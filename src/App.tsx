@@ -2,7 +2,7 @@ import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { createClient, configureChains, WagmiConfig } from "wagmi";
-import { mainnet, hardhat, arbitrum } from "wagmi/chains";
+import { hardhat, arbitrum } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ethers } from "ethers";
@@ -12,7 +12,7 @@ const web3Provider = new ethers.providers.Web3Provider(
 );
 
 const { chains, webSocketProvider } = configureChains(
-  [mainnet, hardhat, arbitrum],
+  [hardhat, arbitrum],
   [publicProvider()]
 );
 const client = createClient({
