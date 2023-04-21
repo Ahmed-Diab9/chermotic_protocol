@@ -84,6 +84,54 @@ const Feeds = () => {
     event.preventDefault();
     await contract?.["createFeed"](formState.title, formState.content);
   };
+
+  useEffect(() => {
+    if (!signer) {
+      return;
+    }
+    const onCreateFeed = function (
+      id: BigNumber,
+      title: string,
+      content: string,
+      author: string,
+      createdAt: BigNumber
+    ) {
+      const newFeed = {
+        id: id.toNumber(),
+        title,
+        content,
+        author,
+        createdAt: createdAt.toNumber(),
+      } satisfies Feed;
+
+      setFeeds((feeds) => [newFeed, ...feeds]);
+    };
+    const onUpdateFeed = function (
+      id: BigNumber,
+      title: string,
+      content: string
+    ) {
+      const feedId = id.toNumber();
+      setFeeds((feeds) => {
+        const newFeeds = feeds.map((feed, feedIndex) => {
+          if (feedId === feedIndex) {
+            return { ...feed, title, content };
+          } else {
+            return feed;
+          }
+        });
+        return newFeeds;
+      });
+    };
+    contract?.on("CreateFeed", onCreateFeed);
+    contract?.on("UpdateFeed", onUpdateFeed);
+
+    return () => {
+      contract?.off("CreateFeed", onCreateFeed);
+      contract?.off("UpdateFeed", onUpdateFeed);
+    };
+  }, [signer, contract]);
+
   return (
     <div className="w-full flex gap-4">
       <div className="flex flex-col gap-4 w-full max-w-[720px]">
