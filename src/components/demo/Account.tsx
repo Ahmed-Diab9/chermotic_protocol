@@ -6,6 +6,7 @@ import {
   useNetwork,
   useSwitchNetwork,
 } from "wagmi";
+import Feeds from "./Feeds";
 
 const Account = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -24,7 +25,11 @@ const Account = () => {
     if (isLoaded) {
       return;
     }
+    if (!connectors || !connectAsync) {
+      return;
+    }
     if (isConnected) {
+      setIsLoaded(true);
       return;
     }
     const [connector] = connectors;
@@ -33,7 +38,7 @@ const Account = () => {
     });
 
     setIsLoaded(true);
-  }, [isLoaded, isConnected, connectors]);
+  }, [isLoaded, isConnected, connectors, connectAsync]);
 
   useEffect(() => {
     connectOnce();
@@ -91,6 +96,7 @@ const Account = () => {
           ))}
         </div>
       )}
+      {isConnected && <Feeds />}
     </div>
   );
 };

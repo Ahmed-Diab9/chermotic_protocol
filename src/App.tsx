@@ -16,7 +16,7 @@ const { chains, webSocketProvider } = configureChains(
   [publicProvider()]
 );
 const client = createClient({
-  autoConnect: true,
+  autoConnect: false,
   connectors: [new InjectedConnector({ chains })] as [InjectedConnector],
   provider: web3Provider,
   webSocketProvider: webSocketProvider,
