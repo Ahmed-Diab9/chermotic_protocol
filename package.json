@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "chromatic": "chromatic --exit-zero-on-changes"
+    "chromatic": "chromatic --exit-zero-on-changes",
+    "automigrate": "storybook automigrate"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -38,6 +39,7 @@
     "chromatic": "^6.17.3",
     "eslint": "^8.38.0",
     "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-storybook": "^0.6.11",
     "postcss": "^8.4.22",
     "prop-types": "^15.8.1",
     "storybook": "^7.0.5",
