@@ -1,14 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+
+module.exports = {
+  darkMode: "class",
+  // darkMode: ["class", '[data-mode="dark"]'],
   theme: {
     extend: {
       fontFamily: {
-        // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
-        // mono: ["VCR mono", ...defaultTheme.fontFamily.sans],
-        // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
-        // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
-        // body: ["VCR mono", ...defaultTheme.fontFamily.sans],
+      // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+      // mono: ["VCR mono", ...defaultTheme.fontFamily.sans],
+      // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
+      // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
+      // body: ["VCR mono", ...defaultTheme.fontFamily.sans],
       },
       colors: {
         current: "currentColor",
