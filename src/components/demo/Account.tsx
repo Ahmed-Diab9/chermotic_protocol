@@ -68,15 +68,19 @@ const Account = () => {
       {isDisconnected && <h5>Not connected...</h5>}
       {isDisconnected && (
         <div>
+          {connectors.map((connector) => (
           <button
-            onClick={() => {
-              connectAsync({
-                connector: connectors[0],
-              });
+              key={connector.name}
+              onClick={async () => {
+                await connectAsync({ connector });
             }}
           >
-            Connect with {connectors[0].name}
+              {connector.name}
+              {isLoading &&
+                connector.id === pendingConnector?.id &&
+                "(connecting)"}
           </button>
+          ))}
         </div>
       )}
       {error && <p>{error.message}</p>}
