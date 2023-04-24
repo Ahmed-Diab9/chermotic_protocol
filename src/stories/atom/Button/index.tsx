@@ -19,7 +19,7 @@ export const Button = ({
   return (
     <button
       type="button"
-      className={`btn btn-${size} ${mode}`}
+      className={`btn btn-${size} ${mode} uppercase`}
       style={{ backgroundColor }}
       {...props}
     >
