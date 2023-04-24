@@ -4,7 +4,8 @@ import { router } from "./routes";
 import { createClient, configureChains, WagmiConfig } from "wagmi";
 import { hardhat, arbitrum } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { ethers } from "ethers";
 
 const web3Provider = new ethers.providers.Web3Provider(
@@ -17,7 +18,13 @@ const { chains, webSocketProvider } = configureChains(
 );
 const client = createClient({
   autoConnect: false,
-  connectors: [new InjectedConnector({ chains })] as [InjectedConnector],
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: { appName: "usum", reloadOnDisconnect: false },
+    }),
+  ] as [MetaMaskConnector, CoinbaseWalletConnector],
   provider: web3Provider,
   webSocketProvider: webSocketProvider,
 });

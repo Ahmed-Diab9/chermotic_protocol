@@ -7,11 +7,13 @@ import {
   useSwitchNetwork,
 } from "wagmi";
 import Feeds from "./Feeds";
+import { CONNECTOR_STORAGE_KEY } from "../../configs/account";
 
 const Account = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { address, isConnected, isDisconnected } = useAccount();
-  const { connectAsync, connectors, error } = useConnect();
+  const { connectAsync, connectors, error, isLoading, pendingConnector } =
+    useConnect();
   const { disconnectAsync } = useDisconnect();
   const { chain: selectedChain, chains } = useNetwork();
   const isSupported = !selectedChain?.unsupported;
@@ -32,11 +34,16 @@ const Account = () => {
       setIsLoaded(true);
       return;
     }
-    const [connector] = connectors;
-    await connectAsync({
-      connector,
+    let connectorId = window.localStorage.getItem(CONNECTOR_STORAGE_KEY) ?? "";
+    connectorId = connectorId?.slice(1, connectorId.length - 1);
+
+    let storedConnector = connectors.find((connector) => {
+      return connector.id === connectorId;
     });
 
+    await connectAsync({
+      connector: storedConnector,
+    });
     setIsLoaded(true);
   }, [isLoaded, isConnected, connectors, connectAsync]);
 
@@ -68,15 +75,19 @@ const Account = () => {
       {isDisconnected && <h5>Not connected...</h5>}
       {isDisconnected && (
         <div>
-          <button
-            onClick={() => {
-              connectAsync({
-                connector: connectors[0],
-              });
-            }}
-          >
-            Connect with {connectors[0].name}
-          </button>
+          {connectors.map((connector) => (
+            <button
+              key={connector.name}
+              onClick={async () => {
+                await connectAsync({ connector });
+              }}
+            >
+              {connector.name}
+              {isLoading &&
+                connector.id === pendingConnector?.id &&
+                "(connecting)"}
+            </button>
+          ))}
         </div>
       )}
       {error && <p>{error.message}</p>}
