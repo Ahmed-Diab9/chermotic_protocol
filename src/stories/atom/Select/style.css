@@ -1,0 +1,17 @@
+.select {
+  @apply inline-block;
+  [type="button"] {
+    @apply px-4 py-1 mb-1;
+    @apply border rounded;
+  }
+  [role="listbox"] {
+    @apply flex flex-col;
+    @apply p-2;
+    @apply border rounded;
+  }
+  [role="option"] {
+    @apply px-2;
+    @apply rounded;
+    @apply cursor-pointer;
+  }
+}
