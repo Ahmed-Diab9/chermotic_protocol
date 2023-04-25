@@ -16,7 +16,6 @@ const Account = () => {
     useConnect();
   const { disconnectAsync } = useDisconnect();
   const { chain: selectedChain, chains } = useNetwork();
-  const isSupported = !selectedChain?.unsupported;
   const {
     switchNetworkAsync,
     isLoading: isSwitchLoading,
@@ -51,18 +50,28 @@ const Account = () => {
     connectOnce();
   }, [connectOnce]);
 
-  useEffect(() => {
-    if (selectedChain?.network === "hardhat") {
-      console.log(selectedChain);
-    }
-  }, [selectedChain]);
-
   return (
     <div>
       {isConnected && (
         <>
           <h2>Address {address}</h2>
           <h3>Chain {selectedChain?.name ?? "undefined"}</h3>
+          <div className="my-2 gap-2 flex flex-col">
+            {chains.map((chain) => (
+              <button
+                key={chain.id}
+                onClick={() => {
+                  switchNetworkAsync(chain.id);
+                }}
+                disabled={selectedChain.id === chain.id}
+              >
+                {chain.name}
+                {isSwitchLoading &&
+                  pendingChainId === chain.id &&
+                  "(switching)"}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => {
               disconnectAsync();
@@ -91,22 +100,6 @@ const Account = () => {
         </div>
       )}
       {error && <p>{error.message}</p>}
-      {!isSupported && (
-        <div className="flex flex-col">
-          {chains.map((chain) => (
-            <button
-              disabled={chain.id === selectedChain?.id && !switchNetworkAsync}
-              key={chain.id}
-              onClick={() => {
-                switchNetworkAsync?.(chain.id);
-              }}
-            >
-              {chain.name}
-              {isSwitchLoading && pendingChainId === chain.id && "(switching)"}
-            </button>
-          ))}
-        </div>
-      )}
       {isConnected && <Feeds />}
     </div>
   );
