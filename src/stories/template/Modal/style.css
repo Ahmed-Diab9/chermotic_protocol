@@ -1,0 +1,16 @@
+.modal {
+  @apply inline-block;
+  [type="button"] {
+    @apply px-4 py-1 mb-1;
+    @apply border rounded;
+  }
+  [role="menu"] {
+    @apply flex flex-col;
+    @apply p-2;
+    @apply border rounded;
+  }
+  [role="menuitem"] {
+    @apply px-2;
+    @apply rounded;
+  }
+}
