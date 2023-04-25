@@ -44,7 +44,6 @@
     "postcss": "^8.4.22",
     "prop-types": "^15.8.1",
     "storybook": "^7.0.7",
-    "storybook-addon-headless": "^2.1.3",
     "storybook-tailwind-dark-mode": "^1.0.22",
     "tailwindcss": "^3.3.1",
     "typescript": "^4.9.3",
