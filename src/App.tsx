@@ -6,13 +6,8 @@ import { hardhat, arbitrum } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { ethers } from "ethers";
 
-const web3Provider = new ethers.providers.Web3Provider(
-  window.ethereum as never
-);
-
-const { chains, webSocketProvider } = configureChains(
+const { chains, provider, webSocketProvider } = configureChains(
   [hardhat, arbitrum],
   [publicProvider()]
 );
@@ -25,7 +20,7 @@ const client = createClient({
       options: { appName: "usum", reloadOnDisconnect: false },
     }),
   ] as [MetaMaskConnector, CoinbaseWalletConnector],
-  provider: web3Provider,
+  provider: provider,
   webSocketProvider: webSocketProvider,
 });
 
