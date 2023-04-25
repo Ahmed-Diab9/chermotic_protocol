@@ -1,18 +1,19 @@
 import "./style.css";
 
 interface ButtonProps {
+  label: string;
   active?: boolean;
   backgroundColor?: string;
   size?: "sm" | "md" | "lg";
-  label: string;
-  onClick?: () => void;
+  disabled?: boolean;
+  onClick?: () => unknown;
 }
 
 export const Button = ({
+  label,
   active = false,
   size = "md",
   backgroundColor,
-  label,
   ...props
 }: ButtonProps) => {
   const mode = active ? "btn-active" : "btn-default";

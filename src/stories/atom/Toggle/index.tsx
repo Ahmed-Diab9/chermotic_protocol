@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Switch } from "@headlessui/react";
 
 interface ToggleProps {
-  size?: "sm" | "lg";
   label: string;
-  onClick?: () => void;
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  onClick?: () => unknown;
 }
 
-export const Toggle = ({ size = "lg", label, ...props }: ToggleProps) => {
+export const Toggle = ({ label, size = "lg", ...props }: ToggleProps) => {
   const [enabled, setEnabled] = useState(false);
 
   return (
