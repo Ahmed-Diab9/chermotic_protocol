@@ -63,17 +63,21 @@ const Feeds = () => {
     if (typeof signer === "undefined") {
       return;
     }
-    const response: FeedResponse[] = await contract?.["getAllFeed"]();
-    const nextFeeds = response.map((data) => {
-      return {
-        id: data[0].toNumber(),
-        title: data[1],
-        content: data[2],
-        author: data[3],
-        createdAt: data[4].toNumber(),
-      } satisfies Feed;
-    });
-    setFeeds(nextFeeds);
+    try {
+      const response: FeedResponse[] = await contract?.["getAllFeed"]();
+      const nextFeeds = response.map((data) => {
+        return {
+          id: data[0].toNumber(),
+          title: data[1],
+          content: data[2],
+          author: data[3],
+          createdAt: data[4].toNumber(),
+        } satisfies Feed;
+      });
+      setFeeds(nextFeeds);
+    } catch (error) {
+      setFeeds([]);
+    }
   }, [contract, signer]);
 
   useEffect(() => {
