@@ -14,3 +14,19 @@ export const bigNumberify: BigNumberify = (value: number): BigNumber => {
     return;
   }
 };
+
+export const withComma = (value: number | string | BigNumber) => {
+  const seperator = /\B(?=(\d{3})+(?!\d))/g;
+  if (typeof value === "number") {
+    const [integer, decimal] = String(value).split(".");
+    return String(integer).replace(seperator, ",") + decimal;
+  }
+  if (typeof value === "string") {
+    const [integer, decimal] = value.split(".");
+    return integer.replace(seperator, ",") + decimal;
+  }
+  if (value instanceof BigNumber) {
+    const [integer, decimal] = value.toString().split(".");
+    return integer.replace(seperator, ",") + decimal;
+  }
+};
