@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Modal } from ".";
 
 const meta = {
-  title: "Molecule/Modal",
+  title: "Template/Modal",
   component: Modal,
   tags: ["autodocs"],
   // argTypes: {
