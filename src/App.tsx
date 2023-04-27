@@ -6,6 +6,8 @@ import { hardhat, arbitrum } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { store } from "./store/index";
+import { Provider } from "react-redux";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [hardhat, arbitrum],
@@ -26,11 +28,13 @@ const client = createClient({
 
 function App() {
   return (
+      <Provider store={store}>
     <WagmiConfig client={client}>
       <div className="App">
         <RouterProvider router={router} />
       </div>
     </WagmiConfig>
+      </Provider>
   );
 }
 
