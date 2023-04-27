@@ -12,6 +12,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const Base: Story = {
+  args: {
+    size: "base",
+    label: "Toggle",
+  },
+};
+
 export const Large: Story = {
   args: {
     size: "lg",
@@ -19,9 +26,9 @@ export const Large: Story = {
   },
 };
 
-export const Small: Story = {
-  args: {
-    size: "sm",
-    label: "Toggle",
-  },
-};
+// export const Small: Story = {
+//   args: {
+//     size: "sm",
+//     label: "Toggle",
+//   },
+// };
