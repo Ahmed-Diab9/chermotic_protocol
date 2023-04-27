@@ -1,0 +1,19 @@
+.avatar {
+  img {
+  }
+}
+.avatar-xs {
+  @apply w-6 h-6;
+}
+.avatar-sm {
+  @apply w-8 h-8;
+}
+.avatar-base {
+  @apply w-10 h-10;
+}
+.avatar-lg {
+  @apply w-9 h-9 lg:w-14 lg:h-14;
+}
+.avatar-xl {
+  @apply w-20 h-20;
+}

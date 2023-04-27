@@ -4,7 +4,7 @@ interface ButtonProps {
   label: string;
   active?: boolean;
   backgroundColor?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "base" | "lg";
   disabled?: boolean;
   onClick?: () => unknown;
 }
@@ -12,7 +12,7 @@ interface ButtonProps {
 export const Button = ({
   label,
   active = false,
-  size = "md",
+  size = "base",
   backgroundColor,
   ...props
 }: ButtonProps) => {

@@ -13,7 +13,7 @@
   @apply px-2 py-1 text-sm;
   @apply rounded-sm;
 }
-.btn-md {
+.btn-base {
   @apply px-2 py-1 text-base;
   @apply rounded;
 }

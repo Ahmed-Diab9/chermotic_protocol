@@ -3,14 +3,14 @@ import "./style.css";
 
 interface DropdownProps {
   label: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "base" | "lg";
   align?: "left" | "center" | "right";
   onClick?: () => void;
 }
 
 export const Dropdown = ({
   label,
-  size = "md",
+  size = "base",
   align = "left",
   ...props
 }: DropdownProps) => {
