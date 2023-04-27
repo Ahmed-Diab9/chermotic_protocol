@@ -9,8 +9,8 @@ const useTradeInput = () => {
   const [leverage, setLeverage] = useState("");
   const [collateral, setCollateral] = useState("");
   const [contractQuantity, setContractQuantity] = useState("");
-  const [takeProfitRatio, setTakeProfitRatio] = useState("");
-  const [stopLossRatio, setStopLossRatio] = useState("");
+  const [takeProfitRate, setTakeProfitRate] = useState("");
+  const [stopLossRate, setStopLossRate] = useState("");
 
   const onTypeToggle = (nextType: typeof type) => {
     dispatch(tradeAction.onTypeToggle(nextType));
@@ -62,32 +62,32 @@ const useTradeInput = () => {
     dispatch(tradeAction.onContractQuantityChange(parsed));
   };
 
-  const onTakeProfitRatioChange = (nextValue: string) => {
+  const onTakeProfitRateChange = (nextValue: string) => {
     if (nextValue.length === 0) {
-      setTakeProfitRatio("");
-      dispatch(tradeAction.onTakeProfitRatioChange(0));
+      setTakeProfitRate("");
+      dispatch(tradeAction.onTakeProfitRateChange(0));
       return;
     }
     const parsed = Number(nextValue);
     if (isNaN(parsed)) {
       return;
     }
-    setTakeProfitRatio(nextValue);
-    dispatch(tradeAction.onTakeProfitRatioChange(parsed));
+    setTakeProfitRate(nextValue);
+    dispatch(tradeAction.onTakeProfitRateChange(parsed));
   };
 
-  const onStopLossRatioChange = (nextValue: string) => {
+  const onStopLossRateChange = (nextValue: string) => {
     if (nextValue.length === 0) {
-      setStopLossRatio("");
-      dispatch(tradeAction.onStopLossRatioChange(0));
+      setStopLossRate("");
+      dispatch(tradeAction.onStopLossRateChange(0));
       return;
     }
     const parsed = Number(nextValue);
     if (isNaN(parsed)) {
       return;
     }
-    setStopLossRatio(nextValue);
-    dispatch(tradeAction.onStopLossRatioChange(parsed));
+    setStopLossRate(nextValue);
+    dispatch(tradeAction.onStopLossRateChange(parsed));
   };
 
   const onPoolsChange = (nextPools: any[]) => {
@@ -100,16 +100,16 @@ const useTradeInput = () => {
     leverage,
     collateral,
     contractQuantity,
-    takeProfitRatio,
-    stopLossRatio,
+    takeProfitRate,
+    stopLossRate,
     pools,
     onTypeToggle,
     onUnitToggle,
     onLeverageChange,
     onCollateralChange,
     onContractQuantityChange,
-    onTakeProfitRatioChange,
-    onStopLossRatioChange,
+    onTakeProfitRateChange,
+    onStopLossRateChange,
     onPoolsChange,
   };
 };

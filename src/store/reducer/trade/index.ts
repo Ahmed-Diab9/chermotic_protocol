@@ -9,8 +9,8 @@ export interface TradeState {
   collateral: BigNumber;
   contractQuantity: BigNumber;
   leverage: number;
-  takeProfitRatio: BigNumber;
-  stopLossRatio: BigNumber;
+  takeProfitRate: BigNumber;
+  stopLossRate: BigNumber;
 
   // @austin-builds
   // TODO: typing needed
@@ -25,8 +25,8 @@ const initialState: TradeState = {
   collateral: bigNumberify(0),
   contractQuantity: bigNumberify(0),
   leverage: 1,
-  takeProfitRatio: bigNumberify(0),
-  stopLossRatio: bigNumberify(100),
+  takeProfitRate: bigNumberify(0),
+  stopLossRate: bigNumberify(100),
   pools: [],
   transactionFee: bigNumberify(0),
   priceDistance: bigNumberify(0),
@@ -51,11 +51,11 @@ export const tradeSlice = createSlice({
     onLeverageChange: (state, action: PayloadAction<number>) => {
       state.leverage = action.payload;
     },
-    onTakeProfitRatioChange: (state, action: PayloadAction<number>) => {
-      state.takeProfitRatio = bigNumberify(action.payload);
+    onTakeProfitRateChange: (state, action: PayloadAction<number>) => {
+      state.takeProfitRate = bigNumberify(action.payload);
     },
-    onStopLossRatioChange: (state, action: PayloadAction<number>) => {
-      state.stopLossRatio = bigNumberify(action.payload);
+    onStopLossRateChange: (state, action: PayloadAction<number>) => {
+      state.stopLossRate = bigNumberify(action.payload);
     },
     onPoolsChange: (state, action: PayloadAction<any[]>) => {
       state.pools = action.payload;
