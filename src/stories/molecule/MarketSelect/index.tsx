@@ -1,21 +1,21 @@
 import { Popover } from "@headlessui/react";
 import "./style.css";
 
-interface SelectMarketProps {
+interface MarketSelectProps {
   label: string;
   size?: "sm" | "md" | "lg";
   align?: "left" | "center" | "right";
   onClick?: () => void;
 }
 
-export const SelectMarket = ({
+export const MarketSelect = ({
   label,
   size = "md",
   align = "left",
   ...props
-}: SelectMarketProps) => {
+}: MarketSelectProps) => {
   return (
-    <div className={`popover text-${align}`}>
+    <div className={`MarketSelect popover text-${align}`}>
       <Popover>
         <Popover.Button className="flex gap-4">
           <p>USDC Market</p>
