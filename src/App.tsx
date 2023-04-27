@@ -8,6 +8,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { store } from "./store/index";
 import { Provider } from "react-redux";
+import { SWRConfig } from "swr";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [hardhat, arbitrum],
@@ -28,13 +29,15 @@ const client = createClient({
 
 function App() {
   return (
+    <SWRConfig>
       <Provider store={store}>
-    <WagmiConfig client={client}>
-      <div className="App">
-        <RouterProvider router={router} />
-      </div>
-    </WagmiConfig>
+        <WagmiConfig client={client}>
+          <div className="App">
+            <RouterProvider router={router} />
+          </div>
+        </WagmiConfig>
       </Provider>
+    </SWRConfig>
   );
 }
 
