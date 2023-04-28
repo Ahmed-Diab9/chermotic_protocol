@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -29,4 +29,11 @@ export const withComma = (value: number | string | BigNumber) => {
     const [integer, decimal] = value.toString().split(".");
     return integer.replace(seperator, ",") + decimal;
   }
+};
+
+export const applyDecimals = (value: BigNumberish, decimals: number) => {
+  const multiplicand = bigNumberify(10).pow(decimals);
+  const multiplier = bigNumberify(value);
+
+  return multiplier.mul(multiplicand);
 };
