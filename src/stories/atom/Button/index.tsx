@@ -4,7 +4,7 @@ interface ButtonProps {
   label: string;
   active?: boolean;
   backgroundColor?: string;
-  size?: "sm" | "base" | "lg";
+  size?: "xs" | "sm" | "base" | "lg";
   disabled?: boolean;
   onClick?: () => unknown;
 }

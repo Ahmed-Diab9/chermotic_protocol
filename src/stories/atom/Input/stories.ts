@@ -7,9 +7,7 @@ const meta = {
   title: "Atom/Input",
   component: Input,
   tags: ["autodocs"],
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
+  argTypes: {},
 } satisfies Meta<typeof Input>;
 
 export default meta;
@@ -22,16 +20,16 @@ export const BaseDefault: Story = {
   },
 };
 
-// export const Large: Story = {
-//   args: {
-//     size: "lg",
-//     label: "Input",
-//   },
-// };
+export const Large: Story = {
+  args: {
+    size: "lg",
+    label: "Input",
+  },
+};
 
-// export const Small: Story = {
-//   args: {
-//     size: "sm",
-//     label: "Input",
-//   },
-// };
+export const Small: Story = {
+  args: {
+    size: "sm",
+    label: "Input",
+  },
+};

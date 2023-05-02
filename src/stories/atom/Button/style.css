@@ -9,6 +9,10 @@
 .btn-default {
   @apply border border-[#666] text-black;
 }
+.btn-xs {
+  @apply p-1 text-xs;
+  @apply rounded-full;
+}
 .btn-sm {
   @apply px-2 py-1 text-sm;
   @apply rounded-sm;

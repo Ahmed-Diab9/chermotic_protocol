@@ -5,14 +5,26 @@ interface InputProps {
   value?: string;
   type?: string;
   size?: "sm" | "base" | "lg";
+  style?: "default" | "active";
   disabled?: boolean;
   onClick?: () => unknown;
 }
 
-export const Input = ({ label, type, size = "base", ...props }: InputProps) => {
+export const Input = ({
+  label,
+  type,
+  size = "base",
+  style = "default",
+  ...props
+}: InputProps) => {
   const value = () => props.value;
 
   return (
-    <input type={type} className="input" value={value()} aria-label={label} />
+    <input
+      type={type}
+      className={`input input-${size} input-${style}`}
+      value={value()}
+      aria-label={label}
+    />
   );
 };
