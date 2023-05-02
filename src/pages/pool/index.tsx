@@ -1,5 +1,6 @@
 import React from "react";
 import { Header } from "../../stories/template/Header";
+import { Footer } from "../../stories/template/Footer";
 import "./style.css";
 
 type User = {
@@ -12,12 +13,11 @@ const Pool = () => {
   return (
     <div>
       <Header
-        user={user}
+        // user={user}
         onLogin={() => setUser({ name: "Jane Doe" })}
         onLogout={() => setUser(undefined)}
         onCreateAccount={() => setUser({ name: "Jane Doe" })}
       />
-      {/*   m - WalletDropdown */}
 
       {/* t - MainBar */}
       {/*   m - <MarketSelect /> */}
@@ -44,9 +44,7 @@ const Pool = () => {
       {/*     text */}
       {/*   a - Button_sm : trade on this pool */}
 
-      {/* t - Footer */}
-
-      <h1>Pool page</h1>
+      <Footer />
     </div>
   );
 };
