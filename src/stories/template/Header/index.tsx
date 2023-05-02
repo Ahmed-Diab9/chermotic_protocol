@@ -1,4 +1,5 @@
 import { Button } from "../../atom/Button";
+import { WalletDropdown } from "../../molecule/WalletDropdown";
 import "./style.css";
 
 type User = {
@@ -30,9 +31,7 @@ export const Header = ({
       <div>
         {user ? (
           <>
-            {/* <Button onClick={onLogin} label="Connect" /> */}
-            {/* wallet dropdown */}
-            {/* <Button size="sm" onClick={onLogout} label="Log out" /> */}
+            <WalletDropdown />
           </>
         ) : (
           <>

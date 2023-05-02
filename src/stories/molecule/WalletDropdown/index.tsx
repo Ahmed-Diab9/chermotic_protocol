@@ -29,11 +29,26 @@ const nftInfo = [
   },
 ];
 
+type User = {
+  name: string;
+  contract: string;
+};
+
 interface WalletDropdownProps {
+  user?: User;
+  onLogin?: () => void;
+  onLogout?: () => void;
+  onCreateAccount?: () => void;
   onClick?: () => void;
 }
 
-export const WalletDropdown = ({ ...props }: WalletDropdownProps) => {
+export const WalletDropdown = ({
+  user,
+  onLogin,
+  onLogout,
+  onCreateAccount,
+  ...props
+}: WalletDropdownProps) => {
   return (
     <div className={`WalletDropdown popover text-right`}>
       <Popover className="relative">
@@ -106,6 +121,7 @@ export const WalletDropdown = ({ ...props }: WalletDropdownProps) => {
                   <div className="px-4 py-2">
                     <a
                       href="##"
+                      onClick={onLogout}
                       className="flow-root px-2 py-2 transition duration-150 ease-in-out rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                       Sign Out
