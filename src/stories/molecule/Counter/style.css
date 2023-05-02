@@ -1,0 +1,23 @@
+.btn {
+  @apply font-semibold leading-[1];
+  @apply inline-block cursor-pointer;
+}
+.btn-active {
+  @apply bg-active text-white dark:text-black;
+  @apply border-none;
+}
+.btn-default {
+  @apply border border-[#666] text-black;
+}
+.btn-sm {
+  @apply px-2 py-1 text-sm;
+  @apply rounded-sm;
+}
+.btn-base {
+  @apply px-2 py-1 text-base;
+  @apply rounded;
+}
+.btn-lg {
+  @apply px-2 py-1 text-lg;
+  @apply rounded;
+}
