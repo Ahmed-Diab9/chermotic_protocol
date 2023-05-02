@@ -1,15 +1,9 @@
 import { Popover, Transition } from "@headlessui/react";
+import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
 import "./style.css";
-
-interface WalletDropdownProps {
-  label: string;
-  size?: "sm" | "md" | "lg";
-  align?: "left" | "center" | "right";
-  onClick?: () => void;
-}
 
 const nftInfo = [
   {
@@ -35,26 +29,28 @@ const nftInfo = [
   },
 ];
 
-export const WalletDropdown = ({
-  label,
-  size = "md",
-  align = "left",
-  ...props
-}: WalletDropdownProps) => {
+interface WalletDropdownProps {
+  onClick?: () => void;
+}
+
+export const WalletDropdown = ({ ...props }: WalletDropdownProps) => {
   return (
     <div className={`WalletDropdown popover text-right`}>
       <Popover className="relative">
         {({ open }) => (
           <>
             <Popover.Button
-              className={`
+              className={`btn-default
                 ${open ? "" : "text-opacity-90"}
-                group inline-flex items-center rounded-md bg-active px-3 py-2 text-base font-medium text-white hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
+                group inline-flex items-center rounded-md px-3 py-2 text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
             >
-              <span>address</span>
+              <div className="flex items-center gap-2">
+                <Avatar size="xs" />
+                <b>contract</b>
+              </div>
               <ChevronDownIcon
                 className={`${open ? "" : "text-opacity-70"}
-                  ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80`}
+                  ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80`}
                 aria-hidden="true"
               />
             </Popover.Button>
