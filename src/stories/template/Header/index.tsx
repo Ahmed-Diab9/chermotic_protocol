@@ -3,6 +3,7 @@ import "./style.css";
 
 type User = {
   name: string;
+  contract: string;
 };
 
 interface HeaderProps {
@@ -29,15 +30,13 @@ export const Header = ({
       <div>
         {user ? (
           <>
-            <span className="welcome">
-              Welcome, <b>{user.name}</b>!
-            </span>
+            {/* <Button onClick={onLogin} label="Connect" /> */}
             {/* wallet dropdown */}
             {/* <Button size="sm" onClick={onLogout} label="Log out" /> */}
           </>
         ) : (
           <>
-            <Button active size="sm" onClick={onLogin} label="Connect" />
+            <Button active onClick={onLogin} label="Connect" />
             {/* <Button size="sm" onClick={onCreateAccount} label="Sign up" /> */}
           </>
         )}

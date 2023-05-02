@@ -19,6 +19,7 @@ export const LoggedIn: Story = {
   args: {
     user: {
       name: "Jane Doe",
+      contract: "0x7djf300",
     },
   },
 };

@@ -1,10 +1,10 @@
 import "./style.css";
 
 interface AvatarProps {
-  label: string;
+  label?: string;
   active?: boolean;
   backgroundColor?: string;
-  size?: "sm" | "base" | "lg";
+  size?: "xs" | "sm" | "base" | "lg" | "xl";
   disabled?: boolean;
   onClick?: () => unknown;
   image?: string;
