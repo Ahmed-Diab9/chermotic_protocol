@@ -1,30 +1,35 @@
 import "./style.css";
 
 interface ButtonProps {
-  label: string;
-  active?: boolean;
-  backgroundColor?: string;
+  label?: string;
+  style?: string;
   size?: "xs" | "sm" | "base" | "lg";
-  disabled?: boolean;
+  className?: string;
+  iconLeft?: any;
+  iconOnly?: any;
+  iconRight?: any;
   onClick?: () => unknown;
 }
 
 export const Button = ({
   label,
-  active = false,
+  style = "default",
   size = "base",
-  backgroundColor,
+  className,
+  iconLeft,
+  iconOnly,
+  iconRight,
   ...props
 }: ButtonProps) => {
-  const mode = active ? "btn-active" : "btn-default";
   return (
     <button
       type="button"
-      className={`btn btn-${size} ${mode} uppercase`}
-      style={{ backgroundColor }}
+      className={`btn btn-${size} btn-${style} ${className}`}
       {...props}
     >
-      {label}
+      {iconLeft !== undefined ? iconLeft : null}
+      {iconOnly !== undefined ? iconOnly : label}
+      {iconRight !== undefined ? iconRight : null}
     </button>
   );
 };

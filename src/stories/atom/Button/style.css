@@ -1,27 +1,33 @@
 .btn {
   @apply font-semibold leading-[1];
   @apply inline-block cursor-pointer;
+  &.toggle-on {
+    @apply border border-active text-active;
+  }
+  &.toggle-off {
+    @apply border border-black/50;
+  }
 }
 .btn-active {
   @apply bg-active text-white dark:text-black;
   @apply border-none;
 }
 .btn-default {
-  @apply border border-[#666] text-black;
+  @apply text-black border;
 }
 .btn-xs {
-  @apply p-1 text-xs;
+  @apply text-xs min-w-[16px];
   @apply rounded-full;
 }
 .btn-sm {
-  @apply px-2 py-1 text-sm;
+  @apply px-2 py-1 text-sm min-w-[20px];
   @apply rounded-sm;
 }
 .btn-base {
-  @apply px-2 py-1 text-base;
+  @apply px-2 py-1 text-base min-w-[40px];
   @apply rounded;
 }
 .btn-lg {
-  @apply px-2 py-1 text-lg;
+  @apply px-2 py-1 text-lg min-w-[60px];
   @apply rounded;
 }
