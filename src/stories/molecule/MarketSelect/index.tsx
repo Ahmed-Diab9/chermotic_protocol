@@ -1,4 +1,5 @@
 import { Popover } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 
 interface MarketSelectProps {
@@ -17,12 +18,16 @@ export const MarketSelect = ({
   return (
     <div className={`MarketSelect popover text-${align}`}>
       <Popover>
-        <Popover.Button className="flex gap-4">
+        <Popover.Button className="flex items-center gap-4 border-r">
           <p>USDC Market</p>
           <h2>ETH/USD</h2>
+          <ChevronDownIcon
+            className="w-5 h-5 mr-4 transition duration-150 ease-in-out"
+            aria-hidden="true"
+          />
         </Popover.Button>
-        <Popover.Panel className="max-w-[1200px] border min-h-[120px]">
-          <Popover.Group className="relative">
+        <Popover.Panel className="popover-panel">
+          <Popover.Group className="">
             <Popover className="inner-popover">
               <Popover.Button className="inner-popover-button">
                 USDC
