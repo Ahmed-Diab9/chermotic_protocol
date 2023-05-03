@@ -16,7 +16,7 @@
   @apply text-black border;
 }
 .btn-xs {
-  @apply text-xs min-w-[16px];
+  @apply px-1 py-[2px] text-xs min-w-[16px];
   @apply rounded-full;
 }
 .btn-sm {
