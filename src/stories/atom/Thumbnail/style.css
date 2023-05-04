@@ -1,0 +1,19 @@
+.thumb {
+  img {
+  }
+}
+.thumb-xs {
+  @apply w-6 h-6;
+}
+.thumb-sm {
+  @apply w-8 h-8;
+}
+.thumb-base {
+  @apply w-10 h-10;
+}
+.thumb-lg {
+  @apply w-16 h-16;
+}
+.thumb-xl {
+  @apply w-20 h-20;
+}
