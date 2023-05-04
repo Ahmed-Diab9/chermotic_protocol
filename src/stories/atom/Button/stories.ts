@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const BaseActive: Story = {
   args: {
     size: "base",
-    style: "active",
+    css: "active",
     label: "Button",
   },
 };
@@ -26,7 +26,7 @@ export const BaseActive: Story = {
 export const BaseDefault: Story = {
   args: {
     size: "base",
-    style: "default",
+    css: "default",
     label: "Base Default Button",
   },
 };

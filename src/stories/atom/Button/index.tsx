@@ -2,7 +2,7 @@ import "./style.css";
 
 interface ButtonProps {
   label?: string;
-  style?: string;
+  css?: string;
   size?: "xs" | "sm" | "base" | "lg";
   className?: string;
   iconLeft?: any;
@@ -13,7 +13,7 @@ interface ButtonProps {
 
 export const Button = ({
   label,
-  style = "default",
+  css = "default",
   size = "base",
   className,
   iconLeft,
@@ -21,10 +21,12 @@ export const Button = ({
   iconRight,
   ...props
 }: ButtonProps) => {
+  const btnIconOnly = iconOnly ? "btn-icon-only" : "";
+
   return (
     <button
       type="button"
-      className={`btn btn-${size} btn-${style} ${className}`}
+      className={`btn btn-${size} btn-${css} ${className} ${btnIconOnly}`}
       {...props}
     >
       {iconLeft !== undefined ? iconLeft : null}

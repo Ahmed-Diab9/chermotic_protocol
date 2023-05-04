@@ -15,19 +15,38 @@
 .btn-default {
   @apply text-black border;
 }
+.btn-noline {
+  @apply hover:bg-active/20;
+}
 .btn-xs {
-  @apply px-1 py-[2px] text-xs min-w-[16px];
-  @apply rounded-full;
+  @apply text-xs min-w-[16px];
+  @apply rounded-sm;
+  padding: 2px 4px;
+  &.btn-icon-only {
+    @apply min-h-[16px] p-[1px];
+  }
 }
 .btn-sm {
-  @apply px-2 py-1 text-sm min-w-[20px];
-  @apply rounded-sm;
+  @apply text-sm min-w-[20px];
+  @apply rounded;
+  padding: 4px 8px;
+  &.btn-icon-only {
+    @apply min-h-[20px] p-[2px];
+  }
 }
 .btn-base {
-  @apply px-2 py-1 text-base min-w-[40px];
+  @apply text-base min-w-[40px];
   @apply rounded;
+  padding: 4px 8px;
+  &.btn-icon-only {
+    @apply min-h-[40px] p-1;
+  }
 }
 .btn-lg {
-  @apply px-2 py-1 text-lg min-w-[60px];
+  @apply text-lg min-w-[60px];
   @apply rounded;
+  padding: 4px 8px;
+  &.btn-icon-only {
+    @apply min-h-[60px] p-2;
+  }
 }
