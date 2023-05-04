@@ -21,9 +21,11 @@ export const Header = ({
   onCreateAccount,
 }: HeaderProps) => (
   <header>
-    <div className="wrapper">
+    <div className="flex items-center wrapper">
       <div className="flex items-center gap-6">
-        <h1>LOGO</h1>
+        <a href="/" className="font-bold">
+          CHROMATIC
+        </a>
         <a href="/trade">Trade</a>
         <a href="/pool">Pool</a>
         {/* dropdown */}
@@ -35,8 +37,7 @@ export const Header = ({
           </>
         ) : (
           <>
-            <Button active onClick={onLogin} label="Connect" />
-            {/* <Button size="sm" onClick={onCreateAccount} label="Sign up" /> */}
+            <Button css="active" onClick={onLogin} label="Connect" />
           </>
         )}
       </div>

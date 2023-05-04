@@ -1,7 +1,10 @@
 import { Popover, Transition } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
+import { Thumbnail } from "../../atom/Thumbnail";
 import { Button } from "../../atom/Button";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Square2StackIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import "./style.css";
 
@@ -11,21 +14,22 @@ const nftInfo = [
     name: "+0.03%",
     quantity: 12,
     price: 240,
-    image: "",
+    image:
+      "https://assets.nick.com/uri/mgid:arc:imageassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
   },
   {
     title: "USDC ETH/USD",
     name: "+0.03%",
     quantity: 12,
     price: 240,
-    image: "",
+    image: undefined,
   },
   {
     title: "USDC ETH/USD",
     name: "+0.03%",
     quantity: 12,
     price: 240,
-    image: "",
+    image: undefined,
   },
 ];
 
@@ -82,19 +86,28 @@ export const WalletDropdown = ({
                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                   <div className="flex items-center justify-between gap-8 p-4 bg-white">
                     <p>address</p>
-                    <Button label="copy" size="sm" />
+                    <Button
+                      label="view all"
+                      size="sm"
+                      css="noline"
+                      iconOnly={<Square2StackIcon />}
+                    />
                   </div>
+                  {/* asset balance 추가될 수 있음 */}
                   <div className="p-4 border-t border-b bg-gray-50">
                     <div className="flex items-center justify-between">
                       <h2>My Liquidity NFT</h2>
-                      <Button label="more" size="sm" />
+                      <Button
+                        label="view all"
+                        size="sm"
+                        css="noline"
+                        iconOnly={<ArrowRightIcon />}
+                      />
                     </div>
-                    <div className="flex flex-col py-4">
+                    <div className="flex flex-col gap-2 py-4">
                       {nftInfo.map((item) => (
-                        <div className="flex">
-                          <div className="flex items-center justify-center w-10 h-10 text-white shrink-0 sm:h-12 sm:w-12">
-                            {/* <item.image /> */}
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Thumbnail size="base" image={item.image} />
                           <div>
                             <p className="text-sm font-medium text-gray-900">
                               {item.title}
@@ -136,23 +149,3 @@ export const WalletDropdown = ({
     </div>
   );
 };
-
-// const NftImage = () => {
-//   return (
-//     <svg
-//       width="48"
-//       height="48"
-//       viewBox="0 0 48 48"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <rect width="48" height="48" rx="8" fill="#FFEDD5" />
-//       <rect x="13" y="32" width="2" height="4" fill="#FDBA74" />
-//       <rect x="17" y="28" width="2" height="8" fill="#FDBA74" />
-//       <rect x="21" y="24" width="2" height="12" fill="#FDBA74" />
-//       <rect x="25" y="20" width="2" height="16" fill="#FDBA74" />
-//       <rect x="29" y="16" width="2" height="20" fill="#FB923C" />
-//       <rect x="33" y="12" width="2" height="24" fill="#FB923C" />
-//     </svg>
-//   );
-// };
