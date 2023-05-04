@@ -1,0 +1,14 @@
+.input {
+}
+.input-sm {
+  @apply h-8 px-2;
+}
+.input-base {
+  @apply h-10 px-3;
+}
+.input-lg {
+  @apply h-12 px-5;
+}
+.input-default {
+  @apply border rounded;
+}

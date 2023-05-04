@@ -1,14 +1,18 @@
 .MarketSelect {
+  .popover-panel {
+    @apply absolute w-full max-w-[1200px] min-h-[120px] mt-6;
+    @apply border bg-white;
+  }
   .inner-popover {
-    @apply flex;
+    @apply flex items-start;
     .inner-popover-button {
-      @apply px-3;
+      @apply px-3 w-24;
       &[aria-expanded="true"] {
         @apply bg-black text-white;
       }
     }
     .inner-popover-panel {
-      @apply absolute top-0 left-20 right-0;
+      @apply absolute top-0 left-[100px] right-0;
       @apply flex flex-col;
       .inner-popover-item {
         @apply flex;

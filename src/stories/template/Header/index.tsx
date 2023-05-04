@@ -1,8 +1,10 @@
 import { Button } from "../../atom/Button";
+import { WalletDropdown } from "../../molecule/WalletDropdown";
 import "./style.css";
 
 type User = {
   name: string;
+  contract: string;
 };
 
 interface HeaderProps {
@@ -19,9 +21,11 @@ export const Header = ({
   onCreateAccount,
 }: HeaderProps) => (
   <header>
-    <div className="wrapper">
+    <div className="flex items-center wrapper">
       <div className="flex items-center gap-6">
-        <h1>LOGO</h1>
+        <a href="/" className="font-bold">
+          CHROMATIC
+        </a>
         <a href="/trade">Trade</a>
         <a href="/pool">Pool</a>
         {/* dropdown */}
@@ -29,16 +33,11 @@ export const Header = ({
       <div>
         {user ? (
           <>
-            <span className="welcome">
-              Welcome, <b>{user.name}</b>!
-            </span>
-            {/* wallet dropdown */}
-            {/* <Button size="sm" onClick={onLogout} label="Log out" /> */}
+            <WalletDropdown />
           </>
         ) : (
           <>
-            <Button active size="sm" onClick={onLogin} label="Connect" />
-            {/* <Button size="sm" onClick={onCreateAccount} label="Sign up" /> */}
+            <Button css="active" onClick={onLogin} label="Connect" />
           </>
         )}
       </div>

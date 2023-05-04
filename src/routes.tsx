@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Demo from "./pages/demo";
+import Pool from "./pages/pool";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/demo",
     element: <Demo />,
+  },
+  {
+    path: "/pool",
+    element: <Pool />,
   },
 ]);
 

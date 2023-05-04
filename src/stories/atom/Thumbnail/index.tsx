@@ -1,6 +1,6 @@
 import "./style.css";
 
-interface AvatarProps {
+interface ThumbnailProps {
   label?: string;
   active?: boolean;
   backgroundColor?: string;
@@ -10,24 +10,22 @@ interface AvatarProps {
   image?: string;
 }
 
-export const Avatar = ({
+export const Thumbnail = ({
   label,
   active = false,
   size = "base",
   backgroundColor,
   ...props
-}: AvatarProps) => {
+}: ThumbnailProps) => {
   const image = () => props.image;
 
   return (
-    <div className="avatar">
+    <div className="thumb">
       <div className="flex items-center gap-3 lg:gap-7">
-        <div
-          className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden`}
-        >
+        <div className={`thumb-${size} bg-[#D9D9D9] overflow-hidden`}>
           {image() !== undefined ? (
             <img src={image()} alt="" className="object-cover w-full h-full" />
-          ) : null}
+          ) : null}{" "}
         </div>
       </div>
     </div>
