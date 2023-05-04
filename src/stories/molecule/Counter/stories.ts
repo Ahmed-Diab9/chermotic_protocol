@@ -7,9 +7,7 @@ const meta = {
   title: "Molecule/Counter",
   component: Counter,
   tags: ["autodocs"],
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
+  argTypes: {},
 } satisfies Meta<typeof Counter>;
 
 export default meta;
@@ -18,8 +16,6 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
   args: {
-    size: "base",
-    active: true,
-    label: "Counter",
+    initialValue: 5,
   },
 };

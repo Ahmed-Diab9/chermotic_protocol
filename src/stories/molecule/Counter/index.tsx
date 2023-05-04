@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Button } from "../../atom/Button";
 // import { Input } from "../../atom/Input";
-import { MinusIcon } from "@heroicons/react/20/solid";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import { MinusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 
 interface CounterProps {
-  label: string;
-  count: number;
+  label?: string;
+  count?: number;
   size?: "sm" | "base" | "lg";
   disabled?: boolean;
   onClick?: () => unknown;
-  initialValue: number;
+  initialValue?: number;
 }
 
 export const Counter = ({
