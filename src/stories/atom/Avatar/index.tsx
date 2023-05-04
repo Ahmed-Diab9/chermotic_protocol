@@ -25,7 +25,9 @@ export const Avatar = ({
         <div
           className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden`}
         >
-          <img src={image()} alt="" className="object-cover w-full h-full" />
+          {image() !== undefined ? (
+            <img src={image()} alt="" className="object-cover w-full h-full" />
+          ) : null}
         </div>
       </div>
     </div>
