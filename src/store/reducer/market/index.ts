@@ -20,11 +20,11 @@ export const marketSlice = createSlice({
   name: "market",
   initialState,
   reducers: {
-    onMarketsUpdate: (state, action: PayloadAction<unknown>) => {
-      state.markets = [];
+    onMarketsUpdate: (state, action: PayloadAction<Market[]>) => {
+      state.markets = action.payload;
     },
-    onTokensUpdate: (state, action: PayloadAction<unknown>) => {
-      state.tokens = [];
+    onTokensUpdate: (state, action: PayloadAction<Token[]>) => {
+      state.tokens = action.payload;
     },
     onTokenSelect: (state, action: PayloadAction<Token>) => {
       state.selectedToken = action.payload;
