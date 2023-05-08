@@ -28,11 +28,11 @@ export const useMarket = (interval?: number) => {
         const factory = OracleProvider__factory.connect(
           providerAddress,
           signer
-  );
+        );
         const description = await factory.description();
         return { address: providerAddress, description } satisfies Market;
       })
-  );
+    );
     return response
       .filter(
         (element): element is PromiseFulfilledResult<Market> =>
@@ -62,7 +62,7 @@ export const useSelectedMarket = () => {
       return;
     }
     dispatch(marketAction.onMarketSelect(nextMarket));
-};
+  };
 
   return [selectedMarket, onMarketSelect] as const;
 };
