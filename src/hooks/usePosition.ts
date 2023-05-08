@@ -88,19 +88,31 @@ export const useOpenPosition = () => {
   return openPosition;
 };
 
-  const { data, isLoading, error } = useSWR(
-    fetchKey,
-    async ([address, chain, contract, method]) => {
-      const response: unknown = await contract[method]();
+export const useClosePosition = (positionId: BigNumber) => {
+  const { data: signer } = useSigner();
+  const [deadline, setDeadline] = useState(0);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
-      return response as Position[];
+  const closePosition = () => {
+    if (!isValid(signer)) {
+      errorLog("no signers");
+      return;
     }
-  );
-
-  return {
-    isLoading,
-    positions: data ?? [],
+    if (!isValid(selectedMarket)) {
+      errorLog("no selected markets");
+      return;
+    }
+    if (!isValid(selectedToken)) {
+      errorLog("no selected tokens");
+      return;
+    }
+    const router = USUMRouter__factory.connect(
+      deployed["anvil"]["USUMRouter"],
+      signer
+    );
+    router.closePosition(selectedMarket.address, positionId, deadline);
   };
-};
 
-export default usePosition;
+  return closePosition;
+};
