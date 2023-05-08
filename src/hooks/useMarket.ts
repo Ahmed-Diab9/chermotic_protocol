@@ -50,6 +50,19 @@ export const useMarket = (interval?: number) => {
   }
   return [markets, fetchMarkets] as const;
 };
+
+export const useSelectedMarket = () => {
+  const dispatch = useAppDispatch();
+  const markets = useAppSelector((state) => state.market.markets);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const onMarketSelect = (address: string) => {
+    const nextMarket = markets.find((market) => market.address === address);
+    if (!isValid(nextMarket)) {
+      errorLog("selected market is invalid.");
+      return;
+    }
+    dispatch(marketAction.onMarketSelect(nextMarket));
 };
 
-export default useMarket;
+  return [selectedMarket, onMarketSelect] as const;
+};
