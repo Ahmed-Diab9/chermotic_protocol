@@ -3,6 +3,7 @@ import { useContract, useNetwork, useSigner } from "wagmi";
 import App from "../../abis/demo/App.json";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import type { FormEvent } from "react";
+import { isValid } from "../../utils/valid";
 
 /**
  * FIXME: need `.env.local`
@@ -22,14 +23,10 @@ type FormState = {
   title: string;
   content: string;
 };
-type FormAction<T = "title" | "content"> = T extends "title"
-  ? {
-      type: T;
-      payload: Pick<FormState, T>;
-    }
-  : T extends "content"
-  ? { type: T; payload: Pick<FormState, T> }
-  : never;
+type FormAction<T extends keyof FormState = keyof FormState> =
+  T extends keyof FormState
+    ? { type: T; payload: Record<T, FormState[T]> }
+    : never;
 
 const Feeds = () => {
   const { chain } = useNetwork();
@@ -60,7 +57,7 @@ const Feeds = () => {
     { title: "", content: "" } satisfies FormState
   );
   const fetchFeeds = useCallback(async () => {
-    if (typeof signer === "undefined") {
+    if (!isValid(signer)) {
       return;
     }
     try {

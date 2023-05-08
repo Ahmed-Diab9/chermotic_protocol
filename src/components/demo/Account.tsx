@@ -61,9 +61,9 @@ const Account = () => {
               <button
                 key={chain.id}
                 onClick={() => {
-                  switchNetworkAsync(chain.id);
+                  switchNetworkAsync?.(chain.id);
                 }}
-                disabled={selectedChain.id === chain.id}
+                disabled={selectedChain?.id === chain.id}
               >
                 {chain.name}
                 {isSwitchLoading &&
