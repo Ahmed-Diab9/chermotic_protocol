@@ -1,19 +1,48 @@
 import useSWR from "swr";
-import { useAccount, useContract, useNetwork } from "wagmi";
-import { Position } from "../typings/position";
-import { useMemo } from "react";
+import { useSigner } from "wagmi";
+import { useMemo, useState } from "react";
 import { useAppSelector } from "../store";
+import { BigNumber } from "ethers";
+import {
+  Account__factory,
+  USUMRouter__factory,
+  deployed,
+} from "@quarkonix/usum";
+import { errorLog } from "../utils/log";
+import useUsumAccount from "./useUsumAccount";
+import { useSelectedMarket } from "./useMarket";
+import { isValid } from "../utils/valid";
 
-/**
- * FIXME @austin-builds
- * contract methods are needed
- */
-const usePosition = () => {
-  const { address } = useAccount();
-  const { chain } = useNetwork();
-  const contract = useContract();
-  const trade = useAppSelector((state) => state.trade);
-  const method = "POSITIONS";
+export const usePosition = () => {
+  const { data: signer } = useSigner();
+  const [account] = useUsumAccount();
+  const [selectedMarket] = useSelectedMarket();
+  const factory = useMemo(() => {
+    if (!isValid(signer) || !isValid(account)) {
+      return;
+    }
+    return Account__factory.connect(account, signer);
+  }, [account, signer]);
+  const fetchKey =
+    isValid(factory) && isValid(selectedMarket)
+      ? ([factory, selectedMarket] as const)
+      : undefined;
+  const {
+    data: positionIds,
+    error,
+    mutate: fetchPositionIds,
+  } = useSWR(fetchKey, async ([factory, selectedMarket]) => {
+    const positionIds = await factory.getPositionIds(selectedMarket.address);
+
+    return positionIds;
+  });
+
+  if (error) {
+    errorLog(error);
+  }
+
+  return [positionIds, fetchPositionIds] as const;
+};
 
   const fetchKey = useMemo(() => {
     if (typeof address !== "string") {
