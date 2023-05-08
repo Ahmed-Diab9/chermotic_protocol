@@ -18,6 +18,11 @@ jobs:
       # Job steps
       steps:
         - uses: actions/checkout@v1
+        - name: Authenticate with private npm packages
+          run: |
+            echo "@quarkonix:registry=https://npm.pkg.github.com" > ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
+            echo "//registry.npmjs.org/" >> ~/.npmrc
         - name: Install dependencies
           # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
           run: yarn
