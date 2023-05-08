@@ -1,54 +1,68 @@
 import { useEffect } from "react";
 import useSWR from "swr";
-import { useContract } from "wagmi";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { marketAction } from "../store/reducer/market";
+import useOracleProvider from "./useOracleProvider";
+import { OracleProvider__factory } from "@quarkonix/usum";
+import { useSigner } from "wagmi";
+import { Market } from "../typings/market";
+import { errorLog } from "../utils/log";
+import { isValid } from "../utils/valid";
 
-/**
- * FIXME @austin-builds
- * Required to fetch token, and market list for Header component.
- * - Contracts
- * - Methods
- * - Data structure of response objects
- */
-const useMarket = (interval?: number) => {
-  const contract = useContract();
+export const useMarket = (interval?: number) => {
   const dispatch = useAppDispatch();
-  const intervalConfig =
-    typeof interval === "number"
-      ? {
-          dedupingInterval: interval,
-        }
-      : null;
+  const { data: signer } = useSigner();
+  const [oracleProviders] = useOracleProvider();
+  const fetchKey =
+    isValid(oracleProviders) && isValid(signer)
+      ? ([oracleProviders, signer] as const)
+      : undefined;
 
-  const fetchMarketsMethod = "FETCH_MARKETS_METHOD";
-  const fetchTokensMethod = "FETCH_TOKENS_METHOD";
-  const { data: markets } = useSWR(
-    [contract],
-    async ([contract]) => {
-      const response = await contract[fetchMarketsMethod]();
-
-      return response;
-    },
-    intervalConfig
-  );
-  const { data: tokens } = useSWR(
-    [contract],
-    async ([contract]) => {
-      const response = await contract[fetchTokensMethod]();
-
-      return response;
-    },
-    intervalConfig
-  );
+  const {
+    data: markets,
+    error,
+    mutate: fetchMarkets,
+  } = useSWR(fetchKey, async ([oracleProviders, signer]) => {
+    const response = await Promise.allSettled(
+      oracleProviders.map(async (providerAddress) => {
+        const factory = OracleProvider__factory.connect(
+          providerAddress,
+          signer
+        );
+        const description = await factory.description();
+        return { address: providerAddress, description } satisfies Market;
+      })
+    );
+    return response
+      .filter(
+        (element): element is PromiseFulfilledResult<Market> =>
+          element.status === "fulfilled"
+      )
+      .map((element) => element.value);
+  });
 
   useEffect(() => {
-    dispatch(marketAction.onMarketsUpdate(markets));
+    dispatch(marketAction.onMarketsUpdate(markets ?? []));
   }, [dispatch, markets]);
 
-  useEffect(() => {
-    dispatch(marketAction.onTokensUpdate(tokens));
-  }, [dispatch, tokens]);
+  if (error) {
+    errorLog(error);
+  }
+  return [markets, fetchMarkets] as const;
 };
 
-export default useMarket;
+export const useSelectedMarket = () => {
+  const dispatch = useAppDispatch();
+  const markets = useAppSelector((state) => state.market.markets);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const onMarketSelect = (address: string) => {
+    const nextMarket = markets.find((market) => market.address === address);
+    if (!isValid(nextMarket)) {
+      errorLog("selected market is invalid.");
+      return;
+    }
+    dispatch(marketAction.onMarketSelect(nextMarket));
+  };
+
+  return [selectedMarket, onMarketSelect] as const;
+};

@@ -4,14 +4,14 @@ interface BigNumberify {
   (value: number): BigNumber;
   (value: unknown): BigNumber | undefined;
 }
-export const bigNumberify: BigNumberify = (value: number): BigNumber => {
+export const bigNumberify: BigNumberify = (value) => {
   if (typeof value === "number") {
     return BigNumber.from(value);
   }
   try {
     return BigNumber.from(value);
   } catch (error) {
-    return;
+    return undefined!;
   }
 };
 
@@ -33,7 +33,10 @@ export const withComma = (value: number | string | BigNumber) => {
 
 export const applyDecimals = (value: BigNumberish, decimals: number) => {
   const multiplicand = bigNumberify(10).pow(decimals);
-  const multiplier = bigNumberify(value);
+  if (typeof value === "number") {
+    return bigNumberify(value).mul(multiplicand);
+  }
 
-  return multiplier.mul(multiplicand);
+  const multiplier = bigNumberify(value);
+  return multiplier?.mul(multiplicand);
 };

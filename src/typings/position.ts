@@ -17,3 +17,19 @@ export interface Position {
   profitAndLoss: BigNumber;
   entryTime: BigNumber;
 }
+
+export interface PositionResponse {
+  id: BigNumber;
+  oracleVersion: BigNumber;
+  qty: BigNumber;
+  leverage: BigNumber;
+  timestamp: BigNumber;
+  takerMargin: BigNumber;
+  owner: string;
+  _slotMargins: LpSlotMargin[];
+}
+
+export interface LpSlotMargin {
+  tradingFeeRate: BigNumber;
+  amount: BigNumber;
+}
