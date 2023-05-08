@@ -44,18 +44,49 @@ export const usePosition = () => {
   return [positionIds, fetchPositionIds] as const;
 };
 
-  const fetchKey = useMemo(() => {
-    if (typeof address !== "string") {
+export const useOpenPosition = () => {
+  const { data: signer } = useSigner();
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const [deadline, setDeadline] = useState(0);
+  const {
+    contractQuantity,
+    leverage,
+    takeProfitRate,
+    stopLossRate,
+    transactionFee,
+  } = useAppSelector((state) => state.trade);
+  const selectedToken = useAppSelector((state) => state.market.selectedToken);
+
+  const openPosition = () => {
+    if (!isValid(signer)) {
+      errorLog("no signers");
       return;
     }
-    if (typeof chain === "undefined" || chain.unsupported) {
+    if (!isValid(selectedMarket)) {
+      errorLog("no selected markets");
       return;
     }
-    if (typeof contract === "undefined") {
+    if (!isValid(selectedToken)) {
+      errorLog("no selected tokens");
       return;
     }
-    return [address, chain, contract, method] as const;
-  }, [address, chain, contract, method]);
+    const router = USUMRouter__factory.connect(
+      deployed["anvil"]["USUMRouter"],
+      signer
+    );
+    router.openPosition(
+      selectedMarket.address,
+      contractQuantity,
+      leverage,
+      takeProfitRate,
+      stopLossRate,
+      null!,
+      deadline
+    );
+  };
+
+  return openPosition;
+};
 
   const { data, isLoading, error } = useSWR(
     fetchKey,
