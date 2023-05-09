@@ -62,7 +62,8 @@ export const AssetPopover = ({ ...props }: AssetPopoverProps) => {
                     <div>
                       <Input align="right" placeholder="0" />
                       <div className="flex gap-1 mt-2">
-                        <Button label="25%" size="sm" />
+                        {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
+                        <Button label="25%" size="sm" css="active" />{" "}
                         <Button label="50%" size="sm" />
                         <Button label="75%" size="sm" />
                         <Button label="Max" size="sm" />
@@ -130,7 +131,8 @@ export const AssetPopover = ({ ...props }: AssetPopoverProps) => {
                     <div>
                       <Input align="right" placeholder="0" />
                       <div className="flex gap-1 mt-2">
-                        <Button label="25%" size="sm" />
+                        {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
+                        <Button label="25%" size="sm" css="active" />
                         <Button label="50%" size="sm" />
                         <Button label="75%" size="sm" />
                         <Button label="Max" size="sm" />

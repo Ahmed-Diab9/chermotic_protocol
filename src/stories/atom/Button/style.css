@@ -7,6 +7,9 @@
   &.toggle-off {
     @apply border border-black/50;
   }
+  &.btn-icon-only {
+    @apply justify-center text-center flex-none;
+  }
 }
 .btn-active {
   @apply bg-active text-white dark:text-black;
@@ -14,6 +17,9 @@
 }
 .btn-default {
   @apply text-black border;
+}
+.btn-circle {
+  @apply border border-[#eee] bg-white !rounded-full;
 }
 .btn-noline {
   @apply hover:bg-active/20;
@@ -36,10 +42,13 @@
 }
 .btn-base {
   @apply text-base min-w-[40px];
-  @apply rounded;
+  /* @apply rounded; */
   padding: 4px 8px;
   &.btn-icon-only {
     @apply min-h-[40px] p-1;
+  }
+  &.btn-circle {
+    @apply p-2;
   }
 }
 .btn-lg {
