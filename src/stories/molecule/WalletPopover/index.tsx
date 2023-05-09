@@ -1,11 +1,14 @@
 import { Popover, Transition } from "@headlessui/react";
+import { Tab } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Thumbnail } from "../../atom/Thumbnail";
 import { Button } from "../../atom/Button";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
+import "../../atom/Tabs/style.css";
 import "./style.css";
 
 const nftInfo = [
@@ -76,70 +79,112 @@ export const WalletPopover = ({
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
+              enterFrom="opacity-100 translate-x-20"
+              enterTo="opacity-100 translate-x-0"
               leave="transition ease-in duration-150"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="absolute z-10 w-[320px] text-left max-w-sm px-4 mt-3 transform right-0 sm:px-0 lg:max-w-3xl">
-                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="flex items-center justify-between gap-8 p-4 bg-white">
-                    <p>address</p>
-                    <Button
-                      label="view all"
-                      size="sm"
-                      css="noline"
-                      iconOnly={<Square2StackIcon />}
-                    />
-                  </div>
-                  {/* asset balance 추가될 수 있음 */}
-                  <div className="p-4 border-t border-b bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <h2>My Liquidity NFT</h2>
+              <Popover.Panel className="transform shadow-lg popover-panel ">
+                <div className="flex flex-col h-full">
+                  {/* Network */}
+                  <article className="flex items-center gap-3">
+                    <Avatar size="lg" />
+                    <p className="text-bold">Arbitrum Network</p>
+                  </article>
+                  <section className="flex-grow mt-6 border rounded-lg">
+                    {/* Wallet address */}
+                    <article className="px-4 py-3 border-b bg-grayL/20">
+                      <h4 className="mb-3 text-center">Connected Wallet</h4>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
+                          <p className="px-4">address</p>
+                          <Button
+                            label="copy address"
+                            css="circle"
+                            iconOnly={<Square2StackIcon />}
+                          />
+                        </div>
+                        <Button
+                          label="view transition"
+                          css="circle"
+                          iconOnly={<ArrowTopRightOnSquareIcon />}
+                        />
+                      </div>
+                    </article>
+                    {/* Tab - Asset, Liquidity */}
+                    <div className="w-full p-4 tabs tabs-line">
+                      <Tab.Group>
+                        <Tab.List>
+                          <Tab>Assets</Tab>
+                          <Tab>Liquidity NFT</Tab>
+                        </Tab.List>
+                        <Tab.Panels>
+                          <Tab.Panel className="grow">
+                            {/* Assets */}
+                            <article></article>
+                          </Tab.Panel>
+                          <Tab.Panel className="grow">
+                            {/* Liquidity NFT */}
+                            <article>
+                              <div className="flex flex-col gap-2 py-4">
+                                {nftInfo.map((item) => (
+                                  <div className="flex items-center gap-2">
+                                    <Thumbnail size="base" image={item.image} />
+                                    <div>
+                                      <p className="text-sm font-medium text-gray-900">
+                                        {item.title}
+                                      </p>
+                                      <p className="text-base font-medium text-gray-900">
+                                        {item.name}
+                                      </p>
+                                    </div>
+                                    <div className="ml-auto text-right">
+                                      <p className="text-sm font-medium text-gray-900">
+                                        {item.quantity}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {item.price} USDC
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="text-center">
+                                <Button label="View more" size="sm" />
+                              </div>
+                            </article>
+                          </Tab.Panel>
+                        </Tab.Panels>
+                      </Tab.Group>
+                    </div>
+                  </section>
+                  {/* Account address */}
+                  <article className="px-4 py-3 mt-5 border rounded-lg bg-grayL/20">
+                    <h4 className="mb-3 text-center">My Account</h4>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
+                        <p className="px-4">address</p>
+                        <Button
+                          label="copy address"
+                          css="circle"
+                          iconOnly={<Square2StackIcon />}
+                        />
+                      </div>
                       <Button
-                        label="view all"
-                        size="sm"
-                        css="noline"
-                        iconOnly={<ArrowRightIcon />}
+                        label="view transition"
+                        css="circle"
+                        iconOnly={<ArrowTopRightOnSquareIcon />}
                       />
                     </div>
-                    <div className="flex flex-col gap-2 py-4">
-                      {nftInfo.map((item) => (
-                        <div className="flex items-center gap-2">
-                          <Thumbnail size="base" image={item.image} />
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {item.title}
-                            </p>
-                            <p className="text-base font-medium text-gray-900">
-                              {item.name}
-                            </p>
-                          </div>
-                          <div className="ml-auto text-right">
-                            <p className="text-sm font-medium text-gray-900">
-                              {item.quantity}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {item.price} USDC
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="text-center">
-                      <Button label="more" size="sm" />
-                    </div>
-                  </div>
-                  <div className="px-4 py-2">
-                    <a
-                      href="##"
-                      onClick={onLogout}
-                      className="flow-root px-2 py-2 transition duration-150 ease-in-out rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                    >
-                      Sign Out
-                    </a>
-                  </div>
+                  </article>
+
+                  <Button
+                    label="Disconnect"
+                    onClick={onLogout}
+                    size="lg"
+                    className="w-full mt-10 mb-3"
+                  />
                 </div>
               </Popover.Panel>
             </Transition>
