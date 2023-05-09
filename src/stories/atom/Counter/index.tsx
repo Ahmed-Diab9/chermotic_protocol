@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../atom/Button";
+import { Button } from "../Button";
 // import { Input } from "../../atom/Input";
 import { MinusIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/outline";

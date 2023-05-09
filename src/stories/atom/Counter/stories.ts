@@ -4,7 +4,7 @@ import { Counter } from ".";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Molecule/Counter",
+  title: "Atom/Counter",
   component: Counter,
   tags: ["autodocs"],
   argTypes: {},
