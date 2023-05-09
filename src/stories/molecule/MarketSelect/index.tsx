@@ -4,11 +4,10 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 
 interface MarketSelectProps {
-  label?: string;
-  onClick?: () => void;
+  // onClick?: () => void;
 }
 
-export const MarketSelect = ({ label, ...props }: MarketSelectProps) => {
+export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   return (
     <div className="MarketSelect">
       <Popover>
