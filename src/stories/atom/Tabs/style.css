@@ -1,8 +1,15 @@
 .tabs {
   @apply inline-block;
-  [type="button"] {
-    @apply px-4 py-1 mb-1;
-    @apply border rounded;
+  [role="tablist"] {
+    @apply flex;
+  }
+}
+.tabs-button {
+  [role="tablist"] {
+    button {
+      @apply px-4 py-1 mb-1;
+      @apply border rounded;
+    }
   }
   [role="menu"] {
     @apply flex flex-col;
@@ -12,5 +19,23 @@
   [role="menuitem"] {
     @apply px-2;
     @apply rounded;
+  }
+}
+.tabs-line {
+  [role="tablist"] {
+    @apply gap-2 justify-around;
+    button {
+      @apply p-1 mb-1;
+      @apply min-w-[80px];
+    }
+    [aria-selected="true"] {
+      @apply text-black border-b-2 border-black;
+    }
+    [aria-selected="false"] {
+      @apply text-black/20;
+    }
+  }
+  [type="button"] {
+    /* @apply ui-selected:text-active; */
   }
 }
