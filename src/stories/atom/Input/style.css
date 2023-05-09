@@ -1,4 +1,5 @@
 .input {
+  @apply max-w-full;
 }
 .input-sm {
   @apply h-8 px-2;
