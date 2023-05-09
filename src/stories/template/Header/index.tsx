@@ -1,5 +1,5 @@
 import { Button } from "../../atom/Button";
-import { WalletDropdown } from "../../molecule/WalletDropdown";
+import { WalletPopover } from "../../molecule/WalletPopover";
 import "./style.css";
 
 type User = {
@@ -33,7 +33,7 @@ export const Header = ({
       <div>
         {user ? (
           <>
-            <WalletDropdown />
+            <WalletPopover />
           </>
         ) : (
           <>

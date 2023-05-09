@@ -38,7 +38,7 @@ type User = {
   contract: string;
 };
 
-interface WalletDropdownProps {
+interface WalletPopoverProps {
   user?: User;
   onLogin?: () => void;
   onLogout?: () => void;
@@ -46,15 +46,15 @@ interface WalletDropdownProps {
   onClick?: () => void;
 }
 
-export const WalletDropdown = ({
+export const WalletPopover = ({
   user,
   onLogin,
   onLogout,
   onCreateAccount,
   ...props
-}: WalletDropdownProps) => {
+}: WalletPopoverProps) => {
   return (
-    <div className={`WalletDropdown popover text-right`}>
+    <div className={`WalletPopover popover text-right`}>
       <Popover className="relative">
         {({ open }) => (
           <>
