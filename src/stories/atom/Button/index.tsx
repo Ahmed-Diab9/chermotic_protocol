@@ -28,12 +28,14 @@ export const Button = ({
   return (
     <button
       type="button"
-      className={`btn btn-${size} btn-${css} align-${align} ${className} ${btnIconOnly}`}
+      className={`btn btn-${size} btn-${css} ${className} ${btnIconOnly}`}
       {...props}
     >
-      {iconLeft !== undefined ? iconLeft : null}
-      {iconOnly !== undefined ? iconOnly : label}
-      {iconRight !== undefined ? iconRight : null}
+      <div className={`flex items-center justify-${align}`}>
+        <span>{iconLeft !== undefined ? iconLeft : null}</span>
+        <span>{iconOnly !== undefined ? iconOnly : label}</span>
+        <span>{iconRight !== undefined ? iconRight : null}</span>
+      </div>
     </button>
   );
 };

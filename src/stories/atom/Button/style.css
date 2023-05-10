@@ -1,6 +1,16 @@
 .btn {
+  @apply flex items-center;
   @apply font-semibold leading-[1];
   @apply inline-block cursor-pointer;
+  background-color: #fff;
+  gap: 4px;
+  > div {
+    justify-content: center;
+  }
+  span,
+  svg {
+    @apply inline-block;
+  }
   &.toggle-on {
     @apply border border-active text-active;
   }
@@ -9,6 +19,12 @@
   }
   &.btn-icon-only {
     @apply justify-center text-center flex-none;
+    span {
+      @apply inline-block;
+    }
+    svg {
+      @apply justify-self-center;
+    }
   }
 }
 .btn-active {
@@ -26,24 +42,31 @@
 }
 .btn-xs {
   @apply text-xs min-w-[16px];
-  @apply rounded-sm;
   padding: 2px 4px;
+  border-radius: 4px;
   &.btn-icon-only {
     @apply min-h-[16px] p-[1px];
   }
 }
 .btn-sm {
-  @apply text-sm min-w-[20px];
-  @apply rounded;
+  @apply min-w-[20px];
+  font-size: 11px;
   padding: 4px 8px;
+  border-radius: 8px;
+  svg {
+    height: 12px;
+  }
   &.btn-icon-only {
     @apply min-h-[20px] p-[2px];
   }
 }
 .btn-base {
   @apply text-base min-w-[40px];
-  /* @apply rounded; */
   padding: 4px 8px;
+  border-radius: 12px;
+  svg {
+    height: 16px;
+  }
   &.btn-icon-only {
     @apply min-h-[40px] p-1;
   }
@@ -52,9 +75,24 @@
   }
 }
 .btn-lg {
-  @apply text-lg min-w-[60px];
+  @apply text-lg min-w-[48px];
+  padding: 4px 8px;
+  border-radius: 16px;
+  svg {
+    height: 20px;
+  }
+  &.btn-icon-only {
+    @apply min-h-[48px] p-2;
+  }
+}
+.btn-xl {
+  @apply text-xl min-w-[60px];
   @apply rounded;
   padding: 4px 8px;
+  border-radius: 20px;
+  svg {
+    height: 20px;
+  }
   &.btn-icon-only {
     @apply min-h-[60px] p-2;
   }
