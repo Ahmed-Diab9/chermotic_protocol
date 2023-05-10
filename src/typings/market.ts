@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 
 export interface Token {
+  name: string;
   address: string;
 }
 
