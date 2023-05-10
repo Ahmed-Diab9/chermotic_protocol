@@ -1,6 +1,7 @@
 .btn {
   @apply font-semibold leading-[1];
   @apply inline-block cursor-pointer;
+  background-color: #fff;
   &.toggle-on {
     @apply border border-active text-active;
   }
@@ -33,9 +34,13 @@
   }
 }
 .btn-sm {
-  @apply text-sm min-w-[20px];
+  @apply min-w-[20px];
   @apply rounded;
+  font-size: 11px;
   padding: 4px 8px;
+  svg {
+    height: 12px;
+  }
   &.btn-icon-only {
     @apply min-h-[20px] p-[2px];
   }

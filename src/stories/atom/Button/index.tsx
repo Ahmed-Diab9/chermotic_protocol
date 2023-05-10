@@ -31,9 +31,11 @@ export const Button = ({
       className={`btn btn-${size} btn-${css} align-${align} ${className} ${btnIconOnly}`}
       {...props}
     >
-      {iconLeft !== undefined ? iconLeft : null}
-      {iconOnly !== undefined ? iconOnly : label}
-      {iconRight !== undefined ? iconRight : null}
+      <div className={`flex items-center gap-1 text-${size}`}>
+        {iconLeft !== undefined ? iconLeft : null}
+        <p className="grow">{iconOnly !== undefined ? iconOnly : label}</p>
+        {iconRight !== undefined ? iconRight : null}
+      </div>
     </button>
   );
 };
