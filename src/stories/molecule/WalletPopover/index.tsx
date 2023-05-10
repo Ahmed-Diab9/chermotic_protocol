@@ -5,9 +5,8 @@ import { Thumbnail } from "../../atom/Thumbnail";
 import { Button } from "../../atom/Button";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-// import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import "../../atom/Tabs/style.css";
 import "./style.css";
@@ -80,39 +79,31 @@ export const WalletPopover = ({
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover className="relative">
-        {({ open }) => (
-          <>
-            <Popover.Button
-              className={`btn-default
-                ${open ? "" : "text-opacity-90"}
-                group inline-flex items-center rounded-md px-3 py-2 text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
-            >
-              <div className="flex items-center gap-2">
-                <Avatar size="xs" />
-                <b>contract</b>
-              </div>
-              <ChevronDownIcon
-                className={`${open ? "" : "text-opacity-70"}
-                  ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80`}
-                aria-hidden="true"
-              />
-            </Popover.Button>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-100 translate-x-20"
-              enterTo="opacity-100 translate-x-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
-            >
-              <Popover.Panel className="transform shadow-lg popover-panel ">
-                <div className="flex flex-col h-full">
+        <Popover.Button className="inline-flex items-center p-0 pr-5 text-base font-medium border rounded-full border-grayL">
+          <div className="flex items-center gap-3">
+            <Avatar size="base" />
+            <b>address</b>
+          </div>
+        </Popover.Button>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-200"
+          enterFrom="opacity-50 translate-x-20"
+          enterTo="opacity-100 translate-x-0"
+          leave="transition ease-in duration-0"
+          // leaveFrom="opacity-100 translate-x-20"
+          // leaveTo="opacity-100 translate-x-0"
+        >
+          <Popover.Panel className="relative transform shadow-lg popover-panel ">
+            {({ close }) => (
+              <>
+                <div className="flex flex-col h-full ">
                   {/* Network */}
                   <article className="flex items-center gap-3">
                     <Avatar size="lg" />
                     <p className="text-bold">Arbitrum Network</p>
                   </article>
+                  {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-grayL/20">
@@ -134,7 +125,7 @@ export const WalletPopover = ({
                       </div>
                     </article>
                     {/* Tab - Asset, Liquidity */}
-                    <div className="relative flex flex-col flex-auto w-full p-4 overflow-hidden tabs tabs-line">
+                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line">
                       <Tab.Group>
                         {/* tab - menu */}
                         <Tab.List className="absolute left-0 w-full top-4">
@@ -142,7 +133,7 @@ export const WalletPopover = ({
                           <Tab>Liquidity NFT</Tab>
                         </Tab.List>
                         {/* tab - contents */}
-                        <Tab.Panels className="mt-[60px] overflow-auto">
+                        <Tab.Panels className="mt-[60px] pb-[60px] absolute bottom-0 px-4 overflow-auto h-[calc(100%-72px)] w-full">
                           <Tab.Panel>
                             {/* Assets */}
                             <article>
@@ -171,7 +162,7 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {nftInfo.map((item) => (
-                                  <div className="flex flex-col pb-3 border-b">
+                                  <div className="flex flex-col pb-3 border-b last:border-b-0">
                                     <div className="flex gap-2">
                                       <p className="flex items-center gap-1 pr-2 text-base font-medium text-gray-900 border-r">
                                         <Avatar size="xs" />
@@ -215,6 +206,7 @@ export const WalletPopover = ({
                       </Tab.Group>
                     </div>
                   </section>
+                  {/* box - bottom */}
                   {/* Account address */}
                   <article className="px-4 py-3 mt-5 border rounded-lg bg-grayL/20">
                     <h4 className="mb-3 text-center">My Account</h4>
@@ -234,18 +226,25 @@ export const WalletPopover = ({
                       />
                     </div>
                   </article>
-
                   <Button
                     label="Disconnect"
                     onClick={onLogout}
                     size="lg"
                     className="w-full mt-10 mb-3"
                   />
+                  <Button
+                    label="close popover"
+                    iconOnly={<ChevronDoubleRightIcon />}
+                    onClick={close}
+                    size="lg"
+                    css="noline"
+                    className="absolute left-0 t-10 ml-[-60px]"
+                  />
                 </div>
-              </Popover.Panel>
-            </Transition>
-          </>
-        )}
+              </>
+            )}
+          </Popover.Panel>
+        </Transition>
       </Popover>
     </div>
   );
