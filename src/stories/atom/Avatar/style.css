@@ -3,10 +3,10 @@
   }
 }
 .avatar-xs {
-  @apply w-6 h-6;
+  @apply w-4 h-4;
 }
 .avatar-sm {
-  @apply w-8 h-8;
+  @apply w-5 h-5;
 }
 .avatar-base {
   @apply w-10 h-10;
