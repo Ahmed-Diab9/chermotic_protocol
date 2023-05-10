@@ -1,7 +1,7 @@
 import { useSigner } from "wagmi";
 import useSWR from "swr";
 import { useAppDispatch, useAppSelector } from "../store";
-import { USUMMarketFactory__factory, deployed } from "@quarkonix/usum";
+import { USUMMarketFactory__factory, deployedAddress } from "@quarkonix/usum";
 import { errorLog } from "../utils/log";
 import { useEffect, useMemo } from "react";
 import { marketAction } from "../store/reducer/market";
@@ -15,7 +15,7 @@ export const useSettlementToken = () => {
       return;
     }
     return USUMMarketFactory__factory.connect(
-      deployed["anvil"]["USUMMarketFactory"],
+      deployedAddress["anvil"]["USUMMarketFactory"],
       signer
     );
   }, [signer]);
