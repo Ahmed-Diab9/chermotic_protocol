@@ -1,44 +1,67 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAppDispatch, useAppSelector } from "../store";
 import { marketAction } from "../store/reducer/market";
-import useOracleProvider from "./useOracleProvider";
-import { OracleProvider__factory } from "@quarkonix/usum";
+import {
+  OracleProvider__factory,
+  USUMMarketFactory__factory,
+  USUMMarket__factory,
+  deployedAddress,
+} from "@quarkonix/usum";
 import { useSigner } from "wagmi";
-import { Market } from "../typings/market";
 import { errorLog } from "../utils/log";
 import { isValid } from "../utils/valid";
+import { useSelectedToken } from "./useSettlementToken";
+import { Market } from "../typings/market";
 
 export const useMarket = (interval?: number) => {
   const dispatch = useAppDispatch();
   const { data: signer } = useSigner();
-  const [oracleProviders] = useOracleProvider();
-  const fetchKey =
-    isValid(oracleProviders) && isValid(signer)
-      ? ([oracleProviders, signer] as const)
-      : undefined;
+  const [settlementToken] = useSelectedToken();
+  const marketFactory = useMemo(() => {
+    if (isValid(signer)) {
+      return USUMMarketFactory__factory.connect(
+        deployedAddress["anvil"]["USUMMarketFactory"],
+        signer
+      );
+    }
+  }, [signer]);
 
+  const fetchKey =
+    isValid(settlementToken?.address) &&
+    isValid(marketFactory) &&
+    isValid(signer)
+      ? ([settlementToken?.address, marketFactory, signer] as const)
+      : undefined;
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
-  } = useSWR(fetchKey, async ([oracleProviders, signer]) => {
+  } = useSWR(fetchKey, async ([tokenAddress, marketFactory, signer]) => {
+    const marketAddresses = await marketFactory.getMarketsBySettlmentToken(
+      tokenAddress as string
+    );
+
     const response = await Promise.allSettled(
-      oracleProviders.map(async (providerAddress) => {
-        const factory = OracleProvider__factory.connect(
-          providerAddress,
+      marketAddresses.map(async (marketAddress) => {
+        const market = USUMMarket__factory.connect(marketAddress, signer);
+        const oracleProviderAddress = await market.oracleProvider();
+        const provider = OracleProvider__factory.connect(
+          oracleProviderAddress,
           signer
         );
-        const description = await factory.description();
-        return { address: providerAddress, description } satisfies Market;
+        const { price } = await provider.currentVersion();
+        const description = await provider.description();
+        return { address: marketAddress, description, price } satisfies Market;
       })
     );
+
     return response
       .filter(
-        (element): element is PromiseFulfilledResult<Market> =>
-          element.status === "fulfilled"
+        (value): value is PromiseFulfilledResult<Market> =>
+          value.status === "fulfilled"
       )
-      .map((element) => element.value);
+      .map((result) => result.value);
   });
 
   useEffect(() => {
@@ -48,6 +71,7 @@ export const useMarket = (interval?: number) => {
   if (error) {
     errorLog(error);
   }
+
   return [markets, fetchMarkets] as const;
 };
 
