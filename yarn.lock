@@ -1970,10 +1970,10 @@
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
 
-"@quarkonix/usum@^0.0.1-pre.10":
-  version "0.0.1-pre.10"
-  resolved "https://npm.pkg.github.com/download/@quarkonix/usum/0.0.1-pre.10/fc12d85ee905ebbca370e380c29b06a189b170c8#fc12d85ee905ebbca370e380c29b06a189b170c8"
-  integrity sha512-ralb8oMc/crtbepogX1Ck4df4qxrP2MkHEsPfgyIB0zdmIUF0wzhIvVTtdnrzRafFdtUKimzOFkHMdlfS40B8w==
+"@quarkonix/usum@^0.0.1-rc.4":
+  version "0.0.1-rc.4"
+  resolved "https://npm.pkg.github.com/download/@quarkonix/usum/0.0.1-rc.4/7c3218b0bd74e90fed9e9b41fcee74d6713538eb#7c3218b0bd74e90fed9e9b41fcee74d6713538eb"
+  integrity sha512-3eZ5wTuq5+p+uz2akxlYzNpT4RRZCkcs3kYgu3y/eNp3Zw8NB1ZgVQXn8Gk+vonjEfs8yYi9j6avtFgmMStlZw==
 
 "@reduxjs/toolkit@^1.9.5":
   version "1.9.5"

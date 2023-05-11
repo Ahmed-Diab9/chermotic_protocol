@@ -6,3 +6,14 @@ export const isValid = <T extends unknown>(
   }
   return true;
 };
+
+export const isPrimitive = (value: unknown) => {
+  switch (typeof value) {
+    case "number":
+    case "string":
+    case "boolean":
+      return true;
+    default:
+      return false;
+  }
+};

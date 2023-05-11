@@ -1,11 +1,13 @@
 import { useSigner } from "wagmi";
 import useSWR from "swr";
 import { useAppDispatch, useAppSelector } from "../store";
-import { USUMMarketFactory__factory, deployedAddress } from "@quarkonix/usum";
+import { USUMMarketFactory, getDeployedContract } from "@quarkonix/usum";
 import { errorLog } from "../utils/log";
 import { useEffect, useMemo } from "react";
 import { marketAction } from "../store/reducer/market";
 import { isValid } from "../utils/valid";
+import { USDC } from "../configs/token";
+import useLocalStorage from "./useLocalStorage";
 
 export const useSettlementToken = () => {
   const dispatch = useAppDispatch();
@@ -14,10 +16,11 @@ export const useSettlementToken = () => {
     if (!isValid(signer)) {
       return;
     }
-    return USUMMarketFactory__factory.connect(
-      deployedAddress["anvil"]["USUMMarketFactory"],
+    return getDeployedContract(
+      "USUMMarketFactory",
+      "anvil",
       signer
-    );
+    ) as USUMMarketFactory;
   }, [signer]);
   const fetchKey = isValid(factory) ? [factory] : undefined;
 
@@ -27,7 +30,19 @@ export const useSettlementToken = () => {
     mutate: fetchTokens,
   } = useSWR(fetchKey, async ([factory]) => {
     const response = await factory.registeredSettlementTokens();
-    return response.map((address) => ({ address }));
+    return response.map((address) => {
+      if (address === USDC) {
+        return {
+          address,
+          name: "USDC",
+        };
+      } else {
+        return {
+          address,
+          name: "URT",
+        };
+      }
+    });
   });
 
   useEffect(() => {
@@ -46,12 +61,25 @@ export const useSelectedToken = () => {
   const tokens = useAppSelector((state) => state.market.tokens);
   const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
+  const [storedToken, setStoredToken] = useLocalStorage<string>("usum:token");
+
+  useEffect(() => {
+    if (!isValid(selectedToken) && isValid(storedToken)) {
+      const nextToken = tokens.find((token) => token.address === storedToken);
+      if (!isValid(nextToken)) {
+        return;
+      }
+      dispatch(marketAction.onTokenSelect(nextToken));
+    }
+  }, [tokens, selectedToken, storedToken, dispatch]);
+
   const onTokenSelect = (address: string) => {
     const nextToken = tokens.find((token) => token.address === address);
     if (!isValid(nextToken)) {
       errorLog("selected token is invalid.");
       return;
     }
+    setStoredToken(nextToken.address);
     dispatch(marketAction.onTokenSelect(nextToken));
   };
 

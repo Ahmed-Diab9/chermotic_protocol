@@ -5,8 +5,8 @@ import { useAppSelector } from "../store";
 import { BigNumber } from "ethers";
 import {
   Account__factory,
-  USUMRouter__factory,
-  deployed,
+  USUMRouter,
+  getDeployedContract,
 } from "@quarkonix/usum";
 import { errorLog } from "../utils/log";
 import useUsumAccount from "./useUsumAccount";
@@ -70,10 +70,11 @@ export const useOpenPosition = () => {
       errorLog("no selected tokens");
       return;
     }
-    const router = USUMRouter__factory.connect(
-      deployed["anvil"]["USUMRouter"],
+    const router = getDeployedContract(
+      "USUMRouter",
+      "anvil",
       signer
-    );
+    ) as USUMRouter;
     router.openPosition(
       selectedMarket.address,
       contractQuantity,
@@ -107,10 +108,11 @@ export const useClosePosition = (positionId: BigNumber) => {
       errorLog("no selected tokens");
       return;
     }
-    const router = USUMRouter__factory.connect(
-      deployed["anvil"]["USUMRouter"],
+    const router = getDeployedContract(
+      "USUMRouter",
+      "anvil",
       signer
-    );
+    ) as USUMRouter;
     router.closePosition(selectedMarket.address, positionId, deadline);
   };
 
