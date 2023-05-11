@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { marketAction } from "../store/reducer/market";
 import {
   OracleProvider__factory,
-  USUMMarketFactory__factory,
+  USUMMarketFactory,
   USUMMarket__factory,
-  deployedAddress,
+  getDeployedContract,
 } from "@quarkonix/usum";
 import { useSigner } from "wagmi";
-import { errorLog, infoLog } from "../utils/log";
+import { errorLog } from "../utils/log";
 import { isValid } from "../utils/valid";
 import { useSelectedToken } from "./useSettlementToken";
 import { Market } from "../typings/market";
@@ -20,12 +20,14 @@ export const useMarket = (interval?: number) => {
   const { data: signer } = useSigner();
   const [settlementToken] = useSelectedToken();
   const marketFactory = useMemo(() => {
-    if (isValid(signer)) {
-      return USUMMarketFactory__factory.connect(
-        deployedAddress["anvil"]["USUMMarketFactory"],
-        signer
-      );
+    if (!isValid(signer)) {
+      return;
     }
+    return getDeployedContract(
+      "USUMMarketFactory",
+      "anvil",
+      signer
+    ) as USUMMarketFactory;
   }, [signer]);
 
   const fetchKey =
@@ -86,7 +88,6 @@ export const useSelectedMarket = () => {
     useLocalStorage<string>("usum:market");
 
   useEffect(() => {
-    infoLog("run effect in useMarket.ts");
     if (!isValid(selectedMarket) && isValid(storedMarket)) {
       const nextMarket = markets.find(
         (market) => market.address === storedMarket
