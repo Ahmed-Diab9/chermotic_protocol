@@ -15,19 +15,25 @@ export const bigNumberify: BigNumberify = (value) => {
   }
 };
 
-export const withComma = (value: number | string | BigNumber) => {
+export const withComma = (
+  value?: number | string | BigNumber,
+  replace?: string
+) => {
   const seperator = /\B(?=(\d{3})+(?!\d))/g;
+  if (value === undefined) {
+    return replace;
+  }
   if (typeof value === "number") {
     const [integer, decimal] = String(value).split(".");
-    return String(integer).replace(seperator, ",") + decimal;
+    return String(integer).replace(seperator, ",") + (decimal ?? "");
   }
   if (typeof value === "string") {
     const [integer, decimal] = value.split(".");
-    return integer.replace(seperator, ",") + decimal;
+    return integer.replace(seperator, ",") + (decimal ?? "");
   }
   if (value instanceof BigNumber) {
     const [integer, decimal] = value.toString().split(".");
-    return integer.replace(seperator, ",") + decimal;
+    return integer.replace(seperator, ",") + (decimal ?? "");
   }
 };
 
