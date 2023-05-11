@@ -15,23 +15,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const BaseDefault: Story = {
+export const Default: Story = {
   args: {
-    size: "base",
-    label: "ToggleButton",
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: "lg",
-    label: "ToggleButton",
-  },
-};
-
-export const Small: Story = {
-  args: {
-    size: "sm",
     label: "ToggleButton",
   },
 };

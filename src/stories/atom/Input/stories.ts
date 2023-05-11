@@ -13,23 +13,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const BaseDefault: Story = {
+export const Default: Story = {
   args: {
-    size: "base",
-    label: "Base Default Input",
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: "lg",
-    label: "Input",
-  },
-};
-
-export const Small: Story = {
-  args: {
-    size: "sm",
     label: "Input",
   },
 };
