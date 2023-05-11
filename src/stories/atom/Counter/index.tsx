@@ -9,6 +9,7 @@ interface CounterProps {
   label?: string;
   count?: number;
   size?: "sm" | "base" | "lg";
+  width?: string;
   disabled?: boolean;
   onClick?: () => unknown;
   initialValue?: number;
@@ -17,6 +18,7 @@ interface CounterProps {
 export const Counter = ({
   label,
   size = "base",
+  width,
   initialValue = 0,
   ...props
 }: CounterProps) => {
@@ -29,14 +31,14 @@ export const Counter = ({
   };
 
   return (
-    <div className="flex items-stretch gap-2">
+    <div className="flex items-stretch gap-0">
       <Button onClick={decrement} label="minus" iconOnly={<MinusIcon />} />
       <input
         type="number"
         value={count.toFixed(2)}
         onChange={() => {}}
         title="counter"
-        className="text-center"
+        className={`text-center w-[${width}]`}
       />
       <Button onClick={increment} label="plus" iconOnly={<PlusIcon />} />
     </div>

@@ -129,7 +129,7 @@ export const WalletPopover = ({
                       <Tab.Group>
                         {/* tab - menu */}
                         <Tab.List className="absolute left-0 w-full top-4">
-                          <Tab>Assets</Tab>
+                          <Tab className="w-[80px]">Assets</Tab>
                           <Tab>Liquidity NFT</Tab>
                         </Tab.List>
                         {/* tab - contents */}
@@ -185,10 +185,7 @@ export const WalletPopover = ({
                                           {item.price} USDC
                                         </p>
                                       </div>
-                                      <Thumbnail
-                                        size="base"
-                                        image={item.image}
-                                      />
+                                      <Thumbnail size="base" src={item.image} />
                                     </div>
                                   </div>
                                 ))}
