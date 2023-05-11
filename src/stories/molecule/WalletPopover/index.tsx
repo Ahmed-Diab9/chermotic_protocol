@@ -81,7 +81,7 @@ export const WalletPopover = ({
       <Popover className="relative">
         <Popover.Button className="inline-flex items-center p-0 pr-5 text-base font-medium border rounded-full border-grayL">
           <div className="flex items-center gap-3">
-            <Avatar size="base" />
+            <Avatar size="lg" />
             <b>address</b>
           </div>
         </Popover.Button>
