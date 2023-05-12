@@ -1,12 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
 
+const monospace = (function () {
+  const fonts = defaultTheme.fontFamily.mono;
+  const monospace = fonts.find((font) => font === "monospace");
+  if (monospace === null || monospace === undefined) {
+    throw new Error("no monospace");
+  }
+  return monospace;
+})();
+
 export const content = ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"];
 export const darkMode = "class";
 export const theme = {
   extend: {
     fontFamily: {
-      mono: ["Source Code Pro", defaultTheme.fontFamily.monospace],
+      mono: ["Source Code Pro", monospace],
       // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
       // display: ["VCR mono", ...defaultTheme.fontFamily.sans],

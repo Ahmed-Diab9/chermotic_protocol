@@ -6,6 +6,7 @@ interface ButtonProps {
   size?: "xs" | "sm" | "base" | "lg";
   align?: "center" | "left" | "right";
   className?: string;
+  active?: boolean;
   iconLeft?: any;
   iconOnly?: any;
   iconRight?: any;

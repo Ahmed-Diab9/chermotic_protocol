@@ -4,9 +4,9 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 import { Market, Token } from "../../../typings/market";
+import { withComma } from "../../../utils/number";
 
 interface MarketSelectProps {
-  // onClick?: () => void;
   tokens?: Token[];
   markets?: Market[];
   selectedToken?: Token;
@@ -21,43 +21,48 @@ interface MarketSelectProps {
  * should remove the component `Legacy`.
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
-  const {
-    tokens,
-    markets,
-    selectedToken,
-    selectedMarket,
-    onTokenClick,
-    onMarketClick,
-    isGroupLegacy,
-  } = props;
+  const { isGroupLegacy, selectedMarket } = props;
 
   return (
     <div className="MarketSelect">
       <Popover>
-        {isGroupLegacy ? <PopoverMain /> : <PopoverGroupLegacy />}
+        {!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}
       </Popover>
       <div className="flex items-center gap-4 mr-10">
         <div className="flex flex-col gap-1 pr-5 text-xs text-right border-r">
           <h4>0.0036%/h</h4>
           <p>Interest Rate</p>
         </div>
-        <h2 className="text-2xl">$1,542.07 </h2>
+        <h2 className="text-2xl">
+          ${withComma(selectedMarket?.price.toString())}
+        </h2>
       </div>
     </div>
   );
 };
 
-export const PopoverMain = () => {
+export const PopoverMain = (
+  props: Omit<MarketSelectProps, "isGroupLegacy">
+) => {
+  const {
+    tokens,
+    selectedToken,
+    markets,
+    selectedMarket,
+    onTokenClick,
+    onMarketClick,
+  } = props;
+
   return (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
         <div className="flex items-center gap-1 pr-3 border-r">
           <Avatar size="base" />
-          <h4>USDC</h4>
+          <h4>{selectedToken?.name}</h4>
         </div>
         <div className="flex items-center gap-1">
           <Avatar size="base" />
-          <h4>ETH / USD</h4>
+          <h4>{selectedMarket?.description}</h4>
         </div>
         <ChevronDownIcon
           className="w-5 h-5 transition duration-150 ease-in-out"
@@ -69,41 +74,42 @@ export const PopoverMain = () => {
           {/* select - asset */}
           <article className="flex flex-col">
             {/* default */}
-            <button className="flex items-center gap-2 px-4 py-2">
-              <Avatar size="base" />
-              <h4>USDC</h4>
-            </button>
-            {/* selected */}
-            <button className="flex items-center gap-2 px-4 py-2 text-white bg-black">
-              <Avatar size="base" />
-              <h4>USDT</h4>
-              <ChevronRightIcon className="w-4" />
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2">
-              <Avatar size="base" />
-              <h4>IMX</h4>
-            </button>
+            {tokens?.map((token) => (
+              <button
+                key={token.address}
+                className={`flex items-center gap-2 px-4 py-2 ${
+                  token.address === selectedToken?.address &&
+                  "text-white bg-black" // the token selected
+                }`}
+                onClick={() => {
+                  onTokenClick?.(token.address);
+                }}
+              >
+                <Avatar size="base" />
+                <h4>{token.name}</h4>
+              </button>
+            ))}
           </article>
 
           {/* select - market */}
           <article className="flex flex-col flex-auto">
             {/* default */}
-            <button className="flex items-center justify-between gap-4 px-4 py-2">
-              <div className="flex gap-2">
-                <Avatar size="base" />
-                <h4>IMX / USD</h4>
-              </div>
-              <p>$1,542.07</p>
-            </button>
-            {/* selected */}
-            {/* 선택된 페어(asset,market)는 따로 selected 표시 필요할지 확인중 */}
-            <button className="flex items-center justify-between gap-4 px-4 py-2 text-white bg-black">
-              <div className="flex gap-2">
-                <Avatar size="base" />
-                <h4>ETH / USD</h4>
-              </div>
-              <p>$1,542.07</p>
-            </button>
+            {markets?.map((market) => (
+              <button
+                key={market.address}
+                className={`flex items-center justify-between gap-4 px-4 py-2 ${
+                  market.address === selectedMarket?.address &&
+                  "text-white bg-black" // the market selected
+                }`}
+                onClick={() => onMarketClick?.(market.address)}
+              >
+                <div className="flex gap-2">
+                  <Avatar size="base" />
+                  <h4>{market.description}</h4>
+                </div>
+                <p>${withComma(market.price.toString())}</p>
+              </button>
+            ))}
           </article>
         </section>
       </Popover.Panel>
