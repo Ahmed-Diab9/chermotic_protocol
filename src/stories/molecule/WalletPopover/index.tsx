@@ -79,11 +79,14 @@ export const WalletPopover = ({
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover className="relative">
-        <Popover.Button className="inline-flex items-center p-0 pr-5 text-base font-medium border rounded-full border-grayL">
-          <div className="flex items-center gap-3">
-            <Avatar size="lg" />
-            <b>address</b>
-          </div>
+        <Popover.Button className="p-0 pr-5 border rounded-full border-grayL">
+          <Avatar
+            label="address"
+            size="lg"
+            fontSize="sm"
+            fontWeight="normal"
+            gap="3"
+          />
         </Popover.Button>
         <Transition
           as={Fragment}
@@ -99,10 +102,12 @@ export const WalletPopover = ({
               <>
                 <div className="flex flex-col h-full ">
                   {/* Network */}
-                  <article className="flex items-center gap-3">
-                    <Avatar size="lg" />
-                    <p className="text-bold">Arbitrum Network</p>
-                  </article>
+                  <Avatar
+                    label="Arbitrum Network"
+                    size="lg"
+                    fontSize="sm"
+                    gap="3"
+                  />
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
@@ -140,10 +145,12 @@ export const WalletPopover = ({
                               <div className="flex flex-col gap-3">
                                 {assetInfo.map((item) => (
                                   <div className="flex">
-                                    <h4 className="flex items-center gap-1 text-lg font-medium text-gray-900">
-                                      <Avatar size="xs" />
-                                      {item.asset}
-                                    </h4>
+                                    <Avatar
+                                      label={item.asset}
+                                      size="xs"
+                                      fontSize="base"
+                                      gap="1"
+                                    />
                                     <div className="ml-auto text-right">
                                       <p className="mt-2 text-base text-gray-500">
                                         ${item.price}
@@ -164,13 +171,21 @@ export const WalletPopover = ({
                                 {nftInfo.map((item) => (
                                   <div className="flex flex-col pb-3 border-b last:border-b-0">
                                     <div className="flex gap-2">
-                                      <p className="flex items-center gap-1 pr-2 text-base font-medium text-gray-900 border-r">
-                                        <Avatar size="xs" />
-                                        {item.asset}
+                                      <p className="pr-2 border-r">
+                                        <Avatar
+                                          label={item.asset}
+                                          size="xs"
+                                          fontSize="base"
+                                          gap="1"
+                                        />
                                       </p>
-                                      <p className="flex items-center gap-1 pr-2 text-base font-medium text-gray-900 border-r">
-                                        <Avatar size="xs" />
-                                        {item.market}
+                                      <p className="pr-2 border-r">
+                                        <Avatar
+                                          label={item.market}
+                                          size="xs"
+                                          fontSize="base"
+                                          gap="1"
+                                        />
                                       </p>
                                       <p className="text-base font-medium text-gray-900">
                                         {item.name}

@@ -1,7 +1,4 @@
 .avatar {
-  p {
-    font-weight: 600;
-  }
 }
 .avatar-xs {
   @apply w-4 h-4;
