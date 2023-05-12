@@ -13,9 +13,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const WithLabel: Story = {
   args: {
     label: "Avatar",
+    src: "https://assets.nick.com/uri/mgid:arc:srcassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
+  },
+};
+
+export const OnlyImage: Story = {
+  args: {
+    label: undefined,
     src: "https://assets.nick.com/uri/mgid:arc:srcassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
   },
 };
