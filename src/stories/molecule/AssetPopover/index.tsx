@@ -24,9 +24,8 @@ export const AssetPopover = ({
 }: AssetPopoverProps) => {
   return (
     <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl w-[40%] max-w-[500px] min-h-[100px]">
-      <div className="flex items-center gap-2 ml-10">
-        <Avatar size="xs" />
-        <h4 className="">Asset balance</h4>
+      <div className="ml-10">
+        <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
       </div>
       <div className="flex flex-col gap-3 mr-10 text-right">
         {user ? (
@@ -57,10 +56,7 @@ export const AssetPopover = ({
                     <section className="flex mt-5 text-left">
                       <article className="flex flex-col gap-4">
                         <h2>Deposit</h2>
-                        <div className="flex gap-1">
-                          <Avatar size="xs" />
-                          <h4 className="">USDC</h4>
-                        </div>
+                        <Avatar size="xs" label="USDC" gap="1" />
                         <div>
                           <h4 className="mb-2">Asset Value</h4>
                           <p>3,025.23 USDC</p>
@@ -117,10 +113,7 @@ export const AssetPopover = ({
                     <section className="flex mt-5 text-left">
                       <article className="flex flex-col gap-4">
                         <h2>Withdraw</h2>
-                        <div className="flex gap-1">
-                          <Avatar size="xs" />
-                          <h4 className="">USDC</h4>
-                        </div>
+                        <Avatar size="xs" label="USDC" gap="1" />
                         <div>
                           <h4 className="mb-2">Asset Value</h4>
                           <p>2,025.23 USDC</p>
