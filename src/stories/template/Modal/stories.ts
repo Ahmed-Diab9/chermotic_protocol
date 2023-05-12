@@ -5,7 +5,6 @@ import { Modal } from ".";
 const meta = {
   title: "Template/Modal",
   component: Modal,
-  tags: ["autodocs"],
   // argTypes: {
   // },
 } satisfies Meta<typeof Modal>;
