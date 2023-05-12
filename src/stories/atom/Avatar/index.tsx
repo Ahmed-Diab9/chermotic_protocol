@@ -33,13 +33,13 @@ export const Avatar = ({
         <div
           className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden shrink-0`}
         >
-          {src() ? (
+          {src() && (
             <img src={src()} alt="" className="object-cover w-full h-full" />
-          ) : null}
+          )}
         </div>
-        {label() ? (
+        {label() && (
           <p className={`font-${fontWeight} text-${fontSize}`}>{label()}</p>
-        ) : null}
+        )}
       </div>
     </div>
   );
