@@ -1,20 +1,21 @@
 import { Tab } from "@headlessui/react";
 import { Counter } from "../../atom/Counter";
-import { AssetInput } from "../../atom/AssetInput";
+import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
+import { AssetInput } from "../../atom/AssetInput";
 import "../../atom/Tabs/style.css";
 
 export const PoolPanel = () => (
-  <div className="inline-flex flex-col border">
+  <div className="inline-flex flex-col mx-auto border">
     <div className="tabs tabs-line tabs-lg">
       <Tab.Group>
-        <Tab.List className="w-[680px] px-10 pt-[36px] flex gap-10">
+        <Tab.List className="w-[50vw] max-w-[680px] mx-auto px-10 pt-[36px] flex gap-10">
           <Tab>ADD</Tab>
           <Tab>REMOVE</Tab>
         </Tab.List>
-        <Tab.Panels className="w-auto">
+        <Tab.Panels className="flex flex-col items-center w-full">
           {/* tab - add */}
-          <Tab.Panel className="w-full max-w-[680px] px-10 pb-10 pt-[36px]">
+          <Tab.Panel className="w-[100vw] max-w-[680px] px-10 pb-10 pt-[36px]">
             <article className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-2">
                 <h4>Account Balance</h4>
@@ -94,7 +95,51 @@ export const PoolPanel = () => (
           </Tab.Panel>
 
           {/* tab - remove */}
-          <Tab.Panel className="w-full max-w-[1360px]"></Tab.Panel>
+          <Tab.Panel className="w-[100vw] max-w-[1360px] p-10">
+            <section className="flex items-stretch gap-5">
+              {/* liquidity value */}
+              <article className="flex items-center justify-between flex-auto px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <div>
+                  <p className="mb-2">Liquidity Value</p>
+                  <Avatar label="USDC" fontSize="xl" />
+                </div>
+                <h4>1,020.36</h4>
+              </article>
+              {/* info */}
+              <article className="flex flex-col justify-between flex-auto gap-2 px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <div className="flex justify-between">
+                  <p>Price Slots</p>
+                  <p className="text-right">29 Slots</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Liquidity Principal</p>
+                  <p className="text-right">1,000.24 USDC</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Removable Liquidity</p>
+                  <p className="text-right">760.24 USDC</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>EST. APY</p>
+                  <p className="text-right">25.76%</p>
+                </div>
+              </article>
+            </section>
+
+            {/* inner tab */}
+            <section className="tabs-line tabs-base">
+              <Tab.Group>
+                <Tab.List className="pt-[36px] gap-[56px] !justify-start !gap-10">
+                  <Tab>Long Counter LP</Tab>
+                  <Tab>Short Counter LP</Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>table list1</Tab.Panel>
+                  <Tab.Panel>table list2</Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            </section>
+          </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
     </div>
