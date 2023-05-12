@@ -26,7 +26,7 @@ export const Modal = ({ label, size = "md", ...props }: ModalProps) => {
             will be permanently removed. This action cannot be undone.
           </p>
 
-          <Button label="Confirm" active={true} />
+          <Button label="Confirm" />
           <Button label="Cancle" />
         </Dialog.Panel>
       </Dialog>
