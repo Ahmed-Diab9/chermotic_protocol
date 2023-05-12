@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { Counter } from "../../atom/Counter";
-import { AssetInput } from "../../molecule/AssetInput";
+import { AssetInput } from "../../atom/AssetInput";
 import { Button } from "../../atom/Button";
 import "../../atom/Tabs/style.css";
 

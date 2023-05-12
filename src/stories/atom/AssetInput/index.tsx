@@ -1,5 +1,5 @@
-import { Avatar } from "../../atom/Avatar";
-import { Button } from "../../atom/Button";
+import { Avatar } from "../Avatar";
+import { Button } from "../Button";
 import "../../atom/Input/style.css";
 
 interface AssetInputProps {
