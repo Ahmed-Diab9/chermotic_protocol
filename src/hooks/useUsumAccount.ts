@@ -1,34 +1,25 @@
 import { useSigner } from "wagmi";
 import useSWR from "swr";
 import {
-  AccountFactory__factory,
+  AccountFactory,
   USUMRouter,
-  USUMRouter__factory,
-  deployedAddress,
+  getDeployedContract,
 } from "@quarkonix/usum";
 import { errorLog } from "../utils/log";
 import { useMemo } from "react";
 import { isValid } from "../utils/valid";
 
-/**
- * FIXME @austin-builds
- * Should use the function `getDeployedContract`
- */
 const useUsumAccount = () => {
   const { data: signer } = useSigner();
   const router = useMemo(() => {
     if (!isValid(signer)) {
       return;
     }
-    const router = USUMRouter__factory.connect(
-      deployedAddress["anvil"]["USUMRouter"],
-      signer
-    ) as USUMRouter;
-    return router;
+    return getDeployedContract("USUMRouter", "anvil", signer) as USUMRouter;
   }, [signer]);
   const fetchKey = isValid(router) ? [router] : undefined;
   const {
-    data: account,
+    data: usumAccount,
     error,
     mutate: fetchAccount,
   } = useSWR(fetchKey, async ([contract]) => {
@@ -40,10 +31,11 @@ const useUsumAccount = () => {
       errorLog("no signers");
       return;
     }
-    const accountFactory = AccountFactory__factory.connect(
-      deployedAddress["anvil"]["AccountFactory"],
+    const accountFactory = getDeployedContract(
+      "AccountFactory",
+      "anvil",
       signer
-    );
+    ) as AccountFactory;
 
     await accountFactory.createAccount();
   };
@@ -51,7 +43,7 @@ const useUsumAccount = () => {
     errorLog(error);
   }
 
-  return [account, fetchAccount, createAccount] as const;
+  return [usumAccount, fetchAccount, createAccount] as const;
 };
 
 export default useUsumAccount;
