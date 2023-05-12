@@ -18,10 +18,15 @@ h4 {
   outline: none;
 }
 
+input {
+  width: 100%;
+  border-sizing: border-box;
+}
+
+/* hide input number inner buttons */
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;

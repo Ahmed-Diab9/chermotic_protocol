@@ -41,14 +41,14 @@ export const PoolPanel = () => (
 
               <article>
                 <div className="flex items-center mt-10 overflow-hidden gap-9">
-                  <div className="inline-flex flex-col items-center flex-auto gap-4 p-5 text-center border">
+                  <div className="inline-flex flex-col items-center flex-auto w-[40%] gap-4 p-5 text-center border">
                     <p>Min trade Fee</p>
-                    <Counter width="100px" />
+                    <Counter />
                   </div>
                   <p>-</p>
-                  <div className="inline-flex flex-col items-center flex-auto gap-4 p-5 text-center border">
+                  <div className="inline-flex flex-col items-center flex-auto w-[40%] gap-4 p-5 text-center border">
                     <p>Max trade Fee</p>
-                    <Counter width="100px" />
+                    <Counter />
                   </div>
                 </div>
                 <div className="mt-5">

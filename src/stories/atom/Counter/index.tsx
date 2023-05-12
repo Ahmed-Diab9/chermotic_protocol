@@ -9,7 +9,6 @@ interface CounterProps {
   label?: string;
   count?: number;
   size?: "sm" | "base" | "lg";
-  width?: string;
   disabled?: boolean;
   onClick?: () => unknown;
   initialValue?: number;
@@ -18,7 +17,6 @@ interface CounterProps {
 export const Counter = ({
   label,
   size = "base",
-  width,
   initialValue = 0,
   ...props
 }: CounterProps) => {
@@ -38,7 +36,7 @@ export const Counter = ({
         value={count.toFixed(2)}
         onChange={() => {}}
         title="counter"
-        className={`text-center w-[${width}]`}
+        className="text-center"
       />
       <Button onClick={increment} label="plus" iconOnly={<PlusIcon />} />
     </div>
