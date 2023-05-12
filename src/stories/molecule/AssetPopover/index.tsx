@@ -1,7 +1,7 @@
+import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
-import { Input } from "../../atom/Input";
-import { Popover } from "@headlessui/react";
+import { AssetInput } from "../../atom/AssetInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import "./style.css";
@@ -72,16 +72,7 @@ export const AssetPopover = ({
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <div>
-                          <Input align="right" placeholder="0" />
-                          <div className="flex gap-1 mt-2">
-                            {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
-                            <Button label="25%" size="sm" css="active" />{" "}
-                            <Button label="50%" size="sm" />
-                            <Button label="75%" size="sm" />
-                            <Button label="Max" size="sm" />
-                          </div>
-                        </div>
+                        <AssetInput />
                         <p className="text-sm text-black/30">
                           Please set additional values to apply to the basic
                           formula in Borrow Fee. Calculated based on open
@@ -141,16 +132,7 @@ export const AssetPopover = ({
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <div>
-                          <Input align="right" placeholder="0" />
-                          <div className="flex gap-1 mt-2">
-                            {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
-                            <Button label="25%" size="sm" css="active" />
-                            <Button label="50%" size="sm" />
-                            <Button label="75%" size="sm" />
-                            <Button label="Max" size="sm" />
-                          </div>
-                        </div>
+                        <AssetInput />
                         <p className="text-sm text-black/30">
                           Please set additional values to apply to the basic
                           formula in Borrow Fee. Calculated based on open

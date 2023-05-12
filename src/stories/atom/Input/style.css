@@ -11,5 +11,5 @@
   @apply h-12 px-5;
 }
 .input-default {
-  @apply border rounded;
+  @apply border rounded-lg;
 }

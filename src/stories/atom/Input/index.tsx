@@ -5,8 +5,9 @@ interface InputProps {
   value?: string;
   placeholder?: string;
   type?: string;
+  className?: string;
   size?: "sm" | "base" | "lg";
-  style?: "default" | "active";
+  css?: "default" | "active";
   align?: "center" | "left" | "right";
   disabled?: boolean;
   onClick?: () => unknown;
@@ -16,8 +17,9 @@ export const Input = ({
   label,
   placeholder,
   type,
+  className,
   size = "base",
-  style = "default",
+  css = "default",
   align = "left",
   ...props
 }: InputProps) => {
@@ -26,7 +28,7 @@ export const Input = ({
   return (
     <input
       type={type}
-      className={`input input-${size} input-${style} text-${align}`}
+      className={`input input-${size} input-${css} text-${align} ${className}}`}
       value={value()}
       placeholder={placeholder}
       aria-label={label}

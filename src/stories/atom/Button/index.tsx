@@ -2,11 +2,10 @@ import "./style.css";
 
 interface ButtonProps {
   label?: string;
-  css?: string;
+  css?: "default" | "active" | "noline" | "circle";
   size?: "xs" | "sm" | "base" | "lg";
   align?: "center" | "left" | "right";
   className?: string;
-  active?: boolean;
   iconLeft?: any;
   iconOnly?: any;
   iconRight?: any;

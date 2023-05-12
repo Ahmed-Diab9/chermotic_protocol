@@ -29,7 +29,7 @@ export const Counter = ({
   };
 
   return (
-    <div className="flex items-stretch gap-2">
+    <div className="flex items-stretch gap-0">
       <Button onClick={decrement} label="minus" iconOnly={<MinusIcon />} />
       <input
         type="number"

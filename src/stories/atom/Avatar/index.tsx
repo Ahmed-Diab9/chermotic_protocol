@@ -5,28 +5,30 @@ interface AvatarProps {
   active?: boolean;
   backgroundColor?: string;
   size?: "xs" | "sm" | "base" | "lg" | "xl";
+  className?: string;
   disabled?: boolean;
   onClick?: () => unknown;
-  image?: string;
+  src?: string;
 }
 
 export const Avatar = ({
   label,
   active = false,
   size = "base",
+  className,
   backgroundColor,
   ...props
 }: AvatarProps) => {
-  const image = () => props.image;
+  const src = () => props.src;
 
   return (
-    <div className="avatar">
+    <div className={`avatar ${className}`}>
       <div className="flex items-center gap-3 lg:gap-7">
         <div
           className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden`}
         >
-          {image() !== undefined ? (
-            <img src={image()} alt="" className="object-cover w-full h-full" />
+          {src() !== undefined ? (
+            <img src={src()} alt="" className="object-cover w-full h-full" />
           ) : null}
         </div>
       </div>

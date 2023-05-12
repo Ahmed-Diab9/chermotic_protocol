@@ -18,17 +18,3 @@ export const Default: Story = {
     label: "Select",
   },
 };
-
-// export const Large: Story = {
-//   args: {
-//     size: "lg",
-//     label: "Select",
-//   },
-// };
-
-// export const Small: Story = {
-//   args: {
-//     size: "sm",
-//     label: "Select",
-//   },
-// };

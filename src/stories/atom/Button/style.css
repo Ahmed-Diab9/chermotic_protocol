@@ -34,11 +34,11 @@
 .btn-default {
   @apply text-black border;
 }
-.btn-circle {
-  @apply border border-[#eee] bg-white !rounded-full;
-}
 .btn-noline {
   @apply hover:bg-active/20;
+}
+.btn-circle {
+  @apply border border-[#eee] bg-white !rounded-full;
 }
 .btn-xs {
   @apply text-xs min-w-[16px];

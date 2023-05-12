@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Mainbar } from ".";
+import { PoolPanel } from ".";
 
 const meta = {
-  title: "Template/Mainbar",
-  component: Mainbar,
+  title: "Template/PoolPanel",
+  component: PoolPanel,
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} satisfies Meta<typeof Mainbar>;
+} satisfies Meta<typeof PoolPanel>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ViewAssetBalance: Story = {
+export const Default: Story = {
   args: {
     user: {
       name: "Jane Doe",
@@ -21,5 +21,3 @@ export const ViewAssetBalance: Story = {
     },
   },
 };
-
-export const Empty: Story = {};
