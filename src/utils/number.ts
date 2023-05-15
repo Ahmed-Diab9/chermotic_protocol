@@ -1,4 +1,7 @@
 import { BigNumber, BigNumberish } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
+import { isValid } from "./valid";
+import { Price, Token } from "../typings/market";
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -47,8 +50,34 @@ export const applyDecimals = (value: BigNumberish, decimals: number) => {
   return multiplier?.mul(multiplicand);
 };
 
+export const formatDecimals = (
+  value: BigNumberish,
+  tokenDecimals?: number,
+  decimalLimit?: number
+) => {
+  const formatted = formatUnits(value, tokenDecimals);
+  const [numeric, decimals] = formatted.split(".");
+  if (!isValid(decimals)) {
+    return numeric;
+  }
+  if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
+    return numeric + "." + decimals.slice(0, decimalLimit);
+  }
+  if (isValid(decimalLimit) && decimals.length < decimalLimit) {
+    const padLength = numeric.length + 1 + decimalLimit;
+    return formatted.padEnd(padLength, "0");
+  }
+};
 
 export const expandDecimals = (decimals?: number) => {
   return BigNumber.from(10).pow(decimals ?? 0);
 };
 
+export const formatBalance = (token: Token, price?: Price) => {
+  const balance = token.balance
+    .mul(price?.value ?? 1)
+    .div(expandDecimals(token.decimals))
+    .div(expandDecimals(price?.decimals));
+
+  return balance;
+};
