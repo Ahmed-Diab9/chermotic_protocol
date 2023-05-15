@@ -2,8 +2,53 @@ import { Tab } from "@headlessui/react";
 import { Counter } from "../../atom/Counter";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
+import { Checkbox } from "../../atom/Checkbox";
+import { Thumbnail } from "../../atom/Thumbnail";
 import { AssetInput } from "../../atom/AssetInput";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
+
+const tokenInfo = [
+  {
+    no: 1,
+    src: undefined,
+    name: {
+      asset: "USDC",
+      market: "ETH/USD",
+      id: "+0.03%",
+    },
+    chroma: 3,
+    removable: "87.5% of 3",
+    slotValue: 1.02,
+    liqValue: 3,
+  },
+  {
+    no: 2,
+    src: undefined,
+    name: {
+      asset: "USDT",
+      market: "ETH/USD",
+      id: "+0.04%",
+    },
+    chroma: 3,
+    removable: "87.5% of 3",
+    slotValue: 1.02,
+    liqValue: 3,
+  },
+  {
+    no: 3,
+    src: undefined,
+    name: {
+      asset: "ETH",
+      market: "ETH/USD",
+      id: "+0.05%",
+    },
+    chroma: 3,
+    removable: "87.5% of 3",
+    slotValue: 1.02,
+    liqValue: 3,
+  },
+];
 
 export const PoolPanel = () => (
   <div className="inline-flex flex-col mx-auto border">
@@ -129,13 +174,78 @@ export const PoolPanel = () => (
             {/* inner tab */}
             <section className="tabs-line tabs-base">
               <Tab.Group>
-                <Tab.List className="pt-[36px] gap-[56px] !justify-start !gap-10">
+                <Tab.List className="pt-[36px] !justify-start !gap-10">
                   <Tab>Long Counter LP</Tab>
                   <Tab>Short Counter LP</Tab>
                 </Tab.List>
-                <Tab.Panels>
-                  <Tab.Panel>table list1</Tab.Panel>
-                  <Tab.Panel>table list2</Tab.Panel>
+                <Tab.Panels className="mt-12">
+                  <Tab.Panel>
+                    <article>
+                      <div className="flex items-center justify-between gap-2 mb-3 text-base px-7 text-black/50">
+                        <div className="w-[4%]">
+                          <Checkbox size="lg" />
+                        </div>
+                        <div className="w-[1%]">No.</div>
+                        <div className="w-[16%] text-center font-">Token</div>
+                        <div className="w-[20%] grow">Name</div>
+                        <div className="w-[12%] text-center">Chroma</div>
+                        <div className="w-[16%] text-center">Removable</div>
+                        <div className="w-[16%] text-center">Slot Value</div>
+                        <div className="w-[16%] text-center">My LIQ.Value</div>
+                        <div className="w-[16%] text-right"></div>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        {tokenInfo.map((item) => (
+                          <div className="flex items-center justify-between gap-2 py-2 border px-7">
+                            <div className="w-[4%]">
+                              <Checkbox size="lg" />
+                            </div>
+                            <div className="w-[1%] text-black/30">
+                              {item.no}
+                            </div>
+                            <div className="w-[16%] text-center flex justify-center">
+                              <Thumbnail src={item.src} size="lg" />
+                            </div>
+                            <div className="w-[20%] grow">
+                              <Avatar
+                                label={item.name.asset}
+                                size="xs"
+                                gap="1"
+                                fontSize="base"
+                                fontWeight="bold"
+                              />
+                              <p className="mt-1 font-semibold text-black/30">
+                                {item.name.market} {item.name.id}
+                              </p>
+                            </div>
+                            <div className="w-[12%] text-center">
+                              {item.chroma}
+                            </div>
+                            <div className="w-[16%] text-center">
+                              {item.removable}
+                            </div>
+                            <div className="w-[16%] text-center">
+                              {item.slotValue}
+                            </div>
+                            <div className="w-[16%] text-center">
+                              {item.liqValue}
+                            </div>
+                            <div className="w-[16%] text-right">
+                              <Button label="Remove" />
+                              <Button
+                                className="ml-2"
+                                iconOnly={<ArrowTopRightOnSquareIcon />}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    table list2
+                    {/* 테이블 리스트 Long과 동일할 듯 */}
+                  </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </section>
