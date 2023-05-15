@@ -46,13 +46,18 @@ export const useSettlementToken = () => {
     mutate: fetchTokens,
   } = useSWR(fetchKey, async ([factory, account]) => {
     const addresses = await factory.registeredSettlementTokens();
-    const response = await Promise.allSettled(
-      addresses.map(async (address) => {
-        const balance = await account.balance(address);
-        const name = address === USDC ? "USDC" : "URT";
-        return { name, address, balance } satisfies Token;
-      })
-    );
+    const promise = addresses.map(async (address) => {
+      const name = address === USDC ? "USDC" : "URT";
+      const balance = await account.balance(address);
+
+      return {
+        name,
+        address,
+        decimals: 6,
+        balance,
+      } satisfies Token;
+    });
+    const response = await Promise.allSettled(promise);
     const nextTokens = response
       .filter(
         (result): result is PromiseFulfilledResult<Token> =>
