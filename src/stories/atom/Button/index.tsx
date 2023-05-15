@@ -3,7 +3,7 @@ import "./style.css";
 interface ButtonProps {
   label?: string;
   css?: "default" | "active" | "noline" | "circle";
-  size?: "xs" | "sm" | "base" | "lg";
+  size?: "xs" | "sm" | "base" | "lg" | "xl";
   align?: "center" | "left" | "right";
   className?: string;
   iconLeft?: any;
