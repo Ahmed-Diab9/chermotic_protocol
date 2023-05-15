@@ -46,3 +46,9 @@ export const applyDecimals = (value: BigNumberish, decimals: number) => {
   const multiplier = bigNumberify(value);
   return multiplier?.mul(multiplicand);
 };
+
+
+export const expandDecimals = (decimals?: number) => {
+  return BigNumber.from(10).pow(decimals ?? 0);
+};
+
