@@ -12,6 +12,7 @@ const tokens = [
   {
     address: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
     name: "USDC",
+    decimals: 6,
     balance: BigNumber.from(100),
   },
 ];
