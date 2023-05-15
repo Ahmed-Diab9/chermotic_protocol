@@ -4,6 +4,7 @@
   @apply inline-block cursor-pointer;
   background-color: #fff;
   gap: 4px;
+  border-radius: 100px;
   > div {
     justify-content: center;
   }
@@ -42,17 +43,16 @@
 }
 .btn-xs {
   @apply text-xs min-w-[16px];
-  padding: 2px 4px;
-  border-radius: 4px;
+  height: 28px;
+  padding: 0 4px;
   &.btn-icon-only {
     @apply min-h-[16px] p-[1px];
   }
 }
 .btn-sm {
   @apply min-w-[20px];
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 8px;
+  height: 34px;
+  padding: 0 8px;
   svg {
     height: 12px;
   }
@@ -62,8 +62,8 @@
 }
 .btn-base {
   @apply text-base min-w-[40px];
-  padding: 4px 8px;
-  border-radius: 12px;
+  height: 40px;
+  padding: 0 8px;
   svg {
     height: 16px;
   }
@@ -76,8 +76,8 @@
 }
 .btn-lg {
   @apply text-lg min-w-[48px];
-  padding: 4px 8px;
-  border-radius: 16px;
+  height: 48px;
+  padding: 0 8px;
   svg {
     height: 20px;
   }
@@ -87,9 +87,8 @@
 }
 .btn-xl {
   @apply text-xl min-w-[60px];
-  @apply rounded;
-  padding: 4px 8px;
-  border-radius: 20px;
+  height: 60px;
+  padding: 0 8px;
   svg {
     height: 20px;
   }

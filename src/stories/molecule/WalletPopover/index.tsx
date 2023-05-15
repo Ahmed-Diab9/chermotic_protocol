@@ -135,7 +135,7 @@ export const WalletPopover = ({
                         {/* tab - menu */}
                         <Tab.List className="absolute left-0 w-full top-4">
                           <Tab className="w-[80px]">Assets</Tab>
-                          <Tab>Liquidity NFT</Tab>
+                          <Tab>Liquidity Token</Tab>
                         </Tab.List>
                         {/* tab - contents */}
                         <Tab.Panels className="mt-[60px] pb-[60px] absolute bottom-0 px-4 overflow-auto h-[calc(100%-72px)] w-full">
@@ -144,7 +144,7 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {assetInfo.map((item) => (
-                                  <div className="flex">
+                                  <div className="flex items-center">
                                     <Avatar
                                       label={item.asset}
                                       size="xs"
@@ -152,11 +152,11 @@ export const WalletPopover = ({
                                       gap="1"
                                     />
                                     <div className="ml-auto text-right">
-                                      <p className="mt-2 text-base text-gray-500">
+                                      <p className="text-sm text-gray-500">
                                         ${item.price}
                                       </p>
-                                      <p className="text-base font-medium text-gray-900">
-                                        {item.quantity}
+                                      <p className="mt-1 text-base font-medium text-gray-900">
+                                        {item.quantity} {item.asset}
                                       </p>
                                     </div>
                                   </div>

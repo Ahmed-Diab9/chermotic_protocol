@@ -23,16 +23,17 @@
 }
 .tabs-line {
   [role="tablist"] {
-    @apply gap-2 justify-around;
+    gap: 8px;
+    justify-content: space-around;
     button {
-      padding: 8px 4px;
+      padding: 4px;
       margin-bottom: 4px;
     }
     [aria-selected="true"] {
       @apply text-black border-b-2 border-black;
     }
     [aria-selected="false"] {
-      @apply text-black/20;
+      @apply text-black/20 border-b-2 border-transparent;
     }
   }
   [type="button"] {
@@ -49,6 +50,16 @@
       [aria-selected="true"] {
       }
       [aria-selected="false"] {
+      }
+    }
+  }
+  &.tabs-base {
+    [role="tablist"] {
+      button {
+        width: auto;
+        max-width: none;
+        padding: 8px 0;
+        font-weight: 600;
       }
     }
   }
