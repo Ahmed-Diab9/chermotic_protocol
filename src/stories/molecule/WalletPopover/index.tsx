@@ -10,6 +10,14 @@ import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import "../../atom/Tabs/style.css";
 import "./style.css";
+import { trimAddress } from "../../../utils/address";
+import { isValid } from "../../../utils/valid";
+import { Price, Token } from "../../../typings/market";
+import {
+  expandDecimals,
+  formatBalance,
+  withComma,
+} from "../../../utils/number";
 
 const assetInfo = [
   {
@@ -56,24 +64,32 @@ const nftInfo = [
   },
 ];
 
-type User = {
-  name: string;
-  contract: string;
+type Account = {
+  walletAddress?: string;
+  usumAddress?: string;
 };
 
 interface WalletPopoverProps {
-  user?: User;
+  account?: Account;
+  tokens?: Token[];
+  priceFeed?: Record<string, Price>;
   onLogin?: () => void;
   onLogout?: () => void;
   onCreateAccount?: () => void;
   onClick?: () => void;
+  onWalletCopy?: (text: string) => unknown;
+  onUsumCopy?: (text: string) => unknown;
 }
 
 export const WalletPopover = ({
-  user,
+  account,
+  tokens,
+  priceFeed,
   onLogin,
   onLogout,
   onCreateAccount,
+  onWalletCopy,
+  onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
   return (
@@ -115,11 +131,20 @@ export const WalletPopover = ({
                       <h4 className="mb-3 text-center">Connected Wallet</h4>
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
-                          <p className="px-4">address</p>
+                          <p className="px-4">
+                            {account?.walletAddress &&
+                              trimAddress(account?.walletAddress)}
+                          </p>
                           <Button
                             label="copy address"
                             css="circle"
                             iconOnly={<Square2StackIcon />}
+                            onClick={() => {
+                              const address = account?.walletAddress;
+                              if (isValid(address)) {
+                                onWalletCopy?.(address);
+                              }
+                            }}
                           />
                         </div>
                         <Button
@@ -143,20 +168,31 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               <div className="flex flex-col gap-3">
-                                {assetInfo.map((item) => (
+                                {tokens?.map((token) => (
                                   <div className="flex items-center">
                                     <Avatar
-                                      label={item.asset}
+                                      label={token.name}
                                       size="xs"
                                       fontSize="base"
                                       gap="1"
                                     />
                                     <div className="ml-auto text-right">
                                       <p className="text-sm text-gray-500">
-                                        ${item.price}
+                                        $
+                                        {withComma(
+                                          formatBalance(
+                                            token,
+                                            priceFeed?.[token.name]
+                                          )
+                                        )}
                                       </p>
                                       <p className="mt-1 text-base font-medium text-gray-900">
-                                        {item.quantity} {item.asset}
+                                        {withComma(
+                                          token.balance
+                                            .div(expandDecimals(token.decimals))
+                                            .toString()
+                                        )}{" "}
+                                        {token.name}
                                       </p>
                                     </div>
                                   </div>
@@ -169,7 +205,10 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {nftInfo.map((item) => (
-                                  <div className="flex flex-col pb-3 border-b last:border-b-0">
+                                  <div
+                                    key={item.asset}
+                                    className="flex flex-col pb-3 border-b last:border-b-0"
+                                  >
                                     <div className="flex gap-2">
                                       <p className="pr-2 border-r">
                                         <Avatar
@@ -224,11 +263,20 @@ export const WalletPopover = ({
                     <h4 className="mb-3 text-center">My Account</h4>
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
-                        <p className="px-4">address</p>
+                        <p className="px-4">
+                          {account?.usumAddress &&
+                            trimAddress(account?.usumAddress)}
+                        </p>
                         <Button
                           label="copy address"
                           css="circle"
                           iconOnly={<Square2StackIcon />}
+                          onClick={() => {
+                            const address = account?.usumAddress;
+                            if (isValid(address)) {
+                              onUsumCopy?.(address);
+                            }
+                          }}
                         />
                       </div>
                       <Button
