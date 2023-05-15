@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Demo from "./pages/demo";
 import Pool from "./pages/pool";
 import MarketSelectDemo from "./pages/demo/market-select";
+import WalletPopoverDemo from "./pages/demo/wallet-popover";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/demo/market-select",
     element: <MarketSelectDemo />,
+  },
+  {
+    path: "/demo/wallet-popover",
+    element: <WalletPopoverDemo />,
   },
 ]);
 
