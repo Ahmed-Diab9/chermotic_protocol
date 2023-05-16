@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import useLocalStorage from "./useLocalStorage";
 import { CONNECTOR_STORAGE_KEY } from "../configs/account";
@@ -34,11 +34,15 @@ const useConnectOnce = () => {
     });
   }, [isLoaded, isConnected, connectors, connectorId, connectAsync]);
 
+  useEffect(() => {
+    onConnectOnce();
+  }, [onConnectOnce]);
+
   if (error) {
     errorLog(error);
   }
 
-  return onConnectOnce;
+  return;
 };
 
 export default useConnectOnce;
