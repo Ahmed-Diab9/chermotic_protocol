@@ -19,16 +19,7 @@ export const Mainbar = ({ user }: MainbarProps) => (
   <div className="p-4">
     <div className="flex gap-5 justify-stretch">
       <MarketSelect />
-      <>
-        {user ? (
-          <>
-            {/* Trading: view Asset Balance */}
-            <AssetPopover />
-          </>
-        ) : (
-          <>{/* Pools: empty */}</>
-        )}
-      </>
+      <AssetPopover />
     </div>
   </div>
 );
