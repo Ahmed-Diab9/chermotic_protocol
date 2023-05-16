@@ -186,8 +186,8 @@ export const PoolPanel = () => (
                           <Checkbox size="lg" />
                         </div>
                         <div className="w-[1%]">No.</div>
-                        <div className="w-[16%] text-center font-">Token</div>
-                        <div className="w-[20%] grow">Name</div>
+                        <div className="w-[16%] text-center">Token</div>
+                        <div className="w-[20%] grow text-left">Name</div>
                         <div className="w-[12%] text-center">Chroma</div>
                         <div className="w-[16%] text-center">Removable</div>
                         <div className="w-[16%] text-center">Slot Value</div>
@@ -206,7 +206,7 @@ export const PoolPanel = () => (
                             <div className="w-[16%] text-center flex justify-center">
                               <Thumbnail src={item.src} size="lg" />
                             </div>
-                            <div className="w-[20%] grow">
+                            <div className="w-[20%] grow text-left">
                               <Avatar
                                 label={item.name.asset}
                                 size="xs"

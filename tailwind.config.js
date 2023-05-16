@@ -48,6 +48,13 @@ export const theme = {
       "3xl": ["28px", "34px"],
       "4xl": ["36px", "40px"],
     },
+    fontWeight: {
+      light: 200,
+      normal: 300,
+      medium: 400,
+      semibold: 500,
+      bold: 600,
+    },
   },
 };
 export const plugins = [];
