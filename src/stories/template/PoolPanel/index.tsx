@@ -4,7 +4,7 @@ import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { Checkbox } from "../../atom/Checkbox";
 import { Thumbnail } from "../../atom/Thumbnail";
-import { AssetInput } from "../../atom/AssetInput";
+import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 
@@ -67,7 +67,7 @@ export const PoolPanel = () => (
                 <h4>Account Balance</h4>
                 <p className="text-black/30">3,214 USDC</p>
               </div>
-              <AssetInput />
+              <OptionInput />
             </article>
             <section className="mb-5">
               <article>

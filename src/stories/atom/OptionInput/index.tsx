@@ -2,7 +2,7 @@ import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import "../../atom/Input/style.css";
 
-interface AssetInputProps {
+interface OptionInputProps {
   label?: string;
   value?: string;
   placeholder?: string;
@@ -15,7 +15,7 @@ interface AssetInputProps {
   onClick?: () => unknown;
 }
 
-export const AssetInput = ({
+export const OptionInput = ({
   label,
   placeholder = "0",
   type,
@@ -24,7 +24,7 @@ export const AssetInput = ({
   css = "default",
   align = "right",
   ...props
-}: AssetInputProps) => {
+}: OptionInputProps) => {
   const value = () => props.value;
 
   return (
