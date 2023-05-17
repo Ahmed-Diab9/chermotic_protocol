@@ -12,12 +12,16 @@ import "../../atom/Tabs/style.css";
 import "./style.css";
 import { trimAddress } from "../../../utils/address";
 import { isValid } from "../../../utils/valid";
-import { Price, Token } from "../../../typings/market";
+import { Market, Price, Token } from "../../../typings/market";
 import {
   expandDecimals,
   formatBalance,
+  formatFeeRate,
   withComma,
 } from "../../../utils/number";
+import { Account } from "../../../typings/account";
+import { BigNumber } from "ethers";
+import { LPToken } from "../../../typings/pools";
 
 const assetInfo = [
   {
@@ -64,17 +68,15 @@ const nftInfo = [
   },
 ];
 
-type Account = {
-  walletAddress?: string;
-  usumAddress?: string;
-};
-
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
+  markets?: Market[];
+  balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
-  onLogin?: () => void;
-  onLogout?: () => void;
+  lpTokens?: LPToken[];
+  onConnect?: () => unknown;
+  onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
   onClick?: () => void;
   onWalletCopy?: (text: string) => unknown;
@@ -84,9 +86,12 @@ interface WalletPopoverProps {
 export const WalletPopover = ({
   account,
   tokens,
+  markets,
+  balances,
   priceFeed,
-  onLogin,
-  onLogout,
+  lpTokens,
+  onConnect,
+  onDisconnect,
   onCreateAccount,
   onWalletCopy,
   onUsumCopy,
@@ -97,7 +102,9 @@ export const WalletPopover = ({
       <Popover className="relative">
         <Popover.Button className="p-0 pr-5 border rounded-full border-grayL">
           <Avatar
-            label="address"
+            label={
+              account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
+            }
             size="lg"
             fontSize="sm"
             fontWeight="normal"
@@ -133,7 +140,7 @@ export const WalletPopover = ({
                         <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
                           <p className="px-4">
                             {account?.walletAddress &&
-                              trimAddress(account?.walletAddress)}
+                              trimAddress(account?.walletAddress, 7, 5)}
                           </p>
                           <Button
                             label="copy address"
@@ -168,35 +175,43 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               <div className="flex flex-col gap-3">
-                                {tokens?.map((token) => (
-                                  <div className="flex items-center">
-                                    <Avatar
-                                      label={token.name}
-                                      size="xs"
-                                      fontSize="base"
-                                      gap="1"
-                                    />
-                                    <div className="ml-auto text-right">
-                                      <p className="text-sm text-gray-500">
-                                        $
-                                        {withComma(
-                                          formatBalance(
-                                            token,
-                                            priceFeed?.[token.name]
-                                          )
-                                        )}
-                                      </p>
-                                      <p className="mt-1 text-base font-medium text-gray-900">
-                                        {withComma(
-                                          token.balance
-                                            .div(expandDecimals(token.decimals))
-                                            .toString()
-                                        )}{" "}
-                                        {token.name}
-                                      </p>
+                                {balances &&
+                                  priceFeed &&
+                                  tokens?.map((token) => (
+                                    <div
+                                      key={token.address}
+                                      className="flex items-center"
+                                    >
+                                      <Avatar
+                                        label={token.name}
+                                        size="xs"
+                                        fontSize="base"
+                                        gap="1"
+                                      />
+                                      <div className="ml-auto text-right">
+                                        <p className="text-sm text-gray-500">
+                                          $
+                                          {withComma(
+                                            formatBalance(
+                                              balances[token.name],
+                                              token,
+                                              priceFeed[token.name]
+                                            )
+                                          )}
+                                        </p>
+                                        <p className="mt-1 text-base font-medium text-gray-900">
+                                          {withComma(
+                                            balances[token.name]
+                                              .div(
+                                                expandDecimals(token.decimals)
+                                              )
+                                              .toString()
+                                          )}{" "}
+                                          {token.name}
+                                        </p>
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  ))}
                               </div>
                             </article>
                           </Tab.Panel>
@@ -204,28 +219,83 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               <div className="flex flex-col gap-3">
-                                {nftInfo.map((item) => (
+                                {lpTokens?.map((lpToken) => {
+                                  const token = tokens?.find(
+                                    ({ address }) =>
+                                      lpToken.tokenAddress === address
+                                  );
+                                  const market = markets?.find(
+                                    ({ address }) =>
+                                      lpToken.marketAddress === address
+                                  );
+                                  return lpToken.slots.map((slot) => {
+                                    const { feeRate, balance } = slot;
+                                    return (
+                                      <div
+                                        key={`${lpToken.tokenAddress}-${lpToken.marketAddress}-${feeRate}`}
+                                        className="flex flex-col pb-3 border-b last:border-b-0"
+                                      >
+                                        <div className="flex gap-2">
+                                          <div className="pr-2 border-r">
+                                            <Avatar
+                                              label={token?.name}
+                                              size="xs"
+                                              fontSize="base"
+                                              gap="1"
+                                            />
+                                          </div>
+                                          <div className="pr-2 border-r">
+                                            <Avatar
+                                              label={market?.description}
+                                              size="xs"
+                                              fontSize="base"
+                                              gap="1"
+                                            />
+                                          </div>
+                                          <p className="text-base font-medium text-gray-900">
+                                            {formatFeeRate(feeRate)}%
+                                          </p>
+                                        </div>
+                                        <div className="flex mt-3">
+                                          <div className="mr-auto">
+                                            <p className="text-base font-medium text-gray-900">
+                                              {balance.toString()}
+                                            </p>
+                                            <p className="mt-2 text-base text-gray-500">
+                                              item.price USDC
+                                            </p>
+                                          </div>
+                                          <Thumbnail
+                                            size="base"
+                                            src={undefined}
+                                          />
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })}
+                                {nftInfo.map((item, index) => (
                                   <div
-                                    key={item.asset}
+                                    key={`${item.asset}-${index}`}
                                     className="flex flex-col pb-3 border-b last:border-b-0"
                                   >
                                     <div className="flex gap-2">
-                                      <p className="pr-2 border-r">
+                                      <div className="pr-2 border-r">
                                         <Avatar
                                           label={item.asset}
                                           size="xs"
                                           fontSize="base"
                                           gap="1"
                                         />
-                                      </p>
-                                      <p className="pr-2 border-r">
+                                      </div>
+                                      <div className="pr-2 border-r">
                                         <Avatar
                                           label={item.market}
                                           size="xs"
                                           fontSize="base"
                                           gap="1"
                                         />
-                                      </p>
+                                      </div>
                                       <p className="text-base font-medium text-gray-900">
                                         {item.name}
                                       </p>
@@ -265,7 +335,7 @@ export const WalletPopover = ({
                       <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
                         <p className="px-4">
                           {account?.usumAddress &&
-                            trimAddress(account?.usumAddress)}
+                            trimAddress(account?.usumAddress, 7, 5)}
                         </p>
                         <Button
                           label="copy address"
@@ -288,7 +358,7 @@ export const WalletPopover = ({
                   </article>
                   <Button
                     label="Disconnect"
-                    onClick={onLogout}
+                    onClick={onDisconnect}
                     size="lg"
                     className="w-full mt-10 mb-3"
                   />
