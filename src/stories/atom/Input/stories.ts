@@ -18,3 +18,10 @@ export const Default: Story = {
     label: "Input",
   },
 };
+
+export const WithAssetImage: Story = {
+  args: {
+    label: "Base Default OptionInput with Image",
+    assetSrc: "src/assets/images/usdc.svg",
+  },
+};

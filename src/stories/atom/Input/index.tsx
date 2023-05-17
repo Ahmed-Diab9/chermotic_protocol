@@ -1,9 +1,11 @@
+import { Avatar } from "../Avatar";
 import "./style.css";
 
 interface InputProps {
   label?: string;
   value?: string;
   placeholder?: string;
+  assetSrc?: string;
   type?: string;
   className?: string;
   size?: "sm" | "base" | "lg";
@@ -16,8 +18,9 @@ interface InputProps {
 export const Input = ({
   label,
   placeholder,
+  assetSrc,
   type,
-  className,
+  // className,
   size = "base",
   css = "default",
   align = "left",
@@ -26,12 +29,16 @@ export const Input = ({
   const value = () => props.value;
 
   return (
-    <input
-      type={type}
-      className={`input input-${size} input-${css} text-${align} ${className}}`}
-      value={value()}
-      placeholder={placeholder}
-      aria-label={label}
-    />
+    <div
+      className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
+    >
+      {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
+      <input
+        type="number"
+        className={`text-${align}`}
+        value={value()}
+        placeholder={placeholder}
+      />
+    </div>
   );
 };
