@@ -73,11 +73,16 @@ export const expandDecimals = (decimals?: number) => {
   return BigNumber.from(10).pow(decimals ?? 0);
 };
 
-export const formatBalance = (token: Token, price?: Price) => {
-  const balance = token.balance
+export const formatBalance = (
+  balance: BigNumber,
+  token: Token,
+  price?: Price
+) => {
+  return balance
     .mul(price?.value ?? 1)
     .div(expandDecimals(token.decimals))
     .div(expandDecimals(price?.decimals));
+};
 
   return balance;
 };
