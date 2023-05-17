@@ -1,64 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
-import { BigNumber } from "ethers";
 import { Market, Token } from "../../../typings/market";
 import { isValid } from "../../../utils/valid";
 import { errorLog } from "../../../utils/log";
 import { MarketSelect } from "../../../stories/molecule/MarketSelect";
-
-const mockTokens: Token[] = [
-  {
-    address: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
-    name: "USDC",
-    decimals: 6,
-    balance: BigNumber.from(100),
-  },
-  {
-    address: "0x509Ee0d083DdF8AC028f2a56731412edD63223B9",
-    name: "USDT",
-    decimals: 6,
-    balance: BigNumber.from(100),
-  },
-];
-const mockMarkets: Record<string, Market[]> = {
-  USDC: [
-    {
-      address: "0x0000000000000000000",
-      description: "ETH/USD",
-      price: BigNumber.from(1500),
-    },
-    {
-      address: "0x4445556667778889999",
-      description: "AAVE/USD",
-      price: BigNumber.from(500),
-    },
-    {
-      address: "0x1111111111111111111",
-      description: "GALA/USD",
-      price: BigNumber.from(200),
-    },
-  ],
-  USDT: [
-    {
-      address: "0x9999999999999999999",
-      description: "ETH/USD",
-      price: BigNumber.from(200),
-    },
-    {
-      address: "0x8888888888888888888",
-      description: "ARB/USD",
-      price: BigNumber.from(100),
-    },
-  ],
-};
+import { marketsMock, tokensMock } from "../../../mock";
+import { useConnect } from "wagmi";
+import useFeeRate from "../../../hooks/useFeeRate";
 
 const MarketSelectDemo = () => {
-  const tokens = mockTokens;
+  const { connectAsync, connectors } = useConnect();
+  useEffect(() => {
+    connectAsync({
+      connector: connectors.find((connector) => connector.id === "metaMask"),
+    });
+  }, [connectors, connectAsync]);
+
+  const tokens = tokensMock;
   const [token, setToken] = useState<Token>();
+  const feeRate = useFeeRate();
   const markets = useMemo(() => {
     if (!isValid(token)) {
       return [];
     }
-    const nextMarket = mockMarkets[token.name];
+    const nextMarket = marketsMock[token.name];
     if (!isValid(nextMarket)) {
       return [];
     }
@@ -75,6 +39,12 @@ const MarketSelectDemo = () => {
     }
   }, [token, tokens, market, markets]);
 
+  useEffect(() => {
+    const newMarket = markets[0];
+
+    setMarket(newMarket);
+  }, [markets]);
+
   const onTokenClick = (address: string) => {
     if (token?.address === address) {
       return;
@@ -84,13 +54,7 @@ const MarketSelectDemo = () => {
       errorLog("no settlement tokens selected");
       return;
     }
-    const nextMarket = mockMarkets[nextToken.name][0];
-    if (!isValid(nextMarket)) {
-      errorLog("the selected markets are invalid");
-      return;
-    }
     setToken(nextToken);
-    setMarket(nextMarket);
   };
 
   const onMarketClick = (address: string) => {
