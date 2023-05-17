@@ -6,13 +6,11 @@ export const tokensMock: Token[] = [
     address: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
     name: "USDC",
     decimals: 6,
-    balance: BigNumber.from(100).mul(BigNumber.from(10).pow(6)),
   },
   {
     address: "0x509Ee0d083DdF8AC028f2a56731412edD63223B9",
     name: "USDT",
     decimals: 6,
-    balance: BigNumber.from(100).mul(BigNumber.from(10).pow(6)),
   },
 ];
 export const marketsMock: Record<string, Market[]> = {
