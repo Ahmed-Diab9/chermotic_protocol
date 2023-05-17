@@ -5,32 +5,53 @@ import { AssetInput } from "../../atom/AssetInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import "./style.css";
-
-type User = {
-  name: string;
-  contract: string;
-};
+import { Account } from "../../../typings/account";
+import { Token } from "../../../typings/market";
+import { expandDecimals } from "../../../utils/number";
+import { BigNumber } from "ethers";
+import { isValid } from "../../../utils/valid";
 
 interface AssetPopoverProps {
   // onClick?: () => void;
-  user?: User;
-  onLogin?: () => void;
+  account?: Account;
+  token?: Token;
+  walletBalances?: Record<string, BigNumber>;
+  usumBalances?: Record<string, BigNumber>;
+  amount?: string;
+  onAmountChange?: (value: string) => unknown;
+  onDeposit?: () => unknown;
+  onWithdraw?: () => unknown;
+  onConnect?: () => void;
 }
 
 export const AssetPopover = ({
-  user,
-  onLogin,
+  account,
+  token,
+  walletBalances,
+  usumBalances,
+  amount,
+  onAmountChange,
+  onDeposit,
+  onWithdraw,
+  onConnect,
   ...props
 }: AssetPopoverProps) => {
+  const isLoaded = isValid(account) && isValid(token);
   return (
     <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl w-[40%] max-w-[500px] min-h-[100px]">
       <div className="ml-10">
         <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
       </div>
       <div className="flex flex-col gap-3 mr-10 text-right">
-        {user ? (
+        {isLoaded ? (
           <>
-            <h2 className="text-2xl">1,542.07 USDC</h2>
+            <h2 className="text-2xl">
+              {token &&
+                usumBalances?.[token.name]
+                  .div(expandDecimals(token.decimals))
+                  .toString()}{" "}
+              {token?.name}
+            </h2>
             <Popover.Group className="flex gap-3">
               <Popover>
                 <Popover.Button className="flex items-center gap-3 px-5 btn btn-default btn-base">
@@ -43,7 +64,7 @@ export const AssetPopover = ({
                       <div className="flex gap-2">
                         <div className="shrink max-w-[50%] overflow-hidden">
                           <p className="inline-block overflow-ellipsis">
-                            0x446c225ec3E...6d66C0496c077cC
+                            {account.usumAddress}
                           </p>
                         </div>
                         <Button
@@ -56,19 +77,31 @@ export const AssetPopover = ({
                     <section className="flex mt-5 text-left">
                       <article className="flex flex-col gap-4">
                         <h2>Deposit</h2>
-                        <Avatar size="xs" label="USDC" gap="1" />
+                        <Avatar size="xs" label={token?.name} gap="1" />
                         <div>
                           <h4 className="mb-2">Asset Value</h4>
-                          <p>3,025.23 USDC</p>
+                          <p>3,025.23 {token?.name}</p>
                         </div>
                         <div>
                           <h4 className="mb-2">Available Margin</h4>
-                          <p>225.23 USDC</p>
+                          <p>225.23 {token?.name}</p>
                         </div>
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <AssetInput />
+                        <AssetInput
+                          value={amount}
+                          totalValue={walletBalances?.[token.name]
+                            .div(expandDecimals(token.decimals))
+                            .toString()}
+                          onChange={(event) => {
+                            event.preventDefault();
+                            onAmountChange?.(event.target.value);
+                          }}
+                          onButtonClick={(value) => {
+                            onAmountChange?.(value);
+                          }}
+                        />
                         <p className="text-sm text-black/30">
                           Please set additional values to apply to the basic
                           formula in Borrow Fee. Calculated based on open
@@ -77,7 +110,12 @@ export const AssetPopover = ({
                       </article>
                     </section>
                     <div className="mt-6 mb-3 text-center">
-                      <Button label="Deposit" size="lg" className="w-full" />
+                      <Button
+                        label="Deposit"
+                        size="lg"
+                        className="w-full"
+                        onClick={onDeposit}
+                      />
                       <Button
                         iconOnly={<ChevronDoubleUpIcon />}
                         size="sm"
@@ -100,7 +138,7 @@ export const AssetPopover = ({
                       <div className="flex gap-2">
                         <div className="shrink max-w-[50%] overflow-hidden">
                           <p className="inline-block overflow-ellipsis">
-                            0x446c225ec3E...6d66C0496c077cC
+                            {account.usumAddress}
                           </p>
                         </div>
                         <Button
@@ -113,19 +151,31 @@ export const AssetPopover = ({
                     <section className="flex mt-5 text-left">
                       <article className="flex flex-col gap-4">
                         <h2>Withdraw</h2>
-                        <Avatar size="xs" label="USDC" gap="1" />
+                        <Avatar size="xs" label={token?.name} gap="1" />
                         <div>
                           <h4 className="mb-2">Asset Value</h4>
-                          <p>2,025.23 USDC</p>
+                          <p>2,025.23 {token?.name}</p>
                         </div>
                         <div>
                           <h4 className="mb-2">Available Margin</h4>
-                          <p>125.23 USDC</p>
+                          <p>125.23 {token?.name}</p>
                         </div>
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <AssetInput />
+                        <AssetInput
+                          value={amount}
+                          totalValue={usumBalances?.[token.name]
+                            .div(expandDecimals(token.decimals))
+                            .toString()}
+                          onChange={(event) => {
+                            event.preventDefault();
+                            onAmountChange?.(event.target.value);
+                          }}
+                          onButtonClick={(value) => {
+                            onAmountChange?.(value);
+                          }}
+                        />
                         <p className="text-sm text-black/30">
                           Please set additional values to apply to the basic
                           formula in Borrow Fee. Calculated based on open
@@ -134,7 +184,12 @@ export const AssetPopover = ({
                       </article>
                     </section>
                     <div className="mt-6 mb-3 text-center">
-                      <Button label="Withdraw" size="lg" className="w-full" />
+                      <Button
+                        label="Withdraw"
+                        size="lg"
+                        className="w-full"
+                        onClick={() => onWithdraw?.()}
+                      />
                       <Button
                         iconOnly={<ChevronDoubleUpIcon />}
                         size="sm"
