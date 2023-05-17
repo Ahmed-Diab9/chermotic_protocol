@@ -17,10 +17,11 @@ const tokenInfo = [
       market: "ETH/USD",
       id: "+0.03%",
     },
-    chroma: 3,
-    removable: "87.5% of 3",
+    // number: 천 단위 콤마 표시, 소수점 2자리까지 표기 (피그마 예시 참고)
+    quantity: 3748982499.0,
+    removable: 87.54,
     slotValue: 1.02,
-    liqValue: 3,
+    liqValue: 3748982499.0,
   },
   {
     no: 2,
@@ -30,10 +31,10 @@ const tokenInfo = [
       market: "ETH/USD",
       id: "+0.04%",
     },
-    chroma: 3,
-    removable: "87.5% of 3",
+    quantity: 123445.5,
+    removable: 44.0,
     slotValue: 1.02,
-    liqValue: 3,
+    liqValue: 23423.33,
   },
   {
     no: 3,
@@ -43,10 +44,10 @@ const tokenInfo = [
       market: "ETH/USD",
       id: "+0.05%",
     },
-    chroma: 3,
-    removable: "87.5% of 3",
+    quantity: 300.01,
+    removable: 60.5,
     slotValue: 1.02,
-    liqValue: 3,
+    liqValue: 499.0,
   },
 ];
 
@@ -188,7 +189,7 @@ export const PoolPanel = () => (
                         <div className="w-[1%]">No.</div>
                         <div className="w-[16%] text-center">Token</div>
                         <div className="w-[20%] grow text-left">Name</div>
-                        <div className="w-[12%] text-center">Chroma</div>
+                        <div className="w-[12%] text-center">Quantity</div>
                         <div className="w-[16%] text-center">Removable</div>
                         <div className="w-[16%] text-center">Slot Value</div>
                         <div className="w-[16%] text-center">My LIQ.Value</div>
@@ -219,10 +220,10 @@ export const PoolPanel = () => (
                               </p>
                             </div>
                             <div className="w-[12%] text-center">
-                              {item.chroma}
+                              {item.quantity}
                             </div>
                             <div className="w-[16%] text-center">
-                              {item.removable}
+                              {item.removable}%
                             </div>
                             <div className="w-[16%] text-center">
                               {item.slotValue}

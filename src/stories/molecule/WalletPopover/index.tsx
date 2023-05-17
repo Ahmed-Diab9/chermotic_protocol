@@ -210,21 +210,12 @@ export const WalletPopover = ({
                                     className="flex flex-col pb-3 border-b last:border-b-0"
                                   >
                                     <div className="flex gap-2">
+                                      {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
                                       <p className="pr-2 border-r">
-                                        <Avatar
-                                          label={item.asset}
-                                          size="xs"
-                                          fontSize="base"
-                                          gap="1"
-                                        />
+                                        {item.asset}
                                       </p>
                                       <p className="pr-2 border-r">
-                                        <Avatar
-                                          label={item.market}
-                                          size="xs"
-                                          fontSize="base"
-                                          gap="1"
-                                        />
+                                        {item.market}
                                       </p>
                                       <p className="text-base font-medium text-gray-900">
                                         {item.name}
