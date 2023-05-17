@@ -2,6 +2,7 @@ import { BigNumber, BigNumberish } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { isValid } from "./valid";
 import { Price, Token } from "../typings/market";
+import { FEE_RATE_DECIMAL } from "../configs/feeRate";
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -84,5 +85,22 @@ export const formatBalance = (
     .div(expandDecimals(price?.decimals));
 };
 
-  return balance;
+export const formatFeeRate = (feeRate: number) => {
+  const percentage = (feeRate / Math.pow(10, FEE_RATE_DECIMAL)) * 100;
+  const converted = percentage.toString();
+  const plus = percentage > 0 ? "+" : "";
+  if (Math.abs(percentage) >= 10) {
+    const endIndex = percentage > 0 ? 2 : 3;
+    return plus + converted.slice(0, endIndex);
+  }
+  if (Math.abs(percentage) >= 1) {
+    const endIndex = percentage > 0 ? 1 : 2;
+    return plus + converted.slice(0, endIndex);
+  }
+  if (Math.abs(percentage) >= 0.1) {
+    const [integer, decimals] = converted.split(".");
+    return plus + integer + "." + decimals[0];
+  }
+  const [integer, decimals] = converted.split(".");
+  return plus + integer + "." + decimals.slice(0, 2);
 };
