@@ -1,3 +1,4 @@
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 
 interface TooltipProps {
@@ -28,7 +29,8 @@ export const Tooltip = ({
 }: TooltipProps) => {
   return (
     <div className={`tooltip tooltip-${position} ${className}`}>
-      {label}
+      {/* {label} */}
+      <InformationCircleIcon className="w-4 text-black/30" />
       <span className="tooltip-tip">{tip}</span>
     </div>
   );

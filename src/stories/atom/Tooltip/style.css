@@ -1,4 +1,5 @@
 .tooltip {
+  @apply flex items-center gap-1;
   position: relative;
   display: inline-block;
 

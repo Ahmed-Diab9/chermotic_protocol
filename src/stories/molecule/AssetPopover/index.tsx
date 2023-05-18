@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
-import { AssetInput } from "../../atom/AssetInput";
+import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import "./style.css";
@@ -89,7 +89,7 @@ export const AssetPopover = ({
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <AssetInput
+                        <OptionInput
                           value={amount}
                           totalValue={walletBalances?.[token.name]
                             .div(expandDecimals(token.decimals))
@@ -163,7 +163,7 @@ export const AssetPopover = ({
                       </article>
                       <article className="flex flex-col gap-4 max-w-[220px] ml-7 pl-7 border-l">
                         <h2>Amount</h2>
-                        <AssetInput
+                        <OptionInput
                           value={amount}
                           totalValue={usumBalances?.[token.name]
                             .div(expandDecimals(token.decimals))

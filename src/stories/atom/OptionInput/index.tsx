@@ -1,10 +1,11 @@
+import { Input } from "../Input";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import "../../atom/Input/style.css";
 import { ChangeEvent, useState } from "react";
 import { bigNumberify } from "../../../utils/number";
 
-interface AssetInputProps {
+interface OptionInputProps {
   label?: string;
   value?: string;
   totalValue?: string;
@@ -20,7 +21,7 @@ interface AssetInputProps {
   onButtonClick?: (value: string) => unknown;
 }
 
-export const AssetInput = ({
+export const OptionInput = ({
   label,
   value,
   totalValue,
@@ -33,7 +34,7 @@ export const AssetInput = ({
   onChange,
   onButtonClick,
   ...props
-}: AssetInputProps) => {
+}: OptionInputProps) => {
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
     const nextValue = bigNumberify(totalValue)?.mul(ratio).div(100).toString();
@@ -57,6 +58,15 @@ export const AssetInput = ({
           }}
         />
       </div>
+      {/* <Input
+        label={label}
+        placeholder={placeholder}
+        assetSrc={assetSrc}
+        type={type}
+        size={size}
+        css={css}
+        align={align}
+      /> */}
       <div className="flex gap-1 mt-2">
         {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
         <Button
