@@ -1,3 +1,4 @@
+import { ChangeEvent, useState } from "react";
 import { Avatar } from "../Avatar";
 import "./style.css";
 
@@ -13,6 +14,7 @@ interface InputProps {
   align?: "center" | "left" | "right";
   disabled?: boolean;
   onClick?: () => unknown;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
 }
 
 export const Input = ({
@@ -24,6 +26,7 @@ export const Input = ({
   size = "base",
   css = "default",
   align = "left",
+  onChange,
   ...props
 }: InputProps) => {
   const value = () => props.value;
