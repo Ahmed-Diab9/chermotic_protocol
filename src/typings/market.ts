@@ -4,7 +4,6 @@ export interface Token {
   name: string;
   address: string;
   decimals: number;
-  balance: BigNumber;
 }
 
 export interface Price {
