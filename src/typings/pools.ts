@@ -9,6 +9,6 @@ export interface LPToken {
 export interface LPTokenSlot {
   feeRate: number;
   balance: BigNumber;
-  totalLiquidity: BigNumber;
+  maxLiquidity: BigNumber;
   unusedLiquidity: BigNumber;
 }
