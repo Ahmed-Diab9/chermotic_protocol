@@ -1,4 +1,5 @@
 import { Tab } from "@headlessui/react";
+import { TradeContent } from "../../molecule/TradeContent";
 import { Button } from "../../atom/Button";
 import "../../atom/Tabs/style.css";
 
@@ -14,8 +15,8 @@ export const TradePanel = () => (
         </Tab.List>
         <Tab.Panels className="flex flex-col items-center w-full">
           {/* tab - add */}
-          <Tab.Panel className="w-[100vw] max-w-[680px] px-10 pb-10 pt-[36px]">
-            {/* TradeContent */}
+          <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+            <TradeContent />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

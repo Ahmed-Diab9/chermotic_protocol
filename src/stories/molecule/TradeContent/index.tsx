@@ -4,7 +4,9 @@
 // import { OptionInput } from "../../atom/OptionInput";
 import { useState } from "react";
 import { Input } from "../../atom/Input";
+import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
+import { Range } from "../../atom/Range";
 import { Listbox } from "@headlessui/react";
 import "./../../atom/Select/style.css";
 import "./style.css";
@@ -54,6 +56,52 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
+      <section className="px-10 pt-5 pb-10 border-b bg-grayL/20">
+        {/* Leverage */}
+        <article className="">
+          <div className="flex justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <h4>Leverage</h4>
+              <p className="text-black/30">Up to 30x</p>
+            </div>
+            <Toggle label="Slider" size="xs" />
+          </div>
+          <div className="flex justify-between">
+            <div className="w-1/2">
+              <Range />
+            </div>
+            <div className="w-1/5">
+              <Input />
+            </div>
+          </div>
+        </article>
+        <div className="flex gap-5">
+          {/* TP */}
+          <article>
+            <div className="flex justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <h4>Take Profit</h4>
+              </div>
+              <div className="w-1/3">
+                <Input size="sm" />
+              </div>
+            </div>
+            <Range />
+          </article>
+          {/* SL */}
+          <article className="pl-5 border-l">
+            <div className="flex justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <h4>Stop Loss</h4>
+              </div>
+              <div className="w-1/3">
+                <Input size="sm" />
+              </div>
+            </div>
+            <Range />
+          </article>
+        </div>
+      </section>
     </div>
   );
 };

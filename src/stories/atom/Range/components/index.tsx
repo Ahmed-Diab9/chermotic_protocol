@@ -11,17 +11,19 @@ const railOuterStyle = {
   transform: "translate(0%, -50%)",
   borderRadius: 7,
   cursor: "pointer",
-  // border: '1px solid white',
+  // border: "1px solid red",
 };
 
+// background line
 const railInnerStyle = {
   position: "absolute",
   width: "100%",
-  height: 14,
+  height: 20,
   transform: "translate(0%, -50%)",
-  borderRadius: 7,
+  backgroundColor: "#ffffff",
+  border: "1px solid #d4d4d4",
+  borderRadius: 20,
   pointerEvents: "none",
-  backgroundColor: "rgb(155,155,155)",
 };
 
 export function SliderRail({ getRailProps }) {
@@ -63,6 +65,7 @@ export function Handle({
         }}
         {...getHandleProps(id)}
       />
+      {/* selected point */}
       <div
         role="slider"
         aria-valuemin={min}
@@ -73,11 +76,10 @@ export function Handle({
           position: "absolute",
           transform: "translate(-50%, -50%)",
           zIndex: 2,
-          width: 24,
-          height: 24,
+          width: 8,
+          height: 8,
           borderRadius: "50%",
-          boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.3)",
-          backgroundColor: disabled ? "#666" : "#ffc400",
+          backgroundColor: disabled ? "#666" : "#ffffff",
         }}
       />
     </Fragment>
@@ -151,13 +153,14 @@ KeyboardHandle.defaultProps = {
 // *******************************************************
 export function Track({ source, target, getTrackProps, disabled }) {
   return (
+    // active line
     <div
       style={{
         position: "absolute",
         transform: "translate(0%, -50%)",
-        height: 14,
+        height: 12,
         zIndex: 1,
-        backgroundColor: disabled ? "#999" : "#b28900",
+        backgroundColor: disabled ? "#999" : "#030303",
         borderRadius: 7,
         cursor: "pointer",
         left: `${source.percent}%`,
