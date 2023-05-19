@@ -1,4 +1,3 @@
-import { useSigner } from "wagmi";
 import useSWR from "swr";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
@@ -7,38 +6,28 @@ import {
   getDeployedContract,
 } from "@quarkonix/usum";
 import { errorLog } from "../utils/log";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { marketAction } from "../store/reducer/market";
 import { isValid } from "../utils/valid";
 import useLocalStorage from "./useLocalStorage";
 import { Token } from "../typings/market";
+import { ethers } from "ethers";
 
 export const useSettlementToken = () => {
-  const dispatch = useAppDispatch();
-  const { data: signer } = useSigner();
-  const factory = useMemo(() => {
-    if (!isValid(signer)) {
-      return;
-    }
-    return getDeployedContract(
-      "USUMMarketFactory",
-      "anvil",
-      signer
-    ) as USUMMarketFactory;
-  }, [signer]);
-
-  const fetchKey =
-    isValid(factory) && isValid(signer)
-      ? ([factory, signer] as const)
-      : undefined;
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
-  } = useSWR(fetchKey, async ([factory, signer]) => {
+  } = useSWR([undefined], async ([]) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const factory = getDeployedContract(
+      "USUMMarketFactory",
+      "anvil",
+      provider
+    ) as USUMMarketFactory;
     const addresses = await factory.registeredSettlementTokens();
     const promise = addresses.map(async (address) => {
-      const tokenContract = IERC20Metadata__factory.connect(address, signer);
+      const tokenContract = IERC20Metadata__factory.connect(address, provider);
 
       return {
         name: await tokenContract.symbol(),
@@ -57,26 +46,24 @@ export const useSettlementToken = () => {
   });
 
   useEffect(() => {
-    dispatch(marketAction.onTokensUpdate(tokens ?? []));
-  }, [dispatch, tokens]);
-
-  if (error) {
-    errorLog(error);
-  }
+    if (error) {
+      errorLog(error);
+    }
+  }, [error]);
 
   return [tokens, fetchTokens] as const;
 };
 
 export const useSelectedToken = () => {
   const dispatch = useAppDispatch();
-  const tokens = useAppSelector((state) => state.market.tokens);
+  const [tokens] = useSettlementToken();
   const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
   const [storedToken, setStoredToken] = useLocalStorage<string>("usum:token");
 
   useEffect(() => {
     if (!isValid(selectedToken) && isValid(storedToken)) {
-      const nextToken = tokens.find((token) => token.address === storedToken);
+      const nextToken = tokens?.find((token) => token.address === storedToken);
       if (!isValid(nextToken)) {
         return;
       }
@@ -85,7 +72,7 @@ export const useSelectedToken = () => {
   }, [tokens, selectedToken, storedToken, dispatch]);
 
   const onTokenSelect = (address: string) => {
-    const nextToken = tokens.find((token) => token.address === address);
+    const nextToken = tokens?.find((token) => token.address === address);
     if (!isValid(nextToken)) {
       errorLog("selected token is invalid.");
       return;
