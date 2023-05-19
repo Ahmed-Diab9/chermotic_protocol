@@ -12,14 +12,13 @@ import { errorLog } from "../utils/log";
 import useUsumAccount from "./useUsumAccount";
 import { useSelectedMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
-import { ADDRESS_ZERO } from "../utils/address";
 
 export const usePosition = () => {
   const { data: signer } = useSigner();
   const [account] = useUsumAccount();
   const [selectedMarket] = useSelectedMarket();
   const factory = useMemo(() => {
-    if (!isValid(signer) || !isValid(account) || account === ADDRESS_ZERO) {
+    if (!isValid(signer) || !isValid(account)) {
       return;
     }
     return Account__factory.connect(account, signer);
