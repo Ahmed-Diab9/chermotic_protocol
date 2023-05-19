@@ -42,7 +42,7 @@ export const AssetPopover = ({
       <div className="ml-10">
         <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
       </div>
-      <div className="flex flex-col gap-3 mr-10 text-right">
+      <div className="flex flex-col gap-2 mr-10 text-right">
         {isLoaded ? (
           <>
             <h2 className="text-2xl">
@@ -54,15 +54,15 @@ export const AssetPopover = ({
             </h2>
             <Popover.Group className="flex gap-3">
               <Popover>
-                <Popover.Button className="flex items-center gap-3 px-5 btn btn-default btn-base">
+                <Popover.Button className="flex items-center gap-3 px-5 btn btn-default btn-xs">
                   Deposit
                 </Popover.Button>
                 <Popover.Panel className="popover-panel">
                   <div className="w-full gap-2 pt-2">
-                    <article className="flex gap-4 p-4 overflow-hidden border rounded-xl">
+                    <article className="flex items-center gap-4 p-4 overflow-hidden border rounded-xl">
                       <p className="flex-none text-black/50">My Account</p>
-                      <div className="flex gap-2">
-                        <div className="shrink max-w-[50%] overflow-hidden">
+                      <div className="flex items-center gap-2">
+                        <div className="shrink max-w-[45%] overflow-hidden">
                           <p className="inline-block overflow-ellipsis">
                             {account.usumAddress}
                           </p>
@@ -127,16 +127,16 @@ export const AssetPopover = ({
                 </Popover.Panel>
               </Popover>
               <Popover>
-                <Popover.Button className="flex items-center gap-3 px-5 btn btn-default btn-base">
+                <Popover.Button className="flex items-center gap-3 px-5 text-base btn btn-default btn-xs">
                   Withdraw
                 </Popover.Button>
                 {/* Deposit popover-panel 구성요소와 동일 */}
                 <Popover.Panel className="popover-panel">
                   <div className="w-full gap-2 pt-2">
-                    <article className="flex gap-4 p-4 overflow-hidden border rounded-xl">
+                    <article className="flex items-center gap-4 p-4 overflow-hidden border rounded-xl">
                       <p className="flex-none text-black/50">My Account</p>
-                      <div className="flex gap-2">
-                        <div className="shrink max-w-[50%] overflow-hidden">
+                      <div className="flex items-center gap-2">
+                        <div className="shrink max-w-[45%] overflow-hidden">
                           <p className="inline-block overflow-ellipsis">
                             {account.usumAddress}
                           </p>
