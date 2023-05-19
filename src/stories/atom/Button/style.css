@@ -42,9 +42,9 @@
   @apply border border-[#eee] bg-white !rounded-full;
 }
 .btn-xs {
-  @apply text-xs min-w-[16px];
+  @apply min-w-[16px];
   height: 28px;
-  padding: 0 4px;
+  padding: 4px 8px;
   &.btn-icon-only {
     @apply min-h-[16px] p-[1px];
   }
