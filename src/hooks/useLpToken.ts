@@ -3,90 +3,75 @@ import {
   USUMMarket__factory,
   getDeployedContract,
 } from "@quarkonix/usum";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import useSWR from "swr";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount } from "wagmi";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";
 import { bigNumberify } from "../utils/number";
-import { FEE_RATES } from "../configs/feeRate";
-import { useSettlementToken } from "./useSettlementToken";
-import { LPToken, LPTokenSlot } from "../typings/pools";
+import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
+import { LPToken } from "../typings/pools";
+import { useSelectedMarket } from "./useMarket";
+import { useAppDispatch } from "../store";
+import { poolsAction } from "../store/reducer/pools";
+import { ethers } from "ethers";
 
-const useLpToken = () => {
-  const { data: signer } = useSigner();
+export const useLpToken = () => {
   const { address: walletAddress } = useAccount();
   const [tokens] = useSettlementToken();
-  const factory = useMemo(() => {
-    if (isValid(signer)) {
-      return getDeployedContract(
-        "USUMMarketFactory",
-        "anvil",
-        signer
-      ) as USUMMarketFactory;
-    }
-  }, [signer]);
+  const tokenAddresses = tokens?.map((token) => token.address);
   const fetchKey =
-    isValid(factory) &&
-    isValid(walletAddress) &&
-    isValid(tokens) &&
-    isValid(signer)
-      ? ([factory, walletAddress, tokens, signer] as const)
+    isValid(walletAddress) && isValid(tokenAddresses)
+      ? ([walletAddress, tokenAddresses] as const)
       : undefined;
 
   const {
     data: lpTokens,
     error,
     mutate: fetchLpTokens,
-  } = useSWR(fetchKey, async ([factory, walletAddress, tokens, signer]) => {
-    const promises = tokens.map(async (token) => {
-      const marketAddresses = await factory.getMarketsBySettlmentToken(
-        token.address
-      );
-      const promise = marketAddresses.map(async (marketAddress) => {
-        const market = USUMMarket__factory.connect(marketAddress, signer);
-        const longFeeRates = FEE_RATES.map((rate) => bigNumberify(rate));
+  } = useSWR(fetchKey, async ([walletAddress, tokenAddresses]) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const factory = getDeployedContract(
+      "USUMMarketFactory",
+      "anvil",
+      provider
+    ) as USUMMarketFactory;
         const precision = bigNumberify(10).pow(10);
-        const shortFeeRates = [...FEE_RATES]
-          .reverse()
-          .map((rate) => precision.add(rate));
-        const feeRates = [...shortFeeRates, ...longFeeRates];
+    const baseFeeRates = [
+      ...SHORT_FEE_RATES.map((rate) => rate * -1),
+      ...LONG_FEE_RATES,
+    ];
+    const feeRates = [
+      ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+      ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
+    ];
         const addresses = Array.from({ length: feeRates.length }).map(
           () => walletAddress
         );
-        const baseFeeRates = [
-          ...[...FEE_RATES].reverse().map((rate) => rate * -1),
-          ...FEE_RATES,
-        ];
-
+    const promises = tokenAddresses.map(async (tokenAddress) => {
+      const marketAddresses = await factory.getMarketsBySettlmentToken(
+        tokenAddress
+      );
+      const promise = marketAddresses.map(async (marketAddress) => {
+        const market = USUMMarket__factory.connect(marketAddress, provider);
         const balances = await market.balanceOfBatch(addresses, feeRates);
-        const slotsPromise = balances.map(async (balance, balanceIndex) => {
-          const totalLiquidity = await market.getSlotMarginTotal(
-            baseFeeRates[balanceIndex]
+
+        const maxLiquidities = await market.getSlotMarginsUnused(baseFeeRates);
+        const unusedLiquidities = await market.getSlotMarginsUnused(
+          baseFeeRates
           );
-          const unusedLiquidity = await market.getSlotMarginUnused(
-            baseFeeRates[balanceIndex]
-          );
-          return {
-            feeRate: baseFeeRates[balanceIndex],
-            balance,
-            totalLiquidity,
-            unusedLiquidity,
-          } satisfies LPTokenSlot;
-        });
-        const slotsResponse = await Promise.allSettled(slotsPromise);
-        const slots = slotsResponse
-          .filter(
-            (result): result is PromiseFulfilledResult<LPTokenSlot> =>
-              result.status === "fulfilled"
-          )
-          .map(({ value }) => value);
 
         return {
-          tokenAddress: token.address,
-          marketAddress,
-          slots,
-        } as const;
+          tokenAddress,
+          marketAddress: market.address,
+          slots: baseFeeRates.map((feeRate, feeRateIndex) => ({
+            feeRate,
+            balance: balances[feeRateIndex],
+            maxLiquidity: maxLiquidities[feeRateIndex],
+            unusedLiquidity: unusedLiquidities[feeRateIndex],
+          })),
+        } satisfies LPToken;
       });
       const response = await Promise.allSettled(promise);
       return response
