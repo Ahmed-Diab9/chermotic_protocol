@@ -37,7 +37,7 @@ export const useLpToken = () => {
       "anvil",
       provider
     ) as USUMMarketFactory;
-        const precision = bigNumberify(10).pow(10);
+    const precision = bigNumberify(10).pow(10);
     const baseFeeRates = [
       ...SHORT_FEE_RATES.map((rate) => rate * -1),
       ...LONG_FEE_RATES,
@@ -46,9 +46,9 @@ export const useLpToken = () => {
       ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
       ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
     ];
-        const addresses = Array.from({ length: feeRates.length }).map(
-          () => walletAddress
-        );
+    const addresses = Array.from({ length: feeRates.length }).map(
+      () => walletAddress
+    );
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const marketAddresses = await factory.getMarketsBySettlmentToken(
         tokenAddress
@@ -60,7 +60,7 @@ export const useLpToken = () => {
         const maxLiquidities = await market.getSlotMarginsUnused(baseFeeRates);
         const unusedLiquidities = await market.getSlotMarginsUnused(
           baseFeeRates
-          );
+        );
 
         return {
           tokenAddress,
@@ -100,4 +100,57 @@ export const useLpToken = () => {
   return [lpTokens, fetchLpTokens] as const;
 };
 
-export default useLpToken;
+export const useSelectedLpTokens = () => {
+  const [market] = useSelectedMarket();
+  const [token] = useSelectedToken();
+  const [lpTokens] = useLpToken();
+  const dispatch = useAppDispatch();
+
+  const lpToken = useMemo(() => {
+    if (!isValid(market) || !isValid(token) || !isValid(lpTokens)) {
+      return;
+    }
+    return lpTokens.find(
+      (lpToken) =>
+        lpToken.tokenAddress === token.address &&
+        lpToken.marketAddress === market.address
+    );
+  }, [market, token, lpTokens]);
+
+  const totalMaxLiquidity = useMemo(() => {
+    if (!isValid(lpToken)) {
+      return;
+    }
+    return lpToken.slots.reduce(
+      (acc, currentValue) => acc.add(currentValue.maxLiquidity),
+      bigNumberify(0)
+    );
+  }, [lpToken]);
+
+  const totalUnusedLiquidity = useMemo(() => {
+    if (!isValid(lpToken)) {
+      return;
+    }
+    return lpToken.slots.reduce(
+      (acc, currentValue) => acc.add(currentValue.unusedLiquidity),
+      bigNumberify(0)
+    );
+  }, [lpToken]);
+
+  useEffect(() => {
+    if (isValid(lpToken)) {
+      dispatch(poolsAction.onLpTokenSelect(lpToken));
+    }
+  }, [dispatch, lpToken]);
+
+  useEffect(() => {
+    dispatch(
+      poolsAction.onTotalLiquidityChange({
+        totalMax: totalMaxLiquidity,
+        totalUnused: totalUnusedLiquidity,
+      })
+    );
+  }, [dispatch, totalMaxLiquidity, totalUnusedLiquidity]);
+
+  return [lpToken, totalMaxLiquidity, totalUnusedLiquidity] as const;
+};
