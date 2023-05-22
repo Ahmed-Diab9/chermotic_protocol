@@ -17,7 +17,7 @@ const UsumAccount = () => {
   const [markets] = useMarket();
   const [tokens] = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [_, onMarketSelect] = useSelectedMarket();
+  const [selectedMarket, onMarketSelect] = useSelectedMarket();
 
   const [positionIds, fetchPositionIds] = usePosition();
 
