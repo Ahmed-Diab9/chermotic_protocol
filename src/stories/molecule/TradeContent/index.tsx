@@ -4,6 +4,7 @@
 // import { OptionInput } from "../../atom/OptionInput";
 import { useState } from "react";
 import { Input } from "../../atom/Input";
+import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
 import { Range } from "../../atom/Range";
@@ -75,7 +76,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
           </div>
         </article>
-        <div className="flex gap-5">
+        <div className="flex gap-5 my-10">
           {/* TP */}
           <article>
             <div className="flex justify-between mb-6">
@@ -102,6 +103,72 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
+      <section className="px-10 py-7">
+        <div className="flex gap-3">
+          <p className="text-black/30">LP Volume</p>
+          <p>26.5 M/34.6M</p>
+        </div>
+        {/* graph */}
+        <article className="mt-5">
+          <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-[#C2C2C2] border-dashed">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Execution Price</p>
+                <Tooltip tip="tooltip" />
+              </div>
+              <p>$ 1,758.54</p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Take Profit Price</p>
+                {/* <Tooltip /> */}
+              </div>
+              <p>
+                $ 1932.53
+                <span className="ml-2 text-black/30">(+12.25%)</span>
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Stop Loss Price</p>
+                {/* <Tooltip /> */}
+              </div>
+              <p>
+                $ 1932.53
+                <span className="ml-2 text-black/30">(+12.25%)</span>
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 pb-3 mb-3 border-b border-[#C2C2C2">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Trade Fees</p>
+                {/* <Tooltip /> */}
+              </div>
+              <p>12.24 USDC / 0.025%</p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>Max Fee Allowancce</p>
+                <Tooltip tip="tooltip" />
+              </div>
+              <div className="w-20">
+                <Input size="sm" unit="%" />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-between text-lg font-bold">
+            <div className="flex items-center gap-2">
+              <p>Expected Collateral</p>
+              {/* <Tooltip /> */}
+            </div>
+            <p>250.25 USDC</p>
+          </div>
+        </article>
+      </section>
+      <div className="px-10">
+        <Button label="Sell" size="xl" className="w-full" />
+      </div>
     </div>
   );
 };
