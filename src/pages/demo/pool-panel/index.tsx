@@ -2,7 +2,6 @@ import useConnectOnce from "../../../hooks/useConnectOnce";
 import useConsole from "../../../hooks/useConsole";
 import { useSelectedLpTokens } from "../../../hooks/useLpToken";
 import { PoolPanel } from "../../../stories/template/PoolPanel";
-import useOracleVersion from "../../../hooks/useOracleVersion";
 import { useSelectedToken } from "../../../hooks/useSettlementToken";
 import { useSelectedMarket } from "../../../hooks/useMarket";
 import useBalances from "../../../hooks/useBalances";
@@ -26,7 +25,6 @@ const PoolPanelDemo = () => {
     onFullRangeSelect,
     onAddLiquidity,
   } = usePoolInput();
-  useOracleVersion();
 
   const slots = lpToken?.slots.filter((slot) => slot.balance.gt(0));
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {

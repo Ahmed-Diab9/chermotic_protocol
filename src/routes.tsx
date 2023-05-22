@@ -5,7 +5,6 @@ import MarketSelectDemo from "./pages/demo/market-select";
 import WalletPopoverDemo from "./pages/demo/wallet-popover";
 import AssetPopoverDemo from "./pages/demo/asset-popover";
 import PoolPanelDemo from "./pages/demo/pool-panel";
-import TradeDemo from "./pages/demo/trade";
 
 const router = createBrowserRouter([
   {
@@ -47,10 +46,6 @@ const router = createBrowserRouter([
   {
     path: "/demo/pool-panel",
     element: <PoolPanelDemo />,
-  },
-  {
-    path: "/demo/trade-input",
-    element: <TradeDemo />,
   },
 ]);
 
