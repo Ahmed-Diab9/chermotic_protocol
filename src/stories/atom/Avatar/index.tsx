@@ -14,18 +14,8 @@ interface AvatarProps {
   src?: string;
 }
 
-export const Avatar = ({
-  active = false,
-  size = "sm",
-  fontSize = "base",
-  fontWeight = "semibold",
-  gap = "2",
-  className,
-  backgroundColor,
-  ...props
-}: AvatarProps) => {
-  const src = () => props.src;
-  const label = () => props.label;
+export const Avatar = (props: AvatarProps) => {
+  const { className, size, gap, src, label, fontSize, fontWeight } = props;
 
   return (
     <div className={`avatar ${className}`}>
@@ -33,12 +23,12 @@ export const Avatar = ({
         <div
           className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden shrink-0`}
         >
-          {src() && (
-            <img src={src()} alt="" className="object-cover w-full h-full" />
+          {src && (
+            <img src={src} alt="" className="object-cover w-full h-full" />
           )}
         </div>
-        {label() && (
-          <p className={`font-${fontWeight} text-${fontSize}`}>{label()}</p>
+        {label && (
+          <p className={`font-${fontWeight} text-${fontSize}`}>{label}</p>
         )}
       </div>
     </div>
