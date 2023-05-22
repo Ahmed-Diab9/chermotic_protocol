@@ -1,7 +1,6 @@
 .tooltip {
-  @apply flex items-center gap-1;
+  @apply inline-flex items-center gap-1;
   position: relative;
-  display: inline-block;
 
   &.tooltip-top .tooltip-tip {
     width: 120px;

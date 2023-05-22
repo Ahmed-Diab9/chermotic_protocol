@@ -61,7 +61,8 @@
   }
 }
 .btn-base {
-  @apply text-base min-w-[40px];
+  @apply min-w-[40px];
+  font-size: 13px;
   height: 40px;
   padding: 0 8px;
   svg {
@@ -75,7 +76,8 @@
   }
 }
 .btn-lg {
-  @apply text-lg min-w-[48px];
+  @apply min-w-[48px];
+  font-size: 16px;
   height: 48px;
   padding: 0 8px;
   svg {
@@ -86,7 +88,8 @@
   }
 }
 .btn-xl {
-  @apply text-xl min-w-[60px];
+  @apply min-w-[60px];
+  font-size: 20px;
   height: 60px;
   padding: 0 8px;
   svg {

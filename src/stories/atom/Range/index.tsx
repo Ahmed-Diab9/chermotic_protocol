@@ -26,7 +26,7 @@ export const Range = ({ ...props }: RangeProps) => {
   };
 
   return (
-    <div style={{ height: 120, width: "100%" }}>
+    <div style={{ height: "auto", width: "100%" }}>
       <Slider
         mode={1}
         step={1}
