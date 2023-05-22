@@ -44,7 +44,7 @@ export const Input = ({
         value={value()}
         placeholder={placeholder}
       />
-      {unit && <span>{unit}</span>}
+      {unit && <span className="text-black/30">{unit}</span>}
     </div>
   );
 };
