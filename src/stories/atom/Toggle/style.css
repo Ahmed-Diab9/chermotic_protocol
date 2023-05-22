@@ -1,0 +1,32 @@
+.toggle {
+  &[aria-checked="false"] > span {
+    @apply translate-x-0;
+  }
+}
+.toggle-xs {
+  @apply h-[16px] w-[28px];
+  > span {
+    @apply h-[12px] w-[12px];
+  }
+  &[aria-checked="true"] > span {
+    @apply translate-x-3;
+  }
+}
+.toggle-base {
+  @apply h-[24px] w-[48px];
+  > span {
+    @apply h-[20px] w-[20px];
+  }
+  &[aria-checked="true"] > span {
+    @apply translate-x-6;
+  }
+}
+.toggle-lg {
+  @apply h-[32px] w-[64px];
+  > span {
+    @apply h-[28px] w-[28px];
+  }
+  &[aria-checked="true"] > span {
+    @apply translate-x-8;
+  }
+}

@@ -1,5 +1,5 @@
 import { Input } from "../Input";
-import { Avatar } from "../Avatar";
+// import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import "../../atom/Input/style.css";
 import { ChangeEvent, useState } from "react";
@@ -43,7 +43,7 @@ export const OptionInput = ({
   };
   return (
     <div className="inline-flex flex-col">
-      <div
+      {/* <div
         className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
       >
         {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
@@ -57,8 +57,8 @@ export const OptionInput = ({
             onChange?.(event);
           }}
         />
-      </div>
-      {/* <Input
+      </div> */}
+      <Input
         label={label}
         placeholder={placeholder}
         assetSrc={assetSrc}
@@ -66,7 +66,11 @@ export const OptionInput = ({
         size={size}
         css={css}
         align={align}
-      /> */}
+        onChange={(event) => {
+          setRatio(undefined);
+          onChange?.(event);
+        }}
+      />
       <div className="flex gap-1 mt-2">
         {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
         <Button
