@@ -1,42 +1,42 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useProvider } from "wagmi";
 import useSWR from "swr";
-import { useAppDispatch, useAppSelector } from "../store";
-import { marketAction } from "../store/reducer/market";
-import {
-  OracleProvider__factory,
-  USUMMarketFactory,
-  USUMMarket__factory,
-  getDeployedContract,
-} from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
-import { isValid } from "../utils/valid";
-import { useSelectedToken } from "./useSettlementToken";
-import { Market } from "../typings/market";
-import useLocalStorage from "./useLocalStorage";
-import { ethers } from "ethers";
 
-export const useMarket = (interval?: number) => {
-  const [settlementToken] = useSelectedToken();
-  const fetchKey = isValid(settlementToken?.address)
-    ? ([settlementToken?.address] as const)
-    : undefined;
+import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
+
+import { Market } from "~/typings/market";
+
+import { useAppDispatch, useAppSelector } from "~/store";
+import { marketAction } from "~/store/reducer/market";
+
+import useLocalStorage from "~/hooks/useLocalStorage";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
+import { useMarketFactory } from "~/hooks/useMarketFactory";
+
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
+
+export const useMarket = (_interval?: number) => {
+  const provider = useProvider();
+
+  const [selectedToken] = useSelectedToken();
+  const [marketFactory] = useMarketFactory();
+
+  const fetchKey = useMemo(() => {
+    return isValid(selectedToken) ? ([selectedToken] as const) : undefined;
+  }, [selectedToken]);
+
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
-  } = useSWR(fetchKey, async ([tokenAddress]) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-    const marketFactory = getDeployedContract(
-      "USUMMarketFactory",
-      "anvil",
-      provider
-    ) as USUMMarketFactory;
-    const marketAddresses = await marketFactory.getMarketsBySettlmentToken(
-      tokenAddress as string
-    );
-
+  } = useSWR(fetchKey, async ([selectedToken]) => {
     const response = await Promise.allSettled(
-      marketAddresses.map(async (marketAddress) => {
+      (
+        await marketFactory.getMarketsBySettlmentToken(
+          selectedToken.address as string
+        )
+      ).map(async (marketAddress) => {
         const market = USUMMarket__factory.connect(marketAddress, provider);
 
         const oracleProviderAddress = await market.oracleProvider();
@@ -50,12 +50,14 @@ export const useMarket = (interval?: number) => {
       })
     );
 
-    return response
+    const fulfilled = response
       .filter(
         (value): value is PromiseFulfilledResult<Market> =>
           value.status === "fulfilled"
       )
       .map((result) => result.value);
+
+    return fulfilled;
   });
 
   if (error) {
@@ -67,23 +69,19 @@ export const useMarket = (interval?: number) => {
 
 export const useSelectedMarket = () => {
   const dispatch = useAppDispatch();
+
   const [markets] = useMarket();
+
   const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
 
   const [storedMarket, setStoredMarket] =
     useLocalStorage<string>("usum:market");
 
   useEffect(() => {
-    if (!isValid(selectedMarket) && isValid(storedMarket)) {
-      const nextMarket = markets?.find(
-        (market) => market.address === storedMarket
-      );
-      if (!isValid(nextMarket)) {
-        return;
-      }
-      dispatch(marketAction.onMarketSelect(nextMarket));
-    }
-  }, [markets, selectedMarket, storedMarket, dispatch]);
+    if (isValid(selectedMarket) || !isValid(markets)) return;
+    else if (isValid(storedMarket)) onMarketSelect(storedMarket);
+    else onMarketSelect(markets[0].address);
+  }, [markets]);
 
   const onMarketSelect = (address: string) => {
     const nextMarket = markets?.find((market) => market.address === address);
