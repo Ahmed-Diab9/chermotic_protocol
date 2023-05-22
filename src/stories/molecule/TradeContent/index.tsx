@@ -8,6 +8,7 @@ import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
 import { Range } from "../../atom/Range";
+import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
 import "./../../atom/Select/style.css";
 import "./style.css";
@@ -69,10 +70,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
           <div className="flex justify-between">
             <div className="w-1/2">
-              <Range />
+              {/* default, slider off */}
+              <LeverageOption />
+              {/* when slider on */}
+              {/* <Range /> */}
             </div>
             <div className="w-1/5">
-              <Input />
+              <Input unit="x" />
             </div>
           </div>
         </article>
@@ -83,8 +87,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
-              <div className="w-1/3">
-                <Input size="sm" />
+              <div className="w-1/3 min-w-[80px]">
+                <Input size="sm" unit="%" />
               </div>
             </div>
             <Range />
@@ -95,8 +99,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
               </div>
-              <div className="w-1/3">
-                <Input size="sm" />
+              <div className="w-1/3 min-w-[80px]">
+                <Input size="sm" unit="%" />
               </div>
             </div>
             <Range />
@@ -156,13 +160,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input size="sm" unit="%" />
               </div>
             </div>
-          </div>
-          <div className="flex justify-between text-lg font-bold">
-            <div className="flex items-center gap-2">
-              <p>Expected Collateral</p>
-              {/* <Tooltip /> */}
-            </div>
-            <p>250.25 USDC</p>
           </div>
         </article>
       </section>
