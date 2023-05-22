@@ -28,16 +28,28 @@ export const withComma = (
     return replace;
   }
   if (typeof value === "number") {
-    const [integer, decimal] = String(value).split(".");
-    return String(integer).replace(seperator, ",") + "." + (decimal ?? "");
+    const [integer, decimals] = String(value).split(".") as [
+      string,
+      string | undefined
+    ];
+    return (
+      String(integer).replace(seperator, ",") +
+      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : "")
+    );
   }
   if (typeof value === "string") {
-    const [integer, decimal] = value.split(".");
-    return integer.replace(seperator, ",") + "." + (decimal ?? "");
+    const [integer, decimals] = value.split(".");
+    return (
+      integer.replace(seperator, ",") +
+      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : "")
+    );
   }
   if (value instanceof BigNumber) {
-    const [integer, decimal] = value.toString().split(".");
-    return integer.replace(seperator, ",") + "." + (decimal ?? "");
+    const [integer, decimals] = value.toString().split(".");
+    return (
+      integer.replace(seperator, ",") +
+      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : "")
+    );
   }
 };
 
@@ -58,11 +70,12 @@ export const formatDecimals = (
 ) => {
   const formatted = formatUnits(value, tokenDecimals);
   const [numeric, decimals] = formatted.split(".");
+  const point = isValid(decimalLimit) && decimalLimit !== 0 ? "." : "";
   if (!isValid(decimals)) {
     return numeric;
   }
   if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
-    return numeric + "." + decimals.slice(0, decimalLimit);
+    return numeric + point + decimals.slice(0, decimalLimit);
   }
   if (isValid(decimalLimit) && decimals.length < decimalLimit) {
     const padLength = numeric.length + 1 + decimalLimit;
