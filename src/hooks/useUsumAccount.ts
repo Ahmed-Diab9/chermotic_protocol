@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { useSigner } from "wagmi";
-import { AccountFactory__factory } from "@quarkonix/usum";
+import useSWR from "swr";
+import { AccountFactory__factory, Account__factory } from "@quarkonix/usum";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
 
@@ -14,12 +15,18 @@ export const useUsumAccount = () => {
 
   const [router] = useRouter();
 
-  const [account, setAccount] = useState<string>();
-
-  useEffect(() => {
-    if (!isValid(router)) return;
-    router.getAccount().then(setAccount);
+  const fetchKey = useMemo(() => {
+    return isValid(router) ? [router] : undefined;
   }, [router]);
+
+  const { data: account, error } = useSWR(fetchKey, async ([router]) => {
+    const address = await router.getAccount();
+    return Account__factory.connect(address, signer);
+  });
+
+  if (error) {
+    errorLog(error);
+  }
 
   const createAccount = async () => {
     if (!isValid(signer)) {

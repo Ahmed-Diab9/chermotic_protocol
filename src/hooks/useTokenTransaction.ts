@@ -10,14 +10,9 @@ import { bigNumberify, expandDecimals } from "../utils/number";
 const useTokenTransaction = () => {
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
-  const [usumAddress] = useUsumAccount();
+  const [usumAccount] = useUsumAccount();
   const [token] = useSelectedToken();
   const [amount, setAmount] = useState("");
-  const usumAccount = useMemo(() => {
-    if (isValid(usumAddress) && isValid(signer)) {
-      return Account__factory.connect(usumAddress, signer);
-    }
-  }, [usumAddress, signer]);
   const tokenContract = useMemo(() => {
     if (isValid(token) && isValid(signer)) {
       return IERC20__factory.connect(token.address, signer);
@@ -25,7 +20,7 @@ const useTokenTransaction = () => {
   }, [token, signer]);
 
   const onDeposit = async () => {
-    if (!isValid(walletAddress) || !isValid(usumAddress)) {
+    if (!isValid(walletAddress) || !isValid(usumAccount.address)) {
       errorLog("no addresses selected");
       return;
     }
@@ -38,7 +33,7 @@ const useTokenTransaction = () => {
       errorLog("invalid amount");
       return;
     }
-    tokenContract?.transfer(usumAddress, expanded);
+    tokenContract?.transfer(usumAccount.address, expanded);
   };
 
   const onWithdraw = async () => {

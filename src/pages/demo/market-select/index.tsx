@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Market, Token } from "../../../typings/market";
-import { isValid } from "../../../utils/valid";
-import { errorLog } from "../../../utils/log";
-import { MarketSelect } from "../../../stories/molecule/MarketSelect";
-import { marketsMock, tokensMock } from "../../../mock";
+import { Market, Token } from "~/typings/market";
+import { isValid } from "~/utils/valid";
+import { errorLog } from "~/utils/log";
+import { MarketSelect } from "~/stories/molecule/MarketSelect";
+import { marketsMock, tokensMock } from "~/mock";
 import { useConnect } from "wagmi";
-import useFeeRate from "../../../hooks/useFeeRate";
+import { useFeeRate } from "~/hooks/useFeeRate";
 
 const MarketSelectDemo = () => {
   const { connectAsync, connectors } = useConnect();

@@ -16,14 +16,18 @@ import { ADDRESS_ZERO } from "~/utils/address";
 
 export const usePosition = () => {
   const { data: signer } = useSigner();
-  const [account] = useUsumAccount();
+  const [usumAccount] = useUsumAccount();
   const [selectedMarket] = useSelectedMarket();
   const factory = useMemo(() => {
-    if (!isValid(signer) || !isValid(account)) {
+    if (
+      !isValid(signer) ||
+      !isValid(usumAccount) ||
+      usumAccount.address === ADDRESS_ZERO
+    ) {
       return;
     }
-    return Account__factory.connect(account, signer);
-  }, [account, signer]);
+    return Account__factory.connect(usumAccount.address, signer);
+  }, [usumAccount, signer]);
   const fetchKey =
     isValid(factory) && isValid(selectedMarket)
       ? ([factory, selectedMarket] as const)

@@ -11,14 +11,15 @@ import { bigNumberify, expandDecimals } from "../../../utils/number";
 import { isValid } from "../../../utils/valid";
 import useConsole from "../../../hooks/useConsole";
 import useConnectOnce from "../../../hooks/useConnectOnce";
-import useBalances from "../../../hooks/useBalances";
+import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
 
 const AssetPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
-  const [usumAddress] = useUsumAccount();
+  const [usumAccount] = useUsumAccount();
   const [tokens] = useSettlementToken();
-  const { walletBalances, usumBalances } = useBalances();
+  const [usumBalances] = useUsumBalances();
+  const [walletBalances] = useWalletBalances();
   const [selectedToken, onTokenSelect] = useSelectedToken();
   const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
 
@@ -46,7 +47,7 @@ const AssetPopoverDemo = () => {
   return (
     <>
       <AssetPopover
-        account={{ walletAddress, usumAddress }}
+        account={{ walletAddress, usumAddress: usumAccount?.address }}
         token={selectedToken}
         walletBalances={walletBalances}
         usumBalances={usumBalances}

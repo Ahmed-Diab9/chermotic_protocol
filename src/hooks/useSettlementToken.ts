@@ -79,7 +79,7 @@ export const useSelectedToken = () => {
   const onTokenSelect = (address: string) => {
     const nextToken = tokens?.find((token) => token.address === address);
     if (!isValid(nextToken)) {
-      errorLog("selected token is invalid.");
+      errorLog("Settlement Token:selected token is invalid.");
       return;
     }
     setStoredToken(nextToken.address);
