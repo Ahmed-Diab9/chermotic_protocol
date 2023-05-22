@@ -2,43 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "../../../utils/number";
-
-interface PoolSlot {
-  fee: BigNumber;
-  liquidity: BigNumber;
-  utilizationRate: BigNumber;
-}
+import { LPToken } from "../../../typings/pools";
+import { isValid } from "../../../utils/valid";
 
 interface PoolState {
   type: "ADD" | "REMOVE";
   input: BigNumber;
-  totalSize: {
-    long: BigNumber;
-    short: BigNumber;
-  };
-  currentSize: {
-    long: BigNumber;
-    short: BigNumber;
-  };
   minTradeFee: BigNumber;
   maxTradeFee: BigNumber;
-  slots: PoolSlot[];
+  selectedLpToken?: LPToken;
+  totalMaxLiquidity?: BigNumber;
+  totalUnusedLiquidity?: BigNumber;
 }
 
 const initialState: PoolState = {
   type: "ADD",
   input: bigNumberify(0),
-  totalSize: {
-    long: bigNumberify(0),
-    short: bigNumberify(0),
-  },
-  currentSize: {
-    long: bigNumberify(0),
-    short: bigNumberify(0),
-  },
   minTradeFee: bigNumberify(0),
   maxTradeFee: bigNumberify(0),
-  slots: [],
+  selectedLpToken: undefined,
+  totalMaxLiquidity: undefined,
+  totalUnusedLiquidity: undefined,
 };
 
 const poolsSlice = createSlice({
@@ -67,8 +51,22 @@ const poolsSlice = createSlice({
         }
       }
     },
-    onSlotsChange: (state, action: PayloadAction<PoolSlot[]>) => {
-      state.slots = action.payload;
+    onLpTokenSelect: (state, action: PayloadAction<LPToken>) => {
+      state.selectedLpToken = action.payload;
+    },
+    onTotalLiquidityChange: (
+      state,
+      action: PayloadAction<
+        Partial<{ totalMax: BigNumber; totalUnused: BigNumber }>
+      >
+    ) => {
+      const { totalMax, totalUnused } = action.payload;
+      if (isValid(totalMax)) {
+        state.totalMaxLiquidity = totalMax;
+      }
+      if (isValid(totalUnused)) {
+        state.totalUnusedLiquidity = totalUnused;
+      }
     },
   },
 });
