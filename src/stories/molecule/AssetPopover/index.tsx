@@ -7,7 +7,11 @@ import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 import { Account } from "../../../typings/account";
 import { Token } from "../../../typings/market";
-import { expandDecimals } from "../../../utils/number";
+import {
+  expandDecimals,
+  formatDecimals,
+  withComma,
+} from "../../../utils/number";
 import { BigNumber } from "ethers";
 import { isValid } from "../../../utils/valid";
 
@@ -47,10 +51,10 @@ export const AssetPopover = ({
           <>
             <h2 className="text-2xl">
               {token &&
-                usumBalances?.[token.name]
-                  .div(expandDecimals(token.decimals))
-                  .toString()}{" "}
-              {token?.name}
+                usumBalances &&
+                withComma(
+                  formatDecimals(usumBalances[token.name], token.decimals, 2)
+                )}
             </h2>
             <Popover.Group className="flex gap-3">
               <Popover>
@@ -91,8 +95,8 @@ export const AssetPopover = ({
                         <h2>Amount</h2>
                         <OptionInput
                           value={amount}
-                          totalValue={walletBalances?.[token.name]
-                            .div(expandDecimals(token.decimals))
+                          maxValue={walletBalances?.[token.name]
+                            ?.div(expandDecimals(token.decimals))
                             .toString()}
                           onChange={(event) => {
                             event.preventDefault();
@@ -165,8 +169,8 @@ export const AssetPopover = ({
                         <h2>Amount</h2>
                         <OptionInput
                           value={amount}
-                          totalValue={usumBalances?.[token.name]
-                            .div(expandDecimals(token.decimals))
+                          maxValue={usumBalances?.[token.name]
+                            ?.div(expandDecimals(token.decimals))
                             .toString()}
                           onChange={(event) => {
                             event.preventDefault();
