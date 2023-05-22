@@ -4,6 +4,7 @@ import Pool from "./pages/pool";
 import MarketSelectDemo from "./pages/demo/market-select";
 import WalletPopoverDemo from "./pages/demo/wallet-popover";
 import AssetPopoverDemo from "./pages/demo/asset-popover";
+import PoolPanelDemo from "./pages/demo/pool-panel";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: "/demo/asset-popover",
     element: <AssetPopoverDemo />,
+  },
+  {
+    path: "/demo/pool-panel",
+    element: <PoolPanelDemo />,
   },
 ]);
 

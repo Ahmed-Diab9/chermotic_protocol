@@ -16,6 +16,7 @@ import { Market, Price, Token } from "../../../typings/market";
 import {
   expandDecimals,
   formatBalance,
+  formatDecimals,
   formatFeeRate,
   withComma,
 } from "../../../utils/number";
@@ -259,10 +260,15 @@ export const WalletPopover = ({
                                         <div className="flex mt-3">
                                           <div className="mr-auto">
                                             <p className="text-base font-medium text-gray-900">
-                                              {balance.toString()}
+                                              {"EACH_SLOT_VALUE"}
                                             </p>
                                             <p className="mt-2 text-base text-gray-500">
-                                              item.price USDC
+                                              {formatDecimals(
+                                                balance,
+                                                token?.decimals,
+                                                2
+                                              )}{" "}
+                                              Bins
                                             </p>
                                           </div>
                                           <Thumbnail

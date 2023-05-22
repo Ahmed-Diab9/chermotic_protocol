@@ -4,7 +4,7 @@ import useUsumAccount from "../../../hooks/useUsumAccount";
 import { copyText } from "../../../utils/clipboard";
 import usePriceFeed from "../../../hooks/usePriceFeed";
 import useConnectOnce from "../../../hooks/useConnectOnce";
-import useLpToken from "../../../hooks/useLpToken";
+import { useLpToken } from "../../../hooks/useLpToken";
 import { useSettlementToken } from "../../../hooks/useSettlementToken";
 import useBalances from "../../../hooks/useBalances";
 import { useMarket } from "../../../hooks/useMarket";
