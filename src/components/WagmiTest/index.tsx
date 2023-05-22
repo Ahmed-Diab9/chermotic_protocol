@@ -10,10 +10,6 @@ function WagmiTest() {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
 
-  useEffect(() => {
-    console.log("MAIN:", market);
-  }, [market]);
-
   return (
     <>
       {isDisconnected && (
@@ -36,6 +32,11 @@ function WagmiTest() {
           <button onClick={() => disconnect()}>disconnect</button>
         </>
       )}
+      <div>
+        <button onClick={async () => console.log(await market.getPrice())}>
+          get price
+        </button>
+      </div>
     </>
   );
 }

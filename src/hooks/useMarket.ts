@@ -44,9 +44,16 @@ export const useMarket = (_interval?: number) => {
           oracleProviderAddress,
           provider
         );
-        const { price } = await oracleProvider.currentVersion();
+        async function getPrice() {
+          const { price } = await oracleProvider.currentVersion();
+          return price;
+        }
         const description = await oracleProvider.description();
-        return { address: marketAddress, description, price } satisfies Market;
+        return {
+          address: marketAddress,
+          description,
+          getPrice,
+        } satisfies Market;
       })
     );
 
