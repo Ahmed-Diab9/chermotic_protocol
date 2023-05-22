@@ -23,10 +23,6 @@ const useLiquidityPool = () => {
     }
   );
 
-  useEffect(() => {
-    dispatch(poolsAction.onSlotsChange([]));
-  }, [dispatch]);
-
   const onInputChange = (value: string) => {
     if (value.length === 0) {
       setInput("");
