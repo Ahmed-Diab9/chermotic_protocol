@@ -8,7 +8,7 @@ import { bigNumberify } from "../../../utils/number";
 interface OptionInputProps {
   label?: string;
   value?: string;
-  totalValue?: string;
+  maxValue?: string;
   placeholder?: string;
   assetSrc?: string;
   type?: string;
@@ -24,7 +24,7 @@ interface OptionInputProps {
 export const OptionInput = ({
   label,
   value,
-  totalValue,
+  maxValue,
   placeholder = "0",
   type,
   assetSrc,
@@ -37,7 +37,7 @@ export const OptionInput = ({
 }: OptionInputProps) => {
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
-    const nextValue = bigNumberify(totalValue)?.mul(ratio).div(100).toString();
+    const nextValue = bigNumberify(maxValue)?.mul(ratio).div(100).toString();
     setRatio(ratio);
     onButtonClick?.(nextValue ?? "");
   };
