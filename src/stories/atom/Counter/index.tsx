@@ -7,38 +7,28 @@ import "./style.css";
 
 interface CounterProps {
   label?: string;
-  count?: number;
   size?: "sm" | "base" | "lg";
   disabled?: boolean;
+  value?: number | string;
+  symbol?: string;
   onClick?: () => unknown;
-  initialValue?: number;
+  onIncrement?: () => unknown;
+  onDecrement?: () => unknown;
 }
 
-export const Counter = ({
-  label,
-  size = "base",
-  initialValue = 0,
-  ...props
-}: CounterProps) => {
-  const [count, setCount] = useState<number>(initialValue);
-  const increment = () => {
-    setCount(count + 0.1);
-  };
-  const decrement = () => {
-    setCount(count - 0.1);
-  };
+export const Counter = (props: CounterProps) => {
+  const { value, symbol, onIncrement, onDecrement } = props;
 
   return (
-    <div className="flex items-stretch gap-0">
-      <Button onClick={decrement} label="minus" iconOnly={<MinusIcon />} />
-      <input
-        type="number"
-        value={count.toFixed(2)}
-        onChange={() => {}}
-        title="counter"
-        className="text-center"
-      />
-      <Button onClick={increment} label="plus" iconOnly={<PlusIcon />} />
+    <div className="flex w-full items-stretch justify-stretch gap-0">
+      <Button onClick={onDecrement} label="minus" iconOnly={<MinusIcon />} />
+      <div className="flex w-full items-center justify-center">
+        <h5 className="text-center">
+          {typeof value === "number" ? value?.toFixed(2) : value}
+          {symbol}
+        </h5>
+      </div>
+      <Button onClick={onIncrement} label="plus" iconOnly={<PlusIcon />} />
     </div>
   );
 };
