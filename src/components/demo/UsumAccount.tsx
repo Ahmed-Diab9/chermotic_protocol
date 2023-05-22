@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMarket, useSelectedMarket } from "../../hooks/useMarket";
-import useUsumAccount from "../../hooks/useUsumAccount";
+import { useUsumAccount } from "../../hooks/useUsumAccount";
 import {
   useSelectedToken,
   useSettlementToken,
@@ -13,7 +13,7 @@ import { infoLog } from "../../utils/log";
 const UsumAccount = () => {
   useAccount();
   const [feeRate] = useFeeRate();
-  const [account, fetchAccount, createAccount] = useUsumAccount();
+  const [account, createAccount] = useUsumAccount();
   const [markets] = useMarket();
   const [tokens] = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();

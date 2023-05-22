@@ -8,10 +8,11 @@ import {
   USUMRouter,
   getDeployedContract,
 } from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
-import useUsumAccount from "./useUsumAccount";
-import { useSelectedMarket } from "./useMarket";
-import { isValid } from "../utils/valid";
+import { errorLog } from "~/utils/log";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
+import { useSelectedMarket } from "~/hooks/useMarket";
+import { isValid } from "~/utils/valid";
+import { ADDRESS_ZERO } from "~/utils/address";
 
 export const usePosition = () => {
   const { data: signer } = useSigner();

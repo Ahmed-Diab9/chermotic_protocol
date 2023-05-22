@@ -1,6 +1,6 @@
 import { useAccount, useDisconnect } from "wagmi";
 import { WalletPopover } from "../../../stories/molecule/WalletPopover";
-import useUsumAccount from "../../../hooks/useUsumAccount";
+import { useUsumAccount } from "../../../hooks/useUsumAccount";
 import { copyText } from "../../../utils/clipboard";
 import usePriceFeed from "../../../hooks/usePriceFeed";
 import useConnectOnce from "../../../hooks/useConnectOnce";
@@ -14,7 +14,7 @@ const WalletPopoverDemo = () => {
   const { address: walletAddress } = useAccount();
   const [tokens] = useSettlementToken();
   const [markets] = useMarket();
-  const [usumAddress, fetchAddress, createAddress] = useUsumAccount();
+  const [usumAddress, createAddress] = useUsumAccount();
   const { walletBalances } = useBalances();
   const [lpTokens] = useLpToken();
   const { disconnectAsync } = useDisconnect();

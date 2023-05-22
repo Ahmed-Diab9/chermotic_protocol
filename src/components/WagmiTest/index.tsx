@@ -1,10 +1,11 @@
-import { useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 import { useSelectedMarket } from "~/hooks/useMarket";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
 
 function WagmiTest() {
   const [market] = useSelectedMarket();
+  const [account] = useUsumAccount();
 
   const { isConnected, isDisconnected, address } = useAccount();
   const { connect, connectors } = useConnect();
@@ -28,7 +29,7 @@ function WagmiTest() {
         <>
           <h1 className="font-bold">Connect Info</h1>
           <div>Wallet: {address}</div>
-          <div>Acoount: {address}</div>
+          <div>Acoount: {account}</div>
           <button onClick={() => disconnect()}>disconnect</button>
         </>
       )}

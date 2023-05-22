@@ -5,7 +5,7 @@ import { Account__factory, IERC20__factory } from "@quarkonix/usum";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";
 import { BigNumber } from "ethers";
-import useUsumAccount from "./useUsumAccount";
+import { useUsumAccount } from "./useUsumAccount";
 
 const useBalances = () => {
   const [tokens] = useSettlementToken();
