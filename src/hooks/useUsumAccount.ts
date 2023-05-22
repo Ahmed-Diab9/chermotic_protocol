@@ -8,6 +8,7 @@ import {
 import { errorLog } from "../utils/log";
 import { useMemo } from "react";
 import { isValid } from "../utils/valid";
+import { ADDRESS_ZERO } from "../utils/address";
 
 const useUsumAccount = () => {
   const { data: signer } = useSigner();
@@ -23,7 +24,11 @@ const useUsumAccount = () => {
     error,
     mutate: fetchAccount,
   } = useSWR(fetchKey, async ([contract]) => {
-    return contract.getAccount();
+    const usumAccount = await contract.getAccount();
+    if (usumAccount === ADDRESS_ZERO) {
+      return;
+    }
+    return usumAccount;
   });
 
   const createAccount = async () => {

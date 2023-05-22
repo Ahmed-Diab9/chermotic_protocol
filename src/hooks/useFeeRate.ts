@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useAppSelector } from "../store";
 import { USUMMarketFactory, getDeployedContract } from "@quarkonix/usum";
 import { useSigner } from "wagmi";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";
+import { useSelectedToken } from "./useSettlementToken";
 
 const useFeeRate = () => {
-  const token = useAppSelector((state) => state.market.selectedToken);
+  const [token] = useSelectedToken();
   const { data: signer } = useSigner();
   const factory = useMemo(() => {
     if (!isValid(signer)) {

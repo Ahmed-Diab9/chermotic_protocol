@@ -1,20 +1,22 @@
 import useSWR from "swr";
-import { useSigner } from "wagmi";
+import { useAccount } from "wagmi";
 import { isValid } from "../utils/valid";
 import { PRICE_FEED } from "../configs/token";
 import { AggregatorV3Interface__factory } from "@quarkonix/usum";
 import { Price } from "../typings/market";
 import { errorLog } from "../utils/log";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 const usePriceFeed = () => {
-  const { data: signer } = useSigner();
-  const fetchKey = isValid(signer) ? [signer] : undefined;
+  const { address } = useAccount();
+  const fetchKey = isValid(address) ? [address] : undefined;
   const {
     data: feed,
     error,
     mutate: fetchFeed,
-  } = useSWR(fetchKey, async ([signer]) => {
+  } = useSWR(fetchKey, async ([walletAddress]) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner(walletAddress);
     const tokens = Object.keys(PRICE_FEED);
     const promise = tokens.map(async (token) => {
       const priceFeed = AggregatorV3Interface__factory.connect(
