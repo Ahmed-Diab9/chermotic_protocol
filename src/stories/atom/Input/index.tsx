@@ -7,9 +7,10 @@ interface InputProps {
   value?: string;
   placeholder?: string;
   assetSrc?: string;
+  unit?: string;
   type?: string;
   className?: string;
-  size?: "sm" | "base" | "lg";
+  size?: "xs" | "sm" | "base" | "lg";
   css?: "default" | "active";
   align?: "center" | "left" | "right";
   disabled?: boolean;
@@ -21,6 +22,7 @@ export const Input = ({
   label,
   placeholder,
   assetSrc,
+  unit,
   type,
   // className,
   size = "base",
@@ -35,13 +37,14 @@ export const Input = ({
     <div
       className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
     >
-      {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
+      {assetSrc && <Avatar className="" src={assetSrc} />}
       <input
         type="number"
         className={`text-${align}`}
         value={value()}
         placeholder={placeholder}
       />
+      {unit && <span>{unit}</span>}
     </div>
   );
 };

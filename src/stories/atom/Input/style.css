@@ -2,10 +2,10 @@
   @apply max-w-full;
 }
 .input-sm {
-  @apply h-8 px-2;
+  @apply h-7 px-2;
 }
 .input-base {
-  @apply h-10 px-3;
+  @apply h-9 px-3;
 }
 .input-lg {
   @apply h-12 px-5;
