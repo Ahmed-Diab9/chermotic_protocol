@@ -5,9 +5,11 @@ import { SliderRail, Handle, Track, Tick } from "./components"; // example rende
 interface RangeProps {}
 
 const sliderStyle: React.CSSProperties = {
-  margin: "5%",
   position: "relative",
-  width: "90%",
+  margin: "0",
+  width: "100%",
+  // margin: "0 10px",
+  // width: "calc(100% - 20px)",
 };
 
 const domain: [number, number] = [0, 100];
@@ -41,29 +43,33 @@ export const Range = ({ ...props }: RangeProps) => {
         </Rail>
         <Handles>
           {({ handles, getHandleProps }) => (
-            <div className="slider-handles">
-              {handles.map((handle) => (
-                <Handle
-                  key={handle.id}
-                  handle={handle}
-                  domain={domain}
-                  getHandleProps={getHandleProps}
-                />
-              ))}
+            <div className="px-3 slider-handles">
+              <div className="relative">
+                {handles.map((handle) => (
+                  <Handle
+                    key={handle.id}
+                    handle={handle}
+                    domain={domain}
+                    getHandleProps={getHandleProps}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </Handles>
         <Tracks right={false}>
           {({ tracks, getTrackProps }) => (
-            <div className="slider-tracks">
-              {tracks.map(({ id, source, target }) => (
-                <Track
-                  key={id}
-                  source={source}
-                  target={target}
-                  getTrackProps={getTrackProps}
-                />
-              ))}
+            <div className="px-3 slider-tracks">
+              <div className="relative">
+                {tracks.map(({ id, source, target }) => (
+                  <Track
+                    key={id}
+                    source={source}
+                    target={target}
+                    getTrackProps={getTrackProps}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </Tracks>
@@ -71,10 +77,12 @@ export const Range = ({ ...props }: RangeProps) => {
           count={4 /* generate approximately 15 ticks within the domain */}
         >
           {({ ticks }) => (
-            <div className="slider-ticks">
-              {ticks.map((tick) => (
-                <Tick key={tick.id} tick={tick} count={ticks.length} />
-              ))}
+            <div className="px-3 slider-ticks">
+              <div className="relative">
+                {ticks.map((tick) => (
+                  <Tick key={tick.id} tick={tick} count={ticks.length} />
+                ))}
+              </div>
             </div>
           )}
         </Ticks>

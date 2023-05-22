@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 // *******************************************************
 // RAIL
 // *******************************************************
+// 생략
 const railOuterStyle = {
   position: "absolute",
   width: "100%",
@@ -11,7 +12,6 @@ const railOuterStyle = {
   transform: "translate(0%, -50%)",
   borderRadius: 7,
   cursor: "pointer",
-  // border: "1px solid red",
 };
 
 // background line
@@ -65,7 +65,7 @@ export function Handle({
         }}
         {...getHandleProps(id)}
       />
-      {/* selected point */}
+      {/* handle: selected point */}
       <div
         role="slider"
         aria-valuemin={min}
@@ -79,7 +79,10 @@ export function Handle({
           width: 8,
           height: 8,
           borderRadius: "50%",
+          boxSizing: "content-box",
+          border: percent === 0 ? "1px solid #D4D4D4" : "2px solid black",
           backgroundColor: disabled ? "#666" : "#ffffff",
+          boxShadow: "1px 1px 4px rgba(163, 163, 163, 0.25)",
         }}
       />
     </Fragment>
@@ -154,20 +157,25 @@ KeyboardHandle.defaultProps = {
 export function Track({ source, target, getTrackProps, disabled }) {
   return (
     // active line
-    <div
-      style={{
-        position: "absolute",
-        transform: "translate(0%, -50%)",
-        height: 12,
-        zIndex: 1,
-        backgroundColor: disabled ? "#999" : "#030303",
-        borderRadius: 7,
-        cursor: "pointer",
-        left: `${source.percent}%`,
-        width: `${target.percent - source.percent}%`,
-      }}
-      {...getTrackProps()}
-    />
+    <div className="relative">
+      <div className="px-1">
+        <div
+          style={{
+            position: "absolute",
+            transform: "translate(-8px, -50%)",
+            height: 12,
+            zIndex: 1,
+            backgroundColor: disabled ? "#999" : "#030303",
+            borderRadius: "8px 0 0 8px",
+            cursor: "pointer",
+            left: `${source.percent}%`,
+            width: `calc(${target.percent - source.percent}% + 8px)`,
+            opacity: target.percent === 0 && 0,
+          }}
+          {...getTrackProps()}
+        />
+      </div>
+    </div>
   );
 }
 
