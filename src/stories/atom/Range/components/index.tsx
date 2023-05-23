@@ -1,5 +1,10 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import {
+  GetHandleProps,
+  GetRailProps,
+  GetTrackProps,
+} from "react-compound-slider";
 
 // *******************************************************
 // RAIL
@@ -15,18 +20,18 @@ const railOuterStyle = {
 };
 
 // background line
-const railInnerStyle: any = {
-  position: "absolute",
+const railInnerStyle = {
+  position: "absolute" as React.CSSProperties["position"],
   width: "100%",
   height: 20,
   transform: "translate(0%, -50%)",
   backgroundColor: "#ffffff",
   border: "1px solid #d4d4d4",
   borderRadius: 20,
-  pointerEvents: null,
+  pointerEvents: "none" as React.CSSProperties["pointerEvents"],
 };
 
-export function SliderRail({ getRailProps }) {
+export function SliderRail({ getRailProps }: { getRailProps: GetRailProps }) {
   return (
     <Fragment>
       <div style={railOuterStyle} {...getRailProps()} />
@@ -42,12 +47,22 @@ SliderRail.propTypes = {
 // *******************************************************
 // HANDLE COMPONENT
 // *******************************************************
+interface HandleProps {
+  domain: [number, number];
+  handle: {
+    id: string;
+    value: number;
+    percent: number;
+  };
+  disabled: boolean;
+  getHandleProps: GetHandleProps;
+}
 export function Handle({
   domain: [min, max],
   handle: { id, value, percent },
   disabled,
   getHandleProps,
-}) {
+}: HandleProps) {
   return (
     <Fragment>
       <div
@@ -108,12 +123,18 @@ Handle.defaultProps = {
 // KEYBOARD HANDLE COMPONENT
 // Uses a button to allow keyboard events
 // *******************************************************
+interface KeyboardHandleProps {
+  domain: [number, number];
+  handle: { id: string; value: number; percent: number };
+  disabled: boolean;
+  getHandleProps: GetHandleProps;
+}
 export function KeyboardHandle({
   domain: [min, max],
   handle: { id, value, percent },
   disabled,
   getHandleProps,
-}) {
+}: KeyboardHandleProps) {
   return (
     <button
       role="slider"
@@ -154,7 +175,21 @@ KeyboardHandle.defaultProps = {
 // *******************************************************
 // TRACK COMPONENT
 // *******************************************************
-export function Track({ source, target, getTrackProps, disabled }) {
+interface TrackProps {
+  source: {
+    id: string;
+    value: number;
+    percent: number;
+  };
+  target: {
+    id: string;
+    value: number;
+    percent: number;
+  };
+  getTrackProps: GetTrackProps;
+  disabled: boolean;
+}
+export function Track({ source, target, getTrackProps, disabled }: TrackProps) {
   return (
     // active line
     <div className="relative">
@@ -201,7 +236,16 @@ Track.defaultProps = {
 // *******************************************************
 // TICK COMPONENT
 // *******************************************************
-export function Tick({ tick, count, format }) {
+interface TickProps {
+  tick: {
+    id: string;
+    value: number;
+    percent: number;
+  };
+  count: number;
+  format: (v: number) => number;
+}
+export function Tick({ tick, count, format }: TickProps) {
   return (
     <div>
       {/* Tick - dot */}
@@ -247,5 +291,5 @@ Tick.propTypes = {
 };
 
 Tick.defaultProps = {
-  format: (d) => d,
+  format: (d: number) => d,
 };

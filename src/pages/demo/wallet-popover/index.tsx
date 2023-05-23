@@ -8,6 +8,7 @@ import { useLpToken } from "../../../hooks/useLpToken";
 import { useSettlementToken } from "../../../hooks/useSettlementToken";
 import useBalances from "../../../hooks/useBalances";
 import { useMarket } from "../../../hooks/useMarket";
+import useOracleVersion from "../../../hooks/useOracleVersion";
 
 const WalletPopoverDemo = () => {
   useConnectOnce();
@@ -19,6 +20,7 @@ const WalletPopoverDemo = () => {
   const [lpTokens] = useLpToken();
   const { disconnectAsync } = useDisconnect();
   const [feed] = usePriceFeed();
+  useOracleVersion();
 
   return (
     <>

@@ -18,10 +18,10 @@ export const ButtonRadio = ({
   defaultSelected = undefined,
   size = "base",
 }: ButtonRadioProps) => {
-  const [selected, setSelected] = useState<string>(
+  const [selected, setSelected] = useState<string | undefined>(
     // defaultSelected ?? options[0].value
     // 초기값이 설정되지 않은 경우, 아무것도 선택되어있지 않도록
-    defaultSelected ?? null
+    defaultSelected ?? undefined
   );
 
   const handleOptionClick = (value: string) => {
