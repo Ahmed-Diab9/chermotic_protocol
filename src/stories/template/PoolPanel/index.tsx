@@ -8,20 +8,23 @@ import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
-import { LPToken } from "../../../typings/pools";
-import { Market, Token } from "../../../typings/market";
+import { LiquidityPool } from "../../../typings/pools";
+import { Token } from "../../../typings/market";
 import {
   bigNumberify,
+  expandDecimals,
   formatDecimals,
   formatFeeRate,
   withComma,
 } from "../../../utils/number";
+import { SLOT_VALUE_DECIMAL } from "../../../configs/pool";
+import { useMemo } from "react";
+import { MILLION_UNITS } from "../../../configs/token";
 
 interface PoolPanelProps {
-  market?: Market;
   token?: Token;
   balances?: Record<string, BigNumber>;
-  lpToken?: LPToken;
+  pool?: LiquidityPool;
   amount?: string;
   indexes?: [number, number];
   rates?: [number, number];
@@ -41,10 +44,9 @@ interface PoolPanelProps {
 
 export const PoolPanel = (props: PoolPanelProps) => {
   const {
-    market,
     token,
     balances,
-    lpToken,
+    pool,
     amount,
     indexes,
     rates,
@@ -59,10 +61,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onAddLiquidity,
   } = props;
 
-  const slots = (lpToken?.slots ?? []).reduce(
-    (acc, cur) => acc.add(cur.balance),
-    bigNumberify(0)
-  );
+  const slots = (pool?.tokens ?? []).filter((token) =>
+    token.balance.gt(0)
+  ).length;
+
+  const totalLiquidity = useMemo(() => {
+    return (pool?.tokens ?? []).reduce((acc, token) => {
+      const { balance, slotValue } = token;
+      const value = balance
+        .mul(slotValue)
+        .div(expandDecimals(SLOT_VALUE_DECIMAL));
+      return acc.add(value);
+    }, bigNumberify(0));
+  }, [pool?.tokens]);
 
   return (
     <div className="inline-flex flex-col mx-auto border">
@@ -104,17 +115,49 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex justify-between mt-6">
                     <div>
                       <p className="mb-1 text-black/30">Short Counter LP</p>
-                      <p>
-                        {longTotalUnusedLiquidity?.toString()}M /{" "}
-                        {longTotalMaxLiquidity?.toString()}M
-                      </p>
+                      {shortTotalMaxLiquidity &&
+                        shortTotalUnusedLiquidity &&
+                        token && (
+                          <p>
+                            {formatDecimals(
+                              shortTotalMaxLiquidity.sub(
+                                shortTotalUnusedLiquidity
+                              ),
+                              token.decimals + MILLION_UNITS,
+                              1
+                            )}
+                            M /{" "}
+                            {formatDecimals(
+                              shortTotalMaxLiquidity,
+                              token.decimals + MILLION_UNITS,
+                              1
+                            )}
+                            M
+                          </p>
+                        )}
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-black/30">Long Counter LP</p>
-                      <p>
-                        {shortTotalUnusedLiquidity?.toString()}M /{" "}
-                        {shortTotalMaxLiquidity?.toString()}M
-                      </p>
+                      {longTotalMaxLiquidity &&
+                        longTotalUnusedLiquidity &&
+                        token && (
+                          <p className="text-center">
+                            {formatDecimals(
+                              longTotalUnusedLiquidity,
+                              token.decimals + MILLION_UNITS,
+                              1
+                            )}
+                            M /{" "}
+                            {formatDecimals(
+                              longTotalMaxLiquidity.sub(
+                                longTotalUnusedLiquidity
+                              ),
+                              token.decimals + MILLION_UNITS,
+                              1
+                            )}
+                            M
+                          </p>
+                        )}
                     </div>
                   </div>
                 </article>
@@ -209,15 +252,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <p className="mb-2">Liquidity Value</p>
                     <Avatar label="USDC" fontSize="xl" />
                   </div>
-                  <h4>1,020.36</h4>
+                  <h4>{formatDecimals(totalLiquidity, token?.decimals, 2)}</h4>
                 </article>
                 {/* info */}
                 <article className="flex flex-col justify-between flex-auto gap-2 px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div className="flex justify-between">
                     <p>Price Slots</p>
-                    <p className="text-right">
-                      {formatDecimals(slots, token?.decimals, 2)} Slots
-                    </p>
+                    <p className="text-right">{slots.toFixed(2)} Slots</p>
                   </div>
                   <div className="flex justify-between">
                     <p>Liquidity Principal</p>
@@ -260,38 +301,38 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           <div className="w-[16%] text-right"></div>
                         </div>
                         <div className="flex flex-col gap-3">
-                          {lpToken?.slots
-                            .filter((slot) => slot.feeRate > 0)
-                            .map((slot, slotIndex) => (
+                          {pool?.tokens
+                            .filter((lpToken) => lpToken.feeRate > 0)
+                            .map((lpToken, lpTokenIndex) => (
                               <div
-                                key={slotIndex + 1}
+                                key={lpTokenIndex + 1}
                                 className="flex items-center justify-between gap-2 py-2 border px-7"
                               >
                                 <div className="w-[4%]">
                                   <Checkbox size="lg" />
                                 </div>
                                 <div className="w-[1%] text-black/30">
-                                  {slotIndex + 1}
+                                  {lpTokenIndex + 1}
                                 </div>
                                 <div className="w-[16%] text-center flex justify-center">
                                   <Thumbnail src={undefined} size="lg" />
                                 </div>
                                 <div className="w-[20%] grow text-left">
                                   <Avatar
-                                    label={token?.name}
+                                    label={lpToken.name}
                                     size="xs"
                                     gap="1"
                                     fontSize="base"
                                     fontWeight="bold"
                                   />
                                   <p className="mt-1 font-semibold text-black/30">
-                                    {market?.description}{" "}
-                                    {formatFeeRate(slot.feeRate)}%
+                                    {lpToken.description}{" "}
+                                    {formatFeeRate(lpToken.feeRate)}%
                                   </p>
                                 </div>
                                 <div className="w-[12%] text-center">
                                   {formatDecimals(
-                                    slot.balance,
+                                    lpToken.balance,
                                     token?.decimals,
                                     2
                                   )}
@@ -300,10 +341,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                   {87.5}%
                                 </div>
                                 <div className="w-[16%] text-center">
-                                  {"SLOT_VALUE_NEEDED"}
+                                  {formatDecimals(
+                                    lpToken.slotValue,
+                                    SLOT_VALUE_DECIMAL,
+                                    2
+                                  )}
                                 </div>
                                 <div className="w-[16%] text-center">
-                                  {"SLOT_VALUE_NEEDED"}
+                                  {formatDecimals(
+                                    lpToken.balance
+                                      .mul(lpToken.slotValue)
+                                      .div(expandDecimals(SLOT_VALUE_DECIMAL)),
+                                    token?.decimals,
+                                    2
+                                  )}
                                 </div>
                                 <div className="w-[16%] text-right">
                                   <Button label="Remove" />
@@ -318,54 +369,83 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       </article>
                     </Tab.Panel>
                     <Tab.Panel>
-                      {lpToken?.slots
-                        .filter((slot) => slot.feeRate < 0)
-                        .map((slot, slotIndex) => (
-                          <div
-                            key={slotIndex + 1}
-                            className="flex items-center justify-between gap-2 py-2 border px-7"
-                          >
-                            <div className="w-[4%]">
-                              <Checkbox size="lg" />
+                      <div className="flex items-center justify-between gap-2 mb-3 text-base px-7 text-black/50">
+                        <div className="w-[4%]">
+                          <Checkbox size="lg" />
+                        </div>
+                        <div className="w-[1%]">No.</div>
+                        <div className="w-[16%] text-center">Token</div>
+                        <div className="w-[20%] grow text-left">Name</div>
+                        <div className="w-[12%] text-center">Quantity</div>
+                        <div className="w-[16%] text-center">Removable</div>
+                        <div className="w-[16%] text-center">Slot Value</div>
+                        <div className="w-[16%] text-center">My LIQ.Value</div>
+                        <div className="w-[16%] text-right"></div>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        {pool?.tokens
+                          .filter((lpToken) => lpToken.feeRate < 0)
+                          .map((lpToken, lpTokenIndex) => (
+                            <div
+                              key={lpTokenIndex + 1}
+                              className="flex items-center justify-between gap-2 py-2 border px-7"
+                            >
+                              <div className="w-[4%]">
+                                <Checkbox size="lg" />
+                              </div>
+                              <div className="w-[1%] text-black/30">
+                                {lpTokenIndex + 1}
+                              </div>
+                              <div className="w-[16%] text-center flex justify-center">
+                                <Thumbnail src={undefined} size="lg" />
+                              </div>
+                              <div className="w-[20%] grow text-left">
+                                <Avatar
+                                  label={lpToken.name}
+                                  size="xs"
+                                  gap="1"
+                                  fontSize="base"
+                                  fontWeight="bold"
+                                />
+                                <p className="mt-1 font-semibold text-black/30">
+                                  {lpToken.description}{" "}
+                                  {formatFeeRate(lpToken.feeRate)}%
+                                </p>
+                              </div>
+                              <div className="w-[12%] text-center">
+                                {formatDecimals(
+                                  lpToken.balance,
+                                  token?.decimals,
+                                  2
+                                )}
+                              </div>
+                              <div className="w-[16%] text-center">{87.5}%</div>
+                              <div className="w-[16%] text-center">
+                                {formatDecimals(
+                                  lpToken.slotValue,
+                                  SLOT_VALUE_DECIMAL,
+                                  2
+                                )}
+                              </div>
+                              <div className="w-[16%] text-center">
+                                {formatDecimals(
+                                  lpToken.balance
+                                    .mul(lpToken.slotValue)
+                                    .div(expandDecimals(SLOT_VALUE_DECIMAL)),
+                                  token?.decimals,
+                                  2
+                                )}
+                              </div>
+                              <div className="w-[16%] text-right">
+                                <Button label="Remove" />
+                                <Button
+                                  className="ml-2"
+                                  iconOnly={<ArrowTopRightOnSquareIcon />}
+                                />
+                              </div>
                             </div>
-                            <div className="w-[1%] text-black/30">
-                              {slotIndex + 1}
-                            </div>
-                            <div className="w-[16%] text-center flex justify-center">
-                              <Thumbnail src={undefined} size="lg" />
-                            </div>
-                            <div className="w-[20%] grow text-left">
-                              <Avatar
-                                label={token?.name}
-                                size="xs"
-                                gap="1"
-                                fontSize="base"
-                                fontWeight="bold"
-                              />
-                              <p className="mt-1 font-semibold text-black/30">
-                                {market?.description}{" "}
-                                {formatFeeRate(slot.feeRate)}
-                              </p>
-                            </div>
-                            <div className="w-[12%] text-center">
-                              {formatDecimals(slot.balance, token?.decimals, 2)}
-                            </div>
-                            <div className="w-[16%] text-center">{87.5}%</div>
-                            <div className="w-[16%] text-center">
-                              {"SLOT_VALUE_NEEDED"}
-                            </div>
-                            <div className="w-[16%] text-center">
-                              {"SLOT_VALUE_NEEDED"}
-                            </div>
-                            <div className="w-[16%] text-right">
-                              <Button label="Remove" />
-                              <Button
-                                className="ml-2"
-                                iconOnly={<ArrowTopRightOnSquareIcon />}
-                              />
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                      </div>
                     </Tab.Panel>
                   </Tab.Panels>
                 </Tab.Group>
