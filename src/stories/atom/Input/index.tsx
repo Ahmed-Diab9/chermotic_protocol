@@ -28,11 +28,10 @@ export const Input = ({
   size = "base",
   css = "default",
   align = "left",
+  value,
   onChange,
   ...props
 }: InputProps) => {
-  const value = () => props.value;
-
   return (
     <div
       className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
@@ -41,8 +40,9 @@ export const Input = ({
       <input
         type="number"
         className={`text-${align}`}
-        value={value()}
+        value={value}
         placeholder={placeholder}
+        onChange={onChange}
       />
       {unit && <span className="text-black/30">{unit}</span>}
     </div>
