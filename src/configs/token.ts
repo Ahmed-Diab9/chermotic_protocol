@@ -1,5 +1,6 @@
 export const USDC = "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892";
 export const USDC_DECIMALS = 6;
+export const MILLION_UNITS = 6;
 
 export const PRICE_FEED: Record<string, string | undefined> = {
   ETH: "0x62CAe0FA2da220f43a51F86Db2EDb36DcA9A5A08",
