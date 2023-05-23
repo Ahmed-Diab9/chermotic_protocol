@@ -6,6 +6,8 @@ import "./style.css";
 import { Market, Token } from "../../../typings/market";
 import { withComma } from "../../../utils/number";
 import { Button } from "../../atom/Button";
+import { useCallback, useEffect, useState } from "react";
+import { filterIfFulfilled } from "~/utils/array";
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -23,6 +25,12 @@ interface MarketSelectProps {
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const { isGroupLegacy, selectedMarket } = props;
+  const [marketPrice, setMarketPrice] = useState<string>();
+  useEffect(() => {
+    selectedMarket?.getPrice().then((price) => {
+      setMarketPrice("$" + withComma(price));
+    });
+  }, [selectedMarket]);
 
   return (
     <div className="MarketSelect">
@@ -34,9 +42,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
           <h4>0.0036%/h</h4>
           <p>Interest Rate</p>
         </div>
-        <h2 className="text-2xl">
-          ${withComma(selectedMarket?.price.toString())}
-        </h2>
+        <h2 className="text-2xl">{marketPrice}</h2>
       </div>
     </div>
   );
@@ -53,7 +59,20 @@ export const PopoverMain = (
     onTokenClick,
     onMarketClick,
   } = props;
-
+  const [marketPrices, setMarketPrices] = useState<string[]>([]);
+  const fetchPrices = useCallback(async () => {
+    const promise = await Promise.allSettled(
+      (markets ?? []).map(async (market) => {
+        const price = await market.getPrice();
+        return "$" + withComma(price);
+      })
+    );
+    const prices = filterIfFulfilled(promise);
+    setMarketPrices(prices);
+  }, [markets]);
+  useEffect(() => {
+    fetchPrices();
+  }, [fetchPrices]);
   return (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
@@ -96,7 +115,7 @@ export const PopoverMain = (
           {/* select - market */}
           <article className="flex flex-col flex-auto">
             {/* default */}
-            {markets?.map((market) => (
+            {markets?.map((market, marketIndex) => (
               <button
                 key={market.address}
                 className={`flex items-center justify-between gap-4 px-4 py-2 ${
@@ -106,7 +125,7 @@ export const PopoverMain = (
                 onClick={() => onMarketClick?.(market.address)}
               >
                 <Avatar label={market.description} fontSize="lg" gap="2" />
-                <p>${withComma(market.price.toString())}</p>
+                <p>{marketPrices[marketIndex]}</p>
               </button>
             ))}
           </article>
