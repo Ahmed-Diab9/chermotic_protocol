@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "../../../utils/number";
-import { LPToken } from "../../../typings/pools";
+import { LiquidityPool } from "../../../typings/pools";
 import { isValid } from "../../../utils/valid";
 
 interface PoolState {
@@ -10,7 +10,7 @@ interface PoolState {
   input: BigNumber;
   minTradeFee: BigNumber;
   maxTradeFee: BigNumber;
-  selectedLpToken?: LPToken;
+  selectedPool?: LiquidityPool;
   totalMaxLiquidity?: BigNumber;
   totalUnusedLiquidity?: BigNumber;
 }
@@ -20,7 +20,7 @@ const initialState: PoolState = {
   input: bigNumberify(0),
   minTradeFee: bigNumberify(0),
   maxTradeFee: bigNumberify(0),
-  selectedLpToken: undefined,
+  selectedPool: undefined,
   totalMaxLiquidity: undefined,
   totalUnusedLiquidity: undefined,
 };
@@ -51,8 +51,8 @@ const poolsSlice = createSlice({
         }
       }
     },
-    onLpTokenSelect: (state, action: PayloadAction<LPToken>) => {
-      state.selectedLpToken = action.payload;
+    onPoolSelect: (state, action: PayloadAction<LiquidityPool>) => {
+      state.selectedPool = action.payload;
     },
     onTotalLiquidityChange: (
       state,
