@@ -1,10 +1,10 @@
 import React from "react";
 import { Header } from "../../stories/template/Header";
-import { Mainbar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { TradePanel } from "../../stories/template/TradePanel";
-import { Footer } from "../../stories/template/Footer";
+import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
-import { Square2StackIcon } from "@heroicons/react/24/outline";
+
 import "./style.css";
 
 type User = {
@@ -23,7 +23,7 @@ const Trade = () => {
         onCreateAccount={() => setUser({ name: "Jane Doe" })}
       />
       <section className="flex flex-col grow">
-        <Mainbar />
+        <MainBar />
         <TradePanel />
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="mb-12">
@@ -36,8 +36,7 @@ const Trade = () => {
           </div>
         </article>
       </section>
-
-      {/* <Footer /> */}
+      <TradeBar />
     </div>
   );
 };

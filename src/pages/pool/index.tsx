@@ -1,6 +1,6 @@
 import React from "react";
 import { Header } from "../../stories/template/Header";
-import { Mainbar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { PoolPanel } from "../../stories/template/PoolPanel";
 import { Footer } from "../../stories/template/Footer";
 import { Button } from "../../stories/atom/Button";
@@ -23,7 +23,7 @@ const Pool = () => {
         onCreateAccount={() => setUser({ name: "Jane Doe" })}
       />
       <section className="flex flex-col grow">
-        <Mainbar />
+        <MainBar />
         <PoolPanel />
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="flex items-center justify-between">
