@@ -15,7 +15,7 @@ const railOuterStyle = {
 };
 
 // background line
-const railInnerStyle = {
+const railInnerStyle: any = {
   position: "absolute",
   width: "100%",
   height: 20,
@@ -23,7 +23,7 @@ const railInnerStyle = {
   backgroundColor: "#ffffff",
   border: "1px solid #d4d4d4",
   borderRadius: 20,
-  pointerEvents: "none",
+  pointerEvents: null,
 };
 
 export function SliderRail({ getRailProps }) {
@@ -76,13 +76,13 @@ export function Handle({
           position: "absolute",
           transform: "translate(-50%, -50%)",
           zIndex: 2,
-          width: 8,
-          height: 8,
+          width: percent === 0 ? 10 : 8,
+          height: percent === 0 ? 10 : 8,
           borderRadius: "50%",
           boxSizing: "content-box",
           border: percent === 0 ? "1px solid #D4D4D4" : "2px solid black",
           backgroundColor: disabled ? "#666" : "#ffffff",
-          boxShadow: "1px 1px 4px rgba(163, 163, 163, 0.25)",
+          boxShadow: percent === 0 && "1px 1px 4px rgba(163, 163, 163, 0.25)",
         }}
       />
     </Fragment>
