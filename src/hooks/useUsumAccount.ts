@@ -1,54 +1,50 @@
+import { useMemo, useEffect } from "react";
 import { useSigner } from "wagmi";
 import useSWR from "swr";
-import {
-  AccountFactory,
-  USUMRouter,
-  getDeployedContract,
-} from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
-import { useMemo } from "react";
-import { isValid } from "../utils/valid";
-import { ADDRESS_ZERO } from "../utils/address";
+import { AccountFactory__factory, Account__factory } from "@quarkonix/usum";
 
-const useUsumAccount = () => {
+import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
+
+import { useRouter } from "~/hooks/useRouter";
+
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
+
+export const useUsumAccount = () => {
   const { data: signer } = useSigner();
-  const router = useMemo(() => {
-    if (!isValid(signer)) {
-      return;
-    }
-    return getDeployedContract("USUMRouter", "anvil", signer) as USUMRouter;
-  }, [signer]);
-  const fetchKey = isValid(router) ? [router] : undefined;
-  const {
-    data: usumAccount,
-    error,
-    mutate: fetchAccount,
-  } = useSWR(fetchKey, async ([contract]) => {
-    const usumAccount = await contract.getAccount();
-    if (usumAccount === ADDRESS_ZERO) {
-      return;
-    }
-    return usumAccount;
+
+  const [router] = useRouter();
+
+  const fetchKey = useMemo(() => {
+    return isValid(router) ? [router] : undefined;
+  }, [router]);
+
+  const { data: account, error } = useSWR(fetchKey, async ([router]) => {
+    const address = await router.getAccount();
+    return Account__factory.connect(address, signer);
   });
 
-  const createAccount = async () => {
-    if (!isValid(signer)) {
-      errorLog("no signers");
-      return;
-    }
-    const accountFactory = getDeployedContract(
-      "AccountFactory",
-      "anvil",
-      signer
-    ) as AccountFactory;
-
-    await accountFactory.createAccount();
-  };
   if (error) {
     errorLog(error);
   }
 
-  return [usumAccount, fetchAccount, createAccount] as const;
-};
+  const createAccount = async () => {
+    if (!isValid(signer)) {
+      return Promise.reject(errorLog("CreateAccount: No signers"));
+    }
 
-export default useUsumAccount;
+    const accountFactory = AccountFactory__factory.connect(
+      DEPLOYED_ADDRESSES.USUMAccount,
+      signer
+    );
+
+    try {
+      await accountFactory.createAccount();
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(errorLog(error));
+    }
+  };
+
+  return [account, createAccount] as const;
+};

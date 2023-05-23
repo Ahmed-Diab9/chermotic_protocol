@@ -4,7 +4,7 @@ import { useSelectedLpTokens } from "../../../hooks/useLpToken";
 import { PoolPanel } from "../../../stories/template/PoolPanel";
 import { useSelectedToken } from "../../../hooks/useSettlementToken";
 import { useSelectedMarket } from "../../../hooks/useMarket";
-import useBalances from "../../../hooks/useBalances";
+import { useWalletBalances } from "../../../hooks/useBalances";
 import usePoolInput from "../../../hooks/usePoolInput";
 import { useMemo } from "react";
 import { bigNumberify } from "../../../utils/number";
@@ -14,7 +14,7 @@ const PoolPanelDemo = () => {
   const [lpToken] = useSelectedLpTokens();
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
-  const { walletBalances } = useBalances();
+  const [walletBalances] = useWalletBalances();
   const {
     amount,
     indexes,

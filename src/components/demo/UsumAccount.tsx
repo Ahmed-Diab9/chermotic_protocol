@@ -1,23 +1,23 @@
 import { useEffect } from "react";
-import { useMarket, useSelectedMarket } from "../../hooks/useMarket";
-import useUsumAccount from "../../hooks/useUsumAccount";
+import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
 import {
   useSelectedToken,
   useSettlementToken,
-} from "../../hooks/useSettlementToken";
-import { usePosition } from "../../hooks/usePosition";
+} from "~/hooks/useSettlementToken";
+import { usePosition } from "~/hooks/usePosition";
 import { useAccount } from "wagmi";
-import useFeeRate from "../../hooks/useFeeRate";
-import { infoLog } from "../../utils/log";
+import { useFeeRate } from "~/hooks/useFeeRate";
+import { infoLog } from "~/utils/log";
 
 const UsumAccount = () => {
   useAccount();
-  const [feeRate] = useFeeRate();
-  const [account, fetchAccount, createAccount] = useUsumAccount();
+  const feeRate = useFeeRate();
+  const [account, createAccount] = useUsumAccount();
   const [markets] = useMarket();
   const [tokens] = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [_, onMarketSelect] = useSelectedMarket();
+  const [selectedMarket, onMarketSelect] = useSelectedMarket();
 
   const [positionIds, fetchPositionIds] = usePosition();
 
@@ -28,7 +28,7 @@ const UsumAccount = () => {
   return (
     <div>
       <h2>Account</h2>
-      <p>{account}</p>
+      <p>{account.address}</p>
       <button onClick={() => createAccount()}>Create Account</button>
       <button
         onClick={() => {

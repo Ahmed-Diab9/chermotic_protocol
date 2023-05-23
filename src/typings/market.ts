@@ -14,5 +14,5 @@ export interface Price {
 export interface Market {
   address: string;
   description: string;
-  price: BigNumber;
+  getPrice: () => Promise<BigNumber>;
 }

@@ -1,80 +1,85 @@
+import { useEffect, useMemo } from "react";
+import { useProvider } from "wagmi";
 import useSWR from "swr";
-import { useAppDispatch, useAppSelector } from "../store";
-import {
-  IERC20Metadata__factory,
-  USUMMarketFactory,
-  getDeployedContract,
-} from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
-import { useEffect } from "react";
-import { marketAction } from "../store/reducer/market";
-import { isValid } from "../utils/valid";
-import useLocalStorage from "./useLocalStorage";
-import { Token } from "../typings/market";
-import { ethers } from "ethers";
+
+import { IERC20Metadata__factory } from "@quarkonix/usum";
+
+import { Token } from "~/typings/market";
+
+import { useAppDispatch, useAppSelector } from "~/store";
+import { marketAction } from "~/store/reducer/market";
+
+import useLocalStorage from "~/hooks/useLocalStorage";
+import { useMarketFactory } from "~/hooks/useMarketFactory";
+
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
 
 export const useSettlementToken = () => {
+  const provider = useProvider();
+  const [marketFactory] = useMarketFactory();
+
+  const fetchKey = useMemo(
+    () => (isValid(marketFactory) ? ([marketFactory] as const) : undefined),
+    [marketFactory]
+  );
+
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
-  } = useSWR([undefined], async ([]) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-    const factory = getDeployedContract(
-      "USUMMarketFactory",
-      "anvil",
-      provider
-    ) as USUMMarketFactory;
-    const addresses = await factory.registeredSettlementTokens();
+  } = useSWR(fetchKey, async ([marketFactory]) => {
+    const addresses = await marketFactory.registeredSettlementTokens();
     const promise = addresses.map(async (address) => {
-      const tokenContract = IERC20Metadata__factory.connect(address, provider);
+      const { symbol, decimals } = IERC20Metadata__factory.connect(
+        address,
+        provider
+      );
 
       return {
-        name: await tokenContract.symbol(),
+        name: await symbol(),
         address,
-        decimals: await tokenContract.decimals(),
+        decimals: await decimals(),
       } satisfies Token;
     });
+
     const response = await Promise.allSettled(promise);
-    const nextTokens = response
+    const fulfilled = response
       .filter(
         (result): result is PromiseFulfilledResult<Token> =>
           result.status === "fulfilled"
       )
       .map(({ value }) => value);
-    return nextTokens;
+
+    return fulfilled;
   });
 
-  useEffect(() => {
-    if (error) {
-      errorLog(error);
-    }
-  }, [error]);
+  if (error) {
+    errorLog(error);
+  }
 
   return [tokens, fetchTokens] as const;
 };
 
 export const useSelectedToken = () => {
   const dispatch = useAppDispatch();
+
   const [tokens] = useSettlementToken();
+
   const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
   const [storedToken, setStoredToken] = useLocalStorage<string>("usum:token");
 
   useEffect(() => {
-    if (!isValid(selectedToken) && isValid(storedToken)) {
-      const nextToken = tokens?.find((token) => token.address === storedToken);
-      if (!isValid(nextToken)) {
-        return;
-      }
-      dispatch(marketAction.onTokenSelect(nextToken));
-    }
-  }, [tokens, selectedToken, storedToken, dispatch]);
+    if (isValid(selectedToken) || !isValid(tokens)) return;
+    else if (isValid(storedToken)) onTokenSelect(storedToken);
+    else onTokenSelect(tokens[0].address);
+  }, [tokens]);
 
   const onTokenSelect = (address: string) => {
     const nextToken = tokens?.find((token) => token.address === address);
     if (!isValid(nextToken)) {
-      errorLog("selected token is invalid.");
+      errorLog("Settlement Token:selected token is invalid.");
       return;
     }
     setStoredToken(nextToken.address);

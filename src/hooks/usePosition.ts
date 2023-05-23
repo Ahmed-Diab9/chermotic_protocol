@@ -1,38 +1,35 @@
-import useSWR from "swr";
-import { useSigner } from "wagmi";
 import { useMemo, useState } from "react";
-import { useAppSelector } from "../store";
 import { BigNumber } from "ethers";
-import {
-  Account__factory,
-  USUMRouter,
-  getDeployedContract,
-} from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
-import useUsumAccount from "./useUsumAccount";
-import { useSelectedMarket } from "./useMarket";
-import { isValid } from "../utils/valid";
+import useSWR from "swr";
+
+import { useAppSelector } from "~/store";
+
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
+
+import { useRouter } from "~/hooks/useRouter";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
+import { useSelectedMarket } from "~/hooks/useMarket";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 export const usePosition = () => {
-  const { data: signer } = useSigner();
-  const [account] = useUsumAccount();
+  const [usumAccount] = useUsumAccount();
   const [selectedMarket] = useSelectedMarket();
-  const factory = useMemo(() => {
-    if (!isValid(signer) || !isValid(account)) {
-      return;
-    }
-    return Account__factory.connect(account, signer);
-  }, [account, signer]);
-  const fetchKey =
-    isValid(factory) && isValid(selectedMarket)
-      ? ([factory, selectedMarket] as const)
-      : undefined;
+
+  const fetchKey = useMemo(
+    () =>
+      isValid(usumAccount) && isValid(selectedMarket)
+        ? ([usumAccount, selectedMarket] as const)
+        : undefined,
+    [usumAccount, selectedMarket]
+  );
+
   const {
     data: positionIds,
     error,
-    mutate: fetchPositionIds,
-  } = useSWR(fetchKey, async ([factory, selectedMarket]) => {
-    const positionIds = await factory.getPositionIds(selectedMarket.address);
+    mutate,
+  } = useSWR(fetchKey, async ([account, selectedMarket]) => {
+    const positionIds = await account.getPositionIds(selectedMarket.address);
 
     return positionIds;
   });
@@ -41,79 +38,78 @@ export const usePosition = () => {
     errorLog(error);
   }
 
-  return [positionIds, fetchPositionIds] as const;
+  return [positionIds, mutate] as const;
 };
 
 export const useOpenPosition = () => {
-  const { data: signer } = useSigner();
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
-  const [deadline, setDeadline] = useState(0);
+  const [deadline] = useState(0);
+
   const {
     contractQuantity,
     leverage,
     takeProfitRate,
     stopLossRate,
-    transactionFee,
+    // transactionFee,
   } = useAppSelector((state) => state.trade);
-  const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
-  const openPosition = () => {
-    if (!isValid(signer)) {
-      errorLog("no signers");
-      return;
-    }
+  const [selectedMarket] = useSelectedMarket();
+  const [selectedToken] = useSelectedToken();
+
+  const [router] = useRouter();
+
+  const openPosition = async () => {
     if (!isValid(selectedMarket)) {
-      errorLog("no selected markets");
-      return;
+      return Promise.reject(errorLog("OpenPosition: No selected market"));
     }
     if (!isValid(selectedToken)) {
-      errorLog("no selected tokens");
-      return;
+      return Promise.reject(errorLog("OpenPosition: No selected token"));
     }
-    const router = getDeployedContract(
-      "USUMRouter",
-      "anvil",
-      signer
-    ) as USUMRouter;
-    router.openPosition(
-      selectedMarket.address,
-      contractQuantity,
-      leverage,
-      takeProfitRate,
-      stopLossRate,
-      null!,
-      deadline
-    );
+
+    try {
+      const result = await router.openPosition(
+        selectedMarket.address,
+        contractQuantity,
+        leverage,
+        takeProfitRate,
+        stopLossRate,
+        null!,
+        deadline
+      );
+      return Promise.resolve(result);
+    } catch (error) {
+      return Promise.reject(errorLog("OpenPosition:", error));
+    }
   };
 
   return openPosition;
 };
 
 export const useClosePosition = (positionId: BigNumber) => {
-  const { data: signer } = useSigner();
-  const [deadline, setDeadline] = useState(0);
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
-  const selectedToken = useAppSelector((state) => state.market.selectedToken);
+  const [deadline] = useState(0);
 
-  const closePosition = () => {
-    if (!isValid(signer)) {
-      errorLog("no signers");
-      return;
-    }
+  const [selectedMarket] = useSelectedMarket();
+  const [selectedToken] = useSelectedToken();
+
+  const [router] = useRouter();
+
+  const closePosition = async () => {
     if (!isValid(selectedMarket)) {
-      errorLog("no selected markets");
-      return;
+      return Promise.reject(errorLog("ClosePosition: No selected market"));
     }
     if (!isValid(selectedToken)) {
-      errorLog("no selected tokens");
-      return;
+      return Promise.reject(errorLog("ClosePosition: No selected token"));
     }
-    const router = getDeployedContract(
-      "USUMRouter",
-      "anvil",
-      signer
-    ) as USUMRouter;
-    router.closePosition(selectedMarket.address, positionId, deadline);
+
+    try {
+      const result = await router.closePosition(
+        selectedMarket.address,
+        positionId,
+        deadline
+      );
+      return Promise.resolve(result);
+    } catch (error) {
+      return Promise.reject(errorLog("ClosePosition:", error));
+    }
   };
 
   return closePosition;
