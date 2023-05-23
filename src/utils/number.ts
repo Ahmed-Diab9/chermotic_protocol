@@ -6,11 +6,15 @@ import { FEE_RATE_DECIMAL } from "../configs/feeRate";
 
 interface BigNumberify {
   (value: number): BigNumber;
+  (value: BigNumber): BigNumber;
   (value: unknown): BigNumber | undefined;
 }
 export const bigNumberify: BigNumberify = (value) => {
   if (typeof value === "number") {
     return BigNumber.from(value);
+  }
+  if (value instanceof BigNumber) {
+    return value;
   }
   try {
     return BigNumber.from(value);
