@@ -22,7 +22,7 @@ import {
 } from "../../../utils/number";
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
-import { LPToken } from "../../../typings/pools";
+import { LiquidityPool } from "../../../typings/pools";
 
 const assetInfo = [
   {
@@ -75,7 +75,7 @@ interface WalletPopoverProps {
   markets?: Market[];
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
-  lpTokens?: LPToken[];
+  pools?: LiquidityPool[];
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
@@ -90,7 +90,7 @@ export const WalletPopover = ({
   markets,
   balances,
   priceFeed,
-  lpTokens,
+  pools,
   onConnect,
   onDisconnect,
   onCreateAccount,
@@ -220,20 +220,20 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               <div className="flex flex-col gap-3">
-                                {lpTokens?.map((lpToken) => {
+                                {pools?.map((pool) => {
                                   const token = tokens?.find(
                                     ({ address }) =>
-                                      lpToken.tokenAddress === address
+                                      pool.tokenAddress === address
                                   );
                                   const market = markets?.find(
                                     ({ address }) =>
-                                      lpToken.marketAddress === address
+                                      pool.marketAddress === address
                                   );
-                                  return lpToken.slots.map((slot) => {
-                                    const { feeRate, balance } = slot;
+                                  return pool.tokens.map((lpToken) => {
+                                    const { feeRate, balance } = lpToken;
                                     return (
                                       <div
-                                        key={`${lpToken.tokenAddress}-${lpToken.marketAddress}-${feeRate}`}
+                                        key={`${pool.tokenAddress}-${pool.marketAddress}-${feeRate}`}
                                         className="flex flex-col pb-3 border-b last:border-b-0"
                                       >
                                         <div className="flex gap-2">
