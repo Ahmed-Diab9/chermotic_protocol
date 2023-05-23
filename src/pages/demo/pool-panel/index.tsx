@@ -1,6 +1,5 @@
 import useConnectOnce from "../../../hooks/useConnectOnce";
-import useConsole from "../../../hooks/useConsole";
-import { useSelectedLpTokens } from "../../../hooks/useLpToken";
+import { useSelectedLiquidityPool } from "../../../hooks/useLiquidityPool";
 import { PoolPanel } from "../../../stories/template/PoolPanel";
 import { useSelectedToken } from "../../../hooks/useSettlementToken";
 import { useSelectedMarket } from "../../../hooks/useMarket";
@@ -11,7 +10,7 @@ import { bigNumberify } from "../../../utils/number";
 
 const PoolPanelDemo = () => {
   useConnectOnce();
-  const [lpToken] = useSelectedLpTokens();
+  const [pool] = useSelectedLiquidityPool();
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
   const [walletBalances] = useWalletBalances();
@@ -26,36 +25,39 @@ const PoolPanelDemo = () => {
     onAddLiquidity,
   } = usePoolInput();
 
-  const slots = lpToken?.slots.filter((slot) => slot.balance.gt(0));
+  const slots = pool?.tokens.filter((lpToken) => lpToken.balance.gt(0));
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
-    const longSlots = (lpToken?.slots ?? []).filter((slot) => slot.feeRate > 0);
-    return longSlots?.reduce(
-      (acc, currentValue) => {
-        acc[0].add(currentValue.maxLiquidity);
-        acc[1].add(currentValue.unusedLiquidity);
-        return acc;
+    const longLpTokens = (pool?.tokens ?? []).filter(
+      (lpToken) => lpToken.feeRate > 0
+    );
+    return longLpTokens?.reduce(
+      (acc, currentToken) => {
+        const max = acc[0].add(currentToken.maxLiquidity);
+        const unused = acc[1].add(currentToken.unusedLiquidity);
+        return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
     );
-  }, [lpToken]);
+  }, [pool]);
   const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
-    const longSlots = (lpToken?.slots ?? []).filter((slot) => slot.feeRate < 0);
-    return longSlots?.reduce(
-      (acc, currentValue) => {
-        acc[0].add(currentValue.maxLiquidity);
-        acc[1].add(currentValue.unusedLiquidity);
+    const shortLpTokens = (pool?.tokens ?? []).filter(
+      (lpToken) => lpToken.feeRate < 0
+    );
+    return shortLpTokens?.reduce(
+      (acc, currentToken) => {
+        acc[0].add(currentToken.maxLiquidity);
+        acc[1].add(currentToken.unusedLiquidity);
         return acc;
       },
       [bigNumberify(0), bigNumberify(0)] as const
     );
-  }, [lpToken]);
+  }, [pool]);
 
   return (
     <PoolPanel
       token={token}
-      market={market}
       balances={walletBalances}
-      lpToken={lpToken}
+      pool={pool}
       amount={amount}
       indexes={indexes}
       rates={rates}

@@ -97,7 +97,8 @@ export function Handle({
           boxSizing: "content-box",
           border: percent === 0 ? "1px solid #D4D4D4" : "2px solid black",
           backgroundColor: disabled ? "#666" : "#ffffff",
-          boxShadow: percent === 0 && "1px 1px 4px rgba(163, 163, 163, 0.25)",
+          boxShadow:
+            percent === 0 ? "1px 1px 4px rgba(163, 163, 163, 0.25)" : undefined,
         }}
       />
     </Fragment>

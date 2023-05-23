@@ -1,14 +1,21 @@
 import { BigNumber } from "ethers";
 
-export interface LPToken {
+export interface LiquidityPool {
   tokenAddress: string;
   marketAddress: string;
-  slots: LPTokenSlot[];
+  tokens: LPToken[];
 }
 
-export interface LPTokenSlot {
+export interface LPToken extends LPTokenMetadata {
   feeRate: number;
   balance: BigNumber;
+  slotValue: BigNumber;
   maxLiquidity: BigNumber;
   unusedLiquidity: BigNumber;
+}
+
+export interface LPTokenMetadata {
+  name: string;
+  description: string;
+  image: string;
 }

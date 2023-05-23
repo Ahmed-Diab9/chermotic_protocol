@@ -28,7 +28,7 @@ const UsumAccount = () => {
   return (
     <div>
       <h2>Account</h2>
-      <p>{account.address}</p>
+      <p>{account?.address}</p>
       <button onClick={() => createAccount()}>Create Account</button>
       <button
         onClick={() => {

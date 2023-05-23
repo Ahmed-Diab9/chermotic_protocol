@@ -47,7 +47,7 @@ function WagmiTest() {
         </>
       )}
       <div>
-        <button onClick={async () => console.log(await market.getPrice())}>
+        <button onClick={async () => console.log(await market?.getPrice())}>
           get price
         </button>
       </div>

@@ -16,11 +16,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    market: {
-      address: "0x8888888888888888888888888888888888888888",
-      description: "ETH / USD",
-      price: BigNumber.from(1000),
-    },
     token: {
       name: "USDC",
       address: "0x8888888888888888888888888888888888888888",
@@ -29,10 +24,10 @@ export const Default: Story = {
     balances: {
       USDC: BigNumber.from(100),
     },
-    lpToken: {
+    pool: {
       tokenAddress: "0x8888888888888888888888888888888888888888",
       marketAddress: "0x8888888888888888888888888888888888888888",
-      slots: [],
+      tokens: [],
     },
     amount: "1000",
     indexes: [35, 36],

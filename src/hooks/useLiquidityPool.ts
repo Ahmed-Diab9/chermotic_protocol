@@ -1,76 +1,195 @@
-import { useContract } from "wagmi";
+import {
+  USUMMarket,
+  USUMMarketFactory,
+  USUMMarket__factory,
+  getDeployedContract,
+} from "@quarkonix/usum";
+import { useEffect, useMemo } from "react";
 import useSWR from "swr";
-import { useAppDispatch, useAppSelector } from "../store";
-import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { isValid } from "../utils/valid";
+import { errorLog } from "../utils/log";
+import { bigNumberify } from "../utils/number";
+import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
+import { LPTokenMetadata, LiquidityPool } from "../typings/pools";
+import { useSelectedMarket } from "./useMarket";
+import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
+import { BigNumber, ethers } from "ethers";
+import { createSlotValueMock } from "../mock/slots";
+import { TOKEN_URI_PREFIX } from "../configs/pool";
 
-const useLiquidityPool = () => {
-  const [input, setInput] = useState("");
-  const [minTradeFee, setMinTradeFee] = useState("");
-  const [maxTradeFee, setMaxTradeFee] = useState("");
-  const token = useAppSelector((state) => state.market.selectedToken);
-  const pools = useAppSelector((state) => state.pools);
-  const dispatch = useAppDispatch();
-  const contract = useContract();
-  const method = "POOLS";
+const fetchLpTokenMetadata = async (
+  market: USUMMarket,
+  feeRates: BigNumber[]
+) => {
+  try {
+    const promise = feeRates.map(async (rate) => {
+      return market.uri(rate);
+    });
+    const response = await Promise.allSettled(promise);
+    const filtered = response.filter(
+      (result): result is PromiseFulfilledResult<string> =>
+        result.status === "fulfilled"
+    );
 
-  const { data: poolSlots } = useSWR(
-    [contract, method, token.address],
-    async ([contract, method, address]) => {
-      const response: unknown = await contract[method]();
-
-      return response;
-    }
-  );
-
-  const onInputChange = (value: string) => {
-    if (value.length === 0) {
-      setInput("");
-      dispatch(poolsAction.onInputChange(0));
-      return;
-    }
-    const parsed = Number(value);
-    if (isNaN(parsed)) {
-      return;
-    }
-    setInput(value);
-    dispatch(poolsAction.onInputChange(parsed));
-  };
-  const onTypeToggle = (type: typeof pools.type) => {
-    dispatch(poolsAction.onTypeToggle(type));
-  };
-
-  const onTradeFeeChange = (minmax: "MIN" | "MAX", value: string) => {
-    if (value.length === 0) {
-      if (minmax === "MIN") {
-        setMinTradeFee("");
-      } else {
-        setMaxTradeFee("");
-      }
-      dispatch(poolsAction.onTradeFeeChange({ minmax, value: 0 }));
-      return;
-    }
-    const parsed = Number(value);
-    if (isNaN(parsed)) {
-      return;
-    }
-    if (minmax === "MIN") {
-      setMinTradeFee(value);
-    } else {
-      setMaxTradeFee(value);
-    }
-    dispatch(poolsAction.onTradeFeeChange({ minmax, value: parsed }));
-  };
-
-  return {
-    input,
-    poolSlots,
-    minTradeFee,
-    maxTradeFee,
-    onTypeToggle,
-    onInputChange,
-    onTradeFeeChange,
-  };
+    return filtered.map(({ value }) => {
+      const trimmed = window.atob(value.replace(TOKEN_URI_PREFIX, ""));
+      const metadata: LPTokenMetadata = JSON.parse(trimmed);
+      return metadata;
+    });
+  } catch (error) {
+    errorLog(error);
+    return undefined!;
+  }
 };
 
-export default useLiquidityPool;
+export const useLiquidityPool = () => {
+  const { address: walletAddress } = useAccount();
+  const [tokens] = useSettlementToken();
+  const tokenAddresses = tokens?.map((token) => token.address);
+  const fetchKey =
+    isValid(walletAddress) && isValid(tokenAddresses)
+      ? ([walletAddress, tokenAddresses] as const)
+      : undefined;
+
+  const {
+    data: liquidityPools,
+    error,
+    mutate: fetchLiquidityPools,
+  } = useSWR(fetchKey, async ([walletAddress, tokenAddresses]) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const factory = getDeployedContract(
+      "USUMMarketFactory",
+      "anvil",
+      provider
+    ) as USUMMarketFactory;
+    const precision = bigNumberify(10).pow(10);
+    const baseFeeRates = [
+      ...SHORT_FEE_RATES.map((rate) => rate * -1),
+      ...LONG_FEE_RATES,
+    ];
+    const feeRates = [
+      ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+      ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
+    ];
+    const addresses = Array.from({ length: feeRates.length }).map(
+      () => walletAddress
+    );
+    const promises = tokenAddresses.map(async (tokenAddress) => {
+      const marketAddresses = await factory.getMarketsBySettlmentToken(
+        tokenAddress
+      );
+      const promise = marketAddresses.map(async (marketAddress) => {
+        const market = USUMMarket__factory.connect(marketAddress, provider);
+        const balances = await market.balanceOfBatch(addresses, feeRates);
+        const metadata = await fetchLpTokenMetadata(market, feeRates);
+
+        const maxLiquidities = await market.getSlotMarginsTotal(baseFeeRates);
+        const unusedLiquidities = await market.getSlotMarginsUnused(
+          baseFeeRates
+        );
+
+        return {
+          tokenAddress,
+          marketAddress: market.address,
+          tokens: baseFeeRates.map((feeRate, feeRateIndex) => {
+            const { name, description, image } = metadata[feeRateIndex];
+            return {
+              name,
+              description,
+              image,
+              feeRate,
+              balance: balances[feeRateIndex],
+              slotValue: createSlotValueMock(),
+              maxLiquidity: maxLiquidities[feeRateIndex],
+              unusedLiquidity: unusedLiquidities[feeRateIndex],
+            };
+          }),
+        } satisfies LiquidityPool;
+      });
+      const response = await Promise.allSettled(promise).catch((err) => {
+        errorLog(err);
+        return undefined!;
+      });
+      return response
+        .filter((result): result is PromiseFulfilledResult<LiquidityPool> => {
+          return result.status === "fulfilled";
+        })
+        .map(({ value }) => value);
+    });
+
+    const response = await Promise.allSettled(promises);
+    return response
+      .filter((result): result is PromiseFulfilledResult<LiquidityPool[]> => {
+        return result.status === "fulfilled";
+      })
+      .map(({ value }) => value)
+      .reduce((array, currentValue) => {
+        array.push(...currentValue);
+        return array;
+      }, []);
+  });
+
+  if (error) {
+    errorLog(error);
+  }
+
+  return [liquidityPools, fetchLiquidityPools] as const;
+};
+
+export const useSelectedLiquidityPool = () => {
+  const [market] = useSelectedMarket();
+  const [token] = useSelectedToken();
+  const [pools] = useLiquidityPool();
+  const dispatch = useAppDispatch();
+
+  const pool = useMemo(() => {
+    if (!isValid(market) || !isValid(token) || !isValid(pools)) {
+      return;
+    }
+    return pools.find(
+      (pool) =>
+        pool.tokenAddress === token.address &&
+        pool.marketAddress === market.address
+    );
+  }, [market, token, pools]);
+
+  const totalMaxLiquidity = useMemo(() => {
+    if (!isValid(pool)) {
+      return;
+    }
+    return pool.tokens.reduce(
+      (acc, currentToken) => acc.add(currentToken.maxLiquidity),
+      bigNumberify(0)
+    );
+  }, [pool]);
+
+  const totalUnusedLiquidity = useMemo(() => {
+    if (!isValid(pool)) {
+      return;
+    }
+    return pool.tokens.reduce(
+      (acc, currentToken) => acc.add(currentToken.unusedLiquidity),
+      bigNumberify(0)
+    );
+  }, [pool]);
+
+  useEffect(() => {
+    if (isValid(pool)) {
+      dispatch(poolsAction.onPoolSelect(pool));
+    }
+  }, [dispatch, pool]);
+
+  useEffect(() => {
+    dispatch(
+      poolsAction.onTotalLiquidityChange({
+        totalMax: totalMaxLiquidity,
+        totalUnused: totalUnusedLiquidity,
+      })
+    );
+  }, [dispatch, totalMaxLiquidity, totalUnusedLiquidity]);
+
+  return [pool, totalMaxLiquidity, totalUnusedLiquidity] as const;
+};
