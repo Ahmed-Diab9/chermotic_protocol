@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { useSigner } from "wagmi";
 import useSWR from "swr";
 import { AccountFactory__factory, Account__factory } from "@quarkonix/usum";
@@ -16,13 +16,18 @@ export const useUsumAccount = () => {
   const [router] = useRouter();
 
   const fetchKey = useMemo(() => {
-    return isValid(router) ? [router] : undefined;
-  }, [router]);
+    return isValid(router) && isValid(signer)
+      ? ([router, signer] as const)
+      : undefined;
+  }, [router, signer]);
 
-  const { data: account, error } = useSWR(fetchKey, async ([router]) => {
-    const address = await router.getAccount();
-    return Account__factory.connect(address, signer);
-  });
+  const { data: account, error } = useSWR(
+    fetchKey,
+    async ([router, signer]) => {
+      const address = await router.getAccount();
+      return Account__factory.connect(address, signer);
+    }
+  );
 
   if (error) {
     errorLog(error);

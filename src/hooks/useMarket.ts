@@ -23,14 +23,16 @@ export const useMarket = (_interval?: number) => {
   const [marketFactory] = useMarketFactory();
 
   const fetchKey = useMemo(() => {
-    return isValid(selectedToken) ? ([selectedToken] as const) : undefined;
-  }, [selectedToken]);
+    return isValid(selectedToken) && isValid(marketFactory)
+      ? ([selectedToken, marketFactory] as const)
+      : undefined;
+  }, [selectedToken, marketFactory]);
 
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
-  } = useSWR(fetchKey, async ([selectedToken]) => {
+  } = useSWR(fetchKey, async ([selectedToken, marketFactory]) => {
     const response = await Promise.allSettled(
       (
         await marketFactory.getMarketsBySettlmentToken(
@@ -88,6 +90,7 @@ export const useSelectedMarket = () => {
     if (isValid(selectedMarket) || !isValid(markets)) return;
     else if (isValid(storedMarket)) onMarketSelect(storedMarket);
     else onMarketSelect(markets[0].address);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markets]);
 
   const onMarketSelect = (address: string) => {
