@@ -19,12 +19,12 @@ export const Range = ({ ...props }: RangeProps) => {
   const [values, setValues] = useState<number[]>(defaultValues.slice());
   const [update, setUpdate] = useState<number[]>(defaultValues.slice());
 
-  const onUpdate = (newUpdate: number[]) => {
-    setUpdate(newUpdate);
+  const onUpdate = (newUpdate: readonly number[]) => {
+    setUpdate([...newUpdate]);
   };
 
-  const onChange = (newValues: number[]) => {
-    setValues(newValues);
+  const onChange = (newValues: readonly number[]) => {
+    setValues([...newValues]);
   };
 
   return (
