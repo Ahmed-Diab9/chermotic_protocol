@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Demo from "./pages/demo";
 import Pool from "./pages/pool";
+import Trade from "./pages/trade";
 import MarketSelectDemo from "./pages/demo/market-select";
 import WalletPopoverDemo from "./pages/demo/wallet-popover";
 import AssetPopoverDemo from "./pages/demo/asset-popover";
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/pool",
     element: <Pool />,
+  },
+  {
+    path: "/trade",
+    element: <Trade />,
   },
   {
     path: "/demo/market-select",

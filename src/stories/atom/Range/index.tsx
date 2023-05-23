@@ -43,7 +43,7 @@ export const Range = ({ ...props }: RangeProps) => {
         </Rail>
         <Handles>
           {({ handles, getHandleProps }) => (
-            <div className="px-3 slider-handles">
+            <div className="px-[11px] slider-handles">
               <div className="relative">
                 {handles.map((handle) => (
                   <Handle
@@ -77,7 +77,7 @@ export const Range = ({ ...props }: RangeProps) => {
           count={4 /* generate approximately 15 ticks within the domain */}
         >
           {({ ticks }) => (
-            <div className="px-3 slider-ticks">
+            <div className="px-[11px] slider-ticks">
               <div className="relative">
                 {ticks.map((tick) => (
                   <Tick key={tick.id} tick={tick} count={ticks.length} />

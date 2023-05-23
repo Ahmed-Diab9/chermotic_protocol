@@ -50,7 +50,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
           <div>
             <Input />
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2 mt-2">
               <Tooltip label="tio" tip="tooltip" />
               <p>Contract Qty</p>
               <p className="text-black/30">0 USDC</p>
@@ -58,7 +58,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="px-10 pt-5 pb-10 border-b bg-grayL/20">
+      <section className="px-10 pt-6 pb-10 border-b bg-grayL/20">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-6">
@@ -80,7 +80,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
           </div>
         </article>
-        <div className="flex gap-5 my-10">
+        <div className="flex gap-5 mt-10">
           {/* TP */}
           <article>
             <div className="flex justify-between mb-6">
@@ -94,7 +94,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <Range />
           </article>
           {/* SL */}
-          <article className="pl-5 border-l">
+          <article className="pl-5 border-l h-[90px]">
             <div className="flex justify-between mb-6">
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
@@ -165,6 +165,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       </section>
       <div className="px-10">
         <Button label="Sell" size="xl" className="w-full" />
+        {/* <Button label="Buy" size="xl" className="w-full" /> */}
       </div>
     </div>
   );

@@ -91,13 +91,13 @@ export function Handle({
           position: "absolute",
           transform: "translate(-50%, -50%)",
           zIndex: 2,
-          width: 8,
-          height: 8,
+          width: percent === 0 ? 10 : 8,
+          height: percent === 0 ? 10 : 8,
           borderRadius: "50%",
           boxSizing: "content-box",
           border: percent === 0 ? "1px solid #D4D4D4" : "2px solid black",
           backgroundColor: disabled ? "#666" : "#ffffff",
-          boxShadow: "1px 1px 4px rgba(163, 163, 163, 0.25)",
+          boxShadow: percent === 0 && "1px 1px 4px rgba(163, 163, 163, 0.25)",
         }}
       />
     </Fragment>
