@@ -66,6 +66,7 @@ export const OptionInput = ({
         size={size}
         css={css}
         align={align}
+        value={value}
         onChange={(event) => {
           setRatio(undefined);
           onChange?.(event);
