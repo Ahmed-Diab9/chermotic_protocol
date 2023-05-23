@@ -9,13 +9,13 @@ type User = {
   contract: string;
 };
 
-interface MainbarProps {
+interface MainBarProps {
   user?: User;
   // onLogin: () => void;
   // onLogout: () => void;
 }
 
-export const Mainbar = ({ user }: MainbarProps) => (
+export const MainBar = ({ user }: MainBarProps) => (
   <div className="p-4">
     <div className="flex gap-5 justify-stretch">
       <MarketSelect />
