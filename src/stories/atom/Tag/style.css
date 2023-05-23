@@ -1,0 +1,11 @@
+.tag {
+  @apply uppercase text-[12px] px-2 py-1 rounded;
+}
+.tag-long {
+  color: #a6d85b;
+  background: rgba(166, 216, 91, 0.3);
+}
+.tag-short {
+  color: #ff3232;
+  background: rgba(255, 50, 50, 0.1);
+}
