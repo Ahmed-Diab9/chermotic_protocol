@@ -20,7 +20,7 @@ const useTokenTransaction = () => {
   }, [token, signer]);
 
   const onDeposit = async () => {
-    if (!isValid(walletAddress) || !isValid(usumAccount.address)) {
+    if (!isValid(walletAddress) || !isValid(usumAccount)) {
       errorLog("no addresses selected");
       return;
     }

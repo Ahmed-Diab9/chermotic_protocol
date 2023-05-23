@@ -66,7 +66,7 @@ export const useOpenPosition = () => {
     }
 
     try {
-      const result = await router.openPosition(
+      const result = await router?.openPosition(
         selectedMarket.address,
         contractQuantity,
         leverage,
@@ -101,7 +101,7 @@ export const useClosePosition = (positionId: BigNumber) => {
     }
 
     try {
-      const result = await router.closePosition(
+      const result = await router?.closePosition(
         selectedMarket.address,
         positionId,
         deadline
