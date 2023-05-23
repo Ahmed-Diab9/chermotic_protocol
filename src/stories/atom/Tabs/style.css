@@ -3,6 +3,12 @@
   [role="tablist"] {
     @apply flex;
   }
+  &.tabs-left {
+    text-align: left;
+    [role="tablist"] {
+      @apply justify-start;
+    }
+  }
 }
 .tabs-button {
   [role="tablist"] {
