@@ -4,7 +4,7 @@ import { useUsumAccount } from "../../../hooks/useUsumAccount";
 import { copyText } from "../../../utils/clipboard";
 import usePriceFeed from "../../../hooks/usePriceFeed";
 import useConnectOnce from "../../../hooks/useConnectOnce";
-import { useLpToken } from "../../../hooks/useLpToken";
+import { useLiquidityPool } from "../../../hooks/useLiquidityPool";
 import { useSettlementToken } from "../../../hooks/useSettlementToken";
 import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
 import { useMarket } from "../../../hooks/useMarket";
@@ -17,7 +17,7 @@ const WalletPopoverDemo = () => {
   const [markets] = useMarket();
   const [usumAddress] = useUsumAccount();
   const [walletBalances] = useWalletBalances();
-  const [lpTokens] = useLpToken();
+  const [pools] = useLiquidityPool();
   const { disconnectAsync } = useDisconnect();
   const [feed] = usePriceFeed();
   useOracleVersion();
@@ -29,7 +29,7 @@ const WalletPopoverDemo = () => {
         tokens={tokens}
         markets={markets}
         balances={walletBalances}
-        lpTokens={lpTokens}
+        pools={pools}
         priceFeed={feed}
         onUsumCopy={copyText}
         onWalletCopy={copyText}
