@@ -21,7 +21,7 @@ import {
 } from "../../../utils/number";
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
-import { LPTokenSummary } from "../../../typings/pools";
+import { LiquidityPoolSummary } from "../../../typings/pools";
 
 const assetInfo = [
   {
@@ -74,7 +74,7 @@ interface WalletPopoverProps {
   markets?: Market[];
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
-  pools?: LPTokenSummary[];
+  pools?: LiquidityPoolSummary[];
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;

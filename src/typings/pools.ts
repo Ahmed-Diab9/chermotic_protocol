@@ -20,7 +20,7 @@ export interface LPTokenMetadata {
   image: string;
 }
 
-export interface LPTokenSummary {
+export interface LiquidityPoolSummary {
   token: { name: string; decimals: number };
   market: string;
   liquidity: BigNumber;
