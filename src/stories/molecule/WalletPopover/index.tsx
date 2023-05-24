@@ -17,12 +17,11 @@ import {
   expandDecimals,
   formatBalance,
   formatDecimals,
-  formatFeeRate,
   withComma,
 } from "../../../utils/number";
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
-import { LiquidityPool } from "../../../typings/pools";
+import { LPTokenSummary } from "../../../typings/pools";
 
 const assetInfo = [
   {
@@ -75,7 +74,7 @@ interface WalletPopoverProps {
   markets?: Market[];
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
-  pools?: LiquidityPool[];
+  pools?: LPTokenSummary[];
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
@@ -220,66 +219,38 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               <div className="flex flex-col gap-3">
-                                {pools?.map((pool) => {
-                                  const token = tokens?.find(
-                                    ({ address }) =>
-                                      pool.tokenAddress === address
-                                  );
-                                  const market = markets?.find(
-                                    ({ address }) =>
-                                      pool.marketAddress === address
-                                  );
-                                  return pool.tokens.map((lpToken) => {
-                                    const { feeRate, balance } = lpToken;
-                                    return (
-                                      <div
-                                        key={`${pool.tokenAddress}-${pool.marketAddress}-${feeRate}`}
-                                        className="flex flex-col pb-3 border-b last:border-b-0"
-                                      >
-                                        <div className="flex gap-2">
-                                          <div className="pr-2 border-r">
-                                            <Avatar
-                                              label={token?.name}
-                                              size="xs"
-                                              fontSize="base"
-                                              gap="1"
-                                            />
-                                          </div>
-                                          <div className="pr-2 border-r">
-                                            <Avatar
-                                              label={market?.description}
-                                              size="xs"
-                                              fontSize="base"
-                                              gap="1"
-                                            />
-                                          </div>
-                                          <p className="text-base font-medium text-gray-900">
-                                            {formatFeeRate(feeRate)}%
-                                          </p>
-                                        </div>
-                                        <div className="flex mt-3">
-                                          <div className="mr-auto">
-                                            <p className="text-base font-medium text-gray-900">
-                                              {"EACH_SLOT_VALUE"}
-                                            </p>
-                                            <p className="mt-2 text-base text-gray-500">
-                                              {formatDecimals(
-                                                balance,
-                                                token?.decimals,
-                                                2
-                                              )}{" "}
-                                              Bins
-                                            </p>
-                                          </div>
-                                          <Thumbnail
-                                            size="base"
-                                            src={undefined}
-                                          />
-                                        </div>
+                                {pools?.map((pool, poolIndex) => (
+                                  <div
+                                    key={`${pool.token}-${pool.market}`}
+                                    className="flex flex-col pb-3 border-b last:border-b-0"
+                                  >
+                                    <div className="flex gap-2">
+                                      {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
+                                      <p className="pr-2 border-r">
+                                        {pool.token.name}
+                                      </p>
+                                      <p className="pr-2 border-r">
+                                        {pool.market}
+                                      </p>
+                                    </div>
+                                    <div className="flex mt-3">
+                                      <div className="mr-auto">
+                                        <p className="text-base font-medium text-gray-900">
+                                          {formatDecimals(
+                                            pool.liquidity,
+                                            pool.token.decimals,
+                                            2
+                                          )}{" "}
+                                          {pool.token.name}
+                                        </p>
+                                        <p className="mt-2 text-base text-gray-500">
+                                          {pool.slots} Bins
+                                        </p>
                                       </div>
-                                    );
-                                  });
-                                })}
+                                      <Thumbnail size="base" src={undefined} />
+                                    </div>
+                                  </div>
+                                ))}
                                 {nftInfo.map((item, index) => (
                                   <div
                                     key={`${item.asset}-${index}`}
