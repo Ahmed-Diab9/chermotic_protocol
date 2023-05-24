@@ -211,3 +211,52 @@ export const useSelectedLiquidityPool = () => {
 
   return [pool, totalMaxLiquidity, totalUnusedLiquidity] as const;
 };
+
+export const useLiquidityPoolSummary = () => {
+  const [pools] = useLiquidityPool();
+  const [markets] = useMarket();
+  const [tokens] = useSettlementToken();
+
+  const poolSummary = useMemo(() => {
+    if (!isValid(pools)) {
+      return [];
+    }
+    const array = [] as LPTokenSummary[];
+    for (const pool of pools) {
+      const { tokenAddress, marketAddress, tokens: lpTokens } = pool;
+      const market = markets?.find(
+        (market) => market.address === marketAddress
+      );
+      const token = tokens?.find((token) => token.address === tokenAddress);
+      if (!isValid(market) || !isValid(token)) {
+        errorLog("unexpected behavior. token and market must be provided");
+        return [];
+      }
+      const { description: marketDescription } = market;
+      let liquiditySum = bigNumberify(0);
+      let slots = 0;
+      for (let index = 0; index < lpTokens.length; index++) {
+        const lpToken = lpTokens[index];
+        if (lpToken.balance.gt(0)) {
+          const addValue = lpToken.balance
+            .mul(lpToken.slotValue)
+            .div(expandDecimals(SLOT_VALUE_DECIMAL));
+          slots += 1;
+          liquiditySum = liquiditySum.add(addValue);
+        }
+      }
+      array.push({
+        token: {
+          name: token.name,
+          decimals: token.decimals,
+        },
+        market: marketDescription,
+        liquidity: liquiditySum,
+        slots: slots,
+      });
+    }
+    return array;
+  }, [pools, markets, tokens]);
+
+  return poolSummary;
+};
