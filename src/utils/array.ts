@@ -1,23 +1,24 @@
 import { errorLog } from "./log";
 
-export const filterIfFulfilled = <T>(
-  promise: PromiseSettledResult<T>[],
+export const filterIfFulfilled = async <T>(
+  asyncTasks: Promise<T>[],
   hasError: boolean = false
 ) => {
   const array = [] as T[];
+  const promise = await Promise.allSettled(asyncTasks);
+  const promiseLength = promise.length;
 
-  const filtered = promise.filter(
-    (result): result is PromiseFulfilledResult<T> => {
-      return result.status === "fulfilled";
+  for (let index = 0; index < promiseLength; index++) {
+    const element = promise[index];
+    if (element.status === "fulfilled") {
+      array.push(element.value);
+    } else {
+      errorLog(element.reason);
     }
-  );
-
-  if (promise.length !== filtered.length && hasError) {
-    errorLog("some elements are rejected");
   }
 
-  for (let index = 0; index < filtered.length; index++) {
-    array.push(filtered[index].value);
+  if (array.length !== promiseLength && hasError) {
+    errorLog("some elements are rejected");
   }
 
   return array;

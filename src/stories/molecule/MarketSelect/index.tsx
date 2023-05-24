@@ -9,6 +9,7 @@ import { Button } from "../../atom/Button";
 import { useCallback, useEffect, useState } from "react";
 import { filterIfFulfilled } from "~/utils/array";
 import { BigNumber } from "ethers";
+import { isValid } from "~/utils/valid";
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -63,13 +64,14 @@ export const PopoverMain = (
   } = props;
   const [marketPrices, setMarketPrices] = useState<string[]>([]);
   const fetchPrices = useCallback(async () => {
-    const promise = await Promise.allSettled(
-      (markets ?? []).map(async (market) => {
-        const price = await market.getPrice();
-        return "$" + withComma(price);
-      })
-    );
-    const prices = filterIfFulfilled(promise);
+    if (!isValid(markets)) {
+      return;
+    }
+    const promise = markets.map(async (market) => {
+      const price = await market.getPrice();
+      return "$" + withComma(price);
+    });
+    const prices = await filterIfFulfilled(promise);
     setMarketPrices(prices);
   }, [markets]);
   useEffect(() => {
