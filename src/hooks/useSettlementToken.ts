@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useProvider } from "wagmi";
 import useSWR from "swr";
 
@@ -70,21 +70,26 @@ export const useSelectedToken = () => {
 
   const [storedToken, setStoredToken] = useLocalStorage<string>("usum:token");
 
+  const onTokenSelect = useCallback(
+    (address: string) => {
+      const nextToken = tokens?.find((token) => token.address === address);
+      if (!isValid(nextToken)) {
+        errorLog("Settlement Token:selected token is invalid.");
+        return;
+      }
+      setStoredToken(nextToken.address);
+      dispatch(marketAction.onTokenSelect(nextToken));
+    },
+    [tokens, setStoredToken, dispatch]
+  );
+
   useEffect(() => {
     if (isValid(selectedToken) || !isValid(tokens)) return;
     else if (isValid(storedToken)) onTokenSelect(storedToken);
     else onTokenSelect(tokens[0].address);
-  }, [tokens]);
 
-  const onTokenSelect = (address: string) => {
-    const nextToken = tokens?.find((token) => token.address === address);
-    if (!isValid(nextToken)) {
-      errorLog("Settlement Token:selected token is invalid.");
-      return;
-    }
-    setStoredToken(nextToken.address);
-    dispatch(marketAction.onTokenSelect(nextToken));
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedToken, tokens, onTokenSelect]);
 
   return [selectedToken, onTokenSelect] as const;
 };
