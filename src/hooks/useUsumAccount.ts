@@ -37,9 +37,8 @@ export const useUsumAccount = () => {
     if (!isValid(signer)) {
       return Promise.reject(errorLog("CreateAccount: No signers"));
     }
-
     const accountFactory = AccountFactory__factory.connect(
-      DEPLOYED_ADDRESSES.USUMAccount,
+      DEPLOYED_ADDRESSES.AccountFactory,
       signer
     );
 

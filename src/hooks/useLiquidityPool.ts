@@ -1,5 +1,4 @@
 import {
-  USUMMarket,
   USUMMarketFactory,
   USUMMarket__factory,
   getDeployedContract,
@@ -9,24 +8,28 @@ import useSWR from "swr";
 import { useAccount } from "wagmi";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";
-import { bigNumberify } from "../utils/number";
+import { bigNumberify, expandDecimals } from "../utils/number";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 import { LPTokenMetadata, LiquidityPool } from "../typings/pools";
-import { useSelectedMarket } from "./useMarket";
+import { useMarket, useSelectedMarket } from "./useMarket";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import { BigNumber, ethers } from "ethers";
 import { createSlotValueMock } from "../mock/slots";
-import { TOKEN_URI_PREFIX } from "../configs/pool";
+import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
 
+// TODO: USUMLpToken class should be provided
+type USUMLpToken = any;
+
+// FIXME: Should fetch uris of each token
 const fetchLpTokenMetadata = async (
-  market: USUMMarket,
+  lpToken: USUMLpToken,
   feeRates: BigNumber[]
 ) => {
   try {
     const promise = feeRates.map(async (rate) => {
-      return market.uri(rate);
+      return "UNDEFINED";
     });
     const response = await Promise.allSettled(promise);
     const filtered = response.filter(
@@ -58,8 +61,12 @@ export const useLiquidityPool = () => {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(fetchKey, async ([walletAddress, tokenAddresses]) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+  } = useSWR(
+    fetchKey,
+    async ([walletAddress, tokenAddresses]) => {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum as any
+      );
     const factory = getDeployedContract(
       "USUMMarketFactory",
       "anvil",
@@ -83,8 +90,13 @@ export const useLiquidityPool = () => {
       );
       const promise = marketAddresses.map(async (marketAddress) => {
         const market = USUMMarket__factory.connect(marketAddress, provider);
-        const balances = await market.balanceOfBatch(addresses, feeRates);
-        const metadata = await fetchLpTokenMetadata(market, feeRates);
+
+          // FIXME
+          // USUMLpToken class is needed to fetch balances
+          const balances = [] as BigNumber[];
+
+          // FIXME: Should fetch metadata of a LP token
+          // const metadata = await fetchLpTokenMetadata(market, feeRates);
 
         const maxLiquidities = await market.getSlotMarginsTotal(baseFeeRates);
         const unusedLiquidities = await market.getSlotMarginsUnused(
@@ -95,11 +107,13 @@ export const useLiquidityPool = () => {
           tokenAddress,
           marketAddress: market.address,
           tokens: baseFeeRates.map((feeRate, feeRateIndex) => {
-            const { name, description, image } = metadata[feeRateIndex];
+              // FIXME: Should fetch metadata of a LP token
+              // const { name, description, image } = metadata[feeRateIndex];
+
             return {
-              name,
-              description,
-              image,
+                name: "LP TOKEN NAME",
+                description: "LP TOKEN DESCRIPTION",
+                image: "LP TOKEN IMAGE",
               feeRate,
               balance: balances[feeRateIndex],
               slotValue: createSlotValueMock(),
@@ -130,7 +144,13 @@ export const useLiquidityPool = () => {
         array.push(...currentValue);
         return array;
       }, []);
-  });
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   if (error) {
     errorLog(error);
