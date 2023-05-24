@@ -1,4 +1,6 @@
 import {
+  USUMLpToken,
+  USUMLpToken__factory,
   USUMMarketFactory,
   USUMMarket__factory,
   getDeployedContract,
@@ -19,17 +21,13 @@ import { BigNumber, ethers } from "ethers";
 import { createSlotValueMock } from "../mock/slots";
 import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
 
-// TODO: USUMLpToken class should be provided
-type USUMLpToken = any;
-
-// FIXME: Should fetch uris of each token
 const fetchLpTokenMetadata = async (
   lpToken: USUMLpToken,
   feeRates: BigNumber[]
 ) => {
   try {
-    const promise = feeRates.map(async (rate) => {
-      return "UNDEFINED";
+    const promise = feeRates.map((rate) => {
+      return lpToken.uri(rate);
     });
     const response = await Promise.allSettled(promise);
     const filtered = response.filter(
@@ -90,13 +88,14 @@ export const useLiquidityPool = () => {
       );
       const promise = marketAddresses.map(async (marketAddress) => {
         const market = USUMMarket__factory.connect(marketAddress, provider);
+          const lpTokenAddress = await market.lpToken();
+          const lpToken = USUMLpToken__factory.connect(
+            lpTokenAddress,
+            provider
+          );
 
-          // FIXME
-          // USUMLpToken class is needed to fetch balances
-          const balances = [] as BigNumber[];
-
-          // FIXME: Should fetch metadata of a LP token
-          // const metadata = await fetchLpTokenMetadata(market, feeRates);
+          const balances = await lpToken.balanceOfBatch(addresses, feeRates);
+          const metadata = await fetchLpTokenMetadata(lpToken, feeRates);
 
         const maxLiquidities = await market.getSlotMarginsTotal(baseFeeRates);
         const unusedLiquidities = await market.getSlotMarginsUnused(
@@ -107,13 +106,12 @@ export const useLiquidityPool = () => {
           tokenAddress,
           marketAddress: market.address,
           tokens: baseFeeRates.map((feeRate, feeRateIndex) => {
-              // FIXME: Should fetch metadata of a LP token
-              // const { name, description, image } = metadata[feeRateIndex];
+              const { name, description, image } = metadata[feeRateIndex];
 
             return {
-                name: "LP TOKEN NAME",
-                description: "LP TOKEN DESCRIPTION",
-                image: "LP TOKEN IMAGE",
+                name,
+                description,
+                image,
               feeRate,
               balance: balances[feeRateIndex],
               slotValue: createSlotValueMock(),
