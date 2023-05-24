@@ -4,16 +4,18 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 import { Market, Token } from "../../../typings/market";
-import { withComma } from "../../../utils/number";
+import { formatDecimals, withComma } from "../../../utils/number";
 import { Button } from "../../atom/Button";
 import { useCallback, useEffect, useState } from "react";
 import { filterIfFulfilled } from "~/utils/array";
+import { BigNumber } from "ethers";
 
 interface MarketSelectProps {
   tokens?: Token[];
   markets?: Market[];
   selectedToken?: Token;
   selectedMarket?: Market;
+  feeRate?: BigNumber;
   isGroupLegacy?: boolean;
   onTokenClick?: (token: string) => unknown;
   onMarketClick?: (market: string) => unknown;
@@ -24,7 +26,7 @@ interface MarketSelectProps {
  * should remove the component `Legacy`.
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
-  const { isGroupLegacy, selectedMarket } = props;
+  const { isGroupLegacy, selectedMarket, feeRate, selectedToken } = props;
   const [marketPrice, setMarketPrice] = useState<string>();
   useEffect(() => {
     selectedMarket?.getPrice().then((price) => {
@@ -39,7 +41,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
       </Popover>
       <div className="flex items-center gap-4 mr-10">
         <div className="flex flex-col gap-1 pr-5 text-xs text-right border-r">
-          <h4>0.0036%/h</h4>
+          <h4>{formatDecimals(feeRate ?? 0, selectedToken?.decimals, 4)}%/h</h4>
           <p>Interest Rate</p>
         </div>
         <h2 className="text-2xl">{marketPrice}</h2>

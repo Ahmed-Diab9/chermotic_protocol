@@ -67,6 +67,7 @@ const MarketSelectDemo = () => {
       markets={markets}
       selectedToken={token}
       selectedMarket={market}
+      feeRate={feeRate}
       onMarketClick={onMarketClick}
       onTokenClick={onTokenClick}
     />
