@@ -20,16 +20,39 @@ import { formatDecimals, withComma } from "~/utils/number";
 import { Token } from "~/typings/market";
 
 interface TradeContentProps {
-  // onClick?: () => void;
+  balances?: Record<string, BigNumber>;
+  token?: Token;
+  input?: TradeInput;
+  totalMaxLiquidity?: BigNumber;
+  totalUnusedLiquidity?: BigNumber;
+  onInputChange?: (
+    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    event: ChangeEvent<HTMLInputElement>
+  ) => unknown;
+  onMethodToggle?: () => unknown;
+  onLeverageChange?: (nextLeverage: number) => unknown;
+  onTakeProfitChange?: (nextRate: number) => unknown;
+  onStopLossChange?: (nextRate: number) => unknown;
 }
 
-const listitem = [
-  { id: 1, title: "Collateral" },
-  { id: 2, title: "Contract Qty" },
-];
+const methodMap: Record<string, string> = {
+  collateral: "Collateral",
+  quantity: "Contract Qty",
+};
 
 export const TradeContent = ({ ...props }: TradeContentProps) => {
-  const [selectedItem, setSelectedItem] = useState(listitem[0]);
+  const {
+    balances,
+    token,
+    input,
+    totalMaxLiquidity,
+    totalUnusedLiquidity,
+    onInputChange,
+    onMethodToggle,
+    onLeverageChange,
+    onTakeProfitChange,
+    onStopLossChange,
+  } = props;
 
   return (
     <div className="TradeContent">
@@ -38,30 +61,25 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         <div className="flex justify-between">
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
-            <p className="text-black/30">3,214 USDC</p>
+            <p className="text-black/30">
+              {balances && token && withComma(balances[token.name])} USDC
+            </p>
           </div>
         </div>
         <div className="flex justify-between mt-3">
           <div className="select w-[160px]">
-            <Listbox value={selectedItem} onChange={setSelectedItem}>
-              <Listbox.Button>{selectedItem.title}</Listbox.Button>
+            <Listbox value={input?.method} onChange={onMethodToggle}>
+              <Listbox.Button>{methodMap[input?.method ?? ""]}</Listbox.Button>
               <Listbox.Options>
-                {listitem.map((item) => (
-                  <Listbox.Option key={item.id} value={item}>
-                    {item.title}
+                {["Collateral", "Contract Qty"].map((method) => (
+                  <Listbox.Option key={method} value={method}>
+                    {method}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>
             </Listbox>
           </div>
-          <div>
-            <Input />
-            <div className="flex items-center justify-end gap-2 mt-2">
-              <Tooltip label="tio" tip="tooltip" />
-              <p>Contract Qty</p>
-              <p className="text-black/30">0 USDC</p>
-            </div>
-          </div>
+          <AmountSwitch input={input} onAmountChange={onInputChange} />
         </div>
       </article>
       <section className="px-10 pt-6 pb-10 border-b bg-grayL/20">
@@ -77,12 +95,21 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex justify-between">
             <div className="w-1/2">
               {/* default, slider off */}
-              <LeverageOption />
+              <LeverageOption
+                value={input?.leverage}
+                onClick={(value) => {
+                  onLeverageChange?.(value);
+                }}
+              />
               {/* when slider on */}
               {/* <Range /> */}
             </div>
             <div className="w-1/5">
-              <Input unit="x" />
+              <Input
+                unit="x"
+                value={input?.leverage}
+                onChange={(event) => onInputChange?.("leverage", event)}
+              />
             </div>
           </div>
         </article>
@@ -94,10 +121,24 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <h4>Take Profit</h4>
               </div>
               <div className="w-1/3 min-w-[80px]">
-                <Input size="sm" unit="%" />
+                <Input
+                  size="sm"
+                  unit="%"
+                  value={input?.takeProfit}
+                  onChange={(event) => {
+                    onInputChange?.("takeProfit", event);
+                  }}
+                />
               </div>
             </div>
-            <Range />
+            {input && (
+              <Range
+                values={[input.takeProfit]}
+                onChange={(values) => {
+                  onTakeProfitChange?.(values[0]);
+                }}
+              />
+            )}
           </article>
           {/* SL */}
           <article className="pl-5 border-l h-[90px]">
@@ -106,17 +147,40 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <h4>Stop Loss</h4>
               </div>
               <div className="w-1/3 min-w-[80px]">
-                <Input size="sm" unit="%" />
+                <Input
+                  size="sm"
+                  unit="%"
+                  value={input?.stopLoss}
+                  onChange={(event) => {
+                    onInputChange?.("stopLoss", event);
+                  }}
+                />
               </div>
             </div>
-            <Range />
+            {input?.stopLoss && (
+              <Range
+                values={[input.stopLoss]}
+                onChange={(values) => {
+                  onStopLossChange?.(values[0]);
+                }}
+              />
+            )}
           </article>
         </div>
       </section>
       <section className="px-10 py-7">
         <div className="flex gap-3">
           <p className="text-black/30">LP Volume</p>
-          <p>26.5 M/34.6M</p>
+          {totalMaxLiquidity && totalUnusedLiquidity && token && (
+            <p>
+              {formatDecimals(
+                totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+                token.decimals + 6,
+                1
+              )}{" "}
+              M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
+            </p>
+          )}
         </div>
         {/* graph */}
         <article className="mt-5">
