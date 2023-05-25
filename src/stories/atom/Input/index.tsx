@@ -4,7 +4,7 @@ import "./style.css";
 
 interface InputProps {
   label?: string;
-  value?: string;
+  value?: string | number;
   placeholder?: string;
   assetSrc?: string;
   unit?: string;
@@ -42,7 +42,10 @@ export const Input = ({
         className={`text-${align}`}
         value={value}
         placeholder={placeholder}
-        onChange={onChange}
+        onChange={(event) => {
+          event.preventDefault();
+          onChange && onChange(event);
+        }}
       />
       {unit && <span className="text-black/30">{unit}</span>}
     </div>
