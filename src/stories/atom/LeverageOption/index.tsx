@@ -1,12 +1,10 @@
 import { Input } from "../Input";
 import { Button } from "../Button";
 import "../../atom/Input/style.css";
-import { ChangeEvent, useState } from "react";
-import { bigNumberify } from "../../../utils/number";
 
 interface LeverageOptionProps {
   label?: string;
-  value?: string;
+  value?: number;
   totalValue?: string;
   placeholder?: string;
   assetSrc?: string;
@@ -15,9 +13,7 @@ interface LeverageOptionProps {
   css?: "default" | "active";
   align?: "center" | "left" | "right";
   disabled?: boolean;
-  onClick?: () => unknown;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
-  onButtonClick?: (value: string) => unknown;
+  onClick?: (nextValue: number) => unknown;
 }
 
 export const LeverageOption = ({
@@ -30,61 +26,53 @@ export const LeverageOption = ({
   size = "base",
   css = "default",
   align = "right",
-  onChange,
-  onButtonClick,
-  ...props
+  onClick,
 }: LeverageOptionProps) => {
-  const [leverage, setLeverage] = useState<5 | 10 | 15 | 20 | 25 | 30>();
-  const onClick = (leverage: 5 | 10 | 15 | 20 | 25 | 30) => {
-    const nextValue = bigNumberify(totalValue)?.mul(leverage).toString();
-    setLeverage(leverage);
-    onButtonClick?.(nextValue ?? "");
-  };
   return (
     <div className="flex gap-1">
       <Button
         className="flex-auto"
         label="5x"
         size="sm"
-        css={leverage === 5 ? "active" : undefined}
+        css={value === 5 ? "active" : undefined}
         onClick={() => {
-          onClick(5);
+          onClick?.(5);
         }}
       />
       <Button
         className="flex-auto"
         label="10x"
         size="sm"
-        css={leverage === 10 ? "active" : undefined}
-        onClick={() => onClick(10)}
+        css={value === 10 ? "active" : undefined}
+        onClick={() => onClick?.(10)}
       />
       <Button
         className="flex-auto"
         label="15x"
         size="sm"
-        css={leverage === 15 ? "active" : undefined}
-        onClick={() => onClick(15)}
+        css={value === 15 ? "active" : undefined}
+        onClick={() => onClick?.(15)}
       />
       <Button
         className="flex-auto"
         label="20x"
         size="sm"
-        css={leverage === 20 ? "active" : undefined}
-        onClick={() => onClick(20)}
+        css={value === 20 ? "active" : undefined}
+        onClick={() => onClick?.(20)}
       />
       <Button
         className="flex-auto"
         label="25x"
         size="sm"
-        css={leverage === 25 ? "active" : undefined}
-        onClick={() => onClick(25)}
+        css={value === 25 ? "active" : undefined}
+        onClick={() => onClick?.(25)}
       />
       <Button
         className="flex-auto"
         label="30x"
         size="sm"
-        css={leverage === 30 ? "active" : undefined}
-        onClick={() => onClick(30)}
+        css={value === 30 ? "active" : undefined}
+        onClick={() => onClick?.(30)}
       />
     </div>
   );

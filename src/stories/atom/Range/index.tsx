@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import { SliderRail, Handle, Track, Tick } from "./components"; // example render components - source below
 
-interface RangeProps {}
+interface RangeProps {
+  values?: number[];
+  onChange?: (newValue: readonly number[]) => unknown;
+  onUpdate?: (newValue: readonly number[]) => unknown;
+}
 
 const sliderStyle: React.CSSProperties = {
   position: "relative",
@@ -13,30 +17,22 @@ const sliderStyle: React.CSSProperties = {
 };
 
 const domain: [number, number] = [0, 100];
-const defaultValues: number[] = [5];
 
 export const Range = ({ ...props }: RangeProps) => {
-  const [values, setValues] = useState<number[]>(defaultValues.slice());
-  const [update, setUpdate] = useState<number[]>(defaultValues.slice());
-
-  const onUpdate = (newUpdate: readonly number[]) => {
-    setUpdate([...newUpdate]);
-  };
-
-  const onChange = (newValues: readonly number[]) => {
-    setValues([...newValues]);
-  };
+  const { values = [], onChange, onUpdate } = props;
 
   return (
     <div style={{ height: "auto", width: "100%" }}>
       <Slider
         mode={1}
-        step={1}
+        step={0.01}
         domain={domain}
         rootStyle={sliderStyle}
         onUpdate={onUpdate}
         onChange={onChange}
-        values={values}
+        values={values.map((value) => {
+          return Number(value.toFixed(2));
+        })}
       >
         <Rail>
           {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}

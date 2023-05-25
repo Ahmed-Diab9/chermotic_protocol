@@ -178,23 +178,30 @@ export const useSelectedLiquidityPool = () => {
     );
   }, [market, token, pools]);
 
-  const totalMaxLiquidity = useMemo(() => {
-    if (!isValid(pool)) {
-      return;
-    }
-    return pool.tokens.reduce(
-      (acc, currentToken) => acc.add(currentToken.maxLiquidity),
-      bigNumberify(0)
+  const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
+    const longLpTokens = (pool?.tokens ?? []).filter(
+      (lpToken) => lpToken.feeRate > 0
+    );
+    return longLpTokens?.reduce(
+      (acc, currentToken) => {
+        const max = acc[0].add(currentToken.maxLiquidity);
+        const unused = acc[1].add(currentToken.unusedLiquidity);
+        return [max, unused];
+      },
+      [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
-
-  const totalUnusedLiquidity = useMemo(() => {
-    if (!isValid(pool)) {
-      return;
-    }
-    return pool.tokens.reduce(
-      (acc, currentToken) => acc.add(currentToken.unusedLiquidity),
-      bigNumberify(0)
+  const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
+    const shortLpTokens = (pool?.tokens ?? []).filter(
+      (lpToken) => lpToken.feeRate < 0
+    );
+    return shortLpTokens?.reduce(
+      (acc, currentToken) => {
+        acc[0].add(currentToken.maxLiquidity);
+        acc[1].add(currentToken.unusedLiquidity);
+        return acc;
+      },
+      [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
 
@@ -204,16 +211,15 @@ export const useSelectedLiquidityPool = () => {
     }
   }, [dispatch, pool]);
 
-  useEffect(() => {
-    dispatch(
-      poolsAction.onTotalLiquidityChange({
-        totalMax: totalMaxLiquidity,
-        totalUnused: totalUnusedLiquidity,
-      })
-    );
-  }, [dispatch, totalMaxLiquidity, totalUnusedLiquidity]);
-
-  return [pool, totalMaxLiquidity, totalUnusedLiquidity] as const;
+  return [
+    pool,
+    [
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    ],
+  ] as const;
 };
 
 export const useLiquidityPoolSummary = () => {

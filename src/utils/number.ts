@@ -121,3 +121,15 @@ export const formatFeeRate = (feeRate: number) => {
   const [integer, decimals] = converted.split(".");
   return plus + integer + "." + decimals.slice(0, 2);
 };
+
+export const trimLeftZero = (rawString: string) => {
+  let firstIndex = 0;
+  for (let index = 0; index < rawString.length; index++) {
+    if (rawString[index] !== "0") {
+      firstIndex = index;
+      break;
+    }
+  }
+
+  return rawString.substring(firstIndex);
+};

@@ -10,7 +10,15 @@ import { bigNumberify } from "../../../utils/number";
 
 const PoolPanelDemo = () => {
   useConnectOnce();
-  const [pool] = useSelectedLiquidityPool();
+  const [
+    pool,
+    [
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    ],
+  ] = useSelectedLiquidityPool();
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
   const [walletBalances] = useWalletBalances();
@@ -26,32 +34,6 @@ const PoolPanelDemo = () => {
   } = usePoolInput();
 
   const slots = pool?.tokens.filter((lpToken) => lpToken.balance.gt(0));
-  const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
-    const longLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate > 0
-    );
-    return longLpTokens?.reduce(
-      (acc, currentToken) => {
-        const max = acc[0].add(currentToken.maxLiquidity);
-        const unused = acc[1].add(currentToken.unusedLiquidity);
-        return [max, unused];
-      },
-      [bigNumberify(0), bigNumberify(0)] as const
-    );
-  }, [pool]);
-  const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
-    const shortLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate < 0
-    );
-    return shortLpTokens?.reduce(
-      (acc, currentToken) => {
-        acc[0].add(currentToken.maxLiquidity);
-        acc[1].add(currentToken.unusedLiquidity);
-        return acc;
-      },
-      [bigNumberify(0), bigNumberify(0)] as const
-    );
-  }, [pool]);
 
   return (
     <PoolPanel
