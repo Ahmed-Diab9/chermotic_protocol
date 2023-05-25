@@ -2,41 +2,61 @@ import { Tab } from "@headlessui/react";
 import { TradeContent } from "../../molecule/TradeContent";
 import { Button } from "../../atom/Button";
 import "../../atom/Tabs/style.css";
-import { useTradeInput } from "~/hooks/useTradeInput";
-import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useUsumBalances } from "~/hooks/useBalances";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { TradeInput } from "~/typings/trade";
+import { BigNumber } from "ethers";
+import { Token } from "~/typings/market";
 
-export const TradePanel = () => {
+export interface TradePanelProps {
+  longInput?: TradeInput;
+  onLongChange?: (
+    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => unknown;
+  onLongMethodToggle?: () => unknown;
+  onLongLeverageChange?: (value: number) => unknown;
+  onLongTakeProfitChange?: (value: number) => unknown;
+  onLongStopLossChange?: (value: number) => unknown;
+
+  shortInput?: TradeInput;
+  onShortChange?: (
+    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => unknown;
+  onShortMethodToggle?: () => unknown;
+  onShortLeverageChange?: (value: number) => unknown;
+  onShortTakeProfitChange?: (value: number) => unknown;
+  onShortStopLossChange?: (value: number) => unknown;
+
+  balances?: Record<string, BigNumber>;
+  token?: Token;
+
+  longTotalMaxLiquidity?: BigNumber;
+  longTotalUnusedLiquidity?: BigNumber;
+  shortTotalMaxLiquidity?: BigNumber;
+  shortTotalUnusedLiquidity?: BigNumber;
+}
+
+export const TradePanel = (props: TradePanelProps) => {
   const {
-    state: longInput,
-    onChange: onLongChange,
-    onMethodToggle: onLongMethodToggle,
-    onLeverageChange: onLongLeverageChange,
-    onTakeProfitChange: onLongTakeProfitChange,
-    onStopLossChange: onLongStopLossChange,
-  } = useTradeInput();
-  const {
-    state: shortInput,
-    onChange: onShortChange,
-    onMethodToggle: onShortMethodToggle,
-    onLeverageChange: onShortLeverageChange,
-    onTakeProfitChange: onShortTakeProfitChange,
-    onStopLossChange: onShortStopLossChange,
-  } = useTradeInput();
-  const [] = useUsumAccount();
-  const [balances] = useUsumBalances();
-  const [token] = useSelectedToken();
-  const [
-    _,
-    [
-      longTotalMaxLiquidity,
-      longTotalUnusedLiquidity,
-      shortTotalMaxLiquidity,
-      shortTotalUnusedLiquidity,
-    ],
-  ] = useSelectedLiquidityPool();
+    longInput,
+    onLongChange,
+    onLongMethodToggle,
+    onLongLeverageChange,
+    onLongTakeProfitChange,
+    onLongStopLossChange,
+    shortInput,
+    onShortChange,
+    onShortMethodToggle,
+    onShortLeverageChange,
+    onShortTakeProfitChange,
+    onShortStopLossChange,
+    balances,
+    token,
+    longTotalMaxLiquidity,
+    longTotalUnusedLiquidity,
+    shortTotalMaxLiquidity,
+    shortTotalUnusedLiquidity,
+  } = props;
 
   return (
     <div className="inline-flex flex-col mx-auto border">
