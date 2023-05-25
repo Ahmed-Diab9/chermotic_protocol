@@ -2,7 +2,7 @@
 // import { Avatar } from "../../atom/Avatar";
 // import { Button } from "../../atom/Button";
 // import { OptionInput } from "../../atom/OptionInput";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
@@ -12,6 +12,12 @@ import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
 import "./../../atom/Select/style.css";
 import "./style.css";
+import { TradeInput } from "~/typings/trade";
+import { isValid } from "~/utils/valid";
+import useConsole from "~/hooks/useConsole";
+import { BigNumber } from "ethers";
+import { formatDecimals, withComma } from "~/utils/number";
+import { Token } from "~/typings/market";
 
 interface TradeContentProps {
   // onClick?: () => void;
@@ -169,4 +175,60 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       </div>
     </div>
   );
+};
+
+interface AmountSwitchProps {
+  input?: TradeInput;
+  onAmountChange?: (
+    key: "collateral" | "quantity",
+    event: ChangeEvent<HTMLInputElement>
+  ) => unknown;
+}
+
+const AmountSwitch = (props: AmountSwitchProps) => {
+  const { input, onAmountChange } = props;
+  if (!isValid(input) || !isValid(onAmountChange)) {
+    return <></>;
+  }
+  switch (input?.method) {
+    case "collateral": {
+      return (
+        <div>
+          <Input
+            value={input.collateral.toString()}
+            onChange={(event) => {
+              event.preventDefault();
+              onAmountChange?.("collateral", event);
+            }}
+          />
+          <div className="flex items-center justify-end gap-2 mt-2">
+            <Tooltip label="tio" tip="tooltip" />
+            <p>Contract Qty</p>
+            <p className="text-black/30">{input?.quantity} USDC</p>
+          </div>
+        </div>
+      );
+    }
+    case "quantity": {
+      return (
+        <div>
+          <Input
+            value={input.quantity.toString()}
+            onChange={(event) => {
+              event.preventDefault();
+              onAmountChange("quantity", event);
+            }}
+          />
+          <div className="flex items-center justify-end gap-2 mt-2">
+            <Tooltip label="tio" tip="tooltip" />
+            <p>Collateral</p>
+            <p className="text-black/30">{input.collateral} USDC</p>
+          </div>
+        </div>
+      );
+    }
+    default: {
+      return <></>;
+    }
+  }
 };
