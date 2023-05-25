@@ -36,7 +36,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           stopLoss: 100 / leverage,
           takerMargin: collateral,
           makerMargin: collateral * (takeProfit / 100) * leverage,
-  };
+        };
         break;
       }
       case "quantity": {
@@ -50,13 +50,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           leverage,
           takerMargin: quantity * (stopLoss / 100),
           makerMargin: quantity * (takeProfit / 100),
-  };
+        };
         break;
       }
     }
 
     return state;
-    }
+  }
   const { type, payload } = action;
   const { method } = state;
 
@@ -80,7 +80,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         collateral: quantity * (state.stopLoss / 100),
         takerMargin: quantity * (state.stopLoss / 100),
         makerMargin: quantity * (state.takeProfit / 100),
-  };
+      };
       break;
     }
     case "takeProfit": {
@@ -97,7 +97,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           takeProfit,
           makerMargin: Number(state.quantity) * (takeProfit / 100),
         };
-    }
+      }
       break;
     }
     case "stopLoss": {
@@ -138,65 +138,113 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         state = {
           ...state,
           leverage,
-  };
-    }
+        };
+      }
       break;
     }
   }
   return state;
 };
+
+export const useTradeInput = () => {
+  const [token] = useSelectedToken();
+  const [market] = useSelectedMarket();
+  const { data: signer } = useSigner();
+
+  const [state, dispatch] = useReducer(tradeInputReducer, tradeInputInitial);
+
+  const onMethodToggle = () => {
+    dispatch({ type: "method" });
   };
 
-  const onTakeProfitRateChange = (nextValue: string) => {
-    if (nextValue.length === 0) {
-      setTakeProfitRate("");
-      dispatch(tradeAction.onTakeProfitRateChange(0));
+  const onChange = (
+    key: keyof Omit<TradeInput, "method" | "takerMargin" | "makerMargin">,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (value.length === 0) {
+      dispatch({
+        type: key,
+        payload: {
+          [key]: 0,
+        } as Record<typeof key, number>,
+      });
       return;
     }
-    const parsed = Number(nextValue);
-    if (isNaN(parsed)) {
+    const parsed = Number(trimLeftZero(value));
+    if (isNaN(parsed) || parsed === state[key]) {
       return;
     }
-    setTakeProfitRate(nextValue);
-    dispatch(tradeAction.onTakeProfitRateChange(parsed));
+
+    dispatch({
+      type: key,
+      payload: {
+        [key]: parsed,
+      } as Record<typeof key, number>,
+    });
   };
 
-  const onStopLossRateChange = (nextValue: string) => {
-    if (nextValue.length === 0) {
-      setStopLossRate("");
-      dispatch(tradeAction.onStopLossRateChange(0));
-      return;
-    }
-    const parsed = Number(nextValue);
-    if (isNaN(parsed)) {
-      return;
-    }
-    setStopLossRate(nextValue);
-    dispatch(tradeAction.onStopLossRateChange(parsed));
+  // TODO: handler function for using leverage slider
+  const onLeverageChange = (value: number) => {
+    dispatch({
+      type: "leverage",
+      payload: {
+        leverage: value,
+      },
+    });
   };
 
-  const onPoolsChange = (nextPools: any[]) => {
-    dispatch(tradeAction.onPoolsChange(nextPools));
+  const onTakeProfitChange = (value: number) => {
+    dispatch({
+      type: "takeProfit",
+      payload: {
+        takeProfit: value,
+      },
+    });
+  };
+
+  const onStopLossChange = (value: number) => {
+    dispatch({
+      type: "stopLoss",
+      payload: {
+        stopLoss: value,
+      },
+    });
+  };
+
+  const onOpenPosition = async () => {
+    if (!isValid(market)) {
+      errorLog("no markets selected");
+      return;
+    }
+    if (!isValid(signer)) {
+      errorLog("no signers");
+      return;
+    }
+    const router = getDeployedContract(
+      "USUMRouter",
+      CHAIN,
+      signer
+    ) as USUMRouter;
+
+    // TODO: Decimals needed for opening positions
+    const response = await router.openPosition(
+      market?.address,
+      state.quantity,
+      state.leverage,
+      state.takerMargin,
+      state.makerMargin,
+      30,
+      Math.random() / 1000 + 30
+    );
   };
 
   return {
-    type,
-    unit,
-    leverage,
-    collateral,
-    contractQuantity,
-    takeProfitRate,
-    stopLossRate,
-    pools,
-    onTypeToggle,
-    onUnitToggle,
+    state,
+    onChange,
+    onMethodToggle,
     onLeverageChange,
-    onCollateralChange,
-    onContractQuantityChange,
-    onTakeProfitRateChange,
-    onStopLossRateChange,
-    onPoolsChange,
+    onTakeProfitChange,
+    onStopLossChange,
   };
 };
-
-export default useTradeInput;
