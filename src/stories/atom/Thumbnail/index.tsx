@@ -1,22 +1,14 @@
 import "./style.css";
 
 interface ThumbnailProps {
-  label?: string;
-  active?: boolean;
-  backgroundColor?: string;
+  // label?: string;
   size?: "xs" | "sm" | "base" | "lg" | "xl";
-  disabled?: boolean;
   onClick?: () => unknown;
   src?: string;
 }
 
-export const Thumbnail = ({
-  label,
-  active = false,
-  size = "base",
-  backgroundColor,
-  ...props
-}: ThumbnailProps) => {
+export const Thumbnail = (props: ThumbnailProps) => {
+  const { size = "base" } = props;
   const src = () => props.src;
 
   return (

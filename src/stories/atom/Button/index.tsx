@@ -9,32 +9,34 @@ interface ButtonProps {
   iconLeft?: any;
   iconOnly?: any;
   iconRight?: any;
+  disabled?: boolean;
   onClick?: () => unknown;
 }
 
-export const Button = ({
-  label,
-  css = "default",
-  size = "base",
-  align = "center",
-  className,
-  iconLeft,
-  iconOnly,
-  iconRight,
-  ...props
-}: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
+  const {
+    label,
+    css = "default",
+    size = "base",
+    align = "center",
+    className,
+    iconLeft,
+    iconOnly,
+    iconRight,
+    disabled = false,
+  } = props;
   const btnIconOnly = iconOnly ? "btn-icon-only" : "";
 
   return (
     <button
       type="button"
       className={`btn btn-${size} btn-${css} ${className} ${btnIconOnly}`}
-      {...props}
+      disabled={disabled}
     >
-      <div className={`flex items-center justify-${align}`}>
-        <span>{iconLeft !== undefined ? iconLeft : null}</span>
-        <span>{iconOnly !== undefined ? iconOnly : label}</span>
-        <span>{iconRight !== undefined ? iconRight : null}</span>
+      <div className={`flex items-center gap-1 justify-${align}`}>
+        {iconLeft !== undefined ? iconLeft : null}
+        {iconOnly !== undefined ? iconOnly : label}
+        {iconRight !== undefined ? iconRight : null}
       </div>
     </button>
   );

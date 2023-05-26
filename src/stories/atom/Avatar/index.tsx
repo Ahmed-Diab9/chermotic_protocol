@@ -15,7 +15,15 @@ interface AvatarProps {
 }
 
 export const Avatar = (props: AvatarProps) => {
-  const { className, size, gap, src, label, fontSize, fontWeight } = props;
+  const {
+    className,
+    size = "base",
+    gap = "2",
+    src,
+    label,
+    fontSize = "base",
+    fontWeight = "semibold",
+  } = props;
 
   return (
     <div className={`avatar ${className}`}>

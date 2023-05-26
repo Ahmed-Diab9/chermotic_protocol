@@ -2,22 +2,14 @@ import { Menu } from "@headlessui/react";
 import "./style.css";
 
 interface DropdownProps {
-  label: string;
-  size?: "sm" | "base" | "lg";
-  align?: "left" | "center" | "right";
   onClick?: () => void;
 }
 
-export const Dropdown = ({
-  label,
-  size = "base",
-  align = "left",
-  ...props
-}: DropdownProps) => {
+export const Dropdown = (props: DropdownProps) => {
   return (
-    <div className={`dropdown text-${align}`}>
+    <div className="dropdown">
       <Menu>
-        <Menu.Button>{label}</Menu.Button>
+        <Menu.Button>dropdown</Menu.Button>
         <Menu.Items>
           <Menu.Item>
             {({ active }) => (

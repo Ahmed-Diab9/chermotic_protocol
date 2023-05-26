@@ -5,16 +5,12 @@ interface ToggleButtonProps {
   label?: string;
   size?: "xs" | "sm" | "base" | "lg";
   className?: string;
+  disabled?: boolean;
   onToggle: (checked: boolean) => void;
 }
 
-export const ToggleButton = ({
-  label,
-  onToggle,
-  size = "base",
-  className,
-  ...props
-}: ToggleButtonProps) => {
+export const ToggleButton = (props: ToggleButtonProps) => {
+  const { label, onToggle, size = "base", className, disabled = false } = props;
   const [isChecked, setIsChecked] = useState(false);
   const handleToggle = () => {
     setIsChecked(!isChecked);
@@ -27,6 +23,7 @@ export const ToggleButton = ({
       className={`btn btn-${size} ${className} toggle-${
         isChecked ? "on" : "off"
       }`}
+      disabled={disabled}
       onClick={handleToggle}
       {...props}
     >

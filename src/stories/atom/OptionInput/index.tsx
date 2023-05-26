@@ -21,26 +21,27 @@ interface OptionInputProps {
   onButtonClick?: (value: string) => unknown;
 }
 
-export const OptionInput = ({
-  label,
-  value,
-  maxValue,
-  placeholder = "0",
-  type,
-  assetSrc,
-  size = "base",
-  css = "default",
-  align = "right",
-  onChange,
-  onButtonClick,
-  ...props
-}: OptionInputProps) => {
+export const OptionInput = (props: OptionInputProps) => {
+  const {
+    label,
+    value,
+    maxValue,
+    placeholder = "0",
+    type,
+    assetSrc,
+    size = "base",
+    css = "default",
+    align = "right",
+    onChange,
+    onButtonClick,
+  } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
     const nextValue = bigNumberify(maxValue)?.mul(ratio).div(100).toString();
     setRatio(ratio);
     onButtonClick?.(nextValue ?? "");
   };
+
   return (
     <div className="inline-flex flex-col">
       {/* <div
