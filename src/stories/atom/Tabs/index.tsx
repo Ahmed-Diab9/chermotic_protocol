@@ -2,20 +2,12 @@ import { Tab } from "@headlessui/react";
 import "./style.css";
 
 interface TabsProps {
-  label: string;
-  size?: "sm" | "md" | "lg";
-  align?: "left" | "center" | "right";
   onClick?: () => void;
 }
 
-export const Tabs = ({
-  label,
-  size = "md",
-  align = "left",
-  ...props
-}: TabsProps) => {
+export const Tabs = (props: TabsProps) => {
   return (
-    <div className={`tabs text-${align}`}>
+    <div className="tabs">
       <Tab.Group>
         <Tab.List>
           <Tab>Tab 1</Tab>

@@ -3,9 +3,6 @@ import { Listbox } from "@headlessui/react";
 import "./style.css";
 
 interface SelectProps {
-  label: string;
-  size?: "sm" | "md" | "lg";
-  align?: "left" | "center" | "right";
   onClick?: () => void;
 }
 
@@ -17,16 +14,11 @@ const listitem = [
   { id: 5, title: "select 05", unavailable: false },
 ];
 
-export const Select = ({
-  label,
-  size = "md",
-  align = "left",
-  ...props
-}: SelectProps) => {
+export const Select = (props: SelectProps) => {
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
   return (
-    <div className={`select text-${align}`}>
+    <div className="select">
       <Listbox value={selectedItem} onChange={setSelectedItem}>
         <Listbox.Button>{selectedItem.title}</Listbox.Button>
         <Listbox.Options>
