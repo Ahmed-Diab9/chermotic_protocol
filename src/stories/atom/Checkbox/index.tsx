@@ -3,18 +3,13 @@ import "./style.css";
 interface CheckboxProps {
   label?: string;
   size?: "sm" | "base" | "lg";
-  className?: string;
   onClick?: () => unknown;
+  disabled?: boolean;
   isChecked?: boolean;
 }
 
-export const Checkbox = ({
-  size = "base",
-  className,
-  ...props
-}: CheckboxProps) => {
-  const label = () => props.label;
-  const isChecked = () => props.isChecked;
+export const Checkbox = (props: CheckboxProps) => {
+  const { label, size = "base", disabled = false, isChecked } = props;
 
   return (
     <div className={`checkbox checkbox-${size}`}>
@@ -22,12 +17,12 @@ export const Checkbox = ({
         className="checkbox-input"
         type="checkbox"
         value=""
-        id={`checkbox-${label()}`}
-        checked={isChecked()}
-        {...props}
+        id={`checkbox-${label}`}
+        checked={isChecked}
+        disabled={disabled}
       />
-      <label className="checkbox-label" htmlFor={`checkbox-${label()}`}>
-        {label()}
+      <label className="checkbox-label" htmlFor={`checkbox-${label}`}>
+        {label}
       </label>
     </div>
   );
