@@ -44,26 +44,23 @@ const nftInfo = [
   {
     asset: "USDC",
     market: "ETH/USD",
-    name: "+0.03%",
-    quantity: 12,
     price: 240,
+    bin: 12,
     image:
       "https://assets.nick.com/uri/mgid:arc:imageassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
   },
   {
     asset: "USDC",
     market: "ETH/USD",
-    name: "+0.03%",
-    quantity: 12,
     price: 240,
+    bin: 12,
     image: undefined,
   },
   {
     asset: "USDC",
     market: "ETH/USD",
-    name: "+0.03%",
-    quantity: 12,
     price: 240,
+    bin: 12,
     image: undefined,
   },
 ];
@@ -254,30 +251,25 @@ export const WalletPopover = ({
                                 {nftInfo.map((item, index) => (
                                   <div
                                     key={`${item.asset}-${index}`}
-                                    className="flex flex-col pb-3 border-b last:border-b-0"
+                                    className="flex pb-3 border-b last:border-b-0"
                                   >
-                                    <div className="flex gap-2">
-                                      {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
-                                      <p className="pr-2 border-r">
-                                        {item.asset}
-                                      </p>
-                                      <p className="pr-2 border-r">
-                                        {item.market}
-                                      </p>
-                                      <p className="text-base font-medium text-gray-900">
-                                        {item.name}
-                                      </p>
-                                    </div>
-                                    <div className="flex mt-3">
-                                      <div className="mr-auto">
-                                        <p className="text-base font-medium text-gray-900">
-                                          {item.quantity}
+                                    <Avatar size="lg" src={item.image} />
+                                    <div className="ml-3">
+                                      <div className="flex">
+                                        {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
+                                        <p className="pr-2 mr-2 border-r">
+                                          {item.asset}
                                         </p>
+                                        <p>{item.market}</p>
+                                      </div>
+                                      <div className="mr-auto">
                                         <p className="mt-2 text-base text-gray-500">
                                           {item.price} USDC
                                         </p>
+                                        <p className="mt-2 text-base font-medium text-gray-900">
+                                          {item.bin} Bins
+                                        </p>
                                       </div>
-                                      <Thumbnail size="base" src={item.image} />
                                     </div>
                                   </div>
                                 ))}
