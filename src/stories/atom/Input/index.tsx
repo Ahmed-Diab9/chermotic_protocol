@@ -18,27 +18,27 @@ interface InputProps {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
 }
 
-export const Input = ({
-  label,
-  placeholder,
-  assetSrc,
-  unit,
-  type,
-  // className,
-  size = "base",
-  css = "default",
-  align = "left",
-  value,
-  onChange,
-  ...props
-}: InputProps) => {
+export const Input = (props: InputProps) => {
+  const {
+    placeholder,
+    assetSrc,
+    unit,
+    type = "number",
+    className,
+    size = "base",
+    css = "default",
+    align = "left",
+    value,
+    onChange,
+  } = props;
+
   return (
     <div
-      className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
+      className={`inline-flex gap-3 items-center input input-${size} input-${css} ${className}`}
     >
-      {assetSrc && <Avatar className="" src={assetSrc} />}
+      {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
       <input
-        type="number"
+        type={type}
         className={`text-${align}`}
         value={value}
         placeholder={placeholder}
@@ -47,7 +47,7 @@ export const Input = ({
           onChange && onChange(event);
         }}
       />
-      {unit && <span className="text-black/30">{unit}</span>}
+      {unit ? <span className="text-black/30">{unit}</span> : null}
     </div>
   );
 };

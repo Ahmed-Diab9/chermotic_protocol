@@ -1,33 +1,14 @@
-import { Input } from "../Input";
 import { Button } from "../Button";
 import "../../atom/Input/style.css";
 
 interface LeverageOptionProps {
-  label?: string;
   value?: number;
-  totalValue?: string;
-  placeholder?: string;
-  assetSrc?: string;
-  type?: string;
-  size?: "sm" | "base" | "lg";
-  css?: "default" | "active";
-  align?: "center" | "left" | "right";
-  disabled?: boolean;
   onClick?: (nextValue: number) => unknown;
 }
 
-export const LeverageOption = ({
-  label,
-  value,
-  totalValue,
-  placeholder = "0",
-  type,
-  assetSrc,
-  size = "base",
-  css = "default",
-  align = "right",
-  onClick,
-}: LeverageOptionProps) => {
+export const LeverageOption = (props: LeverageOptionProps) => {
+  const { value, onClick } = props;
+
   return (
     <div className="flex gap-1">
       <Button
