@@ -21,3 +21,11 @@ export const Default: Story = {
     tip: "tooltip",
   },
 };
+
+export const WithLink: Story = {
+  args: {
+    label: "hover",
+    tip: "tooltip",
+    outLink: "/trade",
+  },
+};
