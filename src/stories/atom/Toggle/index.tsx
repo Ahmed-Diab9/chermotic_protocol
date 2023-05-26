@@ -10,12 +10,8 @@ interface ToggleProps {
   onClick?: () => unknown;
 }
 
-export const Toggle = ({
-  label,
-  size = "base",
-  fontSize = "base",
-  ...props
-}: ToggleProps) => {
+export const Toggle = (props: ToggleProps) => {
+  const { label, size = "base", fontSize = "base", disabled = false } = props;
   const [enabled, setEnabled] = useState(false);
 
   return (
@@ -27,6 +23,7 @@ export const Toggle = ({
         <Switch
           checked={enabled}
           onChange={setEnabled}
+          disabled={disabled}
           className={`toggle toggle-${size} ${
             enabled
               ? "bg-active dark:bg-black"
