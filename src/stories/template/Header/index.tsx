@@ -1,6 +1,6 @@
+import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { WalletPopover } from "../../molecule/WalletPopover";
-import "./style.css";
 
 type User = {
   name: string;
@@ -21,10 +21,10 @@ export const Header = ({
   onCreateAccount,
 }: HeaderProps) => (
   <header>
-    <div className="flex items-center wrapper">
-      <div className="flex items-center gap-6">
-        <a href="/" className="font-bold">
-          CHROMATIC
+    <div className="h-[100px] px-10 py-5 flex items-center justify-between">
+      <div className="flex items-center gap-12 text-lg">
+        <a href="/" className="mr-4 font-bold">
+          <img src="/src/assets/images/logo_simple.svg" alt="Chromatic logo" />
         </a>
         <a href="/trade">Trade</a>
         <a href="/pool">Pool</a>
@@ -37,7 +37,20 @@ export const Header = ({
           </>
         ) : (
           <>
-            <Button css="active" onClick={onLogin} label="Connect" />
+            <button
+              onClick={onLogin}
+              title="connect"
+              className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]"
+            >
+              <Avatar
+                src="/src/assets/images/arbitrum.svg"
+                label="Connect"
+                size="lg"
+                fontSize="lg"
+                fontWeight="normal"
+                gap="5"
+              />
+            </button>
           </>
         )}
       </div>
