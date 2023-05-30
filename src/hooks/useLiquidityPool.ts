@@ -3,13 +3,14 @@ import {
   USUMLpToken__factory,
   USUMMarketFactory,
   USUMMarket__factory,
+  USUMRouter,
   getDeployedContract,
 } from "@quarkonix/usum";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 import { isValid } from "../utils/valid";
-import { errorLog } from "../utils/log";
+import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
@@ -24,6 +25,7 @@ import { poolsAction } from "../store/reducer/pools";
 import { BigNumber, ethers } from "ethers";
 import { createSlotValueMock } from "../mock/slots";
 import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
+import useDeadline from "./useDeadline";
 
 const fetchLpTokenMetadata = async (
   lpToken: USUMLpToken,
@@ -107,6 +109,7 @@ export const useLiquidityPool = () => {
           );
 
           return {
+            address: lpTokenAddress,
             tokenAddress,
             marketAddress: market.address,
             tokens: baseFeeRates.map((feeRate, feeRateIndex) => {
@@ -165,7 +168,10 @@ export const useSelectedLiquidityPool = () => {
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const [pools] = useLiquidityPool();
+  const { data: signer } = useSigner();
+  const { address } = useAccount();
   const dispatch = useAppDispatch();
+  const deadline = useDeadline();
 
   const pool = useMemo(() => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
@@ -211,6 +217,40 @@ export const useSelectedLiquidityPool = () => {
     }
   }, [dispatch, pool]);
 
+  const onRemoveLiquidity = async (feeRate: number, amount: number) => {
+    if (!isValid(signer) || !isValid(address)) {
+      return;
+    }
+    if (!isValid(pool)) {
+      return;
+    }
+
+    const router = getDeployedContract(
+      "USUMRouter",
+      "anvil",
+      signer
+    ) as USUMRouter;
+
+    const lpToken = USUMLpToken__factory.connect(pool.address, signer);
+    const isApproved = await lpToken.isApprovedForAll(address, router.address);
+    if (!isApproved) {
+      infoLog("Approving all lp tokens");
+      await lpToken.setApprovalForAll(router.address, true);
+    }
+    const expandedAmount = bigNumberify(amount).mul(
+      expandDecimals(token?.decimals ?? 1)
+    );
+
+    await router.removeLiquidity(
+      pool.marketAddress,
+      feeRate,
+      expandedAmount,
+      0,
+      address,
+      deadline
+    );
+  };
+
   return [
     pool,
     [
@@ -219,6 +259,7 @@ export const useSelectedLiquidityPool = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     ],
+    onRemoveLiquidity,
   ] as const;
 };
 
