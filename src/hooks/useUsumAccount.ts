@@ -9,6 +9,7 @@ import { useRouter } from "~/hooks/useRouter";
 
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
+import { ADDRESS_ZERO } from "~/utils/address";
 
 export const useUsumAccount = () => {
   const { data: signer } = useSigner();
@@ -25,6 +26,9 @@ export const useUsumAccount = () => {
     fetchKey,
     async ([router, signer]) => {
       const address = await router.getAccount();
+      if (address === ADDRESS_ZERO) {
+        return;
+      }
       return Account__factory.connect(address, signer);
     }
   );
