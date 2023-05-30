@@ -14,7 +14,6 @@ import "./../../atom/Select/style.css";
 import "./style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
-import useConsole from "~/hooks/useConsole";
 import { BigNumber } from "ethers";
 import { formatDecimals, withComma } from "~/utils/number";
 import { Token } from "~/typings/market";
