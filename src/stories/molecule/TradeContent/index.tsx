@@ -242,7 +242,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
       </section>
       <div className="px-10">
-        <Button label="Sell" size="xl" className="w-full" />
+        <Button
+          label={direction === "long" ? "Buy" : "Sell"}
+          size="xl"
+          className="w-full"
+          onClick={() => {
+            onOpenPosition?.();
+          }}
+        />
         {/* <Button label="Buy" size="xl" className="w-full" /> */}
       </div>
     </div>
