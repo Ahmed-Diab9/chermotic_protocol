@@ -5,6 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+::before,
+::after {
+  border-color: #eee;
+}
+
 body {
   @apply font-mono;
   font-size: 13px;
