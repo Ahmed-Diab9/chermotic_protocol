@@ -10,6 +10,7 @@ import AssetPopoverDemo from "./pages/demo/asset-popover";
 import PoolPanelDemo from "./pages/demo/pool-panel";
 import TradePanelDemo from "./pages/demo/trade-panel";
 import WagmiTest from "./components/WagmiTest";
+import PositionsPanelDemo from "./pages/demo/positions-panel";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
   {
     path: "/demo/trade-panel",
     element: <TradePanelDemo />,
+  },
+  {
+    path: "/demo/positions-panel",
+    element: <PositionsPanelDemo />,
   },
 ]);
 
