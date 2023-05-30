@@ -65,7 +65,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
             <p className="text-black/30">
-              {balances && token && withComma(balances[token.name])} USDC
+              {balances &&
+                token &&
+                withComma(
+                  formatDecimals(balances[token.name], token.decimals, 2)
+                )}{" "}
+              USDC
             </p>
           </div>
         </div>
