@@ -5,7 +5,6 @@ import {
   useSelectedToken,
   useSettlementToken,
 } from "~/hooks/useSettlementToken";
-import { usePosition } from "~/hooks/usePosition";
 import { useAccount } from "wagmi";
 import { useFeeRate } from "~/hooks/useFeeRate";
 import { infoLog } from "~/utils/log";
@@ -18,8 +17,6 @@ const UsumAccount = () => {
   const [tokens] = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
-
-  const [positionIds, fetchPositionIds] = usePosition();
 
   useEffect(() => {
     infoLog("feeRate", feeRate);
