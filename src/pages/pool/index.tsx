@@ -1,6 +1,6 @@
 import React from "react";
 import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { PoolPanel } from "../../stories/template/PoolPanel";
 import { Footer } from "../../stories/template/Footer";
 import { Button } from "../../stories/atom/Button";

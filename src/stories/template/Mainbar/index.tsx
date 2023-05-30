@@ -1,22 +1,13 @@
-import { Button } from "../../atom/Button";
 import { MarketSelect } from "../../molecule/MarketSelect";
 import { AssetPopover } from "../../molecule/AssetPopover";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
-// import "./style.css";
 
-type User = {
-  name: string;
-  contract: string;
-};
+// interface MainBarProps {
+// onLogin: () => void;
+// onLogout: () => void;
+// }
 
-interface MainBarProps {
-  user?: User;
-  // onLogin: () => void;
-  // onLogout: () => void;
-}
-
-export const MainBar = ({ user }: MainBarProps) => (
-  <div className="p-4">
+export const MainBar = () => (
+  <div className="px-10 py-5">
     <div className="flex gap-5 justify-stretch">
       <MarketSelect />
       <AssetPopover />
