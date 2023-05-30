@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 
 export interface LiquidityPool {
+  address: string;
   tokenAddress: string;
   marketAddress: string;
   tokens: LPToken[];
@@ -27,3 +28,6 @@ export interface LiquidityPoolSummary {
   slots: number;
   thumbnail?: string;
 }
+
+export type ADD_LIQUIDITY_STATUS = "IDLE" | "PENDING" | "FINISHED";
+export type REMOVE_LIQUIDITY_STATUS = "IDLE" | "PENDING" | "FINISHED";

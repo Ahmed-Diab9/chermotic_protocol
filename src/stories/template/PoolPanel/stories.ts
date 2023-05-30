@@ -25,6 +25,7 @@ export const Default: Story = {
       USDC: BigNumber.from(100),
     },
     pool: {
+      address: "0x8888888888888888888888888888888888888888",
       tokenAddress: "0x8888888888888888888888888888888888888888",
       marketAddress: "0x8888888888888888888888888888888888888888",
       tokens: [],

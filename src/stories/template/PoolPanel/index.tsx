@@ -8,18 +8,24 @@ import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
-import { LiquidityPool } from "../../../typings/pools";
+import { LPToken, LiquidityPool } from "../../../typings/pools";
 import { Token } from "../../../typings/market";
 import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
   formatFeeRate,
+  trimLeftZero,
   withComma,
 } from "../../../utils/number";
 import { SLOT_VALUE_DECIMAL } from "../../../configs/pool";
-import { useMemo } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
+import { createPortal } from "react-dom";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
+import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { errorLog, infoLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
 
 interface PoolPanelProps {
   token?: Token;
@@ -74,6 +80,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
       return acc.add(value);
     }, bigNumberify(0));
   }, [pool?.tokens]);
+
+  const [lpToken, setLpToken] = useState<LPToken>();
 
   return (
     <div className="inline-flex flex-col mx-auto border">
@@ -357,7 +365,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                   )}
                                 </div>
                                 <div className="w-[16%] text-right">
-                                  <Button label="Remove" />
+                                  <Button
+                                    label="Remove"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      if (lpToken.balance.gt(0)) {
+                                        setLpToken(lpToken);
+                                      }
+                                    }}
+                                  />
                                   <Button
                                     className="ml-2"
                                     iconOnly={<ArrowTopRightOnSquareIcon />}
@@ -453,6 +469,141 @@ export const PoolPanel = (props: PoolPanelProps) => {
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
+      </div>
+      {lpToken &&
+        createPortal(
+          <LiquidityRemove
+            lpToken={lpToken}
+            onClickAway={() => {
+              if (isValid(lpToken)) {
+                setLpToken(undefined);
+              }
+            }}
+          />,
+          document.getElementById("modal")!
+        )}
+    </div>
+  );
+};
+
+type PoolRemoveState = {
+  removableRate: number;
+  tokens: number;
+};
+
+type PoolRemoveAction<T extends string = keyof PoolRemoveState> =
+  T extends keyof PoolRemoveState
+    ? {
+        type: T;
+        payload: Record<T, PoolRemoveState[T]>;
+      }
+    : never;
+
+const poolRemoveReducer = (
+  state: PoolRemoveState,
+  action: PoolRemoveAction
+): PoolRemoveState => {
+  const { type, payload } = action;
+  switch (type) {
+    case "removableRate": {
+      return {
+        ...state,
+        removableRate: payload.removableRate,
+      };
+    }
+    case "tokens": {
+      return {
+        ...state,
+        tokens: payload.tokens,
+      };
+    }
+  }
+};
+
+interface LiquidityRemoveProps {
+  lpToken: LPToken;
+  onClickAway?: () => unknown;
+}
+
+const LiquidityRemove = (props: LiquidityRemoveProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const { lpToken, onClickAway } = props;
+  const [token] = useSelectedToken();
+  const [state, dispatch] = useReducer(poolRemoveReducer, {
+    removableRate: 87.5,
+    tokens: 0,
+  });
+  const [_, __, onRemoveLiquidity] = useSelectedLiquidityPool();
+
+  useEffect(() => {
+    const _onClickAway = (event: MouseEvent) => {
+      const clicked = event.target;
+      if (!(clicked instanceof Node)) {
+        return;
+      }
+      const isContained = modalRef.current?.contains(clicked);
+      if (!isContained) {
+        onClickAway?.();
+      }
+    };
+    document.addEventListener("click", _onClickAway);
+
+    return () => {
+      document.removeEventListener("click", _onClickAway);
+    };
+  }, [onClickAway, lpToken]);
+  return (
+    <div
+      className="fixed top-6 left-auto right-6 shadow-md py-2 px-4 bg-white"
+      ref={modalRef}
+    >
+      <h2>Liquidity Remove Demo</h2>
+      <h3 className="text-xl">
+        {lpToken.name} {lpToken.description}
+      </h3>
+      <p>{formatDecimals(lpToken.balance, token?.decimals, 2)} Tokens</p>
+      <p>
+        {formatDecimals(
+          lpToken.balance
+            .mul(lpToken.slotValue)
+            .div(expandDecimals(SLOT_VALUE_DECIMAL)),
+          token?.decimals,
+          2
+        )}{" "}
+        USDC
+      </p>
+      <input
+        type="number"
+        value={state.tokens}
+        onChange={(event) => {
+          const trimmed = trimLeftZero(event.target.value);
+          const parsed = Number(trimmed);
+          if (isNaN(parsed)) {
+            return;
+          }
+          dispatch({ type: "tokens", payload: { tokens: parsed } });
+        }}
+      />
+      <div className="flex gap-x-2">
+        <Button
+          label="Remove"
+          className="mt-2"
+          onClick={() => {
+            const expandedAmount = bigNumberify(state.tokens).mul(
+              expandDecimals(token?.decimals)
+            );
+            const limitation = lpToken.balance
+              .mul(state.removableRate * 100)
+              .div(expandDecimals(2 + 2));
+            infoLog(expandedAmount, limitation);
+
+            if (expandedAmount.lt(limitation)) {
+              onRemoveLiquidity(lpToken.feeRate, state.tokens);
+            } else {
+              errorLog("too much tokens");
+            }
+          }}
+        />
       </div>
     </div>
   );

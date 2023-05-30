@@ -15,13 +15,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: "Base Default LeverageOption",
+    value: 5,
   },
 };
 
 export const WithAssetImage: Story = {
   args: {
-    label: "Base Default LeverageOption with Image",
-    assetSrc: "src/assets/images/usdc.svg",
+    value: 5,
   },
 };
