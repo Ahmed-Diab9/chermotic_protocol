@@ -34,6 +34,9 @@ export interface TradePanelProps {
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
+
+  onOpenLongPosition?: () => unknown;
+  onOpenShortPosition?: () => unknown;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
@@ -56,6 +59,8 @@ export const TradePanel = (props: TradePanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    onOpenLongPosition,
+    onOpenShortPosition,
   } = props;
 
   return (
@@ -77,20 +82,7 @@ export const TradePanel = (props: TradePanelProps) => {
         <div className="flex">
           <div className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px] border-r">
             <TradeContent
-              balances={balances}
-              token={token}
-              input={longInput}
-              totalMaxLiquidity={longTotalMaxLiquidity}
-              totalUnusedLiquidity={longTotalUnusedLiquidity}
-              onMethodToggle={onLongMethodToggle}
-              onInputChange={onLongChange}
-              onLeverageChange={onLongLeverageChange}
-              onTakeProfitChange={onLongTakeProfitChange}
-              onStopLossChange={onLongStopLossChange}
-            />
-          </div>
-          <div className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
-            <TradeContent
+              direction="short"
               balances={balances}
               token={token}
               input={shortInput}
@@ -101,6 +93,23 @@ export const TradePanel = (props: TradePanelProps) => {
               onLeverageChange={onShortLeverageChange}
               onTakeProfitChange={onShortTakeProfitChange}
               onStopLossChange={onShortStopLossChange}
+              onOpenPosition={onOpenShortPosition}
+            />
+          </div>
+          <div className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+            <TradeContent
+              direction="long"
+              balances={balances}
+              token={token}
+              input={longInput}
+              totalMaxLiquidity={longTotalMaxLiquidity}
+              totalUnusedLiquidity={longTotalUnusedLiquidity}
+              onMethodToggle={onLongMethodToggle}
+              onInputChange={onLongChange}
+              onLeverageChange={onLongLeverageChange}
+              onTakeProfitChange={onLongTakeProfitChange}
+              onStopLossChange={onLongStopLossChange}
+              onOpenPosition={onOpenLongPosition}
             />
           </div>
         </div>

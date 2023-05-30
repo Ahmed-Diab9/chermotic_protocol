@@ -1,6 +1,7 @@
 import { useUsumBalances } from "~/hooks/useBalances";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { usePosition } from "~/hooks/usePosition";
 import { useSelectedToken } from "~/hooks/useSettlementToken";
 import { useTradeInput } from "~/hooks/useTradeInput";
 import { TradePanel } from "~/stories/template/TradePanel";
@@ -14,6 +15,7 @@ const TradePanelDemo = () => {
     onLeverageChange: onLongLeverageChange,
     onTakeProfitChange: onLongTakeProfitChange,
     onStopLossChange: onLongStopLossChange,
+    onOpenPosition: onOpenLongPosition,
   } = useTradeInput();
   const {
     state: shortInput,
@@ -22,6 +24,7 @@ const TradePanelDemo = () => {
     onLeverageChange: onShortLeverageChange,
     onTakeProfitChange: onShortTakeProfitChange,
     onStopLossChange: onShortStopLossChange,
+    onOpenPosition: onOpenShortPosition,
   } = useTradeInput();
   const [balances] = useUsumBalances();
   const [token] = useSelectedToken();
@@ -34,6 +37,7 @@ const TradePanelDemo = () => {
       shortTotalUnusedLiquidity,
     ],
   ] = useSelectedLiquidityPool();
+  const [positions] = usePosition();
 
   return (
     <TradePanel
@@ -55,6 +59,8 @@ const TradePanelDemo = () => {
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}
       shortTotalMaxLiquidity={shortTotalMaxLiquidity}
       shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+      onOpenLongPosition={onOpenLongPosition}
+      onOpenShortPosition={onOpenShortPosition}
     />
   );
 };
