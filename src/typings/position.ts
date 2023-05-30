@@ -1,35 +1,34 @@
 import { BigNumber } from "ethers";
 
 export interface Position {
-  asset: string;
+  token: string;
   market: string;
   type: "LONG" | "SHORT";
-  contractQuantity: BigNumber;
+  entryPrice: BigNumber;
+  quantity: BigNumber;
   collateral: BigNumber;
-  takeProfit: {
-    rate: BigNumber;
-    liquidationPrice: BigNumber;
-  };
-  stopLoss: {
-    rate: BigNumber;
-    liquidationPrice: BigNumber;
-  };
+  takeProfit: BigNumber;
+  stopLoss: BigNumber;
+  profitPrice: BigNumber;
+  lossPrice: BigNumber;
   profitAndLoss: BigNumber;
   entryTime: BigNumber;
 }
 
 export interface PositionResponse {
   id: BigNumber;
-  oracleVersion: BigNumber;
+  openVersion: BigNumber;
+  closeVersion: BigNumber;
   qty: BigNumber;
-  leverage: BigNumber;
-  timestamp: BigNumber;
+  leverage: number;
+  openTimestamp: BigNumber;
+  closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
   _slotMargins: LpSlotMargin[];
 }
 
 export interface LpSlotMargin {
-  tradingFeeRate: BigNumber;
+  tradingFeeRate: number;
   amount: BigNumber;
 }
