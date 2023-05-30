@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import "./style.css";
 
 interface ButtonProps {
@@ -10,7 +11,7 @@ interface ButtonProps {
   iconOnly?: any;
   iconRight?: any;
   disabled?: boolean;
-  onClick?: () => unknown;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export const Button = (props: ButtonProps) => {
@@ -24,6 +25,7 @@ export const Button = (props: ButtonProps) => {
     iconOnly,
     iconRight,
     disabled = false,
+    onClick,
   } = props;
   const btnIconOnly = iconOnly ? "btn-icon-only" : "";
 
@@ -32,6 +34,7 @@ export const Button = (props: ButtonProps) => {
       type="button"
       className={`btn btn-${size} btn-${css} ${className} ${btnIconOnly}`}
       disabled={disabled}
+      onClick={onClick}
     >
       <div className={`flex items-center gap-1 justify-${align}`}>
         {iconLeft !== undefined ? iconLeft : null}
