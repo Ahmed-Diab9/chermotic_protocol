@@ -325,7 +325,9 @@ export const WalletPopover = ({
                   <Button
                     label="close popover"
                     iconOnly={<ChevronDoubleRightIcon />}
-                    onClick={close}
+                    onClick={() => {
+                      close();
+                    }}
                     size="lg"
                     css="noline"
                     className="absolute left-0 t-10 ml-[-60px]"

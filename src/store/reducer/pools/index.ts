@@ -1,72 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { BigNumber } from "ethers";
-import { bigNumberify } from "../../../utils/number";
 import { LiquidityPool } from "../../../typings/pools";
-import { isValid } from "../../../utils/valid";
 
 interface PoolState {
-  type: "ADD" | "REMOVE";
-  input: BigNumber;
-  minTradeFee: BigNumber;
-  maxTradeFee: BigNumber;
   selectedPool?: LiquidityPool;
-  totalMaxLiquidity?: BigNumber;
-  totalUnusedLiquidity?: BigNumber;
 }
 
 const initialState: PoolState = {
-  type: "ADD",
-  input: bigNumberify(0),
-  minTradeFee: bigNumberify(0),
-  maxTradeFee: bigNumberify(0),
   selectedPool: undefined,
-  totalMaxLiquidity: undefined,
-  totalUnusedLiquidity: undefined,
 };
 
 const poolsSlice = createSlice({
   name: "pools",
   initialState,
   reducers: {
-    onTypeToggle: (state, action: PayloadAction<"ADD" | "REMOVE">) => {
-      state.type = action.payload;
-    },
-    onInputChange: (state, action: PayloadAction<number>) => {
-      state.input = bigNumberify(action.payload);
-    },
-    onTradeFeeChange: (
-      state,
-      action: PayloadAction<{ minmax: "MIN" | "MAX"; value: number }>
-    ) => {
-      const { minmax, value } = action.payload;
-      switch (minmax) {
-        case "MIN": {
-          state.minTradeFee = bigNumberify(value);
-          break;
-        }
-        case "MAX": {
-          state.maxTradeFee = bigNumberify(value);
-          break;
-        }
-      }
-    },
     onPoolSelect: (state, action: PayloadAction<LiquidityPool>) => {
       state.selectedPool = action.payload;
-    },
-    onTotalLiquidityChange: (
-      state,
-      action: PayloadAction<
-        Partial<{ totalMax: BigNumber; totalUnused: BigNumber }>
-      >
-    ) => {
-      const { totalMax, totalUnused } = action.payload;
-      if (isValid(totalMax)) {
-        state.totalMaxLiquidity = totalMax;
-      }
-      if (isValid(totalUnused)) {
-        state.totalUnusedLiquidity = totalUnused;
-      }
     },
   },
 });
