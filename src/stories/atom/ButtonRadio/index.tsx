@@ -35,7 +35,7 @@ export const ButtonRadio = (props: ButtonRadioProps) => {
         <button
           key={option.value}
           className={`px-4 py-2 border rounded btn-${size} ${
-            selected === option.value ? "border-active text-active" : ""
+            selected === option.value ? "border-black text-black" : ""
           }`}
           onClick={() => handleOptionClick(option.value)}
         >

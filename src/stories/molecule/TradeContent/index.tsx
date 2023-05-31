@@ -192,7 +192,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </div>
         {/* graph */}
         <article className="mt-5">
-          <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-[#C2C2C2] border-dashed">
+          <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Execution Price</p>
@@ -221,7 +221,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 pb-3 mb-3 border-b border-[#C2C2C2">
+          <div className="flex flex-col gap-3 pb-3 mb-3 border-b border-gray">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -231,7 +231,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <p>Max Fee Allowancce</p>
+                <p>Max Fee Allowance</p>
                 <Tooltip tip="tooltip" />
               </div>
               <div className="w-20">

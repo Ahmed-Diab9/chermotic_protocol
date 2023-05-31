@@ -43,7 +43,7 @@
     }
   }
   [type="button"] {
-    /* @apply ui-selected:text-active; */
+    /* @apply ui-selected:text-black; */
   }
   &.tabs-lg {
     [role="tablist"] {
