@@ -10,6 +10,7 @@ import { useRouter } from "~/hooks/useRouter";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { ADDRESS_ZERO } from "~/utils/address";
+import { AppError } from "~/typings/error";
 
 export const useUsumAccount = () => {
   const { data: signer } = useSigner();
@@ -39,7 +40,7 @@ export const useUsumAccount = () => {
 
   const createAccount = async () => {
     if (!isValid(signer)) {
-      return Promise.reject(errorLog("CreateAccount: No signers"));
+      return AppError.reject("no signers", "createAccount");
     }
     const accountFactory = AccountFactory__factory.connect(
       DEPLOYED_ADDRESSES.AccountFactory,
@@ -50,7 +51,9 @@ export const useUsumAccount = () => {
       await accountFactory.createAccount();
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject(errorLog(error));
+      errorLog(error);
+
+      return AppError.reject(error, "createAccount");
     }
   };
 

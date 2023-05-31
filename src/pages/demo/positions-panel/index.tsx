@@ -6,7 +6,7 @@ import { infoLog } from "~/utils/log";
 
 const PositionsPanelDemo = () => {
   useConnectOnce();
-  const [positions, fetchPositions, onClosePosition] = usePosition();
+  const { positions, fetchPositions, onClosePosition } = usePosition();
   const [positionsMock] = usePositionsMock();
 
   useEffect(() => {

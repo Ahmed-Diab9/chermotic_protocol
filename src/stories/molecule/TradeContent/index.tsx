@@ -141,7 +141,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
             {input && (
               <Range
-                values={[input.takeProfit]}
+                values={input.takeProfit === 0 ? [1] : [input.takeProfit]}
                 onChange={(values) => {
                   onTakeProfitChange?.(values[0]);
                 }}
@@ -165,9 +165,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            {input?.stopLoss && (
+            {input && (
               <Range
-                values={[input.stopLoss]}
+                values={input.stopLoss === 0 ? [1] : [input.stopLoss]}
                 onChange={(values) => {
                   onStopLossChange?.(values[0]);
                 }}

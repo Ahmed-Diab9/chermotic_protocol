@@ -5,6 +5,7 @@ import { useProvider } from "wagmi";
 import useLocalStorage from "./useLocalStorage";
 import { bigNumberify } from "../utils/number";
 import { useEffect } from "react";
+import { BigNumber } from "ethers";
 
 const useOracleVersion = () => {
   const [storedOracleVersion, setOracleVersion] =
@@ -51,6 +52,14 @@ const useOracleVersion = () => {
       clearTimeout(timerId);
     };
   }, [provider, market, storedOracleVersion, setOracleVersion]);
+
+  if (isValid(storedOracleVersion)) {
+    return [
+      storedOracleVersion[0],
+      bigNumberify(storedOracleVersion[1]) as BigNumber,
+    ] as const;
+  }
+  return [undefined, undefined] as const;
 };
 
 export default useOracleVersion;

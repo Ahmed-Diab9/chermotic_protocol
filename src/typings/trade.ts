@@ -1,4 +1,5 @@
 export interface TradeInput {
+  direction: "long" | "short";
   method: "collateral" | "quantity";
   quantity: number;
   collateral: number;

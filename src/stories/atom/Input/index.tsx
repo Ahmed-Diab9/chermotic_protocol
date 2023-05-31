@@ -40,7 +40,7 @@ export const Input = (props: InputProps) => {
       <input
         type={type}
         className={`text-${align}`}
-        value={value}
+        value={typeof value === "number" ? value.toString() : value}
         placeholder={placeholder}
         onChange={(event) => {
           event.preventDefault();

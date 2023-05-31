@@ -51,13 +51,13 @@ const usePoolInput = () => {
     }
     if (minmax === "min" && direction === "increment") {
       const nextRate = feeRates[min + 1];
-      if (isValid(nextRate) && min + 1 < max) {
+      if (isValid(nextRate) && min + 1 <= max) {
         setIndexes([min + 1, max]);
       }
     }
     if (minmax === "max" && direction === "decrement") {
       const nextRate = feeRates[max - 1];
-      if (isValid(nextRate) && min < max - 1) {
+      if (isValid(nextRate) && min <= max - 1) {
         setIndexes([min, max - 1]);
       }
     }
@@ -116,8 +116,7 @@ const usePoolInput = () => {
       marketAddress,
       filteredFeeRates[0],
       expandedAmount,
-      address,
-      Math.ceil(Date.now() / 1000) + 30
+      address
     );
   };
 
