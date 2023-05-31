@@ -102,8 +102,8 @@ export const useLiquidityPool = () => {
           const balances = await lpToken.balanceOfBatch(addresses, feeRates);
           const metadata = await fetchLpTokenMetadata(lpToken, feeRates);
 
-          const maxLiquidities = await market.getSlotMarginsTotal(baseFeeRates);
-          const unusedLiquidities = await market.getSlotMarginsUnused(
+          const maxLiquidities = await market.getSlotLiquidities(baseFeeRates);
+          const unusedLiquidities = await market.getSlotFreeLiquidities(
             baseFeeRates
           );
 
