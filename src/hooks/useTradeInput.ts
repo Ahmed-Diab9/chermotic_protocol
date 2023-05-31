@@ -27,8 +27,23 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       state.method === "collateral" ? "quantity" : "collateral";
     switch (nextMethod) {
       case "collateral": {
-        const { collateral, leverage, takeProfit } = state;
+        const { direction, collateral, leverage, takeProfit } = state;
+        const defaultLeverage = 2;
+        if (leverage === 0) {
         state = {
+            direction,
+            method: nextMethod,
+            collateral,
+            quantity: collateral * defaultLeverage,
+            leverage: defaultLeverage,
+            takeProfit,
+            stopLoss: 100 / defaultLeverage,
+            takerMargin: collateral,
+            makerMargin: collateral * (takeProfit / 100) * defaultLeverage,
+          };
+        } else {
+          state = {
+            direction,
           method: nextMethod,
           collateral,
           quantity: collateral * leverage,
@@ -38,11 +53,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           takerMargin: collateral,
           makerMargin: collateral * (takeProfit / 100) * leverage,
         };
+        }
         break;
       }
       case "quantity": {
-        const { quantity, leverage, takeProfit, stopLoss } = state;
+        const { direction, quantity, leverage, takeProfit, stopLoss } = state;
         state = {
+          direction,
           method: nextMethod,
           quantity,
           collateral: quantity * (stopLoss / 100),
@@ -104,15 +121,24 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case "stopLoss": {
       const { stopLoss } = payload;
       if (method === "collateral") {
-        const nextStopRoss = stopLoss === 0 ? 1 : stopLoss;
+        if (stopLoss === 0) {
         state = {
           ...state,
-          stopLoss: nextStopRoss,
-          leverage: 100 / nextStopRoss,
-          quantity: state.collateral * (100 / nextStopRoss),
+            stopLoss: 0,
+            leverage: 0,
+            quantity: 0,
+            makerMargin: 0,
+          };
+        } else {
+          state = {
+            ...state,
+            stopLoss: stopLoss,
+            leverage: 100 / stopLoss,
+            quantity: state.collateral * (100 / stopLoss),
           makerMargin:
-            state.collateral * (100 / nextStopRoss) * (state.takeProfit / 100),
+              state.collateral * (100 / stopLoss) * (state.takeProfit / 100),
         };
+        }
       } else {
         state = {
           ...state,
@@ -126,15 +152,23 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case "leverage": {
       const { leverage } = payload;
       if (method === "collateral") {
-        const nextLeverage = leverage === 0 ? 1 : leverage;
+        if (leverage === 0) {
         state = {
           ...state,
-          leverage: nextLeverage,
-          quantity: state.collateral * nextLeverage,
-          stopLoss: 100 / nextLeverage,
-          makerMargin:
-            state.collateral * nextLeverage * (state.takeProfit / 100),
+            leverage: 0,
+            quantity: state.collateral * 0,
+            stopLoss: 0,
+            makerMargin: 0,
         };
+        } else {
+          state = {
+            ...state,
+            leverage: leverage,
+            quantity: state.collateral * leverage,
+            stopLoss: 100 / leverage,
+            makerMargin: state.collateral * leverage * (state.takeProfit / 100),
+          };
+        }
       } else {
         state = {
           ...state,
