@@ -177,6 +177,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
+    case "direction": {
+      const { direction } = payload;
+      state = {
+        ...state,
+        direction,
+      };
+    }
   }
   return state;
 };
@@ -194,7 +201,10 @@ export const useTradeInput = () => {
   };
 
   const onChange = (
-    key: keyof Omit<TradeInput, "method" | "takerMargin" | "makerMargin">,
+    key: keyof Omit<
+      TradeInput,
+      "direction" | "method" | "takerMargin" | "makerMargin"
+    >,
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
@@ -248,6 +258,16 @@ export const useTradeInput = () => {
     });
   };
 
+  const onDirectionToggle = () => {
+    const { direction } = state;
+    dispatch({
+      type: "direction",
+      payload: {
+        direction: direction === "long" ? "short" : "long",
+      },
+    });
+  };
+
   const onOpenPosition = async () => {
     if (!isValid(market)) {
       errorLog("no markets selected");
@@ -291,6 +311,7 @@ export const useTradeInput = () => {
   return {
     state,
     onChange,
+    onDirectionToggle,
     onMethodToggle,
     onLeverageChange,
     onTakeProfitChange,

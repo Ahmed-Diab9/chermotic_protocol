@@ -17,6 +17,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     longInput: {
+      direction: "long",
       method: "collateral",
       quantity: 0,
       collateral: 0,
@@ -27,6 +28,7 @@ export const Default: Story = {
       leverage: 1,
     },
     shortInput: {
+      direction: "short",
       method: "collateral",
       quantity: 0,
       collateral: 0,

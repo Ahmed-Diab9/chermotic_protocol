@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useUsumBalances } from "~/hooks/useBalances";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
@@ -21,6 +22,7 @@ const TradePanelDemo = () => {
     state: shortInput,
     onChange: onShortChange,
     onMethodToggle: onShortMethodToggle,
+    onDirectionToggle: onShortDirectionToggle,
     onLeverageChange: onShortLeverageChange,
     onTakeProfitChange: onShortTakeProfitChange,
     onStopLossChange: onShortStopLossChange,
@@ -37,7 +39,13 @@ const TradePanelDemo = () => {
       shortTotalUnusedLiquidity,
     ],
   ] = useSelectedLiquidityPool();
-  const [positions] = usePosition();
+  const { positions } = usePosition();
+
+  useEffect(() => {
+    if (shortInput.direction !== "short") {
+      onShortDirectionToggle();
+    }
+  }, [shortInput.direction, onShortDirectionToggle]);
 
   return (
     <TradePanel
