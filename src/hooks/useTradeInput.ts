@@ -1,15 +1,16 @@
 import { ChangeEvent, useReducer } from "react";
 import { useSelectedToken } from "./useSettlementToken";
 import { useSelectedMarket } from "./useMarket";
-import { errorLog } from "../utils/log";
+import { errorLog, infoLog } from "../utils/log";
 import { USUMRouter, getDeployedContract } from "@quarkonix/usum";
 import { CHAIN } from "~/constants/contracts";
 import { useSigner } from "wagmi";
 import { isValid } from "~/utils/valid";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
-import { trimLeftZero } from "~/utils/number";
+import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
+import useDeadline from "./useDeadline";
 
-const tradeInputInitial = {
+const initialTradeInput = {
   method: "collateral",
   quantity: 0,
   collateral: 0,
@@ -150,8 +151,9 @@ export const useTradeInput = () => {
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
   const { data: signer } = useSigner();
+  const deadline = useDeadline();
 
-  const [state, dispatch] = useReducer(tradeInputReducer, tradeInputInitial);
+  const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
 
   const onMethodToggle = () => {
     dispatch({ type: "method" });
@@ -227,15 +229,29 @@ export const useTradeInput = () => {
       signer
     ) as USUMRouter;
 
+    const quantity = bigNumberify(state.quantity).mul(expandDecimals(4));
+    const leverage = bigNumberify(state.leverage).mul(expandDecimals(2));
+    const takerMargin = bigNumberify(state.takerMargin).mul(
+      expandDecimals(token?.decimals)
+    );
+    const makerMargin = bigNumberify(state.makerMargin).mul(
+      expandDecimals(token?.decimals)
+    );
+
+    // FIXME
+    // Trading Fee
+    const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
+    infoLog("makerMargin:::", makerMargin);
+
     // TODO: Decimals needed for opening positions
     const response = await router.openPosition(
       market?.address,
-      state.quantity,
-      state.leverage,
-      state.takerMargin,
-      state.makerMargin,
-      30,
-      Math.random() / 1000 + 30
+      quantity,
+      leverage,
+      takerMargin,
+      makerMargin,
+      tradingFee,
+      deadline
     );
   };
 
@@ -246,5 +262,6 @@ export const useTradeInput = () => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
+    onOpenPosition,
   };
 };

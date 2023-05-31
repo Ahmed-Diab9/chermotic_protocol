@@ -9,7 +9,6 @@ import useTokenTransaction from "../../../hooks/useTokenTransaction";
 import { useEffect, useMemo } from "react";
 import { bigNumberify, expandDecimals } from "../../../utils/number";
 import { isValid } from "../../../utils/valid";
-import useConsole from "../../../hooks/useConsole";
 import useConnectOnce from "../../../hooks/useConnectOnce";
 import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
 
@@ -41,8 +40,6 @@ const AssetPopoverDemo = () => {
       onTokenSelect(tokens[0].address);
     }
   }, [tokens, onTokenSelect]);
-
-  useConsole(tokens, walletAddress);
 
   return (
     <>

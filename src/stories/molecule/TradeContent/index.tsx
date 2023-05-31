@@ -2,7 +2,7 @@
 // import { Avatar } from "../../atom/Avatar";
 // import { Button } from "../../atom/Button";
 // import { OptionInput } from "../../atom/OptionInput";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
@@ -14,12 +14,12 @@ import "./../../atom/Select/style.css";
 import "./style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
-import useConsole from "~/hooks/useConsole";
 import { BigNumber } from "ethers";
 import { formatDecimals, withComma } from "~/utils/number";
 import { Token } from "~/typings/market";
 
 interface TradeContentProps {
+  direction?: "long" | "short";
   balances?: Record<string, BigNumber>;
   token?: Token;
   input?: TradeInput;
@@ -33,6 +33,7 @@ interface TradeContentProps {
   onLeverageChange?: (nextLeverage: number) => unknown;
   onTakeProfitChange?: (nextRate: number) => unknown;
   onStopLossChange?: (nextRate: number) => unknown;
+  onOpenPosition?: () => unknown;
 }
 
 const methodMap: Record<string, string> = {
@@ -42,6 +43,7 @@ const methodMap: Record<string, string> = {
 
 export const TradeContent = ({ ...props }: TradeContentProps) => {
   const {
+    direction,
     balances,
     token,
     input,
@@ -52,6 +54,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
+    onOpenPosition,
   } = props;
 
   return (
@@ -62,7 +65,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
             <p className="text-black/30">
-              {balances && token && withComma(balances[token.name])} USDC
+              {balances &&
+                token &&
+                withComma(
+                  formatDecimals(balances[token.name], token.decimals, 2)
+                )}{" "}
+              USDC
             </p>
           </div>
         </div>
@@ -234,7 +242,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
       </section>
       <div className="px-10">
-        <Button label="Sell" size="xl" className="w-full" />
+        <Button
+          label={direction === "long" ? "Buy" : "Sell"}
+          size="xl"
+          className="w-full"
+          onClick={() => {
+            onOpenPosition?.();
+          }}
+        />
         {/* <Button label="Buy" size="xl" className="w-full" /> */}
       </div>
     </div>
