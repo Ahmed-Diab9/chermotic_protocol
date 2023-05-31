@@ -1,4 +1,5 @@
 .thumb {
+  @apply overflow-hidden flex-none;
   img {
   }
 }
