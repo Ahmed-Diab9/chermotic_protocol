@@ -8,9 +8,11 @@ import { useSigner } from "wagmi";
 import { isValid } from "~/utils/valid";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
+import { useSelectedLiquidityPool } from "./useLiquidityPool";
 import useDeadline from "./useDeadline";
 
 const initialTradeInput = {
+  direction: "long",
   method: "collateral",
   quantity: 0,
   collateral: 0,
@@ -30,7 +32,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         const { direction, collateral, leverage, takeProfit } = state;
         const defaultLeverage = 2;
         if (leverage === 0) {
-        state = {
+          state = {
             direction,
             method: nextMethod,
             collateral,
@@ -44,15 +46,15 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         } else {
           state = {
             direction,
-          method: nextMethod,
-          collateral,
-          quantity: collateral * leverage,
-          leverage,
-          takeProfit,
-          stopLoss: 100 / leverage,
-          takerMargin: collateral,
-          makerMargin: collateral * (takeProfit / 100) * leverage,
-        };
+            method: nextMethod,
+            collateral,
+            quantity: collateral * leverage,
+            leverage,
+            takeProfit,
+            stopLoss: 100 / leverage,
+            takerMargin: collateral,
+            makerMargin: collateral * (takeProfit / 100) * leverage,
+          };
         }
         break;
       }
@@ -122,8 +124,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       const { stopLoss } = payload;
       if (method === "collateral") {
         if (stopLoss === 0) {
-        state = {
-          ...state,
+          state = {
+            ...state,
             stopLoss: 0,
             leverage: 0,
             quantity: 0,
@@ -135,9 +137,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: stopLoss,
             leverage: 100 / stopLoss,
             quantity: state.collateral * (100 / stopLoss),
-          makerMargin:
+            makerMargin:
               state.collateral * (100 / stopLoss) * (state.takeProfit / 100),
-        };
+          };
         }
       } else {
         state = {
@@ -153,13 +155,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       const { leverage } = payload;
       if (method === "collateral") {
         if (leverage === 0) {
-        state = {
-          ...state,
+          state = {
+            ...state,
             leverage: 0,
             quantity: state.collateral * 0,
             stopLoss: 0,
             makerMargin: 0,
-        };
+          };
         } else {
           state = {
             ...state,
@@ -192,9 +194,17 @@ export const useTradeInput = () => {
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
   const { data: signer } = useSigner();
-  const deadline = useDeadline();
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
+  const [
+    _,
+    [
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    ],
+  ] = useSelectedLiquidityPool();
 
   const onMethodToggle = () => {
     dispatch({ type: "method" });
@@ -291,6 +301,21 @@ export const useTradeInput = () => {
     const makerMargin = bigNumberify(state.makerMargin).mul(
       expandDecimals(token?.decimals)
     );
+
+    if (
+      state.direction === "long" &&
+      longTotalUnusedLiquidity.lte(makerMargin)
+    ) {
+      errorLog("the long liquidity is too low");
+      return;
+    }
+    if (
+      state.direction === "short" &&
+      shortTotalUnusedLiquidity.lte(makerMargin)
+    ) {
+      errorLog("the short liquidity is too low");
+      return;
+    }
 
     // FIXME
     // Trading Fee
