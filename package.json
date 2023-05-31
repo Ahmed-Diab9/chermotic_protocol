@@ -13,6 +13,7 @@
     "automigrate": "storybook automigrate"
   },
   "dependencies": {
+    "@chromatic-finance/react-range-slider": "1.0.0",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
     "@quarkonix/usum": "^0.0.1-rc.31",
