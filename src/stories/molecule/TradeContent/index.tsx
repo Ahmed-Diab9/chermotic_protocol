@@ -221,7 +221,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 pb-3 mb-3 border-b border-gray">
+          <div className="flex flex-col gap-3 border-gray">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
