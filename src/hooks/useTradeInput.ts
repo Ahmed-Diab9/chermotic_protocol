@@ -250,8 +250,7 @@ export const useTradeInput = () => {
       leverage,
       takerMargin,
       makerMargin,
-      tradingFee,
-      deadline
+      tradingFee
     );
   };
 

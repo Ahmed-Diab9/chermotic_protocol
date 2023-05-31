@@ -116,8 +116,7 @@ const usePoolInput = () => {
       marketAddress,
       filteredFeeRates[0],
       expandedAmount,
-      address,
-      Math.ceil(Date.now() / 1000) + 30
+      address
     );
   };
 

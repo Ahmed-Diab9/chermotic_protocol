@@ -25,7 +25,6 @@ import { poolsAction } from "../store/reducer/pools";
 import { BigNumber, ethers } from "ethers";
 import { createSlotValueMock } from "../mock/slots";
 import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
-import useDeadline from "./useDeadline";
 
 const fetchLpTokenMetadata = async (
   lpToken: USUMLpToken,
@@ -171,7 +170,6 @@ export const useSelectedLiquidityPool = () => {
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
-  const deadline = useDeadline();
 
   const pool = useMemo(() => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
@@ -246,8 +244,7 @@ export const useSelectedLiquidityPool = () => {
       feeRate,
       expandedAmount,
       0,
-      address,
-      deadline
+      address
     );
   };
 
