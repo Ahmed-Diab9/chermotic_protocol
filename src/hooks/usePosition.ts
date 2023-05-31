@@ -40,11 +40,11 @@ export const usePosition = () => {
     mutate: fetchPositions,
   } = useSWR(fetchKey, async ([account, markets, provider]) => {
     const positionsPromise = markets.map(async (marketAddress) => {
-    const positionIds = await account.getPositionIds(marketAddress);
+      const positionIds = await account.getPositionIds(marketAddress);
       const marketContract = USUMMarket__factory.connect(
         marketAddress,
         provider
-    );
+      );
 
       const positionResponses: PositionResponse[] =
         await marketContract.getPositions(positionIds);
@@ -52,8 +52,8 @@ export const usePosition = () => {
         marketAddress: marketAddress,
         ...response,
       }));
-    return positions;
-  });
+      return positions;
+    });
     const positions = await filterIfFulfilled(positionsPromise);
     return positions.flat(1);
   });
@@ -94,7 +94,28 @@ export const usePosition = () => {
     }
   };
 
+  const onClaimPosition = async (
+    marketAddress: string,
+    positionId: BigNumber
+  ) => {
+    const position = positions?.find(
+      (position) =>
+        position.marketAddress === marketAddress && position.id === positionId
+    );
+    if (!isValid(position)) {
+      errorLog("no positions");
+      return AppError.reject("no positions", "onClosePosition");
     }
+    if (oracleVersion?.lte(position.closeVersion)) {
+      errorLog("the selected position is not closed");
+
+      return AppError.reject(
+        "the selected position is not closed",
+        "onClaimPosition"
+      );
+    }
+
+    await router?.claimPosition(position.marketAddress, position.id);
   };
 
   if (error) {
@@ -106,6 +127,7 @@ export const usePosition = () => {
     closedPositions,
     fetchPositions,
     onClosePosition,
+    onClaimPosition,
   };
 };
 
