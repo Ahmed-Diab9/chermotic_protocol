@@ -12,6 +12,15 @@
     @apply translate-x-3;
   }
 }
+.toggle-sm {
+  @apply h-[16px] w-[28px];
+  > span {
+    @apply h-[12px] w-[12px];
+  }
+  &[aria-checked="true"] > span {
+    @apply translate-x-3;
+  }
+}
 .toggle-base {
   @apply h-[24px] w-[48px];
   > span {
