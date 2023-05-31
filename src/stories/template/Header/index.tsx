@@ -1,5 +1,6 @@
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
+import LogoSimple from "~/assets/icons/LogoSimple";
 import { WalletPopover } from "../../molecule/WalletPopover";
 
 type User = {
@@ -23,8 +24,8 @@ export const Header = ({
   <header>
     <div className="h-[100px] px-10 py-5 flex items-center justify-between">
       <div className="flex items-center gap-12 text-lg">
-        <a href="/" className="mr-4 font-bold">
-          <img src="/src/assets/images/logo_simple.svg" alt="Chromatic logo" />
+        <a href="/" className="mr-4 font-bold" title="Chromatic">
+          <LogoSimple />
         </a>
         <a href="/trade">Trade</a>
         <a href="/pool">Pool</a>
