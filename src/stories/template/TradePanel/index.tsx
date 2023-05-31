@@ -1,6 +1,8 @@
 import { Tab } from "@headlessui/react";
 import { TradeContent } from "../../molecule/TradeContent";
 import { Button } from "../../atom/Button";
+import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
+import { ChevronDoubleRightIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
@@ -67,7 +69,7 @@ export const TradePanel = (props: TradePanelProps) => {
     <div className="inline-flex flex-col mx-auto border">
       {/* TradePanel 확장형 */}
       <div className="relative tabs tabs-line tabs-lg">
-        <div className="flex">
+        <div className="flex text-center">
           <div className="w-[100vw] max-w-[680px] px-0 pb-5 pt-[36px] border-r">
             <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
               SHORT
@@ -114,8 +116,14 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
         </div>
         <div>
-          <Button label=">>" className="absolute left-[-24px] top-10" />
-          <Button label="<<" className="absolute right-[-24px] top-10" />
+          <Button
+            iconOnly={<ChevronDoubleRightIcon />}
+            className="absolute left-[-24px] top-10"
+          />
+          <Button
+            iconOnly={<ChevronDoubleLeftIcon />}
+            className="absolute right-[-24px] top-10"
+          />
         </div>
       </div>
       {/* TradePanel 축소형 (tab 있음) */}
@@ -139,8 +147,8 @@ export const TradePanel = (props: TradePanelProps) => {
         </Tab.Panels>
       </Tab.Group>
       <div>
-        <Button label="<<" className="absolute left-[-24px] top-10" />
-        <Button label=">>" className="absolute right-[-24px] top-10" />
+        <Button iconOnly={<ChevronDoubleLeftIcon />} className="absolute left-[-24px] top-10" />
+        <Button iconOnly={<ChevronDoubleRightIcon />} className="absolute right-[-24px] top-10" />
       </div>
     </div> */}
     </div>

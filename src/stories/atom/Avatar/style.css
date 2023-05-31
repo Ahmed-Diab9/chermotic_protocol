@@ -1,4 +1,5 @@
 .avatar {
+  @apply flex-none;
 }
 .avatar-xs {
   @apply w-4 h-4;

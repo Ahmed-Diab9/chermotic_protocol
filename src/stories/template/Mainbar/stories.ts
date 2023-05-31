@@ -5,7 +5,6 @@ const meta = {
   title: "Template/MainBar",
   component: MainBar,
   parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
 } satisfies Meta<typeof MainBar>;
@@ -13,13 +12,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ViewAssetBalance: Story = {
-  args: {
-    user: {
-      name: "Jane Doe",
-      contract: "0x7djf300",
-    },
-  },
+export const Default: Story = {
+  args: {},
 };
-
-export const Empty: Story = {};

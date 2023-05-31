@@ -24,14 +24,13 @@ export const theme = {
     colors: {
       current: "currentColor",
       black: "#030303",
-      // grayLight
       grayL: "#EEEEEE",
+      gray: "#D4D4D4",
 
-      active: "#efc353",
+      active: "#030303",
       long: "#a6d85b",
       short: "#fb6115",
       line: "#D4D4D4",
-      solid: "#17171F",
     },
     dropShadow: {
       sm: "4px 4px 32px rgba(121, 121, 121, 0.25)",
@@ -39,7 +38,7 @@ export const theme = {
       lg: "4px 4px 60px rgba(163, 163, 163, 0.16)",
     },
     fontSize: {
-      xs: ["10px", "14px"],
+      xs: ["10px", "12px"],
       sm: ["11px", "14px"],
       base: ["13px", "16px"],
       lg: ["16px", "20px"],

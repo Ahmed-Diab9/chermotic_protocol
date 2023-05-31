@@ -7,7 +7,7 @@
       content: "";
     }
     &:checked::after {
-      @apply flex-none inline-block bg-active border-active rounded-sm bg-no-repeat bg-center;
+      @apply flex-none inline-block bg-black border-black rounded-sm bg-no-repeat bg-center;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' fill='none' viewBox='0 0 10 8'%3E%3Cpath fill='%23000' d='M9 .5c-.28 0-.53.11-.71.29L4 5.09l-2.29-2.3A1.003 1.003 0 0 0 .29 4.21l3 3c.18.18.43.29.71.29.28 0 .53-.11.71-.29l5-5A1.003 1.003 0 0 0 9 .5Z'/%3E%3C/svg%3E%0A");
       background-size: 75% auto;
     }

@@ -1,33 +1,33 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { ModalEx } from ".";
+import { RemoveLiquidityModal } from ".";
 
 const meta = {
-  title: "Template/Modal/ModalEx",
-  component: ModalEx,
+  title: "Template/Modal/RemoveLiquidityModal",
+  component: RemoveLiquidityModal,
   // argTypes: {
   // },
-} satisfies Meta<typeof ModalEx>;
+} satisfies Meta<typeof RemoveLiquidityModal>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: "ModalEx",
+    label: "RemoveLiquidityModal",
   },
 };
 
 // export const Large: Story = {
 //   args: {
 //     size: "lg",
-//     label: "ModalEx",
+//     label: "RemoveLiquidityModal",
 //   },
 // };
 
 // export const Small: Story = {
 //   args: {
 //     size: "sm",
-//     label: "ModalEx",
+//     label: "RemoveLiquidityModal",
 //   },
 // };

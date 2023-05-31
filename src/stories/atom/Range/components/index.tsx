@@ -251,7 +251,7 @@ export function Tick({ tick, count, format }: TickProps) {
     <div>
       {/* Tick - dot */}
       <div
-        // className={`absolute mt-[-1px] w-[2px] h-[2px] rounded bg-[#D4D4D4] left-[${tick.percent}%]`}
+        // className={`absolute mt-[-1px] w-[2px] h-[2px] rounded bg-gray left-[${tick.percent}%]`}
         className=""
         style={{
           position: "absolute",

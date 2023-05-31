@@ -4,6 +4,8 @@ import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { Checkbox } from "../../atom/Checkbox";
 import { Thumbnail } from "../../atom/Thumbnail";
+import { Tooltip } from "../../atom/Tooltip";
+import { Toggle } from "~/stories/atom/Toggle";
 import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
@@ -94,7 +96,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
           <Tab.Panels className="flex flex-col items-center w-full">
             {/* tab - add */}
             <Tab.Panel className="w-[100vw] max-w-[680px] px-10 pb-10 pt-[36px]">
-              <article className="flex items-start justify-between mb-6">
+              <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
                   <h4>Account Balance</h4>
                   <p className="text-black/30">
@@ -119,7 +121,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
               </article>
               <section className="mb-5">
                 <article>
-                  <h4>Liquidity Pool Range</h4>
+                  <div className="flex justify-between">
+                    <h4>Liquidity Pool Range</h4>
+                    <Toggle label="Bin Values" size="sm" />
+                  </div>
                   <div className="flex justify-between mt-6">
                     <div>
                       <p className="mb-1 text-black/30">Short Counter LP</p>
@@ -210,36 +215,26 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 </article>
               </section>
               <article>
-                <div className="flex flex-col gap-2 pb-6 mb-5 border-b border-dotted mt-11">
+                <div className="flex flex-col gap-2 pb-6 mb-5 border-dotted mt-11">
                   <div className="flex items-center justify-between">
-                    <p>Slots</p>
+                    <p>Number of LP Bins</p>
                     <p>{bins ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p>Trade Fee Range</p>
-                    <p>
-                      $ 1932.53
-                      <span className="text-black/30">
-                        {rates && formatFeeRate(rates[0])}%
-                      </span>
-                    </p>
+                    <p>{rates && formatFeeRate(rates[0])}%</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p>Trade Fee Range</p>
-                    <p>
-                      $ 1932.53
-                      <span className="text-black/30">
-                        {rates && formatFeeRate(rates[1])}%
-                      </span>
-                    </p>
+                    <p>Average Bin Values</p>
+                    <p>1.05 USDC</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <h4>Total Liquidity Size</h4>
                   <h4>
                     {amount || "0"} {token && token.name}
                   </h4>
-                </div>
+                </div> */}
               </article>
               <div className="mt-[34px]">
                 <Button
@@ -265,20 +260,22 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* info */}
                 <article className="flex flex-col justify-between flex-auto gap-2 px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div className="flex justify-between">
-                    <p>Price Slots</p>
+                    <p>
+                      Price Slots
+                      <Tooltip tip="tooltip" />
+                    </p>
                     <p className="text-right">{slots.toFixed(2)} Slots</p>
                   </div>
                   <div className="flex justify-between">
-                    <p>Liquidity Principal</p>
+                    <p>
+                      Liquidity Principal
+                      <Tooltip tip="tooltip" />
+                    </p>
                     <p className="text-right">1,000.24 USDC</p>
                   </div>
                   <div className="flex justify-between">
                     <p>Removable Liquidity</p>
                     <p className="text-right">760.24 USDC</p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p>EST. APY</p>
-                    <p className="text-right">25.76%</p>
                   </div>
                 </article>
               </section>
@@ -554,7 +551,7 @@ const LiquidityRemove = (props: LiquidityRemoveProps) => {
   }, [onClickAway, lpToken]);
   return (
     <div
-      className="fixed top-6 left-auto right-6 shadow-md py-2 px-4 bg-white"
+      className="fixed left-auto px-4 py-2 bg-white shadow-md top-6 right-6"
       ref={modalRef}
     >
       <h2>Liquidity Remove Demo</h2>

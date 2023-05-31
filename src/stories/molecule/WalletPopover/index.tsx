@@ -5,7 +5,6 @@ import { Thumbnail } from "../../atom/Thumbnail";
 import { Button } from "../../atom/Button";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import "../../atom/Tabs/style.css";
@@ -97,11 +96,12 @@ export const WalletPopover = ({
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover className="relative">
-        <Popover.Button className="p-0 pr-5 border rounded-full border-grayL">
+        <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
           <Avatar
             label={
               account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
             }
+            src="/src/assets/images/arbitrum.svg"
             size="lg"
             fontSize="sm"
             fontWeight="normal"
@@ -117,12 +117,13 @@ export const WalletPopover = ({
           // leaveFrom="opacity-100 translate-x-20"
           // leaveTo="opacity-100 translate-x-0"
         >
-          <Popover.Panel className="relative transform shadow-lg popover-panel ">
+          <Popover.Panel className="relative transform border-l shadow-xl shadow-white popover-panel ">
             {({ close }) => (
               <>
                 <div className="flex flex-col h-full ">
                   {/* Network */}
                   <Avatar
+                    src="/src/assets/images/arbitrum.svg"
                     label="Arbitrum Network"
                     size="lg"
                     fontSize="sm"
@@ -132,7 +133,9 @@ export const WalletPopover = ({
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-grayL/20">
-                      <h4 className="mb-3 text-center">Connected Wallet</h4>
+                      <h4 className="mb-3 text-base text-center text-black/30">
+                        Connected Wallet
+                      </h4>
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
                           <p className="px-4">
@@ -142,6 +145,7 @@ export const WalletPopover = ({
                           <Button
                             label="copy address"
                             css="circle"
+                            className="m-[-1px]"
                             iconOnly={<Square2StackIcon />}
                             onClick={() => {
                               const address = account?.walletAddress;
@@ -186,7 +190,7 @@ export const WalletPopover = ({
                                         gap="1"
                                       />
                                       <div className="ml-auto text-right">
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-black/30">
                                           $
                                           {withComma(
                                             formatBalance(
@@ -222,17 +226,13 @@ export const WalletPopover = ({
                                     className="flex flex-col pb-3 border-b last:border-b-0"
                                   >
                                     <div className="flex gap-2">
-                                      {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
-                                      <p className="pr-2 border-r">
-                                        {pool.token.name}
-                                      </p>
-                                      <p className="pr-2 border-r">
-                                        {pool.market}
-                                      </p>
+                                      <p>{pool.token.name}</p>
+                                      <span className="px-1 text-grayL">|</span>
+                                      <p>{pool.market}</p>
                                     </div>
                                     <div className="flex mt-3">
                                       <div className="mr-auto">
-                                        <p className="text-base font-medium text-gray-900">
+                                        <p className="text-base font-medium text-black/30">
                                           {formatDecimals(
                                             pool.liquidity,
                                             pool.token.decimals,
@@ -240,7 +240,7 @@ export const WalletPopover = ({
                                           )}{" "}
                                           {pool.token.name}
                                         </p>
-                                        <p className="mt-2 text-base text-gray-500">
+                                        <p className="mt-2 text-base text-black">
                                           {pool.slots} Bins
                                         </p>
                                       </div>
@@ -256,14 +256,14 @@ export const WalletPopover = ({
                                     <Avatar size="lg" src={item.image} />
                                     <div className="ml-3">
                                       <div className="flex">
-                                        {/* 아래의 asset / market / name 이 하나의 정보로 불러와진다면, 라인(border) 제외하는걸로 수정할게요 */}
-                                        <p className="pr-2 mr-2 border-r">
-                                          {item.asset}
-                                        </p>
+                                        <p>{item.asset}</p>
+                                        <span className="px-1 text-grayL">
+                                          |
+                                        </span>
                                         <p>{item.market}</p>
                                       </div>
                                       <div className="mr-auto">
-                                        <p className="mt-2 text-base text-gray-500">
+                                        <p className="mt-2 text-base text-black/30">
                                           {item.price} USDC
                                         </p>
                                         <p className="mt-2 text-base font-medium text-gray-900">
@@ -274,13 +274,6 @@ export const WalletPopover = ({
                                   </div>
                                 ))}
                               </div>
-                              <div className="absolute bottom-0 left-0 z-10 w-full pb-5 text-center bg-gradient-to-t from-white pt-9">
-                                <Button
-                                  label="View on pools"
-                                  size="sm"
-                                  iconRight={<ChevronRightIcon />}
-                                />
-                              </div>
                             </article>
                           </Tab.Panel>
                         </Tab.Panels>
@@ -289,8 +282,10 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-5 border rounded-lg bg-grayL/20">
-                    <h4 className="mb-3 text-center">My Account</h4>
+                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL/20">
+                    <h4 className="mb-3 text-base text-center text-black/30">
+                      My Account
+                    </h4>
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
                         <p className="px-4">
@@ -300,6 +295,7 @@ export const WalletPopover = ({
                         <Button
                           label="copy address"
                           css="circle"
+                          className="m-[-1px]"
                           iconOnly={<Square2StackIcon />}
                           onClick={() => {
                             const address = account?.usumAddress;
@@ -320,7 +316,7 @@ export const WalletPopover = ({
                     label="Disconnect"
                     onClick={onDisconnect}
                     size="lg"
-                    className="w-full mt-10 mb-3"
+                    className="w-full mb-3 !text-white !bg-black border-none"
                   />
                   <Button
                     label="close popover"
