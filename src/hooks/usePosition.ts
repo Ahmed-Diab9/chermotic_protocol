@@ -69,17 +69,31 @@ export const usePosition = () => {
     });
   }, [positions, marketAddress, oracleVersion]);
 
+  const onClosePosition = async (
+    marketAddress: string,
+    positionId: BigNumber
+  ) => {
+    const position = positions?.find(
+      (position) =>
+        position.marketAddress === marketAddress && position.id === positionId
+    );
+    if (!isValid(position)) {
+      errorLog("no positions");
+      return AppError.reject("no positions", "onClosePosition");
+    }
     try {
       const result = await router?.closePosition(
-        market.address,
-        positionId,
-        deadline
+        position.marketAddress,
+        position.id
       );
       return Promise.resolve(result);
     } catch (error) {
       errorLog(error);
 
-      return Promise.reject(`onClosePosition ::: ${error}`);
+      return AppError.reject(error, "onClosePosition");
+    }
+  };
+
     }
   };
 
@@ -90,6 +104,8 @@ export const usePosition = () => {
   return {
     positions,
     closedPositions,
+    fetchPositions,
+    onClosePosition,
   };
 };
 
