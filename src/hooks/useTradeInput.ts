@@ -9,7 +9,7 @@ import { isValid } from "~/utils/valid";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import useDeadline from "./useDeadline";
+import { AppError } from "~/typings/error";
 
 const initialTradeInput = {
   direction: "long",
@@ -307,14 +307,17 @@ export const useTradeInput = () => {
       longTotalUnusedLiquidity.lte(makerMargin)
     ) {
       errorLog("the long liquidity is too low");
-      return;
+      return AppError.reject("the long liquidity is too low", "onOpenPosition");
     }
     if (
       state.direction === "short" &&
       shortTotalUnusedLiquidity.lte(makerMargin)
     ) {
       errorLog("the short liquidity is too low");
-      return;
+      return AppError.reject(
+        "the short liquidity is too low",
+        "onOpenPosition"
+      );
     }
 
     // FIXME
