@@ -91,7 +91,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
         <Tab.Group>
           <Tab.List className="w-[50vw] max-w-[680px] mx-auto px-10 pt-[36px] flex gap-10">
             <Tab>ADD</Tab>
-            <Tab>My LP Tokens</Tab>
+            <Tab>REMOVE</Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full">
             {/* tab - add */}

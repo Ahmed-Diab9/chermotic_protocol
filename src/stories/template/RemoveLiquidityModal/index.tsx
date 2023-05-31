@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
+import { DialogCloseButton } from "~/stories/atom/DialogCloseButton";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Range } from "~/stories/atom/Range";
 import { OptionInput } from "~/stories/atom/OptionInput";
@@ -27,7 +28,10 @@ export const RemoveLiquidityModal = ({
       onClose={() => setIsOpen(false)}
     >
       <Dialog.Panel>
-        <Dialog.Title className="modal-title">Remove Liquidity</Dialog.Title>
+        <Dialog.Title className="modal-title">
+          Remove Liquidity
+          <DialogCloseButton />
+        </Dialog.Title>
         <Dialog.Description className="gap-10 modal-content">
           {/* liquidity info */}
           <article className="w-full">
@@ -63,8 +67,8 @@ export const RemoveLiquidityModal = ({
           {/* input - range */}
           <article>
             <div className="flex justify-between">
-              <p className="font-bold">Utilized</p>
-              <p className="font-bold">Removable</p>
+              <p className="font-semibold">Utilized</p>
+              <p className="font-semibold">Removable</p>
             </div>
             <div className="mt-4 h-9">
               <Range />
@@ -73,7 +77,7 @@ export const RemoveLiquidityModal = ({
 
           {/* input - number */}
           <article className="flex gap-4">
-            <p className="font-bold">
+            <p className="font-semibold">
               Remove Liquidity Tokens
               <br />
               (Chroma)

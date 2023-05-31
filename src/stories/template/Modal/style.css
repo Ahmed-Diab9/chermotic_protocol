@@ -1,5 +1,5 @@
 .modal {
-  @apply inline-block px-10 border rounded-2xl;
+  @apply inline-block px-10 border rounded-2xl relative;
   .modal-title {
     @apply text-center text-lg mt-6 mb-2;
   }
