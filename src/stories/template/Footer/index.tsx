@@ -18,21 +18,23 @@ export const Footer = () => (
       <div className="flex items-center gap-2">
         <Button
           css="circle"
-          size="base"
+          size="lg"
           className="!bg-transparent !border-white/30"
           iconOnly={<img src="/src/assets/images/twitter.svg" alt="twitter" />}
         />
         <Button
           css="circle"
-          size="base"
+          size="lg"
           className="!bg-transparent !border-white/30"
-          iconOnly={<img src="/src/assets/images/telegram.svg" alt="twitter" />}
+          iconOnly={
+            <img src="/src/assets/images/telegram.svg" alt="telegram" />
+          }
         />
         <Button
           css="circle"
-          size="base"
+          size="lg"
           className="!bg-transparent !border-white/30"
-          iconOnly={<img src="/src/assets/images/gitbook.svg" alt="twitter" />}
+          iconOnly={<img src="/src/assets/images/gitbook.svg" alt="gitbook" />}
         />
       </div>
     </div>
