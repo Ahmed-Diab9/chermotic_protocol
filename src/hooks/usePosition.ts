@@ -20,7 +20,7 @@ export const usePosition = () => {
   const [markets] = useMarket();
   const provider = useProvider();
   const [router] = useRouter();
-  const [marketAddress, oracleVersion] = useOracleVersion();
+  const { oracleVersions } = useOracleVersion();
 
   const fetchKey = useMemo(
     () =>
@@ -104,7 +104,7 @@ export const usePosition = () => {
       errorLog("no positions");
       return AppError.reject("no positions", "onClosePosition");
     }
-    if (oracleVersion?.lte(position.closeVersion)) {
+    if (oracleVersions?.[marketAddress]?.version.lte(position.closeVersion)) {
       errorLog("the selected position is not closed");
 
       return AppError.reject(
