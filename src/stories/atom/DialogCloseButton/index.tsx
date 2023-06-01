@@ -1,7 +1,6 @@
 import { MouseEventHandler } from "react";
 import { Button } from "../Button";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import "./style.css";
 
 interface DialogCloseButtonProps {
   disabled?: boolean;

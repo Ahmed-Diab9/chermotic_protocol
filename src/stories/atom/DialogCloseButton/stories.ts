@@ -16,15 +16,5 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
-  args: {
-    css: "default",
-    label: "Base Default DialogCloseButton",
-  },
-};
-
-export const Active: Story = {
-  args: {
-    css: "active",
-    label: "DialogCloseButton",
-  },
+  args: {},
 };
