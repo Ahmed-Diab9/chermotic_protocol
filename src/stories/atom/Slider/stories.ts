@@ -31,4 +31,7 @@ export const Ratio: Story = {
     max: 2000,
     step: 0.01,
   },
+  argTypes: {
+    readonly: { control: { type: null } },
+  },
 };

@@ -17,6 +17,7 @@ interface SliderProps {
   value?: number;
   onChange?: (newValue: number) => unknown;
   onUpdate?: (newValue: number) => unknown;
+  readonly?: boolean;
 }
 
 const sliderStyle: React.CSSProperties = {
@@ -35,6 +36,7 @@ export const Slider = ({
   value,
   onChange,
   onUpdate,
+  readonly = false,
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
@@ -65,6 +67,7 @@ export const Slider = ({
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
         values={[+value.toFixed(12)]}
+        disabled={readonly}
       >
         <Rail>
           {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
