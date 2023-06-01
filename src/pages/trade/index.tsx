@@ -6,25 +6,132 @@ import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
 
 import "./style.css";
-
-type User = {
-  name: string;
-};
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
+import {
+  useSelectedToken,
+  useSettlementToken,
+} from "~/hooks/useSettlementToken";
+import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import usePriceFeed from "~/hooks/usePriceFeed";
+import { useUsumBalances, useWalletBalances } from "~/hooks/useBalances";
+import {
+  useLiquidityPoolSummary,
+  useSelectedLiquidityPool,
+} from "~/hooks/useLiquidityPool";
+import { copyText } from "~/utils/clipboard";
+import useConnectOnce from "~/hooks/useConnectOnce";
+import { useFeeRate } from "~/hooks/useFeeRate";
+import useTokenTransaction from "~/hooks/useTokenTransaction";
+import { useTradeInput } from "~/hooks/useTradeInput";
+import { Link } from "react-router-dom";
 
 const Trade = () => {
-  const [user, setUser] = React.useState<User>();
+  useConnectOnce();
+  const { connectAsync } = useConnect();
+  const { address: walletAddress } = useAccount();
+  const [usumAccount, createUsumAccount] = useUsumAccount();
+  const [tokens] = useSettlementToken();
+  const [markets] = useMarket();
+  const [selectedToken, onTokenSelect] = useSelectedToken();
+  const [selectedMarket, onMarketSelect] = useSelectedMarket();
+  const feeRate = useFeeRate();
+  const [walletBalances] = useWalletBalances();
+  const [usumBalances] = useUsumBalances();
+  const [priceFeed] = usePriceFeed();
+  const pools = useLiquidityPoolSummary();
+  const { disconnectAsync } = useDisconnect();
+  const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
+  const {
+    state: longInput,
+    onChange: onLongChange,
+    onMethodToggle: onLongMethodToggle,
+    onLeverageChange: onLongLeverageChange,
+    onTakeProfitChange: onLongTakeProfitChange,
+    onStopLossChange: onLongStopLossChange,
+    onOpenPosition: onOpenLongPosition,
+  } = useTradeInput();
+  const {
+    state: shortInput,
+    onChange: onShortChange,
+    onMethodToggle: onShortMethodToggle,
+    onDirectionToggle: onShortDirectionToggle,
+    onLeverageChange: onShortLeverageChange,
+    onTakeProfitChange: onShortTakeProfitChange,
+    onStopLossChange: onShortStopLossChange,
+    onOpenPosition: onOpenShortPosition,
+  } = useTradeInput();
+  const [
+    _,
+    [
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    ],
+  ] = useSelectedLiquidityPool();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
-        // user={user}
-        onLogin={() => setUser({ name: "Jane Doe" })}
-        onLogout={() => setUser(undefined)}
-        onCreateAccount={() => setUser({ name: "Jane Doe" })}
+        account={{ walletAddress, usumAddress: usumAccount?.address }}
+        tokens={tokens}
+        markets={markets}
+        priceFeed={priceFeed}
+        balances={walletBalances}
+        pools={pools}
+        onConnect={connectAsync}
+        onCreateAccount={createUsumAccount}
+        onDisconnect={disconnectAsync}
+        onWalletCopy={copyText}
+        onUsumCopy={copyText}
       />
       <section className="flex flex-col grow">
-        <MainBar />
-        <TradePanel />
+        <MainBar
+          account={{ walletAddress, usumAddress: usumAccount?.address }}
+          tokens={tokens}
+          markets={markets}
+          selectedToken={selectedToken}
+          selectedMarket={selectedMarket}
+          feeRate={feeRate}
+          walletBalances={walletBalances}
+          usumBalances={usumBalances}
+          amount={amount}
+          onTokenSelect={(token) => {
+            onTokenSelect(token);
+          }}
+          onMarketSelect={(market) => {
+            onMarketSelect(market);
+          }}
+          onAmountChange={onAmountChange}
+          onDeposit={onDeposit}
+          onWithdraw={onWithdraw}
+          onConnect={connectAsync}
+        />
+        <TradePanel
+          longInput={longInput}
+          onLongChange={onLongChange}
+          onLongMethodToggle={onLongMethodToggle}
+          onLongLeverageChange={onLongLeverageChange}
+          onLongTakeProfitChange={onLongTakeProfitChange}
+          onLongStopLossChange={onLongStopLossChange}
+          shortInput={shortInput}
+          onShortChange={onShortChange}
+          onShortMethodToggle={onShortMethodToggle}
+          onShortLeverageChange={onShortLeverageChange}
+          onShortTakeProfitChange={onShortTakeProfitChange}
+          onShortStopLossChange={onShortStopLossChange}
+          balances={usumBalances}
+          priceFeed={priceFeed}
+          token={selectedToken}
+          market={selectedMarket}
+          longTotalMaxLiquidity={longTotalMaxLiquidity}
+          longTotalUnusedLiquidity={longTotalUnusedLiquidity}
+          shortTotalMaxLiquidity={shortTotalMaxLiquidity}
+          shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+          onOpenLongPosition={onOpenLongPosition}
+          onOpenShortPosition={onOpenShortPosition}
+        />
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="mb-12">
             <p className="my-6 text-left text-black/30">
@@ -32,7 +139,9 @@ const Trade = () => {
               Borrow Fee. Calculated based on open Interest and stop profit/Loss
               rate.
             </p>
-            <Button label="Provide Liquidity" />
+            <Link to={"/pool"}>
+              <Button label="Provide Liquidity" />
+            </Link>
           </div>
         </article>
       </section>
