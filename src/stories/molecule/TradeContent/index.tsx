@@ -2,7 +2,7 @@
 // import { Avatar } from "../../atom/Avatar";
 // import { Button } from "../../atom/Button";
 // import { OptionInput } from "../../atom/OptionInput";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
@@ -15,13 +15,20 @@ import "./style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
-import { formatDecimals, withComma } from "~/utils/number";
-import { Token } from "~/typings/market";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatDecimals,
+  withComma,
+} from "~/utils/number";
+import { Market, Price, Token } from "~/typings/market";
 
 interface TradeContentProps {
   direction?: "long" | "short";
   balances?: Record<string, BigNumber>;
+  priceFeed?: Record<string, Price>;
   token?: Token;
+  market?: Market;
   input?: TradeInput;
   totalMaxLiquidity?: BigNumber;
   totalUnusedLiquidity?: BigNumber;
@@ -45,6 +52,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const {
     direction,
     balances,
+    priceFeed,
+    market,
     token,
     input,
     totalMaxLiquidity,
@@ -56,6 +65,31 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onStopLossChange,
     onOpenPosition,
   } = props;
+
+  const [takeProfitPrice, stopLossPrice] = useMemo(() => {
+    if (!isValid(input) || !isValid(priceFeed) || !isValid(token)) {
+      return [undefined, undefined];
+    }
+    const { collateral, takeProfit, stopLoss } = input;
+    const price = priceFeed[token.name];
+    const addition = bigNumberify(Math.round(collateral * takeProfit));
+    const subtraction = bigNumberify(Math.round(collateral * stopLoss));
+    const takeProfitPrice = bigNumberify(collateral)
+      .mul(expandDecimals(2))
+      .add(addition)
+      .mul(expandDecimals(price.decimals + 2))
+      .div(price.value);
+    const stopLossPrice = bigNumberify(collateral)
+      .mul(expandDecimals(2))
+      .sub(subtraction)
+      .mul(expandDecimals(price.decimals + 2))
+      .div(price.value);
+
+    return [
+      withComma(formatDecimals(takeProfitPrice, 4, 2)),
+      withComma(formatDecimals(stopLossPrice, 4, 2)),
+    ];
+  }, [input, priceFeed, token]);
 
   return (
     <div className="TradeContent">
@@ -198,7 +232,18 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Execution Price</p>
                 <Tooltip tip="tooltip" />
               </div>
-              <p>$ 1,758.54</p>
+              <p>
+                ${" "}
+                {priceFeed &&
+                  token &&
+                  withComma(
+                    formatDecimals(
+                      priceFeed[token.name].value,
+                      priceFeed[token.name].decimals,
+                      2
+                    )
+                  )}
+              </p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -206,8 +251,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 {/* <Tooltip /> */}
               </div>
               <p>
-                $ 1932.53
-                <span className="ml-2 text-black/30">(+12.25%)</span>
+                $ {takeProfitPrice}
+                <span className="ml-2 text-black/30">
+                  (+{input?.takeProfit.toFixed(2)}%)
+                </span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -216,8 +263,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 {/* <Tooltip /> */}
               </div>
               <p>
-                $ 1932.53
-                <span className="ml-2 text-black/30">(+12.25%)</span>
+                $ {stopLossPrice}
+                <span className="ml-2 text-black/30">
+                  (-{input?.stopLoss.toFixed(2)}%)
+                </span>
               </p>
             </div>
           </div>
