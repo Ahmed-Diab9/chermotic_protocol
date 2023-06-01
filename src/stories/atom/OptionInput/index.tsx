@@ -49,7 +49,7 @@ export const OptionInput = (props: OptionInputProps) => {
       {/* <div
         className={`inline-flex gap-3 items-center input input-${size} input-${css}`}
       >
-        {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
+        {assetSrc ? <Avatar src={assetSrc} /> : null}
         <input
           type="number"
           className={`text-${align}`}

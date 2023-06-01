@@ -36,7 +36,7 @@ export const Input = (props: InputProps) => {
     <div
       className={`inline-flex gap-3 items-center input input-${size} input-${css} ${className}`}
     >
-      {assetSrc ? <Avatar className="" src={assetSrc} /> : null}
+      {assetSrc ? <Avatar src={assetSrc} /> : null}
       <input
         type={type}
         className={`text-${align}`}
