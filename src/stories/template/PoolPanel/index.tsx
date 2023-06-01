@@ -260,17 +260,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* info */}
                 <article className="flex flex-col justify-between flex-auto gap-2 px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div className="flex justify-between">
-                    <p>
+                    <div>
                       Price Slots
                       <Tooltip tip="tooltip" />
-                    </p>
+                    </div>
                     <p className="text-right">{slots.toFixed(2)} Slots</p>
                   </div>
                   <div className="flex justify-between">
-                    <p>
+                    <div>
                       Liquidity Principal
                       <Tooltip tip="tooltip" />
-                    </p>
+                    </div>
                     <p className="text-right">1,000.24 USDC</p>
                   </div>
                   <div className="flex justify-between">
