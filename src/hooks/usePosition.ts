@@ -63,11 +63,9 @@ export const usePosition = () => {
       return [];
     }
     positions.filter((position) => {
-      const isMarketEqual = marketAddress === position.marketAddress;
-      const hasOlderVersion = oracleVersion?.gt(position.closeVersion);
-      return isMarketEqual && hasOlderVersion;
+      return !position.closeVersion.eq(0);
     });
-  }, [positions, marketAddress, oracleVersion]);
+  }, [positions]);
 
   const onClosePosition = async (
     marketAddress: string,
