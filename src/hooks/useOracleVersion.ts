@@ -1,65 +1,62 @@
 import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
-import { useSelectedMarket } from "./useMarket";
+import { useMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
 import { useProvider } from "wagmi";
-import useLocalStorage from "./useLocalStorage";
-import { bigNumberify } from "../utils/number";
-import { useEffect } from "react";
-import { BigNumber } from "ethers";
+import { useMemo } from "react";
+import useSWR from "swr";
+import { filterIfFulfilled } from "~/utils/array";
+import { errorLog } from "~/utils/log";
+import { OracleVersion } from "~/typings/oracleVersion";
 
 const useOracleVersion = () => {
-  const [storedOracleVersion, setOracleVersion] =
-    useLocalStorage<[string, string]>("usum:oracleVersion");
-  const [market] = useSelectedMarket();
+  const [markets] = useMarket();
   const provider = useProvider();
+  const fetchKey = useMemo(() => {
+    if (isValid(markets) && isValid(provider)) {
+      return [markets, provider] as const;
+    }
+  }, [markets, provider]);
 
-  useEffect(() => {
-    const compareVersion = async () => {
-      if (!isValid(market)) {
-        return;
-      }
-      const contract = USUMMarket__factory.connect(market.address, provider);
-      const oracleProviderAddress = await contract.oracleProvider();
-      const oracleProvider = OracleProvider__factory.connect(
-        oracleProviderAddress,
-        provider
-      );
-      const { version: oracleVersion } = await oracleProvider.currentVersion();
-      if (!isValid(storedOracleVersion)) {
-        setOracleVersion([market.address, oracleVersion.toString()]);
-        return;
-      }
-      if (storedOracleVersion[0] !== market.address) {
-        setOracleVersion([market.address, oracleVersion.toString()]);
-        return;
-      }
-      const oldOracleVersion = bigNumberify(storedOracleVersion[1]);
-      if (isValid(oldOracleVersion) && oracleVersion.gt(oldOracleVersion)) {
-        // TODO @austin-builds
-        // Create a action when oracle version is updated
-        return;
-      }
-    };
-    let timerId = setTimeout(async function handler() {
-      await compareVersion();
+  const {
+    data: oracleVersions,
+    error,
+    mutate: fetchOracleVersions,
+  } = useSWR(
+    fetchKey,
+    async ([markets, provider]) => {
+      const promise = markets.map(async (market) => {
+        const marketContract = USUMMarket__factory.connect(
+          market.address,
+          provider
+        );
+        const oracleProviderAddress = await marketContract.oracleProvider();
+        const oracleProvider = OracleProvider__factory.connect(
+          oracleProviderAddress,
+          provider
+        );
+        const version = await oracleProvider.currentVersion();
+        return {
+          address: market.address,
+          version: version,
+        };
+      });
+      const response = await filterIfFulfilled(promise);
 
-      timerId = setTimeout(handler, 10000);
-    }, 10000);
+      return response.reduce((record, { address, version }) => {
+        record[address] = version;
+        return record;
+      }, {} as Record<string, OracleVersion>);
+    },
+    {
+      refreshInterval: 10000,
+    }
+  );
 
-    compareVersion();
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [provider, market, storedOracleVersion, setOracleVersion]);
-
-  if (isValid(storedOracleVersion)) {
-    return [
-      storedOracleVersion[0],
-      bigNumberify(storedOracleVersion[1]) as BigNumber,
-    ] as const;
+  if (error) {
+    errorLog(error);
   }
-  return [undefined, undefined] as const;
+
+  return { oracleVersions, fetchOracleVersions };
 };
 
 export default useOracleVersion;
