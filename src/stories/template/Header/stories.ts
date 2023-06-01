@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Header } from ".";
+import { BigNumber } from "ethers";
 
 const meta = {
   title: "Template/Header",
@@ -16,10 +17,44 @@ type Story = StoryObj<typeof meta>;
 
 export const LoggedIn: Story = {
   args: {
-    user: {
-      name: "Jane Doe",
-      contract: "0x7djf300",
+    account: {
+      walletAddress: "0x8888888888888888888888888888888888888888",
+      usumAddress: "0x8888888888888888888888888888888888888888",
     },
+    tokens: [
+      {
+        name: "USDC",
+        address: "0x8888888888888888888888888888888888888888",
+        decimals: 6,
+      },
+    ],
+    markets: [
+      {
+        address: "0x8888888888888888888888888888888888888888",
+        description: "ETH/USD",
+        getPrice: async () => BigNumber.from(1500),
+      },
+    ],
+    balances: {
+      USDC: BigNumber.from(100),
+    },
+    priceFeed: {
+      USDC: {
+        value: BigNumber.from(1500),
+        decimals: 8,
+      },
+    },
+    pools: [
+      {
+        token: {
+          name: "USDC",
+          decimals: 6,
+        },
+        market: "ETH/USD",
+        liquidity: BigNumber.from(1000),
+        slots: 10,
+      },
+    ],
   },
 };
 
