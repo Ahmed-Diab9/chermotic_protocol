@@ -106,3 +106,9 @@ export const RANGE_CONFIG = [
 ];
 
 export const RANGE_TICKS = [-10, -1, -0.1, -0.01, 0.01, 0.1, 1, 10];
+
+export const FILLUP_NEG_CONFIG = RANGE_CONFIG.slice(0, 4);
+export const FILLUP_NEG_TICKS = RANGE_TICKS.slice(0, 4);
+
+export const FILLUP_POS_CONFIG = RANGE_CONFIG.slice(4, 8);
+export const FILLUP_POS_TICKS = RANGE_TICKS.slice(4, 8);
