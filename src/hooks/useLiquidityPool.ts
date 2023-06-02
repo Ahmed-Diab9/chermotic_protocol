@@ -75,6 +75,11 @@ export const useLiquidityPool = () => {
         "anvil",
         provider
       ) as USUMMarketFactory;
+      const router = getDeployedContract(
+        "USUMRouter",
+        "anvil",
+        provider
+      ) as USUMRouter;
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
         ...SHORT_FEE_RATES.map((rate) => rate * -1),
@@ -106,6 +111,11 @@ export const useLiquidityPool = () => {
           const unusedLiquidities = await market.getSlotFreeLiquidities(
             baseFeeRates
           );
+          const tokenValueBatch = await router.calculateLpTokenValueBatch(
+            marketAddress,
+            baseFeeRates,
+            maxLiquidities
+          );
 
           return {
             address: lpTokenAddress,
@@ -120,7 +130,7 @@ export const useLiquidityPool = () => {
                 image,
                 feeRate,
                 balance: balances[feeRateIndex],
-                slotValue: createSlotValueMock(),
+                slotValue: tokenValueBatch[feeRateIndex],
                 maxLiquidity: maxLiquidities[feeRateIndex],
                 unusedLiquidity: unusedLiquidities[feeRateIndex],
               };
@@ -276,7 +286,7 @@ export const useLiquidityPoolSummary = () => {
       );
       const token = tokens?.find((token) => token.address === tokenAddress);
       if (!isValid(market) || !isValid(token)) {
-        errorLog("unexpected behavior. token and market must be provided");
+        infoLog("token and market loading");
         return [];
       }
       const { description: marketDescription } = market;

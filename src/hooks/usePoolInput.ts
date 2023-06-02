@@ -11,9 +11,11 @@ import {
   USUMRouter,
   getDeployedContract,
 } from "@quarkonix/usum";
-import { errorLog } from "../utils/log";
+import { errorLog, infoLog } from "../utils/log";
+import { useSelectedLiquidityPool } from "./useLiquidityPool";
 
 const usePoolInput = () => {
+  const [pool] = useSelectedLiquidityPool();
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const { address } = useAccount();
@@ -29,6 +31,18 @@ const usePoolInput = () => {
   const bins = useMemo(() => {
     return indexes[1] - indexes[0] + 1;
   }, [indexes]);
+  const averageBin = useMemo(() => {
+    if (!isValid(pool)) {
+      return;
+    }
+    let index = indexes[0];
+    let totalBin = bigNumberify(0);
+    while (index <= indexes[1]) {
+      totalBin.add(pool.tokens[index].slotValue);
+      index++;
+    }
+    return totalBin.div(rates[1] - rates[0] + 1);
+  }, [pool, indexes, rates]);
 
   const onAmountChange = (value: string) => {
     const parsed = Number(value);
@@ -125,6 +139,7 @@ const usePoolInput = () => {
     indexes,
     rates,
     bins,
+    averageBin,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,

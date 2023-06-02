@@ -37,6 +37,7 @@ interface PoolPanelProps {
   indexes?: [number, number];
   rates?: [number, number];
   bins?: number;
+  averageBin?: BigNumber;
   longTotalMaxLiquidity?: BigNumber;
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
@@ -59,6 +60,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     indexes,
     rates,
     bins,
+    averageBin,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -222,11 +224,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </div>
                   <div className="flex items-center justify-between">
                     <p>Trade Fee Range</p>
-                    <p>{rates && formatFeeRate(rates[0])}%</p>
+                    <p>
+                      {rates &&
+                        (rates[0] !== rates[1]
+                          ? `${formatFeeRate(rates[0])}% ~ ${formatFeeRate(
+                              rates[1]
+                            )}%`
+                          : `${formatFeeRate(rates[0])}%`)}
+                    </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p>Average Bin Values</p>
-                    <p>1.05 USDC</p>
+                    <p>
+                      {formatDecimals(averageBin ?? 0, token?.decimals, 2)} USDC
+                    </p>
                   </div>
                 </div>
                 {/* <div className="flex items-center justify-between">

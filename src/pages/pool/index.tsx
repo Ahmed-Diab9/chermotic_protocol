@@ -58,6 +58,7 @@ const Pool = () => {
     indexes,
     rates,
     bins,
+    averageBin,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
@@ -109,6 +110,7 @@ const Pool = () => {
           indexes={indexes}
           rates={rates}
           bins={bins}
+          averageBin={averageBin}
           longTotalMaxLiquidity={longTotalMaxLiquidity}
           longTotalUnusedLiquidity={longTotalUnusedLiquidity}
           shortTotalMaxLiquidity={shortTotalMaxLiquidity}
