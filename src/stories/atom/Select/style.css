@@ -12,10 +12,11 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath fill='%2319171C' fill-rule='evenodd' d='M2.646 5.646a.5.5 0 0 1 .708 0L8 10.293l4.646-4.647a.5.5 0 0 1 .708.708l-5 5a.5.5 0 0 1-.708 0l-5-5a.5.5 0 0 1 0-.708Z' clip-rule='evenodd'/%3E%3C/svg%3E");
     }
   }
+  /* Select(listbox) panel */
   ul[role="listbox"] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
-    @apply p-2 bg-white;
-    @apply border rounded;
+    @apply p-2 bg-white border rounded;
+    @apply z-10;
   }
   li[role="option"] {
     @apply flex items-center px-2;

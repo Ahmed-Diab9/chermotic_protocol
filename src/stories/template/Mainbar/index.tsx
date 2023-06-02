@@ -7,7 +7,7 @@ import { AssetPopover } from "../../molecule/AssetPopover";
 // }
 
 export const MainBar = () => (
-  <div className="px-10 py-5">
+  <div className="z-30 px-10 py-5">
     <div className="flex gap-5 justify-stretch">
       <MarketSelect />
       <AssetPopover />
