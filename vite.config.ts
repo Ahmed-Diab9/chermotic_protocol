@@ -5,7 +5,11 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), eslint(), tsconfigPaths()],
+  plugins: [
+    react(),
+    eslint(),
+    tsconfigPaths(),
+  ],
   define: {
     "process.env": process.env,
   },

@@ -1,9 +1,9 @@
-import { RangeChart as Chart } from "@chromatic-finance/react-range-slider";
+import { RangeChart as Chart } from "@chromatic-protocol/react-compound-charts";
 
-import {
+import type {
   DotData,
   BarData,
-} from "@chromatic-finance/react-range-slider/dist/esm/types";
+} from "@chromatic-protocol/react-compound-charts";
 
 import { RANGE_CONFIG, RANGE_TICKS } from "~/configs/chart";
 

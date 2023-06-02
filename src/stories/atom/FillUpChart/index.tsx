@@ -1,6 +1,6 @@
-import { FillUpChart as Chart } from "@chromatic-finance/react-range-slider";
+import { FillUpChart as Chart } from "@chromatic-protocol/react-compound-charts";
 
-import { BarData } from "@chromatic-finance/react-range-slider/dist/esm/types";
+import type { BarData } from "@chromatic-protocol/react-compound-charts";
 
 import {
   FILLUP_NEG_CONFIG,
