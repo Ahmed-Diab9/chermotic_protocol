@@ -193,9 +193,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="xl"
                   css="active"
                   className="w-full"
-                  onClick={
-                    title === "Deposit" ? onDeposit : () => onWithdraw?.()
-                  }
+                  onClick={() => {
+                    if (title === "Deposit") {
+                      onDeposit && onDeposit();
+                    } else {
+                      onWithdraw && onWithdraw();
+                    }
+                  }}
                 />
                 <Button
                   iconOnly={<ChevronDoubleUpIcon />}
