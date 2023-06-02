@@ -316,7 +316,7 @@ export const WalletPopover = ({
                       close();
                     }}
                     size="lg"
-                    css="noline"
+                    css="unstyled"
                     className="absolute left-0 t-10 ml-[-60px]"
                   />
                 </div>
