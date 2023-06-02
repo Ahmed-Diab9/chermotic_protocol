@@ -1,7 +1,7 @@
 # .github/workflows/chromatic.yml
 
 # Workflow name
-name: 'Chromatic'
+name: "Chromatic"
 
 # Event for the workflow
 on:
@@ -11,25 +11,26 @@ on:
 
 # List of jobs
 jobs:
-    chromatic-deployment:
-      if: github.event.pull_request.merged == true
-      # Operating System
-      runs-on: ubuntu-latest
-      # Job steps
-      steps:
-        - uses: actions/checkout@v1
-        - name: Authenticate with private npm packages
-          run: |
-            echo "@quarkonix:registry=https://npm.pkg.github.com" > ~/.npmrc
-            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
-            echo "//registry.npmjs.org/" >> ~/.npmrc
-        - name: Install dependencies
-          # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
-          run: yarn
-          # 👇 Adds Chromatic as a step in the workflow
-        - name: Publish to Chromatic
-          uses: chromaui/action@v1
-          # Chromatic GitHub Action options
-          with:
-            # 👇 Chromatic projectToken, refer to the manage page to obtain it.
-            projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+  chromatic-deployment:
+    if: github.event.pull_request.merged == true
+    # Operating System
+    runs-on: ubuntu-latest
+    # Job steps
+    steps:
+      - uses: actions/checkout@v1
+      - name: Authenticate with private npm packages
+        run: |
+          echo "@chromatic-protocol:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "@quarkonix:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
+          echo "//registry.npmjs.org/" >> ~/.npmrc
+      - name: Install dependencies
+        # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
+        run: yarn
+        # 👇 Adds Chromatic as a step in the workflow
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        # Chromatic GitHub Action options
+        with:
+          # 👇 Chromatic projectToken, refer to the manage page to obtain it.
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
