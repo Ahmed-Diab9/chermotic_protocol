@@ -1,11 +1,23 @@
 import React from "react";
-import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
+import {
+  Slider as CompoundSlider,
+  Rail,
+  Handles,
+  Tracks,
+  Ticks,
+  TicksProps,
+} from "react-compound-slider";
 import { SliderRail, Handle, Track, Tick } from "./components"; // example render components - source below
 
-interface RangeProps {
-  values?: number[];
-  onChange?: (newValue: readonly number[]) => unknown;
-  onUpdate?: (newValue: readonly number[]) => unknown;
+interface SliderProps {
+  min?: number;
+  max?: number;
+  step?: number;
+  tick?: number | number[];
+  value?: number;
+  onChange?: (newValue: number) => unknown;
+  onUpdate?: (newValue: number) => unknown;
+  readonly?: boolean;
 }
 
 const sliderStyle: React.CSSProperties = {
@@ -16,23 +28,47 @@ const sliderStyle: React.CSSProperties = {
   // width: "calc(100% - 20px)",
 };
 
-const domain: [number, number] = [0, 100];
+export const Slider = ({
+  min = 0,
+  max = 100,
+  step = 0.01,
+  tick = 1,
+  value,
+  onChange,
+  onUpdate,
+  readonly = false,
+}: SliderProps) => {
+  const domain: [number, number] = [min, max];
 
-export const Range = ({ ...props }: RangeProps) => {
-  const { values = [], onChange, onUpdate } = props;
+  const handleSetter =
+    (setter: (newValue: number) => unknown) => (values: readonly number[]) => {
+      if (!setter) return;
+      if (values.length > 1) {
+        console.warn("[Range]: single value only");
+      }
+      setter(+values[0].toFixed(12));
+    };
+
+  const ticksProps: Omit<TicksProps, "children"> =
+    typeof tick === "number"
+      ? {
+          count: tick,
+        }
+      : {
+          values: tick,
+        };
 
   return (
     <div style={{ height: "auto", width: "100%" }}>
-      <Slider
+      <CompoundSlider
         mode={1}
-        step={0.01}
+        step={step}
         domain={domain}
         rootStyle={sliderStyle}
-        onUpdate={onUpdate}
-        onChange={onChange}
-        values={values.map((value) => {
-          return Number(value.toFixed(2));
-        })}
+        onUpdate={handleSetter(onUpdate)}
+        onChange={handleSetter(onChange)}
+        values={[+value.toFixed(12)]}
+        disabled={readonly}
       >
         <Rail>
           {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
@@ -69,9 +105,7 @@ export const Range = ({ ...props }: RangeProps) => {
             </div>
           )}
         </Tracks>
-        <Ticks
-          count={4 /* generate approximately 15 ticks within the domain */}
-        >
+        <Ticks {...ticksProps}>
           {({ ticks }) => (
             <div className="px-[11px] slider-ticks">
               <div className="relative">
@@ -82,7 +116,7 @@ export const Range = ({ ...props }: RangeProps) => {
             </div>
           )}
         </Ticks>
-      </Slider>
+      </CompoundSlider>
     </div>
   );
 };

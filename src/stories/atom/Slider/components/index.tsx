@@ -1,15 +1,11 @@
 import React, { Fragment } from "react";
-import PropTypes from "prop-types";
 import {
   GetHandleProps,
   GetRailProps,
   GetTrackProps,
+  SliderItem,
 } from "react-compound-slider";
 
-// *******************************************************
-// RAIL
-// *******************************************************
-// 생략
 const railOuterStyle = {
   position: "absolute",
   width: "100%",
@@ -40,21 +36,10 @@ export function SliderRail({ getRailProps }: { getRailProps: GetRailProps }) {
   );
 }
 
-SliderRail.propTypes = {
-  getRailProps: PropTypes.func.isRequired,
-};
-
-// *******************************************************
-// HANDLE COMPONENT
-// *******************************************************
 interface HandleProps {
   domain: [number, number];
-  handle: {
-    id: string;
-    value: number;
-    percent: number;
-  };
-  disabled: boolean;
+  handle: SliderItem;
+  disabled?: boolean;
   getHandleProps: GetHandleProps;
 }
 export function Handle({
@@ -105,92 +90,18 @@ export function Handle({
   );
 }
 
-Handle.propTypes = {
-  domain: PropTypes.array.isRequired,
-  handle: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
-  getHandleProps: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-};
-
-Handle.defaultProps = {
-  disabled: false,
-};
-
-// *******************************************************
-// KEYBOARD HANDLE COMPONENT
-// Uses a button to allow keyboard events
-// *******************************************************
-interface KeyboardHandleProps {
-  domain: [number, number];
-  handle: { id: string; value: number; percent: number };
-  disabled: boolean;
-  getHandleProps: GetHandleProps;
-}
-export function KeyboardHandle({
-  domain: [min, max],
-  handle: { id, value, percent },
-  disabled,
-  getHandleProps,
-}: KeyboardHandleProps) {
-  return (
-    <button
-      role="slider"
-      aria-valuemin={min}
-      aria-valuemax={max}
-      aria-valuenow={value}
-      style={{
-        left: `${percent}%`,
-        position: "absolute",
-        transform: "translate(-50%, -50%)",
-        zIndex: 2,
-        width: 24,
-        height: 24,
-        borderRadius: "50%",
-        boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.3)",
-        backgroundColor: disabled ? "#666" : "#ffc400",
-      }}
-      {...getHandleProps(id)}
-    />
-  );
-}
-
-KeyboardHandle.propTypes = {
-  domain: PropTypes.array.isRequired,
-  handle: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
-  getHandleProps: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-};
-
-KeyboardHandle.defaultProps = {
-  disabled: false,
-};
-
-// *******************************************************
-// TRACK COMPONENT
-// *******************************************************
 interface TrackProps {
-  source: {
-    id: string;
-    value: number;
-    percent: number;
-  };
-  target: {
-    id: string;
-    value: number;
-    percent: number;
-  };
+  source: SliderItem;
+  target: SliderItem;
   getTrackProps: GetTrackProps;
-  disabled: boolean;
+  disabled?: boolean;
 }
-export function Track({ source, target, getTrackProps, disabled }: TrackProps) {
+export function Track({
+  source,
+  target,
+  getTrackProps,
+  disabled = false,
+}: TrackProps) {
   return (
     // active line
     <div className="relative">
@@ -215,38 +126,12 @@ export function Track({ source, target, getTrackProps, disabled }: TrackProps) {
   );
 }
 
-Track.propTypes = {
-  source: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
-  target: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
-  getTrackProps: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-};
-
-Track.defaultProps = {
-  disabled: false,
-};
-
-// *******************************************************
-// TICK COMPONENT
-// *******************************************************
 interface TickProps {
-  tick: {
-    id: string;
-    value: number;
-    percent: number;
-  };
+  tick: SliderItem;
   count: number;
-  format: (v: number) => number;
+  format?: (v: number) => number;
 }
-export function Tick({ tick, count, format }: TickProps) {
+export function Tick({ tick, count, format = (v) => v }: TickProps) {
   return (
     <div>
       {/* Tick - dot */}
@@ -280,17 +165,3 @@ export function Tick({ tick, count, format }: TickProps) {
     </div>
   );
 }
-
-Tick.propTypes = {
-  tick: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-    percent: PropTypes.number.isRequired,
-  }).isRequired,
-  count: PropTypes.number.isRequired,
-  format: PropTypes.func.isRequired,
-};
-
-Tick.defaultProps = {
-  format: (d: number) => d,
-};

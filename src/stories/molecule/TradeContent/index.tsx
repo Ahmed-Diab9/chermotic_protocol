@@ -7,9 +7,9 @@ import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
-import { Range } from "../../atom/Range";
+import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
-import { Listbox } from "@headlessui/react";
+import { Listbox } from "@headlessui/react"
 import "./../../atom/Select/style.css";
 import "./style.css";
 import { TradeInput } from "~/typings/trade";
@@ -90,6 +90,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       withComma(formatDecimals(stopLossPrice, 4, 2)),
     ];
   }, [input, priceFeed, token]);
+  const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
     <div className="TradeContent">
@@ -174,11 +175,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
             </div>
             {input && (
-              <Range
-                values={input.takeProfit === 0 ? [1] : [input.takeProfit]}
+              <Slider
+                value={input.takeProfit === 0? 1 : input.takeProfit}
                 onChange={(values) => {
-                  onTakeProfitChange?.(values[0]);
+                  onTakeProfitChange?.(values);
                 }}
+                tick={SLIDER_TICK}
               />
             )}
           </article>
@@ -200,11 +202,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
             </div>
             {input && (
-              <Range
-                values={input.stopLoss === 0 ? [1] : [input.stopLoss]}
+              <Slider
+                value={input.stopLoss === 0 ? 1 : input.stopLoss}
                 onChange={(values) => {
-                  onStopLossChange?.(values[0]);
+                  onStopLossChange?.(values);
                 }}
+                tick={SLIDER_TICK}
               />
             )}
           </article>
