@@ -42,6 +42,7 @@ export const Slider = ({
 
   const handleSetter =
     (setter: (newValue: number) => unknown) => (values: readonly number[]) => {
+      if (!setter) return;
       if (values.length > 1) {
         console.warn("[Range]: single value only");
       }
