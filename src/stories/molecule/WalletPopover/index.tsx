@@ -3,6 +3,7 @@ import { Tab } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Thumbnail } from "../../atom/Thumbnail";
 import { Button } from "../../atom/Button";
+import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
@@ -102,7 +103,7 @@ export const WalletPopover = ({
               account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
             }
             src="/src/assets/images/arbitrum.svg"
-            size="lg"
+            className="!w-[44px] !h-[44px]"
             fontSize="sm"
             fontWeight="normal"
             gap="3"
@@ -137,27 +138,22 @@ export const WalletPopover = ({
                         Connected Wallet
                       </h4>
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
-                          <p className="px-4">
-                            {account?.walletAddress &&
-                              trimAddress(account?.walletAddress, 7, 5)}
-                          </p>
-                          <Button
-                            label="copy address"
-                            css="circle"
-                            className="m-[-1px]"
-                            iconOnly={<Square2StackIcon />}
-                            onClick={() => {
-                              const address = account?.walletAddress;
-                              if (isValid(address)) {
-                                onWalletCopy?.(address);
-                              }
-                            }}
-                          />
-                        </div>
+                        <AddressCopyButton
+                          address={
+                            account?.walletAddress &&
+                            trimAddress(account?.walletAddress, 7, 5)
+                          }
+                          onClick={() => {
+                            const address = account?.walletAddress;
+                            if (isValid(address)) {
+                              onWalletCopy?.(address);
+                            }
+                          }}
+                        />
                         <Button
                           label="view transition"
                           css="circle"
+                          size="lg"
                           iconOnly={<ArrowTopRightOnSquareIcon />}
                         />
                       </div>
@@ -287,27 +283,22 @@ export const WalletPopover = ({
                       My Account
                     </h4>
                     <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
-                        <p className="px-4">
-                          {account?.usumAddress &&
-                            trimAddress(account?.usumAddress, 7, 5)}
-                        </p>
-                        <Button
-                          label="copy address"
-                          css="circle"
-                          className="m-[-1px]"
-                          iconOnly={<Square2StackIcon />}
-                          onClick={() => {
-                            const address = account?.usumAddress;
-                            if (isValid(address)) {
-                              onUsumCopy?.(address);
-                            }
-                          }}
-                        />
-                      </div>
+                      <AddressCopyButton
+                        address={
+                          account?.usumAddress &&
+                          trimAddress(account?.usumAddress, 7, 5)
+                        }
+                        onClick={() => {
+                          const address = account?.usumAddress;
+                          if (isValid(address)) {
+                            onUsumCopy?.(address);
+                          }
+                        }}
+                      />
                       <Button
                         label="view transition"
                         css="circle"
+                        size="lg"
                         iconOnly={<ArrowTopRightOnSquareIcon />}
                       />
                     </div>
@@ -315,7 +306,7 @@ export const WalletPopover = ({
                   <Button
                     label="Disconnect"
                     onClick={onDisconnect}
-                    size="lg"
+                    size="xl"
                     className="w-full mb-3 !text-white !bg-black border-none"
                   />
                   <Button

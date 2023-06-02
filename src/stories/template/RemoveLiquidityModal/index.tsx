@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
-import { DialogCloseButton } from "~/stories/atom/DialogCloseButton";
+import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Range } from "~/stories/atom/Range";
 import { OptionInput } from "~/stories/atom/OptionInput";
@@ -30,13 +30,14 @@ export const RemoveLiquidityModal = ({
       <Dialog.Panel>
         <Dialog.Title className="modal-title">
           Remove Liquidity
-          <DialogCloseButton />
+          <ModalCloseButton onClick={() => setIsOpen(false)} />
         </Dialog.Title>
+        <div className="w-[100px] mx-auto border-b border-2 border-black"></div>
         <Dialog.Description className="gap-10 modal-content">
           {/* liquidity info */}
           <article className="w-full">
             {/* inner box */}
-            <div className="flex items-center w-full gap-3 px-4 py-3 border rounded-2xl">
+            <div className="flex items-center w-full gap-3 px-4 py-3 border rounded-2xl bg-grayL/20">
               <Thumbnail size="lg" className="rounded" />
               <div>
                 <Avatar label="USDC" size="xs" gap="1" />
@@ -93,7 +94,7 @@ export const RemoveLiquidityModal = ({
           </article>
         </Dialog.Description>
         <div className="modal-button">
-          <Button label="Remove" size="lg" css="active" />
+          <Button label="Remove" size="xl" className="text-lg" css="active" />
         </div>
       </Dialog.Panel>
     </Dialog>

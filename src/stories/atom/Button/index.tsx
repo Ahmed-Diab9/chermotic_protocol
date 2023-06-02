@@ -4,7 +4,7 @@ import "./style.css";
 interface ButtonProps {
   label?: string;
   css?: "default" | "active" | "noline" | "circle";
-  size?: "xs" | "sm" | "base" | "lg" | "xl";
+  size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
   align?: "center" | "left" | "right";
   className?: string;
   iconLeft?: any;

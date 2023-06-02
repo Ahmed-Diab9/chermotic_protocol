@@ -26,10 +26,10 @@ export const Avatar = (props: AvatarProps) => {
   } = props;
 
   return (
-    <div className={`avatar ${className}`}>
+    <div className="avatar">
       <div className={`flex items-center gap-${gap}`}>
         <div
-          className={`avatar-${size} bg-[#D9D9D9] rounded-full overflow-hidden shrink-0`}
+          className={`avatar-${size} ${className} bg-[#D9D9D9] rounded-full overflow-hidden shrink-0`}
         >
           {src && (
             <img src={src} alt="" className="object-cover w-full h-full" />

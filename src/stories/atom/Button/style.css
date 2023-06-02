@@ -42,58 +42,73 @@
   @apply border border-[#eee] bg-white !rounded-full;
 }
 .btn-xs {
-  @apply min-w-[16px];
-  height: 28px;
-  padding: 4px 8px;
+  @apply min-w-[20px];
+  height: 20px;
+  padding: 0 8px;
+  svg {
+    width: 12px;
+  }
   &.btn-icon-only {
-    @apply min-h-[16px] p-[1px];
+    @apply min-h-[20px] p-[1px];
   }
 }
 .btn-sm {
-  @apply min-w-[20px];
-  height: 34px;
+  @apply min-w-[28px];
+  height: 28px;
   padding: 0 8px;
   svg {
-    height: 12px;
+    width: 12px;
   }
   &.btn-icon-only {
-    @apply min-h-[20px] p-[2px];
+    @apply min-h-[28px] p-[2px];
   }
 }
 .btn-base {
-  @apply min-w-[40px];
+  @apply min-w-[34px];
   font-size: 13px;
-  height: 40px;
+  height: 34px;
   padding: 0 8px;
   svg {
-    height: 16px;
+    width: 16px;
   }
   &.btn-icon-only {
-    @apply min-h-[40px] p-1;
+    @apply min-h-[34px] p-1;
   }
   &.btn-circle {
     @apply p-2;
   }
 }
 .btn-lg {
+  @apply min-w-[40px];
+  font-size: 16px;
+  height: 40px;
+  padding: 0 8px;
+  svg {
+    width: 16px;
+  }
+  &.btn-icon-only {
+    @apply min-h-[40px] p-2;
+  }
+}
+.btn-xl {
   @apply min-w-[48px];
   font-size: 16px;
   height: 48px;
   padding: 0 8px;
   svg {
-    height: 20px;
+    width: 20px;
   }
   &.btn-icon-only {
     @apply min-h-[48px] p-2;
   }
 }
-.btn-xl {
+.btn-2xl {
   @apply min-w-[60px];
   font-size: 20px;
   height: 60px;
   padding: 0 8px;
   svg {
-    height: 20px;
+    width: 24px;
   }
   &.btn-icon-only {
     @apply min-h-[60px] p-2;

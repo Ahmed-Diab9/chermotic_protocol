@@ -71,7 +71,7 @@ export const Header = ({
               <Avatar
                 src="/src/assets/images/arbitrum.svg"
                 label="Connect"
-                size="lg"
+                className="!w-[44px] !h-[44px]"
                 fontSize="lg"
                 fontWeight="normal"
                 gap="5"
