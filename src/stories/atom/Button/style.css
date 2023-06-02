@@ -35,8 +35,8 @@
 .btn-default {
   @apply text-black border;
 }
-.btn-noline {
-  @apply hover:bg-black/20;
+.btn-unstyled {
+  @apply bg-transparent hover:bg-black/20;
 }
 .btn-circle {
   @apply border border-[#eee] bg-white !rounded-full;

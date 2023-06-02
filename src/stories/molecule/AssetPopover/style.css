@@ -1,5 +1,4 @@
 .AssetPopover {
-  @apply min-w-[400px];
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
     @apply bg-white max-w-[500px] min-h-[280px] rounded-b-2xl;
