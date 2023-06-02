@@ -133,3 +133,17 @@ export const trimLeftZero = (rawString: string) => {
 
   return rawString.substring(firstIndex);
 };
+
+export const createAnnualSeconds = (time: Date | number, ms?: boolean) => {
+  if (typeof time === "number") {
+    time = new Date(time);
+  }
+  const startTime = time.getTime();
+  const endTime = time.setFullYear(time.getFullYear() + 1);
+  const subtraction = endTime - startTime;
+  if (ms) {
+    return subtraction / 1000;
+  }
+  return subtraction;
+};
+
