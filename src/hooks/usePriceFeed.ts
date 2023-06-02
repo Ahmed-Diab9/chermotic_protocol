@@ -47,7 +47,7 @@ const usePriceFeed = () => {
     errorLog(error);
   }
 
-  return [feed ?? {}, fetchFeed] as const;
+  return [feed, fetchFeed] as const;
 };
 
 export default usePriceFeed;

@@ -243,7 +243,6 @@ export const useSelectedLiquidityPool = () => {
       pool.marketAddress,
       feeRate,
       expandedAmount,
-      0,
       address
     );
   };

@@ -6,7 +6,7 @@ import { ChevronDoubleRightIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
-import { Token } from "~/typings/market";
+import { Market, Price, Token } from "~/typings/market";
 
 export interface TradePanelProps {
   longInput?: TradeInput;
@@ -30,7 +30,9 @@ export interface TradePanelProps {
   onShortStopLossChange?: (value: number) => unknown;
 
   balances?: Record<string, BigNumber>;
+  priceFeed?: Record<string, Price>;
   token?: Token;
+  market?: Market;
 
   longTotalMaxLiquidity?: BigNumber;
   longTotalUnusedLiquidity?: BigNumber;
@@ -56,7 +58,9 @@ export const TradePanel = (props: TradePanelProps) => {
     onShortTakeProfitChange,
     onShortStopLossChange,
     balances,
+    priceFeed,
     token,
+    market,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -86,6 +90,8 @@ export const TradePanel = (props: TradePanelProps) => {
             <TradeContent
               direction="short"
               balances={balances}
+              priceFeed={priceFeed}
+              market={market}
               token={token}
               input={shortInput}
               totalMaxLiquidity={shortTotalMaxLiquidity}
@@ -102,6 +108,8 @@ export const TradePanel = (props: TradePanelProps) => {
             <TradeContent
               direction="long"
               balances={balances}
+              priceFeed={priceFeed}
+              market={market}
               token={token}
               input={longInput}
               totalMaxLiquidity={longTotalMaxLiquidity}
