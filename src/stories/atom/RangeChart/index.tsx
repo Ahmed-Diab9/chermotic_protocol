@@ -1,4 +1,5 @@
 import { RangeChart as Chart } from "@chromatic-protocol/react-compound-charts";
+import "./style.css";
 
 import type {
   DotData,
