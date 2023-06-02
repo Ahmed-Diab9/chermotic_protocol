@@ -1,4 +1,5 @@
 import { FillUpChart as Chart } from "@chromatic-protocol/react-compound-charts";
+import "./style.css";
 
 import type { BarData } from "@chromatic-protocol/react-compound-charts";
 
@@ -36,7 +37,7 @@ export function FillUpChart({
   const labels = isNegative ? FILLUP_NEG_TICKS : FILLUP_POS_TICKS;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div className="flex justify-center ">
       <Chart
         data={data}
         trackConfig={trackConfig}

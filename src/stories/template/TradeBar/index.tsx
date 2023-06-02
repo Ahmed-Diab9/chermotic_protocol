@@ -27,7 +27,7 @@ export const TradeBar = ({ user }: TradeBarProps) => {
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
   return (
-    <div className="z-10 fixed bottom-0 w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left">
+    <div className="fixed bottom-0 z-40 w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left">
       <Tab.Group>
         <div className="flex items-end">
           <Tab.List className="pt-4 text-lg">

@@ -1,0 +1,6 @@
+.react_range__range_container {
+  .react_range__grid_bold,
+  .react_range__track {
+    @apply box-content;
+  }
+}
