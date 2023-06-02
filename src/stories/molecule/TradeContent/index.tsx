@@ -9,18 +9,13 @@ import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
 import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
-import { Listbox } from "@headlessui/react"
+import { Listbox } from "@headlessui/react";
 import "./../../atom/Select/style.css";
 import "./style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  withComma,
-} from "~/utils/number";
+import { formatDecimals, withComma } from "~/utils/number";
 import { Market, Price, Token } from "~/typings/market";
 
 interface TradeContentProps {
@@ -72,22 +67,24 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     }
     const { collateral, takeProfit, stopLoss } = input;
     const price = priceFeed[token.name];
-    const addition = bigNumberify(Math.round(collateral * takeProfit));
-    const subtraction = bigNumberify(Math.round(collateral * stopLoss));
-    const takeProfitPrice = bigNumberify(collateral)
-      .mul(expandDecimals(2))
-      .add(addition)
-      .mul(expandDecimals(price.decimals + 2))
-      .div(price.value);
-    const stopLossPrice = bigNumberify(collateral)
-      .mul(expandDecimals(2))
-      .sub(subtraction)
-      .mul(expandDecimals(price.decimals + 2))
-      .div(price.value);
+    if (input.collateral === 0) {
+      return [
+        withComma(formatDecimals(price.value, price.decimals, 2)),
+        withComma(formatDecimals(price.value, price.decimals, 2)),
+      ];
+    }
+    const addition = Math.round(collateral + collateral * (takeProfit / 100));
+    const subtraction = Math.round(collateral - collateral * (stopLoss / 100));
+
+    const expandedAddition = Math.round((addition / collateral) * 100);
+    const expandedSubtraction = Math.round((subtraction / collateral) * 100);
+
+    const takeProfitPrice = price.value.mul(expandedAddition);
+    const stopLossPrice = price.value.mul(expandedSubtraction);
 
     return [
-      withComma(formatDecimals(takeProfitPrice, 4, 2)),
-      withComma(formatDecimals(stopLossPrice, 4, 2)),
+      withComma(formatDecimals(takeProfitPrice, price.decimals + 2, 2)),
+      withComma(formatDecimals(stopLossPrice, price.decimals + 2, 2)),
     ];
   }, [input, priceFeed, token]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
@@ -176,7 +173,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
             {input && (
               <Slider
-                value={input.takeProfit === 0? 1 : input.takeProfit}
+                value={input.takeProfit === 0 ? 1 : input.takeProfit}
                 onChange={(values) => {
                   onTakeProfitChange?.(values);
                 }}
