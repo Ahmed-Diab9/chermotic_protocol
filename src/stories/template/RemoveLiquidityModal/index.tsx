@@ -3,20 +3,16 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { Avatar } from "~/stories/atom/Avatar";
-import { Range } from "~/stories/atom/Range";
+import { Slider } from "~/stories/atom/Slider";
 import { OptionInput } from "~/stories/atom/OptionInput";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
 
 interface RemoveLiquidityModalProps {
-  label: string;
-  size?: "sm" | "md" | "lg";
   onClick?: () => void;
 }
 
 export const RemoveLiquidityModal = ({
-  label,
-  size = "md",
   ...props
 }: RemoveLiquidityModalProps) => {
   let [isOpen, setIsOpen] = useState(true);
@@ -71,9 +67,7 @@ export const RemoveLiquidityModal = ({
               <p className="font-semibold">Utilized</p>
               <p className="font-semibold">Removable</p>
             </div>
-            <div className="mt-4 h-9">
-              <Range />
-            </div>
+            <div className="mt-4 h-9">{/* <Slider /> */}</div>
           </article>
 
           {/* input - number */}
