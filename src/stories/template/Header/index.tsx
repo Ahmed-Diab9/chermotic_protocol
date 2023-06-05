@@ -6,6 +6,7 @@ import { Market, Price, Token } from "~/typings/market";
 import { Account } from "~/typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "~/typings/pools";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   account?: Account;
@@ -37,11 +38,11 @@ export const Header = ({
   <header>
     <div className="h-[100px] px-10 py-5 flex items-center justify-between">
       <div className="flex items-center gap-12 text-lg">
-        <a href="/" className="mr-4 font-bold" title="Chromatic">
+        <Link to="/" className="mr-4 font-bold" title="Chromatic">
           <LogoSimple />
-        </a>
-        <a href="/trade">Trade</a>
-        <a href="/pool">Pool</a>
+        </Link>
+        <Link to="/trade">Trade</Link>
+        <Link to="/pool">Pool</Link>
         {/* dropdown */}
       </div>
       <div>
