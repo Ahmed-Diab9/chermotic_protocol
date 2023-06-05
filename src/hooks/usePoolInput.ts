@@ -108,14 +108,14 @@ const usePoolInput = () => {
     const filteredFeeRates = feeRates.filter(
       (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
     );
-    const expandedAmount = bigNumberify(amount)
-      ?.mul(expandDecimals(token?.decimals))
-      .div(bins);
-
+    const expandedAmount = bigNumberify(amount)?.mul(
+      expandDecimals(token.decimals)
+    );
     if (!isValid(expandedAmount)) {
       errorLog("amount is invalid");
       return;
     }
+    const dividedAmount = expandedAmount.div(bins);
     const router = getDeployedContract(
       "USUMRouter",
       "anvil",
