@@ -126,11 +126,11 @@ const usePoolInput = () => {
     if (allowance.lte(expandedAmount)) {
       await erc20.approve(router.address, expandedAmount);
     }
-    await router.addLiquidity(
+    await router.addLiquidityBatch(
       marketAddress,
-      filteredFeeRates[0],
-      expandedAmount,
-      address
+      filteredFeeRates,
+      Array.from({ length: bins }).map(() => dividedAmount),
+      Array.from({ length: bins }).map(() => address)
     );
   };
 
