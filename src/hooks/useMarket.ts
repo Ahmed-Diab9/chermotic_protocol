@@ -1,8 +1,11 @@
 import { useEffect, useMemo } from "react";
-import { useProvider } from "wagmi";
 import useSWR from "swr";
+import { useProvider } from "wagmi";
 
-import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
+import {
+  ChromaticMarket__factory,
+  OracleProvider__factory,
+} from "@chromatic-protocol/sdk";
 
 import { Market } from "~/typings/market";
 
@@ -10,8 +13,8 @@ import { useAppDispatch, useAppSelector } from "~/store";
 import { marketAction } from "~/store/reducer/market";
 
 import useLocalStorage from "~/hooks/useLocalStorage";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
 import { useMarketFactory } from "~/hooks/useMarketFactory";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
@@ -39,7 +42,10 @@ export const useMarket = (_interval?: number) => {
           selectedToken.address as string
         )
       ).map(async (marketAddress) => {
-        const market = USUMMarket__factory.connect(marketAddress, provider);
+        const market = ChromaticMarket__factory.connect(
+          marketAddress,
+          provider
+        );
 
         const oracleProviderAddress = await market.oracleProvider();
         const oracleProvider = OracleProvider__factory.connect(

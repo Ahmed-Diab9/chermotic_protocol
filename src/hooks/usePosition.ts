@@ -1,19 +1,22 @@
-import { useMemo } from "react";
 import { BigNumber } from "ethers";
+import { useMemo } from "react";
 import useSWR from "swr";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 
+import {
+  ChromaticMarket__factory,
+  OracleProvider__factory,
+} from "@chromatic-protocol/sdk";
+import { useProvider } from "wagmi";
+import { useMarket } from "~/hooks/useMarket";
 import { useRouter } from "~/hooks/useRouter";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useMarket } from "~/hooks/useMarket";
 import { createPositionsMock } from "~/mock/positions";
-import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
-import { useProvider } from "wagmi";
+import { AppError } from "~/typings/error";
 import { PositionResponse } from "~/typings/position";
 import { filterIfFulfilled } from "~/utils/array";
 import useOracleVersion from "./useOracleVersion";
-import { AppError } from "~/typings/error";
 
 export const usePosition = () => {
   const [usumAccount] = useUsumAccount();
@@ -41,7 +44,7 @@ export const usePosition = () => {
   } = useSWR(fetchKey, async ([account, markets, provider]) => {
     const positionsPromise = markets.map(async (marketAddress) => {
       const positionIds = await account.getPositionIds(marketAddress);
-      const marketContract = USUMMarket__factory.connect(
+      const marketContract = ChromaticMarket__factory.connect(
         marketAddress,
         provider
       );

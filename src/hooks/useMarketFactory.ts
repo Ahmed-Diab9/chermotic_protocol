@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useProvider } from "wagmi";
 import useSWR from "swr";
+import { useProvider } from "wagmi";
 
-import { USUMMarketFactory__factory } from "@quarkonix/usum";
+import { ChromaticMarketFactory__factory } from "@chromatic-protocol/sdk";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
 
@@ -24,8 +24,8 @@ export const useMarketFactory = (_interval?: number) => {
   } = useSWR(
     fetchKey,
     ([provider]) => {
-      return USUMMarketFactory__factory.connect(
-        DEPLOYED_ADDRESSES.USUMMarketFactory,
+      return ChromaticMarketFactory__factory.connect(
+        DEPLOYED_ADDRESSES.ChromaticMarketFactory,
         provider
       );
     },

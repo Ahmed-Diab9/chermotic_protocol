@@ -1,16 +1,16 @@
+import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
 import { ChangeEvent, useMemo, useReducer } from "react";
-import { useSelectedToken } from "./useSettlementToken";
-import { useSelectedMarket } from "./useMarket";
-import { errorLog, infoLog } from "../utils/log";
-import { USUMRouter, getDeployedContract } from "@quarkonix/usum";
-import { CHAIN } from "~/constants/contracts";
 import { useSigner } from "wagmi";
-import { isValid } from "~/utils/valid";
+import { FEE_RATE_DECIMAL } from "~/configs/feeRate";
+import { CHAIN } from "~/constants/contracts";
+import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
+import { isValid } from "~/utils/valid";
+import { errorLog, infoLog } from "../utils/log";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { AppError } from "~/typings/error";
-import { FEE_RATE_DECIMAL } from "~/configs/feeRate";
+import { useSelectedMarket } from "./useMarket";
+import { useSelectedToken } from "./useSettlementToken";
 
 const initialTradeInput = {
   direction: "long",
@@ -351,10 +351,10 @@ export const useTradeInput = () => {
       return;
     }
     const router = getDeployedContract(
-      "USUMRouter",
+      "ChromaticRouter",
       CHAIN,
       signer
-    ) as USUMRouter;
+    ) as ChromaticRouter;
 
     const quantity = bigNumberify(state.quantity).mul(expandDecimals(4));
     const leverage = bigNumberify(state.leverage).mul(expandDecimals(2));

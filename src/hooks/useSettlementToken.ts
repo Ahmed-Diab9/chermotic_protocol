@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useProvider } from "wagmi";
 import useSWR from "swr";
 
-import { IERC20Metadata__factory } from "@quarkonix/usum";
+import { IERC20Metadata__factory } from "@chromatic-protocol/sdk";
 
 import { Token } from "~/typings/market";
 

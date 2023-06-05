@@ -1,18 +1,17 @@
-import { useMemo, useState } from "react";
-import { SHORT_FEE_RATES } from "../configs/feeRate";
-import { LONG_FEE_RATES } from "../configs/feeRate";
-import { isValid } from "../utils/valid";
-import { useSelectedMarket } from "./useMarket";
-import { useAccount, useSigner } from "wagmi";
-import { bigNumberify, expandDecimals } from "../utils/number";
-import { useSelectedToken } from "./useSettlementToken";
 import {
+  ChromaticRouter,
   IERC20__factory,
-  USUMRouter,
   getDeployedContract,
-} from "@quarkonix/usum";
-import { errorLog, infoLog } from "../utils/log";
+} from "@chromatic-protocol/sdk";
+import { useMemo, useState } from "react";
+import { useAccount, useSigner } from "wagmi";
+import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { errorLog } from "../utils/log";
+import { bigNumberify, expandDecimals } from "../utils/number";
+import { isValid } from "../utils/valid";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
+import { useSelectedMarket } from "./useMarket";
+import { useSelectedToken } from "./useSettlementToken";
 
 const usePoolInput = () => {
   const [pool] = useSelectedLiquidityPool();
@@ -117,10 +116,10 @@ const usePoolInput = () => {
     }
     const dividedAmount = expandedAmount.div(bins);
     const router = getDeployedContract(
-      "USUMRouter",
+      "ChromaticRouter",
       "anvil",
       signer
-    ) as USUMRouter;
+    ) as ChromaticRouter;
     const erc20 = IERC20__factory.connect(token.address, signer);
     const allowance = await erc20.allowance(address, router.address);
     if (allowance.lte(expandedAmount)) {
