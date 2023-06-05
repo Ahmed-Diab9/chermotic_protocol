@@ -116,6 +116,13 @@ export const useLiquidityPool = () => {
             baseFeeRates,
             maxLiquidities
           );
+          // @TODO
+          // totalSupplies와 maxLiquidities는 어떤 차이가 있는지 확인해야 합니다.
+          const totalSupplies = await router.totalSupplies(
+            marketAddress,
+            baseFeeRates
+          );
+          infoLog("differences?", maxLiquidities, totalSupplies);
 
           return {
             address: lpTokenAddress,
