@@ -27,6 +27,8 @@ interface TradeContentProps {
   input?: TradeInput;
   totalMaxLiquidity?: BigNumber;
   totalUnusedLiquidity?: BigNumber;
+  tradeFee?: BigNumber;
+  tradeFeePercent?: BigNumber;
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -53,6 +55,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     input,
     totalMaxLiquidity,
     totalUnusedLiquidity,
+    tradeFee,
+    tradeFeePercent,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -306,7 +310,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
                 {/* <Tooltip /> */}
               </div>
-              <p>12.24 USDC / 0.025%</p>
+              <p>
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{" "}
+                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
+              </p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">

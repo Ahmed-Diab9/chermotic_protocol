@@ -8,7 +8,7 @@ import { useRouter } from "~/hooks/useRouter";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { useMarket } from "~/hooks/useMarket";
 import { createPositionsMock } from "~/mock/positions";
-import { USUMMarket__factory } from "@quarkonix/usum";
+import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
 import { useProvider } from "wagmi";
 import { PositionResponse } from "~/typings/position";
 import { filterIfFulfilled } from "~/utils/array";
@@ -45,13 +45,27 @@ export const usePosition = () => {
         marketAddress,
         provider
       );
+      const oracleProviderAddress = await marketContract.oracleProvider();
+      const marketOracleProvider = OracleProvider__factory.connect(
+        oracleProviderAddress,
+        provider
+      );
 
       const positionResponses: PositionResponse[] =
         await marketContract.getPositions(positionIds);
-      const positions = positionResponses.map((response) => ({
-        marketAddress: marketAddress,
-        ...response,
-      }));
+      const positionsPromise = positionResponses.map(async (response) => {
+        const [openPrice, closePrice] = await marketOracleProvider.atVersions([
+          response.openVersion,
+          response.closeVersion,
+        ]);
+        return {
+          marketAddress: marketAddress,
+          openPrice,
+          closePrice,
+          ...response,
+        };
+      });
+      const positions = await filterIfFulfilled(positionsPromise);
       return positions;
     });
     const positions = await filterIfFulfilled(positionsPromise);

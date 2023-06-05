@@ -47,13 +47,10 @@ export const useMarket = (_interval?: number) => {
           provider
         );
 
-        // TODO
-        // 오라클 버전에서 받을 수 있는 마켓 가격에 대해 decimals 값 확인이 필요합니다.
-        // USUM REPL에서는 입력한 가격에 고정된 소수점 8이 적용되어 있었습니다.
-        // await oracleProvider.increaseVersion(ethers.utils.parseUnits(price.toString(), 8))
+        // 오라클에서 제공하는 모든 가격 데이터는 소수점 18자리를 적용해야 함
         async function getPrice() {
           const { price } = await oracleProvider.currentVersion();
-          return { value: price, decimals: 8 };
+          return { value: price, decimals: 18 };
         }
         const description = await oracleProvider.description();
         return {
