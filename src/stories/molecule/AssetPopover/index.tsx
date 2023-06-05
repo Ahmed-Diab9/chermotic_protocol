@@ -133,7 +133,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   My Account
                 </p>
                 <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
-                  {account.usumAddress}
+                  {account?.usumAddress}
                 </div>
                 <Button
                   size="base"
@@ -164,13 +164,14 @@ const AssetPanel = (props: AssetPanelProps) => {
                   <OptionInput
                     value={amount}
                     maxValue={
-                      title === "Deposit"
+                      token &&
+                      (title === "Deposit"
                         ? walletBalances?.[token.name]
                             ?.div(expandDecimals(token.decimals))
                             .toString()
                         : usumBalances?.[token.name]
                             ?.div(expandDecimals(token.decimals))
-                            .toString()
+                            .toString())
                     }
                     onChange={(event) => {
                       event.preventDefault();

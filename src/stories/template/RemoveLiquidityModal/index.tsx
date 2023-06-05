@@ -3,7 +3,7 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { Avatar } from "~/stories/atom/Avatar";
-import { Range } from "~/stories/atom/Range";
+import { Slider } from "~/stories/atom/Slider";
 import { OptionInput } from "~/stories/atom/OptionInput";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
@@ -72,7 +72,7 @@ export const RemoveLiquidityModal = ({
               <p className="font-semibold">Removable</p>
             </div>
             <div className="mt-4 h-9">
-              <Range />
+              <Slider value={50} />
             </div>
           </article>
 

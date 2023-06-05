@@ -41,7 +41,7 @@ export const Slider = ({
   const domain: [number, number] = [min, max];
 
   const handleSetter =
-    (setter: (newValue: number) => unknown) => (values: readonly number[]) => {
+    (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
       if (!setter) return;
       if (values.length > 1) {
         console.warn("[Range]: single value only");
@@ -67,7 +67,7 @@ export const Slider = ({
         rootStyle={sliderStyle}
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
-        values={[+value.toFixed(12)]}
+        values={value ? [+value.toFixed(12)] : []}
         disabled={readonly}
       >
         <Rail>
