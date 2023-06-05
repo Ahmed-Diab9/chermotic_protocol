@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Header } from "../../stories/template/Header";
 import { MainBar } from "../../stories/template/Mainbar";
 import { TradePanel } from "../../stories/template/TradePanel";
@@ -44,6 +44,8 @@ const Trade = () => {
   const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
   const {
     state: longInput,
+    tradeFee: longTradeFee,
+    feePercent: longFeePercent,
     onChange: onLongChange,
     onMethodToggle: onLongMethodToggle,
     onLeverageChange: onLongLeverageChange,
@@ -53,6 +55,8 @@ const Trade = () => {
   } = useTradeInput();
   const {
     state: shortInput,
+    tradeFee: shortTradeFee,
+    feePercent: shortFeePercent,
     onChange: onShortChange,
     onMethodToggle: onShortMethodToggle,
     onDirectionToggle: onShortDirectionToggle,
@@ -70,6 +74,12 @@ const Trade = () => {
       shortTotalUnusedLiquidity,
     ],
   ] = useSelectedLiquidityPool();
+
+  useEffect(() => {
+    if (shortInput.direction === "long") {
+      onShortDirectionToggle();
+    }
+  }, [shortInput.direction, onShortDirectionToggle]);
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -110,12 +120,16 @@ const Trade = () => {
         />
         <TradePanel
           longInput={longInput}
+          longTradeFee={longTradeFee}
+          longTradeFeePercent={longFeePercent}
           onLongChange={onLongChange}
           onLongMethodToggle={onLongMethodToggle}
           onLongLeverageChange={onLongLeverageChange}
           onLongTakeProfitChange={onLongTakeProfitChange}
           onLongStopLossChange={onLongStopLossChange}
           shortInput={shortInput}
+          shortTradeFee={shortTradeFee}
+          shortTradeFeePercent={shortFeePercent}
           onShortChange={onShortChange}
           onShortMethodToggle={onShortMethodToggle}
           onShortLeverageChange={onShortLeverageChange}

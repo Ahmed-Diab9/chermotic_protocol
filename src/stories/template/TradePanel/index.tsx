@@ -10,6 +10,8 @@ import { Market, Price, Token } from "~/typings/market";
 
 export interface TradePanelProps {
   longInput?: TradeInput;
+  longTradeFee?: BigNumber;
+  longTradeFeePercent?: BigNumber;
   onLongChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: React.ChangeEvent<HTMLInputElement>
@@ -20,6 +22,8 @@ export interface TradePanelProps {
   onLongStopLossChange?: (value: number) => unknown;
 
   shortInput?: TradeInput;
+  shortTradeFee?: BigNumber;
+  shortTradeFeePercent?: BigNumber;
   onShortChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: React.ChangeEvent<HTMLInputElement>
@@ -46,12 +50,16 @@ export interface TradePanelProps {
 export const TradePanel = (props: TradePanelProps) => {
   const {
     longInput,
+    longTradeFee,
+    longTradeFeePercent,
     onLongChange,
     onLongMethodToggle,
     onLongLeverageChange,
     onLongTakeProfitChange,
     onLongStopLossChange,
     shortInput,
+    shortTradeFee,
+    shortTradeFeePercent,
     onShortChange,
     onShortMethodToggle,
     onShortLeverageChange,
@@ -96,6 +104,8 @@ export const TradePanel = (props: TradePanelProps) => {
               input={shortInput}
               totalMaxLiquidity={shortTotalMaxLiquidity}
               totalUnusedLiquidity={shortTotalUnusedLiquidity}
+              tradeFee={shortTradeFee}
+              tradeFeePercent={shortTradeFeePercent}
               onMethodToggle={onShortMethodToggle}
               onInputChange={onShortChange}
               onLeverageChange={onShortLeverageChange}
@@ -114,6 +124,8 @@ export const TradePanel = (props: TradePanelProps) => {
               input={longInput}
               totalMaxLiquidity={longTotalMaxLiquidity}
               totalUnusedLiquidity={longTotalUnusedLiquidity}
+              tradeFee={longTradeFee}
+              tradeFeePercent={longTradeFeePercent}
               onMethodToggle={onLongMethodToggle}
               onInputChange={onLongChange}
               onLeverageChange={onLongLeverageChange}
