@@ -2,7 +2,7 @@
 // import { Avatar } from "../../atom/Avatar";
 // import { Button } from "../../atom/Button";
 // import { OptionInput } from "../../atom/OptionInput";
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
@@ -61,8 +61,21 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
-  const [takeProfitPrice, stopLossPrice] = useMemo(() => {
-    if (!isValid(input) || !isValid(priceFeed) || !isValid(token)) {
+  const [executionPrice, setPrice] = useState("");
+  const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
+    undefined,
+    undefined,
+  ] as [string | undefined, string | undefined]);
+  useEffect(() => {
+    market?.getPrice().then((price) => {
+      const nextPrice = withComma(
+        formatDecimals(price.value, price.decimals, 2)
+      );
+      if (isValid(nextPrice)) {
+        setPrice(nextPrice);
+      }
+    });
+  }, [market]);
       return [undefined, undefined];
     }
     const { collateral, takeProfit, stopLoss } = input;
