@@ -1,4 +1,4 @@
-import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
+import { OracleProvider__factory, ChromaticMarket__factory } from "@chromatic-protocol/sdk";
 import { useMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
 import { useProvider } from "wagmi";
@@ -25,7 +25,7 @@ const useOracleVersion = () => {
     fetchKey,
     async ([markets, provider]) => {
       const promise = markets.map(async (market) => {
-        const marketContract = USUMMarket__factory.connect(
+        const marketContract = ChromaticMarket__factory.connect(
           market.address,
           provider
         );

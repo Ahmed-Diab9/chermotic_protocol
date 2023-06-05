@@ -15,7 +15,18 @@ export interface Position {
   entryTime: BigNumber;
 }
 
-export interface PositionResponse {
+export type PositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  number,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string,
+  BinMarginStructOutput[]
+] & {
   id: BigNumber;
   openVersion: BigNumber;
   closeVersion: BigNumber;
@@ -25,10 +36,10 @@ export interface PositionResponse {
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
-  _slotMargins: LpSlotMargin[];
-}
+  _binMargins: BinMarginStructOutput[];
+};
 
-export interface LpSlotMargin {
+export type BinMarginStructOutput = [number, BigNumber] & {
   tradingFeeRate: number;
   amount: BigNumber;
-}
+};

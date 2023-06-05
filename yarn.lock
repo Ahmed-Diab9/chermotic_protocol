@@ -1117,6 +1117,11 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
+"@chromatic-protocol/sdk@^0.1.0-rc.3":
+  version "0.1.0-rc.3"
+  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.3/9caeef662fd79ebf422a2257cf879223ecb0f8ef#9caeef662fd79ebf422a2257cf879223ecb0f8ef"
+  integrity sha512-lk43redSBY6VCLCEX54Lkl7hJKIhG6/G3XrKtmD3RIG/GgZUiNs6zb2h9n7Jqj91kl4ZaenxejkJjjQBwUeanw==
+
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.6.6"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.6.6.tgz#4a0758fe0fe0ba3ed7e33b5bb6eb094ff8bd6c98"
@@ -1981,11 +1986,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
-
-"@quarkonix/usum@^0.0.1-rc.35":
-  version "0.0.1-rc.35"
-  resolved "https://npm.pkg.github.com/download/@quarkonix/usum/0.0.1-rc.35/16cbbb1c236a00867a20f1fab98ce7182e084dd6#16cbbb1c236a00867a20f1fab98ce7182e084dd6"
-  integrity sha512-gH2DYbnwSDmLx36eQakoXBwSQSVhWIWf/hyfpKSJLb1It8yY4Dk0i+gMdHisPtdyvfiwSOa7e9qf8SFfzWIWoQ==
 
 "@reduxjs/toolkit@^1.9.5":
   version "1.9.5"

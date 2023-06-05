@@ -1,4 +1,4 @@
-import { getAllDeployedContracts, deployedAddress } from "@quarkonix/usum";
+import { getAllDeployedContracts, deployedAddress } from "@chromatic-protocol/sdk";
 
 export const CHAIN = "anvil";
 

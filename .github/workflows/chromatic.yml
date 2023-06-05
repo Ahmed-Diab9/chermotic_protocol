@@ -21,7 +21,6 @@ jobs:
       - name: Authenticate with private npm packages
         run: |
           echo "@chromatic-protocol:registry=https://npm.pkg.github.com" >> ~/.npmrc
-          echo "@quarkonix:registry=https://npm.pkg.github.com" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
           echo "//registry.npmjs.org/" >> ~/.npmrc
       - name: Install dependencies

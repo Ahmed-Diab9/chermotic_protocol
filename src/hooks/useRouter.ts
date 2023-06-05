@@ -1,7 +1,7 @@
-import { useSigner } from "wagmi";
 import useSWR from "swr";
+import { useSigner } from "wagmi";
 
-import { USUMRouter__factory } from "@quarkonix/usum";
+import { ChromaticRouter__factory } from "@chromatic-protocol/sdk";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
 
@@ -20,8 +20,8 @@ export const useRouter = () => {
   } = useSWR(
     fetchKey,
     async ([signer]) => {
-      const contract = USUMRouter__factory.connect(
-        DEPLOYED_ADDRESSES.USUMRouter,
+      const contract = ChromaticRouter__factory.connect(
+        DEPLOYED_ADDRESSES.ChromaticRouter,
         signer
       );
 

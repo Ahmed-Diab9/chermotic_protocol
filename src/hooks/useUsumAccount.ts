@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSigner } from "wagmi";
 import useSWR from "swr";
-import { AccountFactory__factory, Account__factory } from "@quarkonix/usum";
+import { AccountFactory__factory, Account__factory } from "@chromatic-protocol/sdk";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
 
