@@ -33,7 +33,7 @@ export function RangeChart({
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Chart
         barData={barData}
-        dotData={isDotVisible ? dotData : undefined}
+        dotData={isDotVisible ? dotData : []}
         trackConfig={RANGE_CONFIG}
         labels={RANGE_TICKS}
         selectedInterval={selectedInterval}

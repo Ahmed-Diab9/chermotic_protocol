@@ -19,17 +19,17 @@ const markets = [
   {
     address: "0x0000000000000000000",
     description: "ETH/USD",
-    getPrice: async () => BigNumber.from(1500),
+    getPrice: async () => ({ value: BigNumber.from(1500), decimals: 18 }),
   },
   {
     address: "0x4445556667778889999",
     description: "AAVE/USD",
-    getPrice: async () => BigNumber.from(500),
+    getPrice: async () => ({ value: BigNumber.from(500), decimals: 18 }),
   },
   {
     address: "0x1111111111111111111",
     description: "GALA/USD",
-    getPrice: async () => BigNumber.from(200),
+    getPrice: async () => ({ value: BigNumber.from(200), decimals: 18 }),
   },
 ];
 

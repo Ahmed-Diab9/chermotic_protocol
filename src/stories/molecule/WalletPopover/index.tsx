@@ -140,8 +140,9 @@ export const WalletPopover = ({
                       <div className="flex items-center justify-between gap-2">
                         <AddressCopyButton
                           address={
-                            account?.walletAddress &&
-                            trimAddress(account?.walletAddress, 7, 5)
+                            account?.walletAddress
+                              ? trimAddress(account?.walletAddress, 7, 5)
+                              : "Create Account"
                           }
                           onClick={() => {
                             const address = account?.walletAddress;
@@ -285,8 +286,9 @@ export const WalletPopover = ({
                     <div className="flex items-center justify-between gap-2">
                       <AddressCopyButton
                         address={
-                          account?.usumAddress &&
-                          trimAddress(account?.usumAddress, 7, 5)
+                          account?.usumAddress
+                            ? trimAddress(account?.usumAddress, 7, 5)
+                            : "Create Account"
                         }
                         onClick={() => {
                           const address = account?.usumAddress;
