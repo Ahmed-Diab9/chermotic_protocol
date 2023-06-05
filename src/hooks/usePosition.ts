@@ -14,7 +14,7 @@ import { useRouter } from "~/hooks/useRouter";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { createPositionsMock } from "~/mock/positions";
 import { AppError } from "~/typings/error";
-import { PositionResponse } from "~/typings/position";
+import { PositionStructOutput } from "~/typings/position";
 import { filterIfFulfilled } from "~/utils/array";
 import useOracleVersion from "./useOracleVersion";
 
@@ -54,7 +54,7 @@ export const usePosition = () => {
         provider
       );
 
-      const positionResponses: PositionResponse[] =
+      const positionResponses: PositionStructOutput[] =
         await marketContract.getPositions(positionIds);
       const positionsPromise = positionResponses.map(async (response) => {
         const [openPrice, closePrice] = await marketOracleProvider.atVersions([

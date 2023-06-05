@@ -100,17 +100,19 @@ export const useLiquidityPool = () => {
             marketAddress,
             provider
           );
-          const lpTokenAddress = await market.lpToken();
+          const lpTokenAddress = await market.clbToken();
+
           const lpToken = CLBToken__factory.connect(lpTokenAddress, provider);
 
           const balances = await lpToken.balanceOfBatch(addresses, feeRates);
           const metadata = await fetchLpTokenMetadata(lpToken, feeRates);
 
-          const maxLiquidities = await market.getSlotLiquidities(baseFeeRates);
-          const unusedLiquidities = await market.getSlotFreeLiquidities(
+          const maxLiquidities = await market.getBinLiquidities(baseFeeRates);
+
+          const unusedLiquidities = await market.getBinFreeLiquidities(
             baseFeeRates
           );
-          const tokenValueBatch = await router.calculateLpTokenValueBatch(
+          const tokenValueBatch = await router.calculateCLBTokenValueBatch(
             marketAddress,
             baseFeeRates,
             maxLiquidities
