@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { filterIfFulfilled } from "~/utils/array";
 import { BigNumber } from "ethers";
 import { isValid } from "~/utils/valid";
+import { infoLog } from "~/utils/log";
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -31,9 +32,11 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const [marketPrice, setMarketPrice] = useState<string>();
   useEffect(() => {
     selectedMarket?.getPrice().then((price) => {
-      setMarketPrice("$" + withComma(price));
+      setMarketPrice(
+        "$" + withComma(formatDecimals(price.value, price.decimals, 2))
+      );
     });
-  }, [selectedMarket]);
+  }, [selectedToken, selectedMarket]);
 
   return (
     <div className="MarketSelect">
@@ -69,7 +72,7 @@ export const PopoverMain = (
     }
     const promise = markets.map(async (market) => {
       const price = await market.getPrice();
-      return "$" + withComma(price);
+      return "$" + withComma(formatDecimals(price.value, price.decimals, 2));
     });
     const prices = await filterIfFulfilled(promise);
     setMarketPrices(prices);

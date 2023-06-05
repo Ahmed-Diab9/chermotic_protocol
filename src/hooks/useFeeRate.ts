@@ -17,6 +17,8 @@ export const useFeeRate = () => {
   const { data: feeRate, error } = useSWR(
     fetchKey,
     ([factory, token]) => {
+      // @TODO
+      // 연이율(Interest Rate)에 적용시켜야 할 소수점(Decimals) 값이 필요합니다.
       return factory.currentInterestRate(token.address);
     },
     {
