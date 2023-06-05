@@ -108,14 +108,14 @@ const usePoolInput = () => {
     const filteredFeeRates = feeRates.filter(
       (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
     );
-    const expandedAmount = bigNumberify(amount)
-      ?.mul(expandDecimals(token?.decimals))
-      .div(bins);
-
+    const expandedAmount = bigNumberify(amount)?.mul(
+      expandDecimals(token.decimals)
+    );
     if (!isValid(expandedAmount)) {
       errorLog("amount is invalid");
       return;
     }
+    const dividedAmount = expandedAmount.div(bins);
     const router = getDeployedContract(
       "USUMRouter",
       "anvil",
@@ -126,11 +126,11 @@ const usePoolInput = () => {
     if (allowance.lte(expandedAmount)) {
       await erc20.approve(router.address, expandedAmount);
     }
-    await router.addLiquidity(
+    await router.addLiquidityBatch(
       marketAddress,
-      filteredFeeRates[0],
-      expandedAmount,
-      address
+      filteredFeeRates,
+      Array.from({ length: bins }).map(() => dividedAmount),
+      Array.from({ length: bins }).map(() => address)
     );
   };
 

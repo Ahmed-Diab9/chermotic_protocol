@@ -32,7 +32,10 @@ export const LoggedIn: Story = {
       {
         address: "0x8888888888888888888888888888888888888888",
         description: "ETH/USD",
-        getPrice: async () => BigNumber.from(1500),
+        getPrice: async () => ({
+          value: BigNumber.from(1500),
+          decimals: 18,
+        }),
       },
     ],
     balances: {

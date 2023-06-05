@@ -28,6 +28,8 @@ import { useSelectedToken } from "~/hooks/useSettlementToken";
 import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
+import usePoolReceipt from "~/hooks/usePoolReceipt";
+import { useSelectedMarket } from "~/hooks/useMarket";
 
 interface PoolPanelProps {
   token?: Token;
@@ -490,6 +492,32 @@ export const PoolPanel = (props: PoolPanelProps) => {
           />,
           document.getElementById("modal")!
         )}
+      {document.getElementById("modal") &&
+        createPortal(<PoolClaim />, document.getElementById("modal")!)}
+    </div>
+  );
+};
+
+const PoolClaim = () => {
+  const { receipts, claimLpTokens } = usePoolReceipt();
+  const [market] = useSelectedMarket();
+
+  return (
+    <div className="flex flex-col gap-x-1 gap-y-2 fixed left-auto top-4 right-4 z-10 bg-white shadow-md">
+      {receipts?.map((receipt) => (
+        <div key={receipt.toNumber()} className="px-4 py-4">
+          <h3>Receipt {receipt.toNumber()}</h3>
+          {market && <p>Market {market.description}</p>}
+          <button
+            className="bg-black text-white px-2 py-1"
+            onClick={() => {
+              claimLpTokens(receipt);
+            }}
+          >
+            Claim
+          </button>
+        </div>
+      ))}
     </div>
   );
 };

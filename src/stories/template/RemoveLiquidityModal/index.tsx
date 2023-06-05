@@ -67,7 +67,9 @@ export const RemoveLiquidityModal = ({
               <p className="font-semibold">Utilized</p>
               <p className="font-semibold">Removable</p>
             </div>
-            <div className="mt-4 h-9">{/* <Slider /> */}</div>
+            <div className="mt-4 h-9">
+              <Slider value={50} />
+            </div>
           </article>
 
           {/* input - number */}
