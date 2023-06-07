@@ -6,7 +6,7 @@ import {
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
-  createReducedCollateral,
+  createAnnualSeconds,
   expandDecimals,
   formatDecimals,
   withComma,
@@ -63,6 +63,7 @@ export class Position {
     this.qty = qty;
     this.leverage = leverage;
     this.takerMargin = takerMargin;
+    this.collateral = takerMargin;
     this.owner = owner;
     this.openVersion = openVersion;
     this.openTimestamp = openTimestamp;
@@ -70,7 +71,6 @@ export class Position {
     this.closeTimestamp = closeTimestamp;
     this.makerMargin = _binMargins[0].amount;
 
-    this.collateral = bigNumberify(0);
     this.takeProfit = 0;
     this.stopLoss = 0;
     this.profitPrice = bigNumberify(0);
@@ -85,12 +85,29 @@ export class Position {
 
   // @TODO
   // 이자 차감된 증거금 구하는 메소드
+  // 시간이 지남에 따른 보증금 차감 로직이 유효한지 검증이 필요합니다.
+  // 추가 Decimals 20 적용 - 초당 토큰 수수료 10 + 보증금 차감 10
   createCollateral(feeRate: BigNumber) {
-    this.collateral = createReducedCollateral(
-      this.takerMargin,
-      this.openTimestamp,
-      feeRate ?? bigNumberify(0)
+    // entryTime: 진입시각
+    const entryTime = this.openTimestamp.toNumber();
+    // annualSeconds: 현재 시각부터 1년 뒤 시각까지의 차이를 초 단위로 변환된 값
+    const annualSeconds = createAnnualSeconds(entryTime);
+    // subtraction: 현재 시각에서 포지션 진입 시각을 뺀 값
+    const subtraction = (Date.now() - entryTime * 1000) / 1000;
+    // progressRate: 1년 동안 시간(초)이 얼마나 지났는지 나타내는 비율
+    const prograssRate = subtraction / annualSeconds;
+
+    // 초당 토큰 수수료 = 포지션 증거금 * (연이율을 초 단위로 변환한 값)
+    // FIXME @austin-builds 언더플로우 대처가 필요함
+    const tokenFeeBasis = this.collateral.mul(
+      feeRate.mul(expandDecimals(10)).div(annualSeconds)
     );
+
+    // 진입 시 증거금에서 초당 토큰 수수료에 진행률을 곱한 값
+    this.collateral = this.collateral
+      .mul(expandDecimals(20))
+      .sub(tokenFeeBasis.mul(Math.round(10 ** 10 * prograssRate)))
+      .div(expandDecimals(20));
   }
 
   // @TODO
