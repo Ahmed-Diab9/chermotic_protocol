@@ -1,13 +1,12 @@
-import { useSigner } from "wagmi";
-import useSWR from "swr";
-import { useSelectedMarket } from "./useMarket";
-import { useMemo } from "react";
-import { isValid } from "~/utils/valid";
-import { USUMMarket__factory } from "@quarkonix/usum";
 import { BigNumber } from "ethers";
-import { useRouter } from "./useRouter";
-import { errorLog } from "~/utils/log";
+import { useMemo } from "react";
+import useSWR from "swr";
+import { useSigner } from "wagmi";
 import { AppError } from "~/typings/error";
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
+import { useSelectedMarket } from "./useMarket";
+import { useRouter } from "./useRouter";
 
 const usePoolReceipt = () => {
   const [market] = useSelectedMarket();

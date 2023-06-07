@@ -2,7 +2,7 @@
 // import { Avatar } from "../../atom/Avatar";
 // import { Button } from "../../atom/Button";
 // import { OptionInput } from "../../atom/OptionInput";
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
 import { Toggle } from "../../atom/Toggle";
@@ -26,6 +26,8 @@ interface TradeContentProps {
   input?: TradeInput;
   totalMaxLiquidity?: BigNumber;
   totalUnusedLiquidity?: BigNumber;
+  tradeFee?: BigNumber;
+  tradeFeePercent?: BigNumber;
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -52,6 +54,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     input,
     totalMaxLiquidity,
     totalUnusedLiquidity,
+    tradeFee,
+    tradeFeePercent,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -60,32 +64,65 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
-  const [takeProfitPrice, stopLossPrice] = useMemo(() => {
-    if (!isValid(input) || !isValid(priceFeed) || !isValid(token)) {
+  const [executionPrice, setPrice] = useState("");
+  const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
+    undefined,
+    undefined,
+  ] as [string | undefined, string | undefined]);
+  useEffect(() => {
+    market?.getPrice().then((price) => {
+      const nextPrice = withComma(
+        formatDecimals(price.value, price.decimals, 2)
+      );
+      if (isValid(nextPrice)) {
+        setPrice(nextPrice);
+      }
+    });
+  }, [market]);
+
+  // @TODO
+  // 청산가 계산이 올바른지 점검해야 합니다.
+  const createLiquidation = useCallback(async () => {
+    if (!isValid(input) || !isValid(market) || !isValid(token)) {
       return [undefined, undefined];
     }
-    const { collateral, takeProfit, stopLoss } = input;
-    const price = priceFeed[token.name];
+    const { quantity, takeProfit, stopLoss } = input;
+    const price = await market.getPrice();
     if (input.collateral === 0) {
       return [
         withComma(formatDecimals(price.value, price.decimals, 2)),
         withComma(formatDecimals(price.value, price.decimals, 2)),
       ];
     }
-    const addition = Math.round(collateral + collateral * (takeProfit / 100));
-    const subtraction = Math.round(collateral - collateral * (stopLoss / 100));
 
-    const expandedAddition = Math.round((addition / collateral) * 100);
-    const expandedSubtraction = Math.round((subtraction / collateral) * 100);
+    // Quantity에 profit, loss 비율 적용
+    // Long일 때는 profit을 덧셈, Short일 대는 profit을 뺄셈
+    const addedProfit =
+      input.direction === "long"
+        ? quantity + quantity * (takeProfit / 100)
+        : quantity - quantity * (takeProfit / 100);
+    const addedLoss =
+      input.direction === "long"
+        ? quantity - quantity * (stopLoss / 100)
+        : quantity + quantity * (stopLoss / 100);
 
-    const takeProfitPrice = price.value.mul(expandedAddition);
-    const stopLossPrice = price.value.mul(expandedSubtraction);
+    // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
+    // 추가 소수점 4자리 적용
+    const profitRate = Math.round((addedProfit / quantity) * 10000);
+    const lossRate = Math.round((addedLoss / quantity) * 10000);
 
-    return [
-      withComma(formatDecimals(takeProfitPrice, price.decimals + 2, 2)),
-      withComma(formatDecimals(stopLossPrice, price.decimals + 2, 2)),
-    ];
-  }, [input, priceFeed, token]);
+    // 현재 가격에 비율 곱하여 예상 청산가격을 계산
+    const takeProfitPrice = price.value.mul(profitRate);
+    const stopLossPrice = price.value.mul(lossRate);
+
+    setPrices([
+      withComma(formatDecimals(takeProfitPrice, price.decimals + 4, 2)),
+      withComma(formatDecimals(stopLossPrice, price.decimals + 4, 2)),
+    ]);
+  }, [input, market, token]);
+  useEffect(() => {
+    createLiquidation();
+  }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
@@ -107,12 +144,20 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </div>
         <div className="flex justify-between mt-3">
           <div className="select w-[160px]">
-            <Listbox value={input?.method} onChange={onMethodToggle}>
+            <Listbox
+              value={input?.method}
+              onChange={(value) => {
+                console.log("changed", value, input?.method);
+                if (input?.method !== value) {
+                  onMethodToggle?.();
+                }
+              }}
+            >
               <Listbox.Button>{methodMap[input?.method ?? ""]}</Listbox.Button>
               <Listbox.Options>
-                {["Collateral", "Contract Qty"].map((method) => (
+                {["collateral", "quantity"].map((method) => (
                   <Listbox.Option key={method} value={method}>
-                    {method}
+                    {methodMap[method]}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>
@@ -231,18 +276,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Execution Price</p>
                 <Tooltip tip="tooltip" />
               </div>
-              <p>
-                ${" "}
-                {priceFeed &&
-                  token &&
-                  withComma(
-                    formatDecimals(
-                      priceFeed[token.name].value,
-                      priceFeed[token.name].decimals,
-                      2
-                    )
-                  )}
-              </p>
+              <p>$ {executionPrice}</p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -275,7 +309,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
                 {/* <Tooltip /> */}
               </div>
-              <p>12.24 USDC / 0.025%</p>
+              <p>
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{" "}
+                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
+              </p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">

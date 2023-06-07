@@ -1109,13 +1109,18 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromatic-protocol/react-compound-charts@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/react-compound-charts/1.0.0/dda5ae5fca69514f28dfa3bc5d53497836e1cf46#dda5ae5fca69514f28dfa3bc5d53497836e1cf46"
-  integrity sha512-ZRySgh3N7dbY/xihmG9XhwVzBmvMYsg5WJE+KUS8jBAc78+Z/Gb7t1eVSJXm+pouINu8gSlpAIQI3aF3jdX20Q==
+"@chromatic-protocol/react-compound-charts@^1.0.0-rc.1":
+  version "1.0.0-rc.1"
+  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/react-compound-charts/1.0.0-rc.1/1ec90ce2eb83d9efe4ed724b5bb15d0349c0ff23#1ec90ce2eb83d9efe4ed724b5bb15d0349c0ff23"
+  integrity sha512-7OBLny5tOYpSG603R1QSU/X35F3BIhMTPlGS+w9h0mPUsK7+rXJG/4vUGw2DYTxfSJm2S7UsMJH0Ve05jrD1hg==
   dependencies:
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
+
+"@chromatic-protocol/sdk@^0.1.0-rc.6":
+  version "0.1.0-rc.6"
+  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.6/86b6eb64bcfeef5ee14d7f8b88238d447e2777b5#86b6eb64bcfeef5ee14d7f8b88238d447e2777b5"
+  integrity sha512-am6q1dyGya1cVo4R9N7th7RZJPpvlwzv+bVQb/jki6znbXbxYQ17h33j7xjrQ1rfEY/2fxnw//xpdrbqg9qtVg==
 
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.6.6"
@@ -1981,11 +1986,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
-
-"@quarkonix/usum@^0.0.1-rc.35":
-  version "0.0.1-rc.35"
-  resolved "https://npm.pkg.github.com/download/@quarkonix/usum/0.0.1-rc.35/16cbbb1c236a00867a20f1fab98ce7182e084dd6#16cbbb1c236a00867a20f1fab98ce7182e084dd6"
-  integrity sha512-gH2DYbnwSDmLx36eQakoXBwSQSVhWIWf/hyfpKSJLb1It8yY4Dk0i+gMdHisPtdyvfiwSOa7e9qf8SFfzWIWoQ==
 
 "@reduxjs/toolkit@^1.9.5":
   version "1.9.5"

@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-
+export type { PositionStructOutput, BinMarginStructOutput } from "@chromatic-protocol/sdk"
 export interface Position {
   token: string;
   market: string;
@@ -13,22 +13,4 @@ export interface Position {
   lossPrice: BigNumber;
   profitAndLoss: BigNumber;
   entryTime: BigNumber;
-}
-
-export interface PositionResponse {
-  id: BigNumber;
-  openVersion: BigNumber;
-  closeVersion: BigNumber;
-  qty: BigNumber;
-  leverage: number;
-  openTimestamp: BigNumber;
-  closeTimestamp: BigNumber;
-  takerMargin: BigNumber;
-  owner: string;
-  _slotMargins: LpSlotMargin[];
-}
-
-export interface LpSlotMargin {
-  tradingFeeRate: number;
-  amount: BigNumber;
 }

@@ -4,13 +4,16 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 import { Market, Token } from "../../../typings/market";
-import { formatDecimals, withComma } from "../../../utils/number";
+import {
+  expandDecimals,
+  formatDecimals,
+  withComma,
+} from "../../../utils/number";
 import { Button } from "../../atom/Button";
 import { useCallback, useEffect, useState } from "react";
 import { filterIfFulfilled } from "~/utils/array";
 import { BigNumber } from "ethers";
 import { isValid } from "~/utils/valid";
-import { infoLog } from "~/utils/log";
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -38,6 +41,9 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
     });
   }, [selectedToken, selectedMarket]);
 
+  // @TODO
+  // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
+  // 현재는 연이율을 1년에 해당하는 시간 값으로 나눗셈
   return (
     <div className="MarketSelect">
       <Popover>
@@ -45,7 +51,14 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
       </Popover>
       <div className="flex items-center gap-4 mr-10">
         <div className="flex flex-col gap-1 pr-5 text-xs text-right border-r">
-          <h4>{formatDecimals(feeRate ?? 0, selectedToken?.decimals, 4)}%/h</h4>
+          <h4>
+            {formatDecimals(
+              feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0,
+              4,
+              4
+            )}
+            %/h
+          </h4>
           <p>Interest Rate</p>
         </div>
         <h2 className="text-2xl">{marketPrice}</h2>

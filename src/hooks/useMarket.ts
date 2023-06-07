@@ -1,8 +1,11 @@
 import { useEffect, useMemo } from "react";
-import { useProvider } from "wagmi";
 import useSWR from "swr";
+import { useProvider } from "wagmi";
 
-import { OracleProvider__factory, USUMMarket__factory } from "@quarkonix/usum";
+import {
+  ChromaticMarket__factory,
+  OracleProvider__factory,
+} from "@chromatic-protocol/sdk";
 
 import { Market } from "~/typings/market";
 
@@ -10,8 +13,8 @@ import { useAppDispatch, useAppSelector } from "~/store";
 import { marketAction } from "~/store/reducer/market";
 
 import useLocalStorage from "~/hooks/useLocalStorage";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
 import { useMarketFactory } from "~/hooks/useMarketFactory";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
@@ -39,7 +42,10 @@ export const useMarket = (_interval?: number) => {
           selectedToken.address as string
         )
       ).map(async (marketAddress) => {
-        const market = USUMMarket__factory.connect(marketAddress, provider);
+        const market = ChromaticMarket__factory.connect(
+          marketAddress,
+          provider
+        );
 
         const oracleProviderAddress = await market.oracleProvider();
         const oracleProvider = OracleProvider__factory.connect(
@@ -47,13 +53,10 @@ export const useMarket = (_interval?: number) => {
           provider
         );
 
-        // TODO
-        // 오라클 버전에서 받을 수 있는 마켓 가격에 대해 decimals 값 확인이 필요합니다.
-        // USUM REPL에서는 입력한 가격에 고정된 소수점 8이 적용되어 있었습니다.
-        // await oracleProvider.increaseVersion(ethers.utils.parseUnits(price.toString(), 8))
+        // 오라클에서 제공하는 모든 가격 데이터는 소수점 18자리를 적용해야 함
         async function getPrice() {
           const { price } = await oracleProvider.currentVersion();
-          return { value: price, decimals: 8 };
+          return { value: price, decimals: 18 };
         }
         const description = await oracleProvider.description();
         return {

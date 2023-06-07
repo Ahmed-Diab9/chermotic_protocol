@@ -1,15 +1,16 @@
-import { ChangeEvent, useReducer } from "react";
-import { useSelectedToken } from "./useSettlementToken";
-import { useSelectedMarket } from "./useMarket";
-import { errorLog, infoLog } from "../utils/log";
-import { USUMRouter, getDeployedContract } from "@quarkonix/usum";
-import { CHAIN } from "~/constants/contracts";
+import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
+import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
-import { isValid } from "~/utils/valid";
+import { FEE_RATE_DECIMAL } from "~/configs/feeRate";
+import { CHAIN } from "~/constants/contracts";
+import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
+import { isValid } from "~/utils/valid";
+import { errorLog, infoLog } from "../utils/log";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { AppError } from "~/typings/error";
+import { useSelectedMarket } from "./useMarket";
+import { useSelectedToken } from "./useSettlementToken";
 
 const initialTradeInput = {
   direction: "long",
@@ -197,7 +198,7 @@ export const useTradeInput = () => {
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const [
-    _,
+    pool,
     [
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
@@ -205,6 +206,68 @@ export const useTradeInput = () => {
       shortTotalUnusedLiquidity,
     ],
   ] = useSelectedLiquidityPool();
+
+  // @TODO
+  // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
+  // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
+  const [tradeFee, feePercent] = useMemo(() => {
+    let makerMargin = bigNumberify(Math.round(state.makerMargin)).mul(
+      expandDecimals(token?.decimals)
+    );
+    if (
+      state.direction === "long" &&
+      makerMargin.gt(longTotalUnusedLiquidity)
+    ) {
+      return [];
+    }
+    if (
+      state.direction === "short" &&
+      makerMargin.gt(shortTotalUnusedLiquidity)
+    ) {
+      return [];
+    }
+    let tradeFee = bigNumberify(0);
+    const lpTokens =
+      pool?.tokens.filter((token) => {
+        if (state.direction === "long") {
+          return token.feeRate > 0;
+        } else {
+          return token.feeRate < 0;
+        }
+      }) ?? [];
+    if (state.direction === "short") {
+      lpTokens.reverse();
+    }
+    for (const token of lpTokens) {
+      if (makerMargin.lte(0)) {
+        break;
+      }
+      const { feeRate: _feeRate, unusedLiquidity } = token;
+      const feeRate = Math.abs(_feeRate);
+      if (makerMargin.gte(unusedLiquidity)) {
+        tradeFee = tradeFee.add(
+          unusedLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
+        );
+        makerMargin = makerMargin.sub(unusedLiquidity);
+      } else {
+        tradeFee = tradeFee.add(
+          makerMargin.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
+        );
+        makerMargin = bigNumberify(0);
+      }
+    }
+    const feePercent = tradeFee
+      .mul(expandDecimals(2))
+      .div(Math.round(state.makerMargin) || 1);
+    return [tradeFee, feePercent] as const;
+  }, [
+    state.makerMargin,
+    state.direction,
+    token?.decimals,
+    pool?.tokens,
+    longTotalUnusedLiquidity,
+    shortTotalUnusedLiquidity,
+  ]);
 
   const onMethodToggle = () => {
     dispatch({ type: "method" });
@@ -288,10 +351,10 @@ export const useTradeInput = () => {
       return;
     }
     const router = getDeployedContract(
-      "USUMRouter",
+      "ChromaticRouter",
       CHAIN,
       signer
-    ) as USUMRouter;
+    ) as ChromaticRouter;
 
     const quantity = bigNumberify(state.quantity).mul(expandDecimals(4));
     const leverage = bigNumberify(state.leverage).mul(expandDecimals(2));
@@ -338,6 +401,8 @@ export const useTradeInput = () => {
 
   return {
     state,
+    tradeFee,
+    feePercent,
     onChange,
     onDirectionToggle,
     onMethodToggle,

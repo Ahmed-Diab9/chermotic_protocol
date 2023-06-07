@@ -5,6 +5,7 @@ import { useMarketFactory } from "~/hooks/useMarketFactory";
 import { isValid } from "~/utils/valid";
 import { errorLog } from "~/utils/log";
 
+// 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
   const [marketFactory] = useMarketFactory();
   const [selectedToken] = useSelectedToken();
@@ -17,8 +18,6 @@ export const useFeeRate = () => {
   const { data: feeRate, error } = useSWR(
     fetchKey,
     ([factory, token]) => {
-      // @TODO
-      // 연이율(Interest Rate)에 적용시켜야 할 소수점(Decimals) 값이 필요합니다.
       return factory.currentInterestRate(token.address);
     },
     {

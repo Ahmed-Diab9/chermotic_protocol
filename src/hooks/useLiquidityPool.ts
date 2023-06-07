@@ -1,33 +1,32 @@
 import {
-  USUMLpToken,
-  USUMLpToken__factory,
-  USUMMarketFactory,
-  USUMMarket__factory,
-  USUMRouter,
+  CLBToken,
+  CLBToken__factory,
+  ChromaticMarketFactory,
+  ChromaticMarket__factory,
+  ChromaticRouter,
   getDeployedContract,
-} from "@quarkonix/usum";
+} from "@chromatic-protocol/sdk";
+import { BigNumber, ethers } from "ethers";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useSigner } from "wagmi";
-import { isValid } from "../utils/valid";
-import { errorLog, infoLog } from "../utils/log";
-import { bigNumberify, expandDecimals } from "../utils/number";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
-import {
-  LPTokenMetadata,
-  LiquidityPoolSummary,
-  LiquidityPool,
-} from "../typings/pools";
-import { useMarket, useSelectedMarket } from "./useMarket";
+import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
-import { BigNumber, ethers } from "ethers";
-import { createSlotValueMock } from "../mock/slots";
-import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
+import {
+  LPTokenMetadata,
+  LiquidityPool,
+  LiquidityPoolSummary,
+} from "../typings/pools";
+import { errorLog, infoLog } from "../utils/log";
+import { bigNumberify, expandDecimals } from "../utils/number";
+import { isValid } from "../utils/valid";
+import { useMarket, useSelectedMarket } from "./useMarket";
+import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 
 const fetchLpTokenMetadata = async (
-  lpToken: USUMLpToken,
+  lpToken: CLBToken,
   feeRates: BigNumber[]
 ) => {
   try {
@@ -71,15 +70,15 @@ export const useLiquidityPool = () => {
         window.ethereum as any
       );
       const factory = getDeployedContract(
-        "USUMMarketFactory",
+        "ChromaticMarketFactory",
         "anvil",
         provider
-      ) as USUMMarketFactory;
+      ) as ChromaticMarketFactory;
       const router = getDeployedContract(
-        "USUMRouter",
+        "ChromaticRouter",
         "anvil",
         provider
-      ) as USUMRouter;
+      ) as ChromaticRouter;
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
         ...SHORT_FEE_RATES.map((rate) => rate * -1),
@@ -97,25 +96,34 @@ export const useLiquidityPool = () => {
           tokenAddress
         );
         const promise = marketAddresses.map(async (marketAddress) => {
-          const market = USUMMarket__factory.connect(marketAddress, provider);
-          const lpTokenAddress = await market.lpToken();
-          const lpToken = USUMLpToken__factory.connect(
-            lpTokenAddress,
+          const market = ChromaticMarket__factory.connect(
+            marketAddress,
             provider
           );
+          const lpTokenAddress = await market.clbToken();
+
+          const lpToken = CLBToken__factory.connect(lpTokenAddress, provider);
 
           const balances = await lpToken.balanceOfBatch(addresses, feeRates);
           const metadata = await fetchLpTokenMetadata(lpToken, feeRates);
 
-          const maxLiquidities = await market.getSlotLiquidities(baseFeeRates);
-          const unusedLiquidities = await market.getSlotFreeLiquidities(
+          const maxLiquidities = await market.getBinLiquidities(baseFeeRates);
+
+          const unusedLiquidities = await market.getBinFreeLiquidities(
             baseFeeRates
           );
-          const tokenValueBatch = await router.calculateLpTokenValueBatch(
+          const tokenValueBatch = await router.calculateCLBTokenValueBatch(
             marketAddress,
             baseFeeRates,
             maxLiquidities
           );
+          // @TODO
+          // totalSupplies와 maxLiquidities는 어떤 차이가 있는지 확인해야 합니다.
+          const totalSupplies = await router.totalSupplies(
+            marketAddress,
+            baseFeeRates
+          );
+          infoLog("differences?", maxLiquidities, totalSupplies);
 
           return {
             address: lpTokenAddress,
@@ -234,12 +242,12 @@ export const useSelectedLiquidityPool = () => {
     }
 
     const router = getDeployedContract(
-      "USUMRouter",
+      "ChromaticRouter",
       "anvil",
       signer
-    ) as USUMRouter;
+    ) as ChromaticRouter;
 
-    const lpToken = USUMLpToken__factory.connect(pool.address, signer);
+    const lpToken = CLBToken__factory.connect(pool.address, signer);
     const isApproved = await lpToken.isApprovedForAll(address, router.address);
     if (!isApproved) {
       infoLog("Approving all lp tokens");
