@@ -268,7 +268,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <p className="mb-2">Liquidity Value</p>
                     <Avatar label="USDC" fontSize="xl" />
                   </div>
-                  <h4>{formatDecimals(totalLiquidity, token?.decimals, 2)}</h4>
+                  <h4>
+                    {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
+                    {token?.name}
+                  </h4>
                 </article>
                 {/* info */}
                 <article className="flex flex-col justify-between flex-auto gap-2 px-10 border py-7 w-[50%] bg-grayL/20 rounded-xl">
@@ -284,11 +287,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Liquidity Principal
                       <Tooltip tip="tooltip" />
                     </div>
-                    <p className="text-right">1,000.24 USDC</p>
+                    <p className="text-right">
+                      {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
+                      {token?.name}
+                    </p>
                   </div>
                   <div className="flex justify-between">
                     <p>Removable Liquidity</p>
-                    <p className="text-right">760.24 USDC</p>
+                    <p className="text-right">760.24 {token?.name}</p>
                   </div>
                 </article>
               </section>
@@ -503,7 +509,7 @@ const PoolClaim = () => {
   const [market] = useSelectedMarket();
 
   return (
-    <div className="flex flex-col gap-x-1 gap-y-2 fixed left-auto top-4 right-4 z-10 bg-white shadow-md">
+    <div className="flex flex-col gap-x-1 gap-y-2 fixed left-auto top-4 right-4 z-30 bg-white shadow-md">
       {receipts?.map((receipt) => (
         <div key={receipt.toNumber()} className="px-4 py-4">
           <h3>Receipt {receipt.toNumber()}</h3>

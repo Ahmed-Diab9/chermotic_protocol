@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { errorLog } from "~/utils/log";
+import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 
 import {
@@ -14,34 +14,43 @@ import { useRouter } from "~/hooks/useRouter";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { createPositionsMock } from "~/mock/positions";
 import { AppError } from "~/typings/error";
-import { PositionStructOutput } from "~/typings/position";
+import { Position, PositionStructOutput } from "~/typings/position";
 import { filterIfFulfilled } from "~/utils/array";
 import useOracleVersion from "./useOracleVersion";
+import { bigNumberify } from "~/utils/number";
+import { useFeeRate } from "./useFeeRate";
+import { useSelectedToken } from "./useSettlementToken";
 
 export const usePosition = () => {
   const [usumAccount] = useUsumAccount();
+  const [token] = useSelectedToken();
   const [markets] = useMarket();
   const provider = useProvider();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
+  const feeRate = useFeeRate();
 
   const fetchKey = useMemo(
     () =>
-      isValid(usumAccount) && isValid(markets) && isValid(provider)
+      isValid(usumAccount) &&
+      isValid(markets) &&
+      isValid(oracleVersions) &&
+      isValid(provider)
         ? ([
             usumAccount,
             markets.map((market) => market.address),
+            oracleVersions,
             provider,
           ] as const)
         : undefined,
-    [usumAccount, markets, provider]
+    [usumAccount, markets, oracleVersions, provider]
   );
 
   const {
     data: positions,
     error,
     mutate: fetchPositions,
-  } = useSWR(fetchKey, async ([account, markets, provider]) => {
+  } = useSWR(fetchKey, async ([account, markets, oracleVersions, provider]) => {
     const positionsPromise = markets.map(async (marketAddress) => {
       const positionIds = await account.getPositionIds(marketAddress);
       const marketContract = ChromaticMarket__factory.connect(
@@ -61,17 +70,26 @@ export const usePosition = () => {
           response.openVersion,
           response.closeVersion,
         ]);
-        return {
-          marketAddress: marketAddress,
-          openPrice,
-          closePrice,
-          ...response,
-        };
+        const newPosition = new Position(response, marketAddress, "long");
+        newPosition.createCollateral(feeRate ?? bigNumberify(0));
+        newPosition.createTakeProfit();
+        newPosition.createStopLoss();
+
+        const { price: currentPrice, decimals: oracleDecimals } =
+          oracleVersions[marketAddress];
+        newPosition.createCurrentPrice(currentPrice);
+        newPosition.createOraclePrice([openPrice, closePrice]);
+        newPosition.createLiquidationPrice(token?.decimals);
+        newPosition.createPNL(oracleDecimals);
+        newPosition.createPriceTo(oracleDecimals);
+
+        return newPosition;
       });
       const positions = await filterIfFulfilled(positionsPromise);
       return positions;
     });
     const positions = await filterIfFulfilled(positionsPromise);
+    infoLog("positions", positions);
     return positions.flat(1);
   });
 
