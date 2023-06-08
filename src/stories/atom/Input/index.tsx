@@ -1,6 +1,7 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { Avatar } from "../Avatar";
 import "./style.css";
+import { isValid } from "~/utils/valid";
 
 interface InputProps {
   label?: string;
@@ -16,6 +17,7 @@ interface InputProps {
   disabled?: boolean;
   onClick?: () => unknown;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
+  onClickAway?: () => unknown;
 }
 
 export const Input = (props: InputProps) => {
@@ -30,7 +32,29 @@ export const Input = (props: InputProps) => {
     align = "left",
     value,
     onChange,
+    onClickAway,
   } = props;
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isValid(onClickAway)) {
+      return;
+    }
+    const handleClickAway = (event: MouseEvent) => {
+      const element = event.target;
+      if (element instanceof Node) {
+        const isContained = inputRef.current?.contains(element);
+        if (!isContained) {
+          onClickAway?.();
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleClickAway);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickAway);
+    };
+  }, [onClickAway, inputRef, value]);
 
   return (
     <div
@@ -38,6 +62,7 @@ export const Input = (props: InputProps) => {
     >
       {assetSrc ? <Avatar src={assetSrc} /> : null}
       <input
+        ref={inputRef}
         type={type}
         className={`text-${align}`}
         value={typeof value === "number" ? value.toString() : value}
