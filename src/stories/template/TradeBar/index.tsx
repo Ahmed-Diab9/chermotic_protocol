@@ -145,7 +145,7 @@ export const TradeBar = ({ token, markets, positions }: TradeBarProps) => {
                   ))}
                   <p className="text-right text-sm text-[#CBCBCB] mt-2">
                     {/* entry time */}
-                    Entry time: October 28, 2022
+                    Entry time: {createCurrentDate()}
                   </p>
                 </div>
               </div>
