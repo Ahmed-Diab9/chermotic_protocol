@@ -7,9 +7,12 @@ import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { useSelectedMarket } from "./useMarket";
 import { useRouter } from "./useRouter";
+import { handleTx } from "~/utils/tx";
+import { useLiquidityPool } from "./useLiquidityPool";
 
 const usePoolReceipt = () => {
   const [market] = useSelectedMarket();
+  const [_, fetchLiquidityPools] = useLiquidityPool();
   const { data: signer } = useSigner();
   const [router] = useRouter();
 
@@ -30,13 +33,37 @@ const usePoolReceipt = () => {
   });
 
   const claimLpTokens = async (receiptId: BigNumber) => {
+    if (!isValid(router)) {
+      errorLog("no router contracts");
+      return AppError.reject("no router contracts", "onPoolReceipt");
+    }
     if (!isValid(market)) {
       errorLog("no selected markets");
       return AppError.reject("no selected markets", "onPoolReceipt");
     }
-    await router?.claimLiquidity(market.address, receiptId);
+    const tx = await router.claimLiquidity(market.address, receiptId);
+
+    handleTx(tx, fetchReceipts, fetchLiquidityPools);
 
     return Promise.resolve();
+  };
+
+  const claimLpTokensBatch = async () => {
+    if (!isValid(market)) {
+      errorLog("no selected markets");
+      return AppError.reject("no selected markets", "onPoolReceipt");
+    }
+    if (!isValid(receipts)) {
+      errorLog("no receipts");
+      return AppError.reject("no receipts", "onPoolReceipt");
+    }
+    if (!isValid(router)) {
+      errorLog("no router contracts");
+      return AppError.reject("no router contracts", "onPoolReceipt");
+    }
+    const tx = await router?.claimLiquidityBatch(market.address, receipts);
+
+    handleTx(tx, fetchReceipts, fetchLiquidityPools);
   };
 
   if (error) {
@@ -47,6 +74,7 @@ const usePoolReceipt = () => {
     receipts,
     fetchReceipts,
     claimLpTokens,
+    claimLpTokensBatch,
   };
 };
 
