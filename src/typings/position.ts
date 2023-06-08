@@ -183,7 +183,7 @@ export class Position {
     return withComma(formatDecimals(this.openPrice, oracleDecimals, 2));
   }
   renderQty(tokenDecimals?: number) {
-    return withComma(formatDecimals(this.qty, tokenDecimals, 2));
+    return withComma(formatDecimals(this.qty, 4, 2));
   }
   renderCollateral(tokenDecimals?: number) {
     return withComma(formatDecimals(this.collateral, tokenDecimals, 2));
