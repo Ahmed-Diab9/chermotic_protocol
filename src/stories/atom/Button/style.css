@@ -12,6 +12,9 @@
   svg {
     @apply inline-block;
   }
+  &:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
   &.toggle-on {
     @apply border border-black text-black;
   }
@@ -55,7 +58,7 @@
 .btn-sm {
   @apply min-w-[28px];
   height: 28px;
-  padding: 0 8px;
+  padding: 0 12px;
   svg {
     width: 12px;
   }

@@ -1,7 +1,9 @@
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import { Avatar } from "~/stories/atom/Avatar";
+import { Tag } from "~/stories/atom/Tag";
 import { Button } from "~/stories/atom/Button";
 import { Progress } from "~/stories/atom/Progress";
+import { Loading } from "~/stories/atom/Loading";
 import { Tab } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { ArrowPathRoundedSquareIcon } from "@heroicons/react/20/solid";
@@ -14,14 +16,14 @@ interface PoolProgressProps {}
 
 export const PoolProgress = ({ ...props }: PoolProgressProps) => {
   return (
-    <div className="w-[500px] px-5 py-8 border PoolProgress tabs tabs-line tabs-base rounded-xl">
+    <div className="w-[500px] h-[1000px] !flex flex-col px-5 pt-8 pb-6 border PoolProgress tabs tabs-line tabs-base rounded-xl">
       <Tab.Group>
         <Tab.List className="!justify-start !gap-8 px-7">
           <Tab>All</Tab>
           <Tab>Minting (2)</Tab>
-          <Tab>Burning (6)</Tab>
+          <Tab>Burning (3)</Tab>
         </Tab.List>
-        <Tab.Panels className="mt-7">
+        <Tab.Panels className="flex-auto mt-7">
           {/* tab1 - all */}
           <Tab.Panel>
             <ProgressItem
@@ -32,25 +34,81 @@ export const PoolProgress = ({ ...props }: PoolProgressProps) => {
               progressPercent={0}
             />
             <ProgressItem
+              title="minting"
+              status="completed"
+              detail="3,000.45 CLB"
+              name="ETH/USD +0.03%"
+              progressPercent={0}
+            />
+            <ProgressItem
               title="burning"
-              status="in process"
-              detail="456.00/1,000.00 CLB (46.5%)"
+              status="standby"
+              detail="Waiting for the next oracle round"
+              name="ETH/USD +0.03%"
+              progressPercent={46.5}
+            />
+            <ProgressItem
+              title="burning"
+              status="in progress"
+              detail="456.00/1,000.00 CLB (46.50%)"
               name="ETH/USD +0.03%"
               progressPercent={46.5}
             />
             <ProgressItem
               title="burning"
               status="completed"
-              detail="1,000.00/1,000.00 CLB (100%)"
+              detail="1,000.00/1,000.00 CLB (100.00%)"
               name="ETH/USD +0.03%"
               progressPercent={100}
             />
           </Tab.Panel>
+
           {/* tab2 - minting */}
-          <Tab.Panel>Tab2</Tab.Panel>
+          <Tab.Panel>
+            <ProgressItem
+              title="minting"
+              status="standby"
+              detail="Waiting for the next oracle round"
+              name="ETH/USD +0.03%"
+              progressPercent={0}
+            />
+            <ProgressItem
+              title="minting"
+              status="completed"
+              detail="3,000.45 CLB"
+              name="ETH/USD +0.03%"
+              progressPercent={0}
+            />
+          </Tab.Panel>
+
           {/* tab3 - burning */}
-          <Tab.Panel>Tab3</Tab.Panel>
+          <Tab.Panel>
+            <ProgressItem
+              title="burning"
+              status="standby"
+              detail="Waiting for the next oracle round"
+              name="ETH/USD +0.03%"
+              progressPercent={46.5}
+            />
+            <ProgressItem
+              title="burning"
+              status="in progress"
+              detail="456.00/1,000.00 CLB (46.50%)"
+              name="ETH/USD +0.03%"
+              progressPercent={46.5}
+            />
+            <ProgressItem
+              title="burning"
+              status="completed"
+              detail="1,000.00/1,000.00 CLB (100.00%)"
+              name="ETH/USD +0.03%"
+              progressPercent={100}
+            />
+          </Tab.Panel>
         </Tab.Panels>
+        <div className="mt-auto">
+          <Button label="Claim All" />
+        </div>
       </Tab.Group>
     </div>
   );
@@ -58,7 +116,7 @@ export const PoolProgress = ({ ...props }: PoolProgressProps) => {
 
 interface ProgressItemProps {
   title: "minting" | "burning";
-  status: "standby" | "in process" | "completed";
+  status: "standby" | "in progress" | "completed";
   detail: string;
   token?: string;
   name: string;
@@ -76,71 +134,73 @@ const ProgressItem = (props: ProgressItemProps) => {
   } = props;
 
   return (
-    <div className="flex flex-col gap-4 px-5 py-4 mb-3 border rounded-xl">
+    <div className="flex flex-col gap-3 px-5 py-4 mb-3 border rounded-xl">
       <div className="flex items-center justify-between gap-2">
-        <h4 className="flex items-center capitalize">
+        <h4 className="flex items-center gap-2 capitalize">
+          {title}
           <span className="mr-1">
             {status === "standby" ? (
-              <ProgressStatusIcon className="text-[#FF8A00]" />
+              <Tag
+                label="standby"
+                className="text-[#FF9820] bg-[#FF8900]/10 !capitalize "
+              />
             ) : status === "completed" ? (
-              <ProgressStatusIcon className="text-[#00E23F]" />
+              <Tag
+                label="completed"
+                className="text-[#03C239] bg-[#23F85F]/10 !capitalize "
+              />
             ) : (
-              <ProgressStatusIcon className="text-[#08E3D6]" />
+              <Tag
+                label="in progress"
+                className="text-[#13D2C7] bg-[#1EFCEF]/10 !capitalize "
+              />
             )}
           </span>
-          {title} | {status}
         </h4>
-        <p className="flex items-center gap-1 text-sm text-black/30">
+        <p className="flex items-center gap-[6px] text-sm tracking-tight text-black/30 ">
           <span className="">
             {status === "completed" ? (
               <CheckIcon className="w-4" />
             ) : (
-              <ArrowPathRoundedSquareIcon className="w-3" />
+              <Loading size="xs" />
             )}
           </span>
           {detail}
         </p>
       </div>
-      <Progress value={progressPercent} max={100} />
-      <div className="flex items-end gap-3">
+      {title === "burning" ? (
+        <Progress value={progressPercent} max={100} />
+      ) : (
+        <div className="border-t" />
+      )}
+      <div className="flex items-end gap-3 mt-1">
         <Thumbnail className="rounded" />
         <div>
           <Avatar label={token} size="xs" gap="1" />
           <p className="mt-1 text-black/30">{name}</p>
         </div>
-        <Button
-          label={
-            title === "burning"
-              ? status === "in process"
-                ? `Stop Process & Claim ${token}`
-                : `Claim ${token}`
-              : "Claim Tokens"
-          }
-          size="sm"
-          className="ml-auto"
-        />
+        {status === "standby" ? (
+          <Button
+            label={title === "burning" ? `Claim ${token}` : "Claim Tokens"}
+            size="sm"
+            className="ml-auto !text-gray"
+            disabled
+          />
+        ) : (
+          <Button
+            label={
+              title === "burning"
+                ? status === "in progress"
+                  ? `Stop Process & Claim ${token}`
+                  : `Claim ${token}`
+                : "Claim Tokens"
+            }
+            css="active"
+            size="sm"
+            className="ml-auto"
+          />
+        )}
       </div>
     </div>
-  );
-};
-
-interface ProgressStatusIconProps {
-  className: string;
-}
-
-const ProgressStatusIcon = (props: ProgressStatusIconProps) => {
-  const { className } = props;
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="6"
-      height="6"
-      fill="none"
-      viewBox="0 0 6 6"
-      className={className}
-    >
-      <circle cx="3" cy="3" r="3" className="fill-current" />
-    </svg>
   );
 };
