@@ -33,7 +33,7 @@
 }
 .btn-active {
   @apply bg-black text-white dark:text-black;
-  @apply border-none;
+  @apply border border-black;
 }
 .btn-default {
   @apply text-black border;

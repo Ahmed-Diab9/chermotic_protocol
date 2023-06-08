@@ -45,7 +45,7 @@ export const PoolProgress = ({ ...props }: PoolProgressProps) => {
               status="standby"
               detail="Waiting for the next oracle round"
               name="ETH/USD +0.03%"
-              progressPercent={46.5}
+              progressPercent={0}
             />
             <ProgressItem
               title="burning"
@@ -88,7 +88,7 @@ export const PoolProgress = ({ ...props }: PoolProgressProps) => {
               status="standby"
               detail="Waiting for the next oracle round"
               name="ETH/USD +0.03%"
-              progressPercent={46.5}
+              progressPercent={0}
             />
             <ProgressItem
               title="burning"
@@ -140,24 +140,21 @@ const ProgressItem = (props: ProgressItemProps) => {
           {title}
           <span className="mr-1">
             {status === "standby" ? (
-              <Tag
-                label="standby"
-                className="text-[#FF9820] bg-[#FF8900]/10 !capitalize "
-              />
+              <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
             ) : status === "completed" ? (
               <Tag
                 label="completed"
-                className="text-[#03C239] bg-[#23F85F]/10 !capitalize "
+                className="text-[#03C239] bg-[#23F85F]/10"
               />
             ) : (
               <Tag
                 label="in progress"
-                className="text-[#13D2C7] bg-[#1EFCEF]/10 !capitalize "
+                className="text-[#13D2C7] bg-[#1EFCEF]/10"
               />
             )}
           </span>
         </h4>
-        <p className="flex items-center gap-[6px] text-sm tracking-tight text-black/30 ">
+        <p className="flex items-center gap-[6px] text-sm tracking-tight text-black">
           <span className="">
             {status === "completed" ? (
               <CheckIcon className="w-4" />
