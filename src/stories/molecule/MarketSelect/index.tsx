@@ -9,7 +9,6 @@ import {
   formatDecimals,
   withComma,
 } from "../../../utils/number";
-import { Button } from "../../atom/Button";
 import { useCallback, useEffect, useState } from "react";
 import { filterIfFulfilled } from "~/utils/array";
 import { BigNumber } from "ethers";
@@ -50,7 +49,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
         {!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}
       </Popover>
       <div className="flex items-center gap-4 mr-10">
-        <div className="flex flex-col gap-1 pr-5 text-xs text-right border-r">
+        <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
           <h4>
             {formatDecimals(
               feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0,
@@ -97,34 +96,39 @@ export const PopoverMain = (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
         <div className="pr-3 border-r">
-          <Avatar label={selectedToken?.name} fontSize="lg" gap="1" />
+          <Avatar label={selectedToken?.name} fontSize="lg" gap="1" size="sm" />
         </div>
         <div>
-          <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" />
+          <Avatar
+            label={selectedMarket?.description}
+            fontSize="lg"
+            gap="1"
+            size="sm"
+          />
         </div>
         <ChevronDownIcon
           className="w-5 h-5 transition duration-150 ease-in-out"
           aria-hidden="true"
         />
       </Popover.Button>
-      <Popover.Panel className="popover-panel">
-        <section className="flex w-full gap-12 pt-4 border-t">
+      <Popover.Panel className="flex popover-panel">
+        <section className="flex w-full py-4 border-t">
           {/* select - asset */}
-          <article className="flex flex-col">
+          <article className="flex flex-col pr-6 mr-6 border-r">
             {/* default */}
             {tokens?.map((token) => (
               <button
                 key={token.address}
                 className={`flex items-center gap-2 px-4 py-2 ${
                   token.address === selectedToken?.address &&
-                  "text-white bg-black" // the token selected
+                  "text-white bg-black rounded-lg" // the token selected
                 }`}
                 onClick={() => {
                   onTokenClick?.(token.address);
                 }}
                 title={token.name}
               >
-                <Avatar label={token.name} fontSize="lg" gap="2" />
+                <Avatar label={token.name} fontSize="lg" gap="2" size="sm" />
                 {token.address === selectedToken?.address && (
                   <ChevronRightIcon className="w-4" />
                 )}
@@ -140,11 +144,16 @@ export const PopoverMain = (
                 key={market.address}
                 className={`flex items-center justify-between gap-4 px-4 py-2 ${
                   market.address === selectedMarket?.address &&
-                  "text-white bg-black" // the market selected
+                  "text-white bg-black rounded-lg" // the market selected
                 }`}
                 onClick={() => onMarketClick?.(market.address)}
               >
-                <Avatar label={market.description} fontSize="lg" gap="2" />
+                <Avatar
+                  label={market.description}
+                  fontSize="lg"
+                  gap="2"
+                  size="sm"
+                />
                 <p>{marketPrices[marketIndex]}</p>
               </button>
             ))}
@@ -165,19 +174,19 @@ export const PopoverGroupLegacy = () => {
         <Popover.Panel className="inner-popover-panel">
           <div className="inner-popover-item">
             <Popover.Button>
-              <Avatar label="USDC" fontSize="lg" />
+              <Avatar label="USDC" fontSize="lg" size="sm" />
             </Popover.Button>
             <p>$1,542.07</p>
           </div>
           <div className="inner-popover-item">
             <Popover.Button>
-              <Avatar label="ETH/USD" fontSize="lg" />
+              <Avatar label="ETH/USD" fontSize="lg" size="sm" />
             </Popover.Button>
             <p>$1,542.07</p>
           </div>
           <div className="inner-popover-item">
             <Popover.Button>
-              <Avatar label="ETH/USD" fontSize="lg" />
+              <Avatar label="ETH/USD" fontSize="lg" size="sm" />
             </Popover.Button>
             <p>$1,542.07</p>
           </div>
@@ -186,12 +195,12 @@ export const PopoverGroupLegacy = () => {
 
       <Popover className="inner-popover">
         <Popover.Button className="w-[128px] px-4 py-2 inner-popover-button">
-          <Avatar label="USDT" fontSize="lg" />
+          <Avatar label="USDT" fontSize="lg" size="sm" />
         </Popover.Button>
         <Popover.Panel className="inner-popover-panel">
           <div className="inner-popover-item">
             <Popover.Button>
-              <Avatar label="ETH/USD" fontSize="lg" />
+              <Avatar label="ETH/USD" fontSize="lg" size="sm" />
             </Popover.Button>
             <p>$1,542.07</p>
           </div>

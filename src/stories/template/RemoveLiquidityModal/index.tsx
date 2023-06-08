@@ -9,14 +9,10 @@ import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
 
 interface RemoveLiquidityModalProps {
-  label: string;
-  size?: "sm" | "md" | "lg";
   onClick?: () => void;
 }
 
 export const RemoveLiquidityModal = ({
-  label,
-  size = "md",
   ...props
 }: RemoveLiquidityModalProps) => {
   let [isOpen, setIsOpen] = useState(true);

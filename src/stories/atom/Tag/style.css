@@ -1,5 +1,6 @@
 .tag {
-  @apply uppercase text-[12px] px-2 py-1 rounded;
+  @apply inline-flex items-center uppercase text-[12px] px-[6px] h-5 leading-none rounded;
+  @apply tracking-tight;
 }
 .tag-long {
   color: #a6d85b;

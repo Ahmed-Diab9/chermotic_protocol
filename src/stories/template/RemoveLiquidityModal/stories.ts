@@ -13,21 +13,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    label: "RemoveLiquidityModal",
-  },
+  args: {},
 };
-
-// export const Large: Story = {
-//   args: {
-//     size: "lg",
-//     label: "RemoveLiquidityModal",
-//   },
-// };
-
-// export const Small: Story = {
-//   args: {
-//     size: "sm",
-//     label: "RemoveLiquidityModal",
-//   },
-// };

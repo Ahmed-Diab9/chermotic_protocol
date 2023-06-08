@@ -11,7 +11,6 @@ import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
 import "./../../atom/Select/style.css";
-import "./style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";

@@ -27,6 +27,10 @@ export const theme = {
       gray: "#D4D4D4",
       grayL: "#EEEEEE",
 
+      standby: "#FF8A00",
+      completed: "#00E23F",
+      inprocess: "#08E3D6",
+
       active: "#030303",
       long: "#a6d85b",
       short: "#fb6115",
