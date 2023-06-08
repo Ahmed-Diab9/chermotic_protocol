@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../../atom/Button";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Tag } from "~/stories/atom/Tag";
@@ -9,11 +9,17 @@ import "../../atom/Tabs/style.css";
 import { Position } from "~/typings/position";
 import { Market, Token } from "~/typings/market";
 import { usePrevious } from "~/hooks/usePrevious";
+import { BigNumber } from "ethers";
+import { createCurrentDate } from "~/utils/date";
+import { OracleVersion } from "~/typings/oracleVersion";
 
 interface TradeBarProps {
   token?: Token;
   markets?: Market[];
   positions?: Position[];
+  oracleVersions?: Record<string, OracleVersion>;
+  onPositionClose?: (marketAddress: string, id: BigNumber) => unknown;
+  onPositionClaim?: (marketAddress: string, id: BigNumber) => unknown;
 }
 
 const listitem = [
@@ -21,8 +27,15 @@ const listitem = [
   { id: 2, title: "Positions only in ETH/USD market" },
 ];
 
-export const TradeBar = ({ token, markets, positions }: TradeBarProps) => {
-  const previousPositions = usePrevious(positions);
+export const TradeBar = ({
+  token,
+  markets,
+  positions,
+  oracleVersions,
+  onPositionClose,
+  onPositionClaim,
+}: TradeBarProps) => {
+  const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
   return (
@@ -99,7 +112,7 @@ export const TradeBar = ({ token, markets, positions }: TradeBarProps) => {
                       </div>
                       <div className="w-[4%]">
                         {/* Posiiton */}
-                        <Tag label="long" />
+                        <Tag label={position.direction} />
                         {/* <Tag label="long" /> */}
                       </div>
                       <div className="w-[6%]">
@@ -136,10 +149,32 @@ export const TradeBar = ({ token, markets, positions }: TradeBarProps) => {
                         </p>
                       </div>
                       <div className="w-[4%]">
-                        {/* PnL */}+{position.renderPNL(18)}
+                        {/* PnL */}
+                        {position.renderPNL(18)}
                       </div>
                       <div className="w-[4%] text-right">
-                        <Button label="Close" />
+                        {position.closeVersion.eq(0) ? (
+                          <Button
+                            label="Close"
+                            onClick={() => {
+                              onPositionClose?.(
+                                position.marketAddress,
+                                position.id
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Button
+                            label="Claim"
+                            disabled={!position.isClaimable(oracleVersions)}
+                            onClick={() => {
+                              onPositionClaim?.(
+                                position.marketAddress,
+                                position.id
+                              );
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   ))}

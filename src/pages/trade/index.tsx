@@ -27,6 +27,7 @@ import { useTradeInput } from "~/hooks/useTradeInput";
 import { Link } from "react-router-dom";
 import { usePosition } from "~/hooks/usePosition";
 import { infoLog } from "~/utils/log";
+import useOracleVersion from "~/hooks/useOracleVersion";
 
 const Trade = () => {
   useConnectOnce();
@@ -76,13 +77,14 @@ const Trade = () => {
       shortTotalUnusedLiquidity,
     ],
   ] = useSelectedLiquidityPool();
+  const { oracleVersions } = useOracleVersion();
 
   useEffect(() => {
     if (shortInput.direction === "long") {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { positions } = usePosition();
+  const { positions, onClosePosition, onClaimPosition } = usePosition();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -162,7 +164,18 @@ const Trade = () => {
           </div>
         </article>
       </section>
-      <TradeBar token={selectedToken} markets={markets} positions={positions} />
+      <TradeBar
+        token={selectedToken}
+        markets={markets}
+        positions={positions}
+        oracleVersions={oracleVersions}
+        onPositionClose={(marketAddress, positionId) => {
+          onClosePosition(marketAddress, positionId);
+        }}
+        onPositionClaim={(marketAddress, positionId) => {
+          onClaimPosition(marketAddress, positionId);
+        }}
+      />
     </div>
   );
 };
