@@ -222,9 +222,14 @@ export class Position {
       "%"
     );
   }
-  renderPNL(oracleDecimals: number) {
+  isClaimable(oracleVersions?: Record<string, OracleVersion>) {
+    if (!isValid(oracleVersions)) {
+      return false;
+    }
+    const isClosed = !this.closeVersion.eq(0);
     return (
-      withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) + "%"
+      isClosed &&
+      this.closeVersion.lt(oracleVersions[this.marketAddress].version)
     );
   }
 }
