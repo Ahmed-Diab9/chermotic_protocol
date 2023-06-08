@@ -134,7 +134,16 @@ export const RemoveLiquidityModal = ({
               {/* for single bin */}
               <div className="flex justify-between">
                 <p className="text-black/30">My Liquidity Value</p>
-                <p>2,850.24 USDC</p>
+                <p>
+                  {lpToken &&
+                    token &&
+                    formatDecimals(
+                      lpToken.balance.mul(lpToken.slotValue),
+                      token.decimals + SLOT_VALUE_DECIMAL,
+                      2
+                    )}{" "}
+                  {token?.name}
+                </p>
               </div>
             </article>
 
@@ -143,7 +152,12 @@ export const RemoveLiquidityModal = ({
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
-                  756.36 CLB
+                  {formatDecimals(
+                    lpToken.balance.mul(100 * 87.5).div(100),
+                    token?.decimals,
+                    2
+                  )}{" "}
+                  CLB
                   <span className="ml-1 text-black/30">(87.5%)</span>
                 </p>
               </div>
@@ -180,10 +194,35 @@ export const RemoveLiquidityModal = ({
                     className="flex-auto border-gray drop-shadow-md"
                     label="Removable"
                     size="sm"
+                    onClick={() => {
+                      const nextTokens = Math.floor((maxTokens * 87.5) / 100);
+                      dispatch({
+                        type: "tokens",
+                        payload: { tokens: nextTokens },
+                      });
+                    }}
                   />
                 </div>
                 <div className="max-w-[220px]">
-                  <Input unit="CLB" />
+                  <Input
+                    unit="CLB"
+                    value={state.tokens}
+                    onChange={(event) => {
+                      const value = trimLeftZero(event.target.value);
+                      const parsed = Number(value);
+                      if (isNaN(parsed)) {
+                        return;
+                      }
+                      dispatch({ type: "tokens", payload: { tokens: parsed } });
+                    }}
+                    onClickAway={() => {
+                      const nextTokens = Math.floor((maxTokens * 87.5) / 100);
+                      dispatch({
+                        type: "tokens",
+                        payload: { tokens: nextTokens },
+                      });
+                    }}
+                  />
                 </div>
               </div>
               <p className="mt-2 text-right text-black/30">0.00 USDC</p>
@@ -195,7 +234,13 @@ export const RemoveLiquidityModal = ({
             </article>
           </Dialog.Description>
           <div className="modal-button">
-            <Button label="Remove" size="xl" className="text-lg" css="active" />
+            <Button
+              label="Remove"
+              size="xl"
+              className="text-lg"
+              css="active"
+              onClick={() => onRemoveLiquidity?.(lpToken.feeRate, state.tokens)}
+            />
           </div>
         </Dialog.Panel>
       </div>
