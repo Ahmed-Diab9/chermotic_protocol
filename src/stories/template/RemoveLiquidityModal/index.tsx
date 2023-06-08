@@ -128,8 +128,8 @@ interface LiquidityItemProps {
 
 const LiquidityItem = (props: LiquidityItemProps) => {
   const { token = "USDC", name, qty, utilizedValue, removableValue } = props;
-  const utilizedPercent = (utilizedValue / qty) * 100;
-  const remoablePercent = (removableValue / qty) * 100;
+  const utilizedPercent = (utilizedValue / (qty ?? 1)) * 100;
+  const remoablePercent = (removableValue / (qty ?? 1)) * 100;
 
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기
