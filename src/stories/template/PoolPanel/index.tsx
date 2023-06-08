@@ -313,7 +313,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {pool?.tokens
                             .filter((lpToken) => lpToken.feeRate > 0)
                             .map((lpToken, lpTokenIndex) => (
-                              <BinItem lpTokenIndex={lpTokenIndex} />
+                              <BinItem
+                                index={lpTokenIndex}
+                                lpToken={lpToken}
+                                onLpTokenSelect={setLpToken}
+                              />
                             ))}
                         </div>
                       </article>
@@ -323,7 +327,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         {pool?.tokens
                           .filter((lpToken) => lpToken.feeRate < 0)
                           .map((lpToken, lpTokenIndex) => (
-                            <BinItem lpTokenIndex={lpTokenIndex} />
+                            <BinItem
+                              index={lpTokenIndex}
+                              lpToken={lpToken}
+                              onLpTokenSelect={setLpToken}
+                            />
                           ))}
                       </div>
                     </Tab.Panel>
@@ -353,63 +361,63 @@ export const PoolPanel = (props: PoolPanelProps) => {
 };
 
 interface BinItemProps {
+  index: number;
   token?: Token;
-  lpToken?: any;
-  lpTokenIndex?: any;
+  lpToken?: LPToken;
+  onLpTokenSelect?: (lpToken: LPToken) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { token, lpTokenIndex } = props;
-
-  const [lpToken, setLpToken] = useState<LPToken>();
+  const { index, token, lpToken, onLpTokenSelect } = props;
 
   return (
     <div
-      key={lpTokenIndex + 1}
+      key={index + 1}
       className="flex items-center justify-between gap-2 py-2 border px-7"
     >
       <div className="w-[4%]">
         <Checkbox size="lg" />
       </div>
-      <div className="w-[1%] text-black/30">{lpTokenIndex + 1}</div>
+      <div className="w-[1%] text-black/30">{index + 1}</div>
       <div className="w-[16%] text-center flex justify-center">
         <Thumbnail src={undefined} size="lg" />
       </div>
       <div className="w-[20%] grow text-left">
         <Avatar
-          label={lpToken.name}
+          label={lpToken?.name}
           size="xs"
           gap="1"
           fontSize="base"
           fontWeight="bold"
         />
         <p className="mt-1 font-semibold text-black/30">
-          {lpToken.description} {formatFeeRate(lpToken.feeRate)}%
+          {lpToken?.description} {lpToken && formatFeeRate(lpToken.feeRate)}%
         </p>
       </div>
       <div className="w-[12%] text-center">
-        {formatDecimals(lpToken.balance, token?.decimals, 2)}
+        {lpToken && formatDecimals(lpToken.balance, token?.decimals, 2)}
       </div>
       <div className="w-[16%] text-center">{87.5}%</div>
       <div className="w-[16%] text-center">
-        {formatDecimals(lpToken.slotValue, SLOT_VALUE_DECIMAL, 2)}
+        {lpToken && formatDecimals(lpToken.slotValue, SLOT_VALUE_DECIMAL, 2)}
       </div>
       <div className="w-[16%] text-center">
-        {formatDecimals(
-          lpToken.balance
-            .mul(lpToken.slotValue)
-            .div(expandDecimals(SLOT_VALUE_DECIMAL)),
-          token?.decimals,
-          2
-        )}
+        {lpToken &&
+          formatDecimals(
+            lpToken.balance
+              .mul(lpToken.slotValue)
+              .div(expandDecimals(SLOT_VALUE_DECIMAL)),
+            token?.decimals,
+            2
+          )}
       </div>
       <div className="w-[16%] text-right">
         <Button
           label="Remove"
           onClick={(event) => {
             event.stopPropagation();
-            if (lpToken.balance.gt(0)) {
-              setLpToken(lpToken);
+            if (lpToken?.balance.gt(0)) {
+              onLpTokenSelect?.(lpToken);
             }
           }}
         />

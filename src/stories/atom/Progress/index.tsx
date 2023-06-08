@@ -1,3 +1,4 @@
+import { isValid } from "~/utils/valid";
 import "./style.css";
 
 interface ProgressProps {
@@ -8,7 +9,8 @@ interface ProgressProps {
 
 export const Progress = (props: ProgressProps) => {
   const { value, max, css = "default" } = props;
-  const progressPercent = (value / max) * 100;
+  const progressPercent =
+    isValid(value) && isValid(max) ? (value / max) * 100 : 0;
 
   return (
     <div
