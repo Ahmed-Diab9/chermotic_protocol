@@ -7,8 +7,8 @@ import { bigNumberify } from "../../../utils/number";
 
 interface OptionInputProps {
   label?: string;
-  value?: string;
-  maxValue?: string;
+  value?: string | number;
+  maxValue?: string | number;
   placeholder?: string;
   assetSrc?: string;
   type?: string;
@@ -20,6 +20,7 @@ interface OptionInputProps {
   onClick?: () => unknown;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
   onButtonClick?: (value: string) => unknown;
+  onClickAway?: () => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -36,6 +37,7 @@ export const OptionInput = (props: OptionInputProps) => {
     className,
     onChange,
     onButtonClick,
+    onClickAway,
   } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
@@ -60,6 +62,7 @@ export const OptionInput = (props: OptionInputProps) => {
           onChange?.(event);
         }}
         className="z-10 border-gray"
+        onClickAway={onClickAway}
       />
       <div className="flex gap-1 mt-2">
         {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
