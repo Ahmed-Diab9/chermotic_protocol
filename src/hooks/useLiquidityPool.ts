@@ -24,6 +24,9 @@ import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useMarket, useSelectedMarket } from "./useMarket";
 import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
+import usePoolReceipt from "./usePoolReceipt";
+import { handleTx } from "~/utils/tx";
+import { useWalletBalances } from "./useBalances";
 
 const fetchLpTokenMetadata = async (
   lpToken: CLBToken,
@@ -184,6 +187,8 @@ export const useSelectedLiquidityPool = () => {
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const [pools] = useLiquidityPool();
+  const { fetchReceipts } = usePoolReceipt();
+  const [_, fetchWalletBalances] = useWalletBalances();
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
@@ -218,9 +223,9 @@ export const useSelectedLiquidityPool = () => {
     );
     return shortLpTokens?.reduce(
       (acc, currentToken) => {
-        acc[0].add(currentToken.maxLiquidity);
-        acc[1].add(currentToken.unusedLiquidity);
-        return acc;
+        const max = acc[0].add(currentToken.maxLiquidity);
+        const unused = acc[1].add(currentToken.unusedLiquidity);
+        return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
     );
@@ -256,12 +261,14 @@ export const useSelectedLiquidityPool = () => {
       expandDecimals(token?.decimals ?? 1)
     );
 
-    await router.removeLiquidity(
+    const tx = await router.removeLiquidity(
       pool.marketAddress,
       feeRate,
       expandedAmount,
       address
     );
+
+    handleTx(tx, fetchReceipts, fetchWalletBalances);
   };
 
   return [

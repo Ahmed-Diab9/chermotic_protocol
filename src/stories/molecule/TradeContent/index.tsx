@@ -84,15 +84,15 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   // 청산가 계산이 올바른지 점검해야 합니다.
   const createLiquidation = useCallback(async () => {
     if (!isValid(input) || !isValid(market) || !isValid(token)) {
-      return [undefined, undefined];
+      return setPrices([undefined, undefined]);
     }
     const { quantity, takeProfit, stopLoss } = input;
     const price = await market.getPrice();
     if (input.collateral === 0) {
-      return [
+      return setPrices([
         withComma(formatDecimals(price.value, price.decimals, 2)),
         withComma(formatDecimals(price.value, price.decimals, 2)),
-      ];
+      ]);
     }
 
     // Quantity에 profit, loss 비율 적용
@@ -138,7 +138,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 withComma(
                   formatDecimals(balances[token.name], token.decimals, 2)
                 )}{" "}
-              USDC
+              {token?.name}
             </p>
           </div>
         </div>

@@ -1,8 +1,4 @@
-import {
-  IOracleProvider,
-  BinMarginStructOutput,
-  PositionStructOutput,
-} from "@chromatic-protocol/sdk";
+import { IOracleProvider, PositionStructOutput } from "@chromatic-protocol/sdk";
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
@@ -11,6 +7,8 @@ import {
   formatDecimals,
   withComma,
 } from "~/utils/number";
+import { isValid } from "~/utils/valid";
+import { OracleVersion } from "./oracleVersion";
 export type {
   PositionStructOutput,
   BinMarginStructOutput,
@@ -40,11 +38,7 @@ export class Position {
   closeVersion: BigNumber;
   currentPrice: BigNumber;
   profitAndLoss: BigNumber;
-  constructor(
-    output: PositionStructOutput,
-    marketAddress: string,
-    direction: "long" | "short"
-  ) {
+  constructor(output: PositionStructOutput, marketAddress: string) {
     const {
       id,
       qty,
@@ -59,7 +53,7 @@ export class Position {
     } = output;
     this.id = id;
     this.marketAddress = marketAddress;
-    this.direction = direction;
+    this.direction = qty.gt(0) ? "long" : "short";
     this.qty = qty;
     this.leverage = leverage;
     this.takerMargin = takerMargin;
@@ -113,13 +107,13 @@ export class Position {
   // @TODO
   // Take Profit 비율을 구하는 메소드
   createTakeProfit() {
-    this.takeProfit = this.makerMargin.div(this.qty).toNumber();
+    this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
   // @TODO
   // Stop Loss 비율을 구하는 메소드
   createStopLoss() {
-    this.stopLoss = this.takerMargin.div(this.qty).toNumber();
+    this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
   }
 
   createCurrentPrice(price: BigNumber) {
@@ -138,9 +132,12 @@ export class Position {
   // @TODO
   // 청산가를 구하는 메소드
   createLiquidationPrice(tokenDecimals?: number) {
-    const quantity = this.qty.div(expandDecimals(tokenDecimals)).toNumber();
-    const takeProfit = this.makerMargin.div(this.qty).toNumber();
-    const stopLoss = this.takerMargin.div(this.qty).toNumber();
+    const quantity = this.qty
+      .abs()
+      .div(expandDecimals(tokenDecimals))
+      .toNumber();
+    const takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
+    const stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
     const addedProfit =
       this.direction === "long"
         ? quantity + quantity * (takeProfit / 100)
@@ -166,6 +163,7 @@ export class Position {
     this.profitAndLoss = this.currentPrice
       .sub(this.openPrice)
       .mul(expandDecimals(oracleDecimals + 2))
+      .mul(this.direction === "long" ? 1 : -1)
       .div(this.openPrice);
   }
 
@@ -185,7 +183,7 @@ export class Position {
     return withComma(formatDecimals(this.openPrice, oracleDecimals, 2));
   }
   renderQty(tokenDecimals?: number) {
-    return withComma(formatDecimals(this.qty, tokenDecimals, 2));
+    return withComma(formatDecimals(this.qty, 4, 2));
   }
   renderCollateral(tokenDecimals?: number) {
     return withComma(formatDecimals(this.collateral, tokenDecimals, 2));
@@ -197,20 +195,41 @@ export class Position {
     return "$" + withComma(formatDecimals(this.lossPrice, oracleDecimals, 2));
   }
   renderToProfit(oracleDecimals: number) {
-    return (
-      "+" +
-      withComma(formatDecimals(this.toProfitPrice, oracleDecimals, 2)) +
-      "% higher"
+    const toProfit = withComma(
+      formatDecimals(this.toProfitPrice, oracleDecimals, 2)
     );
+    if (this.direction === "long") {
+      return "+" + toProfit + "% higher";
+    } else {
+      return toProfit + "% lower";
+    }
   }
   renderToLoss(oracleDecimals: number) {
-    return (
-      withComma(formatDecimals(this.toLossPrice, oracleDecimals, 2)) + "% lower"
+    const toLoss = withComma(
+      formatDecimals(this.toLossPrice, oracleDecimals, 2)
     );
+    if (this.direction === "long") {
+      return toLoss + "% lower";
+    } else {
+      return "+" + toLoss + "% higher";
+    }
   }
   renderPNL(oracleDecimals: number) {
+    const prefix = this.profitAndLoss.gt(0) ? "+" : "";
     return (
-      withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) + "%"
+      prefix +
+      withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) +
+      "%"
+    );
+  }
+  isClaimable(oracleVersions?: Record<string, OracleVersion>) {
+    if (!isValid(oracleVersions)) {
+      return false;
+    }
+    const isClosed = !this.closeVersion.eq(0);
+    return (
+      isClosed &&
+      this.closeVersion.lt(oracleVersions[this.marketAddress].version)
     );
   }
 }

@@ -20,9 +20,12 @@ import useOracleVersion from "./useOracleVersion";
 import { bigNumberify } from "~/utils/number";
 import { useFeeRate } from "./useFeeRate";
 import { useSelectedToken } from "./useSettlementToken";
+import { handleTx } from "~/utils/tx";
+import { useUsumBalances } from "./useBalances";
 
 export const usePosition = () => {
   const [usumAccount] = useUsumAccount();
+  const [_, fetchUsumBalances] = useUsumBalances();
   const [token] = useSelectedToken();
   const [markets] = useMarket();
   const provider = useProvider();
@@ -70,7 +73,7 @@ export const usePosition = () => {
           response.openVersion,
           response.closeVersion,
         ]);
-        const newPosition = new Position(response, marketAddress, "long");
+        const newPosition = new Position(response, marketAddress);
         newPosition.createCollateral(feeRate ?? bigNumberify(0));
         newPosition.createTakeProfit();
         newPosition.createStopLoss();
@@ -89,7 +92,6 @@ export const usePosition = () => {
       return positions;
     });
     const positions = await filterIfFulfilled(positionsPromise);
-    infoLog("positions", positions);
     return positions.flat(1);
   });
 
@@ -97,15 +99,20 @@ export const usePosition = () => {
     if (!isValid(positions)) {
       return [];
     }
-    positions.filter((position) => {
+    const closed = positions.filter((position) => {
       return !position.closeVersion.eq(0);
     });
+    return closed;
   }, [positions]);
 
   const onClosePosition = async (
     marketAddress: string,
     positionId: BigNumber
   ) => {
+    if (!isValid(router)) {
+      errorLog("no router contracts");
+      return AppError.reject("no router contracts", "onClosePosition");
+    }
     const position = positions?.find(
       (position) =>
         position.marketAddress === marketAddress && position.id === positionId
@@ -115,11 +122,12 @@ export const usePosition = () => {
       return AppError.reject("no positions", "onClosePosition");
     }
     try {
-      const result = await router?.closePosition(
+      const tx = await router?.closePosition(
         position.marketAddress,
         position.id
       );
-      return Promise.resolve(result);
+
+      handleTx(tx, fetchPositions);
     } catch (error) {
       errorLog(error);
 
@@ -131,6 +139,9 @@ export const usePosition = () => {
     marketAddress: string,
     positionId: BigNumber
   ) => {
+    if (!isValid(router)) {
+      return AppError.reject("no router contractsd", "onClaimPosition");
+    }
     const position = positions?.find(
       (position) =>
         position.marketAddress === marketAddress && position.id === positionId
@@ -148,7 +159,9 @@ export const usePosition = () => {
       );
     }
 
-    await router?.claimPosition(position.marketAddress, position.id);
+    const tx = await router?.claimPosition(position.marketAddress, position.id);
+
+    handleTx(tx, fetchPositions, fetchUsumBalances);
   };
 
   if (error) {

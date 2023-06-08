@@ -12,6 +12,9 @@ import { isValid } from "../utils/valid";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
 import { useSelectedMarket } from "./useMarket";
 import { useSelectedToken } from "./useSettlementToken";
+import usePoolReceipt from "./usePoolReceipt";
+import { handleTx } from "~/utils/tx";
+import { useWalletBalances } from "./useBalances";
 
 const usePoolInput = () => {
   const [pool] = useSelectedLiquidityPool();
@@ -19,6 +22,8 @@ const usePoolInput = () => {
   const [token] = useSelectedToken();
   const { address } = useAccount();
   const { data: signer } = useSigner();
+  const { fetchReceipts } = usePoolReceipt();
+  const [_, fetchWalletBalances] = useWalletBalances();
   const feeRates = useMemo(() => {
     return SHORT_FEE_RATES.map((rate) => rate * -1).concat(LONG_FEE_RATES);
   }, []);
@@ -125,12 +130,14 @@ const usePoolInput = () => {
     if (allowance.lte(expandedAmount)) {
       await erc20.approve(router.address, expandedAmount);
     }
-    await router.addLiquidityBatch(
+    const tx = await router.addLiquidityBatch(
       marketAddress,
       filteredFeeRates,
       Array.from({ length: bins }).map(() => dividedAmount),
       Array.from({ length: bins }).map(() => address)
     );
+
+    handleTx(tx, fetchReceipts, fetchWalletBalances);
   };
 
   return {

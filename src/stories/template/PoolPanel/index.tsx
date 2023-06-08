@@ -30,6 +30,7 @@ import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import usePoolReceipt from "~/hooks/usePoolReceipt";
 import { useSelectedMarket } from "~/hooks/useMarket";
+import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
 
 interface PoolPanelProps {
   token?: Token;
@@ -344,9 +345,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
       </div>
       {lpToken &&
         createPortal(
-          <LiquidityRemove
+          <RemoveLiquidityModal
             lpToken={lpToken}
-            onClickAway={() => {
+            onClose={() => {
               if (isValid(lpToken)) {
                 setLpToken(undefined);
               }
@@ -428,7 +429,7 @@ const BinItem = (props: BinItemProps) => {
 };
 
 const PoolClaim = () => {
-  const { receipts, claimLpTokens } = usePoolReceipt();
+  const { receipts, claimLpTokens, claimLpTokensBatch } = usePoolReceipt();
   const [market] = useSelectedMarket();
 
   return (
@@ -447,129 +448,16 @@ const PoolClaim = () => {
           </button>
         </div>
       ))}
-    </div>
-  );
-};
-
-type PoolRemoveState = {
-  removableRate: number;
-  tokens: number;
-};
-
-type PoolRemoveAction<T extends string = keyof PoolRemoveState> =
-  T extends keyof PoolRemoveState
-    ? {
-        type: T;
-        payload: Record<T, PoolRemoveState[T]>;
-      }
-    : never;
-
-const poolRemoveReducer = (
-  state: PoolRemoveState,
-  action: PoolRemoveAction
-): PoolRemoveState => {
-  const { type, payload } = action;
-  switch (type) {
-    case "removableRate": {
-      return {
-        ...state,
-        removableRate: payload.removableRate,
-      };
-    }
-    case "tokens": {
-      return {
-        ...state,
-        tokens: payload.tokens,
-      };
-    }
-  }
-};
-
-interface LiquidityRemoveProps {
-  lpToken: LPToken;
-  onClickAway?: () => unknown;
-}
-
-const LiquidityRemove = (props: LiquidityRemoveProps) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const { lpToken, onClickAway } = props;
-  const [token] = useSelectedToken();
-  const [state, dispatch] = useReducer(poolRemoveReducer, {
-    removableRate: 87.5,
-    tokens: 0,
-  });
-  const [_, __, onRemoveLiquidity] = useSelectedLiquidityPool();
-
-  useEffect(() => {
-    const _onClickAway = (event: MouseEvent) => {
-      const clicked = event.target;
-      if (!(clicked instanceof Node)) {
-        return;
-      }
-      const isContained = modalRef.current?.contains(clicked);
-      if (!isContained) {
-        onClickAway?.();
-      }
-    };
-    document.addEventListener("click", _onClickAway);
-
-    return () => {
-      document.removeEventListener("click", _onClickAway);
-    };
-  }, [onClickAway, lpToken]);
-  return (
-    <div
-      className="fixed left-auto px-4 py-2 bg-white shadow-md top-6 right-6"
-      ref={modalRef}
-    >
-      <h2>Liquidity Remove Demo</h2>
-      <h3 className="text-xl">
-        {lpToken.name} {lpToken.description}
-      </h3>
-      <p>{formatDecimals(lpToken.balance, token?.decimals, 2)} Tokens</p>
-      <p>
-        {formatDecimals(
-          lpToken.balance
-            .mul(lpToken.slotValue)
-            .div(expandDecimals(SLOT_VALUE_DECIMAL)),
-          token?.decimals,
-          2
-        )}{" "}
-        USDC
-      </p>
-      <input
-        type="number"
-        value={state.tokens}
-        onChange={(event) => {
-          const trimmed = trimLeftZero(event.target.value);
-          const parsed = Number(trimmed);
-          if (isNaN(parsed)) {
-            return;
-          }
-          dispatch({ type: "tokens", payload: { tokens: parsed } });
-        }}
-      />
-      <div className="flex gap-x-2">
-        <Button
-          label="Remove"
-          className="mt-2"
+      {receipts && receipts.length > 0 && (
+        <button
+          className="bg-black text-white px-2 py-1"
           onClick={() => {
-            const expandedAmount = bigNumberify(state.tokens).mul(
-              expandDecimals(token?.decimals)
-            );
-            const limitation = lpToken.balance
-              .mul(state.removableRate * 100)
-              .div(expandDecimals(2 + 2));
-            infoLog(expandedAmount, limitation);
-
-            if (expandedAmount.lt(limitation)) {
-              onRemoveLiquidity(lpToken.feeRate, state.tokens);
-            } else {
-              errorLog("too much tokens");
-            }
+            claimLpTokensBatch();
           }}
-        />
-      </div>
+        >
+          Claim All
+        </button>
+      )}
     </div>
   );
 };

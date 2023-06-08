@@ -7,10 +7,13 @@ import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
 import { isValid } from "~/utils/valid";
-import { errorLog, infoLog } from "../utils/log";
+import { errorLog } from "../utils/log";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
 import { useSelectedMarket } from "./useMarket";
 import { useSelectedToken } from "./useSettlementToken";
+import { usePosition } from "./usePosition";
+import { handleTx } from "~/utils/tx";
+import { useUsumBalances } from "./useBalances";
 
 const initialTradeInput = {
   direction: "long",
@@ -23,6 +26,10 @@ const initialTradeInput = {
   makerMargin: 0,
   leverage: 1,
 } satisfies TradeInput;
+
+const trimDecimals = (num: number, decimals: number) => {
+  return Math.round(num * 10 ** decimals) / 10 ** decimals;
+};
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === "method") {
@@ -168,7 +175,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             ...state,
             leverage: leverage,
             quantity: state.collateral * leverage,
-            stopLoss: 100 / leverage,
+            stopLoss: Math.round((100 * 100) / leverage) / 100,
             makerMargin: state.collateral * leverage * (state.takeProfit / 100),
           };
         }
@@ -188,13 +195,25 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       };
     }
   }
+  state = {
+    ...state,
+    quantity: trimDecimals(state.quantity, 0),
+    collateral: trimDecimals(state.collateral, 2),
+    takeProfit: trimDecimals(state.takeProfit, 2),
+    stopLoss: trimDecimals(state.stopLoss, 2),
+    takerMargin: trimDecimals(state.takerMargin, 2),
+    makerMargin: trimDecimals(state.makerMargin, 2),
+    leverage: trimDecimals(state.leverage, 2),
+  };
   return state;
 };
 
 export const useTradeInput = () => {
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
+  const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
+  const [_, fetchUsumBalances] = useUsumBalances();
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const [
@@ -356,14 +375,18 @@ export const useTradeInput = () => {
       signer
     ) as ChromaticRouter;
 
-    const quantity = bigNumberify(state.quantity).mul(expandDecimals(4));
-    const leverage = bigNumberify(state.leverage).mul(expandDecimals(2));
-    const takerMargin = bigNumberify(state.takerMargin).mul(
-      expandDecimals(token?.decimals)
-    );
-    const makerMargin = bigNumberify(state.makerMargin).mul(
-      expandDecimals(token?.decimals)
-    );
+    const quantity = bigNumberify(state.quantity * 100)
+      .mul(expandDecimals(4))
+      .div(100);
+    const leverage = bigNumberify(state.leverage * 100)
+      .mul(expandDecimals(2))
+      .div(100);
+    const takerMargin = bigNumberify(state.takerMargin * 100)
+      .mul(expandDecimals(token?.decimals))
+      .div(100);
+    const makerMargin = bigNumberify(state.makerMargin * 100)
+      .mul(expandDecimals(token?.decimals))
+      .div(100);
 
     if (
       state.direction === "long" &&
@@ -386,17 +409,18 @@ export const useTradeInput = () => {
     // FIXME
     // Trading Fee
     const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
-    infoLog("makerMargin:::", makerMargin);
 
     // TODO: Decimals needed for opening positions
-    const response = await router.openPosition(
+    const tx = await router.openPosition(
       market?.address,
-      quantity,
+      quantity.mul(state.direction === "long" ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
       tradingFee
     );
+
+    handleTx(tx, fetchPositions, fetchUsumBalances);
   };
 
   return {
