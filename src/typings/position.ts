@@ -195,15 +195,31 @@ export class Position {
     return "$" + withComma(formatDecimals(this.lossPrice, oracleDecimals, 2));
   }
   renderToProfit(oracleDecimals: number) {
-    return (
-      "+" +
-      withComma(formatDecimals(this.toProfitPrice, oracleDecimals, 2)) +
-      "% higher"
+    const toProfit = withComma(
+      formatDecimals(this.toProfitPrice, oracleDecimals, 2)
     );
+    if (this.direction === "long") {
+      return "+" + toProfit + "% higher";
+    } else {
+      return toProfit + "% lower";
+    }
   }
   renderToLoss(oracleDecimals: number) {
+    const toLoss = withComma(
+      formatDecimals(this.toLossPrice, oracleDecimals, 2)
+    );
+    if (this.direction === "long") {
+      return toLoss + "% lower";
+    } else {
+      return "+" + toLoss + "% higher";
+    }
+  }
+  renderPNL(oracleDecimals: number) {
+    const prefix = this.profitAndLoss.gt(0) ? "+" : "";
     return (
-      withComma(formatDecimals(this.toLossPrice, oracleDecimals, 2)) + "% lower"
+      prefix +
+      withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) +
+      "%"
     );
   }
   renderPNL(oracleDecimals: number) {
