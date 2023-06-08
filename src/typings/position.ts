@@ -1,8 +1,4 @@
-import {
-  IOracleProvider,
-  BinMarginStructOutput,
-  PositionStructOutput,
-} from "@chromatic-protocol/sdk";
+import { IOracleProvider, PositionStructOutput } from "@chromatic-protocol/sdk";
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
@@ -11,6 +7,8 @@ import {
   formatDecimals,
   withComma,
 } from "~/utils/number";
+import { isValid } from "~/utils/valid";
+import { OracleVersion } from "./oracleVersion";
 export type {
   PositionStructOutput,
   BinMarginStructOutput,
@@ -40,11 +38,7 @@ export class Position {
   closeVersion: BigNumber;
   currentPrice: BigNumber;
   profitAndLoss: BigNumber;
-  constructor(
-    output: PositionStructOutput,
-    marketAddress: string,
-    direction: "long" | "short"
-  ) {
+  constructor(output: PositionStructOutput, marketAddress: string) {
     const {
       id,
       qty,
@@ -59,7 +53,7 @@ export class Position {
     } = output;
     this.id = id;
     this.marketAddress = marketAddress;
-    this.direction = direction;
+    this.direction = qty.gt(0) ? "long" : "short";
     this.qty = qty;
     this.leverage = leverage;
     this.takerMargin = takerMargin;
@@ -166,6 +160,7 @@ export class Position {
     this.profitAndLoss = this.currentPrice
       .sub(this.openPrice)
       .mul(expandDecimals(oracleDecimals + 2))
+      .mul(this.direction === "long" ? 1 : -1)
       .div(this.openPrice);
   }
 
