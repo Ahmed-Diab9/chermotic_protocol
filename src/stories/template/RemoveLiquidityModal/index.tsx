@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
@@ -7,18 +7,99 @@ import { Progress } from "~/stories/atom/Progress";
 import { Input } from "~/stories/atom/Input";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
+import { LPToken } from "~/typings/pools";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatDecimals,
+  trimLeftZero,
+} from "~/utils/number";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
+import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { SLOT_VALUE_DECIMAL } from "~/configs/pool";
+import { isValid } from "~/utils/valid";
+import { infoLog } from "~/utils/log";
+
+type PoolRemoveState = {
+  removableRate: number;
+  tokens: number;
+};
+
+type PoolRemoveAction<T extends string = keyof PoolRemoveState> =
+  T extends keyof PoolRemoveState
+    ? {
+        type: T;
+        payload: Record<T, PoolRemoveState[T]>;
+      }
+    : never;
+
+const poolRemoveReducer = (
+  state: PoolRemoveState,
+  action: PoolRemoveAction
+): PoolRemoveState => {
+  const { type, payload } = action;
+  switch (type) {
+    case "removableRate": {
+      return {
+        ...state,
+        removableRate: payload.removableRate,
+      };
+    }
+    case "tokens": {
+      return {
+        ...state,
+        tokens: payload.tokens,
+      };
+    }
+  }
+};
 
 interface RemoveLiquidityModalProps {
-  onClick?: () => void;
+  lpToken?: LPToken;
+  onClose?: () => unknown;
 }
 
 export const RemoveLiquidityModal = ({
-  ...props
+  lpToken,
+  onClose,
 }: RemoveLiquidityModalProps) => {
-  let [isOpen, setIsOpen] = useState(true);
+  const modalRef = useRef<HTMLDivElement>(null!);
+  const [token] = useSelectedToken();
+  const [state, dispatch] = useReducer(poolRemoveReducer, {
+    removableRate: 87.5,
+    tokens: 0,
+  });
+  const [_, __, onRemoveLiquidity] = useSelectedLiquidityPool();
+  useEffect(() => {
+    const onClickAway = (event: MouseEvent) => {
+      const clicked = event.target;
+      if (!(clicked instanceof Node)) {
+        return;
+      }
+      const isContained = modalRef.current?.contains(clicked);
+      if (!isContained) {
+        onClose?.();
+      }
+    };
+    document.addEventListener("click", onClickAway);
+
+    return () => {
+      document.removeEventListener("click", onClickAway);
+    };
+  }, [onClose]);
+
+  const maxTokens = useMemo(() => {
+    if (!isValid(lpToken)) {
+      return;
+    }
+    const balance = lpToken.balance
+      .div(expandDecimals(token?.decimals))
+      .toNumber();
+    return (balance * state.removableRate) / 100;
+  }, [state, lpToken, token]);
 
   return (
-    <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
+    <Dialog className="" open={!!lpToken} onClose={() => onClose?.()}>
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
@@ -26,7 +107,7 @@ export const RemoveLiquidityModal = ({
             Remove Liquidity
             {/* Bin 개수가 여러개일 때 */}
             <span className="ml-2">(2)</span>
-            <ModalCloseButton onClick={() => setIsOpen(false)} />
+            <ModalCloseButton onClick={() => onClose?.()} />
           </Dialog.Title>
           <div className="w-[100px] mx-auto border-b border-2 border-black"></div>
           <Dialog.Description className="gap-5 modal-content">
@@ -55,6 +136,10 @@ export const RemoveLiquidityModal = ({
                 <p className="text-black/30">My Liquidity Value</p>
                 <p>2,850.24 USDC</p>
               </div>
+            </article>
+
+            {/* input - range */}
+            <article>
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
