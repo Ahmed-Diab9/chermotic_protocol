@@ -107,13 +107,13 @@ export class Position {
   // @TODO
   // Take Profit 비율을 구하는 메소드
   createTakeProfit() {
-    this.takeProfit = this.makerMargin.div(this.qty).toNumber();
+    this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
   // @TODO
   // Stop Loss 비율을 구하는 메소드
   createStopLoss() {
-    this.stopLoss = this.takerMargin.div(this.qty).toNumber();
+    this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
   }
 
   createCurrentPrice(price: BigNumber) {
@@ -132,9 +132,12 @@ export class Position {
   // @TODO
   // 청산가를 구하는 메소드
   createLiquidationPrice(tokenDecimals?: number) {
-    const quantity = this.qty.div(expandDecimals(tokenDecimals)).toNumber();
-    const takeProfit = this.makerMargin.div(this.qty).toNumber();
-    const stopLoss = this.takerMargin.div(this.qty).toNumber();
+    const quantity = this.qty
+      .abs()
+      .div(expandDecimals(tokenDecimals))
+      .toNumber();
+    const takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
+    const stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
     const addedProfit =
       this.direction === "long"
         ? quantity + quantity * (takeProfit / 100)
