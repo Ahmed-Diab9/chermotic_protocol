@@ -13,7 +13,7 @@
   @apply w-10 h-10;
 }
 .thumb-lg {
-  @apply w-16 h-16;
+  @apply w-[60px] h-[60px];
 }
 .thumb-xl {
   @apply w-20 h-20;
