@@ -25,6 +25,8 @@ import { useFeeRate } from "~/hooks/useFeeRate";
 import useTokenTransaction from "~/hooks/useTokenTransaction";
 import { useTradeInput } from "~/hooks/useTradeInput";
 import { Link } from "react-router-dom";
+import { usePosition } from "~/hooks/usePosition";
+import { infoLog } from "~/utils/log";
 
 const Trade = () => {
   useConnectOnce();
@@ -80,6 +82,7 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
+  const { positions } = usePosition();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -159,7 +162,7 @@ const Trade = () => {
           </div>
         </article>
       </section>
-      <TradeBar />
+      <TradeBar token={selectedToken} markets={markets} positions={positions} />
     </div>
   );
 };

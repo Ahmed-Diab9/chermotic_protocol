@@ -1,4 +1,7 @@
-import { OracleProvider__factory, ChromaticMarket__factory } from "@chromatic-protocol/sdk";
+import {
+  OracleProvider__factory,
+  ChromaticMarket__factory,
+} from "@chromatic-protocol/sdk";
 import { useMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
 import { useProvider } from "wagmi";
@@ -34,18 +37,22 @@ const useOracleVersion = () => {
           oracleProviderAddress,
           provider
         );
-        const version = await oracleProvider.currentVersion();
+        const { price, version, timestamp } =
+          await oracleProvider.currentVersion();
         return {
           address: market.address,
-          version: version,
+          price,
+          version,
+          timestamp,
+          decimals: 18,
         };
       });
       const response = await filterIfFulfilled(promise);
 
-      return response.reduce((record, { address, version }) => {
-        record[address] = version;
+      return response.reduce((record, { address, ...oracle }) => {
+        record[address] = oracle;
         return record;
-      }, {} as Record<string, OracleVersion>);
+      }, {} as Record<string, OracleVersion & { decimals: number }>);
     },
     {
       refreshInterval: 10000,
