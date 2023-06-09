@@ -334,6 +334,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               <BinItem
                                 key={lpToken.feeRate}
                                 index={tokenIndex}
+                                token={token}
                                 lpToken={lpToken}
                               />
                             ))}
@@ -360,26 +361,41 @@ export const PoolPanel = (props: PoolPanelProps) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
-      {lpTokens.length > 0 &&
+      {selectedLpTokens.length > 0 &&
         createPortal(
-          <RemoveLiquidityModal />,
+          <RemoveLiquidityModal
+            selectedLpTokens={selectedLpTokens}
+            token={token}
+            input={removeInput}
+            maxAmount={maxRemoveAmount}
+            onAmountChange={onRemoveAmountChange}
+            onMaxChange={onRemoveMaxAmountChange}
+          />,
           document.getElementById("modal")!
         )}
       {document.getElementById("modal") &&
-        createPortal(<PoolClaim />, document.getElementById("modal")!)}
+        createPortal(
+          <PoolClaim
+            market={market}
+            receipts={receipts}
+            onClaimLpTokens={onClaimLpTokens}
+            onClaimLpTokensBatch={onClaimLpTokensBatch}
+          />,
+          document.getElementById("modal")!
+        )}
     </div>
   );
 };
 
 interface BinItemProps {
   index: number;
+  token?: Token;
   lpToken?: LPToken;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, lpToken } = props;
+  const { index, token, lpToken } = props;
   const dispatch = useAppDispatch();
-  const [token] = useSelectedToken();
 
   return (
     <div
@@ -438,9 +454,15 @@ const BinItem = (props: BinItemProps) => {
   );
 };
 
-const PoolClaim = () => {
-  const { receipts, claimLpTokens, claimLpTokensBatch } = usePoolReceipt();
-  const [market] = useSelectedMarket();
+interface PoolClaimProps {
+  market?: Market;
+  receipts?: BigNumber[];
+  onClaimLpTokens?: (receiptId: BigNumber) => Promise<unknown>;
+  onClaimLpTokensBatch?: () => Promise<unknown>;
+}
+
+const PoolClaim = (props: PoolClaimProps) => {
+  const { market, receipts, onClaimLpTokens, onClaimLpTokensBatch } = props;
 
   return (
     <div className="flex flex-col gap-x-1 gap-y-2 fixed left-auto top-4 right-4 z-30 bg-white shadow-md">
@@ -451,7 +473,7 @@ const PoolClaim = () => {
           <button
             className="bg-black text-white px-2 py-1"
             onClick={() => {
-              claimLpTokens(receipt);
+              onClaimLpTokens?.(receipt);
             }}
           >
             Claim
@@ -462,7 +484,7 @@ const PoolClaim = () => {
         <button
           className="bg-black text-white px-2 py-1"
           onClick={() => {
-            claimLpTokensBatch();
+            onClaimLpTokensBatch?.();
           }}
         >
           Claim All
