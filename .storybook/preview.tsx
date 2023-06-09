@@ -2,6 +2,8 @@ import type { Preview } from "@storybook/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import "../src/index.css";
+import { Provider } from "react-redux";
+import { store } from "../src/store";
 // import "../src/theme";
 
 const preview: Preview = {
@@ -25,7 +27,11 @@ const preview: Preview = {
   },
   decorators: [
     (story) => {
-      return <MemoryRouter>{story()}</MemoryRouter>;
+      return (
+        <Provider store={store}>
+          <MemoryRouter>{story()}</MemoryRouter>
+        </Provider>
+      );
     },
   ],
 };
