@@ -1,41 +1,54 @@
-import { Tab } from "@headlessui/react";
-import { Switch } from "@headlessui/react";
-import { Counter } from "../../atom/Counter";
-import { Avatar } from "../../atom/Avatar";
-import { Button } from "../../atom/Button";
-import { Checkbox } from "../../atom/Checkbox";
-import { Thumbnail } from "../../atom/Thumbnail";
-import { Tooltip } from "../../atom/Tooltip";
-import { OptionInput } from "../../atom/OptionInput";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import "../../atom/Tabs/style.css";
+import "~/stories/atom/Tabs/style.css";
+
+import { useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
+
 import { BigNumber } from "ethers";
-import { Bin, LiquidityPool } from "../../../typings/pools";
-import { Market, Token } from "../../../typings/market";
+
+import { Tab } from "@headlessui/react";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+
+import { Switch } from "@headlessui/react";
+import { Counter } from "~/stories/atom/Counter";
+import { Avatar } from "~/stories/atom/Avatar";
+import { Button } from "~/stories/atom/Button";
+import { Checkbox } from "~/stories/atom/Checkbox";
+import { Thumbnail } from "~/stories/atom/Thumbnail";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { OptionInput } from "~/stories/atom/OptionInput";
+import { RangeChart } from "~/stories/atom/RangeChart";
+
+import { RangeChartData } from "@chromatic-protocol/react-compound-charts";
+import { Bin, LiquidityPool } from "~/typings/pools";
+import { Market, Token } from "~/typings/market";
+import { LPReceipt } from "~/typings/receipt";
+
+import {
+  BIN_VALUE_DECIMAL,
+  FEE_RATE_DECIMAL,
+  PERCENT_DECIMALS,
+} from "~/configs/decimals";
+import { MILLION_UNITS } from "~/configs/token";
+import { MULTI_TYPE } from "~/configs/pool";
+
+import { usePrevious } from "~/hooks/usePrevious";
+
 import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
   formatFeeRate,
   withComma,
-} from "../../../utils/number";
-import {
-  BIN_VALUE_DECIMAL,
-  FEE_RATE_DECIMAL,
-  PERCENT_DECIMALS,
-} from "~/configs/decimals";
-import { useEffect, useMemo, useState } from "react";
-import { MILLION_UNITS } from "../../../configs/token";
-import { createPortal } from "react-dom";
+} from "~/utils/number";
 import { isValid } from "~/utils/valid";
-import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
+import { infoLog } from "~/utils/log";
+
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
-import { usePrevious } from "~/hooks/usePrevious";
-import { LPReceipt } from "~/typings/receipt";
-import { infoLog } from "~/utils/log";
+
+import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
 import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
-import { MULTI_TYPE } from "~/configs/pool";
+
 
 interface PoolPanelProps {
   token?: Token;
@@ -43,10 +56,10 @@ interface PoolPanelProps {
   balances?: Record<string, BigNumber>;
   pool?: LiquidityPool;
   amount?: string;
-  indexes?: [number, number];
+  defaultRates?: [number, number];
   rates?: [number, number];
-  bins?: number;
-  averageBin?: BigNumber;
+  binCount?: number;
+  binAverage?: BigNumber;
   longTotalMaxLiquidity?: BigNumber;
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
@@ -54,10 +67,7 @@ interface PoolPanelProps {
   selectedBins?: Bin[];
   isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onRangeChange?: (
-    minmax: "min" | "max",
-    direction: "increment" | "decrement"
-  ) => unknown;
+  onRangeChange?: (data: RangeChartData) => unknown;
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
@@ -76,6 +86,12 @@ interface PoolPanelProps {
   multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
+
+  onMinIncrease: () => void;
+  onMinDecrease: () => void;
+  onMaxIncrease: () => void;
+  onMaxDecrease: () => void;
+  rangeChartRef?: any;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -85,10 +101,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
     balances,
     pool,
     amount,
-    indexes,
+    defaultRates,
     rates,
-    bins,
-    averageBin,
+    binCount = 0,
+    binAverage = 0,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -113,12 +129,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onRemoveLiquidity,
     onMultiAmountChange,
     onRemoveLiquidityBatch,
+
+    onMinIncrease,
+    onMinDecrease,
+    onMaxIncrease,
+    onMaxDecrease,
+    rangeChartRef,
   } = props;
+
   const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
-  const binLength = (pool?.bins ?? []).filter((bin) =>
-    bin.balance.gt(0)
-  ).length;
+  const binLength = (pool?.bins ?? []).filter((bin) => bin.balance.gt(0)).length;
+
+  const [minRate, maxRate] = rates;
 
   /**
    * @TODO
@@ -283,28 +306,35 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                   </div>
                 </article>
-
-                {/* chart with range */}
+                <article>
+                  {/* chart with range */}
+                  <RangeChart
+                    rangeChartRef={rangeChartRef}
+                    height={200}
+                    defaultValues={defaultRates}
+                    onChange={onRangeChange}
+                  />
+                </article>
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
                     <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Min trade Fee</p>
                       <Counter
-                        value={rates && formatFeeRate(rates[0])}
+                        value={rates && minRate}
                         symbol="%"
-                        onDecrement={() => onRangeChange?.("min", "decrement")}
-                        onIncrement={() => onRangeChange?.("min", "increment")}
+                        onDecrement={onMinDecrease}
+                        onIncrement={onMinIncrease}
                       />
                     </div>
                     <p>-</p>
                     <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Max trade Fee</p>
                       <Counter
-                        value={rates && formatFeeRate(rates[1])}
+                        value={rates && maxRate}
                         symbol="%"
-                        onDecrement={() => onRangeChange?.("max", "decrement")}
-                        onIncrement={() => onRangeChange?.("max", "increment")}
+                        onDecrement={onMaxDecrease}
+                        onIncrement={onMaxIncrease}
                       />
                     </div>
                   </div>
@@ -332,7 +362,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Number of Liquidity Bins
                       <Tooltip tip="This is the total count of target Bins I am about to provide liquidity for." />
                     </p>
-                    <p>{bins ?? 0} Bins</p>
+                    <p>{binCount ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="flex">
@@ -341,11 +371,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                     <p>
                       {rates &&
-                        (rates[0] !== rates[1]
-                          ? `${formatFeeRate(rates[0])}% ~ ${formatFeeRate(
-                              rates[1]
-                            )}%`
-                          : `${formatFeeRate(rates[0])}%`)}
+                        (minRate !== maxRate
+                          ? `${minRate}% ~ ${maxRate}%`
+                          : `${minRate}%`)}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
@@ -354,7 +382,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tooltip tip="This is the average token value of the target Bins I am about to provide liquidity for." />
                     </p>
                     <p>
-                      {formatDecimals(averageBin ?? 0, token?.decimals, 2)} USDC
+                      {formatDecimals(binAverage ?? 0, token?.decimals, 2)} USDC
                     </p>
                   </div>
                 </div>

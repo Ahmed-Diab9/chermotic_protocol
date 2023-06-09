@@ -1,10 +1,11 @@
-import useConnectOnce from "../../../hooks/useConnectOnce";
-import { useSelectedLiquidityPool } from "../../../hooks/useLiquidityPool";
-import { PoolPanel } from "../../../stories/template/PoolPanel";
-import { useSelectedToken } from "../../../hooks/useSettlementToken";
-import { useSelectedMarket } from "../../../hooks/useMarket";
-import { useWalletBalances } from "../../../hooks/useBalances";
-import usePoolInput from "../../../hooks/usePoolInput";
+import { PoolPanel } from "~/stories/template/PoolPanel";
+
+import useConnectOnce from "~/hooks/useConnectOnce";
+import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { useSelectedMarket } from "~/hooks/useMarket";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
+import { useWalletBalances } from "~/hooks/useBalances";
+import usePoolInput from "~/hooks/usePoolInput";
 
 const PoolPanelDemo = () => {
   useConnectOnce();
@@ -18,17 +19,18 @@ const PoolPanelDemo = () => {
     },
   } = useSelectedLiquidityPool();
   const [token] = useSelectedToken();
-  const [market] = useSelectedMarket();
   const [walletBalances] = useWalletBalances();
   const {
     amount,
-    indexes,
     rates,
-    bins,
+    binCount,
+    binAverage,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
+    move,
+    rangeChartRef,
   } = usePoolInput();
 
   return (
@@ -37,9 +39,9 @@ const PoolPanelDemo = () => {
       balances={walletBalances}
       pool={pool}
       amount={amount}
-      indexes={indexes}
       rates={rates}
-      bins={bins}
+      binCount={binCount}
+      binAverage={binAverage}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}
       shortTotalMaxLiquidity={shortTotalMaxLiquidity}
@@ -48,6 +50,11 @@ const PoolPanelDemo = () => {
       onRangeChange={onRangeChange}
       onFullRangeSelect={onFullRangeSelect}
       onAddLiquidity={onAddLiquidity}
+      rangeChartRef={rangeChartRef}
+      onMinIncrease={move().left.next}
+      onMinDecrease={move().left.prev}
+      onMaxIncrease={move().right.next}
+      onMaxDecrease={move().right.prev}
     />
   );
 };
