@@ -62,6 +62,7 @@ interface PoolPanelProps {
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
+  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -91,6 +92,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onClaimLpTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
+    onRemoveLiquidity,
   } = props;
 
   const binLength = (pool?.tokens ?? []).filter((token) =>
@@ -106,9 +108,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
     return (pool?.tokens ?? []).reduce(
       (acc, token) => {
         const { balance, binValue, removableRate } = token;
-      const value = balance
-        .mul(binValue)
-        .div(expandDecimals(BIN_VALUE_DECIMAL));
+        const value = balance
+          .mul(binValue)
+          .div(expandDecimals(BIN_VALUE_DECIMAL));
         const rate = removableRate > 87.5 ? 87.5 : removableRate;
         const removableValue = value
           .mul(Math.round(rate * 10))
@@ -414,6 +416,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             maxAmount={maxRemoveAmount}
             onAmountChange={onRemoveAmountChange}
             onMaxChange={onRemoveMaxAmountChange}
+            onRemoveLiquidity={onRemoveLiquidity}
           />,
           document.getElementById("modal")!
         )}

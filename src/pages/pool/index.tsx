@@ -60,6 +60,7 @@ const Pool = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     ],
+    onRemoveLiquidity,
   ] = useSelectedLiquidityPool();
   const {
     amount,
@@ -144,6 +145,7 @@ const Pool = () => {
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
               onRemoveMaxAmountChange={onRemoveMaxAmountChange}
+              onRemoveLiquidity={onRemoveLiquidity}
             />
             {/* bottom */}
             <article className="px-5 pt-5 pb-6 mx-auto mt-5 border rounded-2xl">

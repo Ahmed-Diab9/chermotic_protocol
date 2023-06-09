@@ -30,6 +30,7 @@ export interface RemoveLiquidityModalProps {
   maxAmount?: number;
   onAmountChange?: (nextAmount: number) => unknown;
   onMaxChange?: () => unknown;
+  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
@@ -40,6 +41,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     maxAmount,
     onAmountChange,
     onMaxChange,
+    onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null!);
@@ -162,20 +164,20 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   .div(expandDecimals(3));
 
                 return (
-                <LiquidityItem
+                  <LiquidityItem
                     key={lpToken.feeRate}
-                  token={token?.name}
-                  name={lpToken.description}
-                  qty={Number(
-                    formatDecimals(lpToken.balance, token?.decimals, 2)
-                  )}
+                    token={token?.name}
+                    name={lpToken.description}
+                    qty={Number(
+                      formatDecimals(lpToken.balance, token?.decimals, 2)
+                    )}
                     utilizedValue={Number(
                       formatDecimals(utilized, token?.decimals, 2)
                     )}
                     removableValue={Number(
                       formatDecimals(removable, token?.decimals, 2)
                     )}
-                />
+                  />
                 );
               })}
               {/**
@@ -323,7 +325,14 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               size="xl"
               className="text-lg"
               css="active"
-              // onClick={() => onRemoveLiquidity?.(lpToken.feeRate, state.tokens)}
+              onClick={() => {
+                if (selectedLpTokens.length > 0 && isValid(input)) {
+                  onRemoveLiquidity?.(
+                    selectedLpTokens[0].feeRate,
+                    input.amount
+                  );
+                }
+              }}
             />
           </div>
         </Dialog.Panel>
