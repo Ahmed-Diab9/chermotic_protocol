@@ -119,6 +119,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
     );
   }, [pool?.tokens]);
 
+  /**
+   * @TODO
+   * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
+   */
+  const totalRemovableRate = totalRemovableLiquidity
+    .mul(10000)
+    .div(totalLiquidity);
+
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
