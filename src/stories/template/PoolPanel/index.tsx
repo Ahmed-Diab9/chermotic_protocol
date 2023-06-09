@@ -170,6 +170,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex justify-between mt-6">
                     <div>
                       <p className="mb-1 text-black/30">Short Counter LP</p>
+                      {/**
+                       * @TODO
+                       * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
+                       */}
                       {shortTotalMaxLiquidity &&
                         shortTotalUnusedLiquidity &&
                         token && (
@@ -193,6 +197,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-black/30">Long Counter LP</p>
+                      {/**
+                       * @TODO
+                       * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
+                       */}
                       {longTotalMaxLiquidity &&
                         longTotalUnusedLiquidity &&
                         token && (
@@ -309,6 +317,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
                   <h4 className="text-xl">
+                    {/**
+                     * @TODO
+                     * 총 유동성 보여주는 로직
+                     */}
                     {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
                     {/* {token?.name} */}
                   </h4>
@@ -336,7 +348,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <div className="flex items-center gap-1 font-medium text-black/30">
                       Removable Liquidity
                     </div>
-                    <p className="text-right">760.24 {token?.name} (87.52%)</p>
+                    <p className="text-right">
+                      {formatDecimals(
+                        totalRemovableLiquidity,
+                        token?.decimals,
+                        2
+                      )}{" "}
+                      {token?.name} ({formatDecimals(totalRemovableRate, 2, 2)}
+                      %)
+                    </p>
                   </div>
                 </article>
               </section>
