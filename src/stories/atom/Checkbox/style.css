@@ -1,5 +1,5 @@
 .checkbox {
-  @apply flex items-center gap-2;
+  @apply flex items-center;
   .checkbox-input[type="checkbox"] {
     @apply flex items-center justify-center cursor-pointer;
     &::after {

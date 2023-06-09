@@ -2,6 +2,7 @@ import { useMemo, useReducer } from "react";
 import { useAppSelector } from "~/store";
 import { useSelectedToken } from "./useSettlementToken";
 import { expandDecimals } from "~/utils/number";
+import { isValid } from "~/utils/valid";
 
 type PoolRemoveState = {
   removableRate: number;
@@ -45,6 +46,9 @@ export const usePoolRemoveInput = () => {
   const [token] = useSelectedToken();
   const lpTokens = useAppSelector((state) => state.pools.selectedLpTokens);
   const maxAmount = useMemo(() => {
+    if (lpTokens.length <= 0) {
+      return;
+    }
     const lpToken = lpTokens[0];
     const balance = lpToken.balance
       .div(expandDecimals(token?.decimals))
@@ -54,12 +58,14 @@ export const usePoolRemoveInput = () => {
   }, [lpTokens, input.removableRate, token?.decimals]);
 
   const onAmountChange = (nextAmount: number) => {
-    dispatch({ type: "amount", payload: { amount: Math.floor(maxAmount) } });
+    dispatch({ type: "amount", payload: { amount: nextAmount } });
     return;
   };
 
   const onMaxChange = () => {
-    onAmountChange(Math.floor(maxAmount));
+    if (isValid(maxAmount)) {
+      onAmountChange(Math.floor(maxAmount));
+    }
     return;
   };
 

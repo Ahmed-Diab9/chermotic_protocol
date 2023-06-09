@@ -39,28 +39,32 @@ export const MainBar = ({
   onWithdraw,
   onConnect,
 }: MainBarProps) => (
-  <div className="z-30 px-10 py-5">
+  <div className="z-30 py-5">
     <div className="flex gap-5 justify-stretch">
-      <MarketSelect
-        tokens={tokens}
-        markets={markets}
-        selectedToken={selectedToken}
-        selectedMarket={selectedMarket}
-        feeRate={feeRate}
-        onTokenClick={onTokenSelect}
-        onMarketClick={onMarketSelect}
-      />
-      <AssetPopover
-        account={account}
-        token={selectedToken}
-        walletBalances={walletBalances}
-        usumBalances={usumBalances}
-        amount={amount}
-        onAmountChange={onAmountChange}
-        onDeposit={onDeposit}
-        onWithdraw={onWithdraw}
-        onConnect={onConnect}
-      />
+      <div className="flex-auto w-3/5">
+        <MarketSelect
+          tokens={tokens}
+          markets={markets}
+          selectedToken={selectedToken}
+          selectedMarket={selectedMarket}
+          feeRate={feeRate}
+          onTokenClick={onTokenSelect}
+          onMarketClick={onMarketSelect}
+        />
+      </div>
+      <div className="w-2/5 max-w-[500px] min-w-[480px]">
+        <AssetPopover
+          account={account}
+          token={selectedToken}
+          walletBalances={walletBalances}
+          usumBalances={usumBalances}
+          amount={amount}
+          onAmountChange={onAmountChange}
+          onDeposit={onDeposit}
+          onWithdraw={onWithdraw}
+          onConnect={onConnect}
+        />
+      </div>
     </div>
   </div>
 );

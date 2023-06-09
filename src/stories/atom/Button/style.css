@@ -70,7 +70,7 @@
   @apply min-w-[34px];
   font-size: 13px;
   height: 34px;
-  padding: 0 8px;
+  padding: 0 16px;
   svg {
     width: 16px;
   }

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { TradePanel } from "../../stories/template/TradePanel";
 import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
