@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
@@ -7,12 +7,18 @@ import { Progress } from "~/stories/atom/Progress";
 import { Input } from "~/stories/atom/Input";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
-import { formatDecimals, trimLeftZero } from "~/utils/number";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatDecimals,
+  trimLeftZero,
+} from "~/utils/number";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
 import { LPToken } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
+import { BIN_VALUE_DECIMAL } from "~/configs/pool";
 
 export interface RemoveLiquidityModalProps {
   selectedLpTokens?: LPToken[];
@@ -55,6 +61,65 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       document.removeEventListener("click", onClickAway);
     };
   }, [dispatch]);
+
+  /**
+   * @TODO
+   * 선택한 LP 토큰에 대해 토큰 총합 개수, 총합 유동성, 총합 제거 가능한 유동성을 계산하는 로직입니다.
+   */
+  const {
+    balance: totalBalance,
+    liquidity: totalLiquidity,
+    removableLiquidity: totalRemovableLiquidity,
+  } = useMemo(() => {
+    return selectedLpTokens.reduce(
+      (record, currentToken) => {
+        const { balance, binValue, removableRate } = currentToken;
+
+        /**
+         * @TODO
+         * 유동성 = LP 토큰 개수 * Bin 값
+         */
+        const liquidity = balance
+          .mul(binValue)
+          .div(expandDecimals(BIN_VALUE_DECIMAL));
+        /**
+         * @TODO
+         * 제거 가능한 유동성의 비율 최대치 적용
+         */
+        const rate = removableRate > 87.5 ? 87.5 : removableRate;
+        const removableLiquidity = balance
+          .mul(binValue)
+          .mul(rate * 10)
+          .div(expandDecimals(3))
+          .div(expandDecimals(BIN_VALUE_DECIMAL));
+
+        return {
+          balance: record.balance.add(balance),
+          liquidity: record.liquidity.add(liquidity),
+          removableLiquidity: record.removableLiquidity.add(removableLiquidity),
+        };
+      },
+      {
+        balance: bigNumberify(0),
+        liquidity: bigNumberify(0),
+        removableLiquidity: bigNumberify(0),
+      }
+    );
+  }, [selectedLpTokens]);
+
+  /**
+   * @TODO
+   * 여러 LP 토큰에 대해 제거 가능한 비율 평균 계산
+   */
+  const totalRemovableRate = totalRemovableLiquidity
+    .mul(10000)
+    .div(totalLiquidity);
+
+  /**
+   * @TODO
+   * Bin 값 평균 계산
+   */
+  const totalBinValue = totalLiquidity.div(totalBalance);
 
   return (
     <Dialog
