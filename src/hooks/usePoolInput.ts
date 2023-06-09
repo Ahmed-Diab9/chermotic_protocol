@@ -42,7 +42,7 @@ const usePoolInput = () => {
     let index = indexes[0];
     let totalBin = bigNumberify(0);
     while (index <= indexes[1]) {
-      totalBin.add(pool.tokens[index].slotValue);
+      totalBin.add(pool.tokens[index].binValue);
       index++;
     }
     return totalBin.div(rates[1] - rates[0] + 1);

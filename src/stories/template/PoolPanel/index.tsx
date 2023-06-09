@@ -73,21 +73,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onAddLiquidity,
   } = props;
 
-  const slots = (pool?.tokens ?? []).filter((token) =>
+  const binLength = (pool?.tokens ?? []).filter((token) =>
     token.balance.gt(0)
   ).length;
 
   const totalLiquidity = useMemo(() => {
     return (pool?.tokens ?? []).reduce((acc, token) => {
-      const { balance, slotValue } = token;
+      const { balance, binValue } = token;
       const value = balance
-        .mul(slotValue)
-        .div(expandDecimals(SLOT_VALUE_DECIMAL));
+        .mul(binValue)
+        .div(expandDecimals(BIN_VALUE_DECIMAL));
       return acc.add(value);
     }, bigNumberify(0));
   }, [pool?.tokens]);
-
-  const lpTokens = useAppSelector((state) => state.pools.selectedLpTokens);
 
   return (
     <div className="inline-flex flex-col mx-auto border">
@@ -280,7 +278,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Price Slots
                       <Tooltip tip="tooltip" />
                     </div>
-                    <p className="text-right">{slots.toFixed(2)} Slots</p>
+                    <p className="text-right">{binLength.toFixed(2)} Bins</p>
                   </div>
                   <div className="flex justify-between">
                     <div>
@@ -392,14 +390,14 @@ const BinItem = (props: BinItemProps) => {
       </div>
       <div className="w-[16%] text-center">{87.5}%</div>
       <div className="w-[16%] text-center">
-        {lpToken && formatDecimals(lpToken.slotValue, SLOT_VALUE_DECIMAL, 2)}
+        {lpToken && formatDecimals(lpToken.binValue, BIN_VALUE_DECIMAL, 2)}
       </div>
       <div className="w-[16%] text-center">
         {lpToken &&
           formatDecimals(
             lpToken.balance
-              .mul(lpToken.slotValue)
-              .div(expandDecimals(SLOT_VALUE_DECIMAL)),
+              .mul(lpToken.binValue)
+              .div(expandDecimals(BIN_VALUE_DECIMAL)),
             token?.decimals,
             2
           )}
