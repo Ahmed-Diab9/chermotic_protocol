@@ -8,21 +8,35 @@ import { Input } from "~/stories/atom/Input";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
 import { formatDecimals, trimLeftZero } from "~/utils/number";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
-import { useAppDispatch, useAppSelector } from "~/store";
+import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
-import { infoLog } from "~/utils/log";
-import { usePoolRemoveInput } from "~/hooks/usePoolRemoveInput";
+import { LPToken } from "~/typings/pools";
+import { Token } from "~/typings/market";
+import { isValid } from "~/utils/valid";
 
-export const RemoveLiquidityModal = () => {
-  const lpTokens = useAppSelector((state) => state.pools.selectedLpTokens);
+export interface RemoveLiquidityModalProps {
+  selectedLpTokens?: LPToken[];
+  token?: Token;
+  input?: {
+    amount: number;
+    removableRate: number;
+  };
+  maxAmount?: number;
+  onAmountChange?: (nextAmount: number) => unknown;
+  onMaxChange?: () => unknown;
+}
+
+export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
+  const {
+    selectedLpTokens = [],
+    token,
+    input,
+    maxAmount,
+    onAmountChange,
+    onMaxChange,
+  } = props;
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null!);
-  const [token] = useSelectedToken();
-  const [_, __, onRemoveLiquidity] = useSelectedLiquidityPool();
-  const { input, maxAmount, onAmountChange, onMaxChange } =
-    usePoolRemoveInput();
 
   useEffect(() => {
     const onClickAway = (event: MouseEvent) => {
@@ -45,7 +59,7 @@ export const RemoveLiquidityModal = () => {
   return (
     <Dialog
       className=""
-      open={!!lpTokens}
+      open={selectedLpTokens.length > 0}
       onClose={() => {
         dispatch(poolsAction.onLpTokensReset());
       }}
@@ -67,7 +81,7 @@ export const RemoveLiquidityModal = () => {
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
-              {lpTokens.map((lpToken) => (
+              {selectedLpTokens.map((lpToken) => (
                 <LiquidityItem
                   token={token?.name}
                   name={lpToken.description}
@@ -142,25 +156,28 @@ export const RemoveLiquidityModal = () => {
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      onMaxChange();
+                      onMaxChange?.();
                     }}
                   />
                 </div>
                 <div className="max-w-[220px]">
                   <Input
                     unit="CLB"
-                    value={input.amount}
+                    value={input?.amount}
                     onChange={(event) => {
                       const value = trimLeftZero(event.target.value);
                       const parsed = Number(value);
                       if (isNaN(parsed)) {
                         return;
                       }
-                      onAmountChange(parsed);
+                      onAmountChange?.(parsed);
                     }}
                     onClickAway={() => {
+                      if (!isValid(input) || !isValid(maxAmount)) {
+                        return;
+                      }
                       if (input.amount > maxAmount) {
-                        onMaxChange();
+                        onMaxChange?.();
                       }
                     }}
                   />
