@@ -32,7 +32,10 @@ const usePoolInput = () => {
 
   const [amount, setAmount] = useState("");
 
-  const rates = useMemo<[number, number]>(() => [min, max], [max, min]);
+  const rates = useMemo<[number, number]>(
+    () => [bins[0], bins[bins.length - 1]],
+    [bins]
+  );
 
   const binAverage = useMemo(() => {
     if (!isValid(pool)) {
@@ -62,10 +65,6 @@ const usePoolInput = () => {
       return;
     }
     setAmount(value);
-  };
-
-  const onFullRangeSelect = () => {
-    // setIndexes([0, feeRates.length - 1]);
   };
 
   const onAddLiquidity = async () => {
@@ -117,10 +116,9 @@ const usePoolInput = () => {
     binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
     rangeChartRef,
-    move,
+    move: move(),
   };
 };
 

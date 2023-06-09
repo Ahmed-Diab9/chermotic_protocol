@@ -27,7 +27,6 @@ const PoolPanelDemo = () => {
     binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
     move,
     rangeChartRef,
@@ -39,22 +38,22 @@ const PoolPanelDemo = () => {
       balances={walletBalances}
       pool={pool}
       amount={amount}
-      rates={rates}
       binCount={binCount}
       binAverage={binAverage}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}
       shortTotalMaxLiquidity={shortTotalMaxLiquidity}
       shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+      rates={rates}
       onAmountChange={onAmountChange}
       onRangeChange={onRangeChange}
-      onFullRangeSelect={onFullRangeSelect}
       onAddLiquidity={onAddLiquidity}
       rangeChartRef={rangeChartRef}
-      onMinIncrease={move().left.next}
-      onMinDecrease={move().left.prev}
-      onMaxIncrease={move().right.next}
-      onMaxDecrease={move().right.prev}
+      onMinIncrease={move.left.next}
+      onMinDecrease={move.left.prev}
+      onMaxIncrease={move.right.next}
+      onMaxDecrease={move.right.prev}
+      onFullRange={move.full}
     />
   );
 };

@@ -18,19 +18,6 @@ import { Tooltip } from "~/stories/atom/Tooltip";
 import { OptionInput } from "~/stories/atom/OptionInput";
 import { RangeChart } from "~/stories/atom/RangeChart";
 
-import { RangeChartData } from "@chromatic-protocol/react-compound-charts";
-import { Bin, LiquidityPool } from "~/typings/pools";
-import { Market, Token } from "~/typings/market";
-import { LPReceipt } from "~/typings/receipt";
-
-import {
-  BIN_VALUE_DECIMAL,
-  FEE_RATE_DECIMAL,
-  PERCENT_DECIMALS,
-} from "~/configs/decimals";
-import { MILLION_UNITS } from "~/configs/token";
-import { MULTI_TYPE } from "~/configs/pool";
-
 import { usePrevious } from "~/hooks/usePrevious";
 
 import {
@@ -49,6 +36,18 @@ import { poolsAction } from "~/store/reducer/pools";
 import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
 import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
 
+import { RangeChartData } from "@chromatic-protocol/react-compound-charts";
+import { Bin, LiquidityPool } from "~/typings/pools";
+import { Market, Token } from "~/typings/market";
+import { LPReceipt } from "~/typings/receipt";
+
+import {
+  BIN_VALUE_DECIMAL,
+  FEE_RATE_DECIMAL,
+  PERCENT_DECIMALS,
+} from "~/configs/decimals";
+import { MILLION_UNITS } from "~/configs/token";
+import { MULTI_TYPE } from "~/configs/pool";
 
 interface PoolPanelProps {
   token?: Token;
@@ -56,8 +55,6 @@ interface PoolPanelProps {
   balances?: Record<string, BigNumber>;
   pool?: LiquidityPool;
   amount?: string;
-  defaultRates?: [number, number];
-  rates?: [number, number];
   binCount?: number;
   binAverage?: BigNumber;
   longTotalMaxLiquidity?: BigNumber;
@@ -67,8 +64,6 @@ interface PoolPanelProps {
   selectedBins?: Bin[];
   isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onRangeChange?: (data: RangeChartData) => unknown;
-  onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
   removeAmount?: number;
@@ -87,11 +82,15 @@ interface PoolPanelProps {
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
 
+  rangeChartRef?: any;
+
+  rates: [number, number];
+  onRangeChange: (data: RangeChartData) => unknown;
   onMinIncrease: () => void;
   onMinDecrease: () => void;
   onMaxIncrease: () => void;
   onMaxDecrease: () => void;
-  rangeChartRef?: any;
+  onFullRange?: () => unknown;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -101,7 +100,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     balances,
     pool,
     amount,
-    defaultRates,
     rates,
     binCount = 0,
     binAverage = 0,
@@ -121,8 +119,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiFreeLiquidity,
     multiRemovableRate,
     onAmountChange,
-    onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
@@ -130,16 +126,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMultiAmountChange,
     onRemoveLiquidityBatch,
 
+    onRangeChange,
+    rangeChartRef,
     onMinIncrease,
     onMinDecrease,
     onMaxIncrease,
     onMaxDecrease,
-    rangeChartRef,
+    onFullRange,
   } = props;
 
   const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
-  const binLength = (pool?.bins ?? []).filter((bin) => bin.balance.gt(0)).length;
+  const binLength = (pool?.bins ?? []).filter((bin) =>
+    bin.balance.gt(0)
+  ).length;
 
   const [minRate, maxRate] = rates;
 
@@ -311,7 +311,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <RangeChart
                     rangeChartRef={rangeChartRef}
                     height={200}
-                    defaultValues={defaultRates}
                     onChange={onRangeChange}
                   />
                 </article>
@@ -343,7 +342,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       label="Full Range"
                       className="w-full !text-base !rounded-lg"
                       size="xl"
-                      onClick={() => onFullRangeSelect?.()}
+                      onClick={onFullRange}
                     />
                     <p className="mt-3 text-sm text-left text-black/30">
                       The percentage on the price range represents the trade fee
