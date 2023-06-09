@@ -32,7 +32,7 @@ const usePoolReceipt = () => {
     return receiptIds;
   });
 
-  const claimLpTokens = async (receiptId: BigNumber) => {
+  const onClaimLpTokens = async (receiptId: BigNumber) => {
     if (!isValid(router)) {
       errorLog("no router contracts");
       return AppError.reject("no router contracts", "onPoolReceipt");
@@ -48,7 +48,7 @@ const usePoolReceipt = () => {
     return Promise.resolve();
   };
 
-  const claimLpTokensBatch = async () => {
+  const onClaimLpTokensBatch = async () => {
     if (!isValid(market)) {
       errorLog("no selected markets");
       return AppError.reject("no selected markets", "onPoolReceipt");
@@ -73,8 +73,8 @@ const usePoolReceipt = () => {
   return {
     receipts,
     fetchReceipts,
-    claimLpTokens,
-    claimLpTokensBatch,
+    onClaimLpTokens,
+    onClaimLpTokensBatch,
   };
 };
 
