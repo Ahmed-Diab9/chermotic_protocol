@@ -97,14 +97,26 @@ export const PoolPanel = (props: PoolPanelProps) => {
     token.balance.gt(0)
   ).length;
 
-  const totalLiquidity = useMemo(() => {
-    return (pool?.tokens ?? []).reduce((acc, token) => {
-      const { balance, binValue } = token;
+  /**
+   * @TODO
+   * LP 토큰에 대한 총 유동성, 총 제거 가능한 유동성 구하는 로직입니다.
+   * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
+   */
+  const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
+    return (pool?.tokens ?? []).reduce(
+      (acc, token) => {
+        const { balance, binValue, removableRate } = token;
       const value = balance
         .mul(binValue)
         .div(expandDecimals(BIN_VALUE_DECIMAL));
-      return acc.add(value);
-    }, bigNumberify(0));
+        const rate = removableRate > 87.5 ? 87.5 : removableRate;
+        const removableValue = value
+          .mul(Math.round(rate * 10))
+          .div(expandDecimals(3));
+        return [acc[0].add(value), acc[1].add(removableValue)];
+      },
+      [bigNumberify(0), bigNumberify(0)]
+    );
   }, [pool?.tokens]);
 
   return (
