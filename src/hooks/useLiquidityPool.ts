@@ -1,4 +1,5 @@
 import {
+  CLBToken,
   CLBToken__factory,
   ChromaticLens,
   ChromaticMarketFactory,
@@ -6,10 +7,10 @@ import {
   ChromaticRouter,
   getDeployedContract,
 } from "@chromatic-protocol/sdk";
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useProvider, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
@@ -29,7 +30,35 @@ import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import useOracleVersion from "./useOracleVersion";
-import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
+import { MULTI_ALL, MULTI_TYPE, TOKEN_URI_PREFIX } from "~/configs/pool";
+import { useRouter } from "~/hooks/useRouter";
+import { useMarketFactory } from "./useMarketFactory";
+import { CLBTokenMetadata } from "~/typings/pools";
+
+const fetchLpTokenMetadata = async (
+  lpToken: CLBToken,
+  feeRates: BigNumber[]
+) => {
+  try {
+    const promise = feeRates.map((rate) => {
+      return lpToken.uri(rate);
+    });
+    const response = await Promise.allSettled(promise);
+    const filtered = response.filter(
+      (result): result is PromiseFulfilledResult<string> =>
+        result.status === "fulfilled"
+    );
+
+    return filtered.map(({ value }) => {
+      const trimmed = window.atob(value.replace(TOKEN_URI_PREFIX, ""));
+      const metadata: CLBTokenMetadata = JSON.parse(trimmed);
+      return metadata;
+    });
+  } catch (error) {
+    errorLog(error);
+    return undefined!;
+  }
+};
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
@@ -40,6 +69,11 @@ export const useLiquidityPool = () => {
     isValid(walletAddress) && isValid(tokenAddresses) && isValid(oracleVersions)
       ? ([walletAddress, tokenAddresses, oracleVersions] as const)
       : undefined;
+
+  const [chromaticRouter] = useRouter();
+  const [marketFactoy] = useMarketFactory();
+
+  const provider = useProvider();
 
   const {
     data: liquidityPools,
@@ -71,7 +105,7 @@ export const useLiquidityPool = () => {
         ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
       ];
       const promises = tokenAddresses.map(async (tokenAddress) => {
-        const marketAddresses = await factory.getMarketsBySettlmentToken(
+        const marketAddresses = await marketFactoy.getMarketsBySettlmentToken(
           tokenAddress
         );
         const promise = marketAddresses.map(async (marketAddress) => {
@@ -144,6 +178,7 @@ export const useSelectedLiquidityPool = () => {
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const [pools] = useLiquidityPool();
+
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
   const { data: signer } = useSigner();
@@ -154,6 +189,7 @@ export const useSelectedLiquidityPool = () => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
       return;
     }
+
     return pools.find(
       (pool) =>
         pool.tokenAddress === token.address &&
