@@ -272,7 +272,19 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   />
                 </div>
               </div>
-              <p className="mt-2 text-right text-black/30">0.00 USDC</p>
+              <p className="mt-2 text-right text-black/30">
+                {/**
+                 * @TODO
+                 * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
+                 */}
+                {input &&
+                  formatDecimals(
+                    bigNumberify(input.amount).mul(totalBinValue),
+                    2,
+                    2
+                  )}{" "}
+                {token?.name}
+              </p>
               <p className="mt-4 text-xs text-black/30">
                 Please set additional values to apply to the basic formula in
                 Borrow Fee. Calculated based on open Interest and stop
