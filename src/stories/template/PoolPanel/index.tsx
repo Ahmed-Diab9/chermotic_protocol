@@ -402,9 +402,13 @@ const BinItem = (props: BinItemProps) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div key={index + 1} className="overflow-hidden border rounded-xl">
+    <div className="overflow-hidden border rounded-xl">
       <div className="flex items-center justify-between gap-10 px-5 py-3 border-b bg-grayL/20">
-        <Checkbox label={index + 1} gap="5" className="text-black/30" />
+        <Checkbox
+          label={isValid(index) ? index + 1 : 0}
+          gap="5"
+          className="text-black/30"
+        />
         <div className="flex items-center gap-2">
           <Avatar
             label={lpToken?.name}
