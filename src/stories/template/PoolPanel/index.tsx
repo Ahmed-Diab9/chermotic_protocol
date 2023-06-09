@@ -11,7 +11,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
 import { LPToken, LiquidityPool } from "../../../typings/pools";
-import { Token } from "../../../typings/market";
+import { Market, Token } from "../../../typings/market";
 import {
   bigNumberify,
   expandDecimals,
@@ -19,20 +19,18 @@ import {
   formatFeeRate,
   withComma,
 } from "../../../utils/number";
-import { SLOT_VALUE_DECIMAL } from "../../../configs/pool";
+import { BIN_VALUE_DECIMAL } from "../../../configs/pool";
 import { useMemo } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";
 import { isValid } from "~/utils/valid";
-import usePoolReceipt from "~/hooks/usePoolReceipt";
-import { useSelectedMarket } from "~/hooks/useMarket";
 import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
-import { useAppDispatch, useAppSelector } from "~/store";
+import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 interface PoolPanelProps {
   token?: Token;
+  market?: Market;
   balances?: Record<string, BigNumber>;
   pool?: LiquidityPool;
   amount?: string;
@@ -44,6 +42,7 @@ interface PoolPanelProps {
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
+  selectedLpTokens?: LPToken[];
   onAmountChange?: (value: string) => unknown;
   onRangeChange?: (
     minmax: "min" | "max",
@@ -51,11 +50,24 @@ interface PoolPanelProps {
   ) => unknown;
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
+
+  receipts?: BigNumber[];
+  onClaimLpTokens?: (receiptId: BigNumber) => Promise<unknown>;
+  onClaimLpTokensBatch?: () => Promise<unknown>;
+
+  removeInput?: {
+    amount: number;
+    removableRate: number;
+  };
+  maxRemoveAmount?: number;
+  onRemoveAmountChange?: (nextAmount: number) => unknown;
+  onRemoveMaxAmountChange?: () => unknown;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
   const {
     token,
+    market,
     balances,
     pool,
     amount,
@@ -67,10 +79,18 @@ export const PoolPanel = (props: PoolPanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    selectedLpTokens = [],
+    receipts,
+    removeInput,
+    maxRemoveAmount,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
+    onClaimLpTokens,
+    onClaimLpTokensBatch,
+    onRemoveAmountChange,
+    onRemoveMaxAmountChange,
   } = props;
 
   const binLength = (pool?.tokens ?? []).filter((token) =>
