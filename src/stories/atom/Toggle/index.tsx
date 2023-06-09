@@ -25,7 +25,7 @@ export const Toggle = (props: ToggleProps) => {
           onChange={setEnabled}
           disabled={disabled}
           className={`toggle toggle-${size} ${
-            enabled ? "bg-black dark:bg-black" : "bg-black/60 dark:bg-black/60"
+            enabled ? "bg-black dark:bg-black" : "bg-gray dark:bg-gray"
           } relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-white focus-visible:ring-opacity-75`}
         >
           <span

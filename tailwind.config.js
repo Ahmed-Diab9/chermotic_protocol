@@ -31,10 +31,8 @@ export const theme = {
       completed: "#00E23F",
       inprocess: "#08E3D6",
 
-      active: "#030303",
       long: "#a6d85b",
       short: "#fb6115",
-      line: "#D4D4D4",
     },
     dropShadow: {
       // sm: "4px 4px 32px rgba(121, 121, 121, 0.25)",
@@ -58,6 +56,7 @@ export const theme = {
       medium: 400,
       semibold: 500,
       bold: 600,
+      extrabold: 700,
     },
   },
 };
