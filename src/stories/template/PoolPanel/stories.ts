@@ -43,6 +43,7 @@ export const Default: Story = {
         feeRate: 10,
         balance: BigNumber.from(10000),
         binValue: BigNumber.from(1200),
+        removableRate: 87.5,
         maxLiquidity: BigNumber.from(100000),
         unusedLiquidity: BigNumber.from(50000),
         name: "LP BIN NAME",
