@@ -6,6 +6,7 @@
   .tooltip-tip {
     visibility: hidden;
     width: 120px;
+    min-height: 28px;
     background-color: black;
     color: #fff;
     text-align: center;

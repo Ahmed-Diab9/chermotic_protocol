@@ -65,7 +65,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       }}
     >
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center z-30 p-4">
+      <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
