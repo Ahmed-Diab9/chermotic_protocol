@@ -17,20 +17,19 @@ import {
   expandDecimals,
   formatDecimals,
   formatFeeRate,
-  trimLeftZero,
   withComma,
 } from "../../../utils/number";
 import { SLOT_VALUE_DECIMAL } from "../../../configs/pool";
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useMemo } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
-import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import usePoolReceipt from "~/hooks/usePoolReceipt";
 import { useSelectedMarket } from "~/hooks/useMarket";
 import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
+import { useAppDispatch, useAppSelector } from "~/store";
+import { poolsAction } from "~/store/reducer/pools";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 interface PoolPanelProps {
   token?: Token;
@@ -88,7 +87,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }, bigNumberify(0));
   }, [pool?.tokens]);
 
-  const [lpToken, setLpToken] = useState<LPToken>();
+  const lpTokens = useAppSelector((state) => state.pools.selectedLpTokens);
 
   return (
     <div className="inline-flex flex-col mx-auto border">
@@ -313,11 +312,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <div className="flex flex-col gap-3">
                           {pool?.tokens
                             .filter((lpToken) => lpToken.feeRate > 0)
-                            .map((lpToken, lpTokenIndex) => (
+                            .map((lpToken, tokenIndex) => (
                               <BinItem
-                                index={lpTokenIndex}
+                                key={lpToken.feeRate}
+                                index={tokenIndex}
                                 lpToken={lpToken}
-                                onLpTokenSelect={setLpToken}
                               />
                             ))}
                         </div>
@@ -327,11 +326,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <div className="flex flex-col gap-3">
                         {pool?.tokens
                           .filter((lpToken) => lpToken.feeRate < 0)
-                          .map((lpToken, lpTokenIndex) => (
+                          .map((lpToken, tokenIndex) => (
                             <BinItem
-                              index={lpTokenIndex}
+                              key={lpToken.feeRate}
+                              index={tokenIndex}
                               lpToken={lpToken}
-                              onLpTokenSelect={setLpToken}
                             />
                           ))}
                       </div>
@@ -343,16 +342,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
-      {lpToken &&
+      {lpTokens.length > 0 &&
         createPortal(
-          <RemoveLiquidityModal
-            lpToken={lpToken}
-            onClose={() => {
-              if (isValid(lpToken)) {
-                setLpToken(undefined);
-              }
-            }}
-          />,
+          <RemoveLiquidityModal />,
           document.getElementById("modal")!
         )}
       {document.getElementById("modal") &&
@@ -363,13 +355,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
 interface BinItemProps {
   index: number;
-  token?: Token;
   lpToken?: LPToken;
-  onLpTokenSelect?: (lpToken: LPToken) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, lpToken, onLpTokenSelect } = props;
+  const { index, lpToken } = props;
+  const dispatch = useAppDispatch();
+  const [token] = useSelectedToken();
 
   return (
     <div
@@ -418,7 +410,7 @@ const BinItem = (props: BinItemProps) => {
           onClick={(event) => {
             event.stopPropagation();
             if (lpToken?.balance.gt(0)) {
-              onLpTokenSelect?.(lpToken);
+              dispatch(poolsAction.onLpTokenSelect(lpToken));
             }
           }}
         />
