@@ -26,6 +26,9 @@ import { useFeeRate } from "~/hooks/useFeeRate";
 import { Link } from "react-router-dom";
 import { trimAddress } from "~/utils/address";
 import usePoolInput from "~/hooks/usePoolInput";
+import { useAppSelector } from "~/store";
+import usePoolReceipt from "~/hooks/usePoolReceipt";
+import { usePoolRemoveInput } from "~/hooks/usePoolRemoveInput";
 
 const Pool = () => {
   useConnectOnce();
@@ -44,6 +47,10 @@ const Pool = () => {
   const { disconnectAsync } = useDisconnect();
   const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
     useTokenTransaction();
+  const selectedLpTokens = useAppSelector(
+    (state) => state.pools.selectedLpTokens
+  );
+  const { receipts, onClaimLpTokens, onClaimLpTokensBatch } = usePoolReceipt();
   const [
     pool,
     [
@@ -64,6 +71,12 @@ const Pool = () => {
     onFullRangeSelect,
     onAddLiquidity,
   } = usePoolInput();
+  const {
+    input: removeInput,
+    maxAmount: maxRemoveAmount,
+    onAmountChange: onRemoveAmountChange,
+    onMaxChange: onRemoveMaxAmountChange,
+  } = usePoolRemoveInput();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -104,6 +117,7 @@ const Pool = () => {
         />
         <PoolPanel
           token={selectedToken}
+          market={selectedMarket}
           balances={walletBalances}
           pool={pool}
           amount={amount}
@@ -115,10 +129,18 @@ const Pool = () => {
           longTotalUnusedLiquidity={longTotalUnusedLiquidity}
           shortTotalMaxLiquidity={shortTotalMaxLiquidity}
           shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+          selectedLpTokens={selectedLpTokens}
           onAmountChange={onAmountChange}
           onRangeChange={onRangeChange}
           onFullRangeSelect={onFullRangeSelect}
           onAddLiquidity={onAddLiquidity}
+          receipts={receipts}
+          onClaimLpTokens={onClaimLpTokens}
+          onClaimLpTokensBatch={onClaimLpTokensBatch}
+          removeInput={removeInput}
+          maxRemoveAmount={maxRemoveAmount}
+          onRemoveAmountChange={onRemoveAmountChange}
+          onRemoveMaxAmountChange={onRemoveMaxAmountChange}
         />
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="flex items-center justify-between">
