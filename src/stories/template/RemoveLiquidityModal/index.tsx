@@ -146,17 +146,41 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
-              {selectedLpTokens.map((lpToken) => (
+              {selectedLpTokens.map((lpToken) => {
+                /**
+                 * @TODO
+                 * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
+                 */
+                const utilizedRate = 100 - lpToken.removableRate;
+                const removableRate =
+                  lpToken.removableRate > 87.5 ? 87.5 : lpToken.removableRate;
+                const utilized = lpToken.balance
+                  .mul(Math.round(utilizedRate * 10))
+                  .div(expandDecimals(3));
+                const removable = lpToken.balance
+                  .mul(Math.round(removableRate * 10))
+                  .div(expandDecimals(3));
+
+                return (
                 <LiquidityItem
+                    key={lpToken.feeRate}
                   token={token?.name}
                   name={lpToken.description}
                   qty={Number(
                     formatDecimals(lpToken.balance, token?.decimals, 2)
                   )}
-                  utilizedValue={820.34}
-                  removableValue={1820.34}
+                    utilizedValue={Number(
+                      formatDecimals(utilized, token?.decimals, 2)
+                    )}
+                    removableValue={Number(
+                      formatDecimals(removable, token?.decimals, 2)
+                    )}
                 />
-              ))}
+                );
+              })}
+              {/**
+               * LiquidityItem 컴포넌트 예시
+               */}
               <LiquidityItem
                 token="USDC"
                 name="ETH/USD +0.03%"
