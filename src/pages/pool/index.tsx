@@ -27,6 +27,9 @@ import { useFeeRate } from "~/hooks/useFeeRate";
 import { Link } from "react-router-dom";
 import { trimAddress } from "~/utils/address";
 import usePoolInput from "~/hooks/usePoolInput";
+import { useAppSelector } from "~/store";
+import usePoolReceipt from "~/hooks/usePoolReceipt";
+import { usePoolRemoveInput } from "~/hooks/usePoolRemoveInput";
 
 const Pool = () => {
   useConnectOnce();
@@ -45,6 +48,10 @@ const Pool = () => {
   const { disconnectAsync } = useDisconnect();
   const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
     useTokenTransaction();
+  const selectedLpTokens = useAppSelector(
+    (state) => state.pools.selectedLpTokens
+  );
+  const { receipts, onClaimLpTokens, onClaimLpTokensBatch } = usePoolReceipt();
   const [
     pool,
     [
@@ -65,6 +72,12 @@ const Pool = () => {
     onFullRangeSelect,
     onAddLiquidity,
   } = usePoolInput();
+  const {
+    input: removeInput,
+    maxAmount: maxRemoveAmount,
+    onAmountChange: onRemoveAmountChange,
+    onMaxChange: onRemoveMaxAmountChange,
+  } = usePoolRemoveInput();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -103,11 +116,11 @@ const Pool = () => {
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
         />
-
         <div className="flex items-stretch gap-5">
           <div className="flex-auto w-3/5">
             <PoolPanel
               token={selectedToken}
+              market={selectedMarket}
               balances={walletBalances}
               pool={pool}
               amount={amount}
@@ -119,12 +132,19 @@ const Pool = () => {
               longTotalUnusedLiquidity={longTotalUnusedLiquidity}
               shortTotalMaxLiquidity={shortTotalMaxLiquidity}
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+              selectedLpTokens={selectedLpTokens}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
               onFullRangeSelect={onFullRangeSelect}
               onAddLiquidity={onAddLiquidity}
+              receipts={receipts}
+              onClaimLpTokens={onClaimLpTokens}
+              onClaimLpTokensBatch={onClaimLpTokensBatch}
+              removeInput={removeInput}
+              maxRemoveAmount={maxRemoveAmount}
+              onRemoveAmountChange={onRemoveAmountChange}
+              onRemoveMaxAmountChange={onRemoveMaxAmountChange}
             />
-
             {/* bottom */}
             <article className="px-5 pt-5 pb-6 mx-auto mt-5 border rounded-2xl">
               <div className="flex items-center justify-between">

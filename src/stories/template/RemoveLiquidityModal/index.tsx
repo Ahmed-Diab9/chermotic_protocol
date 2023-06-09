@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
@@ -7,69 +7,37 @@ import { Progress } from "~/stories/atom/Progress";
 import { Input } from "~/stories/atom/Input";
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import "../Modal/style.css";
+import { formatDecimals, trimLeftZero } from "~/utils/number";
+import { useAppDispatch } from "~/store";
+import { poolsAction } from "~/store/reducer/pools";
 import { LPToken } from "~/typings/pools";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  trimLeftZero,
-} from "~/utils/number";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
-import { SLOT_VALUE_DECIMAL } from "~/configs/pool";
+import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
-import { infoLog } from "~/utils/log";
 
-type PoolRemoveState = {
-  removableRate: number;
-  tokens: number;
-};
-
-type PoolRemoveAction<T extends string = keyof PoolRemoveState> =
-  T extends keyof PoolRemoveState
-    ? {
-        type: T;
-        payload: Record<T, PoolRemoveState[T]>;
-      }
-    : never;
-
-const poolRemoveReducer = (
-  state: PoolRemoveState,
-  action: PoolRemoveAction
-): PoolRemoveState => {
-  const { type, payload } = action;
-  switch (type) {
-    case "removableRate": {
-      return {
-        ...state,
-        removableRate: payload.removableRate,
-      };
-    }
-    case "tokens": {
-      return {
-        ...state,
-        tokens: payload.tokens,
-      };
-    }
-  }
-};
-
-interface RemoveLiquidityModalProps {
-  lpToken?: LPToken;
-  onClose?: () => unknown;
+export interface RemoveLiquidityModalProps {
+  selectedLpTokens?: LPToken[];
+  token?: Token;
+  input?: {
+    amount: number;
+    removableRate: number;
+  };
+  maxAmount?: number;
+  onAmountChange?: (nextAmount: number) => unknown;
+  onMaxChange?: () => unknown;
 }
 
-export const RemoveLiquidityModal = ({
-  lpToken,
-  onClose,
-}: RemoveLiquidityModalProps) => {
+export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
+  const {
+    selectedLpTokens = [],
+    token,
+    input,
+    maxAmount,
+    onAmountChange,
+    onMaxChange,
+  } = props;
+  const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null!);
-  const [token] = useSelectedToken();
-  const [state, dispatch] = useReducer(poolRemoveReducer, {
-    removableRate: 87.5,
-    tokens: 0,
-  });
-  const [_, __, onRemoveLiquidity] = useSelectedLiquidityPool();
+
   useEffect(() => {
     const onClickAway = (event: MouseEvent) => {
       const clicked = event.target;
@@ -78,7 +46,7 @@ export const RemoveLiquidityModal = ({
       }
       const isContained = modalRef.current?.contains(clicked);
       if (!isContained) {
-        onClose?.();
+        dispatch(poolsAction.onLpTokensReset());
       }
     };
     document.addEventListener("click", onClickAway);
@@ -86,20 +54,16 @@ export const RemoveLiquidityModal = ({
     return () => {
       document.removeEventListener("click", onClickAway);
     };
-  }, [onClose]);
-
-  const maxTokens = useMemo(() => {
-    if (!isValid(lpToken)) {
-      return;
-    }
-    const balance = lpToken.balance
-      .div(expandDecimals(token?.decimals))
-      .toNumber();
-    return (balance * state.removableRate) / 100;
-  }, [state, lpToken, token]);
+  }, [dispatch]);
 
   return (
-    <Dialog className="" open={!!lpToken} onClose={() => onClose?.()}>
+    <Dialog
+      className=""
+      open={selectedLpTokens.length > 0}
+      onClose={() => {
+        dispatch(poolsAction.onLpTokensReset());
+      }}
+    >
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center z-30 p-4">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
@@ -107,19 +71,27 @@ export const RemoveLiquidityModal = ({
             Remove Liquidity
             {/* Bin 개수가 여러개일 때 */}
             <span className="ml-2">(2)</span>
-            <ModalCloseButton onClick={() => onClose?.()} />
+            <ModalCloseButton
+              onClick={() => {
+                dispatch(poolsAction.onLpTokensReset());
+              }}
+            />
           </Dialog.Title>
           <div className="w-[100px] mx-auto border-b border-2 border-black"></div>
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
-              <LiquidityItem
-                token="USDC"
-                name="ETH/USD +0.03%"
-                qty={2640.68}
-                utilizedValue={820.34}
-                removableValue={1820.34}
-              />
+              {selectedLpTokens.map((lpToken) => (
+                <LiquidityItem
+                  token={token?.name}
+                  name={lpToken.description}
+                  qty={Number(
+                    formatDecimals(lpToken.balance, token?.decimals, 2)
+                  )}
+                  utilizedValue={820.34}
+                  removableValue={1820.34}
+                />
+              ))}
               <LiquidityItem
                 token="USDC"
                 name="ETH/USD +0.03%"
@@ -135,13 +107,7 @@ export const RemoveLiquidityModal = ({
               <div className="flex justify-between">
                 <p className="text-black/30">My Liquidity Value</p>
                 <p>
-                  {lpToken &&
-                    token &&
-                    formatDecimals(
-                      lpToken.balance.mul(lpToken.slotValue),
-                      token.decimals + SLOT_VALUE_DECIMAL,
-                      2
-                    )}{" "}
+                  LIQUIDITY VALUE
                   {token?.name}
                 </p>
               </div>
@@ -152,12 +118,7 @@ export const RemoveLiquidityModal = ({
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
-                  {formatDecimals(
-                    lpToken.balance.mul(100 * 87.5).div(100),
-                    token?.decimals,
-                    2
-                  )}{" "}
-                  CLB
+                  BALANCE CLB
                   <span className="ml-1 text-black/30">(87.5%)</span>
                 </p>
               </div>
@@ -195,32 +156,29 @@ export const RemoveLiquidityModal = ({
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      const nextTokens = Math.floor((maxTokens * 87.5) / 100);
-                      dispatch({
-                        type: "tokens",
-                        payload: { tokens: nextTokens },
-                      });
+                      onMaxChange?.();
                     }}
                   />
                 </div>
                 <div className="max-w-[220px]">
                   <Input
                     unit="CLB"
-                    value={state.tokens}
+                    value={input?.amount}
                     onChange={(event) => {
                       const value = trimLeftZero(event.target.value);
                       const parsed = Number(value);
                       if (isNaN(parsed)) {
                         return;
                       }
-                      dispatch({ type: "tokens", payload: { tokens: parsed } });
+                      onAmountChange?.(parsed);
                     }}
                     onClickAway={() => {
-                      const nextTokens = Math.floor((maxTokens * 87.5) / 100);
-                      dispatch({
-                        type: "tokens",
-                        payload: { tokens: nextTokens },
-                      });
+                      if (!isValid(input) || !isValid(maxAmount)) {
+                        return;
+                      }
+                      if (input.amount > maxAmount) {
+                        onMaxChange?.();
+                      }
                     }}
                   />
                 </div>
@@ -239,7 +197,7 @@ export const RemoveLiquidityModal = ({
               size="xl"
               className="text-lg"
               css="active"
-              onClick={() => onRemoveLiquidity?.(lpToken.feeRate, state.tokens)}
+              // onClick={() => onRemoveLiquidity?.(lpToken.feeRate, state.tokens)}
             />
           </div>
         </Dialog.Panel>

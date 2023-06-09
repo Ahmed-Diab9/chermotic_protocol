@@ -55,7 +55,7 @@ export const LoggedIn: Story = {
         },
         market: "ETH/USD",
         liquidity: BigNumber.from(1000),
-        slots: 10,
+        bins: 10,
       },
     ],
   },

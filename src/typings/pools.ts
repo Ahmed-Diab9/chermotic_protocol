@@ -10,7 +10,7 @@ export interface LiquidityPool {
 export interface LPToken extends LPTokenMetadata {
   feeRate: number;
   balance: BigNumber;
-  slotValue: BigNumber;
+  binValue: BigNumber;
   maxLiquidity: BigNumber;
   unusedLiquidity: BigNumber;
 }
@@ -25,7 +25,7 @@ export interface LiquidityPoolSummary {
   token: { name: string; decimals: number };
   market: string;
   liquidity: BigNumber;
-  slots: number;
+  bins: number;
   thumbnail?: string;
 }
 
