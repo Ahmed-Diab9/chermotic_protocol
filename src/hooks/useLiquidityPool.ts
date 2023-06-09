@@ -11,7 +11,7 @@ import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { SLOT_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
+import { BIN_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import {
@@ -140,7 +140,7 @@ export const useLiquidityPool = () => {
                 image,
                 feeRate,
                 balance: balances[feeRateIndex],
-                slotValue: tokenValueBatch[feeRateIndex],
+                binValue: tokenValueBatch[feeRateIndex],
                 maxLiquidity: maxLiquidities[feeRateIndex],
                 unusedLiquidity: unusedLiquidities[feeRateIndex],
               };
@@ -305,14 +305,14 @@ export const useLiquidityPoolSummary = () => {
       }
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
-      let slots = 0;
+      let bins = 0;
       for (let index = 0; index < lpTokens.length; index++) {
         const lpToken = lpTokens[index];
         if (lpToken.balance.gt(0)) {
           const addValue = lpToken.balance
-            .mul(lpToken.slotValue)
-            .div(expandDecimals(SLOT_VALUE_DECIMAL));
-          slots += 1;
+            .mul(lpToken.binValue)
+            .div(expandDecimals(BIN_VALUE_DECIMAL));
+          bins += 1;
           liquiditySum = liquiditySum.add(addValue);
         }
       }
@@ -323,7 +323,7 @@ export const useLiquidityPoolSummary = () => {
         },
         market: marketDescription,
         liquidity: liquiditySum,
-        slots: slots,
+        bins,
       });
     }
     return array;

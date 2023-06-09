@@ -238,7 +238,7 @@ export const WalletPopover = ({
                                           {pool.token.name}
                                         </p>
                                         <p className="mt-2 text-base text-black">
-                                          {pool.slots} Bins
+                                          {pool.bins} Bins
                                         </p>
                                       </div>
                                       <Thumbnail size="base" src={undefined} />

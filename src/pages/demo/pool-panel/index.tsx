@@ -33,8 +33,6 @@ const PoolPanelDemo = () => {
     onAddLiquidity,
   } = usePoolInput();
 
-  const slots = pool?.tokens.filter((lpToken) => lpToken.balance.gt(0));
-
   return (
     <PoolPanel
       token={token}
