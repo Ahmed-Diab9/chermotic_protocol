@@ -11,6 +11,7 @@ export interface LPToken extends LPTokenMetadata {
   feeRate: number;
   balance: BigNumber;
   binValue: BigNumber;
+  removableRate: number;
   maxLiquidity: BigNumber;
   unusedLiquidity: BigNumber;
 }

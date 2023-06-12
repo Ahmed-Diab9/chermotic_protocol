@@ -381,10 +381,10 @@ export const useTradeInput = () => {
     const leverage = bigNumberify(state.leverage * 100)
       .mul(expandDecimals(2))
       .div(100);
-    const takerMargin = bigNumberify(state.takerMargin * 100)
+    const takerMargin = bigNumberify(Math.floor(state.takerMargin * 100))
       .mul(expandDecimals(token?.decimals))
       .div(100);
-    const makerMargin = bigNumberify(state.makerMargin * 100)
+    const makerMargin = bigNumberify(Math.floor(state.makerMargin * 100))
       .mul(expandDecimals(token?.decimals))
       .div(100);
 

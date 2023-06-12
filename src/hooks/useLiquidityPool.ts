@@ -27,6 +27,7 @@ import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 import usePoolReceipt from "./usePoolReceipt";
 import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
+import { createRemovableRateMock } from "~/mock/pools";
 
 const fetchLpTokenMetadata = async (
   lpToken: CLBToken,
@@ -141,6 +142,7 @@ export const useLiquidityPool = () => {
                 feeRate,
                 balance: balances[feeRateIndex],
                 binValue: tokenValueBatch[feeRateIndex],
+                removableRate: createRemovableRateMock(),
                 maxLiquidity: maxLiquidities[feeRateIndex],
                 unusedLiquidity: unusedLiquidities[feeRateIndex],
               };

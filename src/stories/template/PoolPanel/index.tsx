@@ -62,6 +62,7 @@ interface PoolPanelProps {
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
+  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -91,21 +92,42 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onClaimLpTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
+    onRemoveLiquidity,
   } = props;
 
   const binLength = (pool?.tokens ?? []).filter((token) =>
     token.balance.gt(0)
   ).length;
 
-  const totalLiquidity = useMemo(() => {
-    return (pool?.tokens ?? []).reduce((acc, token) => {
-      const { balance, binValue } = token;
-      const value = balance
-        .mul(binValue)
-        .div(expandDecimals(BIN_VALUE_DECIMAL));
-      return acc.add(value);
-    }, bigNumberify(0));
+  /**
+   * @TODO
+   * LP 토큰에 대한 총 유동성, 총 제거 가능한 유동성 구하는 로직입니다.
+   * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
+   */
+  const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
+    return (pool?.tokens ?? []).reduce(
+      (acc, token) => {
+        const { balance, binValue, removableRate } = token;
+        const value = balance
+          .mul(binValue)
+          .div(expandDecimals(BIN_VALUE_DECIMAL));
+        const rate = removableRate > 87.5 ? 87.5 : removableRate;
+        const removableValue = value
+          .mul(Math.round(rate * 10))
+          .div(expandDecimals(3));
+        return [acc[0].add(value), acc[1].add(removableValue)];
+      },
+      [bigNumberify(0), bigNumberify(0)]
+    );
   }, [pool?.tokens]);
+
+  /**
+   * @TODO
+   * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
+   */
+  const totalRemovableRate = totalRemovableLiquidity
+    .mul(10000)
+    .div(totalLiquidity);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -150,6 +172,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex justify-between mt-6">
                     <div>
                       <p className="mb-1 text-black/30">Short Counter LP</p>
+                      {/**
+                       * @TODO
+                       * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
+                       */}
                       {shortTotalMaxLiquidity &&
                         shortTotalUnusedLiquidity &&
                         token && (
@@ -173,6 +199,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-black/30">Long Counter LP</p>
+                      {/**
+                       * @TODO
+                       * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
+                       */}
                       {longTotalMaxLiquidity &&
                         longTotalUnusedLiquidity &&
                         token && (
@@ -289,6 +319,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
                   <h4 className="text-xl">
+                    {/**
+                     * @TODO
+                     * 총 유동성 보여주는 로직
+                     */}
                     {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
                     {/* {token?.name} */}
                   </h4>
@@ -316,7 +350,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <div className="flex items-center gap-1 font-medium text-black/30">
                       Removable Liquidity
                     </div>
-                    <p className="text-right">760.24 {token?.name} (87.52%)</p>
+                    <p className="text-right">
+                      {formatDecimals(
+                        totalRemovableLiquidity,
+                        token?.decimals,
+                        2
+                      )}{" "}
+                      {token?.name} ({formatDecimals(totalRemovableRate, 2, 2)}
+                      %)
+                    </p>
                   </div>
                 </article>
               </section>
@@ -374,6 +416,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             maxAmount={maxRemoveAmount}
             onAmountChange={onRemoveAmountChange}
             onMaxChange={onRemoveMaxAmountChange}
+            onRemoveLiquidity={onRemoveLiquidity}
           />,
           document.getElementById("modal")!
         )}
