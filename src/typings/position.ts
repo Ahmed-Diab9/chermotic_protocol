@@ -77,7 +77,7 @@ export class Position {
     this.profitAndLoss = bigNumberify(0);
   }
 
-  // @TODO
+  // TODO
   // 이자 차감된 증거금 구하는 메소드
   // 시간이 지남에 따른 보증금 차감 로직이 유효한지 검증이 필요합니다.
   // 추가 Decimals 20 적용 - 초당 토큰 수수료 10 + 보증금 차감 10
@@ -104,13 +104,13 @@ export class Position {
       .div(expandDecimals(20));
   }
 
-  // @TODO
+  // TODO
   // Take Profit 비율을 구하는 메소드
   createTakeProfit() {
     this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
-  // @TODO
+  // TODO
   // Stop Loss 비율을 구하는 메소드
   createStopLoss() {
     this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
@@ -129,7 +129,7 @@ export class Position {
     this.closePrice = output[1].price;
   }
 
-  // @TODO
+  // TODO
   // 청산가를 구하는 메소드
   createLiquidationPrice(tokenDecimals?: number) {
     const quantity = this.qty
@@ -157,7 +157,7 @@ export class Position {
     this.lossPrice = this.openPrice.mul(lossRate).div(10000);
   }
 
-  // @TODO
+  // TODO
   // Profit and Loss를 구하는 메소드
   createPNL(oracleDecimals: number) {
     this.profitAndLoss = this.currentPrice
@@ -167,7 +167,7 @@ export class Position {
       .div(this.openPrice);
   }
 
-  // @TODO
+  // TODO
   // 현재 가격에서 각 청산가까지 남은 퍼센트를 구하는 메소드
   createPriceTo(oracleDecimals: number) {
     this.toProfitPrice = this.profitPrice

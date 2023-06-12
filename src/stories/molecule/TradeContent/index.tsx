@@ -80,7 +80,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     });
   }, [market]);
 
-  // @TODO
+  // TODO
   // 청산가 계산이 올바른지 점검해야 합니다.
   const createLiquidation = useCallback(async () => {
     if (!isValid(input) || !isValid(market) || !isValid(token)) {
