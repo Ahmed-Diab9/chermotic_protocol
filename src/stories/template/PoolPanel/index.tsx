@@ -19,7 +19,11 @@ import {
   formatFeeRate,
   withComma,
 } from "../../../utils/number";
-import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
+import {
+  BIN_VALUE_DECIMAL,
+  FEE_RATE_DECIMAL,
+  PERCENT_DECIMALS,
+} from "~/configs/decimals";
 import { useMemo } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";
@@ -125,9 +129,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * @TODO
    * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
    */
-  const totalRemovableRate = totalRemovableLiquidity
-    .mul(10000)
-    .div(totalLiquidity);
+  const totalRemovableRate = totalLiquidity.eq(0)
+    ? 0
+    : totalRemovableLiquidity
+        .mul(expandDecimals(FEE_RATE_DECIMAL))
+        .div(totalLiquidity);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -356,7 +362,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         token?.decimals,
                         2
                       )}{" "}
-                      {token?.name} ({formatDecimals(totalRemovableRate, 2, 2)}
+                      {token?.name} (
+                      {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
                       %)
                     </p>
                   </div>
@@ -490,12 +497,12 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>87.54%</p>
+            <p>{lpToken?.removableRate}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 border-l">
           <div className="flex gap-2">
-            <p className="text-black/30 w-[100px]">Slot Value</p>
+            <p className="text-black/30 w-[100px]">Bin Value</p>
             <p>
               {lpToken &&
                 formatDecimals(lpToken.binValue, BIN_VALUE_DECIMAL, 2)}

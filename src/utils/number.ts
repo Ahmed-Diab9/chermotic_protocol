@@ -150,3 +150,11 @@ export const createAnnualSeconds = (time: Date | number, ms?: boolean) => {
   }
   return subtraction;
 };
+
+export const percentage = () => {
+  return 10 ** PERCENT_DECIMALS;
+};
+
+export const numberBuffer = (decimals: number = BUFFER_DECIMALS) => {
+  return 10 ** decimals;
+};
