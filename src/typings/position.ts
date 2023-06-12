@@ -10,6 +10,7 @@ import {
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
 import { OracleVersion } from "./oracleVersion";
+import { PERCENT_DECIMALS } from "~/configs/decimals";
 export type {
   PositionStructOutput,
   BinMarginStructOutput,
@@ -187,6 +188,13 @@ export class Position {
       .mul(expandDecimals(oracleDecimals + 2))
       .div(this.currentPrice);
   }
+  addProfitAndLoss(oracleDecimals: number) {
+    return this.collateral
+      .mul(this.profitAndLoss)
+      .div(expandDecimals(oracleDecimals))
+      .div(expandDecimals(PERCENT_DECIMALS));
+  }
+
   renderOpenPrice(oracleDecimals: number) {
     return withComma(formatDecimals(this.openPrice, oracleDecimals, 2));
   }
