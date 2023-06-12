@@ -87,4 +87,3 @@ export const useUsumBalances = () => {
 
   return { usumBalances, fetchUsumBalances };
 };
-};
