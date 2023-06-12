@@ -28,7 +28,7 @@ const TradePanelDemo = () => {
     onStopLossChange: onShortStopLossChange,
     onOpenPosition: onOpenShortPosition,
   } = useTradeInput();
-  const [balances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [token] = useSelectedToken();
   const [
     _,
@@ -61,7 +61,7 @@ const TradePanelDemo = () => {
       onShortLeverageChange={onShortLeverageChange}
       onShortTakeProfitChange={onShortTakeProfitChange}
       onShortStopLossChange={onShortStopLossChange}
-      balances={balances}
+      balances={usumBalances}
       token={token}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}

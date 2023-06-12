@@ -10,7 +10,7 @@ function WagmiTest() {
   const [account] = useUsumAccount();
 
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
 
   const { isConnected, isDisconnected, address } = useAccount();
   const { connect, connectors } = useConnect();

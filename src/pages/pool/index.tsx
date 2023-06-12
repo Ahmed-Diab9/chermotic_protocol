@@ -15,7 +15,11 @@ import {
   useSettlementToken,
 } from "~/hooks/useSettlementToken";
 import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
-import { useUsumBalances, useWalletBalances } from "~/hooks/useBalances";
+import {
+  useUsumBalances,
+  useUsumMargins,
+  useWalletBalances,
+} from "~/hooks/useBalances";
 import usePriceFeed from "~/hooks/usePriceFeed";
 import {
   useLiquidityPoolSummary,
@@ -42,7 +46,7 @@ const Pool = () => {
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [priceFeed] = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -79,6 +83,7 @@ const Pool = () => {
     onAmountChange: onRemoveAmountChange,
     onMaxChange: onRemoveMaxAmountChange,
   } = usePoolRemoveInput();
+  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -106,6 +111,9 @@ const Pool = () => {
           walletBalances={walletBalances}
           usumBalances={usumBalances}
           amount={balanceAmount}
+          totalBalance={totalBalance}
+          availableMargin={totalMargin}
+          assetValue={totalAsset}
           onTokenSelect={(token) => {
             onTokenSelect(token);
           }}

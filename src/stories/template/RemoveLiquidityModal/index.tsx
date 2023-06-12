@@ -11,6 +11,7 @@ import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
+  percentage,
   trimLeftZero,
 } from "~/utils/number";
 import { useAppDispatch } from "~/store";
@@ -18,7 +19,7 @@ import { poolsAction } from "~/store/reducer/pools";
 import { LPToken } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
-import { BIN_VALUE_DECIMAL } from "~/configs/pool";
+import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveLiquidityModalProps {
   selectedLpTokens?: LPToken[];
@@ -91,8 +92,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
         const rate = removableRate > 87.5 ? 87.5 : removableRate;
         const removableLiquidity = balance
           .mul(binValue)
-          .mul(rate * 10)
-          .div(expandDecimals(3))
+          .mul(Math.round(rate * percentage()))
+          .div(expandDecimals(FEE_RATE_DECIMAL))
           .div(expandDecimals(BIN_VALUE_DECIMAL));
 
         return {
@@ -351,8 +352,8 @@ interface LiquidityItemProps {
 
 const LiquidityItem = (props: LiquidityItemProps) => {
   const { token = "USDC", name, qty, utilizedValue, removableValue } = props;
-  const utilizedPercent = (utilizedValue / (qty ?? 1)) * 100;
-  const remoablePercent = (removableValue / (qty ?? 1)) * 100;
+  const utilizedPercent = (utilizedValue / (qty ?? 1)) * percentage();
+  const remoablePercent = (removableValue / (qty ?? 1)) * percentage();
 
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기

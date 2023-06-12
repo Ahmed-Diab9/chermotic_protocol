@@ -17,7 +17,7 @@ const AssetPopoverDemo = () => {
   const { address: walletAddress } = useAccount();
   const [usumAccount] = useUsumAccount();
   const [tokens] = useSettlementToken();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [walletBalances] = useWalletBalances();
   const [selectedToken, onTokenSelect] = useSelectedToken();
   const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();

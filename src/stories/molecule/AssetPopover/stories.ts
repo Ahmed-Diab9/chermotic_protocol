@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AssetPopover } from ".";
+import { BigNumber } from "ethers";
 
 const meta = {
   title: "Molecule/AssetPopover",
@@ -20,6 +21,9 @@ export const LoggedIn: Story = {
       address: "0x11111111112222222222",
       decimals: 6,
     },
+    availableMargin: BigNumber.from(1500000000),
+    assetValue: BigNumber.from(2500000000),
+    totalBalance: BigNumber.from(2000000000),
   },
 };
 

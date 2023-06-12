@@ -6,10 +6,15 @@ import useSWR from "swr";
 import { IERC20__factory } from "@chromatic-protocol/sdk";
 
 import { isValid } from "~/utils/valid";
-import { errorLog } from "~/utils/log";
+import { errorLog, infoLog } from "~/utils/log";
 
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useSettlementToken } from "~/hooks/useSettlementToken";
+import {
+  useSelectedToken,
+  useSettlementToken,
+} from "~/hooks/useSettlementToken";
+import { usePosition } from "./usePosition";
+import { bigNumberify } from "~/utils/number";
 
 function filterResponse(
   response: PromiseSettledResult<readonly [string, BigNumber]>[]
@@ -69,9 +74,9 @@ export const useUsumBalances = () => {
     [tokens, account]
   );
   const {
-    data: accountBalance,
+    data: usumBalances,
     error,
-    mutate,
+    mutate: fetchUsumBalances,
   } = useSWR(fetchKey, async ([tokens, account]) => {
     const promise = tokens.map(async (token) => {
       const balance = await account.balance(token.address);
@@ -85,5 +90,39 @@ export const useUsumBalances = () => {
     errorLog(error);
   }
 
-  return [accountBalance, mutate] as const;
+  return { usumBalances, fetchUsumBalances };
+};
+
+export const useUsumMargins = () => {
+  const { usumBalances } = useUsumBalances();
+  const { positions = [] } = usePosition();
+  const [token] = useSelectedToken();
+
+  const [totalBalance, totalAsset] = useMemo(() => {
+    if (!isValid(usumBalances) || !isValid(token)) {
+      return [bigNumberify(0), bigNumberify(0)];
+    }
+    const balance = usumBalances[token.name];
+    const [totalCollateral, totalCollateralAdded] = positions.reduce(
+      (record, position) => {
+        const added = position.addProfitAndLoss(18);
+        return [record[0].add(position.collateral), record[1].add(added)];
+      },
+      [bigNumberify(0), bigNumberify(0)]
+    );
+    return [balance.add(totalCollateral), balance.add(totalCollateralAdded)];
+  }, [usumBalances, token, positions]);
+
+  const totalMargin = useMemo(() => {
+    if (isValid(usumBalances) && isValid(token)) {
+      return usumBalances[token.name];
+    }
+    return bigNumberify(0);
+  }, [usumBalances, token]);
+
+  return {
+    totalBalance,
+    totalAsset,
+    totalMargin,
+  };
 };

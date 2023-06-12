@@ -5,10 +5,12 @@ import {
   createAnnualSeconds,
   expandDecimals,
   formatDecimals,
+  numberBuffer,
   withComma,
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
 import { OracleVersion } from "./oracleVersion";
+import { PERCENT_DECIMALS } from "~/configs/decimals";
 export type {
   PositionStructOutput,
   BinMarginStructOutput,
@@ -77,7 +79,7 @@ export class Position {
     this.profitAndLoss = bigNumberify(0);
   }
 
-  // @TODO
+  // TODO
   // 이자 차감된 증거금 구하는 메소드
   // 시간이 지남에 따른 보증금 차감 로직이 유효한지 검증이 필요합니다.
   // 추가 Decimals 20 적용 - 초당 토큰 수수료 10 + 보증금 차감 10
@@ -104,13 +106,13 @@ export class Position {
       .div(expandDecimals(20));
   }
 
-  // @TODO
+  // TODO
   // Take Profit 비율을 구하는 메소드
   createTakeProfit() {
     this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
-  // @TODO
+  // TODO
   // Stop Loss 비율을 구하는 메소드
   createStopLoss() {
     this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
@@ -129,7 +131,7 @@ export class Position {
     this.closePrice = output[1].price;
   }
 
-  // @TODO
+  // TODO
   // 청산가를 구하는 메소드
   createLiquidationPrice(tokenDecimals?: number) {
     const quantity = this.qty
@@ -148,16 +150,23 @@ export class Position {
         : quantity + quantity * (stopLoss / 100);
 
     // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
-    // 추가 소수점 4자리 적용
-    const profitRate = Math.round((addedProfit / quantity) * 10000);
-    const lossRate = Math.round((addedLoss / quantity) * 10000);
+    // 추가 소수점 5 적용
+    const decimals = 5;
+    const profitRate = Math.round(
+      (addedProfit / quantity) * numberBuffer(decimals)
+    );
+    const lossRate = Math.round(
+      (addedLoss / quantity) * numberBuffer(decimals)
+    );
 
     // 현재 가격에 비율 곱하여 예상 청산가격을 계산
-    this.profitPrice = this.openPrice.mul(profitRate).div(10000);
-    this.lossPrice = this.openPrice.mul(lossRate).div(10000);
+    this.profitPrice = this.openPrice
+      .mul(profitRate)
+      .div(numberBuffer(decimals));
+    this.lossPrice = this.openPrice.mul(lossRate).div(numberBuffer(decimals));
   }
 
-  // @TODO
+  // TODO
   // Profit and Loss를 구하는 메소드
   createPNL(oracleDecimals: number) {
     this.profitAndLoss = this.currentPrice
@@ -167,7 +176,7 @@ export class Position {
       .div(this.openPrice);
   }
 
-  // @TODO
+  // TODO
   // 현재 가격에서 각 청산가까지 남은 퍼센트를 구하는 메소드
   createPriceTo(oracleDecimals: number) {
     this.toProfitPrice = this.profitPrice
@@ -179,6 +188,13 @@ export class Position {
       .mul(expandDecimals(oracleDecimals + 2))
       .div(this.currentPrice);
   }
+  addProfitAndLoss(oracleDecimals: number) {
+    return this.collateral
+      .mul(this.profitAndLoss)
+      .div(expandDecimals(oracleDecimals))
+      .div(expandDecimals(PERCENT_DECIMALS));
+  }
+
   renderOpenPrice(oracleDecimals: number) {
     return withComma(formatDecimals(this.openPrice, oracleDecimals, 2));
   }

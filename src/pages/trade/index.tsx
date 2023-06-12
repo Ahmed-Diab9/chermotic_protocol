@@ -14,7 +14,11 @@ import {
 } from "~/hooks/useSettlementToken";
 import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
 import usePriceFeed from "~/hooks/usePriceFeed";
-import { useUsumBalances, useWalletBalances } from "~/hooks/useBalances";
+import {
+  useUsumBalances,
+  useUsumMargins,
+  useWalletBalances,
+} from "~/hooks/useBalances";
 import {
   useLiquidityPoolSummary,
   useSelectedLiquidityPool,
@@ -40,7 +44,7 @@ const Trade = () => {
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [priceFeed] = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -78,6 +82,7 @@ const Trade = () => {
     ],
   ] = useSelectedLiquidityPool();
   const { oracleVersions } = useOracleVersion();
+  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   useEffect(() => {
     if (shortInput.direction === "long") {
@@ -112,6 +117,9 @@ const Trade = () => {
           walletBalances={walletBalances}
           usumBalances={usumBalances}
           amount={amount}
+          totalBalance={totalBalance}
+          availableMargin={totalMargin}
+          assetValue={totalAsset}
           onTokenSelect={(token) => {
             onTokenSelect(token);
           }}
