@@ -69,9 +69,9 @@ export const useUsumBalances = () => {
     [tokens, account]
   );
   const {
-    data: accountBalance,
+    data: usumBalances,
     error,
-    mutate,
+    mutate: fetchUsumBalances,
   } = useSWR(fetchKey, async ([tokens, account]) => {
     const promise = tokens.map(async (token) => {
       const balance = await account.balance(token.address);
@@ -85,5 +85,6 @@ export const useUsumBalances = () => {
     errorLog(error);
   }
 
-  return [accountBalance, mutate] as const;
+  return { usumBalances, fetchUsumBalances };
+};
 };

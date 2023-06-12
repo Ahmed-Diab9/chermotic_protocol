@@ -213,7 +213,7 @@ export const useTradeInput = () => {
   const [market] = useSelectedMarket();
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  const [_, fetchUsumBalances] = useUsumBalances();
+  const { fetchUsumBalances } = useUsumBalances();
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const [
