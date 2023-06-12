@@ -2,7 +2,11 @@ import { BigNumber, BigNumberish } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { isValid } from "./valid";
 import { Price, Token } from "../typings/market";
-import { FEE_RATE_DECIMAL } from "../configs/feeRate";
+import {
+  BUFFER_DECIMALS,
+  FEE_RATE_DECIMAL,
+  PERCENT_DECIMALS,
+} from "../configs/decimals";
 
 interface BigNumberify {
   (value: number): BigNumber;

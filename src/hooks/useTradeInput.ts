@@ -1,7 +1,6 @@
 import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
 import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
-import { FEE_RATE_DECIMAL } from "~/configs/feeRate";
 import { CHAIN } from "~/constants/contracts";
 import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
@@ -14,6 +13,7 @@ import { useSelectedToken } from "./useSettlementToken";
 import { usePosition } from "./usePosition";
 import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
+import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
 
 const initialTradeInput = {
   direction: "long",

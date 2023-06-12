@@ -19,7 +19,7 @@ import {
   formatFeeRate,
   withComma,
 } from "../../../utils/number";
-import { BIN_VALUE_DECIMAL } from "../../../configs/pool";
+import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import { useMemo } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";

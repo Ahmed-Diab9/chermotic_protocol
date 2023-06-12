@@ -18,7 +18,7 @@ import { poolsAction } from "~/store/reducer/pools";
 import { LPToken } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
-import { BIN_VALUE_DECIMAL } from "~/configs/pool";
+import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveLiquidityModalProps {
   selectedLpTokens?: LPToken[];
