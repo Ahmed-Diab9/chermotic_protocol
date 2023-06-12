@@ -64,7 +64,7 @@ export class Position {
     this.openTimestamp = openTimestamp;
     this.closeVersion = closeVersion;
     this.closeTimestamp = closeTimestamp;
-    this.makerMargin = _binMargins[0].amount;
+    this.makerMargin = _binMargins.reduce((acc,curr)=>acc.add(curr?.amount || 0),BigNumber.from(0));
 
     this.takeProfit = 0;
     this.stopLoss = 0;
