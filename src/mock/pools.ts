@@ -11,3 +11,12 @@ export const createBinValueMock = () => {
     return bigNumberify(value).mul(-1).add(expandDecimals(BIN_VALUE_DECIMAL));
   }
 };
+
+/**
+ * @TODO
+ * 임의로 제거 가능한 비율을 생성해주는 Mock 함수입니다.
+ */
+export const createRemovableRateMock = () => {
+  const value = Math.ceil(Math.random() * 1000);
+  return value / 10;
+};
