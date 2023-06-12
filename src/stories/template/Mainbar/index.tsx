@@ -14,6 +14,9 @@ interface MainBarProps {
   usumBalances?: Record<string, BigNumber>;
   feeRate?: BigNumber;
   amount?: string;
+  totalBalance?: BigNumber;
+  availableMargin?: BigNumber;
+  assetValue?: BigNumber;
   onTokenSelect?: (token: string) => unknown;
   onMarketSelect?: (market: string) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -32,6 +35,9 @@ export const MainBar = ({
   usumBalances,
   feeRate,
   amount,
+  totalBalance,
+  availableMargin,
+  assetValue,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -59,6 +65,9 @@ export const MainBar = ({
           walletBalances={walletBalances}
           usumBalances={usumBalances}
           amount={amount}
+          totalBalance={totalBalance}
+          availableMargin={availableMargin}
+          assetValue={assetValue}
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}

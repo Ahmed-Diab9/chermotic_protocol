@@ -8,6 +8,7 @@ import "./style.css";
 import { Account } from "../../../typings/account";
 import { Token } from "../../../typings/market";
 import {
+  bigNumberify,
   expandDecimals,
   formatDecimals,
   withComma,
@@ -22,6 +23,9 @@ interface AssetPopoverProps {
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
   amount?: string;
+  totalBalance?: BigNumber;
+  availableMargin?: BigNumber;
+  assetValue?: BigNumber;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -34,6 +38,9 @@ export const AssetPopover = ({
   walletBalances,
   usumBalances,
   amount,
+  totalBalance,
+  availableMargin,
+  assetValue,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -50,11 +57,8 @@ export const AssetPopover = ({
         {isLoaded ? (
           <>
             <h2 className="text-2xl">
-              {token &&
-                usumBalances &&
-                withComma(
-                  formatDecimals(usumBalances[token.name], token.decimals, 2)
-                )}
+              {totalBalance &&
+                withComma(formatDecimals(totalBalance, token.decimals, 2))}
             </h2>
             <Popover.Group className="flex gap-3">
               <AssetPanel
@@ -64,6 +68,8 @@ export const AssetPopover = ({
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
                 amount={amount}
+                availableMargin={availableMargin}
+                assetValue={assetValue}
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
@@ -75,6 +81,8 @@ export const AssetPopover = ({
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
                 amount={amount}
+                availableMargin={availableMargin}
+                assetValue={assetValue}
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
@@ -97,6 +105,8 @@ interface AssetPanelProps {
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
   amount?: string;
+  availableMargin?: BigNumber;
+  assetValue?: BigNumber;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -112,6 +122,8 @@ const AssetPanel = (props: AssetPanelProps) => {
     walletBalances,
     usumBalances,
     amount,
+    availableMargin = bigNumberify(0),
+    assetValue = bigNumberify(0),
     onAmountChange,
     onDeposit,
     onWithdraw,
@@ -151,11 +163,17 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </div>
                   <div>
                     <p className="mb-1 text-black/30">Available Margin</p>
-                    <p>225.23 {token?.name}</p>
+                    <p>
+                      {formatDecimals(availableMargin, token?.decimals, 2)}{" "}
+                      {token?.name}
+                    </p>
                   </div>
                   <div>
                     <p className="mb-1 text-black/30">Asset Value</p>
-                    <p>3,025.23 {token?.name}</p>
+                    <p>
+                      {formatDecimals(assetValue, token?.decimals, 2)}{" "}
+                      {token?.name}
+                    </p>
                   </div>
                 </article>
                 {/* Account */}
