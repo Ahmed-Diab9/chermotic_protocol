@@ -25,7 +25,7 @@ import { useUsumBalances } from "./useBalances";
 
 export const usePosition = () => {
   const [usumAccount] = useUsumAccount();
-  const [_, fetchUsumBalances] = useUsumBalances();
+  const { fetchUsumBalances } = useUsumBalances();
   const [token] = useSelectedToken();
   const [markets] = useMarket();
   const provider = useProvider();

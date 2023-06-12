@@ -14,7 +14,7 @@ import "./../../atom/Select/style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
-import { formatDecimals, withComma } from "~/utils/number";
+import { formatDecimals, numberBuffer, withComma } from "~/utils/number";
 import { Market, Price, Token } from "~/typings/market";
 
 interface TradeContentProps {
@@ -107,17 +107,22 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         : quantity + quantity * (stopLoss / 100);
 
     // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
-    // 추가 소수점 4자리 적용
-    const profitRate = Math.round((addedProfit / quantity) * 10000);
-    const lossRate = Math.round((addedLoss / quantity) * 10000);
+    // 추가 소수점 5 적용
+    const decimals = 5;
+    const profitRate = Math.round(
+      (addedProfit / quantity) * numberBuffer(decimals)
+    );
+    const lossRate = Math.round(
+      (addedLoss / quantity) * numberBuffer(decimals)
+    );
 
     // 현재 가격에 비율 곱하여 예상 청산가격을 계산
     const takeProfitPrice = price.value.mul(profitRate);
     const stopLossPrice = price.value.mul(lossRate);
 
     setPrices([
-      withComma(formatDecimals(takeProfitPrice, price.decimals + 4, 2)),
-      withComma(formatDecimals(stopLossPrice, price.decimals + 4, 2)),
+      withComma(formatDecimals(takeProfitPrice, price.decimals + decimals, 2)),
+      withComma(formatDecimals(stopLossPrice, price.decimals + decimals, 2)),
     ]);
   }, [input, market, token]);
   useEffect(() => {

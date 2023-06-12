@@ -40,7 +40,7 @@ const Trade = () => {
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [priceFeed] = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();

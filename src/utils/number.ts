@@ -2,7 +2,11 @@ import { BigNumber, BigNumberish } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { isValid } from "./valid";
 import { Price, Token } from "../typings/market";
-import { FEE_RATE_DECIMAL } from "../configs/feeRate";
+import {
+  BUFFER_DECIMALS,
+  FEE_RATE_DECIMAL,
+  PERCENT_DECIMALS,
+} from "../configs/decimals";
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -145,4 +149,12 @@ export const createAnnualSeconds = (time: Date | number, ms?: boolean) => {
     return subtraction / 1000;
   }
   return subtraction;
+};
+
+export const percentage = () => {
+  return 10 ** PERCENT_DECIMALS;
+};
+
+export const numberBuffer = (decimals: number = BUFFER_DECIMALS) => {
+  return 10 ** decimals;
 };

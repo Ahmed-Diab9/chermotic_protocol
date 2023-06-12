@@ -1,11 +1,15 @@
 import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
 import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
-import { FEE_RATE_DECIMAL } from "~/configs/feeRate";
 import { CHAIN } from "~/constants/contracts";
 import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
-import { bigNumberify, expandDecimals, trimLeftZero } from "~/utils/number";
+import {
+  bigNumberify,
+  expandDecimals,
+  numberBuffer,
+  trimLeftZero,
+} from "~/utils/number";
 import { isValid } from "~/utils/valid";
 import { errorLog } from "../utils/log";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
@@ -14,6 +18,7 @@ import { useSelectedToken } from "./useSettlementToken";
 import { usePosition } from "./usePosition";
 import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
+import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
 
 const initialTradeInput = {
   direction: "long",
@@ -175,7 +180,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             ...state,
             leverage: leverage,
             quantity: state.collateral * leverage,
-            stopLoss: Math.round((100 * 100) / leverage) / 100,
+            stopLoss:
+              Math.round((100 * numberBuffer()) / leverage) / numberBuffer(),
             makerMargin: state.collateral * leverage * (state.takeProfit / 100),
           };
         }
@@ -213,7 +219,7 @@ export const useTradeInput = () => {
   const [market] = useSelectedMarket();
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  const [_, fetchUsumBalances] = useUsumBalances();
+  const { fetchUsumBalances } = useUsumBalances();
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const [
@@ -276,7 +282,7 @@ export const useTradeInput = () => {
       }
     }
     const feePercent = tradeFee
-      .mul(expandDecimals(2))
+      .mul(expandDecimals(PERCENT_DECIMALS))
       .div(Math.round(state.makerMargin) || 1);
     return [tradeFee, feePercent] as const;
   }, [
@@ -375,18 +381,22 @@ export const useTradeInput = () => {
       signer
     ) as ChromaticRouter;
 
-    const quantity = bigNumberify(state.quantity * 100)
+    const quantity = bigNumberify(state.quantity * numberBuffer())
       .mul(expandDecimals(4))
-      .div(100);
-    const leverage = bigNumberify(state.leverage * 100)
+      .div(numberBuffer());
+    const leverage = bigNumberify(state.leverage * numberBuffer())
       .mul(expandDecimals(2))
-      .div(100);
-    const takerMargin = bigNumberify(Math.floor(state.takerMargin * 100))
+      .div(numberBuffer());
+    const takerMargin = bigNumberify(
+      Math.floor(state.takerMargin * numberBuffer())
+    )
       .mul(expandDecimals(token?.decimals))
-      .div(100);
-    const makerMargin = bigNumberify(Math.floor(state.makerMargin * 100))
+      .div(numberBuffer());
+    const makerMargin = bigNumberify(
+      Math.floor(state.makerMargin * numberBuffer())
+    )
       .mul(expandDecimals(token?.decimals))
-      .div(100);
+      .div(numberBuffer());
 
     if (
       state.direction === "long" &&
@@ -410,7 +420,6 @@ export const useTradeInput = () => {
     // Trading Fee
     const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
-    // TODO: Decimals needed for opening positions
     const tx = await router.openPosition(
       market?.address,
       quantity.mul(state.direction === "long" ? 1 : -1),

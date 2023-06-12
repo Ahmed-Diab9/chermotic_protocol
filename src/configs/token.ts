@@ -1,5 +1,4 @@
 export const USDC = "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892";
-export const USDC_DECIMALS = 6;
 export const MILLION_UNITS = 6;
 
 export const PRICE_FEED: Record<string, string | undefined> = {
