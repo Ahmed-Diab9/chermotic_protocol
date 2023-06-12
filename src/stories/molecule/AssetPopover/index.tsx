@@ -8,6 +8,7 @@ import "./style.css";
 import { Account } from "../../../typings/account";
 import { Token } from "../../../typings/market";
 import {
+  bigNumberify,
   expandDecimals,
   formatDecimals,
   withComma,
@@ -22,6 +23,9 @@ interface AssetPopoverProps {
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
   amount?: string;
+  totalBalance?: BigNumber;
+  availableMargin?: BigNumber;
+  assetValue?: BigNumber;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -34,6 +38,9 @@ export const AssetPopover = ({
   walletBalances,
   usumBalances,
   amount,
+  totalBalance,
+  availableMargin,
+  assetValue,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -64,6 +71,8 @@ export const AssetPopover = ({
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
                 amount={amount}
+                availableMargin={availableMargin}
+                assetValue={assetValue}
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
@@ -75,6 +84,8 @@ export const AssetPopover = ({
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
                 amount={amount}
+                availableMargin={availableMargin}
+                assetValue={assetValue}
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
@@ -97,6 +108,8 @@ interface AssetPanelProps {
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
   amount?: string;
+  availableMargin?: BigNumber;
+  assetValue?: BigNumber;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -112,6 +125,8 @@ const AssetPanel = (props: AssetPanelProps) => {
     walletBalances,
     usumBalances,
     amount,
+    availableMargin = bigNumberify(0),
+    assetValue = bigNumberify(0),
     onAmountChange,
     onDeposit,
     onWithdraw,
