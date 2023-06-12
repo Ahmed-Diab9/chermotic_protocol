@@ -1,6 +1,6 @@
 .MarketSelect {
   @apply relative flex items-center justify-between gap-6;
-  @apply border rounded-2xl w-full min-h-[100px];
+  @apply border rounded-2xl min-h-[100px];
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
     @apply bg-white min-h-[280px] rounded-b-2xl;

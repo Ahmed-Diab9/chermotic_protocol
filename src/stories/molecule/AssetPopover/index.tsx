@@ -42,7 +42,7 @@ export const AssetPopover = ({
 }: AssetPopoverProps) => {
   const isLoaded = isValid(account) && isValid(token);
   return (
-    <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl w-full max-w-[500px] min-h-[100px]">
+    <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px]">
       <div className="ml-10">
         <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
       </div>
@@ -207,6 +207,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="sm"
                   css="unstyled"
                   className="w-full my-2"
+                  // onClick={() => {
+                  //   close();
+                  // }}
                 />
               </div>
             </div>

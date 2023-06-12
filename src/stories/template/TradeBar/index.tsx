@@ -2,6 +2,10 @@ import { useMemo, useState } from "react";
 import { Button } from "../../atom/Button";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Tag } from "~/stories/atom/Tag";
+import { TextRow } from "~/stories/atom/TextRow";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { Loading } from "~/stories/atom/Loading";
+import { CheckIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleDownIcon } from "@heroicons/react/20/solid";
 import { Tab } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
@@ -12,6 +16,7 @@ import { usePrevious } from "~/hooks/usePrevious";
 import { BigNumber } from "ethers";
 import { createCurrentDate } from "~/utils/date";
 import { OracleVersion } from "~/typings/oracleVersion";
+import { isValid } from "~/utils/valid";
 
 interface TradeBarProps {
   token?: Token;
@@ -63,125 +68,146 @@ export const TradeBar = ({
           <Tab.Panel>
             {/* position table */}
             <article>
-              <div className="flex items-center justify-between gap-2 mb-3 text-base text-center px-7 text-black/50">
-                <div className="w-[4%]">Asset</div>
-                <div className="w-[8%]">Market</div>
-                <div className="w-[4%]">Posiiton</div>
-                <div className="w-[6%]">Entry Price</div>
-                <div className="w-[6%]">Contract Qty</div>
-                <div className="w-[4%]">Collateral</div>
-                <div className="w-[6%]">Take Profit</div>
-                <div className="w-[6%]">TP Liq. Price</div>
-                <div className="w-[4%]">Stop Loss</div>
-                <div className="w-[6%]">SL Liq. Price</div>
-                <div className="w-[4%]">PnL</div>
-                <div className="w-[4%] text-right"></div>
-              </div>
               <div className="flex flex-col gap-3">
                 {/* 리스트 한개 단위: 리스트 + entry time */}
                 <div>
-                  {(positions ?? previousPositions ?? []).map((position) => (
-                    <div
-                      key={position.id.toString()}
-                      className="flex items-center justify-between gap-2 py-2 text-center border px-7"
-                    >
-                      <div className="w-[4%]">
-                        {/* Asset */}
-                        <Avatar
-                          label={token?.name}
-                          size="xs"
-                          gap="1"
-                          fontSize="base"
-                          fontWeight="bold"
-                        />
+                  {(positions ?? previousPositions ?? []).map((position) => {
+                    const isOpen = position.closeVersion.eq(0);
+                    const isClosed =
+                      isValid(oracleVersions) &&
+                      !position.closeVersion.eq(0) &&
+                      oracleVersions[position.marketAddress].version.gt(
+                        position.closeVersion
+                      );
+                    const isElse = !isOpen && !isClosed;
+                    return (
+                      <div
+                        key={position.id.toString()}
+                        className="border rounded-xl"
+                      >
+                        <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
+                          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
+                            <Avatar
+                              label={token?.name}
+                              size="xs"
+                              gap="1"
+                              fontSize="base"
+                              fontWeight="bold"
+                            />
+                            <Avatar
+                              label={
+                                markets?.find(
+                                  (market) =>
+                                    market.address === position.marketAddress
+                                )?.description
+                              }
+                              size="xs"
+                              gap="1"
+                              fontSize="base"
+                              fontWeight="bold"
+                            />
+                            <Tag label={position.direction} />
+                          </div>
+                          <div className="flex items-center gap-8 pl-6 border-l">
+                            <p className="text-black/50">Entry Price</p>$
+                            {position.renderOpenPrice(18)}
+                          </div>
+                          <div className="flex items-center gap-8 pl-6 border-l">
+                            <p className="text-black/50">Entry Time</p>
+                            {createCurrentDate()}
+                          </div>
+
+                          <div className="flex items-center gap-2 ml-auto">
+                            {/* 상태에 따라 내용 변동 */}
+                            {/* <CheckIcon className="w-4" /> */}
+                            <Loading size="xs" />
+                            <p className="text-black/30">Opening in progress</p>
+                            {/* <p className="text-black/30">Opening completed</p>
+                            <p className="text-black/30">Closing in progress</p>
+                            <p className="text-black/30">Closing completed</p> */}
+                            <Tooltip tip="tooltip" />
+                          </div>
+                        </div>
+                        <div className="flex items-stretch justify-between gap-6 px-5 py-4">
+                          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
+                            <TextRow
+                              label="Contract Qty"
+                              labelClass="text-black/50"
+                              value={position.renderQty(token?.decimals)}
+                            />
+                            <TextRow
+                              label="Collateral"
+                              labelClass="text-black/50"
+                              value={position.renderCollateral(token?.decimals)}
+                            />
+                          </div>
+                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+                            <TextRow
+                              label="Take Profit"
+                              labelClass="text-black/50"
+                              value={`${position.takeProfit}%`}
+                            />
+                            <TextRow
+                              label="Liq. Price"
+                              labelClass="text-black/50"
+                              value={position.renderProfitPrice(18)}
+                              subValueLeft={`(${position.renderToProfit(18)})`}
+                            />
+                          </div>
+                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+                            <TextRow
+                              label="Stop Loss"
+                              labelClass="text-black/50"
+                              value={`${position.stopLoss}%`}
+                            />
+                            <TextRow
+                              label="Liq. Price"
+                              labelClass="text-black/50"
+                              value={position.renderLossPrice(18)}
+                              subValueLeft={`(${position.renderToLoss(18)})`}
+                            />
+                          </div>
+                          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
+                            <TextRow
+                              label="PnL"
+                              labelClass="text-black/50"
+                              value={position.renderPNL(18)}
+                            />
+                          </div>
+                          <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
+                            {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
+                            {/* Close / Claim USDC */}
+                            {isOpen && (
+                              <Button
+                                label="Close"
+                                size="sm"
+                                onClick={() => {
+                                  onPositionClose?.(
+                                    position.marketAddress,
+                                    position.id
+                                  );
+                                }}
+                              />
+                            )}
+                            {isClosed && (
+                              <Button
+                                label="Claim"
+                                css="active"
+                                size="sm"
+                                onClick={() => {
+                                  onPositionClaim?.(
+                                    position.marketAddress,
+                                    position.id
+                                  );
+                                }}
+                              />
+                            )}
+                            {isElse && <Button label="Close" size="sm" />}
+                          </div>
+                        </div>
                       </div>
-                      <div className="w-[8%]">
-                        {/* Market */}
-                        <Avatar
-                          label={
-                            markets?.find(
-                              (market) =>
-                                market.address === position.marketAddress
-                            )?.description
-                          }
-                          size="xs"
-                          gap="1"
-                          fontSize="base"
-                          fontWeight="bold"
-                        />
-                      </div>
-                      <div className="w-[4%]">
-                        {/* Posiiton */}
-                        <Tag label={position.direction} />
-                        {/* <Tag label="long" /> */}
-                      </div>
-                      <div className="w-[6%]">
-                        {/* Entry Price */}${position.renderOpenPrice(18)}
-                      </div>
-                      <div className="w-[6%]">
-                        {/* Contract Qty */}
-                        {position.renderQty(token?.decimals)}
-                      </div>
-                      <div className="w-[4%]">
-                        {/* Collateral */}
-                        {position.renderCollateral(token?.decimals)}
-                      </div>
-                      <div className="w-[6%]">
-                        {/* Take Profit */}
-                        {position.takeProfit}%
-                      </div>
-                      <div className="w-[6%]">
-                        {/* TP Liq. Price */}
-                        <p>{position.renderProfitPrice(18)}</p>
-                        <p className="text-sm text-black/30">
-                          {position.renderToProfit(18)}
-                        </p>
-                      </div>
-                      <div className="w-[4%]">
-                        {/* Stop Loss */}
-                        {position.stopLoss}%
-                      </div>
-                      <div className="w-[6%]">
-                        {/* SL Liq. Price */}
-                        <p>{position.renderLossPrice(18)}</p>
-                        <p className="text-sm text-black/30">
-                          {position.renderToLoss(18)}
-                        </p>
-                      </div>
-                      <div className="w-[4%]">
-                        {/* PnL */}
-                        {position.renderPNL(18)}
-                      </div>
-                      <div className="w-[4%] text-right">
-                        {position.closeVersion.eq(0) ? (
-                          <Button
-                            label="Close"
-                            onClick={() => {
-                              onPositionClose?.(
-                                position.marketAddress,
-                                position.id
-                              );
-                            }}
-                          />
-                        ) : (
-                          <Button
-                            label="Claim"
-                            disabled={!position.isClaimable(oracleVersions)}
-                            onClick={() => {
-                              onPositionClaim?.(
-                                position.marketAddress,
-                                position.id
-                              );
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  <p className="text-right text-sm text-[#CBCBCB] mt-2">
-                    {/* entry time */}
-                    Entry time: {createCurrentDate()}
-                  </p>
+                    );
+                  })}
                 </div>
               </div>
             </article>

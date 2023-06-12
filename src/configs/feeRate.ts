@@ -1,4 +1,3 @@
-export const FEE_RATE_DECIMAL = 4;
 export const LONG_FEE_RATES = [
   1,
   2,

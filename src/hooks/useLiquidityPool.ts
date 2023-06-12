@@ -11,7 +11,7 @@ import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { BIN_VALUE_DECIMAL, TOKEN_URI_PREFIX } from "../configs/pool";
+import { TOKEN_URI_PREFIX } from "../configs/pool";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import {
@@ -27,6 +27,8 @@ import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 import usePoolReceipt from "./usePoolReceipt";
 import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
+import { createRemovableRateMock } from "~/mock/pools";
+import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 
 const fetchLpTokenMetadata = async (
   lpToken: CLBToken,
@@ -141,6 +143,7 @@ export const useLiquidityPool = () => {
                 feeRate,
                 balance: balances[feeRateIndex],
                 binValue: tokenValueBatch[feeRateIndex],
+                removableRate: createRemovableRateMock(),
                 maxLiquidity: maxLiquidities[feeRateIndex],
                 unusedLiquidity: unusedLiquidities[feeRateIndex],
               };

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { TradePanel } from "../../stories/template/TradePanel";
 import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
@@ -40,7 +40,7 @@ const Trade = () => {
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [priceFeed] = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();

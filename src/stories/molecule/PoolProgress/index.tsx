@@ -6,7 +6,8 @@ import { Progress } from "~/stories/atom/Progress";
 import { Loading } from "~/stories/atom/Loading";
 import { Tab } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
-import { ArrowPathRoundedSquareIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Disclosure } from "@headlessui/react";
 import "../../atom/Tabs/style.css";
 
 import { LPToken, LiquidityPool } from "../../../typings/pools";
@@ -16,100 +17,120 @@ interface PoolProgressProps {}
 
 export const PoolProgress = ({ ...props }: PoolProgressProps) => {
   return (
-    <div className="w-[500px] h-[1000px] !flex flex-col px-5 pt-8 pb-6 border PoolProgress tabs tabs-line tabs-base rounded-xl">
-      <Tab.Group>
-        <Tab.List className="!justify-start !gap-8 px-7">
-          <Tab>All</Tab>
-          <Tab>Minting (2)</Tab>
-          <Tab>Burning (3)</Tab>
-        </Tab.List>
-        <Tab.Panels className="flex-auto mt-7">
-          {/* tab1 - all */}
-          <Tab.Panel>
-            <ProgressItem
-              title="minting"
-              status="standby"
-              detail="Waiting for the next oracle round"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-            <ProgressItem
-              title="minting"
-              status="completed"
-              detail="3,000.45 CLB"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-            <ProgressItem
-              title="burning"
-              status="standby"
-              detail="Waiting for the next oracle round"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-            <ProgressItem
-              title="burning"
-              status="in progress"
-              detail="456.00/1,000.00 CLB (46.50%)"
-              name="ETH/USD +0.03%"
-              progressPercent={46.5}
-            />
-            <ProgressItem
-              title="burning"
-              status="completed"
-              detail="1,000.00/1,000.00 CLB (100.00%)"
-              name="ETH/USD +0.03%"
-              progressPercent={100}
-            />
-          </Tab.Panel>
+    <div className="!flex flex-col border PoolProgress tabs tabs-line tabs-base rounded-2xl">
+      <Disclosure>
+        {({ open }) => (
+          <>
+            <Disclosure.Button className="relative flex items-center justify-center py-5">
+              <h4 className="font-bold">IN PROGRESS (5)</h4>
+              <ChevronDownIcon
+                className={`${
+                  open ? "rotate-180 transform" : ""
+                } w-6 text-black/30 absolute right-6`}
+              />
+            </Disclosure.Button>
+            <Disclosure.Panel className="px-5 text-gray-500 border-t">
+              <Tab.Group>
+                <Tab.List className="!justify-start !gap-8 pt-5 px-7">
+                  <Tab>All</Tab>
+                  <Tab>Minting (2)</Tab>
+                  <Tab>Burning (3)</Tab>
+                </Tab.List>
+                <div className="mt-4">
+                  <Button
+                    label="Claim All"
+                    className="w-full border-gray"
+                    size="xl"
+                  />
+                </div>
+                <Tab.Panels className="flex-auto mt-5">
+                  {/* tab1 - all */}
+                  <Tab.Panel className="flex flex-col gap-3 mb-5">
+                    <ProgressItem
+                      title="minting"
+                      status="standby"
+                      detail="Waiting for the next oracle round"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                    <ProgressItem
+                      title="minting"
+                      status="completed"
+                      detail="3,000.45 CLB"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                    <ProgressItem
+                      title="burning"
+                      status="standby"
+                      detail="Waiting for the next oracle round"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                    <ProgressItem
+                      title="burning"
+                      status="in progress"
+                      detail="456.00/1,000.00 CLB (46.50%)"
+                      name="ETH/USD +0.03%"
+                      progressPercent={46.5}
+                    />
+                    <ProgressItem
+                      title="burning"
+                      status="completed"
+                      detail="1,000.00/1,000.00 CLB (100.00%)"
+                      name="ETH/USD +0.03%"
+                      progressPercent={100}
+                    />
+                  </Tab.Panel>
 
-          {/* tab2 - minting */}
-          <Tab.Panel>
-            <ProgressItem
-              title="minting"
-              status="standby"
-              detail="Waiting for the next oracle round"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-            <ProgressItem
-              title="minting"
-              status="completed"
-              detail="3,000.45 CLB"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-          </Tab.Panel>
+                  {/* tab2 - minting */}
+                  <Tab.Panel className="flex flex-col gap-3 mb-5">
+                    <ProgressItem
+                      title="minting"
+                      status="standby"
+                      detail="Waiting for the next oracle round"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                    <ProgressItem
+                      title="minting"
+                      status="completed"
+                      detail="3,000.45 CLB"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                  </Tab.Panel>
 
-          {/* tab3 - burning */}
-          <Tab.Panel>
-            <ProgressItem
-              title="burning"
-              status="standby"
-              detail="Waiting for the next oracle round"
-              name="ETH/USD +0.03%"
-              progressPercent={0}
-            />
-            <ProgressItem
-              title="burning"
-              status="in progress"
-              detail="456.00/1,000.00 CLB (46.50%)"
-              name="ETH/USD +0.03%"
-              progressPercent={46.5}
-            />
-            <ProgressItem
-              title="burning"
-              status="completed"
-              detail="1,000.00/1,000.00 CLB (100.00%)"
-              name="ETH/USD +0.03%"
-              progressPercent={100}
-            />
-          </Tab.Panel>
-        </Tab.Panels>
-        <div className="mt-auto">
-          <Button label="Claim All" />
-        </div>
-      </Tab.Group>
+                  {/* tab3 - burning */}
+                  <Tab.Panel className="flex flex-col gap-3 mb-5">
+                    <ProgressItem
+                      title="burning"
+                      status="standby"
+                      detail="Waiting for the next oracle round"
+                      name="ETH/USD +0.03%"
+                      progressPercent={0}
+                    />
+                    <ProgressItem
+                      title="burning"
+                      status="in progress"
+                      detail="456.00/1,000.00 CLB (46.50%)"
+                      name="ETH/USD +0.03%"
+                      progressPercent={46.5}
+                    />
+                    <ProgressItem
+                      title="burning"
+                      status="completed"
+                      detail="1,000.00/1,000.00 CLB (100.00%)"
+                      name="ETH/USD +0.03%"
+                      progressPercent={100}
+                    />
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
     </div>
   );
 };
@@ -134,7 +155,7 @@ const ProgressItem = (props: ProgressItemProps) => {
   } = props;
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 mb-3 border rounded-xl">
+    <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
           {title}
@@ -154,7 +175,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             )}
           </span>
         </h4>
-        <p className="flex items-center gap-[6px] text-sm tracking-tight text-black">
+        <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
           <span className="">
             {status === "completed" ? (
               <CheckIcon className="w-4" />
@@ -162,8 +183,8 @@ const ProgressItem = (props: ProgressItemProps) => {
               <Loading size="xs" />
             )}
           </span>
-          {detail}
-        </p>
+          <p className="">{detail}</p>
+        </div>
       </div>
       {title === "burning" ? (
         <Progress value={progressPercent} max={100} />
@@ -174,7 +195,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         <Thumbnail className="rounded" />
         <div>
           <Avatar label={token} size="xs" gap="1" />
-          <p className="mt-1 text-black/30">{name}</p>
+          <p className="mt-1 text-left text-black/30">{name}</p>
         </div>
         {status === "standby" ? (
           <Button

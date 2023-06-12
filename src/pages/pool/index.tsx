@@ -1,7 +1,8 @@
 import React from "react";
 import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/Mainbar";
+import { MainBar } from "../../stories/template/MainBar";
 import { PoolPanel } from "../../stories/template/PoolPanel";
+import { PoolProgress } from "~/stories/molecule/PoolProgress";
 import { Footer } from "../../stories/template/Footer";
 import { Button } from "../../stories/atom/Button";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
@@ -41,7 +42,7 @@ const Pool = () => {
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
-  const [usumBalances] = useUsumBalances();
+  const { usumBalances } = useUsumBalances();
   const [priceFeed] = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -59,6 +60,7 @@ const Pool = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     ],
+    onRemoveLiquidity,
   ] = useSelectedLiquidityPool();
   const {
     amount,
@@ -93,7 +95,7 @@ const Pool = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow">
+      <section className="flex flex-col grow max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount?.address }}
           tokens={tokens}
@@ -115,62 +117,67 @@ const Pool = () => {
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
         />
-        <PoolPanel
-          token={selectedToken}
-          market={selectedMarket}
-          balances={walletBalances}
-          pool={pool}
-          amount={amount}
-          indexes={indexes}
-          rates={rates}
-          bins={bins}
-          averageBin={averageBin}
-          longTotalMaxLiquidity={longTotalMaxLiquidity}
-          longTotalUnusedLiquidity={longTotalUnusedLiquidity}
-          shortTotalMaxLiquidity={shortTotalMaxLiquidity}
-          shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-          selectedLpTokens={selectedLpTokens}
-          onAmountChange={onAmountChange}
-          onRangeChange={onRangeChange}
-          onFullRangeSelect={onFullRangeSelect}
-          onAddLiquidity={onAddLiquidity}
-          receipts={receipts}
-          onClaimLpTokens={onClaimLpTokens}
-          onClaimLpTokensBatch={onClaimLpTokensBatch}
-          removeInput={removeInput}
-          maxRemoveAmount={maxRemoveAmount}
-          onRemoveAmountChange={onRemoveAmountChange}
-          onRemoveMaxAmountChange={onRemoveMaxAmountChange}
-        />
-        <article className="max-w-[680px] w-full mt-8 mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <p>Token(ERC-1155) Contract Address</p>
-              {/* tooltip */}
-            </div>
-            <div className="flex items-center gap-1">
-              {/* address */}
-              {selectedToken && (
-                <p>{trimAddress(selectedToken.address, 6, 6)}</p>
-              )}
-              <Button iconOnly={<Square2StackIcon />} />
-            </div>
+        <div className="flex items-stretch gap-5">
+          <div className="flex-auto w-3/5">
+            <PoolPanel
+              token={selectedToken}
+              market={selectedMarket}
+              balances={walletBalances}
+              pool={pool}
+              amount={amount}
+              indexes={indexes}
+              rates={rates}
+              bins={bins}
+              averageBin={averageBin}
+              longTotalMaxLiquidity={longTotalMaxLiquidity}
+              longTotalUnusedLiquidity={longTotalUnusedLiquidity}
+              shortTotalMaxLiquidity={shortTotalMaxLiquidity}
+              shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+              selectedLpTokens={selectedLpTokens}
+              onAmountChange={onAmountChange}
+              onRangeChange={onRangeChange}
+              onFullRangeSelect={onFullRangeSelect}
+              onAddLiquidity={onAddLiquidity}
+              receipts={receipts}
+              onClaimLpTokens={onClaimLpTokens}
+              onClaimLpTokensBatch={onClaimLpTokensBatch}
+              removeInput={removeInput}
+              maxRemoveAmount={maxRemoveAmount}
+              onRemoveAmountChange={onRemoveAmountChange}
+              onRemoveMaxAmountChange={onRemoveMaxAmountChange}
+              onRemoveLiquidity={onRemoveLiquidity}
+            />
+            {/* bottom */}
+            <article className="px-5 pt-5 pb-6 mx-auto mt-5 border rounded-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <p>Token(ERC-1155) Contract Address</p>
+                  {/* tooltip */}
+                </div>
+                <div className="flex items-center gap-1">
+                  {/* address */}
+                  {selectedToken && (
+                    <p>{trimAddress(selectedToken.address, 6, 6)}</p>
+                  )}
+                  <Button iconOnly={<Square2StackIcon />} />
+                </div>
+              </div>
+              <div>
+                <p className="mt-6 text-left text-black/30">
+                  Please set additional values to apply to the basic formula in
+                  Borrow Fee. Calculated based on open Interest and stop
+                  profit/Loss rate.
+                </p>
+                <Link to={"/trade"}>
+                  <Button label="Trade on this ETH/USDC Pool" />
+                </Link>
+              </div>
+            </article>
           </div>
-          <div className="mb-12">
-            <p className="my-6 text-left text-black/30">
-              Please set additional values to apply to the basic formula in
-              Borrow Fee. Calculated based on open Interest and stop profit/Loss
-              rate.
-            </p>
-            <Link to={"/trade"}>
-              <Button label="Trade on this ETH/USDC Pool" />
-            </Link>
+          <div className="w-2/5 max-w-[500px] min-w-[480px]">
+            <PoolProgress />
           </div>
-        </article>
-        {/*   info bottom */}
-        {/*     a - infoRow_sm? */}
-        {/*     text */}
-        {/*   a - Button_sm : trade on this pool */}
+        </div>
       </section>
 
       <Footer />

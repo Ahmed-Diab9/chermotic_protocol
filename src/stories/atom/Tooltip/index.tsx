@@ -24,9 +24,9 @@ export const Tooltip = (props: TooltipProps) => {
   } = props;
 
   return (
-    <div className={`tooltip tooltip-${position} ${className}`}>
-      {/* {label} */}
-      <InformationCircleIcon className="w-4 text-black/30" />
+    <div className={`tooltip tooltip-${position} ${className} text-black/30`}>
+      {label}
+      <InformationCircleIcon className="w-4" />
       <div className="tooltip-tip">
         <p>{tip}</p>
 
