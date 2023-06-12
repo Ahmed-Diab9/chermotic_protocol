@@ -50,18 +50,6 @@ export const Default: Story = {
     longTotalUnusedLiquidity: BigNumber.from(100),
     shortTotalMaxLiquidity: BigNumber.from(100),
     shortTotalUnusedLiquidity: BigNumber.from(100),
-    selectedLpTokens: [
-      {
-        feeRate: 10,
-        balance: BigNumber.from(50000000000),
-        binValue: BigNumber.from(10000000000),
-        removableRate: 87.5,
-        maxLiquidity: BigNumber.from(3000000000),
-        unusedLiquidity: BigNumber.from(2000000000),
-        name: "LP BIN NAME",
-        description: "LP BIN DESCRIPTION",
-        image: "",
-      },
-    ],
+    selectedLpTokens: [],
   },
 };
