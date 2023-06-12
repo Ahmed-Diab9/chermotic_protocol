@@ -57,11 +57,8 @@ export const AssetPopover = ({
         {isLoaded ? (
           <>
             <h2 className="text-2xl">
-              {token &&
-                usumBalances &&
-                withComma(
-                  formatDecimals(usumBalances[token.name], token.decimals, 2)
-                )}
+              {totalBalance &&
+                withComma(formatDecimals(totalBalance, token.decimals, 2))}
             </h2>
             <Popover.Group className="flex gap-3">
               <AssetPanel
@@ -166,11 +163,17 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </div>
                   <div>
                     <p className="mb-1 text-black/30">Available Margin</p>
-                    <p>225.23 {token?.name}</p>
+                    <p>
+                      {formatDecimals(availableMargin, token?.decimals, 2)}{" "}
+                      {token?.name}
+                    </p>
                   </div>
                   <div>
                     <p className="mb-1 text-black/30">Asset Value</p>
-                    <p>3,025.23 {token?.name}</p>
+                    <p>
+                      {formatDecimals(assetValue, token?.decimals, 2)}{" "}
+                      {token?.name}
+                    </p>
                   </div>
                 </article>
                 {/* Account */}
