@@ -252,28 +252,28 @@ export const useTradeInput = () => {
       return [];
     }
     let tradeFee = bigNumberify(0);
-    const lpTokens =
-      pool?.tokens.filter((token) => {
+    const bins =
+      pool?.bins.filter((bin) => {
         if (state.direction === "long") {
-          return token.feeRate > 0;
+          return bin.baseFeeRate > 0;
         } else {
-          return token.feeRate < 0;
+          return bin.baseFeeRate < 0;
         }
       }) ?? [];
     if (state.direction === "short") {
-      lpTokens.reverse();
+      bins.reverse();
     }
-    for (const token of lpTokens) {
+    for (const token of bins) {
       if (makerMargin.lte(0)) {
         break;
       }
-      const { feeRate: _feeRate, unusedLiquidity } = token;
-      const feeRate = Math.abs(_feeRate);
-      if (makerMargin.gte(unusedLiquidity)) {
+      const { baseFeeRate, freeLiquidity } = token;
+      const feeRate = Math.abs(baseFeeRate);
+      if (makerMargin.gte(freeLiquidity)) {
         tradeFee = tradeFee.add(
-          unusedLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
+          freeLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
         );
-        makerMargin = makerMargin.sub(unusedLiquidity);
+        makerMargin = makerMargin.sub(freeLiquidity);
       } else {
         tradeFee = tradeFee.add(
           makerMargin.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
@@ -289,7 +289,7 @@ export const useTradeInput = () => {
     state.makerMargin,
     state.direction,
     token?.decimals,
-    pool?.tokens,
+    pool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
   ]);
