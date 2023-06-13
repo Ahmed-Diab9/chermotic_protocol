@@ -1,5 +1,5 @@
 {
-  "name": "usum-frontend",
+  "name": "@chromatic-protocol/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
