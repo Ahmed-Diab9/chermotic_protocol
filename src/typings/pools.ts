@@ -50,6 +50,125 @@ export class CLBTokenBatch {
     this.removableRates = [];
   }
 
+  async updateMetadata() {
+    const promise = this.feeRates.map(async (rate) => {
+      const name = await this.clb.name(rate);
+      const image = await this.clb.image(rate);
+      const description = await this.clb.description(rate);
+
+      /**
+       * FIXME
+       * CLB Decimals should be fixed.
+       * const decimals = await clbToken.decimals();
+       */
+      const decimals = BIN_VALUE_DECIMAL;
+
+      return {
+        name,
+        image,
+        description,
+        decimals,
+      } satisfies CLBTokenMetadata;
+    });
+
+    this.metadata = await filterIfFulfilled(promise);
+  }
+
+  async updateBalances(walletAddress: string) {
+    const walletAddresses = this.feeRates.map(() => walletAddress);
+    this.balances = await this.clb.balanceOfBatch(
+      walletAddresses,
+      this.feeRates
+    );
+  }
+
+  async updateLiquidities(oracleVersion: BigNumber) {
+    const liquidityParams = this.baseFeeRates.map((tradingFeeRate) => ({
+      tradingFeeRate,
+      oracleVersion,
+    }));
+    const response = await this.lens.liquidityBins(
+      this.marketAddress,
+      liquidityParams
+    );
+
+    const liquidities = [] as BigNumber[];
+    const freeLiquidiries = [] as BigNumber[];
+    for (let index = 0; index < this.batchLength; index++) {
+      liquidities.push(response[index].liquidity);
+      freeLiquidiries.push(response[index].freeVolume);
+
+      this.liquidities = liquidities;
+      this.freeLiquidities = freeLiquidiries;
+    }
+  }
+
+  async updateBinValues() {
+    const binValues = [] as BigNumber[];
+    const binAmounts = await this.lens.liquidityBinValue(
+      this.marketAddress,
+      this.baseFeeRates
+    );
+    for (let index = 0; index < this.batchLength; index++) {
+      const binAmount = binAmounts[index].value;
+      let value = bigNumberify(0);
+      if (binAmount.eq(0)) {
+        value = this.liquidities[index].div(1);
+      } else {
+        value = this.liquidities[index]
+          .mul(expandDecimals(BIN_VALUE_DECIMAL))
+          .div(binAmount);
+      }
+      binValues.push(value);
+    }
+    this.binValues = binValues;
+  }
+
+  updateLiquidityValues() {
+    const values = [] as BigNumber[];
+    for (let index = 0; index < this.batchLength; index++) {
+      const balance = this.balances[index];
+      const binValue = this.binValues[index];
+      const value = balance
+        .mul(binValue)
+        .div(expandDecimals(BIN_VALUE_DECIMAL));
+      values.push(value);
+    }
+    this.liquidityValues = values;
+  }
+
+  updateRemovableRates() {
+    const rates = [] as number[];
+    for (let index = 0; index < this.batchLength; index++) {
+      const liquidityValue = this.liquidityValues[index];
+      const freeLiquidity = this.freeLiquidities[index];
+      const denominator = liquidityValue.eq(0) ? 1 : liquidityValue;
+
+      const rate = freeLiquidity.mul(percentage()).div(denominator);
+      rates.push(rate.toNumber());
+    }
+    this.removableRates = rates;
+  }
+
+  toBins() {
+    const bins = [] as Bin[];
+    for (let index = 0; index < this.batchLength; index++) {
+      bins.push(
+        new Bin(
+          this.metadata[index],
+          this.baseFeeRates[index],
+          this.feeRates[index],
+          this.binValues[index],
+          this.liquidities[index],
+          this.freeLiquidities[index],
+          this.balances[index],
+          this.liquidityValues[index],
+          this.removableRates[index]
+        )
+      );
+    }
+    return bins;
+  }
 }
 
 export class Bin implements CLBTokenMetadata {
