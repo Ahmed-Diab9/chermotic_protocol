@@ -196,6 +196,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="w-1/5">
               <Input
                 unit="x"
+                className="w-full"
                 value={input?.leverage}
                 onChange={(event) => onInputChange?.("leverage", event)}
               />
@@ -204,7 +205,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
         <div className="flex gap-5 mt-10">
           {/* TP */}
-          <article>
+          <article className="flex-auto">
             <div className="flex justify-between mb-6">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
@@ -213,6 +214,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
+                  className="w-full"
                   value={input?.takeProfit}
                   onChange={(event) => {
                     onInputChange?.("takeProfit", event);
@@ -231,7 +233,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             )}
           </article>
           {/* SL */}
-          <article className="pl-5 border-l h-[90px]">
+          <article className="flex-auto pl-5 border-l h-[90px]">
             <div className="flex justify-between mb-6">
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
@@ -240,6 +242,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
+                  className="w-full"
                   value={input?.stopLoss}
                   onChange={(event) => {
                     onInputChange?.("stopLoss", event);

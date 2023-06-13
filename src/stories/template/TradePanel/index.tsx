@@ -82,19 +82,19 @@ export const TradePanel = (props: TradePanelProps) => {
       {/* TradePanel 확장형 */}
       <div className="relative tabs tabs-line tabs-lg">
         <div className="flex text-center">
-          <div className="w-[100vw] max-w-[680px] px-0 pb-5 pt-[36px] border-r">
+          <div className="w-[50vw] max-w-[680px] px-0 pb-5 pt-[36px] border-r">
             <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
               SHORT
             </h2>
           </div>
-          <div className="w-[100vw] max-w-[680px] px-0 pb-5 pt-[36px]">
+          <div className="w-[50vw] max-w-[680px] px-0 pb-5 pt-[36px]">
             <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
               LONG
             </h2>
           </div>
         </div>
         <div className="flex">
-          <div className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px] border-r">
+          <div className="px-0 pb-10 pt-[36px] border-r">
             <TradeContent
               direction="short"
               balances={balances}
@@ -114,7 +114,7 @@ export const TradePanel = (props: TradePanelProps) => {
               onOpenPosition={onOpenShortPosition}
             />
           </div>
-          <div className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+          <div className="px-0 pb-10 pt-[36px]">
             <TradeContent
               direction="long"
               balances={balances}
