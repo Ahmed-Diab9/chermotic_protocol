@@ -11,6 +11,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    //
+    token: "CLB Token",
+    name: "CLB Pool",
+    qty: 1000,
+    utilizedValue: 300,
+    removableValue: 700,
   },
 };
