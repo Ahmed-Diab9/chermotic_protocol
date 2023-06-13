@@ -8,6 +8,9 @@ on:
   pull_request:
     types:
       - closed
+    paths:
+      - .stroybook/**
+      - src/stories/**
 
 # List of jobs
 jobs:
@@ -17,15 +20,18 @@ jobs:
     runs-on: ubuntu-latest
     # Job steps
     steps:
-      - uses: actions/checkout@v1
-      - name: Authenticate with private npm packages
-        run: |
-          echo "@chromatic-protocol:registry=https://npm.pkg.github.com" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
-          echo "//registry.npmjs.org/" >> ~/.npmrc
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+          registry-url: https://npm.pkg.github.com/
+          scope: "@chromatic-protocol"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         # 👇 Install dependencies with the same package manager used in the project (replace it as needed), e.g. yarn, npm, pnpm
-        run: yarn
+        run: yarn install
         # 👇 Adds Chromatic as a step in the workflow
       - name: Publish to Chromatic
         uses: chromaui/action@v1
