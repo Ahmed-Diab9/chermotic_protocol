@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { LPToken, LiquidityPool } from "../../../typings/pools";
+import { Bin, LiquidityPool } from "../../../typings/pools";
 
 interface PoolState {
   selectedPool?: LiquidityPool;
-  selectedLpTokens: LPToken[];
+  selectedBins: Bin[];
 }
 
 const initialState: PoolState = {
   selectedPool: undefined,
-  selectedLpTokens: [],
+  selectedBins: [],
 };
 
 const poolsSlice = createSlice({
@@ -19,14 +19,14 @@ const poolsSlice = createSlice({
     onPoolSelect: (state, action: PayloadAction<LiquidityPool>) => {
       state.selectedPool = action.payload;
     },
-    onLpTokenSelect: (state, action: PayloadAction<LPToken>) => {
-      state.selectedLpTokens = [action.payload];
+    onBinSelect: (state, action: PayloadAction<Bin>) => {
+      state.selectedBins = [action.payload];
     },
-    onLpTokensSelect: (state, action: PayloadAction<LPToken[]>) => {
-      state.selectedLpTokens = action.payload;
+    onBinsSelect: (state, action: PayloadAction<Bin[]>) => {
+      state.selectedBins = action.payload;
     },
-    onLpTokensReset: (state) => {
-      state.selectedLpTokens = [];
+    onBinsReset: (state) => {
+      state.selectedBins = [];
     },
   },
 });
