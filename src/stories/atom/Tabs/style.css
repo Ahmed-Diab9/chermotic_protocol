@@ -2,6 +2,11 @@
   @apply inline-block;
   [role="tablist"] {
     @apply flex;
+    [role="tab"] {
+      &:disabled {
+        @apply border-none opacity-30;
+      }
+    }
   }
   &.tabs-left {
     text-align: left;

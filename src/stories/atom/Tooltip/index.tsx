@@ -18,7 +18,7 @@ export const Tooltip = (props: TooltipProps) => {
     label,
     tip,
     outLink,
-    position = "right",
+    position = "top",
     align = "center",
     className,
   } = props;

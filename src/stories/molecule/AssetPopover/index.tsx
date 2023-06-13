@@ -131,7 +131,7 @@ const AssetPanel = (props: AssetPanelProps) => {
 
   return (
     <Popover>
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <Popover.Button
             className={`btn btn-default btn-sm ${open ? "border-black" : null}`}
@@ -225,9 +225,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="sm"
                   css="unstyled"
                   className="w-full my-2"
-                  // onClick={() => {
-                  //   close();
-                  // }}
+                  onClick={() => {
+                    close();
+                  }}
                 />
               </div>
             </div>
