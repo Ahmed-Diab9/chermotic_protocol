@@ -9,7 +9,7 @@ on:
     types:
       - closed
     paths:
-      - .stroybook/**
+      - .storybook/**
       - src/stories/**
 
 # List of jobs
