@@ -19,7 +19,7 @@ import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
 import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
-export interface RemoveLiquidityModalProps {
+export interface RemoveMultiLiquidityModalProps {
   selectedLpTokens?: LPToken[];
   token?: Token;
   input?: {
@@ -32,7 +32,9 @@ export interface RemoveLiquidityModalProps {
   onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
-export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
+export const RemoveMultiLiquidityModal = (
+  props: RemoveMultiLiquidityModalProps
+) => {
   const {
     selectedLpTokens = [],
     token,
