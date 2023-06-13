@@ -161,26 +161,26 @@ export const useSelectedLiquidityPool = () => {
   }, [market, token, pools]);
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
-    const longLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate > 0
+    const longCLBTokens = (isValid(pool) ? pool.bins : []).filter(
+      (bin) => bin.baseFeeRate > 0
     );
-    return longLpTokens?.reduce(
+    return longCLBTokens?.reduce(
       (acc, currentToken) => {
-        const max = acc[0].add(currentToken.maxLiquidity);
-        const unused = acc[1].add(currentToken.unusedLiquidity);
+        const max = acc[0].add(currentToken.liquidity);
+        const unused = acc[1].add(currentToken.freeLiquidity);
         return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
   const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
-    const shortLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate < 0
+    const shortCLBTokens = (isValid(pool) ? pool.bins : []).filter(
+      (clbToken) => clbToken.baseFeeRate < 0
     );
-    return shortLpTokens?.reduce(
+    return shortCLBTokens?.reduce(
       (acc, currentToken) => {
-        const max = acc[0].add(currentToken.maxLiquidity);
-        const unused = acc[1].add(currentToken.unusedLiquidity);
+        const max = acc[0].add(currentToken.liquidity);
+        const unused = acc[1].add(currentToken.freeLiquidity);
         return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
@@ -207,11 +207,11 @@ export const useSelectedLiquidityPool = () => {
       signer
     ) as ChromaticRouter;
 
-    const lpToken = CLBToken__factory.connect(pool.address, signer);
-    const isApproved = await lpToken.isApprovedForAll(address, router.address);
+    const clbToken = CLBToken__factory.connect(pool.address, signer);
+    const isApproved = await clbToken.isApprovedForAll(address, router.address);
     if (!isApproved) {
       infoLog("Approving all lp tokens");
-      await lpToken.setApprovalForAll(router.address, true);
+      await clbToken.setApprovalForAll(router.address, true);
     }
     const expandedAmount = bigNumberify(amount).mul(
       expandDecimals(token?.decimals ?? 1)
