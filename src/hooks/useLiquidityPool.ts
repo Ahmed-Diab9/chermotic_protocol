@@ -250,7 +250,7 @@ export const useLiquidityPoolSummary = () => {
     }
     const array = [] as LiquidityPoolSummary[];
     for (const pool of pools) {
-      const { tokenAddress, marketAddress, tokens: lpTokens } = pool;
+      const { tokenAddress, marketAddress, bins } = pool;
       const market = markets?.find(
         (market) => market.address === marketAddress
       );
@@ -261,14 +261,14 @@ export const useLiquidityPoolSummary = () => {
       }
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
-      let bins = 0;
-      for (let index = 0; index < lpTokens.length; index++) {
-        const lpToken = lpTokens[index];
-        if (lpToken.balance.gt(0)) {
-          const addValue = lpToken.balance
-            .mul(lpToken.binValue)
+      let binSize = 0;
+      for (let index = 0; index < bins.length; index++) {
+        const bin = bins[index];
+        if (bin.balance.gt(0)) {
+          const addValue = bin.balance
+            .mul(bin.binValue)
             .div(expandDecimals(BIN_VALUE_DECIMAL));
-          bins += 1;
+          binSize += 1;
           liquiditySum = liquiditySum.add(addValue);
         }
       }
@@ -279,7 +279,7 @@ export const useLiquidityPoolSummary = () => {
         },
         market: marketDescription,
         liquidity: liquiditySum,
-        bins,
+        bins: binSize,
       });
     }
     return array;
