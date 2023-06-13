@@ -195,30 +195,6 @@ export const RemoveMultiLiquidityModal = (
 
             {/* info bottom */}
             <article className="flex flex-col gap-2 pb-5 border-b">
-              {/* for single bin */}
-              <div className="flex justify-between">
-                <p className="text-black/30">My Liquidity Value</p>
-                <p>
-                  {formatDecimals(totalLiquidity, token?.decimals, 2)}
-                  {token?.name}
-                </p>
-              </div>
-            </article>
-
-            {/* input - range */}
-            <article>
-              <div className="flex justify-between">
-                <p className="text-black/30">Removable Liquidity</p>
-                <p>
-                  {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{" "}
-                  CLB
-                  <span className="ml-1 text-black/30">
-                    ({formatDecimals(totalRemovableRate, 2, 2)}%)
-                  </span>
-                </p>
-              </div>
-
-              {/* for multiple bins */}
               {/**
                * @TODO
                * LP 토큰 총합 밸런스
