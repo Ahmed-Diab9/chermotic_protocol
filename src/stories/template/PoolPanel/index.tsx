@@ -444,11 +444,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
 interface BinItemProps {
   index?: number;
   token?: Token;
-  lpToken?: LPToken;
+  bin?: Bin;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, lpToken } = props;
+  const { index, token, bin } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -461,14 +461,14 @@ const BinItem = (props: BinItemProps) => {
         />
         <div className="flex items-center gap-2">
           <Avatar
-            label={lpToken?.name}
+            label={bin?.name}
             size="xs"
             gap="1"
             fontSize="base"
             fontWeight="bold"
           />
           <p className="font-semibold text-black/30">
-            {lpToken?.description} {lpToken && formatFeeRate(lpToken.feeRate)}%
+            {bin?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
           </p>
         </div>
         <div className="flex items-center ml-auto">
@@ -476,8 +476,8 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              if (lpToken?.balance.gt(0)) {
-                dispatch(poolsAction.onLpTokenSelect(lpToken));
+              if (bin?.balance.gt(0)) {
+                dispatch(poolsAction.onBinSelect(bin));
               }
             }}
           />
@@ -491,30 +491,25 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex flex-col gap-2 min-w-[28%]">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
-            <p>
-              {lpToken && formatDecimals(lpToken.balance, token?.decimals, 2)}
-            </p>
+            <p>{bin && formatDecimals(bin.balance, bin?.decimals, 2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{lpToken?.removableRate}%</p>
+            <p>{bin?.removableRate}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>
-              {lpToken &&
-                formatDecimals(lpToken.binValue, BIN_VALUE_DECIMAL, 2)}
-            </p>
+            <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {lpToken &&
+              {bin &&
                 formatDecimals(
-                  lpToken.balance
-                    .mul(lpToken.binValue)
+                  bin.balance
+                    .mul(bin.binValue)
                     .div(expandDecimals(BIN_VALUE_DECIMAL)),
                   token?.decimals,
                   2
@@ -530,12 +525,12 @@ const BinItem = (props: BinItemProps) => {
 interface PoolClaimProps {
   market?: Market;
   receipts?: BigNumber[];
-  onClaimLpTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimLpTokensBatch?: () => Promise<unknown>;
+  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
+  onClaimCLBTokensBatch?: () => Promise<unknown>;
 }
 
 const PoolClaim = (props: PoolClaimProps) => {
-  const { market, receipts, onClaimLpTokens, onClaimLpTokensBatch } = props;
+  const { market, receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = props;
 
   return (
     <div className="fixed left-auto z-30 flex flex-col bg-white shadow-md gap-x-1 gap-y-2 top-4 right-4">
@@ -546,7 +541,7 @@ const PoolClaim = (props: PoolClaimProps) => {
           <button
             className="px-2 py-1 text-white bg-black"
             onClick={() => {
-              onClaimLpTokens?.(receipt);
+              onClaimCLBTokens?.(receipt);
             }}
           >
             Claim
@@ -557,7 +552,7 @@ const PoolClaim = (props: PoolClaimProps) => {
         <button
           className="px-2 py-1 text-white bg-black"
           onClick={() => {
-            onClaimLpTokensBatch?.();
+            onClaimCLBTokensBatch?.();
           }}
         >
           Claim All
