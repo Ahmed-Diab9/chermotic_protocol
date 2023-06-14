@@ -16,6 +16,13 @@ export type {
   BinMarginStructOutput,
 } from "@chromatic-protocol/sdk";
 
+export const OPENING = "OPENING";
+export const OPENED = "OPENED";
+export const CLOSING = "CLOSING";
+export const CLOSED = "CLOSED";
+
+type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
+
 export class Position {
   id: BigNumber;
   marketAddress: string;
@@ -40,6 +47,7 @@ export class Position {
   closeVersion: BigNumber;
   currentPrice: BigNumber;
   profitAndLoss: BigNumber;
+  status: Status;
   constructor(output: PositionStructOutput, marketAddress: string) {
     const {
       id,
@@ -69,6 +77,7 @@ export class Position {
       (totalMargin, currentBin) => totalMargin.add(currentBin?.amount || 0),
       bigNumberify(0)
     );
+    this.status = OPENED;
 
     this.takeProfit = 0;
     this.stopLoss = 0;
@@ -191,6 +200,24 @@ export class Position {
       .mul(expandDecimals(oracleDecimals + 2))
       .div(this.currentPrice);
   }
+
+  updateStatus(oracleVersions?: Record<string, OracleVersion>) {
+    if (!isValid(oracleVersions)) {
+      return this.status;
+    }
+    const version = oracleVersions[this.marketAddress].version;
+    if (version.eq(this.openVersion)) {
+      this.status = OPENING;
+    }
+    if (!this.closeVersion.eq(0) && version.eq(this.closeVersion)) {
+      this.status = CLOSING;
+    }
+    if (!this.closeVersion.eq(0) && version.gt(this.closeVersion)) {
+      this.status = CLOSED;
+    }
+    return this.status;
+  }
+
   addProfitAndLoss(oracleDecimals: number) {
     return this.collateral
       .mul(this.profitAndLoss)
