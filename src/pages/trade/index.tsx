@@ -161,10 +161,10 @@ const Trade = () => {
         />
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="mb-12">
-            <p className="my-6 text-left text-black/30">
+            <p className="my-6 text-center text-black/30">
               Please set additional values to apply to the basic formula in
-              Borrow Fee. Calculated based on open Interest and stop profit/Loss
-              rate.
+              Borrow Fee. <br /> Calculated based on open Interest and stop
+              profit/Loss rate.
             </p>
             <Link to={"/pool"}>
               <Button label="Provide Liquidity" />

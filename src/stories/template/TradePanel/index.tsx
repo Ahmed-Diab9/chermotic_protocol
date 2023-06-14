@@ -1,8 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { TradeContent } from "../../molecule/TradeContent";
-import { Button } from "../../atom/Button";
-import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
-import { ChevronDoubleRightIcon } from "@heroicons/react/20/solid";
+import { CurvedButton } from "~/stories/atom/CurvedButton";
 import "../../atom/Tabs/style.css";
 import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
@@ -78,23 +76,16 @@ export const TradePanel = (props: TradePanelProps) => {
   } = props;
 
   return (
-    <div className="inline-flex flex-col mx-auto border">
+    <div className="inline-flex flex-col mx-auto border rounded-2xl">
       {/* TradePanel 확장형 */}
-      <div className="relative tabs tabs-line tabs-lg">
-        <div className="flex text-center">
-          <div className="w-[50vw] max-w-[680px] px-0 pb-5 pt-[36px] border-r">
-            <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
-              SHORT
-            </h2>
-          </div>
-          <div className="w-[50vw] max-w-[680px] px-0 pb-5 pt-[36px]">
-            <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
-              LONG
-            </h2>
-          </div>
-        </div>
+      <div className="relative">
         <div className="flex">
-          <div className="px-0 pb-10 pt-[36px] border-r">
+          <div className="px-0 pt-6 pb-10 border-r">
+            <div className="w-[50vw] max-w-[680px] mb-10">
+              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+                SHORT
+              </h2>
+            </div>
             <TradeContent
               direction="short"
               balances={balances}
@@ -114,7 +105,12 @@ export const TradePanel = (props: TradePanelProps) => {
               onOpenPosition={onOpenShortPosition}
             />
           </div>
-          <div className="px-0 pb-10 pt-[36px]">
+          <div className="px-0 pt-6 pb-10">
+            <div className="w-[50vw] max-w-[680px] mb-10">
+              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+                LONG
+              </h2>
+            </div>
             <TradeContent
               direction="long"
               balances={balances}
@@ -135,42 +131,43 @@ export const TradePanel = (props: TradePanelProps) => {
             />
           </div>
         </div>
-        <div>
-          <Button
-            iconOnly={<ChevronDoubleRightIcon />}
-            className="absolute left-[-24px] top-10"
-          />
-          <Button
-            iconOnly={<ChevronDoubleLeftIcon />}
-            className="absolute right-[-24px] top-10"
-          />
+        <div className="absolute left-0 top-8">
+          <CurvedButton direction="right" position="left" />
+        </div>
+        <div className="absolute right-0 top-8">
+          <CurvedButton direction="left" position="right" />
         </div>
       </div>
+
       {/* TradePanel 축소형 (tab 있음) */}
       {/* <div className="relative tabs tabs-line tabs-lg">
-      <Tab.Group>
-        <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-[36px] flex gap-10">
-          <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
-            SHORT
-          </Tab>
-          <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
-            LONG
-          </Tab>
-        </Tab.List>
-        <Tab.Panels className="flex flex-col items-center w-full">
-          <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
-            <TradeContent />
-          </Tab.Panel>
-          <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
-            <TradeContent />
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
-      <div>
-        <Button iconOnly={<ChevronDoubleLeftIcon />} className="absolute left-[-24px] top-10" />
-        <Button iconOnly={<ChevronDoubleRightIcon />} className="absolute right-[-24px] top-10" />
-      </div>
-    </div> */}
+        <Tab.Group>
+          <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-6 flex gap-10">
+            <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              SHORT
+            </Tab>
+            <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              LONG
+            </Tab>
+          </Tab.List>
+          <Tab.Panels className="flex flex-col items-center w-full">
+            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+              <TradeContent />
+            </Tab.Panel>
+            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+              <TradeContent />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+        <div>
+          <div className="absolute left-0 top-8">
+            <CurvedButton direction="left" position="left" />
+          </div>
+          <div className="absolute right-0 top-8">
+            <CurvedButton direction="right" position="right" />
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 };

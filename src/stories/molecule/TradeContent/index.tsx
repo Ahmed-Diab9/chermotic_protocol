@@ -171,7 +171,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <AmountSwitch input={input} onAmountChange={onInputChange} />
         </div>
       </article>
-      <section className="px-10 pt-6 pb-10 border-b bg-grayL/20">
+      <section className="px-10 pt-5 pb-5 border-b bg-grayL/20">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-6">
@@ -181,8 +181,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
             <Toggle label="Slider" size="xs" />
           </div>
-          <div className="flex justify-between">
-            <div className="w-1/2">
+          <div className="flex items-center justify-between gap-5">
+            <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
               <LeverageOption
                 value={input?.leverage}
@@ -193,7 +193,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {/* when slider on */}
               {/* <Range /> */}
             </div>
-            <div className="w-1/5">
+            <div className="w-2/5 max-w-[160px]">
               <Input
                 unit="x"
                 className="w-full"
@@ -339,6 +339,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           label={direction === "long" ? "Buy" : "Sell"}
           size="xl"
           className="w-full"
+          css="active"
           onClick={() => {
             onOpenPosition?.();
           }}
@@ -374,7 +375,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             }}
           />
           <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip label="tio" tip="tooltip" />
+            <Tooltip tip="tooltip" />
             <p>Contract Qty</p>
             <p className="text-black/30">{input?.quantity} USDC</p>
           </div>
@@ -392,7 +393,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             }}
           />
           <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip label="tio" tip="tooltip" />
+            <Tooltip tip="tooltip" />
             <p>Collateral</p>
             <p className="text-black/30">{input.collateral} USDC</p>
           </div>
