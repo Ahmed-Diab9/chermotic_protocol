@@ -19,7 +19,7 @@ import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
 import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
-export interface RemoveLiquidityModalProps {
+export interface RemoveMultiLiquidityModalProps {
   selectedLpTokens?: LPToken[];
   token?: Token;
   input?: {
@@ -32,7 +32,9 @@ export interface RemoveLiquidityModalProps {
   onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
-export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
+export const RemoveMultiLiquidityModal = (
+  props: RemoveMultiLiquidityModalProps
+) => {
   const {
     selectedLpTokens = [],
     token,
@@ -135,6 +137,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
+            {/* Bin 개수가 여러개일 때 */}
+            <span className="ml-2">({selectedLpTokens.length})</span>
             <ModalCloseButton
               onClick={() => {
                 dispatch(poolsAction.onLpTokensReset());
@@ -191,20 +195,39 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
 
             {/* info bottom */}
             <article className="flex flex-col gap-2 pb-5 border-b">
+              {/**
+               * @TODO
+               * LP 토큰 총합 밸런스
+               */}
               <div className="flex justify-between">
-                <p className="text-black/30">My Liquidity Value</p>
+                <p className="text-black/30">Total CLB</p>
+                <p>{formatDecimals(totalBalance, token?.decimals, 2)} CLB</p>
+              </div>
+              {/**
+               * @TODO
+               * 총합 유동성 가치
+               */}
+              <div className="flex justify-between">
+                <p className="text-black/30">Total Liquidity Value</p>
                 <p>
-                  {formatDecimals(totalLiquidity, token?.decimals, 2)}
+                  {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
                   {token?.name}
                 </p>
               </div>
-
+              {/**
+               * @TODO
+               * 총합 제거 가능한 유동성 가치
+               */}
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
                   {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{" "}
                   CLB
                   <span className="ml-1 text-black/30">
+                    {/**
+                     * @TODO
+                     * 평균 제거 가능한 비율
+                     */}
                     ({formatDecimals(totalRemovableRate, 2, 2)}%)
                   </span>
                 </p>
