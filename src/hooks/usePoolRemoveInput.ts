@@ -1,65 +1,31 @@
-import { useMemo, useReducer } from "react";
+import { useMemo, useState } from "react";
 import { useAppSelector } from "~/store";
-import { useSelectedToken } from "./useSettlementToken";
-import { expandDecimals } from "~/utils/number";
+import { expandDecimals, trimLeftZero } from "~/utils/number";
 import { isValid } from "~/utils/valid";
 
-type PoolRemoveState = {
-  removableRate: number;
-  amount: number;
-};
-
-type PoolRemoveAction<T extends string = keyof PoolRemoveState> =
-  T extends keyof PoolRemoveState
-    ? {
-        type: T;
-        payload: Record<T, PoolRemoveState[T]>;
-      }
-    : never;
-
-const poolRemoveReducer = (
-  state: PoolRemoveState,
-  action: PoolRemoveAction
-): PoolRemoveState => {
-  const { type, payload } = action;
-  switch (type) {
-    case "removableRate": {
-      return {
-        ...state,
-        removableRate: payload.removableRate,
-      };
-    }
-    case "amount": {
-      return {
-        ...state,
-        amount: payload.amount,
-      };
-    }
-  }
-};
-
 export const usePoolRemoveInput = () => {
-  const [input, dispatch] = useReducer(poolRemoveReducer, {
-    removableRate: 87.5,
-    amount: 0,
-  });
-  const [token] = useSelectedToken();
-  const lpTokens = useAppSelector((state) => state.pools.selectedLpTokens);
+  const [amount, setAmount] = useState(0);
+  const bins = useAppSelector((state) => state.pools.selectedBins);
   const maxAmount = useMemo(() => {
-    if (lpTokens.length <= 0) {
+    if (bins.length <= 0) {
       return;
     }
-    const lpToken = lpTokens[0];
-    const balance = lpToken.balance
-      .div(expandDecimals(token?.decimals))
-      .toNumber();
+    const bin = bins[0];
+    const balance = bin.balance.div(expandDecimals(bin?.decimals)).toNumber();
 
-    return (balance * input.removableRate) / 100;
-  }, [lpTokens, input.removableRate, token?.decimals]);
+    return balance;
+  }, [bins]);
 
-  const onAmountChange = (nextAmount: number) => {
-    dispatch({ type: "amount", payload: { amount: nextAmount } });
-    return;
+  const onAmountChange = (nextAmount: number | string) => {
+    if (typeof nextAmount === "string") {
+      const parsed = Number(trimLeftZero(nextAmount));
+      if (isNaN(parsed)) {
+        return;
+      }
+      setAmount(parsed);
+    } else {
+      setAmount(nextAmount);
+    }
   };
 
   const onMaxChange = () => {
@@ -69,5 +35,5 @@ export const usePoolRemoveInput = () => {
     return;
   };
 
-  return { input, maxAmount, onAmountChange, onMaxChange };
+  return { amount, maxAmount, onAmountChange, onMaxChange };
 };

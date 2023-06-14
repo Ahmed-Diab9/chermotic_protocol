@@ -10,7 +10,7 @@ import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
-import { LPToken, LiquidityPool } from "../../../typings/pools";
+import { Bin, LiquidityPool } from "../../../typings/pools";
 import { Market, Token } from "../../../typings/market";
 import {
   bigNumberify,
@@ -31,6 +31,7 @@ import { isValid } from "~/utils/valid";
 import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
+import { usePrevious } from "~/hooks/usePrevious";
 
 interface PoolPanelProps {
   token?: Token;
@@ -46,7 +47,7 @@ interface PoolPanelProps {
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
-  selectedLpTokens?: LPToken[];
+  selectedBins?: Bin[];
   onAmountChange?: (value: string) => unknown;
   onRangeChange?: (
     minmax: "min" | "max",
@@ -56,13 +57,10 @@ interface PoolPanelProps {
   onAddLiquidity?: () => unknown;
 
   receipts?: BigNumber[];
-  onClaimLpTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimLpTokensBatch?: () => Promise<unknown>;
+  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
+  onClaimCLBTokensBatch?: () => Promise<unknown>;
 
-  removeInput?: {
-    amount: number;
-    removableRate: number;
-  };
+  removeAmount?: number;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
@@ -84,23 +82,23 @@ export const PoolPanel = (props: PoolPanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
-    selectedLpTokens = [],
+    selectedBins = [],
     receipts,
-    removeInput,
+    removeAmount,
     maxRemoveAmount,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
-    onClaimLpTokens,
-    onClaimLpTokensBatch,
+    onClaimCLBTokens,
+    onClaimCLBTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
   } = props;
-
-  const binLength = (pool?.tokens ?? []).filter((token) =>
-    token.balance.gt(0)
+  const previousPools = usePrevious(pool?.bins, true);
+  const binLength = (pool?.bins ?? []).filter((bin) =>
+    bin.balance.gt(0)
   ).length;
 
   /**
@@ -109,21 +107,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
    */
   const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
-    return (pool?.tokens ?? []).reduce(
-      (acc, token) => {
-        const { balance, binValue, removableRate } = token;
+    return (pool?.bins ?? []).reduce(
+      (acc, bin) => {
+        const { balance, binValue, removableRate } = bin;
         const value = balance
           .mul(binValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
-        const rate = removableRate > 87.5 ? 87.5 : removableRate;
         const removableValue = value
-          .mul(Math.round(rate * 10))
+          .mul(Math.round(removableRate * 10))
           .div(expandDecimals(3));
         return [acc[0].add(value), acc[1].add(removableValue)];
       },
       [bigNumberify(0), bigNumberify(0)]
     );
-  }, [pool?.tokens]);
+  }, [pool?.bins]);
 
   /**
    * @TODO
@@ -381,31 +378,33 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Tab.Panel>
                       <article>
                         <div className="flex flex-col gap-3">
-                          {pool?.tokens
-                            .filter((lpToken) => lpToken.feeRate > 0)
-                            .map((lpToken, tokenIndex) => (
+                          {(pool?.bins ?? previousPools ?? [])
+                            .filter((bin) => bin.baseFeeRate > 0)
+                            .map((bin, binIndex) => (
                               <BinItem
-                                key={lpToken.feeRate}
-                                index={tokenIndex}
+                                key={bin.baseFeeRate}
+                                index={binIndex}
                                 token={token}
-                                lpToken={lpToken}
+                                bin={bin}
                               />
                             ))}
                         </div>
                       </article>
                     </Tab.Panel>
                     <Tab.Panel>
-                      <div className="flex flex-col gap-3">
-                        {pool?.tokens
-                          .filter((lpToken) => lpToken.feeRate < 0)
-                          .map((lpToken, tokenIndex) => (
-                            <BinItem
-                              key={lpToken.feeRate}
-                              index={tokenIndex}
-                              lpToken={lpToken}
-                            />
-                          ))}
-                      </div>
+                      <article>
+                        <div className="flex flex-col gap-3">
+                          {(pool?.bins ?? previousPools ?? [])
+                            .filter((bin) => bin.baseFeeRate < 0)
+                            .map((bin, binIndex) => (
+                              <BinItem
+                                key={bin.baseFeeRate}
+                                index={binIndex}
+                                bin={bin}
+                              />
+                            ))}
+                        </div>
+                      </article>
                     </Tab.Panel>
                   </Tab.Panels>
                 </Tab.Group>
@@ -414,12 +413,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
-      {selectedLpTokens.length > 0 &&
+      {selectedBins.length === 1 &&
         createPortal(
           <RemoveLiquidityModal
-            selectedLpTokens={selectedLpTokens}
+            selectedBin={selectedBins[0]}
             token={token}
-            input={removeInput}
+            amount={removeAmount}
             maxAmount={maxRemoveAmount}
             onAmountChange={onRemoveAmountChange}
             onMaxChange={onRemoveMaxAmountChange}
@@ -432,8 +431,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
           <PoolClaim
             market={market}
             receipts={receipts}
-            onClaimLpTokens={onClaimLpTokens}
-            onClaimLpTokensBatch={onClaimLpTokensBatch}
+            onClaimCLBTokens={onClaimCLBTokens}
+            onClaimCLBTokensBatch={onClaimCLBTokensBatch}
           />,
           document.getElementById("modal")!
         )}
@@ -444,11 +443,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
 interface BinItemProps {
   index?: number;
   token?: Token;
-  lpToken?: LPToken;
+  bin?: Bin;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, lpToken } = props;
+  const { index, token, bin } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -461,14 +460,14 @@ const BinItem = (props: BinItemProps) => {
         />
         <div className="flex items-center gap-2">
           <Avatar
-            label={lpToken?.name}
+            label={bin?.name}
             size="xs"
             gap="1"
             fontSize="base"
             fontWeight="bold"
           />
           <p className="font-semibold text-black/30">
-            {lpToken?.description} {lpToken && formatFeeRate(lpToken.feeRate)}%
+            {bin?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
           </p>
         </div>
         <div className="flex items-center ml-auto">
@@ -476,8 +475,8 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              if (lpToken?.balance.gt(0)) {
-                dispatch(poolsAction.onLpTokenSelect(lpToken));
+              if (bin?.balance.gt(0)) {
+                dispatch(poolsAction.onBinSelect(bin));
               }
             }}
           />
@@ -491,30 +490,25 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex flex-col gap-2 min-w-[28%]">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
-            <p>
-              {lpToken && formatDecimals(lpToken.balance, token?.decimals, 2)}
-            </p>
+            <p>{bin && formatDecimals(bin.balance, bin?.decimals, 2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{lpToken?.removableRate}%</p>
+            <p>{bin?.removableRate}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>
-              {lpToken &&
-                formatDecimals(lpToken.binValue, BIN_VALUE_DECIMAL, 2)}
-            </p>
+            <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {lpToken &&
+              {bin &&
                 formatDecimals(
-                  lpToken.balance
-                    .mul(lpToken.binValue)
+                  bin.balance
+                    .mul(bin.binValue)
                     .div(expandDecimals(BIN_VALUE_DECIMAL)),
                   token?.decimals,
                   2
@@ -530,12 +524,12 @@ const BinItem = (props: BinItemProps) => {
 interface PoolClaimProps {
   market?: Market;
   receipts?: BigNumber[];
-  onClaimLpTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimLpTokensBatch?: () => Promise<unknown>;
+  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
+  onClaimCLBTokensBatch?: () => Promise<unknown>;
 }
 
 const PoolClaim = (props: PoolClaimProps) => {
-  const { market, receipts, onClaimLpTokens, onClaimLpTokensBatch } = props;
+  const { market, receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = props;
 
   return (
     <div className="fixed left-auto z-30 flex flex-col bg-white shadow-md gap-x-1 gap-y-2 top-4 right-4">
@@ -546,7 +540,7 @@ const PoolClaim = (props: PoolClaimProps) => {
           <button
             className="px-2 py-1 text-white bg-black"
             onClick={() => {
-              onClaimLpTokens?.(receipt);
+              onClaimCLBTokens?.(receipt);
             }}
           >
             Claim
@@ -557,7 +551,7 @@ const PoolClaim = (props: PoolClaimProps) => {
         <button
           className="px-2 py-1 text-white bg-black"
           onClick={() => {
-            onClaimLpTokensBatch?.();
+            onClaimCLBTokensBatch?.();
           }}
         >
           Claim All

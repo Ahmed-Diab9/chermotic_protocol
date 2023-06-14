@@ -9,23 +9,19 @@ import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
-  percentage,
   trimLeftZero,
 } from "~/utils/number";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
-import { LPToken } from "~/typings/pools";
+import { Bin } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveLiquidityModalProps {
-  selectedLpTokens?: LPToken[];
+  selectedBin?: Bin;
   token?: Token;
-  input?: {
-    amount: number;
-    removableRate: number;
-  };
+  amount?: number;
   maxAmount?: number;
   onAmountChange?: (nextAmount: number) => unknown;
   onMaxChange?: () => unknown;
@@ -34,9 +30,9 @@ export interface RemoveLiquidityModalProps {
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const {
-    selectedLpTokens = [],
+    selectedBin,
     token,
-    input,
+    amount,
     maxAmount,
     onAmountChange,
     onMaxChange,
@@ -53,7 +49,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       }
       const isContained = modalRef.current?.contains(clicked);
       if (!isContained) {
-        dispatch(poolsAction.onLpTokensReset());
+        dispatch(poolsAction.onBinsReset());
       }
     };
     document.addEventListener("click", onClickAway);
@@ -63,71 +59,12 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     };
   }, [dispatch]);
 
-  /**
-   * @TODO
-   * 선택한 LP 토큰에 대해 토큰 총합 개수, 총합 유동성, 총합 제거 가능한 유동성을 계산하는 로직입니다.
-   */
-  const {
-    balance: totalBalance,
-    liquidity: totalLiquidity,
-    removableLiquidity: totalRemovableLiquidity,
-  } = useMemo(() => {
-    return selectedLpTokens.reduce(
-      (record, currentToken) => {
-        const { balance, binValue, removableRate } = currentToken;
-
-        /**
-         * @TODO
-         * 유동성 = LP 토큰 개수 * Bin 값
-         */
-        const liquidity = balance
-          .mul(binValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-        /**
-         * @TODO
-         * 제거 가능한 유동성의 비율 최대치 적용
-         */
-        const rate = removableRate > 87.5 ? 87.5 : removableRate;
-        const removableLiquidity = balance
-          .mul(binValue)
-          .mul(Math.round(rate * percentage()))
-          .div(expandDecimals(FEE_RATE_DECIMAL))
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-
-        return {
-          balance: record.balance.add(balance),
-          liquidity: record.liquidity.add(liquidity),
-          removableLiquidity: record.removableLiquidity.add(removableLiquidity),
-        };
-      },
-      {
-        balance: bigNumberify(0),
-        liquidity: bigNumberify(0),
-        removableLiquidity: bigNumberify(0),
-      }
-    );
-  }, [selectedLpTokens]);
-
-  /**
-   * @TODO
-   * 여러 LP 토큰에 대해 제거 가능한 비율 평균 계산
-   */
-  const totalRemovableRate = totalRemovableLiquidity
-    .mul(10000)
-    .div(totalLiquidity);
-
-  /**
-   * @TODO
-   * Bin 값 평균 계산
-   */
-  const totalBinValue = totalLiquidity.div(totalBalance);
-
   return (
     <Dialog
       className=""
-      open={selectedLpTokens.length > 0}
+      open={!!selectedBin}
       onClose={() => {
-        dispatch(poolsAction.onLpTokensReset());
+        dispatch(poolsAction.onBinsReset());
       }}
     >
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
@@ -137,7 +74,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             Remove Liquidity
             <ModalCloseButton
               onClick={() => {
-                dispatch(poolsAction.onLpTokensReset());
+                dispatch(poolsAction.onBinsReset());
               }}
             />
           </Dialog.Title>
@@ -145,34 +82,30 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
-              {selectedLpTokens.map((lpToken) => {
+              {[selectedBin].map((bin) => {
                 /**
                  * @TODO
                  * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
                  */
-                const utilizedRate = 100 - lpToken.removableRate;
-                const removableRate =
-                  lpToken.removableRate > 87.5 ? 87.5 : lpToken.removableRate;
-                const utilized = lpToken.balance
+                const utilizedRate = 100 - bin.removableRate;
+                const utilized = bin.balance
                   .mul(Math.round(utilizedRate * 10))
                   .div(expandDecimals(3));
-                const removable = lpToken.balance
-                  .mul(Math.round(removableRate * 10))
+                const removable = bin.balance
+                  .mul(Math.round(bin.removableRate * 10))
                   .div(expandDecimals(3));
 
                 return (
                   <LiquidityItem
-                    key={lpToken.feeRate}
+                    key={bin.baseFeeRate}
                     token={token?.name}
-                    name={lpToken.description}
-                    qty={Number(
-                      formatDecimals(lpToken.balance, token?.decimals, 2)
-                    )}
+                    name={bin.description}
+                    qty={Number(formatDecimals(bin.balance, bin?.decimals, 2))}
                     utilizedValue={Number(
-                      formatDecimals(utilized, token?.decimals, 2)
+                      formatDecimals(utilized, bin?.decimals, 2)
                     )}
                     removableValue={Number(
-                      formatDecimals(removable, token?.decimals, 2)
+                      formatDecimals(removable, bin?.decimals, 2)
                     )}
                   />
                 );
@@ -194,7 +127,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex justify-between">
                 <p className="text-black/30">My Liquidity Value</p>
                 <p>
-                  {formatDecimals(totalLiquidity, token?.decimals, 2)}
+                  {formatDecimals(
+                    selectedBin.balance
+                      .mul(selectedBin.binValue)
+                      .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                    token?.decimals,
+                    2
+                  )}{" "}
                   {token?.name}
                 </p>
               </div>
@@ -202,10 +141,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
-                  {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{" "}
-                  CLB
+                  {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)}{" "}
+                  {token.name}
                   <span className="ml-1 text-black/30">
-                    ({formatDecimals(totalRemovableRate, 2, 2)}%)
+                    ({selectedBin.removableRate}%)
                   </span>
                 </p>
               </div>
@@ -220,20 +159,23 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     className="flex-auto border-gray drop-shadow-md"
                     label="All"
                     size="sm"
+                    onClick={() => {
+                      onMaxChange?.();
+                    }}
                   />
                   <Button
                     className="flex-auto border-gray drop-shadow-md"
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      onMaxChange?.();
+                      onAmountChange?.(1000);
                     }}
                   />
                 </div>
                 <div className="max-w-[220px]">
                   <Input
                     unit="CLB"
-                    value={input?.amount}
+                    value={amount}
                     onChange={(event) => {
                       const value = trimLeftZero(event.target.value);
                       const parsed = Number(value);
@@ -243,10 +185,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       onAmountChange?.(parsed);
                     }}
                     onClickAway={() => {
-                      if (!isValid(input) || !isValid(maxAmount)) {
+                      if (!isValid(amount) || !isValid(maxAmount)) {
                         return;
                       }
-                      if (input.amount > maxAmount) {
+                      if (amount > maxAmount) {
                         onMaxChange?.();
                       }
                     }}
@@ -258,10 +200,12 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                  * @TODO
                  * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                  */}
-                {input &&
+                {amount &&
                   formatDecimals(
-                    bigNumberify(input.amount).mul(totalBinValue),
-                    2,
+                    bigNumberify(amount)
+                      .mul(selectedBin.binValue)
+                      .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                    0,
                     2
                   )}{" "}
                 {token?.name}
@@ -280,11 +224,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               className="text-lg"
               css="active"
               onClick={() => {
-                if (selectedLpTokens.length > 0 && isValid(input)) {
-                  onRemoveLiquidity?.(
-                    selectedLpTokens[0].feeRate,
-                    input.amount
-                  );
+                if (isValid(selectedBin) && isValid(amount)) {
+                  onRemoveLiquidity?.(selectedBin.baseFeeRate, amount);
                 }
               }}
             />
