@@ -15,13 +15,13 @@ import {
 } from "~/utils/number";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
-import { LPToken } from "~/typings/pools";
+import { Bin } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
 import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveMultiLiquidityModalProps {
-  selectedLpTokens?: LPToken[];
+  selectedBins?: Bin[];
   token?: Token;
   input?: {
     amount: number;
@@ -37,7 +37,7 @@ export const RemoveMultiLiquidityModal = (
   props: RemoveMultiLiquidityModalProps
 ) => {
   const {
-    selectedLpTokens = [],
+    selectedBins = [],
     token,
     input,
     maxAmount,
@@ -56,7 +56,7 @@ export const RemoveMultiLiquidityModal = (
       }
       const isContained = modalRef.current?.contains(clicked);
       if (!isContained) {
-        dispatch(poolsAction.onLpTokensReset());
+        dispatch(poolsAction.onBinsReset());
       }
     };
     document.addEventListener("click", onClickAway);
@@ -65,6 +65,8 @@ export const RemoveMultiLiquidityModal = (
       document.removeEventListener("click", onClickAway);
     };
   }, [dispatch]);
+
+  const binDecimals = selectedBins.length > 0 && selectedBins[0].decimals;
 
   /**
    * @TODO
@@ -75,9 +77,9 @@ export const RemoveMultiLiquidityModal = (
     liquidity: totalLiquidity,
     removableLiquidity: totalRemovableLiquidity,
   } = useMemo(() => {
-    return selectedLpTokens.reduce(
-      (record, currentToken) => {
-        const { balance, binValue, removableRate } = currentToken;
+    return selectedBins.reduce(
+      (record, bin) => {
+        const { balance, binValue, removableRate } = bin;
 
         /**
          * @TODO
@@ -90,10 +92,9 @@ export const RemoveMultiLiquidityModal = (
          * @TODO
          * 제거 가능한 유동성의 비율 최대치 적용
          */
-        const rate = removableRate > 87.5 ? 87.5 : removableRate;
         const removableLiquidity = balance
           .mul(binValue)
-          .mul(Math.round(rate * percentage()))
+          .mul(Math.round(removableRate * percentage()))
           .div(expandDecimals(FEE_RATE_DECIMAL))
           .div(expandDecimals(BIN_VALUE_DECIMAL));
 
@@ -109,7 +110,7 @@ export const RemoveMultiLiquidityModal = (
         removableLiquidity: bigNumberify(0),
       }
     );
-  }, [selectedLpTokens]);
+  }, [selectedBins]);
 
   /**
    * @TODO
@@ -128,9 +129,9 @@ export const RemoveMultiLiquidityModal = (
   return (
     <Dialog
       className=""
-      open={selectedLpTokens.length > 0}
+      open={selectedBins.length > 0}
       onClose={() => {
-        dispatch(poolsAction.onLpTokensReset());
+        dispatch(poolsAction.onBinsReset());
       }}
     >
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
@@ -139,10 +140,10 @@ export const RemoveMultiLiquidityModal = (
           <Dialog.Title className="modal-title">
             Remove Liquidity
             {/* Bin 개수가 여러개일 때 */}
-            <span className="ml-2">({selectedLpTokens.length})</span>
+            <span className="ml-2">({selectedBins.length})</span>
             <ModalCloseButton
               onClick={() => {
-                dispatch(poolsAction.onLpTokensReset());
+                dispatch(poolsAction.onBinsReset());
               }}
             />
           </Dialog.Title>
@@ -151,38 +152,34 @@ export const RemoveMultiLiquidityModal = (
             {/* liquidity items */}
             <article className="relative flex flex-col border border-gray rounded-xl">
               <div className="max-h-[calc(100vh-600px)] overflow-auto">
-                {selectedLpTokens.map((lpToken) => {
-                  /**
-                   * @TODO
-                   * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
-                   */
-                  const utilizedRate = 100 - lpToken.removableRate;
-                  const removableRate =
-                    lpToken.removableRate > 87.5 ? 87.5 : lpToken.removableRate;
-                  const utilized = lpToken.balance
-                    .mul(Math.round(utilizedRate * 10))
-                    .div(expandDecimals(3));
-                  const removable = lpToken.balance
-                    .mul(Math.round(removableRate * 10))
-                    .div(expandDecimals(3));
+                {selectedBins.map((bin) => {
+                /**
+                 * @TODO
+                 * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
+                 */
+                const utilizedRate = 100 - bin.removableRate;
+                const utilized = bin.balance
+                  .mul(Math.round(utilizedRate * percentage()))
+                  .div(expandDecimals(FEE_RATE_DECIMAL));
+                const removable = bin.balance
+                  .mul(Math.round(bin.removableRate * percentage()))
+                  .div(expandDecimals(FEE_RATE_DECIMAL));
 
-                  return (
-                    <LiquidityItem
-                      key={lpToken.feeRate}
-                      token={token?.name}
-                      name={lpToken.description}
-                      qty={Number(
-                        formatDecimals(lpToken.balance, token?.decimals, 2)
-                      )}
-                      utilizedValue={Number(
-                        formatDecimals(utilized, token?.decimals, 2)
-                      )}
-                      removableValue={Number(
-                        formatDecimals(removable, token?.decimals, 2)
-                      )}
-                    />
-                  );
-                })}
+                return (
+                  <LiquidityItem
+                    key={bin.baseFeeRate}
+                    token={token?.name}
+                    name={bin.description}
+                    qty={Number(formatDecimals(bin.balance, bin?.decimals, 2))}
+                    utilizedValue={Number(
+                      formatDecimals(utilized, bin?.decimals, 2)
+                    )}
+                    removableValue={Number(
+                      formatDecimals(removable, bin?.decimals, 2)
+                    )}
+                  />
+                );
+              })}
                 {/**
                  * LiquidityItem 컴포넌트 예시
                  */}
@@ -207,7 +204,7 @@ export const RemoveMultiLiquidityModal = (
                */}
               <div className="flex justify-between">
                 <p className="text-black/30">Total CLB</p>
-                <p>{formatDecimals(totalBalance, token?.decimals, 2)} CLB</p>
+                <p>{formatDecimals(totalBalance, binDecimals, 2)} CLB</p>
               </div>
               {/**
                * @TODO
@@ -311,9 +308,9 @@ export const RemoveMultiLiquidityModal = (
               className="text-lg"
               css="active"
               onClick={() => {
-                if (selectedLpTokens.length > 0 && isValid(input)) {
+                if (selectedBins.length > 0 && isValid(input)) {
                   onRemoveLiquidity?.(
-                    selectedLpTokens[0].feeRate,
+                    selectedBins[0].baseFeeRate,
                     input.amount
                   );
                 }

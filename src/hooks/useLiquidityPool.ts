@@ -1,21 +1,20 @@
 import {
-  CLBToken,
   CLBToken__factory,
+  ChromaticLens,
   ChromaticMarketFactory,
   ChromaticMarket__factory,
   ChromaticRouter,
   getDeployedContract,
 } from "@chromatic-protocol/sdk";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { TOKEN_URI_PREFIX } from "../configs/pool";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import {
-  LPTokenMetadata,
+  CLBTokenBatch,
   LiquidityPool,
   LiquidityPoolSummary,
 } from "../typings/pools";
@@ -27,41 +26,17 @@ import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 import usePoolReceipt from "./usePoolReceipt";
 import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
-import { createRemovableRateMock } from "~/mock/pools";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
-
-const fetchLpTokenMetadata = async (
-  lpToken: CLBToken,
-  feeRates: BigNumber[]
-) => {
-  try {
-    const promise = feeRates.map((rate) => {
-      return lpToken.uri(rate);
-    });
-    const response = await Promise.allSettled(promise);
-    const filtered = response.filter(
-      (result): result is PromiseFulfilledResult<string> =>
-        result.status === "fulfilled"
-    );
-
-    return filtered.map(({ value }) => {
-      const trimmed = window.atob(value.replace(TOKEN_URI_PREFIX, ""));
-      const metadata: LPTokenMetadata = JSON.parse(trimmed);
-      return metadata;
-    });
-  } catch (error) {
-    errorLog(error);
-    return undefined!;
-  }
-};
+import useOracleVersion from "./useOracleVersion";
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
   const [tokens] = useSettlementToken();
   const tokenAddresses = tokens?.map((token) => token.address);
+  const { oracleVersions } = useOracleVersion();
   const fetchKey =
-    isValid(walletAddress) && isValid(tokenAddresses)
-      ? ([walletAddress, tokenAddresses] as const)
+    isValid(walletAddress) && isValid(tokenAddresses) && isValid(oracleVersions)
+      ? ([walletAddress, tokenAddresses, oracleVersions] as const)
       : undefined;
 
   const {
@@ -70,7 +45,7 @@ export const useLiquidityPool = () => {
     mutate: fetchLiquidityPools,
   } = useSWR(
     fetchKey,
-    async ([walletAddress, tokenAddresses]) => {
+    async ([walletAddress, tokenAddresses, oracleVersions]) => {
       const provider = new ethers.providers.Web3Provider(
         window.ethereum as any
       );
@@ -79,11 +54,11 @@ export const useLiquidityPool = () => {
         "anvil",
         provider
       ) as ChromaticMarketFactory;
-      const router = getDeployedContract(
-        "ChromaticRouter",
+      const lens = getDeployedContract(
+        "ChromaticLens",
         "anvil",
         provider
-      ) as ChromaticRouter;
+      ) as ChromaticLens;
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
         ...SHORT_FEE_RATES.map((rate) => rate * -1),
@@ -93,9 +68,6 @@ export const useLiquidityPool = () => {
         ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
         ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
       ];
-      const addresses = Array.from({ length: feeRates.length }).map(
-        () => walletAddress
-      );
       const promises = tokenAddresses.map(async (tokenAddress) => {
         const marketAddresses = await factory.getMarketsBySettlmentToken(
           tokenAddress
@@ -105,49 +77,30 @@ export const useLiquidityPool = () => {
             marketAddress,
             provider
           );
-          const lpTokenAddress = await market.clbToken();
-
-          const lpToken = CLBToken__factory.connect(lpTokenAddress, provider);
-
-          const balances = await lpToken.balanceOfBatch(addresses, feeRates);
-          const metadata = await fetchLpTokenMetadata(lpToken, feeRates);
-
-          const maxLiquidities = await market.getBinLiquidities(baseFeeRates);
-
-          const unusedLiquidities = await market.getBinFreeLiquidities(
-            baseFeeRates
-          );
-          const tokenValueBatch = await router.calculateCLBTokenValueBatch(
-            marketAddress,
+          const version = oracleVersions[marketAddress].version;
+          const clbTokenAddress = await market.clbToken();
+          const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
+          const clbTokenBatch = new CLBTokenBatch(
+            clbToken,
+            lens,
+            clbTokenAddress,
+            tokenAddress,
+            market.address,
             baseFeeRates,
-            maxLiquidities
+            feeRates
           );
-
-          // LP Token의 총 수량
-          const totalSupplies = await router.totalSupplies(
-            marketAddress,
-            baseFeeRates
-          );
+          await clbTokenBatch.updateBalances(walletAddress);
+          await clbTokenBatch.updateMetadata();
+          await clbTokenBatch.updateLiquidities(version);
+          await clbTokenBatch.updateBinValues();
+          clbTokenBatch.updateLiquidityValues();
+          clbTokenBatch.updateRemovableRates();
 
           return {
-            address: lpTokenAddress,
+            address: clbTokenAddress,
             tokenAddress,
-            marketAddress: market.address,
-            tokens: baseFeeRates.map((feeRate, feeRateIndex) => {
-              const { name, description, image } = metadata[feeRateIndex];
-
-              return {
-                name,
-                description,
-                image,
-                feeRate,
-                balance: balances[feeRateIndex],
-                binValue: tokenValueBatch[feeRateIndex],
-                removableRate: createRemovableRateMock(),
-                maxLiquidity: maxLiquidities[feeRateIndex],
-                unusedLiquidity: unusedLiquidities[feeRateIndex],
-              };
-            }),
+            marketAddress,
+            bins: clbTokenBatch.toBins(),
           } satisfies LiquidityPool;
         });
         const response = await Promise.allSettled(promise).catch((err) => {
@@ -208,26 +161,26 @@ export const useSelectedLiquidityPool = () => {
   }, [market, token, pools]);
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
-    const longLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate > 0
+    const longCLBTokens = (isValid(pool) ? pool.bins : []).filter(
+      (bin) => bin.baseFeeRate > 0
     );
-    return longLpTokens?.reduce(
+    return longCLBTokens?.reduce(
       (acc, currentToken) => {
-        const max = acc[0].add(currentToken.maxLiquidity);
-        const unused = acc[1].add(currentToken.unusedLiquidity);
+        const max = acc[0].add(currentToken.liquidity);
+        const unused = acc[1].add(currentToken.freeLiquidity);
         return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
   const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
-    const shortLpTokens = (pool?.tokens ?? []).filter(
-      (lpToken) => lpToken.feeRate < 0
+    const shortCLBTokens = (isValid(pool) ? pool.bins : []).filter(
+      (clbToken) => clbToken.baseFeeRate < 0
     );
-    return shortLpTokens?.reduce(
+    return shortCLBTokens?.reduce(
       (acc, currentToken) => {
-        const max = acc[0].add(currentToken.maxLiquidity);
-        const unused = acc[1].add(currentToken.unusedLiquidity);
+        const max = acc[0].add(currentToken.liquidity);
+        const unused = acc[1].add(currentToken.freeLiquidity);
         return [max, unused];
       },
       [bigNumberify(0), bigNumberify(0)] as const
@@ -254,11 +207,11 @@ export const useSelectedLiquidityPool = () => {
       signer
     ) as ChromaticRouter;
 
-    const lpToken = CLBToken__factory.connect(pool.address, signer);
-    const isApproved = await lpToken.isApprovedForAll(address, router.address);
+    const clbToken = CLBToken__factory.connect(pool.address, signer);
+    const isApproved = await clbToken.isApprovedForAll(address, router.address);
     if (!isApproved) {
       infoLog("Approving all lp tokens");
-      await lpToken.setApprovalForAll(router.address, true);
+      await clbToken.setApprovalForAll(router.address, true);
     }
     const expandedAmount = bigNumberify(amount).mul(
       expandDecimals(token?.decimals ?? 1)
@@ -297,7 +250,7 @@ export const useLiquidityPoolSummary = () => {
     }
     const array = [] as LiquidityPoolSummary[];
     for (const pool of pools) {
-      const { tokenAddress, marketAddress, tokens: lpTokens } = pool;
+      const { tokenAddress, marketAddress, bins } = pool;
       const market = markets?.find(
         (market) => market.address === marketAddress
       );
@@ -308,14 +261,14 @@ export const useLiquidityPoolSummary = () => {
       }
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
-      let bins = 0;
-      for (let index = 0; index < lpTokens.length; index++) {
-        const lpToken = lpTokens[index];
-        if (lpToken.balance.gt(0)) {
-          const addValue = lpToken.balance
-            .mul(lpToken.binValue)
+      let binSize = 0;
+      for (let index = 0; index < bins.length; index++) {
+        const bin = bins[index];
+        if (bin.balance.gt(0)) {
+          const addValue = bin.balance
+            .mul(bin.binValue)
             .div(expandDecimals(BIN_VALUE_DECIMAL));
-          bins += 1;
+          binSize += 1;
           liquiditySum = liquiditySum.add(addValue);
         }
       }
@@ -326,7 +279,7 @@ export const useLiquidityPoolSummary = () => {
         },
         market: marketDescription,
         liquidity: liquiditySum,
-        bins,
+        bins: binSize,
       });
     }
     return array;

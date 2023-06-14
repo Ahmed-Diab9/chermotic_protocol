@@ -28,17 +28,20 @@ export const Default: Story = {
       address: "0x8888888888888888888888888888888888888888",
       tokenAddress: "0x8888888888888888888888888888888888888888",
       marketAddress: "0x8888888888888888888888888888888888888888",
-      tokens: [
+      bins: [
         {
           name: "LP Token",
           description: "LP Token Description",
           image: "",
-          feeRate: 100,
+          decimals: 18,
+          baseFeeRate: 100,
+          feeRate: BigNumber.from(100 * 100000000000),
           balance: BigNumber.from(50000000000),
           binValue: BigNumber.from(10000000000),
+          liquidityValue: BigNumber.from(1500000),
           removableRate: 87.54,
-          maxLiquidity: BigNumber.from(3000000000),
-          unusedLiquidity: BigNumber.from(2000000000),
+          liquidity: BigNumber.from(3000000000),
+          freeLiquidity: BigNumber.from(2000000000),
         },
       ],
     },
@@ -50,6 +53,6 @@ export const Default: Story = {
     longTotalUnusedLiquidity: BigNumber.from(100),
     shortTotalMaxLiquidity: BigNumber.from(100),
     shortTotalUnusedLiquidity: BigNumber.from(100),
-    selectedLpTokens: [],
+    selectedBins: [],
   },
 };

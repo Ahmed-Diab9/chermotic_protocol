@@ -52,10 +52,9 @@ const Pool = () => {
   const { disconnectAsync } = useDisconnect();
   const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
     useTokenTransaction();
-  const selectedLpTokens = useAppSelector(
-    (state) => state.pools.selectedLpTokens
-  );
-  const { receipts, onClaimLpTokens, onClaimLpTokensBatch } = usePoolReceipt();
+  const selectedBins = useAppSelector((state) => state.pools.selectedBins);
+  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
+    usePoolReceipt();
   const [
     pool,
     [
@@ -78,7 +77,7 @@ const Pool = () => {
     onAddLiquidity,
   } = usePoolInput();
   const {
-    input: removeInput,
+    amount: removeAmount,
     maxAmount: maxRemoveAmount,
     onAmountChange: onRemoveAmountChange,
     onMaxChange: onRemoveMaxAmountChange,
@@ -141,15 +140,15 @@ const Pool = () => {
               longTotalUnusedLiquidity={longTotalUnusedLiquidity}
               shortTotalMaxLiquidity={shortTotalMaxLiquidity}
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-              selectedLpTokens={selectedLpTokens}
+              selectedBins={selectedBins}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
               onFullRangeSelect={onFullRangeSelect}
               onAddLiquidity={onAddLiquidity}
               receipts={receipts}
-              onClaimLpTokens={onClaimLpTokens}
-              onClaimLpTokensBatch={onClaimLpTokensBatch}
-              removeInput={removeInput}
+              onClaimCLBTokens={onClaimCLBTokens}
+              onClaimCLBTokensBatch={onClaimCLBTokensBatch}
+              removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
               onRemoveMaxAmountChange={onRemoveMaxAmountChange}
