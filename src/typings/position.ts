@@ -86,7 +86,7 @@ export class Position {
   // 이자 차감된 증거금 구하는 메소드
   // 시간이 지남에 따른 보증금 차감 로직이 유효한지 검증이 필요합니다.
   // 추가 Decimals 20 적용 - 초당 토큰 수수료 10 + 보증금 차감 10
-  createCollateral(feeRate: BigNumber) {
+  updateCollateral(feeRate: BigNumber) {
     // entryTime: 진입시각
     const entryTime = this.openTimestamp.toNumber();
     // annualSeconds: 현재 시각부터 1년 뒤 시각까지의 차이를 초 단위로 변환된 값
@@ -111,20 +111,20 @@ export class Position {
 
   // TODO
   // Take Profit 비율을 구하는 메소드
-  createTakeProfit() {
+  updateTakeProfit() {
     this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
   // TODO
   // Stop Loss 비율을 구하는 메소드
-  createStopLoss() {
+  updateStopLoss() {
     this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
   }
 
-  createCurrentPrice(price: BigNumber) {
+  updateCurrentPrice(price: BigNumber) {
     this.currentPrice = price;
   }
-  createOraclePrice(
+  updateOraclePrice(
     output: [
       IOracleProvider.OracleVersionStructOutput,
       IOracleProvider.OracleVersionStructOutput
@@ -136,7 +136,7 @@ export class Position {
 
   // TODO
   // 청산가를 구하는 메소드
-  createLiquidationPrice(tokenDecimals?: number) {
+  updateLiquidationPrice(tokenDecimals?: number) {
     const quantity = this.qty
       .abs()
       .div(expandDecimals(tokenDecimals))
@@ -171,7 +171,7 @@ export class Position {
 
   // TODO
   // Profit and Loss를 구하는 메소드
-  createPNL(oracleDecimals: number) {
+  updatePNL(oracleDecimals: number) {
     this.profitAndLoss = this.currentPrice
       .sub(this.openPrice)
       .mul(expandDecimals(oracleDecimals + 2))
@@ -181,7 +181,7 @@ export class Position {
 
   // TODO
   // 현재 가격에서 각 청산가까지 남은 퍼센트를 구하는 메소드
-  createPriceTo(oracleDecimals: number) {
+  updatePriceTo(oracleDecimals: number) {
     this.toProfitPrice = this.profitPrice
       .sub(this.currentPrice)
       .mul(expandDecimals(oracleDecimals + 2))
