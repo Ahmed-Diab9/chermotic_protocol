@@ -179,9 +179,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
                     (
-                    {input &&
+                    {amount &&
                       formatDecimals(
-                        bigNumberify(input.amount).mul(totalBinValue),
+                        bigNumberify(amount).mul(selectedBin.binValue),
                         2,
                         2
                       )}{" "}
