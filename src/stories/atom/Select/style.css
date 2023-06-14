@@ -3,7 +3,7 @@
   button[aria-haspopup="listbox"] {
     @apply flex items-center text-left gap-2 justify-between px-3 py-2 mb-1;
     @apply w-full;
-    @apply border rounded;
+    @apply border border-gray rounded-lg;
     &::after {
       content: "";
       display: inline-block;

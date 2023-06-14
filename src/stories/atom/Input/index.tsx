@@ -29,7 +29,7 @@ export const Input = (props: InputProps) => {
     className,
     size = "base",
     css = "default",
-    align = "left",
+    align = "right",
     value,
     onChange,
     onClickAway,
@@ -58,9 +58,9 @@ export const Input = (props: InputProps) => {
 
   return (
     <div
-      className={`inline-flex gap-3 items-center input input-${size} input-${css} ${className}`}
+      className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}
     >
-      {assetSrc ? <Avatar src={assetSrc} /> : null}
+      {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
       <input
         ref={inputRef}
         type={type}

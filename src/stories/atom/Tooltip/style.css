@@ -1,21 +1,14 @@
 .tooltip {
-  @apply inline-flex items-center gap-1;
-  position: relative;
+  @apply flex items-center gap-1 relative;
 
-  /* Tooltip text */
   .tooltip-tip {
+    @apply z-40 absolute max-w-[400px] min-h-[28px] whitespace-normal;
+    @apply bg-black text-white;
     visibility: hidden;
-    width: 120px;
-    min-height: 28px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
+    width: max-content;
+    text-align: left;
+    padding: 6px 16px;
     border-radius: 6px;
-    max-width: 600px;
-
-    position: absolute;
-    @apply z-10;
 
     &::after {
       content: " ";
@@ -30,10 +23,8 @@
   }
 }
 .tooltip-top .tooltip-tip {
-  width: 120px;
+  @apply translate-x-[-50%] left-[50%];
   bottom: calc(100% + 8px);
-  left: 50%;
-  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
   &::after {
     top: 100%; /* At the bottom of the tooltip */
     left: 50%;
@@ -52,10 +43,8 @@
   }
 }
 .tooltip-bottom .tooltip-tip {
-  width: 120px;
+  @apply translate-x-[-50%] left-[50%];
   top: calc(100% + 8px);
-  left: 50%;
-  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
   &::after {
     bottom: 100%; /* At the top of the tooltip */
     left: 50%;
