@@ -20,8 +20,8 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   // 소수점 2자리 표기
 
   return (
-    <div className="w-full px-4 py-3 border rounded-2xl bg-grayL/20">
-      <div className="flex items-center gap-3 pb-4 mb-4 border-b">
+    <div className="w-full px-4 py-3 bg-grayL/20 [&:not(:last-child)]:border-b border-gray">
+      <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
         <Thumbnail size="lg" className="rounded" />
         <div>
           <Avatar label={token} size="xs" gap="1" />
@@ -40,11 +40,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         <Progress css="sm" value={utilizedValue} max={qty} />
         <div className="flex justify-between mt-1">
           <p className="">
-            {utilizedValue}
+            {utilizedValue} CLB
             <span className="text-black/30 ml-[2px]">({utilizedPercent}%)</span>
           </p>
           <p className="">
-            {removableValue}
+            {removableValue} CLB
             <span className="text-black/30 ml-[2px]">({remoablePercent}%)</span>
           </p>
         </div>

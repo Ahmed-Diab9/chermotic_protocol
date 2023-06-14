@@ -96,32 +96,39 @@ export const WalletPopover = ({
 }: WalletPopoverProps) => {
   return (
     <div className={`WalletPopover popover text-right`}>
-      <Popover className="relative">
-        <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
-          <Avatar
-            label={
-              account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
-            }
-            src="/src/assets/images/arbitrum.svg"
-            className="!w-[44px] !h-[44px]"
-            fontSize="sm"
-            fontWeight="normal"
-            gap="3"
-          />
-        </Popover.Button>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-200"
-          enterFrom="opacity-50 translate-x-20"
-          enterTo="opacity-100 translate-x-0"
-          leave="transition ease-in duration-0"
-          // leaveFrom="opacity-100 translate-x-20"
-          // leaveTo="opacity-100 translate-x-0"
-        >
-          <Popover.Panel className="relative transform border-l shadow-xl shadow-white popover-panel ">
-            {({ close }) => (
-              <>
-                <div className="flex flex-col h-full ">
+      <Popover>
+        {({ open, close }) => (
+          <>
+            <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
+              <Avatar
+                label={
+                  account?.usumAddress &&
+                  trimAddress(account?.usumAddress, 7, 5)
+                }
+                src="/src/assets/images/arbitrum.svg"
+                className="!w-[44px] !h-[44px]"
+                fontSize="sm"
+                fontWeight="normal"
+                gap="3"
+              />
+            </Popover.Button>
+            {open && (
+              <div
+                className="fixed inset-0 z-40 bg-white/80"
+                aria-hidden="true"
+              />
+            )}
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-200"
+              enterFrom="opacity-50 translate-x-20"
+              enterTo="opacity-100 translate-x-0"
+              leave="transition ease-in duration-0"
+              // leaveFrom="opacity-100 translate-x-20"
+              // leaveTo="opacity-100 translate-x-0"
+            >
+              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel ">
+                <div className="relative flex flex-col h-full ">
                   {/* Network */}
                   <Avatar
                     src="/src/assets/images/arbitrum.svg"
@@ -322,10 +329,10 @@ export const WalletPopover = ({
                     className="absolute left-0 t-10 ml-[-60px]"
                   />
                 </div>
-              </>
-            )}
-          </Popover.Panel>
-        </Transition>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
       </Popover>
     </div>
   );

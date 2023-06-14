@@ -2,7 +2,7 @@
   @apply max-w-full bg-white;
 }
 .input-sm {
-  @apply h-7 px-2 text-base;
+  @apply h-7 px-3 text-base;
 }
 .input-base {
   @apply h-9 px-3 text-lg;
@@ -11,5 +11,5 @@
   @apply h-12 px-5;
 }
 .input-default {
-  @apply border rounded-lg;
+  @apply border border-gray rounded-lg;
 }

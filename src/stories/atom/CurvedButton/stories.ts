@@ -1,37 +1,28 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from ".";
+import { CurvedButton } from ".";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/Button",
-  component: Button,
+  title: "Atom/CurvedButton",
+  component: CurvedButton,
   tags: ["autodocs"],
   argTypes: {
     // backgroundColor: { control: "color" },
   },
-} satisfies Meta<typeof Button>;
+} satisfies Meta<typeof CurvedButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Default: Story = {
+export const Left: Story = {
   args: {
-    css: "default",
-    label: "Button",
+    direction: "left",
   },
 };
 
-export const Active: Story = {
+export const Right: Story = {
   args: {
-    css: "active",
-    label: "Button",
-  },
-};
-
-export const Gray: Story = {
-  args: {
-    css: "gray",
-    label: "Button",
+    direction: "right",
   },
 };

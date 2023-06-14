@@ -35,8 +35,11 @@
   @apply bg-black text-white dark:text-black;
   @apply border border-black;
 }
+.btn-gray {
+  @apply border border-gray;
+}
 .btn-default {
-  @apply text-black border;
+  @apply border;
 }
 .btn-unstyled {
   @apply bg-transparent hover:bg-black/20;

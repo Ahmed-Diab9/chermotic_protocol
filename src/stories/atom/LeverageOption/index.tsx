@@ -15,44 +15,44 @@ export const LeverageOption = (props: LeverageOptionProps) => {
         className="flex-auto"
         label="5x"
         size="sm"
-        css={value === 5 ? "active" : undefined}
+        css={value === 5 ? "active" : "gray"}
         onClick={() => {
           onClick?.(5);
         }}
       />
       <Button
-        className="flex-auto"
+        className="flex-auto drop-shadow-md"
         label="10x"
         size="sm"
-        css={value === 10 ? "active" : undefined}
+        css={value === 10 ? "active" : "gray"}
         onClick={() => onClick?.(10)}
       />
       <Button
-        className="flex-auto"
+        className="flex-auto drop-shadow-md"
         label="15x"
         size="sm"
-        css={value === 15 ? "active" : undefined}
+        css={value === 15 ? "active" : "gray"}
         onClick={() => onClick?.(15)}
       />
       <Button
-        className="flex-auto"
+        className="flex-auto drop-shadow-md"
         label="20x"
         size="sm"
-        css={value === 20 ? "active" : undefined}
+        css={value === 20 ? "active" : "gray"}
         onClick={() => onClick?.(20)}
       />
       <Button
-        className="flex-auto"
+        className="flex-auto drop-shadow-md"
         label="25x"
         size="sm"
-        css={value === 25 ? "active" : undefined}
+        css={value === 25 ? "active" : "gray"}
         onClick={() => onClick?.(25)}
       />
       <Button
-        className="flex-auto"
+        className="flex-auto drop-shadow-md"
         label="30x"
         size="sm"
-        css={value === 30 ? "active" : undefined}
+        css={value === 30 ? "active" : "gray"}
         onClick={() => onClick?.(30)}
       />
     </div>
