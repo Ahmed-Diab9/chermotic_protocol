@@ -66,7 +66,8 @@ export const RemoveMultiLiquidityModal = (
     };
   }, [dispatch]);
 
-  const binDecimals = selectedBins.length > 0 && selectedBins[0].decimals;
+  const binDecimals =
+    selectedBins.length > 0 ? selectedBins[0].decimals : BIN_VALUE_DECIMAL;
 
   /**
    * @TODO
