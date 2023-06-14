@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
+import { ScrollAni } from "~/stories/atom/ScrollAni";
 import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
 import "../Modal/style.css";
@@ -145,52 +146,57 @@ export const RemoveMultiLiquidityModal = (
               }}
             />
           </Dialog.Title>
-          <div className="w-[100px] mx-auto border-b border-2 border-black"></div>
+          {/* <div className="w-[100px] mx-auto border-b border-2 border-black"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
-              {selectedLpTokens.map((lpToken) => {
-                /**
-                 * @TODO
-                 * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
-                 */
-                const utilizedRate = 100 - lpToken.removableRate;
-                const removableRate =
-                  lpToken.removableRate > 87.5 ? 87.5 : lpToken.removableRate;
-                const utilized = lpToken.balance
-                  .mul(Math.round(utilizedRate * 10))
-                  .div(expandDecimals(3));
-                const removable = lpToken.balance
-                  .mul(Math.round(removableRate * 10))
-                  .div(expandDecimals(3));
+            <article className="relative flex flex-col border border-gray rounded-xl">
+              <div className="max-h-[calc(100vh-600px)] overflow-auto">
+                {selectedLpTokens.map((lpToken) => {
+                  /**
+                   * @TODO
+                   * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
+                   */
+                  const utilizedRate = 100 - lpToken.removableRate;
+                  const removableRate =
+                    lpToken.removableRate > 87.5 ? 87.5 : lpToken.removableRate;
+                  const utilized = lpToken.balance
+                    .mul(Math.round(utilizedRate * 10))
+                    .div(expandDecimals(3));
+                  const removable = lpToken.balance
+                    .mul(Math.round(removableRate * 10))
+                    .div(expandDecimals(3));
 
-                return (
-                  <LiquidityItem
-                    key={lpToken.feeRate}
-                    token={token?.name}
-                    name={lpToken.description}
-                    qty={Number(
-                      formatDecimals(lpToken.balance, token?.decimals, 2)
-                    )}
-                    utilizedValue={Number(
-                      formatDecimals(utilized, token?.decimals, 2)
-                    )}
-                    removableValue={Number(
-                      formatDecimals(removable, token?.decimals, 2)
-                    )}
-                  />
-                );
-              })}
-              {/**
-               * LiquidityItem 컴포넌트 예시
-               */}
-              <LiquidityItem
-                token="USDC"
-                name="ETH/USD +0.03%"
-                qty={2500.03}
-                utilizedValue={135.12}
-                removableValue={2364.91}
-              />
+                  return (
+                    <LiquidityItem
+                      key={lpToken.feeRate}
+                      token={token?.name}
+                      name={lpToken.description}
+                      qty={Number(
+                        formatDecimals(lpToken.balance, token?.decimals, 2)
+                      )}
+                      utilizedValue={Number(
+                        formatDecimals(utilized, token?.decimals, 2)
+                      )}
+                      removableValue={Number(
+                        formatDecimals(removable, token?.decimals, 2)
+                      )}
+                    />
+                  );
+                })}
+                {/**
+                 * LiquidityItem 컴포넌트 예시
+                 */}
+                <LiquidityItem
+                  token="USDC"
+                  name="ETH/USD +0.03%"
+                  qty={2500.03}
+                  utilizedValue={135.12}
+                  removableValue={2364.91}
+                />
+              </div>
+              <div className="absolute bottom-0 flex justify-center w-full">
+                <ScrollAni />
+              </div>
             </article>
 
             {/* info bottom */}
@@ -253,8 +259,23 @@ export const RemoveMultiLiquidityModal = (
                     }}
                   />
                 </div>
-                <div className="max-w-[220px]">
-                  <Input
+                <div className="max-w-[220px] relative">
+                  <p className="absolute right-0 top-[-28px] text-right text-black/30">
+                    {/**
+                     * @TODO
+                     * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
+                     */}
+                    (
+                    {input &&
+                      formatDecimals(
+                        bigNumberify(input.amount).mul(totalBinValue),
+                        2,
+                        2
+                      )}{" "}
+                    {token?.name})
+                  </p>
+                  <p className="text-lg text-black/30">0.00 CLB</p>
+                  {/* <Input
                     unit="CLB"
                     value={input?.amount}
                     onChange={(event) => {
@@ -273,22 +294,9 @@ export const RemoveMultiLiquidityModal = (
                         onMaxChange?.();
                       }
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
-              <p className="mt-2 text-right text-black/30">
-                {/**
-                 * @TODO
-                 * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
-                 */}
-                {input &&
-                  formatDecimals(
-                    bigNumberify(input.amount).mul(totalBinValue),
-                    2,
-                    2
-                  )}{" "}
-                {token?.name}
-              </p>
               <p className="mt-4 text-xs text-black/30">
                 Please set additional values to apply to the basic formula in
                 Borrow Fee. Calculated based on open Interest and stop

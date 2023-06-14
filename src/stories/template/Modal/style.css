@@ -4,10 +4,10 @@
     @apply text-center text-lg mt-6 mb-2 font-semibold;
   }
   .modal-content {
-    @apply flex flex-col my-7;
+    @apply flex flex-col mt-5 mb-7;
   }
   .modal-button {
-    @apply flex my-10 justify-stretch;
+    @apply flex mb-7 justify-stretch;
     button {
       @apply flex-auto;
     }

@@ -131,7 +131,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       }}
     >
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -141,10 +141,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               }}
             />
           </Dialog.Title>
-          <div className="w-[100px] mx-auto border-b border-2 border-black"></div>
+          {/* <div className="w-[100px] mx-auto border-b border-2 border-black"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col gap-5 max-h-[calc(100vh-600px)] mx-[-20px] px-[20px] overflow-auto">
+            <article className="flex flex-col border border-gray rounded-xl">
               {selectedLpTokens.map((lpToken) => {
                 /**
                  * @TODO
@@ -230,7 +230,21 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     }}
                   />
                 </div>
-                <div className="max-w-[220px]">
+                <div className="max-w-[220px] relative">
+                  <p className="absolute right-0 top-[-28px] text-right text-black/30">
+                    {/**
+                     * @TODO
+                     * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
+                     */}
+                    (
+                    {input &&
+                      formatDecimals(
+                        bigNumberify(input.amount).mul(totalBinValue),
+                        2,
+                        2
+                      )}{" "}
+                    {token?.name})
+                  </p>
                   <Input
                     unit="CLB"
                     value={input?.amount}
@@ -253,19 +267,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   />
                 </div>
               </div>
-              <p className="mt-2 text-right text-black/30">
-                {/**
-                 * @TODO
-                 * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
-                 */}
-                {input &&
-                  formatDecimals(
-                    bigNumberify(input.amount).mul(totalBinValue),
-                    2,
-                    2
-                  )}{" "}
-                {token?.name}
-              </p>
               <p className="mt-4 text-xs text-black/30">
                 Please set additional values to apply to the basic formula in
                 Borrow Fee. Calculated based on open Interest and stop
