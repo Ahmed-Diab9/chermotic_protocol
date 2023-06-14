@@ -10,9 +10,6 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Disclosure } from "@headlessui/react";
 import "../../atom/Tabs/style.css";
 
-import { LPToken, LiquidityPool } from "../../../typings/pools";
-import { Token } from "../../../typings/market";
-
 interface PoolProgressProps {}
 
 export const PoolProgress = ({ ...props }: PoolProgressProps) => {
