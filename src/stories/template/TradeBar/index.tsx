@@ -5,12 +5,12 @@ import { Tag } from "~/stories/atom/Tag";
 import { TextRow } from "~/stories/atom/TextRow";
 import { Tooltip } from "~/stories/atom/Tooltip";
 import { Loading } from "~/stories/atom/Loading";
-import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import { Popover, Transition } from "@headlessui/react";
 import { Tab } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
 import "../../atom/Tabs/style.css";
-import { Position } from "~/typings/position";
+import { CLOSED, CLOSING, OPENED, OPENING, Position } from "~/typings/position";
 import { Market, Token } from "~/typings/market";
 import { usePrevious } from "~/hooks/usePrevious";
 import { BigNumber } from "ethers";
@@ -94,14 +94,6 @@ export const TradeBar = ({
                               <div>
                                 {(positions ?? previousPositions ?? []).map(
                                   (position) => {
-                                    const isOpen = position.closeVersion.eq(0);
-                                    const isClosed =
-                                      isValid(oracleVersions) &&
-                                      !position.closeVersion.eq(0) &&
-                                      oracleVersions[
-                                        position.marketAddress
-                                      ].version.gt(position.closeVersion);
-                                    const isElse = !isOpen && !isClosed;
                                     return (
                                       <div
                                         key={position.id.toString()}
@@ -146,14 +138,38 @@ export const TradeBar = ({
 
                                           <div className="flex items-center gap-2 ml-auto">
                                             {/* 상태에 따라 내용 변동 */}
-                                            {/* <CheckIcon className="w-4" /> */}
-                                            <Loading size="xs" />
-                                            <p className="text-black/30">
-                                              Opening in progress
-                                            </p>
-                                            {/* <p className="text-black/30">Opening completed</p>
-                            <p className="text-black/30">Closing in progress</p>
-                            <p className="text-black/30">Closing completed</p> */}
+                                            {position.status === OPENING && (
+                                              <>
+                                                <Loading size="xs" />
+                                                <p className="text-black/30">
+                                                  Opening in progress
+                                                </p>
+                                              </>
+                                            )}
+                                            {position.status === OPENED && (
+                                              <>
+                                                <CheckIcon className="w-4" />
+                                                <p className="text-black/30">
+                                                  Opening completed
+                                                </p>
+                                              </>
+                                            )}
+                                            {position.status === CLOSING && (
+                                              <>
+                                                <Loading size="xs" />
+                                                <p className="text-black/30">
+                                                  Closing in progress
+                                                </p>
+                                              </>
+                                            )}
+                                            {position.status === CLOSED && (
+                                              <>
+                                                <CheckIcon className="w-4" />
+                                                <p className="text-black/30">
+                                                  Closing completed
+                                                </p>
+                                              </>
+                                            )}
                                             <Tooltip tip="tooltip" />
                                           </div>
                                         </div>
@@ -218,7 +234,8 @@ export const TradeBar = ({
                                           <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
                                             {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
                                             {/* Close / Claim USDC */}
-                                            {isOpen && (
+                                            {(position.status === OPENED ||
+                                              position.status === OPENING) && (
                                               <Button
                                                 label="Close"
                                                 size="sm"
@@ -230,7 +247,7 @@ export const TradeBar = ({
                                                 }}
                                               />
                                             )}
-                                            {isClosed && (
+                                            {position.status === CLOSED && (
                                               <Button
                                                 label="Claim"
                                                 css="active"
@@ -243,8 +260,13 @@ export const TradeBar = ({
                                                 }}
                                               />
                                             )}
-                                            {isElse && (
-                                              <Button label="Close" size="sm" />
+                                            {position.status === CLOSING && (
+                                              <Button
+                                                label="Claim"
+                                                size="sm"
+                                                disabled={true}
+                                                css="gray"
+                                              />
                                             )}
                                           </div>
                                         </div>
