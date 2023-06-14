@@ -9,6 +9,7 @@ import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
+  percentage,
   trimLeftZero,
 } from "~/utils/number";
 import { useAppDispatch } from "~/store";
@@ -16,7 +17,7 @@ import { poolsAction } from "~/store/reducer/pools";
 import { Bin } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
-import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
+import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: Bin;
@@ -59,6 +60,21 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     };
   }, [dispatch]);
 
+  const balance = isValid(selectedBin) ? selectedBin.balance : bigNumberify(0);
+  const utilizedRate = isValid(selectedBin)
+    ? 100 - selectedBin.removableRate
+    : 0;
+  const utilized = isValid(selectedBin)
+    ? selectedBin.balance
+        .mul(Math.round(utilizedRate * percentage()))
+        .div(expandDecimals(FEE_RATE_DECIMAL))
+    : bigNumberify(0);
+  const removable = isValid(selectedBin)
+    ? selectedBin?.balance
+        .mul(Math.round(selectedBin.removableRate * percentage()))
+        .div(expandDecimals(FEE_RATE_DECIMAL))
+    : bigNumberify(0);
+
   return (
     <Dialog
       className=""
@@ -82,34 +98,17 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="flex flex-col border border-gray rounded-xl">
-              {[selectedBin].map((bin) => {
-                /**
-                 * @TODO
-                 * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
-                 */
-                const utilizedRate = 100 - bin.removableRate;
-                const utilized = bin.balance
-                  .mul(Math.round(utilizedRate * 10))
-                  .div(expandDecimals(3));
-                const removable = bin.balance
-                  .mul(Math.round(bin.removableRate * 10))
-                  .div(expandDecimals(3));
-
-                return (
-                  <LiquidityItem
-                    key={bin.baseFeeRate}
-                    token={token?.name}
-                    name={bin.description}
-                    qty={Number(formatDecimals(bin.balance, bin?.decimals, 2))}
-                    utilizedValue={Number(
-                      formatDecimals(utilized, bin?.decimals, 2)
-                    )}
-                    removableValue={Number(
-                      formatDecimals(removable, bin?.decimals, 2)
-                    )}
-                  />
-                );
-              })}
+              <LiquidityItem
+                token={token?.name}
+                name={selectedBin?.description}
+                qty={Number(formatDecimals(balance, selectedBin?.decimals, 2))}
+                utilizedValue={Number(
+                  formatDecimals(utilized, selectedBin?.decimals, 2)
+                )}
+                removableValue={Number(
+                  formatDecimals(removable, selectedBin?.decimals, 2)
+                )}
+              />
               {/**
                * LiquidityItem 컴포넌트 예시
                */}
@@ -126,27 +125,35 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             <article className="flex flex-col gap-2 pb-5 border-b">
               <div className="flex justify-between">
                 <p className="text-black/30">My Liquidity Value</p>
-                <p>
-                  {formatDecimals(
-                    selectedBin.balance
-                      .mul(selectedBin.binValue)
-                      .div(expandDecimals(BIN_VALUE_DECIMAL)),
-                    token?.decimals,
-                    2
-                  )}{" "}
-                  {token?.name}
-                </p>
+                {selectedBin && (
+                  <p>
+                    {formatDecimals(
+                      selectedBin.balance
+                        .mul(selectedBin.binValue)
+                        .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                      token?.decimals,
+                      2
+                    )}{" "}
+                    {token?.name}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
-                <p>
-                  {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)}{" "}
-                  {token.name}
-                  <span className="ml-1 text-black/30">
-                    ({selectedBin.removableRate}%)
-                  </span>
-                </p>
+                {selectedBin && token && (
+                  <p>
+                    {formatDecimals(
+                      selectedBin.freeLiquidity,
+                      token.decimals,
+                      2
+                    )}{" "}
+                    {token.name}
+                    <span className="ml-1 text-black/30">
+                      ({selectedBin.removableRate}%)
+                    </span>
+                  </p>
+                )}
               </div>
             </article>
 
@@ -179,9 +186,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
                     (
-                    {input &&
+                    {selectedBin &&
+                      amount &&
                       formatDecimals(
-                        bigNumberify(input.amount).mul(totalBinValue),
+                        bigNumberify(amount).mul(selectedBin.binValue),
                         2,
                         2
                       )}{" "}

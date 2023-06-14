@@ -18,11 +18,13 @@ type Story = StoryObj<typeof meta>;
 export const Left: Story = {
   args: {
     direction: "left",
+    position: "left",
   },
 };
 
 export const Right: Story = {
   args: {
     direction: "right",
+    position: "right",
   },
 };
