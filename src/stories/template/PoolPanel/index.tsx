@@ -413,10 +413,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
-      {selectedBins.length > 0 &&
+      {selectedBins.length === 1 &&
         createPortal(
           <RemoveLiquidityModal
-            selectedBins={selectedBins}
+            selectedBin={selectedBins[0]}
             token={token}
             amount={removeAmount}
             maxAmount={maxRemoveAmount}
