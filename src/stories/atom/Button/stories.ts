@@ -18,13 +18,20 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     css: "default",
-    label: "Base Default Button",
+    label: "Button",
   },
 };
 
 export const Active: Story = {
   args: {
     css: "active",
+    label: "Button",
+  },
+};
+
+export const Gray: Story = {
+  args: {
+    css: "gray",
     label: "Button",
   },
 };
