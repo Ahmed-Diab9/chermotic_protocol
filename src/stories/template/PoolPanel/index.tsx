@@ -34,6 +34,7 @@ import { poolsAction } from "~/store/reducer/pools";
 import { usePrevious } from "~/hooks/usePrevious";
 import { LPReceipt } from "~/typings/receipt";
 import { infoLog } from "~/utils/log";
+import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
 
 interface PoolPanelProps {
   token?: Token;
@@ -58,10 +59,6 @@ interface PoolPanelProps {
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
-  receipts?: LPReceipt[];
-  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimCLBTokensBatch?: () => Promise<unknown>;
-
   removeAmount?: number;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
@@ -85,15 +82,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
     selectedBins = [],
-    receipts,
     removeAmount,
     maxRemoveAmount,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
-    onClaimCLBTokens,
-    onClaimCLBTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
@@ -366,11 +360,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Removable Liquidity
                     </div>
                     <p className="text-right">
-                      {formatDecimals(
-                        totalRemovableLiquidity,
-                        token?.decimals,
-                        2
-                      )}{" "}
+                      {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
                       {token?.name} (
                       {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
                       %)
@@ -400,6 +390,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 key={bin.baseFeeRate}
                                 index={binIndex}
                                 token={token}
+                                market={market}
                                 bin={bin}
                               />
                             ))}
@@ -415,6 +406,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               <BinItem
                                 key={bin.baseFeeRate}
                                 index={binIndex}
+                                token={token}
+                                market={market}
                                 bin={bin}
                               />
                             ))}
@@ -441,6 +434,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
           />,
           document.getElementById("modal")!
         )}
+      {selectedBins.length > 1 &&
+        createPortal(
+          <RemoveMultiLiquidityModal
+            selectedBins={selectedBins}
+            token={token}
+            onAmountChange={onRemoveAmountChange}
+            onRemoveLiquidity={onRemoveLiquidity}
+          />,
+          document.getElementById("modal")!
+        )}
     </div>
   );
 };
@@ -448,11 +451,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
 interface BinItemProps {
   index?: number;
   token?: Token;
+  market?: Market;
   bin?: Bin;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, bin } = props;
+  const { index, token, market, bin } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -465,14 +469,14 @@ const BinItem = (props: BinItemProps) => {
         />
         <div className="flex items-center gap-2">
           <Avatar
-            label={bin?.name}
+            label={token?.name}
             size="xs"
             gap="1"
             fontSize="base"
             fontWeight="bold"
           />
           <p className="font-semibold text-black/30">
-            {bin?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
+            {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
           </p>
         </div>
         <div className="flex items-center ml-auto">
