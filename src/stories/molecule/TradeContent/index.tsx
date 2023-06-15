@@ -198,13 +198,15 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
               {enabled ? (
-                <Slider
-                  value={input.leverage === 0 ? 1 : input.leverage}
-                  onChange={(values) => {
-                    onLeverageChange?.(values);
-                  }}
-                  tick={SLIDER_TICK}
-                />
+                <div className="mt-[-8px]">
+                  <Slider
+                    value={input.leverage === 0 ? 1 : input.leverage}
+                    onChange={(values) => {
+                      onLeverageChange?.(values);
+                    }}
+                    tick={SLIDER_TICK}
+                  />
+                </div>
               ) : (
                 <LeverageOption
                   value={input?.leverage}
@@ -227,7 +229,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         <div className="flex gap-5 mt-10">
           {/* TP */}
           <article className="flex-auto">
-            <div className="flex justify-between mb-6">
+            <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
@@ -243,15 +245,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            {input && (
-              <Slider
-                value={input.takeProfit === 0 ? 1 : input.takeProfit}
-                onChange={(values) => {
-                  onTakeProfitChange?.(values);
-                }}
-                tick={SLIDER_TICK}
-              />
-            )}
+            <div className="mt-8">
+              {input && (
+                <Slider
+                  value={input.takeProfit === 0 ? 1 : input.takeProfit}
+                  onChange={(values) => {
+                    onTakeProfitChange?.(values);
+                  }}
+                  tick={SLIDER_TICK}
+                />
+              )}
+            </div>
           </article>
           {/* SL */}
           <article className="flex-auto pl-5 border-l h-[90px]">
@@ -271,15 +275,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            {input && (
-              <Slider
-                value={input.stopLoss === 0 ? 1 : input.stopLoss}
-                onChange={(values) => {
-                  onStopLossChange?.(values);
-                }}
-                tick={SLIDER_TICK}
-              />
-            )}
+            <div className="mt-8">
+              {input && (
+                <Slider
+                  value={input.stopLoss === 0 ? 1 : input.stopLoss}
+                  onChange={(values) => {
+                    onStopLossChange?.(values);
+                  }}
+                  tick={SLIDER_TICK}
+                />
+              )}
+            </div>
           </article>
         </div>
       </section>
