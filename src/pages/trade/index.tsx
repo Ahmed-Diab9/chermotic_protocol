@@ -4,7 +4,6 @@ import { MainBar } from "../../stories/template/MainBar";
 import { TradePanel } from "../../stories/template/TradePanel";
 import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
-
 import "./style.css";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
@@ -106,7 +105,7 @@ const Trade = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow max-w-[1400px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount?.address }}
           tokens={tokens}
