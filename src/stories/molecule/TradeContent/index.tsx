@@ -5,12 +5,13 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
-import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
 import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import "./../../atom/Select/style.css";
+import "./../../atom/Toggle/style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
@@ -64,6 +65,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
+  const [enabled, setEnabled] = useState(false);
   const [executionPrice, setPrice] = useState("");
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
     undefined,
@@ -179,19 +181,38 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <h4>Leverage</h4>
               <p className="text-black/30">Up to 30x</p>
             </div>
-            <Toggle label="Slider" size="xs" />
+            {/* Toggle: {enabled ? "On" : "Off"} */}
+
+            <Switch.Group>
+              <div className="flex items-center gap-[6px]">
+                <Switch.Label className="">Slider</Switch.Label>
+                <Switch
+                  checked={enabled}
+                  onChange={setEnabled}
+                  className="toggle toggle-xs"
+                />
+              </div>
+            </Switch.Group>
           </div>
           <div className="flex items-center justify-between gap-5">
             <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
-              <LeverageOption
-                value={input?.leverage}
-                onClick={(value) => {
-                  onLeverageChange?.(value);
-                }}
-              />
-              {/* when slider on */}
-              {/* <Range /> */}
+              {enabled ? (
+                <Slider
+                  value={input.leverage === 0 ? 1 : input.leverage}
+                  onChange={(values) => {
+                    onLeverageChange?.(values);
+                  }}
+                  tick={SLIDER_TICK}
+                />
+              ) : (
+                <LeverageOption
+                  value={input?.leverage}
+                  onClick={(value) => {
+                    onLeverageChange?.(value);
+                  }}
+                />
+              )}
             </div>
             <div className="w-2/5 max-w-[160px]">
               <Input

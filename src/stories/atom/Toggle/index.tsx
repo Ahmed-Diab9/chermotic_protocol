@@ -24,15 +24,8 @@ export const Toggle = (props: ToggleProps) => {
           checked={enabled}
           onChange={setEnabled}
           disabled={disabled}
-          className={`toggle toggle-${size} ${
-            enabled ? "bg-black dark:bg-black" : "bg-gray dark:bg-gray"
-          } relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-white focus-visible:ring-opacity-75`}
-        >
-          <span
-            aria-hidden="true"
-            className="inline-block transition duration-200 ease-in-out transform bg-white rounded-full pointer-events-none"
-          />
-        </Switch>
+          className={`toggle toggle-${size}`}
+        ></Switch>
       </div>
     </Switch.Group>
   );
