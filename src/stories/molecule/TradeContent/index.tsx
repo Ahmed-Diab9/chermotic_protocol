@@ -263,7 +263,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </div>
       </section>
       <section className="px-10 py-7">
-        <div className="flex gap-3">
+        <div className={`flex gap-3 ${direction === "long" && "justify-end"}`}>
           <p className="text-black/30">LP Volume</p>
           {totalMaxLiquidity && totalUnusedLiquidity && token && (
             <p>
@@ -337,7 +337,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       <div className="px-10">
         <Button
           label={direction === "long" ? "Buy" : "Sell"}
-          size="xl"
+          size="2xl"
           className="w-full"
           css="active"
           onClick={() => {

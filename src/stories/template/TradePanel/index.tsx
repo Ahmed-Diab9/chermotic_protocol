@@ -82,7 +82,7 @@ export const TradePanel = (props: TradePanelProps) => {
         <div className="flex">
           <div className="px-0 pt-6 pb-10 border-r">
             <div className="w-[50vw] max-w-[680px] mb-10">
-              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                 SHORT
               </h2>
             </div>
@@ -107,7 +107,7 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
           <div className="px-0 pt-6 pb-10">
             <div className="w-[50vw] max-w-[680px] mb-10">
-              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                 LONG
               </h2>
             </div>
@@ -142,7 +142,7 @@ export const TradePanel = (props: TradePanelProps) => {
       {/* TradePanel 축소형 (tab 있음) */}
       {/* <div className="relative tabs tabs-line tabs-lg">
         <Tab.Group>
-          <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-6 flex gap-10">
+          <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-4 flex gap-10">
             <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
               SHORT
             </Tab>
@@ -151,10 +151,10 @@ export const TradePanel = (props: TradePanelProps) => {
             </Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full">
-            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
               <TradeContent />
             </Tab.Panel>
-            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 pb-10 pt-[36px]">
+            <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
               <TradeContent />
             </Tab.Panel>
           </Tab.Panels>
