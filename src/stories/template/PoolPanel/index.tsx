@@ -370,10 +370,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
               {/* inner tab */}
               <section className="tabs-line tabs-base">
                 <Tab.Group>
-                  <Tab.List className="pt-[36px] !justify-start !gap-10">
-                    <Tab>Long Counter LP</Tab>
-                    <Tab>Short Counter LP</Tab>
-                  </Tab.List>
+                  <div className="flex items-baseline">
+                    <Tab.List className="pt-[36px] !justify-start !gap-10">
+                      <Tab>Long Counter LP</Tab>
+                      <Tab>Short Counter LP</Tab>
+                    </Tab.List>
+                    <Button label="Remove All" className="ml-auto" />
+                  </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>
                       <article>
