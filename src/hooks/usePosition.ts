@@ -74,17 +74,18 @@ export const usePosition = () => {
           response.closeVersion,
         ]);
         const newPosition = new Position(response, marketAddress);
-        newPosition.createCollateral(feeRate ?? bigNumberify(0));
-        newPosition.createTakeProfit();
-        newPosition.createStopLoss();
+        newPosition.updateCollateral(feeRate ?? bigNumberify(0));
+        newPosition.updateTakeProfit();
+        newPosition.updateStopLoss();
 
         const { price: currentPrice, decimals: oracleDecimals } =
           oracleVersions[marketAddress];
-        newPosition.createCurrentPrice(currentPrice);
-        newPosition.createOraclePrice([openPrice, closePrice]);
-        newPosition.createLiquidationPrice(token?.decimals);
-        newPosition.createPNL(oracleDecimals);
-        newPosition.createPriceTo(oracleDecimals);
+        newPosition.updateCurrentPrice(currentPrice);
+        newPosition.updateOraclePrice([openPrice, closePrice]);
+        newPosition.updateLiquidationPrice(token?.decimals);
+        newPosition.updatePNL(oracleDecimals);
+        newPosition.updatePriceTo(oracleDecimals);
+        newPosition.updateStatus(oracleVersions);
 
         return newPosition;
       });

@@ -16,6 +16,13 @@ export type {
   BinMarginStructOutput,
 } from "@chromatic-protocol/sdk";
 
+export const OPENING = "OPENING";
+export const OPENED = "OPENED";
+export const CLOSING = "CLOSING";
+export const CLOSED = "CLOSED";
+
+type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
+
 export class Position {
   id: BigNumber;
   marketAddress: string;
@@ -40,6 +47,7 @@ export class Position {
   closeVersion: BigNumber;
   currentPrice: BigNumber;
   profitAndLoss: BigNumber;
+  status: Status;
   constructor(output: PositionStructOutput, marketAddress: string) {
     const {
       id,
@@ -69,6 +77,7 @@ export class Position {
       (totalMargin, currentBin) => totalMargin.add(currentBin?.amount || 0),
       bigNumberify(0)
     );
+    this.status = OPENED;
 
     this.takeProfit = 0;
     this.stopLoss = 0;
@@ -86,7 +95,7 @@ export class Position {
   // 이자 차감된 증거금 구하는 메소드
   // 시간이 지남에 따른 보증금 차감 로직이 유효한지 검증이 필요합니다.
   // 추가 Decimals 20 적용 - 초당 토큰 수수료 10 + 보증금 차감 10
-  createCollateral(feeRate: BigNumber) {
+  updateCollateral(feeRate: BigNumber) {
     // entryTime: 진입시각
     const entryTime = this.openTimestamp.toNumber();
     // annualSeconds: 현재 시각부터 1년 뒤 시각까지의 차이를 초 단위로 변환된 값
@@ -111,20 +120,20 @@ export class Position {
 
   // TODO
   // Take Profit 비율을 구하는 메소드
-  createTakeProfit() {
+  updateTakeProfit() {
     this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
   }
 
   // TODO
   // Stop Loss 비율을 구하는 메소드
-  createStopLoss() {
+  updateStopLoss() {
     this.stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
   }
 
-  createCurrentPrice(price: BigNumber) {
+  updateCurrentPrice(price: BigNumber) {
     this.currentPrice = price;
   }
-  createOraclePrice(
+  updateOraclePrice(
     output: [
       IOracleProvider.OracleVersionStructOutput,
       IOracleProvider.OracleVersionStructOutput
@@ -136,7 +145,7 @@ export class Position {
 
   // TODO
   // 청산가를 구하는 메소드
-  createLiquidationPrice(tokenDecimals?: number) {
+  updateLiquidationPrice(tokenDecimals?: number) {
     const quantity = this.qty
       .abs()
       .div(expandDecimals(tokenDecimals))
@@ -171,7 +180,7 @@ export class Position {
 
   // TODO
   // Profit and Loss를 구하는 메소드
-  createPNL(oracleDecimals: number) {
+  updatePNL(oracleDecimals: number) {
     this.profitAndLoss = this.currentPrice
       .sub(this.openPrice)
       .mul(expandDecimals(oracleDecimals + 2))
@@ -181,7 +190,7 @@ export class Position {
 
   // TODO
   // 현재 가격에서 각 청산가까지 남은 퍼센트를 구하는 메소드
-  createPriceTo(oracleDecimals: number) {
+  updatePriceTo(oracleDecimals: number) {
     this.toProfitPrice = this.profitPrice
       .sub(this.currentPrice)
       .mul(expandDecimals(oracleDecimals + 2))
@@ -191,6 +200,24 @@ export class Position {
       .mul(expandDecimals(oracleDecimals + 2))
       .div(this.currentPrice);
   }
+
+  updateStatus(oracleVersions?: Record<string, OracleVersion>) {
+    if (!isValid(oracleVersions)) {
+      return this.status;
+    }
+    const version = oracleVersions[this.marketAddress].version;
+    if (version.eq(this.openVersion)) {
+      this.status = OPENING;
+    }
+    if (!this.closeVersion.eq(0) && version.eq(this.closeVersion)) {
+      this.status = CLOSING;
+    }
+    if (!this.closeVersion.eq(0) && version.gt(this.closeVersion)) {
+      this.status = CLOSED;
+    }
+    return this.status;
+  }
+
   addProfitAndLoss(oracleDecimals: number) {
     return this.collateral
       .mul(this.profitAndLoss)
