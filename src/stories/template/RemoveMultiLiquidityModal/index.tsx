@@ -71,42 +71,31 @@ export const RemoveMultiLiquidityModal = (
 
   /**
    * @TODO
-   * 선택한 LP 토큰에 대해 토큰 총합 개수, 총합 유동성, 총합 제거 가능한 유동성을 계산하는 로직입니다.
+   * 선택한 CLB 토큰에 대해 토큰 총합 개수, 유동성 가치, 총합 유동성, 총합 제거 가능한 유동성을 계산하는 로직입니다.
    */
   const {
     balance: totalBalance,
+    liquidityValue: totalLiquidityValue,
     liquidity: totalLiquidity,
-    removableLiquidity: totalRemovableLiquidity,
+    removableLiquidity: totalFreeLiquidity,
   } = useMemo(() => {
     return selectedBins.reduce(
       (record, bin) => {
-        const { balance, binValue, removableRate } = bin;
-
-        /**
-         * @TODO
-         * 유동성 = LP 토큰 개수 * Bin 값
-         */
-        const liquidity = balance
+        const { balance, binValue, liquidity, freeLiquidity } = bin;
+        const liquidityValue = balance
           .mul(binValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-        /**
-         * @TODO
-         * 제거 가능한 유동성의 비율 최대치 적용
-         */
-        const removableLiquidity = balance
-          .mul(binValue)
-          .mul(Math.round(removableRate * percentage()))
-          .div(expandDecimals(FEE_RATE_DECIMAL))
           .div(expandDecimals(BIN_VALUE_DECIMAL));
 
         return {
           balance: record.balance.add(balance),
+          liquidityValue: record.liquidityValue.add(liquidityValue),
           liquidity: record.liquidity.add(liquidity),
-          removableLiquidity: record.removableLiquidity.add(removableLiquidity),
+          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
         };
       },
       {
         balance: bigNumberify(0),
+        liquidityValue: bigNumberify(0),
         liquidity: bigNumberify(0),
         removableLiquidity: bigNumberify(0),
       }
@@ -117,15 +106,15 @@ export const RemoveMultiLiquidityModal = (
    * @TODO
    * 여러 LP 토큰에 대해 제거 가능한 비율 평균 계산
    */
-  const totalRemovableRate = totalRemovableLiquidity
-    .mul(10000)
-    .div(totalLiquidity);
+  const totalRemovableRate = totalFreeLiquidity
+    .mul(expandDecimals(FEE_RATE_DECIMAL))
+    .div(totalLiquidityValue);
 
   /**
    * @TODO
    * Bin 값 평균 계산
    */
-  const totalBinValue = totalLiquidity.div(totalBalance);
+  const totalBinValue = totalLiquidityValue.div(totalBalance);
 
   return (
     <Dialog

@@ -105,22 +105,32 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
   /**
    * @TODO
-   * LP 토큰에 대한 총 유동성, 총 제거 가능한 유동성 구하는 로직입니다.
-   * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
+   * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
    */
-  const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
+  const {
+    liquidityValue: totalLiquidityValue,
+    liquidity: totalLiquidity,
+    removableLiquidity: totalFreeLiquidity,
+  } = useMemo(() => {
     return (pool?.bins ?? []).reduce(
-      (acc, bin) => {
-        const { balance, binValue, removableRate } = bin;
-        const value = balance
+      (record, bin) => {
+        const { balance, binValue, liquidity, freeLiquidity } = bin;
+        const liquidityValue = balance
           .mul(binValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
-        const removableValue = value
-          .mul(Math.round(removableRate * 10))
-          .div(expandDecimals(3));
-        return [acc[0].add(value), acc[1].add(removableValue)];
+        return {
+          balance: record.balance.add(balance),
+          liquidityValue: record.liquidityValue.add(liquidityValue),
+          liquidity: record.liquidity.add(liquidity),
+          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+        };
       },
-      [bigNumberify(0), bigNumberify(0)]
+      {
+        balance: bigNumberify(0),
+        liquidityValue: bigNumberify(0),
+        liquidity: bigNumberify(0),
+        removableLiquidity: bigNumberify(0),
+      }
     );
   }, [pool?.bins]);
 
@@ -128,11 +138,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * @TODO
    * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
    */
-  const totalRemovableRate = totalLiquidity.eq(0)
-    ? 0
-    : totalRemovableLiquidity
+  const totalRemovableRate = totalLiquidityValue.eq(0)
+    ? bigNumberify(0)
+    : totalFreeLiquidity
         .mul(expandDecimals(FEE_RATE_DECIMAL))
-        .div(totalLiquidity);
+        .div(totalLiquidityValue);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
