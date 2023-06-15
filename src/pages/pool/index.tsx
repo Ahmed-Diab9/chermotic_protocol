@@ -182,7 +182,17 @@ const Pool = () => {
             </article>
           </div>
           <div className="w-2/5 max-w-[500px] min-w-[480px]">
-            <PoolProgress />
+            <PoolProgress
+              token={selectedToken}
+              market={selectedMarket}
+              receipts={receipts}
+              onReceiptClaim={(id) => {
+                onClaimCLBTokens(id);
+              }}
+              onReceiptClaimBatch={() => {
+                onClaimCLBTokensBatch();
+              }}
+            />
           </div>
         </div>
       </section>
