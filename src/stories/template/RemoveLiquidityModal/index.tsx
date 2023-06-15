@@ -109,16 +109,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   formatDecimals(removable, selectedBin?.decimals, 2)
                 )}
               />
-              {/**
-               * LiquidityItem 컴포넌트 예시
-               */}
-              <LiquidityItem
-                token="USDC"
-                name="ETH/USD +0.03%"
-                qty={2500.03}
-                utilizedValue={135.12}
-                removableValue={2364.91}
-              />
             </article>
 
             {/* info bottom */}
@@ -175,7 +165,22 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      onAmountChange?.(1000);
+                      if (!isValid(selectedBin)) {
+                        return;
+                      }
+                      const liquidityValue = selectedBin.balance
+                        .mul(selectedBin.binValue)
+                        .div(expandDecimals(BIN_VALUE_DECIMAL));
+                      const nextAmount = liquidityValue?.gt(
+                        selectedBin.freeLiquidity
+                      )
+                        ? liquidityValue
+                        : selectedBin.freeLiquidity;
+                      onAmountChange?.(
+                        nextAmount
+                          .div(expandDecimals(BIN_VALUE_DECIMAL))
+                          .toNumber()
+                      );
                     }}
                   />
                 </div>
@@ -190,7 +195,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       amount &&
                       formatDecimals(
                         bigNumberify(amount).mul(selectedBin.binValue),
-                        2,
+                        BIN_VALUE_DECIMAL,
                         2
                       )}{" "}
                     {token?.name})

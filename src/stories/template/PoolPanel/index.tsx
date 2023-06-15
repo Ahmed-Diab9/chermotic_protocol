@@ -34,6 +34,7 @@ import { poolsAction } from "~/store/reducer/pools";
 import { usePrevious } from "~/hooks/usePrevious";
 import { LPReceipt } from "~/typings/receipt";
 import { infoLog } from "~/utils/log";
+import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
 
 interface PoolPanelProps {
   token?: Token;
@@ -58,10 +59,6 @@ interface PoolPanelProps {
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
-  receipts?: LPReceipt[];
-  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimCLBTokensBatch?: () => Promise<unknown>;
-
   removeAmount?: number;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
@@ -85,15 +82,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
     selectedBins = [],
-    receipts,
     removeAmount,
     maxRemoveAmount,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
-    onClaimCLBTokens,
-    onClaimCLBTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
@@ -105,22 +99,32 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
   /**
    * @TODO
-   * LP 토큰에 대한 총 유동성, 총 제거 가능한 유동성 구하는 로직입니다.
-   * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
+   * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
    */
-  const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
+  const {
+    liquidityValue: totalLiquidityValue,
+    liquidity: totalLiquidity,
+    removableLiquidity: totalFreeLiquidity,
+  } = useMemo(() => {
     return (pool?.bins ?? []).reduce(
-      (acc, bin) => {
-        const { balance, binValue, removableRate } = bin;
-        const value = balance
+      (record, bin) => {
+        const { balance, binValue, liquidity, freeLiquidity } = bin;
+        const liquidityValue = balance
           .mul(binValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
-        const removableValue = value
-          .mul(Math.round(removableRate * 10))
-          .div(expandDecimals(3));
-        return [acc[0].add(value), acc[1].add(removableValue)];
+        return {
+          balance: record.balance.add(balance),
+          liquidityValue: record.liquidityValue.add(liquidityValue),
+          liquidity: record.liquidity.add(liquidity),
+          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+        };
       },
-      [bigNumberify(0), bigNumberify(0)]
+      {
+        balance: bigNumberify(0),
+        liquidityValue: bigNumberify(0),
+        liquidity: bigNumberify(0),
+        removableLiquidity: bigNumberify(0),
+      }
     );
   }, [pool?.bins]);
 
@@ -128,11 +132,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * @TODO
    * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
    */
-  const totalRemovableRate = totalLiquidity.eq(0)
-    ? 0
-    : totalRemovableLiquidity
+  const totalRemovableRate = totalLiquidityValue.eq(0)
+    ? bigNumberify(0)
+    : totalFreeLiquidity
         .mul(expandDecimals(FEE_RATE_DECIMAL))
-        .div(totalLiquidity);
+        .div(totalLiquidityValue);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -356,11 +360,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Removable Liquidity
                     </div>
                     <p className="text-right">
-                      {formatDecimals(
-                        totalRemovableLiquidity,
-                        token?.decimals,
-                        2
-                      )}{" "}
+                      {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
                       {token?.name} (
                       {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
                       %)
@@ -390,6 +390,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 key={bin.baseFeeRate}
                                 index={binIndex}
                                 token={token}
+                                market={market}
                                 bin={bin}
                               />
                             ))}
@@ -405,6 +406,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               <BinItem
                                 key={bin.baseFeeRate}
                                 index={binIndex}
+                                token={token}
+                                market={market}
                                 bin={bin}
                               />
                             ))}
@@ -431,6 +434,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
           />,
           document.getElementById("modal")!
         )}
+      {selectedBins.length > 1 &&
+        createPortal(
+          <RemoveMultiLiquidityModal
+            selectedBins={selectedBins}
+            token={token}
+            onAmountChange={onRemoveAmountChange}
+            onRemoveLiquidity={onRemoveLiquidity}
+          />,
+          document.getElementById("modal")!
+        )}
     </div>
   );
 };
@@ -438,11 +451,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
 interface BinItemProps {
   index?: number;
   token?: Token;
+  market?: Market;
   bin?: Bin;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, bin } = props;
+  const { index, token, market, bin } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -455,14 +469,14 @@ const BinItem = (props: BinItemProps) => {
         />
         <div className="flex items-center gap-2">
           <Avatar
-            label={bin?.name}
+            label={token?.name}
             size="xs"
             gap="1"
             fontSize="base"
             fontWeight="bold"
           />
           <p className="font-semibold text-black/30">
-            {bin?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
+            {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
           </p>
         </div>
         <div className="flex items-center ml-auto">

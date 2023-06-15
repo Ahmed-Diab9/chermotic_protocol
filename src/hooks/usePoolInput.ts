@@ -17,7 +17,7 @@ import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
 
 const usePoolInput = () => {
-  const [pool] = useSelectedLiquidityPool();
+  const { pool } = useSelectedLiquidityPool();
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const { address } = useAccount();

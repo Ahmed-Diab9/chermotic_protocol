@@ -5,20 +5,18 @@ import { useSelectedToken } from "../../../hooks/useSettlementToken";
 import { useSelectedMarket } from "../../../hooks/useMarket";
 import { useWalletBalances } from "../../../hooks/useBalances";
 import usePoolInput from "../../../hooks/usePoolInput";
-import { useMemo } from "react";
-import { bigNumberify } from "../../../utils/number";
 
 const PoolPanelDemo = () => {
   useConnectOnce();
-  const [
+  const {
     pool,
-    [
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
-  ] = useSelectedLiquidityPool();
+    },
+  } = useSelectedLiquidityPool();
   const [token] = useSelectedToken();
   const [market] = useSelectedMarket();
   const [walletBalances] = useWalletBalances();
