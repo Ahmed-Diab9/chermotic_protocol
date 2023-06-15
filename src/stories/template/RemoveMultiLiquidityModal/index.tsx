@@ -11,7 +11,6 @@ import {
   expandDecimals,
   formatDecimals,
   percentage,
-  trimLeftZero,
 } from "~/utils/number";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
@@ -22,14 +21,9 @@ import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
 
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: Bin[];
+  amount?: number;
   token?: Token;
-  input?: {
-    amount: number;
-    removableRate: number;
-  };
-  maxAmount?: number;
   onAmountChange?: (nextAmount: number) => unknown;
-  onMaxChange?: () => unknown;
   onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
@@ -39,10 +33,8 @@ export const RemoveMultiLiquidityModal = (
   const {
     selectedBins = [],
     token,
-    input,
-    maxAmount,
+    amount,
     onAmountChange,
-    onMaxChange,
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
@@ -143,43 +135,35 @@ export const RemoveMultiLiquidityModal = (
             <article className="relative flex flex-col border border-gray rounded-xl">
               <div className="max-h-[calc(100vh-600px)] overflow-auto">
                 {selectedBins.map((bin) => {
-                /**
-                 * @TODO
-                 * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
-                 */
-                const utilizedRate = 100 - bin.removableRate;
-                const utilized = bin.balance
-                  .mul(Math.round(utilizedRate * percentage()))
-                  .div(expandDecimals(FEE_RATE_DECIMAL));
-                const removable = bin.balance
-                  .mul(Math.round(bin.removableRate * percentage()))
-                  .div(expandDecimals(FEE_RATE_DECIMAL));
+                  /**
+                   * @TODO
+                   * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
+                   */
+                  const utilizedRate = 100 - bin.removableRate;
+                  const utilized = bin.balance
+                    .mul(Math.round(utilizedRate * percentage()))
+                    .div(expandDecimals(FEE_RATE_DECIMAL));
+                  const removable = bin.balance
+                    .mul(Math.round(bin.removableRate * percentage()))
+                    .div(expandDecimals(FEE_RATE_DECIMAL));
 
-                return (
-                  <LiquidityItem
-                    key={bin.baseFeeRate}
-                    token={token?.name}
-                    name={bin.description}
-                    qty={Number(formatDecimals(bin.balance, bin?.decimals, 2))}
-                    utilizedValue={Number(
-                      formatDecimals(utilized, bin?.decimals, 2)
-                    )}
-                    removableValue={Number(
-                      formatDecimals(removable, bin?.decimals, 2)
-                    )}
-                  />
-                );
-              })}
-                {/**
-                 * LiquidityItem 컴포넌트 예시
-                 */}
-                <LiquidityItem
-                  token="USDC"
-                  name="ETH/USD +0.03%"
-                  qty={2500.03}
-                  utilizedValue={135.12}
-                  removableValue={2364.91}
-                />
+                  return (
+                    <LiquidityItem
+                      key={bin.baseFeeRate}
+                      token={token?.name}
+                      name={bin.description}
+                      qty={Number(
+                        formatDecimals(bin.balance, bin?.decimals, 2)
+                      )}
+                      utilizedValue={Number(
+                        formatDecimals(utilized, bin?.decimals, 2)
+                      )}
+                      removableValue={Number(
+                        formatDecimals(removable, bin?.decimals, 2)
+                      )}
+                    />
+                  );
+                })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
                 <ScrollAni />
@@ -214,8 +198,7 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
-                  {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{" "}
-                  CLB
+                  {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} CLB
                   <span className="ml-1 text-black/30">
                     {/**
                      * @TODO
@@ -242,7 +225,8 @@ export const RemoveMultiLiquidityModal = (
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      onMaxChange?.();
+                      // FIXME
+                      onAmountChange?.(1000);
                     }}
                   />
                 </div>
@@ -253,9 +237,9 @@ export const RemoveMultiLiquidityModal = (
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
                     (
-                    {input &&
+                    {amount &&
                       formatDecimals(
-                        bigNumberify(input.amount).mul(totalBinValue),
+                        bigNumberify(amount).mul(totalBinValue),
                         2,
                         2
                       )}{" "}
@@ -298,11 +282,8 @@ export const RemoveMultiLiquidityModal = (
               className="text-lg"
               css="active"
               onClick={() => {
-                if (selectedBins.length > 0 && isValid(input)) {
-                  onRemoveLiquidity?.(
-                    selectedBins[0].baseFeeRate,
-                    input.amount
-                  );
+                if (selectedBins.length > 0 && isValid(amount)) {
+                  onRemoveLiquidity?.(selectedBins[0].baseFeeRate, amount);
                 }
               }}
             />

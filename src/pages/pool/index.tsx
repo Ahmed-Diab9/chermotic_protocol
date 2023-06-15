@@ -148,9 +148,6 @@ const Pool = () => {
               onRangeChange={onRangeChange}
               onFullRangeSelect={onFullRangeSelect}
               onAddLiquidity={onAddLiquidity}
-              receipts={receipts}
-              onClaimCLBTokens={onClaimCLBTokens}
-              onClaimCLBTokensBatch={onClaimCLBTokensBatch}
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
