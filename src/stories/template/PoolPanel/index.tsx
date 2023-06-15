@@ -32,6 +32,8 @@ import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
 import { usePrevious } from "~/hooks/usePrevious";
+import { LPReceipt } from "~/typings/receipt";
+import { infoLog } from "~/utils/log";
 
 interface PoolPanelProps {
   token?: Token;
@@ -56,7 +58,7 @@ interface PoolPanelProps {
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
-  receipts?: BigNumber[];
+  receipts?: LPReceipt[];
   onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
   onClaimCLBTokensBatch?: () => Promise<unknown>;
 
@@ -429,16 +431,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
           />,
           document.getElementById("modal")!
         )}
-      {document.getElementById("modal") &&
-        createPortal(
-          <PoolClaim
-            market={market}
-            receipts={receipts}
-            onClaimCLBTokens={onClaimCLBTokens}
-            onClaimCLBTokensBatch={onClaimCLBTokensBatch}
-          />,
-          document.getElementById("modal")!
-        )}
     </div>
   );
 };
@@ -520,46 +512,6 @@ const BinItem = (props: BinItemProps) => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-interface PoolClaimProps {
-  market?: Market;
-  receipts?: BigNumber[];
-  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimCLBTokensBatch?: () => Promise<unknown>;
-}
-
-const PoolClaim = (props: PoolClaimProps) => {
-  const { market, receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = props;
-
-  return (
-    <div className="fixed left-auto z-30 flex flex-col bg-white shadow-md gap-x-1 gap-y-2 top-4 right-4">
-      {receipts?.map((receipt) => (
-        <div key={receipt.toNumber()} className="px-4 py-4">
-          <h3>Receipt {receipt.toNumber()}</h3>
-          {market && <p>Market {market.description}</p>}
-          <button
-            className="px-2 py-1 text-white bg-black"
-            onClick={() => {
-              onClaimCLBTokens?.(receipt);
-            }}
-          >
-            Claim
-          </button>
-        </div>
-      ))}
-      {receipts && receipts.length > 0 && (
-        <button
-          className="px-2 py-1 text-white bg-black"
-          onClick={() => {
-            onClaimCLBTokensBatch?.();
-          }}
-        >
-          Claim All
-        </button>
-      )}
     </div>
   );
 };

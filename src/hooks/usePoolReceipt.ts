@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useSigner } from "wagmi";
 import { AppError } from "~/typings/error";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
@@ -9,27 +8,41 @@ import { useSelectedMarket } from "./useMarket";
 import { useRouter } from "./useRouter";
 import { handleTx } from "~/utils/tx";
 import { useLiquidityPool } from "./useLiquidityPool";
+import { useChromaticLens } from "./useChromaticLens";
+import { LPReceipt } from "~/typings/receipt";
+import useOracleVersion from "./useOracleVersion";
 
 const usePoolReceipt = () => {
   const [market] = useSelectedMarket();
   const [_, fetchLiquidityPools] = useLiquidityPool();
-  const { data: signer } = useSigner();
+  const lens = useChromaticLens();
   const [router] = useRouter();
+  const { oracleVersions } = useOracleVersion();
 
   const fetchKey = useMemo(() => {
-    if (isValid(market) && isValid(router) && isValid(signer)) {
-      return [market, router, signer] as const;
+    if (
+      isValid(market) &&
+      isValid(oracleVersions) &&
+      isValid(router) &&
+      isValid(lens)
+    ) {
+      return [market, oracleVersions, router, lens] as const;
     }
-  }, [market, router, signer]);
+  }, [market, oracleVersions, router, lens]);
 
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
-  } = useSWR(fetchKey, async ([market, router, signer]) => {
+  } = useSWR(fetchKey, async ([market, oracleVersions, router, lens]) => {
     const receiptIds = await router.getLpReceiptIds(market.address);
+    const receipts = await lens.lpReceipts(market.address, receiptIds);
+    return receipts.map((receipt) => {
+      const instance = new LPReceipt(receipt);
+      instance.updateIsCompleted(oracleVersions[market.address].version);
 
-    return receiptIds;
+      return instance;
+    });
   });
 
   const onClaimCLBTokens = async (receiptId: BigNumber) => {
@@ -61,7 +74,10 @@ const usePoolReceipt = () => {
       errorLog("no router contracts");
       return AppError.reject("no router contracts", "onPoolReceipt");
     }
-    const tx = await router?.claimLiquidityBatch(market.address, receipts);
+    const completed = receipts
+      .filter((receipt) => receipt.isCompleted)
+      .map((receipt) => receipt.id);
+    const tx = await router?.claimLiquidityBatch(market.address, completed);
 
     handleTx(tx, fetchReceipts, fetchLiquidityPools);
   };
