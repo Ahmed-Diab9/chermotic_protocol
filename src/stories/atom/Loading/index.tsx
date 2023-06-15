@@ -9,7 +9,7 @@ export const Loading = (props: LoadingProps) => {
   const { color, size = "xs" } = props;
 
   return (
-    <div className={`loading loading-${size} text-${color}`}>
+    <div className={`loading loading-${size} text-${color} animate-spin`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

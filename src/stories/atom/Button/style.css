@@ -86,9 +86,9 @@
 }
 .btn-lg {
   @apply min-w-[40px];
-  font-size: 16px;
+  font-size: 13px;
   height: 40px;
-  padding: 0 8px;
+  padding: 0 20px;
   svg {
     width: 16px;
   }
