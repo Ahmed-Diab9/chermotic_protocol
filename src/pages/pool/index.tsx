@@ -172,17 +172,17 @@ const Pool = () => {
                 profit/Loss rate.
               </p>
               <div className="flex justify-end gap-2 mt-6">
-                <div className="flex items-center gap-1">
-                  {/* address */}
-                  {selectedToken && (
-                    <p>{trimAddress(selectedToken.address, 6, 6)}</p>
-                  )}
-                  <Button iconOnly={<Square2StackIcon />} />
-                </div>
+                <AddressCopyButton
+                  address={
+                    selectedToken && trimAddress(selectedToken.address, 6, 6)
+                  }
+                  onClick={null}
+                />
                 <Link to={"/trade"}>
                   <Button
                     label="Trade on ETH/USDC Pool"
                     iconRight={<ChevronRightIcon />}
+                    size="lg"
                   />
                 </Link>
               </div>
