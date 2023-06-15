@@ -14,6 +14,7 @@ import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import {
+  Bin,
   CLBTokenBatch,
   LiquidityPool,
   LiquidityPoolSummary,
@@ -227,16 +228,19 @@ export const useSelectedLiquidityPool = () => {
     handleTx(tx, fetchReceipts, fetchWalletBalances);
   };
 
-  return [
+  const onRemoveLiquidityBatch = async (bins: Bin[], amount: number) => {};
+
+  return {
     pool,
-    [
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
+    },
     onRemoveLiquidity,
-  ] as const;
+    onRemoveLiquidityBatch,
+  };
 };
 
 export const useLiquidityPoolSummary = () => {

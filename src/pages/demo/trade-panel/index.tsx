@@ -30,15 +30,14 @@ const TradePanelDemo = () => {
   } = useTradeInput();
   const { usumBalances } = useUsumBalances();
   const [token] = useSelectedToken();
-  const [
-    _,
-    [
+  const {
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
-  ] = useSelectedLiquidityPool();
+    },
+  } = useSelectedLiquidityPool();
   const { positions } = usePosition();
 
   useEffect(() => {

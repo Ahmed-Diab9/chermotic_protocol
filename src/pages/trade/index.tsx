@@ -72,15 +72,14 @@ const Trade = () => {
     onStopLossChange: onShortStopLossChange,
     onOpenPosition: onOpenShortPosition,
   } = useTradeInput();
-  const [
-    _,
-    [
+  const {
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
-  ] = useSelectedLiquidityPool();
+    },
+  } = useSelectedLiquidityPool();
   const { oracleVersions } = useOracleVersion();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 

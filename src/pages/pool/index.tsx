@@ -57,16 +57,17 @@ const Pool = () => {
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
     usePoolReceipt();
-  const [
+  const {
     pool,
-    [
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
+    },
     onRemoveLiquidity,
-  ] = useSelectedLiquidityPool();
+    onRemoveLiquidityBatch,
+  } = useSelectedLiquidityPool();
   const {
     amount,
     indexes,
