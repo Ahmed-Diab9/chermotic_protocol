@@ -12,7 +12,7 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
   const { address, onClick } = props;
 
   return (
-    <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full">
+    <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full max-w-[220px]">
       <p className="px-4">{address}</p>
       <Button
         label="copy address"

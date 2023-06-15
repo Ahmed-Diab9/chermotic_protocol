@@ -1,5 +1,4 @@
 .loading {
-  animation: rotate 1s linear infinite;
   @apply flex items-center justify-center;
   svg {
     @apply w-full h-full;
@@ -18,18 +17,5 @@
   }
   &.loading-lg {
     width: 24px;
-  }
-}
-
-@keyframes rotate {
-  from {
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
   }
 }
