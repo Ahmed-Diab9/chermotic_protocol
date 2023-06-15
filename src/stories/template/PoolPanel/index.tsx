@@ -142,7 +142,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab className="text-2xl">ADD</Tab>
             <Tab className="text-2xl">REMOVE</Tab>
           </Tab.List>
-          <Tab.Panels className="flex flex-col items-center w-full px-10 pt-8 pb-10">
+          <Tab.Panels className="flex flex-col items-center w-full px-10 py-10">
             {/* tab - add */}
             <Tab.Panel className="w-full">
               <article className="flex items-start justify-between mb-10">
@@ -235,8 +235,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* chart with range */}
 
                 <article>
-                  <div className="flex items-center mt-10 overflow-hidden gap-9">
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] gap-4 p-5 text-center border">
+                  <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Min trade Fee</p>
                       <Counter
                         value={rates && formatFeeRate(rates[0])}
@@ -246,7 +246,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p>-</p>
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] gap-4 p-5 text-center border">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Max trade Fee</p>
                       <Counter
                         value={rates && formatFeeRate(rates[1])}
@@ -259,10 +259,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="mt-5">
                     <Button
                       label="Full Range"
-                      className="w-full"
+                      className="w-full !text-base !rounded-lg"
+                      size="xl"
                       onClick={() => onFullRangeSelect?.()}
                     />
-                    <p className="mt-3 text-sm text-black/30">
+                    <p className="mt-3 text-sm text-left text-black/30">
                       The percentage of price range means the gap from index
                       price when your liquidity occupied by takers. When
                       fluidity is supplied to the fluid pool, a separate PLP
@@ -272,7 +273,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 </article>
               </section>
               <article>
-                <div className="flex flex-col gap-2 pb-6 mb-5 border-dotted mt-11">
+                <div className="flex flex-col gap-2 mb-10 border-dotted mt-9">
                   <div className="flex items-center justify-between">
                     <p>Number of LP Bins</p>
                     <p>{bins ?? 0} Bins</p>
@@ -307,6 +308,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   label="Deposit"
                   className="w-full"
                   css="active"
+                  size="2xl"
                   onClick={onAddLiquidity}
                 />
               </div>
@@ -482,7 +484,7 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex justify-center text-center">
           <Thumbnail src={undefined} size="lg" className="rounded" />
         </div>
-        <div className="flex flex-col gap-2 min-w-[28%]">
+        <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
             <p>{bin && formatDecimals(bin.balance, bin?.decimals, 2)}</p>
@@ -492,7 +494,7 @@ const BinItem = (props: BinItemProps) => {
             <p>{bin?.removableRate}%</p>
           </div>
         </div>
-        <div className="flex flex-col gap-2 pl-10 border-l">
+        <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
             <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p>
