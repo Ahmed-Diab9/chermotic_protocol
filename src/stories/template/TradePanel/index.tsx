@@ -75,9 +75,15 @@ export const TradePanel = (props: TradePanelProps) => {
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
+
   const [viewWide, setViewWide] = useState(false);
   const toggleWide = () => {
     setViewWide(!viewWide);
+  };
+
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const selectTabIndex = (index: number) => {
+    setSelectedIndex(index);
   };
 
   return (
@@ -136,38 +142,86 @@ export const TradePanel = (props: TradePanelProps) => {
               />
             </div>
           </div>
-          <div className="absolute left-0 top-8">
-            <CurvedButton
-              direction="right"
-              position="left"
-              onClick={toggleWide}
-            />
-          </div>
-          <div className="absolute right-0 top-8">
-            <CurvedButton
-              direction="left"
-              position="right"
-              onClick={toggleWide}
-            />
+          <div>
+            <div className="absolute left-0 top-8">
+              <CurvedButton
+                direction="right"
+                position="left"
+                onClick={() => {
+                  toggleWide();
+                  selectTabIndex(0);
+                }}
+              />
+            </div>
+            <div className="absolute right-0 top-8">
+              <CurvedButton
+                direction="left"
+                position="right"
+                onClick={() => {
+                  toggleWide();
+                  selectTabIndex(1);
+                }}
+              />
+            </div>
           </div>
         </div>
       ) : (
         <div className="relative tabs tabs-line tabs-lg">
-          <Tab.Group>
+          <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
             <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-4 flex gap-10">
-              <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              <Tab
+                value="short"
+                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+              >
                 SHORT
               </Tab>
-              <Tab className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2">
+              <Tab
+                value="long"
+                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+              >
                 LONG
               </Tab>
             </Tab.List>
             <Tab.Panels className="flex flex-col items-center w-full">
               <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
-                <TradeContent />
+                <TradeContent
+                  direction="short"
+                  balances={balances}
+                  priceFeed={priceFeed}
+                  market={market}
+                  token={token}
+                  input={shortInput}
+                  totalMaxLiquidity={shortTotalMaxLiquidity}
+                  totalUnusedLiquidity={shortTotalUnusedLiquidity}
+                  tradeFee={shortTradeFee}
+                  tradeFeePercent={shortTradeFeePercent}
+                  onMethodToggle={onShortMethodToggle}
+                  onInputChange={onShortChange}
+                  onLeverageChange={onShortLeverageChange}
+                  onTakeProfitChange={onShortTakeProfitChange}
+                  onStopLossChange={onShortStopLossChange}
+                  onOpenPosition={onOpenShortPosition}
+                />
               </Tab.Panel>
               <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
-                <TradeContent />
+                <TradeContent
+                  direction="long"
+                  balances={balances}
+                  priceFeed={priceFeed}
+                  market={market}
+                  token={token}
+                  input={longInput}
+                  totalMaxLiquidity={longTotalMaxLiquidity}
+                  totalUnusedLiquidity={longTotalUnusedLiquidity}
+                  tradeFee={longTradeFee}
+                  tradeFeePercent={longTradeFeePercent}
+                  onMethodToggle={onLongMethodToggle}
+                  onInputChange={onLongChange}
+                  onLeverageChange={onLongLeverageChange}
+                  onTakeProfitChange={onLongTakeProfitChange}
+                  onStopLossChange={onLongStopLossChange}
+                  onOpenPosition={onOpenLongPosition}
+                />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
