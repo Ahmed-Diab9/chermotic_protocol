@@ -121,7 +121,12 @@ export class Position {
   // TODO
   // Take Profit 비율을 구하는 메소드
   updateTakeProfit() {
-    this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
+    const qty = this.qty.abs();
+    if (qty.eq(0)) {
+      this.takeProfit = 0;
+    } else {
+      this.takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
+    }
   }
 
   // TODO
