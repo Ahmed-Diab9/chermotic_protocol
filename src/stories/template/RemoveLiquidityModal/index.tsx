@@ -151,15 +151,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       const liquidityValue = selectedBin.balance
                         .mul(selectedBin.binValue)
                         .div(expandDecimals(BIN_VALUE_DECIMAL));
-                      const nextAmount = liquidityValue?.gt(
+                      const nextAmount = liquidityValue?.lt(
                         selectedBin.freeLiquidity
                       )
                         ? liquidityValue
                         : selectedBin.freeLiquidity;
                       onAmountChange?.(
-                        nextAmount
-                          .div(expandDecimals(BIN_VALUE_DECIMAL))
-                          .toNumber()
+                        nextAmount.div(selectedBin.binValue).toNumber()
                       );
                     }}
                   />
