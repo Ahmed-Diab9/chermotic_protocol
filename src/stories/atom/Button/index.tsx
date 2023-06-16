@@ -6,6 +6,7 @@ interface ButtonProps {
   css?: "default" | "active" | "gray" | "unstyled" | "circle";
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
   align?: "center" | "left" | "right";
+  gap?: string;
   className?: string;
   iconLeft?: any;
   iconOnly?: any;
@@ -20,6 +21,7 @@ export const Button = (props: ButtonProps) => {
     css = "default",
     size = "base",
     align = "center",
+    gap,
     className,
     iconLeft,
     iconOnly,
@@ -36,7 +38,7 @@ export const Button = (props: ButtonProps) => {
       disabled={disabled}
       onClick={onClick}
     >
-      <div className={`flex items-center gap-1 justify-${align}`}>
+      <div className={`flex items-center gap-${gap} justify-${align}`}>
         {iconLeft !== undefined ? iconLeft : null}
         {iconOnly !== undefined ? iconOnly : label}
         {iconRight !== undefined ? iconRight : null}
