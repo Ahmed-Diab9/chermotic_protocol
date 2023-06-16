@@ -38,26 +38,6 @@ export const RemoveMultiLiquidityModal = (
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
-  const modalRef = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    const onClickAway = (event: MouseEvent) => {
-      const clicked = event.target;
-      if (!(clicked instanceof Node)) {
-        return;
-      }
-      const isContained = modalRef.current?.contains(clicked);
-      if (!isContained) {
-        dispatch(poolsAction.onBinsReset());
-      }
-    };
-    document.addEventListener("click", onClickAway);
-
-    return () => {
-      document.removeEventListener("click", onClickAway);
-    };
-  }, [dispatch]);
-
   const binDecimals =
     selectedBins.length > 0 ? selectedBins[0].decimals : BIN_VALUE_DECIMAL;
 

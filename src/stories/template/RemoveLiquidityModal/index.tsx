@@ -40,26 +40,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
-  const modalRef = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    const onClickAway = (event: MouseEvent) => {
-      const clicked = event.target;
-      if (!(clicked instanceof Node)) {
-        return;
-      }
-      const isContained = modalRef.current?.contains(clicked);
-      if (!isContained) {
-        dispatch(poolsAction.onBinsReset());
-      }
-    };
-    document.addEventListener("click", onClickAway);
-
-    return () => {
-      document.removeEventListener("click", onClickAway);
-    };
-  }, [dispatch]);
-
   const balance = isValid(selectedBin) ? selectedBin.balance : bigNumberify(0);
   const utilizedRate = isValid(selectedBin)
     ? 100 - selectedBin.removableRate
