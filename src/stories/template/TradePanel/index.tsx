@@ -6,6 +6,8 @@ import "../../atom/Tabs/style.css";
 import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
 import { Market, Price, Token } from "~/typings/market";
+import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
+import { errorLog } from "~/utils/log";
 
 export interface TradePanelProps {
   longInput?: TradeInput;
@@ -76,19 +78,30 @@ export const TradePanel = (props: TradePanelProps) => {
     onOpenShortPosition,
   } = props;
 
-  const [viewWide, setViewWide] = useState(false);
-  const toggleWide = () => {
-    setViewWide(!viewWide);
+  const [isWideView, setIsWideView] = useState(false);
+  const onToggleView = () => {
+    setIsWideView(!isWideView);
   };
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const selectTabIndex = (index: number) => {
-    setSelectedIndex(index);
+  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(SHORT_TAB);
+  const onSelectTab = (tab: number) => {
+    switch (tab) {
+      case SHORT_TAB: {
+        return setSelectedTab(SHORT_TAB);
+      }
+      case LONG_TAB: {
+        return setSelectedTab(LONG_TAB);
+      }
+      default: {
+        errorLog("You selected wrong tab");
+        return;
+      }
+    }
   };
 
   return (
     <div className="inline-flex flex-col mx-auto border rounded-2xl">
-      {viewWide ? (
+      {isWideView ? (
         <div className="relative">
           <div className="flex">
             <div className="px-0 pt-6 pb-10 border-r">
@@ -148,8 +161,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 direction="right"
                 position="left"
                 onClick={() => {
-                  toggleWide();
-                  selectTabIndex(0);
+                  onToggleView();
+                  onSelectTab(SHORT_TAB);
                 }}
               />
             </div>
@@ -158,8 +171,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 direction="left"
                 position="right"
                 onClick={() => {
-                  toggleWide();
-                  selectTabIndex(1);
+                  onToggleView();
+                  onSelectTab(LONG_TAB);
                 }}
               />
             </div>
@@ -167,7 +180,7 @@ export const TradePanel = (props: TradePanelProps) => {
         </div>
       ) : (
         <div className="relative tabs tabs-line tabs-lg">
-          <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
             <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-4 flex gap-10">
               <Tab
                 value="short"
@@ -230,14 +243,14 @@ export const TradePanel = (props: TradePanelProps) => {
               <CurvedButton
                 direction="left"
                 position="left"
-                onClick={toggleWide}
+                onClick={onToggleView}
               />
             </div>
             <div className="absolute right-0 top-8">
               <CurvedButton
                 direction="right"
                 position="right"
-                onClick={toggleWide}
+                onClick={onToggleView}
               />
             </div>
           </div>
