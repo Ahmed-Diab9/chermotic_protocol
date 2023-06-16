@@ -96,7 +96,7 @@ export class CLBTokenBatch {
     const freeLiquidiries = [] as BigNumber[];
     for (let index = 0; index < this.batchLength; index++) {
       liquidities.push(response[index].liquidity);
-      freeLiquidiries.push(response[index].freeVolume);
+      freeLiquidiries.push(response[index].freeLiquidity);
 
       this.liquidities = liquidities;
       this.freeLiquidities = freeLiquidiries;
