@@ -66,6 +66,15 @@ const useLocalStorage = <T>(key: string, defaultValue?: T) => {
     }
   };
 
+  const deleteState = () => {
+    cache.delete(key);
+    window.localStorage.removeItem(key);
+
+    for (const handler of handlers) {
+      handler(key);
+    }
+  };
+
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
       if (event.key === key) {
@@ -81,7 +90,7 @@ const useLocalStorage = <T>(key: string, defaultValue?: T) => {
     };
   }, [key]);
 
-  return [state, setState] as const;
+  return { state, setState, deleteState };
 };
 
 export default useLocalStorage;
