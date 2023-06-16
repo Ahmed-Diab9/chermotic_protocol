@@ -35,7 +35,10 @@ import { trimAddress } from "~/utils/address";
 import usePoolInput from "~/hooks/usePoolInput";
 import { useAppSelector } from "~/store";
 import usePoolReceipt from "~/hooks/usePoolReceipt";
-import { usePoolRemoveInput } from "~/hooks/usePoolRemoveInput";
+import {
+  useMultiPoolRemoveInput,
+  usePoolRemoveInput,
+} from "~/hooks/usePoolRemoveInput";
 
 const Pool = () => {
   useConnectOnce();
@@ -55,6 +58,7 @@ const Pool = () => {
   const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
     useTokenTransaction();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
+  const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
     usePoolReceipt();
   const {
@@ -85,6 +89,15 @@ const Pool = () => {
     onAmountChange: onRemoveAmountChange,
     onMaxChange: onRemoveMaxAmountChange,
   } = usePoolRemoveInput();
+  const {
+    type: multiType,
+    amount: multiAmount,
+    balance: multiBalance,
+    liquidityValue: multiLiquidityValue,
+    removableLiquidity: multiFreeLiquidity,
+    removableRate: multiRemovableRate,
+    onAmountChange: onMultiAmountChange,
+  } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   return (
@@ -144,6 +157,7 @@ const Pool = () => {
               shortTotalMaxLiquidity={shortTotalMaxLiquidity}
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
               selectedBins={selectedBins}
+              isModalOpen={isRemoveModalOpen}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
               onFullRangeSelect={onFullRangeSelect}
@@ -153,6 +167,14 @@ const Pool = () => {
               onRemoveAmountChange={onRemoveAmountChange}
               onRemoveMaxAmountChange={onRemoveMaxAmountChange}
               onRemoveLiquidity={onRemoveLiquidity}
+              onRemoveLiquidityBatch={onRemoveLiquidityBatch}
+              multiType={multiType}
+              multiAmount={multiAmount}
+              multiBalance={multiBalance}
+              multiLiquidityValue={multiLiquidityValue}
+              multiFreeLiquidity={multiFreeLiquidity}
+              multiRemovableRate={multiRemovableRate}
+              onMultiAmountChange={onMultiAmountChange}
             />
             {/* bottom */}
             <article className="px-5 pt-5 pb-6 mx-auto mt-5 border rounded-2xl">
@@ -174,7 +196,11 @@ const Pool = () => {
                   address={
                     selectedToken && trimAddress(selectedToken.address, 6, 6)
                   }
-                  onClick={null}
+                  onClick={() => {
+                    if (selectedToken) {
+                      copyText(selectedToken.address);
+                    }
+                  }}
                 />
                 <Link to={"/trade"}>
                   <Button

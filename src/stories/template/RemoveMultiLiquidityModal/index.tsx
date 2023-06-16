@@ -18,13 +18,22 @@ import { Bin } from "~/typings/pools";
 import { Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
 import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { infoLog } from "~/utils/log";
+import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
+import { BigNumber } from "ethers";
 
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: Bin[];
   amount?: number;
   token?: Token;
-  onAmountChange?: (nextAmount: number) => unknown;
-  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
+  type?: MULTI_TYPE;
+  balance?: BigNumber;
+  binValue?: BigNumber;
+  liquidityValue?: BigNumber;
+  freeLiquidity?: BigNumber;
+  removableRate?: BigNumber;
+  onAmountChange?: (type: MULTI_TYPE) => unknown;
+  onRemoveLiquidity?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
 export const RemoveMultiLiquidityModal = (
@@ -32,61 +41,20 @@ export const RemoveMultiLiquidityModal = (
 ) => {
   const {
     selectedBins = [],
+    type = MULTI_ALL,
     token,
-    amount,
+    amount = 0,
+    balance = bigNumberify(0),
+    binValue = bigNumberify(0),
+    liquidityValue = bigNumberify(0),
+    freeLiquidity = bigNumberify(0),
+    removableRate = bigNumberify(0),
     onAmountChange,
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
   const binDecimals =
     selectedBins.length > 0 ? selectedBins[0].decimals : BIN_VALUE_DECIMAL;
-
-  /**
-   * @TODO
-   * 선택한 CLB 토큰에 대해 토큰 총합 개수, 유동성 가치, 총합 유동성, 총합 제거 가능한 유동성을 계산하는 로직입니다.
-   */
-  const {
-    balance: totalBalance,
-    liquidityValue: totalLiquidityValue,
-    liquidity: totalLiquidity,
-    removableLiquidity: totalFreeLiquidity,
-  } = useMemo(() => {
-    return selectedBins.reduce(
-      (record, bin) => {
-        const { balance, binValue, liquidity, freeLiquidity } = bin;
-        const liquidityValue = balance
-          .mul(binValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-
-        return {
-          balance: record.balance.add(balance),
-          liquidityValue: record.liquidityValue.add(liquidityValue),
-          liquidity: record.liquidity.add(liquidity),
-          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
-        };
-      },
-      {
-        balance: bigNumberify(0),
-        liquidityValue: bigNumberify(0),
-        liquidity: bigNumberify(0),
-        removableLiquidity: bigNumberify(0),
-      }
-    );
-  }, [selectedBins]);
-
-  /**
-   * @TODO
-   * 여러 LP 토큰에 대해 제거 가능한 비율 평균 계산
-   */
-  const totalRemovableRate = totalFreeLiquidity
-    .mul(expandDecimals(FEE_RATE_DECIMAL))
-    .div(totalLiquidityValue);
-
-  /**
-   * @TODO
-   * Bin 값 평균 계산
-   */
-  const totalBinValue = totalLiquidityValue.div(totalBalance);
 
   return (
     <Dialog
@@ -158,7 +126,7 @@ export const RemoveMultiLiquidityModal = (
                */}
               <div className="flex justify-between">
                 <p className="text-black/30">Total CLB</p>
-                <p>{formatDecimals(totalBalance, binDecimals, 2)} CLB</p>
+                <p>{formatDecimals(balance, binDecimals, 2)} CLB</p>
               </div>
               {/**
                * @TODO
@@ -167,7 +135,7 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="text-black/30">Total Liquidity Value</p>
                 <p>
-                  {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
+                  {formatDecimals(liquidityValue, token?.decimals, 2)}{" "}
                   {token?.name}
                 </p>
               </div>
@@ -178,13 +146,13 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="text-black/30">Removable Liquidity</p>
                 <p>
-                  {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} CLB
+                  {formatDecimals(freeLiquidity, token?.decimals, 2)} CLB
                   <span className="ml-1 text-black/30">
                     {/**
                      * @TODO
                      * 평균 제거 가능한 비율
                      */}
-                    ({formatDecimals(totalRemovableRate, 2, 2)}%)
+                    ({formatDecimals(removableRate, 2, 2)}%)
                   </span>
                 </p>
               </div>
@@ -199,6 +167,7 @@ export const RemoveMultiLiquidityModal = (
                     className="flex-auto border-gray drop-shadow-md"
                     label="All"
                     size="sm"
+                    onClick={() => onAmountChange?.(MULTI_ALL)}
                   />
                   <Button
                     className="flex-auto border-gray drop-shadow-md"
@@ -206,7 +175,7 @@ export const RemoveMultiLiquidityModal = (
                     size="sm"
                     onClick={() => {
                       // FIXME
-                      onAmountChange?.(1000);
+                      onAmountChange?.(MULTI_REMOVABLE);
                     }}
                   />
                 </div>
@@ -219,13 +188,13 @@ export const RemoveMultiLiquidityModal = (
                     (
                     {amount &&
                       formatDecimals(
-                        bigNumberify(amount).mul(totalBinValue),
-                        2,
+                        bigNumberify(amount).mul(binValue),
+                        BIN_VALUE_DECIMAL,
                         2
                       )}{" "}
                     {token?.name})
                   </p>
-                  <p className="text-lg text-black/30">0.00 CLB</p>
+                  <p className="text-lg text-black/30">{amount} CLB</p>
                   {/* <Input
                     unit="CLB"
                     value={input?.amount}
@@ -262,9 +231,7 @@ export const RemoveMultiLiquidityModal = (
               className="text-lg"
               css="active"
               onClick={() => {
-                if (selectedBins.length > 0 && isValid(amount)) {
-                  onRemoveLiquidity?.(selectedBins[0].baseFeeRate, amount);
-                }
+                onRemoveLiquidity?.(selectedBins, type);
               }}
             />
           </div>
