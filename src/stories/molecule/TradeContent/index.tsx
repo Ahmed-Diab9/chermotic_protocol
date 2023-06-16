@@ -5,12 +5,13 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Input } from "../../atom/Input";
 import { Button } from "../../atom/Button";
-import { Toggle } from "../../atom/Toggle";
 import { Tooltip } from "../../atom/Tooltip";
 import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import "./../../atom/Select/style.css";
+import "./../../atom/Toggle/style.css";
 import { TradeInput } from "~/typings/trade";
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
@@ -64,6 +65,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [executionPrice, setPrice] = useState("");
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
     undefined,
@@ -179,19 +181,40 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <h4>Leverage</h4>
               <p className="text-black/30">Up to 30x</p>
             </div>
-            <Toggle label="Slider" size="xs" />
+            {/* Toggle: {enabled ? "On" : "Off"} */}
+
+            <Switch.Group>
+              <div className="flex items-center gap-[6px]">
+                <Switch.Label className="">Slider</Switch.Label>
+                <Switch
+                  checked={isSliderOpen}
+                  onChange={setIsSliderOpen}
+                  className="toggle toggle-xs"
+                />
+              </div>
+            </Switch.Group>
           </div>
           <div className="flex items-center justify-between gap-5">
             <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
-              <LeverageOption
-                value={input?.leverage}
-                onClick={(value) => {
-                  onLeverageChange?.(value);
-                }}
-              />
-              {/* when slider on */}
-              {/* <Range /> */}
+              {isSliderOpen ? (
+                <div className="mt-[-8px]">
+                  <Slider
+                    value={input?.leverage === 0 ? 1 : input?.leverage}
+                    onChange={(values) => {
+                      onLeverageChange?.(values);
+                    }}
+                    tick={SLIDER_TICK}
+                  />
+                </div>
+              ) : (
+                <LeverageOption
+                  value={input?.leverage}
+                  onClick={(value) => {
+                    onLeverageChange?.(value);
+                  }}
+                />
+              )}
             </div>
             <div className="w-2/5 max-w-[160px]">
               <Input
@@ -206,7 +229,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         <div className="flex gap-5 mt-10">
           {/* TP */}
           <article className="flex-auto">
-            <div className="flex justify-between mb-6">
+            <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
@@ -222,15 +245,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            {input && (
-              <Slider
-                value={input.takeProfit === 0 ? 1 : input.takeProfit}
-                onChange={(values) => {
-                  onTakeProfitChange?.(values);
-                }}
-                tick={SLIDER_TICK}
-              />
-            )}
+            <div className="mt-8">
+              {input && (
+                <Slider
+                  value={input.takeProfit === 0 ? 1 : input.takeProfit}
+                  onChange={(values) => {
+                    onTakeProfitChange?.(values);
+                  }}
+                  tick={SLIDER_TICK}
+                />
+              )}
+            </div>
           </article>
           {/* SL */}
           <article className="flex-auto pl-5 border-l h-[90px]">
@@ -250,20 +275,22 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            {input && (
-              <Slider
-                value={input.stopLoss === 0 ? 1 : input.stopLoss}
-                onChange={(values) => {
-                  onStopLossChange?.(values);
-                }}
-                tick={SLIDER_TICK}
-              />
-            )}
+            <div className="mt-8">
+              {input && (
+                <Slider
+                  value={input.stopLoss === 0 ? 1 : input.stopLoss}
+                  onChange={(values) => {
+                    onStopLossChange?.(values);
+                  }}
+                  tick={SLIDER_TICK}
+                />
+              )}
+            </div>
           </article>
         </div>
       </section>
       <section className="px-10 py-7">
-        <div className="flex gap-3">
+        <div className={`flex gap-3 ${direction === "long" && "justify-end"}`}>
           <p className="text-black/30">LP Volume</p>
           {totalMaxLiquidity && totalUnusedLiquidity && token && (
             <p>
@@ -337,7 +364,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       <div className="px-10">
         <Button
           label={direction === "long" ? "Buy" : "Sell"}
-          size="xl"
+          size="2xl"
           className="w-full"
           css="active"
           onClick={() => {

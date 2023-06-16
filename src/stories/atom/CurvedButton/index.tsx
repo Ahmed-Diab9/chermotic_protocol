@@ -6,22 +6,18 @@ interface CurvedButtonProps {
   position: "right" | "left";
   className?: string;
   disabled?: boolean;
-  // onClick?: MouseEventHandler<HTMLCurvedButtonElement>;
+  onClick?: () => unknown;
 }
 
 export const CurvedButton = (props: CurvedButtonProps) => {
-  const {
-    // onClick,
-    direction,
-    position,
-    className,
-  } = props;
+  const { onClick, direction, position, className } = props;
 
   return (
     <button
       className={`relative border-none bg-white w-[50px] h-[50px] rounded-full text-black/30 hover:text-black/50 ${
         position === "right" ? "translate-x-[50%]" : "translate-x-[-50%]"
       } ${className}`}
+      onClick={onClick}
     >
       <div className="inline-flex items-center justify-center w-full h-full">
         <CurvedLine direction={direction} position={position} />

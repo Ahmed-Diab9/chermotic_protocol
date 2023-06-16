@@ -53,10 +53,7 @@
   &.tabs-lg {
     [role="tablist"] {
       button {
-        width: 50%;
-        max-width: 240px;
-        padding: 10px;
-        font-weight: 700;
+        @apply w-1/2 max-w-[240px] p-2 m-0 font-extrabold;
       }
       [aria-selected="true"] {
       }

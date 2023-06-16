@@ -59,7 +59,7 @@ export const Slider = ({
         };
 
   return (
-    <div style={{ height: "auto", width: "100%" }}>
+    <div className="w-full h-auto">
       <CompoundSlider
         mode={1}
         step={step}

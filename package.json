@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.1",
-    "@chromatic-protocol/sdk": "^0.1.0-rc.21",
+    "@chromatic-protocol/sdk": "0.1.0-rc.24",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
