@@ -31,5 +31,6 @@ export const Default: Story = {
         liquidityValue: BigNumber.from(150000000),
       },
     ],
+    amount: 100,
   },
 };

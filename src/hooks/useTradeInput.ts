@@ -222,15 +222,15 @@ export const useTradeInput = () => {
   const { fetchUsumBalances } = useUsumBalances();
 
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
-  const [
+  const {
     pool,
-    [
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
-  ] = useSelectedLiquidityPool();
+    },
+  } = useSelectedLiquidityPool();
 
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.

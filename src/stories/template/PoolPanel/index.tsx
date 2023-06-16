@@ -24,7 +24,7 @@ import {
   FEE_RATE_DECIMAL,
   PERCENT_DECIMALS,
 } from "~/configs/decimals";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";
 import { isValid } from "~/utils/valid";
@@ -34,6 +34,8 @@ import { poolsAction } from "~/store/reducer/pools";
 import { usePrevious } from "~/hooks/usePrevious";
 import { LPReceipt } from "~/typings/receipt";
 import { infoLog } from "~/utils/log";
+import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
+import { MULTI_TYPE } from "~/configs/pool";
 
 interface PoolPanelProps {
   token?: Token;
@@ -50,6 +52,7 @@ interface PoolPanelProps {
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
   selectedBins?: Bin[];
+  isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
   onRangeChange?: (
     minmax: "min" | "max",
@@ -58,15 +61,21 @@ interface PoolPanelProps {
   onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
-  receipts?: LPReceipt[];
-  onClaimCLBTokens?: (receiptId: BigNumber) => Promise<unknown>;
-  onClaimCLBTokensBatch?: () => Promise<unknown>;
-
   removeAmount?: number;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
   onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
+
+  multiType?: MULTI_TYPE;
+  multiAmount?: number;
+  multiBalance?: BigNumber;
+  multiBinValue?: BigNumber;
+  multiLiquidityValue?: BigNumber;
+  multiFreeLiquidity?: BigNumber;
+  multiRemovableRate?: BigNumber;
+  onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
+  onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -85,19 +94,27 @@ export const PoolPanel = (props: PoolPanelProps) => {
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
     selectedBins = [],
-    receipts,
+    isModalOpen = false,
     removeAmount,
     maxRemoveAmount,
+    multiType,
+    multiAmount,
+    multiBalance,
+    multiBinValue,
+    multiLiquidityValue,
+    multiFreeLiquidity,
+    multiRemovableRate,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
     onAddLiquidity,
-    onClaimCLBTokens,
-    onClaimCLBTokensBatch,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
+    onMultiAmountChange,
+    onRemoveLiquidityBatch,
   } = props;
+  const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
   const binLength = (pool?.bins ?? []).filter((bin) =>
     bin.balance.gt(0)
@@ -105,22 +122,32 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
   /**
    * @TODO
-   * LP 토큰에 대한 총 유동성, 총 제거 가능한 유동성 구하는 로직입니다.
-   * 현재 각 토큰의 개수와 Bin 가치를 곱하여 총 유동성 계산
+   * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
    */
-  const [totalLiquidity, totalRemovableLiquidity] = useMemo(() => {
+  const {
+    liquidityValue: totalLiquidityValue,
+    liquidity: totalLiquidity,
+    removableLiquidity: totalFreeLiquidity,
+  } = useMemo(() => {
     return (pool?.bins ?? []).reduce(
-      (acc, bin) => {
-        const { balance, binValue, removableRate } = bin;
-        const value = balance
+      (record, bin) => {
+        const { balance, binValue, liquidity, freeLiquidity } = bin;
+        const liquidityValue = balance
           .mul(binValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
-        const removableValue = value
-          .mul(Math.round(removableRate * 10))
-          .div(expandDecimals(3));
-        return [acc[0].add(value), acc[1].add(removableValue)];
+        return {
+          balance: record.balance.add(balance),
+          liquidityValue: record.liquidityValue.add(liquidityValue),
+          liquidity: record.liquidity.add(liquidity),
+          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+        };
       },
-      [bigNumberify(0), bigNumberify(0)]
+      {
+        balance: bigNumberify(0),
+        liquidityValue: bigNumberify(0),
+        liquidity: bigNumberify(0),
+        removableLiquidity: bigNumberify(0),
+      }
     );
   }, [pool?.bins]);
 
@@ -128,11 +155,27 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * @TODO
    * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
    */
-  const totalRemovableRate = totalLiquidity.eq(0)
-    ? 0
-    : totalRemovableLiquidity
+  const totalRemovableRate = totalLiquidityValue.eq(0)
+    ? bigNumberify(0)
+    : totalFreeLiquidity
         .mul(expandDecimals(FEE_RATE_DECIMAL))
-        .div(totalLiquidity);
+        .div(totalLiquidityValue);
+
+  const onBinCheck = (bin: Bin) => {
+    infoLog("Running check");
+    const found = selectedBins.find(
+      (selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate
+    );
+    if (isValid(found)) {
+      dispatch(poolsAction.onBinsUnselect(bin));
+    } else {
+      dispatch(poolsAction.onBinsSelect(bin));
+    }
+  };
+
+  useEffect(() => {
+    infoLog(selectedBins);
+  }, [selectedBins]);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -358,11 +401,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       Removable Liquidity
                     </div>
                     <p className="text-right">
-                      {formatDecimals(
-                        totalRemovableLiquidity,
-                        token?.decimals,
-                        2
-                      )}{" "}
+                      {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
                       {token?.name} (
                       {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
                       %)
@@ -379,7 +418,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
-                    <Button label="Remove All" className="ml-auto" />
+                    <Button
+                      label="Remove All"
+                      className="ml-auto"
+                      onClick={() => {
+                        dispatch(poolsAction.onModalOpen());
+                      }}
+                    />
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>
@@ -392,7 +437,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 key={bin.baseFeeRate}
                                 index={binIndex}
                                 token={token}
+                                market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -407,7 +455,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               <BinItem
                                 key={bin.baseFeeRate}
                                 index={binIndex}
+                                token={token}
+                                market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -421,6 +473,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
         </Tab.Group>
       </div>
       {selectedBins.length === 1 &&
+        isModalOpen &&
         createPortal(
           <RemoveLiquidityModal
             selectedBin={selectedBins[0]}
@@ -433,6 +486,24 @@ export const PoolPanel = (props: PoolPanelProps) => {
           />,
           document.getElementById("modal")!
         )}
+      {selectedBins.length > 1 &&
+        isModalOpen &&
+        createPortal(
+          <RemoveMultiLiquidityModal
+            selectedBins={selectedBins}
+            token={token}
+            type={multiType}
+            amount={multiAmount}
+            balance={multiBalance}
+            binValue={multiBinValue}
+            liquidityValue={multiLiquidityValue}
+            freeLiquidity={multiFreeLiquidity}
+            removableRate={multiRemovableRate}
+            onAmountChange={onMultiAmountChange}
+            onRemoveLiquidity={onRemoveLiquidityBatch}
+          />,
+          document.getElementById("modal")!
+        )}
     </div>
   );
 };
@@ -440,12 +511,22 @@ export const PoolPanel = (props: PoolPanelProps) => {
 interface BinItemProps {
   index?: number;
   token?: Token;
+  market?: Market;
   bin?: Bin;
+  selectedBins?: Bin[];
+  onBinCheck?: (bin: Bin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, bin } = props;
+  const { index, token, market, bin, selectedBins, onBinCheck } = props;
   const dispatch = useAppDispatch();
+  const isChecked = useMemo(() => {
+    const found = selectedBins?.find(
+      (selectedBins) => selectedBins.baseFeeRate === bin?.baseFeeRate
+    );
+
+    return isValid(found);
+  }, [selectedBins, bin]);
 
   return (
     <div className="overflow-hidden border rounded-xl">
@@ -454,17 +535,19 @@ const BinItem = (props: BinItemProps) => {
           label={isValid(index) ? index + 1 : 0}
           gap="5"
           className="text-black/30"
+          isChecked={isChecked}
+          onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
         <div className="flex items-center gap-2">
           <Avatar
-            label={bin?.name}
+            label={token?.name}
             size="xs"
             gap="1"
             fontSize="base"
             fontWeight="bold"
           />
           <p className="font-semibold text-black/30">
-            {bin?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
+            {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
           </p>
         </div>
         <div className="flex items-center ml-auto">

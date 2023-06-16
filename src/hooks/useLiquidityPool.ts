@@ -14,6 +14,7 @@ import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useAppDispatch } from "../store";
 import { poolsAction } from "../store/reducer/pools";
 import {
+  Bin,
   CLBTokenBatch,
   LiquidityPool,
   LiquidityPoolSummary,
@@ -28,6 +29,7 @@ import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import useOracleVersion from "./useOracleVersion";
+import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
@@ -227,16 +229,48 @@ export const useSelectedLiquidityPool = () => {
     handleTx(tx, fetchReceipts, fetchWalletBalances);
   };
 
-  return [
+  const onRemoveLiquidityBatch = async (bins: Bin[], type: MULTI_TYPE) => {
+    if (!isValid(signer) || !isValid(address) || !isValid(market)) {
+      return;
+    }
+    if (!isValid(pool)) {
+      return;
+    }
+    const amounts = bins.map((bin) => {
+      const { balance, binValue, freeLiquidity } = bin;
+      const liquidityValue = balance
+        .mul(binValue)
+        .div(expandDecimals(BIN_VALUE_DECIMAL));
+      const removable = liquidityValue.lt(freeLiquidity)
+        ? liquidityValue
+        : freeLiquidity;
+
+      return type === MULTI_ALL ? balance : removable;
+    });
+    const router = getDeployedContract(
+      "ChromaticRouter",
+      "anvil",
+      signer
+    ) as ChromaticRouter;
+    router.removeLiquidityBatch(
+      market.address,
+      bins.map((bin) => bin.baseFeeRate),
+      amounts,
+      bins.map(() => address)
+    );
+  };
+
+  return {
     pool,
-    [
+    liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
-    ],
+    },
     onRemoveLiquidity,
-  ] as const;
+    onRemoveLiquidityBatch,
+  };
 };
 
 export const useLiquidityPoolSummary = () => {

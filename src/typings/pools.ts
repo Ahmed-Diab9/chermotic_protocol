@@ -61,7 +61,7 @@ export class CLBTokenBatch {
        * CLB Decimals should be fixed.
        * const decimals = await clbToken.decimals();
        */
-      const decimals = BIN_VALUE_DECIMAL;
+      const decimals = await this.clb.decimals();
 
       return {
         name,

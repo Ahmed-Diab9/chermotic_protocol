@@ -40,26 +40,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
-  const modalRef = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    const onClickAway = (event: MouseEvent) => {
-      const clicked = event.target;
-      if (!(clicked instanceof Node)) {
-        return;
-      }
-      const isContained = modalRef.current?.contains(clicked);
-      if (!isContained) {
-        dispatch(poolsAction.onBinsReset());
-      }
-    };
-    document.addEventListener("click", onClickAway);
-
-    return () => {
-      document.removeEventListener("click", onClickAway);
-    };
-  }, [dispatch]);
-
   const balance = isValid(selectedBin) ? selectedBin.balance : bigNumberify(0);
   const utilizedRate = isValid(selectedBin)
     ? 100 - selectedBin.removableRate
@@ -108,16 +88,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 removableValue={Number(
                   formatDecimals(removable, selectedBin?.decimals, 2)
                 )}
-              />
-              {/**
-               * LiquidityItem 컴포넌트 예시
-               */}
-              <LiquidityItem
-                token="USDC"
-                name="ETH/USD +0.03%"
-                qty={2500.03}
-                utilizedValue={135.12}
-                removableValue={2364.91}
               />
             </article>
 
@@ -175,7 +145,20 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     label="Removable"
                     size="sm"
                     onClick={() => {
-                      onAmountChange?.(1000);
+                      if (!isValid(selectedBin)) {
+                        return;
+                      }
+                      const liquidityValue = selectedBin.balance
+                        .mul(selectedBin.binValue)
+                        .div(expandDecimals(BIN_VALUE_DECIMAL));
+                      const nextAmount = liquidityValue?.lt(
+                        selectedBin.freeLiquidity
+                      )
+                        ? liquidityValue
+                        : selectedBin.freeLiquidity;
+                      onAmountChange?.(
+                        nextAmount.div(selectedBin.binValue).toNumber()
+                      );
                     }}
                   />
                 </div>
@@ -190,7 +173,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       amount &&
                       formatDecimals(
                         bigNumberify(amount).mul(selectedBin.binValue),
-                        2,
+                        BIN_VALUE_DECIMAL,
                         2
                       )}{" "}
                     {token?.name})

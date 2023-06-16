@@ -68,7 +68,8 @@ export const useSelectedToken = () => {
 
   const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
-  const [storedToken, setStoredToken] = useLocalStorage<string>("usum:token");
+  const { state: storedToken, setState: setStoredToken } =
+    useLocalStorage<string>("usum:token");
 
   const onTokenSelect = useCallback(
     (address: string) => {
