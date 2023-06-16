@@ -65,7 +65,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
-  const [enabled, setEnabled] = useState(false);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [executionPrice, setPrice] = useState("");
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
     undefined,
@@ -187,8 +187,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-[6px]">
                 <Switch.Label className="">Slider</Switch.Label>
                 <Switch
-                  checked={enabled}
-                  onChange={setEnabled}
+                  checked={isSliderOpen}
+                  onChange={setIsSliderOpen}
                   className="toggle toggle-xs"
                 />
               </div>
@@ -197,10 +197,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex items-center justify-between gap-5">
             <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
-              {enabled ? (
+              {isSliderOpen ? (
                 <div className="mt-[-8px]">
                   <Slider
-                    value={input.leverage === 0 ? 1 : input.leverage}
+                    value={input?.leverage === 0 ? 1 : input?.leverage}
                     onChange={(values) => {
                       onLeverageChange?.(values);
                     }}
