@@ -13,7 +13,9 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
 
   return (
     <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full max-w-[220px]">
-      <p className="px-4">{address}</p>
+      <p className="w-[calc(100%-40px)] px-4 text-ellipsis overflow-hidden">
+        {address}
+      </p>
       <Button
         label="copy address"
         css="circle"
