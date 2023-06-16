@@ -18,6 +18,7 @@ export const Checkbox = (props: CheckboxProps) => {
     className,
     disabled = false,
     isChecked,
+    onClick,
   } = props;
 
   return (
@@ -29,6 +30,7 @@ export const Checkbox = (props: CheckboxProps) => {
         id={`checkbox-${label}`}
         checked={isChecked}
         disabled={disabled}
+        onChange={onClick}
       />
       <label className="checkbox-label" htmlFor={`checkbox-${label}`}>
         {label}

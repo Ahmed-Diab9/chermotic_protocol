@@ -23,48 +23,6 @@ import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "../../../typings/pools";
 
-const assetInfo = [
-  {
-    asset: "USDC",
-    quantity: 120,
-    price: 120,
-  },
-  {
-    asset: "USDT",
-    quantity: 12.5,
-    price: 12.56,
-  },
-  {
-    asset: "IMX",
-    quantity: 12,
-    price: 15.6,
-  },
-];
-const nftInfo = [
-  {
-    asset: "USDC",
-    market: "ETH/USD",
-    price: 240,
-    bin: 12,
-    image:
-      "https://assets.nick.com/uri/mgid:arc:imageassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
-  },
-  {
-    asset: "USDC",
-    market: "ETH/USD",
-    price: 240,
-    bin: 12,
-    image: undefined,
-  },
-  {
-    asset: "USDC",
-    market: "ETH/USD",
-    price: 240,
-    bin: 12,
-    image: undefined,
-  },
-];
-
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
@@ -102,8 +60,8 @@ export const WalletPopover = ({
             <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
               <Avatar
                 label={
-                  account?.usumAddress &&
-                  trimAddress(account?.usumAddress, 7, 5)
+                  account?.walletAddress &&
+                  trimAddress(account?.walletAddress, 7, 5)
                 }
                 src="/src/assets/images/arbitrum.svg"
                 className="!w-[44px] !h-[44px]"
@@ -249,31 +207,6 @@ export const WalletPopover = ({
                                         </p>
                                       </div>
                                       <Thumbnail size="base" src={undefined} />
-                                    </div>
-                                  </div>
-                                ))}
-                                {nftInfo.map((item, index) => (
-                                  <div
-                                    key={`${item.asset}-${index}`}
-                                    className="flex pb-3 border-b last:border-b-0"
-                                  >
-                                    <Avatar size="lg" src={item.image} />
-                                    <div className="ml-3">
-                                      <div className="flex">
-                                        <p>{item.asset}</p>
-                                        <span className="px-1 text-grayL">
-                                          |
-                                        </span>
-                                        <p>{item.market}</p>
-                                      </div>
-                                      <div className="mr-auto">
-                                        <p className="mt-2 text-base text-black/30">
-                                          {item.price} USDC
-                                        </p>
-                                        <p className="mt-2 text-base font-medium text-gray-900">
-                                          {item.bin} Bins
-                                        </p>
-                                      </div>
                                     </div>
                                   </div>
                                 ))}

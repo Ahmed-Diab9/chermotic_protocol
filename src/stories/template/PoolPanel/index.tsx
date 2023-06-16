@@ -24,7 +24,7 @@ import {
   FEE_RATE_DECIMAL,
   PERCENT_DECIMALS,
 } from "~/configs/decimals";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MILLION_UNITS } from "../../../configs/token";
 import { createPortal } from "react-dom";
 import { isValid } from "~/utils/valid";
@@ -35,6 +35,7 @@ import { usePrevious } from "~/hooks/usePrevious";
 import { LPReceipt } from "~/typings/receipt";
 import { infoLog } from "~/utils/log";
 import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
+import { MULTI_TYPE } from "~/configs/pool";
 
 interface PoolPanelProps {
   token?: Token;
@@ -51,6 +52,7 @@ interface PoolPanelProps {
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
   selectedBins?: Bin[];
+  isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
   onRangeChange?: (
     minmax: "min" | "max",
@@ -64,6 +66,16 @@ interface PoolPanelProps {
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
   onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
+
+  multiType?: MULTI_TYPE;
+  multiAmount?: number;
+  multiBalance?: BigNumber;
+  multiBinValue?: BigNumber;
+  multiLiquidityValue?: BigNumber;
+  multiFreeLiquidity?: BigNumber;
+  multiRemovableRate?: BigNumber;
+  onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
+  onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -82,8 +94,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
     selectedBins = [],
+    isModalOpen = false,
     removeAmount,
     maxRemoveAmount,
+    multiType,
+    multiAmount,
+    multiBalance,
+    multiBinValue,
+    multiLiquidityValue,
+    multiFreeLiquidity,
+    multiRemovableRate,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
@@ -91,7 +111,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
+    onMultiAmountChange,
+    onRemoveLiquidityBatch,
   } = props;
+  const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
   const binLength = (pool?.bins ?? []).filter((bin) =>
     bin.balance.gt(0)
@@ -137,6 +160,22 @@ export const PoolPanel = (props: PoolPanelProps) => {
     : totalFreeLiquidity
         .mul(expandDecimals(FEE_RATE_DECIMAL))
         .div(totalLiquidityValue);
+
+  const onBinCheck = (bin: Bin) => {
+    infoLog("Running check");
+    const found = selectedBins.find(
+      (selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate
+    );
+    if (isValid(found)) {
+      dispatch(poolsAction.onBinsUnselect(bin));
+    } else {
+      dispatch(poolsAction.onBinsSelect(bin));
+    }
+  };
+
+  useEffect(() => {
+    infoLog(selectedBins);
+  }, [selectedBins]);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -379,7 +418,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
-                    <Button label="Remove All" className="ml-auto" />
+                    <Button
+                      label="Remove All"
+                      className="ml-auto"
+                      onClick={() => {
+                        dispatch(poolsAction.onModalOpen());
+                      }}
+                    />
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>
@@ -394,6 +439,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 token={token}
                                 market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -411,6 +458,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 token={token}
                                 market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -424,6 +473,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
         </Tab.Group>
       </div>
       {selectedBins.length === 1 &&
+        isModalOpen &&
         createPortal(
           <RemoveLiquidityModal
             selectedBin={selectedBins[0]}
@@ -437,12 +487,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
           document.getElementById("modal")!
         )}
       {selectedBins.length > 1 &&
+        isModalOpen &&
         createPortal(
           <RemoveMultiLiquidityModal
             selectedBins={selectedBins}
             token={token}
-            onAmountChange={onRemoveAmountChange}
-            onRemoveLiquidity={onRemoveLiquidity}
+            type={multiType}
+            amount={multiAmount}
+            balance={multiBalance}
+            binValue={multiBinValue}
+            liquidityValue={multiLiquidityValue}
+            freeLiquidity={multiFreeLiquidity}
+            removableRate={multiRemovableRate}
+            onAmountChange={onMultiAmountChange}
+            onRemoveLiquidity={onRemoveLiquidityBatch}
           />,
           document.getElementById("modal")!
         )}
@@ -455,11 +513,20 @@ interface BinItemProps {
   token?: Token;
   market?: Market;
   bin?: Bin;
+  selectedBins?: Bin[];
+  onBinCheck?: (bin: Bin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, market, bin } = props;
+  const { index, token, market, bin, selectedBins, onBinCheck } = props;
   const dispatch = useAppDispatch();
+  const isChecked = useMemo(() => {
+    const found = selectedBins?.find(
+      (selectedBins) => selectedBins.baseFeeRate === bin?.baseFeeRate
+    );
+
+    return isValid(found);
+  }, [selectedBins, bin]);
 
   return (
     <div className="overflow-hidden border rounded-xl">
@@ -468,6 +535,8 @@ const BinItem = (props: BinItemProps) => {
           label={isValid(index) ? index + 1 : 0}
           gap="5"
           className="text-black/30"
+          isChecked={isChecked}
+          onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
         <div className="flex items-center gap-2">
           <Avatar

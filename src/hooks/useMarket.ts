@@ -91,7 +91,7 @@ export const useSelectedMarket = () => {
 
   const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
 
-  const [storedMarket, setStoredMarket] =
+  const { state: storedMarket, setState: setStoredMarket } =
     useLocalStorage<string>("usum:market");
 
   useEffect(() => {
