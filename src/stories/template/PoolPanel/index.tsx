@@ -161,6 +161,22 @@ export const PoolPanel = (props: PoolPanelProps) => {
         .mul(expandDecimals(FEE_RATE_DECIMAL))
         .div(totalLiquidityValue);
 
+  const onBinCheck = (bin: Bin) => {
+    infoLog("Running check");
+    const found = selectedBins.find(
+      (selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate
+    );
+    if (isValid(found)) {
+      dispatch(poolsAction.onBinsUnselect(bin));
+    } else {
+      dispatch(poolsAction.onBinsSelect(bin));
+    }
+  };
+
+  useEffect(() => {
+    infoLog(selectedBins);
+  }, [selectedBins]);
+
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
@@ -402,7 +418,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
-                    <Button label="Remove All" className="ml-auto" />
+                    <Button
+                      label="Remove All"
+                      className="ml-auto"
+                      onClick={() => {
+                        dispatch(poolsAction.onModalOpen());
+                      }}
+                    />
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>
@@ -417,6 +439,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 token={token}
                                 market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -434,6 +458,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                 token={token}
                                 market={market}
                                 bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
                               />
                             ))}
                         </div>
@@ -487,11 +513,20 @@ interface BinItemProps {
   token?: Token;
   market?: Market;
   bin?: Bin;
+  selectedBins?: Bin[];
+  onBinCheck?: (bin: Bin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, market, bin } = props;
+  const { index, token, market, bin, selectedBins, onBinCheck } = props;
   const dispatch = useAppDispatch();
+  const isChecked = useMemo(() => {
+    const found = selectedBins?.find(
+      (selectedBins) => selectedBins.baseFeeRate === bin?.baseFeeRate
+    );
+
+    return isValid(found);
+  }, [selectedBins, bin]);
 
   return (
     <div className="overflow-hidden border rounded-xl">
@@ -500,6 +535,8 @@ const BinItem = (props: BinItemProps) => {
           label={isValid(index) ? index + 1 : 0}
           gap="5"
           className="text-black/30"
+          isChecked={isChecked}
+          onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
         <div className="flex items-center gap-2">
           <Avatar
