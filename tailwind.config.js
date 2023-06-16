@@ -58,6 +58,9 @@ export const theme = {
       bold: 600,
       extrabold: 700,
     },
+    animation: {
+      "spin-slow": "spin 3s linear infinite",
+    },
   },
 };
 export const plugins = [];

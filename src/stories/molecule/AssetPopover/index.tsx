@@ -2,8 +2,10 @@ import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { OptionInput } from "../../atom/OptionInput";
+import { Loading } from "~/stories/atom/Loading";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
+import { CheckIcon } from "@heroicons/react/20/solid";
 import "./style.css";
 import { Account } from "../../../typings/account";
 import { Token } from "../../../typings/market";
@@ -138,7 +140,126 @@ const AssetPanel = (props: AssetPanelProps) => {
           >
             {title}
           </Popover.Button>
+          {/* account 없을 때 */}
+          {/* 1. create account */}
+          {/* <Popover.Panel className="popover-panel">
+            <div className="w-full gap-2 pt-2 text-center">
+              <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <img
+                  src="/src/assets/images/i_create_account_xl.svg"
+                  alt="create account"
+                />
+                <p>
+                  To make a deposit, you need to <br />
+                  create account first
+                </p>
+              </article>
+              <div className="my-7">
+                <p className="text-black/50">
+                  This process may take approximately 10 seconds or more.
+                </p>
+              </div>
+              <div className="text-center">
+                <Button
+                  label="Create Account"
+                  size="xl"
+                  css="active"
+                  className="w-full"
+                  // onClick={}
+                />
+                <Button
+                  iconOnly={<ChevronDoubleUpIcon />}
+                  size="sm"
+                  css="unstyled"
+                  className="w-full my-2"
+                  onClick={() => {
+                    close();
+                  }}
+                />
+              </div>
+            </div>
+          </Popover.Panel> */}
+
+          {/* account 없을 때 */}
+          {/* 2. loading to generate account */}
+          {/* <Popover.Panel className="popover-panel">
+            <div className="w-full gap-2 pt-2 text-center">
+              <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <img
+                  src="/src/assets/images/i_loading_xl.svg"
+                  alt="creating account"
+                  className="animate-spin-slow"
+                />
+                <p>
+                  The account addtress is being generated <br /> on the chain
+                </p>
+              </article>
+              <div className="my-7">
+                <p className="text-black/50">
+                  This process may take approximately 10 seconds or more.
+                </p>
+              </div>
+              <div className="text-center">
+                <Button
+                  label="Create Account"
+                  iconRight={<Loading />}
+                  size="xl"
+                  css="active"
+                  className="w-full"
+                  disabled
+                  // onClick={}
+                />
+                <Button
+                  iconOnly={<ChevronDoubleUpIcon />}
+                  size="sm"
+                  css="unstyled"
+                  className="w-full my-2"
+                  onClick={() => {
+                    close();
+                  }}
+                />
+              </div>
+            </div>
+          </Popover.Panel> */}
+
+          {/* account 없을 때 */}
+          {/* 3. complete to create account */}
+          {/* todo: 3초 정도 보여지고, account 있을 때의 UI로 자연스럽게 전환됨 */}
           <Popover.Panel className="popover-panel">
+            <div className="w-full gap-2 pt-2 text-center">
+              <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <img
+                  src="/src/assets/images/i_check_xl.svg"
+                  alt="creating account"
+                />
+                <p>Account has been created</p>
+              </article>
+              <div className="py-8"></div>
+              <div className="text-center">
+                <Button
+                  label="Create Account"
+                  iconRight={<CheckIcon />}
+                  size="xl"
+                  css="active"
+                  className="w-full"
+                  disabled
+                  // onClick={}
+                />
+                <Button
+                  iconOnly={<ChevronDoubleUpIcon />}
+                  size="sm"
+                  css="unstyled"
+                  className="w-full my-2"
+                  onClick={() => {
+                    close();
+                  }}
+                />
+              </div>
+            </div>
+          </Popover.Panel>
+
+          {/* account 있을 때 */}
+          {/* <Popover.Panel className="popover-panel">
             <div className="w-full gap-2 pt-2">
               <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">
                 <p className="flex-none pr-4 border-r text-black/30">
@@ -155,7 +276,6 @@ const AssetPanel = (props: AssetPanelProps) => {
                 />
               </article>
               <section className="flex mt-5 text-left">
-                {/* Deposit */}
                 <article className="flex flex-col items-start w-2/5 min-w-[140px] gap-3">
                   <h4 className="text-lg font-semibold">{title}</h4>
                   <div className="px-3 py-2 border rounded-full">
@@ -176,7 +296,6 @@ const AssetPanel = (props: AssetPanelProps) => {
                     </p>
                   </div>
                 </article>
-                {/* Account */}
                 <article className="flex flex-col w-3/5 gap-3 border-l ml-7 pl-7">
                   <h4 className="text-lg font-semibold">Amount</h4>
                   <OptionInput
@@ -231,7 +350,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                 />
               </div>
             </div>
-          </Popover.Panel>
+          </Popover.Panel> */}
         </>
       )}
     </Popover>
