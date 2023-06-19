@@ -54,6 +54,20 @@ export const useUsumAccount = () => {
     }
   }, [isLoading, account]);
 
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined;
+    if (status === ACCOUNT_COMPLETING) {
+      infoLog("account is now created");
+      timerId = setTimeout(() => {
+        setStatus(ACCOUNT_COMPLETED);
+      }, 3000);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [status]);
+
   if (error) {
     errorLog(error);
   }
