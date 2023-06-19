@@ -1,16 +1,24 @@
-import { useMemo } from "react";
-import { useSigner } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
+import { useAccount, useSigner } from "wagmi";
 import useSWR from "swr";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
 
 import { useRouter } from "~/hooks/useRouter";
 
-import { errorLog } from "~/utils/log";
+import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { ADDRESS_ZERO } from "~/utils/address";
 import { AppError } from "~/typings/error";
 import { ChromaticAccount__factory } from "@chromatic-protocol/sdk";
+import {
+  ACCOUNT_COMPLETED,
+  ACCOUNT_COMPLETING,
+  ACCOUNT_CREATING,
+  ACCOUNT_NONE,
+  ACCOUNT_STATUS,
+} from "~/typings/account";
+import { handleTx } from "~/utils/tx";
 
 export const useUsumAccount = () => {
   const { data: signer } = useSigner();
@@ -31,8 +39,20 @@ export const useUsumAccount = () => {
         return;
       }
       return ChromaticAccount__factory.connect(address, signer);
+  });
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
     }
-  );
+    if (isValid(account) && isValid(account.address)) {
+      infoLog("loading chromatic accounts");
+      setStatus(ACCOUNT_COMPLETED);
+      return;
+    } else {
+      setStatus(ACCOUNT_NONE);
+    }
+  }, [isLoading, account]);
 
   if (error) {
     errorLog(error);
