@@ -12,7 +12,7 @@ import { infoLog } from "~/utils/log";
 const UsumAccount = () => {
   useAccount();
   const feeRate = useFeeRate();
-  const [account, createAccount] = useUsumAccount();
+  const { account, createAccount } = useUsumAccount();
   const [markets] = useMarket();
   const [tokens] = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();

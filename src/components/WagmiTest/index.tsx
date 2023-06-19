@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 function WagmiTest() {
   const [market] = useSelectedMarket();
-  const [account] = useUsumAccount();
+  const { account } = useUsumAccount();
 
   const [walletBalances] = useWalletBalances();
   const { usumBalances } = useUsumBalances();

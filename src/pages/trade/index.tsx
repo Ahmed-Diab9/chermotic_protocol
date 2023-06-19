@@ -36,7 +36,11 @@ const Trade = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const [usumAccount, createUsumAccount] = useUsumAccount();
+  const {
+    account: usumAccount,
+    createAccount: createUsumAccount,
+    status,
+  } = useUsumAccount();
   const [tokens] = useSettlementToken();
   const [markets] = useMarket();
   const [selectedToken, onTokenSelect] = useSelectedToken();
@@ -107,6 +111,7 @@ const Trade = () => {
       <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount?.address }}
+          status={status}
           tokens={tokens}
           markets={markets}
           selectedToken={selectedToken}
@@ -128,6 +133,9 @@ const Trade = () => {
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
+          onStatusUpdate={() => {
+            createUsumAccount();
+          }}
         />
         <TradePanel
           longInput={longInput}

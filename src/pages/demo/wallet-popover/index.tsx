@@ -15,7 +15,7 @@ const WalletPopoverDemo = () => {
   const { address: walletAddress } = useAccount();
   const [tokens] = useSettlementToken();
   const [markets] = useMarket();
-  const [usumAddress] = useUsumAccount();
+  const { account } = useUsumAccount();
   const [walletBalances] = useWalletBalances();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -25,7 +25,7 @@ const WalletPopoverDemo = () => {
   return (
     <>
       <WalletPopover
-        account={{ walletAddress, usumAddress: usumAddress?.address }}
+        account={{ walletAddress, usumAddress: account?.address }}
         tokens={tokens}
         markets={markets}
         balances={walletBalances}

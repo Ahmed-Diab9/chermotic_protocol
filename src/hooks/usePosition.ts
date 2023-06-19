@@ -24,7 +24,7 @@ import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
 
 export const usePosition = () => {
-  const [usumAccount] = useUsumAccount();
+  const { account: usumAccount } = useUsumAccount();
   const { fetchUsumBalances } = useUsumBalances();
   const [token] = useSelectedToken();
   const [markets] = useMarket();
@@ -181,7 +181,7 @@ export const usePosition = () => {
 };
 
 export const usePositionsMock = () => {
-  const [account] = useUsumAccount();
+  const { account } = useUsumAccount();
 
   const fetchKey = useMemo(() => {
     if (isValid(account)) {

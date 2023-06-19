@@ -2,10 +2,11 @@ import { MarketSelect } from "../../molecule/MarketSelect";
 import { AssetPopover } from "../../molecule/AssetPopover";
 import { Market, Token } from "~/typings/market";
 import { BigNumber } from "ethers";
-import { Account } from "~/typings/account";
+import { ACCOUNT_STATUS, Account } from "~/typings/account";
 
 interface MainBarProps {
   account?: Account;
+  status?: ACCOUNT_STATUS;
   tokens?: Token[];
   markets?: Market[];
   selectedToken?: Token;
@@ -23,10 +24,12 @@ interface MainBarProps {
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
   onConnect?: () => unknown;
+  onStatusUpdate?: () => unknown;
 }
 
 export const MainBar = ({
   account,
+  status,
   tokens,
   markets,
   selectedToken,
@@ -44,6 +47,7 @@ export const MainBar = ({
   onDeposit,
   onWithdraw,
   onConnect,
+  onStatusUpdate,
 }: MainBarProps) => (
   <div className="z-30 py-5">
     <div className="flex gap-5 justify-stretch">
@@ -61,6 +65,7 @@ export const MainBar = ({
       <div className="w-2/5 max-w-[500px] min-w-[480px]">
         <AssetPopover
           account={account}
+          status={status}
           token={selectedToken}
           walletBalances={walletBalances}
           usumBalances={usumBalances}
@@ -72,6 +77,7 @@ export const MainBar = ({
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
           onConnect={onConnect}
+          onStatusUpdate={onStatusUpdate}
         />
       </div>
     </div>

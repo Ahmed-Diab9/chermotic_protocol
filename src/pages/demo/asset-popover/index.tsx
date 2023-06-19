@@ -15,7 +15,7 @@ import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
 const AssetPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
-  const [usumAccount] = useUsumAccount();
+  const { account: usumAccount } = useUsumAccount();
   const [tokens] = useSettlementToken();
   const { usumBalances } = useUsumBalances();
   const [walletBalances] = useWalletBalances();

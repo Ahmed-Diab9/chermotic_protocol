@@ -64,7 +64,7 @@ export const useWalletBalances = () => {
 
 export const useUsumBalances = () => {
   const [tokens] = useSettlementToken();
-  const [account] = useUsumAccount();
+  const { account } = useUsumAccount();
 
   const fetchKey = useMemo(
     () =>
