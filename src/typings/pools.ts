@@ -2,7 +2,7 @@ import { CLBToken, ChromaticLens } from "@chromatic-protocol/sdk";
 import { BigNumber } from "ethers";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import { filterIfFulfilled } from "~/utils/array";
-import { bigNumberify, expandDecimals, percentage } from "~/utils/number";
+import { expandDecimals, percentage } from "~/utils/number";
 
 export class CLBTokenBatch {
   clb: CLBToken;
@@ -82,45 +82,33 @@ export class CLBTokenBatch {
     );
   }
 
-  async updateLiquidities(oracleVersion: BigNumber) {
-    const liquidityParams = this.baseFeeRates.map((tradingFeeRate) => ({
-      tradingFeeRate,
-      oracleVersion,
-    }));
-    const response = await this.lens.liquidityBins(
-      this.marketAddress,
-      liquidityParams
-    );
-
+  async updateLiquidities() {
+    const response = await this.lens.liquidityBinStatuses(this.marketAddress);
     const liquidities = [] as BigNumber[];
     const freeLiquidiries = [] as BigNumber[];
-    for (let index = 0; index < this.batchLength; index++) {
+    const binValues = [] as BigNumber[];
+    for (let index = 0; index < response.length; index++) {
       liquidities.push(response[index].liquidity);
       freeLiquidiries.push(response[index].freeLiquidity);
 
-      this.liquidities = liquidities;
-      this.freeLiquidities = freeLiquidiries;
-    }
-  }
+      const liquidity = response[index].liquidity.gt(0)
+        ? response[index].liquidity
+        : 1;
 
-  async updateBinValues() {
-    const binValues = [] as BigNumber[];
-    const binAmounts = await this.lens.liquidityBinValue(
-      this.marketAddress,
-      this.baseFeeRates
-    );
-    for (let index = 0; index < this.batchLength; index++) {
-      const binAmount = binAmounts[index].value;
-      let value = bigNumberify(0);
-      if (binAmount.eq(0)) {
-        value = this.liquidities[index].div(1);
-      } else {
-        value = this.liquidities[index]
-          .mul(expandDecimals(BIN_VALUE_DECIMAL))
-          .div(binAmount);
-      }
-      binValues.push(value);
+      /**
+       * TODO
+       * 현재 Bin의 가치 계산 방법
+       * 각 Response의 Bin Value를 Liquidity로 나눗셈
+       * Bin Value Decimals 적용
+       */
+      const binValue = response[index].binValue
+        .mul(expandDecimals(BIN_VALUE_DECIMAL))
+        .div(liquidity);
+      binValues.push(binValue);
     }
+
+    this.liquidities = liquidities;
+    this.freeLiquidities = freeLiquidiries;
     this.binValues = binValues;
   }
 
