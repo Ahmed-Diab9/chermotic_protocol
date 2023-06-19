@@ -4,7 +4,7 @@ import { useProvider } from "wagmi";
 
 import {
   ChromaticMarket__factory,
-  OracleProvider__factory,
+  IOracleProvider__factory,
 } from "@chromatic-protocol/sdk";
 
 import { Market } from "~/typings/market";
@@ -48,7 +48,7 @@ export const useMarket = (_interval?: number) => {
         );
 
         const oracleProviderAddress = await market.oracleProvider();
-        const oracleProvider = OracleProvider__factory.connect(
+        const oracleProvider = IOracleProvider__factory.connect(
           oracleProviderAddress,
           provider
         );

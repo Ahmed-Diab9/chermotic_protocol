@@ -10,7 +10,7 @@ import { bigNumberify, expandDecimals } from "../utils/number";
 const useTokenTransaction = () => {
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
-  const [usumAccount] = useUsumAccount();
+  const { account: usumAccount } = useUsumAccount();
   const [token] = useSelectedToken();
   const [amount, setAmount] = useState("");
   const tokenContract = useMemo(() => {

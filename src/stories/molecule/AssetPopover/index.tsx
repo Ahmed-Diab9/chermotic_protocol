@@ -7,7 +7,14 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
 import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import "./style.css";
-import { Account } from "../../../typings/account";
+import {
+  ACCOUNT_COMPLETED,
+  ACCOUNT_COMPLETING,
+  ACCOUNT_CREATING,
+  ACCOUNT_NONE,
+  ACCOUNT_STATUS,
+  Account,
+} from "../../../typings/account";
 import { Token } from "../../../typings/market";
 import {
   bigNumberify,
@@ -21,6 +28,7 @@ import { isValid } from "../../../utils/valid";
 interface AssetPopoverProps {
   // onClick?: () => void;
   account?: Account;
+  status?: ACCOUNT_STATUS;
   token?: Token;
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
@@ -32,10 +40,12 @@ interface AssetPopoverProps {
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
   onConnect?: () => void;
+  onStatusUpdate?: () => unknown;
 }
 
 export const AssetPopover = ({
   account,
+  status,
   token,
   walletBalances,
   usumBalances,
@@ -47,6 +57,7 @@ export const AssetPopover = ({
   onDeposit,
   onWithdraw,
   onConnect,
+  onStatusUpdate,
   ...props
 }: AssetPopoverProps) => {
   const isLoaded = isValid(account) && isValid(token);
@@ -66,6 +77,7 @@ export const AssetPopover = ({
               <AssetPanel
                 title="Deposit"
                 account={account}
+                status={status}
                 token={token}
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
@@ -75,10 +87,12 @@ export const AssetPopover = ({
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
+                onStatusUpdate={onStatusUpdate}
               />
               <AssetPanel
                 title="Withdraw"
                 account={account}
+                status={status}
                 token={token}
                 walletBalances={walletBalances}
                 usumBalances={usumBalances}
@@ -88,6 +102,7 @@ export const AssetPopover = ({
                 onAmountChange={onAmountChange}
                 onDeposit={onDeposit}
                 onWithdraw={onWithdraw}
+                onStatusUpdate={onStatusUpdate}
               />
             </Popover.Group>
           </>
@@ -103,6 +118,7 @@ export const AssetPopover = ({
 
 interface AssetPanelProps {
   account?: Account;
+  status?: ACCOUNT_STATUS;
   token?: Token;
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
@@ -112,7 +128,7 @@ interface AssetPanelProps {
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
-
+  onStatusUpdate?: () => unknown;
   title: string;
 }
 
@@ -120,6 +136,7 @@ const AssetPanel = (props: AssetPanelProps) => {
   const {
     title,
     account,
+    status,
     token,
     walletBalances,
     usumBalances,
@@ -129,6 +146,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     onAmountChange,
     onDeposit,
     onWithdraw,
+    onStatusUpdate,
   } = props;
 
   return (
@@ -142,7 +160,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           </Popover.Button>
           {/* account 없을 때 */}
           {/* 1. create account */}
-          {/* <Popover.Panel className="popover-panel">
+          {status === ACCOUNT_NONE && (
+            <Popover.Panel className="popover-panel">
             <div className="w-full gap-2 pt-2 text-center">
               <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
                 <img
@@ -165,7 +184,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="xl"
                   css="active"
                   className="w-full"
-                  // onClick={}
+                    onClick={() => {
+                      onStatusUpdate?.();
+                    }}
                 />
                 <Button
                   iconOnly={<ChevronDoubleUpIcon />}
@@ -178,11 +199,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                 />
               </div>
             </div>
-          </Popover.Panel> */}
+            </Popover.Panel>
+          )}
 
           {/* account 없을 때 */}
           {/* 2. loading to generate account */}
-          {/* <Popover.Panel className="popover-panel">
+          {status === ACCOUNT_CREATING && (
+            <Popover.Panel className="popover-panel">
             <div className="w-full gap-2 pt-2 text-center">
               <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
                 <img
@@ -206,8 +229,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="xl"
                   css="active"
                   className="w-full"
-                  disabled
-                  // onClick={}
+                    disabled={true}
                 />
                 <Button
                   iconOnly={<ChevronDoubleUpIcon />}
@@ -220,11 +242,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                 />
               </div>
             </div>
-          </Popover.Panel> */}
+            </Popover.Panel>
+          )}
 
           {/* account 없을 때 */}
           {/* 3. complete to create account */}
           {/* todo: 3초 정도 보여지고, account 있을 때의 UI로 자연스럽게 전환됨 */}
+          {status === ACCOUNT_COMPLETING && (
           <Popover.Panel className="popover-panel">
             <div className="w-full gap-2 pt-2 text-center">
               <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
@@ -242,8 +266,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   size="xl"
                   css="active"
                   className="w-full"
-                  disabled
-                  // onClick={}
+                    disabled={true}
                 />
                 <Button
                   iconOnly={<ChevronDoubleUpIcon />}
@@ -257,9 +280,11 @@ const AssetPanel = (props: AssetPanelProps) => {
               </div>
             </div>
           </Popover.Panel>
+          )}
 
           {/* account 있을 때 */}
-          {/* <Popover.Panel className="popover-panel">
+          {status === ACCOUNT_COMPLETED && (
+            <Popover.Panel className="popover-panel">
             <div className="w-full gap-2 pt-2">
               <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">
                 <p className="flex-none pr-4 border-r text-black/30">
@@ -350,7 +375,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                 />
               </div>
             </div>
-          </Popover.Panel> */}
+            </Popover.Panel>
+          )}
         </>
       )}
     </Popover>

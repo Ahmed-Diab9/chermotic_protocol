@@ -25,7 +25,7 @@ const usePoolInput = () => {
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
   const feeRates = useMemo(() => {
-    return SHORT_FEE_RATES.map((rate) => rate * -1).concat(LONG_FEE_RATES);
+    return LONG_FEE_RATES.concat(SHORT_FEE_RATES.map((rate) => rate * -1));
   }, []);
   const [amount, setAmount] = useState("");
   const [indexes, setIndexes] = useState<[number, number]>([35, 36]);

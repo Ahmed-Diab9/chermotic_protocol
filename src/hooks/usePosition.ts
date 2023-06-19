@@ -6,7 +6,7 @@ import { isValid } from "~/utils/valid";
 
 import {
   ChromaticMarket__factory,
-  OracleProvider__factory,
+  IOracleProvider__factory,
 } from "@chromatic-protocol/sdk";
 import { useProvider } from "wagmi";
 import { useMarket } from "~/hooks/useMarket";
@@ -14,7 +14,7 @@ import { useRouter } from "~/hooks/useRouter";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { createPositionsMock } from "~/mock/positions";
 import { AppError } from "~/typings/error";
-import { Position, PositionStructOutput } from "~/typings/position";
+import { Position } from "~/typings/position";
 import { filterIfFulfilled } from "~/utils/array";
 import useOracleVersion from "./useOracleVersion";
 import { bigNumberify } from "~/utils/number";
@@ -24,7 +24,7 @@ import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
 
 export const usePosition = () => {
-  const [usumAccount] = useUsumAccount();
+  const { account: usumAccount } = useUsumAccount();
   const { fetchUsumBalances } = useUsumBalances();
   const [token] = useSelectedToken();
   const [markets] = useMarket();
@@ -61,18 +61,20 @@ export const usePosition = () => {
         provider
       );
       const oracleProviderAddress = await marketContract.oracleProvider();
-      const marketOracleProvider = OracleProvider__factory.connect(
+      const marketOracleProvider = IOracleProvider__factory.connect(
         oracleProviderAddress,
         provider
       );
 
-      const positionResponses: PositionStructOutput[] =
-        await marketContract.getPositions(positionIds);
+      const positionResponses = await marketContract.getPositions(positionIds);
       const positionsPromise = positionResponses.map(async (response) => {
-        const [openPrice, closePrice] = await marketOracleProvider.atVersions([
-          response.openVersion,
-          response.closeVersion,
-        ]);
+        const openPrice = await marketOracleProvider.atVersion(
+          response.openVersion
+        );
+        const closePrice = await marketOracleProvider.atVersion(
+          response.closeVersion
+        );
+
         const newPosition = new Position(response, marketAddress);
         newPosition.updateCollateral(feeRate ?? bigNumberify(0));
         newPosition.updateTakeProfit();
@@ -179,7 +181,7 @@ export const usePosition = () => {
 };
 
 export const usePositionsMock = () => {
-  const [account] = useUsumAccount();
+  const { account } = useUsumAccount();
 
   const fetchKey = useMemo(() => {
     if (isValid(account)) {

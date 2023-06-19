@@ -11,6 +11,7 @@ import { useLiquidityPool } from "./useLiquidityPool";
 import { useChromaticLens } from "./useChromaticLens";
 import { LPReceipt } from "~/typings/receipt";
 import useOracleVersion from "./useOracleVersion";
+import { useAccount } from "wagmi";
 
 const usePoolReceipt = () => {
   const [market] = useSelectedMarket();
@@ -18,25 +19,25 @@ const usePoolReceipt = () => {
   const lens = useChromaticLens();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
+  const { address } = useAccount();
 
   const fetchKey = useMemo(() => {
     if (
       isValid(market) &&
       isValid(oracleVersions) &&
-      isValid(router) &&
-      isValid(lens)
+      isValid(lens) &&
+      isValid(address)
     ) {
-      return [market, oracleVersions, router, lens] as const;
+      return [market, oracleVersions, lens, address] as const;
     }
-  }, [market, oracleVersions, router, lens]);
+  }, [market, oracleVersions, lens, address]);
 
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
-  } = useSWR(fetchKey, async ([market, oracleVersions, router, lens]) => {
-    const receiptIds = await router.getLpReceiptIds(market.address);
-    const receipts = await lens.lpReceipts(market.address, receiptIds);
+  } = useSWR(fetchKey, async ([market, oracleVersions, lens, address]) => {
+    const receipts = await lens.lpReceipts(market.address, address);
     return receipts.map((receipt) => {
       const instance = new LPReceipt(receipt);
       instance.updateIsCompleted(oracleVersions[market.address].version);

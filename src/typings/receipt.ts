@@ -1,8 +1,16 @@
-import { LpReceiptStructOutput } from "@chromatic-protocol/sdk";
 import { BigNumber } from "ethers";
 import { Market } from "./market";
 import { formatDecimals, numberBuffer, percentage } from "~/utils/number";
 import { CLB_TOKEN_DECIMALS, FEE_RATE_DECIMAL } from "~/configs/decimals";
+
+interface BaseOutput {
+  id: BigNumber;
+  oracleVersion: BigNumber;
+  amount: BigNumber;
+  recipient: string;
+  action: number;
+  tradingFeeRate: number;
+}
 
 export class LPReceipt {
   id: BigNumber;
@@ -14,7 +22,7 @@ export class LPReceipt {
   isCompleted: boolean;
   title: "minting" | "burning";
   status: "standby" | "completed" | "in progress";
-  constructor(output: LpReceiptStructOutput) {
+  constructor(output: BaseOutput) {
     const { id, oracleVersion, amount, action, recipient, tradingFeeRate } =
       output;
     this.id = id;
