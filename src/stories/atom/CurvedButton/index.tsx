@@ -67,9 +67,9 @@ const CurvedLine = (props: CurvedLineProps) => {
     >
       <path
         fill="#EEE"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M0 53h1c0-3.816 3.234-6.983 7.184-8.497C15.664 41.638 21 34.92 21 27c0-7.919-5.335-14.638-12.816-17.503C4.234 7.983 1 4.817 1 1V0H0v1c0 4.418 3.7 7.85 7.827 9.43C14.983 13.173 20 19.56 20 27c0 7.441-5.017 13.828-12.173 16.57C3.7 45.15 0 48.58 0 53Z"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
     </svg>
   );
