@@ -1,5 +1,5 @@
 import {
-  OracleProvider__factory,
+  IOracleProvider__factory,
   ChromaticMarket__factory,
 } from "@chromatic-protocol/sdk";
 import { useMarket } from "./useMarket";
@@ -33,7 +33,7 @@ const useOracleVersion = () => {
           provider
         );
         const oracleProviderAddress = await marketContract.oracleProvider();
-        const oracleProvider = OracleProvider__factory.connect(
+        const oracleProvider = IOracleProvider__factory.connect(
           oracleProviderAddress,
           provider
         );

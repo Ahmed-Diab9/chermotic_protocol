@@ -63,12 +63,12 @@ export const useLiquidityPool = () => {
       ) as ChromaticLens;
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
-        ...SHORT_FEE_RATES.map((rate) => rate * -1),
         ...LONG_FEE_RATES,
+        ...SHORT_FEE_RATES.map((rate) => rate * -1),
       ];
       const feeRates = [
-        ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
         ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
+        ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
       ];
       const promises = tokenAddresses.map(async (tokenAddress) => {
         const marketAddresses = await factory.getMarketsBySettlmentToken(
@@ -93,8 +93,7 @@ export const useLiquidityPool = () => {
           );
           await clbTokenBatch.updateBalances(walletAddress);
           await clbTokenBatch.updateMetadata();
-          await clbTokenBatch.updateLiquidities(version);
-          await clbTokenBatch.updateBinValues();
+          await clbTokenBatch.updateLiquidities();
           clbTokenBatch.updateLiquidityValues();
           clbTokenBatch.updateRemovableRates();
 
