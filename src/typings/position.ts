@@ -1,4 +1,4 @@
-import { IOracleProvider, PositionStructOutput } from "@chromatic-protocol/sdk";
+import { IOracleProvider } from "@chromatic-protocol/sdk";
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
@@ -11,10 +11,6 @@ import {
 import { isValid } from "~/utils/valid";
 import { OracleVersion } from "./oracleVersion";
 import { PERCENT_DECIMALS } from "~/configs/decimals";
-export type {
-  PositionStructOutput,
-  BinMarginStructOutput,
-} from "@chromatic-protocol/sdk";
 
 export const OPENING = "OPENING";
 export const OPENED = "OPENED";
@@ -22,6 +18,24 @@ export const CLOSING = "CLOSING";
 export const CLOSED = "CLOSED";
 
 type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
+
+interface BaseOutput {
+  id: BigNumber;
+  qty: BigNumber;
+  leverage: number;
+  owner: string;
+  takerMargin: BigNumber;
+  openVersion: BigNumber;
+  openTimestamp: BigNumber;
+  closeVersion: BigNumber;
+  closeTimestamp: BigNumber;
+  _binMargins: BaseMargin[];
+}
+
+interface BaseMargin {
+  tradingFeeRate: number;
+  amount: BigNumber;
+}
 
 export class Position {
   id: BigNumber;
@@ -48,7 +62,7 @@ export class Position {
   currentPrice: BigNumber;
   profitAndLoss: BigNumber;
   status: Status;
-  constructor(output: PositionStructOutput, marketAddress: string) {
+  constructor(output: BaseOutput, marketAddress: string) {
     const {
       id,
       qty,
