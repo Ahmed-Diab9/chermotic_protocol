@@ -51,7 +51,8 @@ const Pool = () => {
   } = useUsumAccount();
   const [tokens] = useSettlementToken();
   const [markets] = useMarket();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
+  const [_, onTokenSelect] = useSelectedToken();
+  const selectedToken = useAppSelector((state) => state.market.selectedToken)
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();
   const [walletBalances] = useWalletBalances();
@@ -76,6 +77,8 @@ const Pool = () => {
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
   } = useSelectedLiquidityPool();
+
+
   const {
     amount,
     indexes,

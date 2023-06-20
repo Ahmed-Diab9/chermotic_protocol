@@ -2,11 +2,11 @@ import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useProvider } from "wagmi";
 
-import {
-  ChromaticMarket__factory,
-  IOracleProvider__factory,
-} from "@chromatic-protocol/sdk";
-
+// import {
+//   ChromaticMarket__factory,
+//   IOracleProvider__factory,
+// } from "@chromatic-protocol/sdk/contracts";
+import { useChromaticClient } from "./useChromaticClient";
 import { Market } from "~/typings/market";
 
 import { useAppDispatch, useAppSelector } from "~/store";
@@ -18,53 +18,50 @@ import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
+import { ChromaticMarket__factory, IOracleProvider__factory } from "@chromatic-protocol/sdk/contracts";
 
 export const useMarket = (_interval?: number) => {
   const provider = useProvider();
+  const {client} = useChromaticClient()
 
-  const [selectedToken] = useSelectedToken();
-  const [marketFactory] = useMarketFactory();
+  const selectedToken = useAppSelector((state) => state.market.selectedToken)
 
-  const fetchKey = useMemo(() => {
-    return isValid(selectedToken) && isValid(marketFactory)
-      ? ([selectedToken, marketFactory] as const)
-      : undefined;
-  }, [selectedToken, marketFactory]);
-
+  
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
-  } = useSWR(fetchKey, async ([selectedToken, marketFactory]) => {
-    const response = await Promise.allSettled(
-      (
-        await marketFactory.getMarketsBySettlmentToken(
-          selectedToken.address as string
-        )
-      ).map(async (marketAddress) => {
-        const market = ChromaticMarket__factory.connect(
-          marketAddress,
-          provider
-        );
+  } = useSWR(`market#${selectedToken?.address}`, async () => {
+    client?.marketFactory().contract.getMarketsBySettlmentToken()
+    // const response = await Promise.allSettled(
+    //   (
+    //     await marketFactory.getMarketsBySettlmentToken(
+    //       selectedToken.address as string
+    //     )
+    //   ).map(async (marketAddress) => {
+    //     const market = ChromaticMarket__factory.connect(
+    //       marketAddress,
+    //       provider
+    //     );
 
-        const oracleProviderAddress = await market.oracleProvider();
-        const oracleProvider = IOracleProvider__factory.connect(
-          oracleProviderAddress,
-          provider
-        );
+    //     const oracleProviderAddress = await market.oracleProvider();
+    //     const oracleProvider = IOracleProvider__factory.connect(
+    //       oracleProviderAddress,
+    //       provider
+    //     );
 
-        // 오라클에서 제공하는 모든 가격 데이터는 소수점 18자리를 적용해야 함
-        async function getPrice() {
-          const { price } = await oracleProvider.currentVersion();
-          return { value: price, decimals: 18 };
-        }
-        const description = await oracleProvider.description();
-        return {
-          address: marketAddress,
-          description,
-          getPrice,
-        } satisfies Market;
-      })
+    //     // 오라클에서 제공하는 모든 가격 데이터는 소수점 18자리를 적용해야 함
+    //     async function getPrice() {
+    //       const { price } = await oracleProvider.currentVersion();
+    //       return { value: price, decimals: 18 };
+    //     }
+    //     const description = await oracleProvider.description();
+    //     return {
+    //       address: marketAddress,
+    //       description,
+    //       getPrice,
+    //     } satisfies Market;
+    //   })
     );
 
     const fulfilled = response
@@ -89,7 +86,7 @@ export const useSelectedMarket = () => {
 
   const [markets] = useMarket();
 
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
 
   const { state: storedMarket, setState: setStoredMarket } =
     useLocalStorage<string>("usum:market");

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useUsumAccount } from "./useUsumAccount";
-import { IERC20__factory } from "@chromatic-protocol/sdk";
+import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 import { useAccount, useSigner } from "wagmi";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";

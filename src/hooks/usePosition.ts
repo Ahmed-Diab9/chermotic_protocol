@@ -4,10 +4,7 @@ import useSWR from "swr";
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 
-import {
-  ChromaticMarket__factory,
-  IOracleProvider__factory,
-} from "@chromatic-protocol/sdk";
+
 import { useProvider } from "wagmi";
 import { useMarket } from "~/hooks/useMarket";
 import { useRouter } from "~/hooks/useRouter";
@@ -22,6 +19,7 @@ import { useFeeRate } from "./useFeeRate";
 import { useSelectedToken } from "./useSettlementToken";
 import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
+import { ChromaticMarket__factory, IOracleProvider__factory } from "@chromatic-protocol/sdk/contracts";
 
 export const usePosition = () => {
   const { account: usumAccount } = useUsumAccount();

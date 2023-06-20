@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { useAccount } from "wagmi";
 import { isValid } from "../utils/valid";
 import { PRICE_FEED } from "../configs/token";
-import { AggregatorV3Interface__factory } from "@chromatic-protocol/sdk";
+import { AggregatorV3Interface__factory } from "@chromatic-protocol/sdk/contracts";
 import { Price } from "../typings/market";
 import { errorLog } from "../utils/log";
 import { BigNumber, ethers } from "ethers";

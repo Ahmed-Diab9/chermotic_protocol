@@ -3,14 +3,14 @@ import { useAccount, useSigner } from "wagmi";
 import useSWR from "swr";
 
 import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
-
+import { useChromaticClient } from "./useChromaticClient";
 import { useRouter } from "~/hooks/useRouter";
 
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { ADDRESS_ZERO } from "~/utils/address";
 import { AppError } from "~/typings/error";
-import { ChromaticAccount__factory } from "@chromatic-protocol/sdk";
+import { ChromaticAccount__factory } from "@chromatic-protocol/sdk/contracts";
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -24,7 +24,6 @@ export const useUsumAccount = () => {
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-
   const [router] = useRouter();
 
   const fetchKey = useMemo(() => {
@@ -38,11 +37,23 @@ export const useUsumAccount = () => {
     error,
     isLoading,
   } = useSWR(fetchKey, async ([router, signer]) => {
-    const address = await router.getAccount();
-    if (address === ADDRESS_ZERO) {
-      return;
+    console.log('router!!!', router);
+    console.log('router signerOrProvider', router.signer || router.provider)
+    try{
+      const address = await router?.getAccount();
+      
+      console.log('router addr' , address)
+      if (!address || address === ADDRESS_ZERO) {
+        return;
+      }
+      return ChromaticAccount__factory.connect(address, signer);
+    }catch(e){
+      
+      console.log(e)
+      console.log('ee', router.signer, signer)
     }
-    return ChromaticAccount__factory.connect(address, signer);
+    
+
   });
 
   useEffect(() => {
@@ -72,9 +83,9 @@ export const useUsumAccount = () => {
     };
   }, [status]);
 
-  if (error) {
-    errorLog(error);
-  }
+  // if (error) {
+  //   errorLog(error);
+  // }
 
   const createAccount = async () => {
     if (!isValid(signer)) {

@@ -1,4 +1,5 @@
-import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
+import { ChromaticRouter} from "@chromatic-protocol/sdk/contracts";
+import { getDeployedContract} from '@chromatic-protocol/sdk/contracts'
 import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
 import { CHAIN } from "~/constants/contracts";
@@ -12,6 +13,7 @@ import {
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
 import { errorLog } from "../utils/log";
+import { useChromaticClient } from "./useChromaticClient";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
 import { useSelectedMarket } from "./useMarket";
 import { useSelectedToken } from "./useSettlementToken";
@@ -220,7 +222,8 @@ export const useTradeInput = () => {
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
   const { fetchUsumBalances } = useUsumBalances();
-
+  const {client} = useChromaticClient()
+  const routerApi = client?.router()
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
     pool,
@@ -375,11 +378,10 @@ export const useTradeInput = () => {
       errorLog("no signers");
       return;
     }
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      CHAIN,
-      signer
-    ) as ChromaticRouter;
+    if (!isValid(routerApi)) {
+      errorLog("no routers")
+      return
+    }
 
     const quantity = bigNumberify(state.quantity * numberBuffer())
       .mul(expandDecimals(4))
@@ -420,16 +422,15 @@ export const useTradeInput = () => {
     // Trading Fee
     const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
-    const tx = await router.openPosition(
-      market?.address,
-      quantity.mul(state.direction === "long" ? 1 : -1),
+    await routerApi.openPosition(market.address, {
+      quantity: quantity.mul(state.direction === "long" ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
       tradingFee
-    );
-
-    handleTx(tx, fetchPositions, fetchUsumBalances);
+    } )
+    await fetchPositions()
+    await fetchUsumBalances()
   };
 
   return {

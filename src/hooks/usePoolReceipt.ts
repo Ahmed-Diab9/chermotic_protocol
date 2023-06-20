@@ -8,7 +8,7 @@ import { useSelectedMarket } from "./useMarket";
 import { useRouter } from "./useRouter";
 import { handleTx } from "~/utils/tx";
 import { useLiquidityPool } from "./useLiquidityPool";
-import { useChromaticLens } from "./useChromaticLens";
+import { useChromaticClient } from "./useChromaticClient";
 import { LPReceipt } from "~/typings/receipt";
 import useOracleVersion from "./useOracleVersion";
 import { useAccount } from "wagmi";
@@ -16,7 +16,8 @@ import { useAccount } from "wagmi";
 const usePoolReceipt = () => {
   const [market] = useSelectedMarket();
   const [_, fetchLiquidityPools] = useLiquidityPool();
-  const lens = useChromaticLens();
+  const {client} = useChromaticClient()
+  const lensApi = client?.lens()
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
@@ -25,19 +26,19 @@ const usePoolReceipt = () => {
     if (
       isValid(market) &&
       isValid(oracleVersions) &&
-      isValid(lens) &&
+      isValid(lensApi) &&
       isValid(address)
     ) {
-      return [market, oracleVersions, lens, address] as const;
+      return [market, oracleVersions, lensApi, address] as const;
     }
-  }, [market, oracleVersions, lens, address]);
+  }, [market, oracleVersions, lensApi, address]);
 
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
-  } = useSWR(fetchKey, async ([market, oracleVersions, lens, address]) => {
-    const receipts = await lens.lpReceipts(market.address, address);
+  } = useSWR(fetchKey, async ([market, oracleVersions, lensApi, address]) => {
+    const receipts = await lensApi.lpReceipts(market.address, address);
     return receipts.map((receipt) => {
       const instance = new LPReceipt(receipt);
       instance.updateIsCompleted(oracleVersions[market.address].version);

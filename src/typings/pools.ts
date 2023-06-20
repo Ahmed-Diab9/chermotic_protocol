@@ -1,4 +1,4 @@
-import { CLBToken, ChromaticLens } from "@chromatic-protocol/sdk";
+import { CLBToken, ChromaticLens } from "@chromatic-protocol/sdk/contracts";
 import { BigNumber } from "ethers";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import { filterIfFulfilled } from "~/utils/array";

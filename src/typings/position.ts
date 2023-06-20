@@ -1,4 +1,4 @@
-import { IOracleProvider } from "@chromatic-protocol/sdk";
+import { IOracleProvider } from "@chromatic-protocol/sdk/contracts";
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
@@ -19,7 +19,7 @@ export const CLOSED = "CLOSED";
 
 type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
 
-interface BaseOutput {
+export interface BaseOutput {
   id: BigNumber;
   qty: BigNumber;
   leverage: number;

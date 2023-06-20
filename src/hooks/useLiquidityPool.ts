@@ -5,7 +5,7 @@ import {
   ChromaticMarket__factory,
   ChromaticRouter,
   getDeployedContract,
-} from "@chromatic-protocol/sdk";
+} from "@chromatic-protocol/sdk/contracts";
 import { ethers } from "ethers";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
@@ -22,6 +22,7 @@ import {
 import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
+import { useChromaticClient } from "./useChromaticClient";
 import { useMarket, useSelectedMarket } from "./useMarket";
 import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
 import usePoolReceipt from "./usePoolReceipt";
@@ -34,6 +35,8 @@ import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
   const [tokens] = useSettlementToken();
+  const {client} = useChromaticClient()
+  const marketFactoryApi = client?.marketFactory()
   const tokenAddresses = tokens?.map((token) => token.address);
   const { oracleVersions } = useOracleVersion();
   const fetchKey =
@@ -141,6 +144,7 @@ export const useLiquidityPool = () => {
 };
 
 export const useSelectedLiquidityPool = () => {
+  const {client} = useChromaticClient()
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const [pools] = useLiquidityPool();
@@ -149,6 +153,8 @@ export const useSelectedLiquidityPool = () => {
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
+
+  const routerApi = client?.router()
 
   const pool = useMemo(() => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
@@ -201,31 +207,32 @@ export const useSelectedLiquidityPool = () => {
     if (!isValid(pool)) {
       return;
     }
-
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      "anvil",
-      signer
-    ) as ChromaticRouter;
+    if (!isValid(routerApi)) {
+      errorLog("no clients")
+      return
+    }
+    const routerAddress = routerApi.routerContract.address
 
     const clbToken = CLBToken__factory.connect(pool.address, signer);
-    const isApproved = await clbToken.isApprovedForAll(address, router.address);
+    const isApproved = await clbToken.isApprovedForAll(address, routerAddress);
     if (!isApproved) {
       infoLog("Approving all lp tokens");
-      await clbToken.setApprovalForAll(router.address, true);
+      await clbToken.setApprovalForAll(routerAddress, true);
     }
     const expandedAmount = bigNumberify(amount).mul(
       expandDecimals(token?.decimals ?? 1)
     );
 
-    const tx = await router.removeLiquidity(
+    await routerApi.removeLiquidity(
       pool.marketAddress,
-      feeRate,
-      expandedAmount,
-      address
+      {
+        feeRate,
+        receipient: address,
+        clbTokenAmount: expandedAmount
+      },
     );
-
-    handleTx(tx, fetchReceipts, fetchWalletBalances);
+    await fetchReceipts()
+    await fetchWalletBalances()
   };
 
   const onRemoveLiquidityBatch = async (bins: Bin[], type: MULTI_TYPE) => {
@@ -234,6 +241,9 @@ export const useSelectedLiquidityPool = () => {
     }
     if (!isValid(pool)) {
       return;
+    }
+    if (!isValid(routerApi)) {
+      return
     }
     const amounts = bins.map((bin) => {
       const { balance, binValue, freeLiquidity } = bin;
@@ -246,17 +256,13 @@ export const useSelectedLiquidityPool = () => {
 
       return type === MULTI_ALL ? balance : removable;
     });
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      "anvil",
-      signer
-    ) as ChromaticRouter;
-    router.removeLiquidityBatch(
-      market.address,
-      bins.map((bin) => bin.baseFeeRate),
-      amounts,
-      bins.map(() => address)
-    );
+    await routerApi.removeLiquidities(market.address, bins.map((bin, binIndex) => ({
+      feeRate: bin.baseFeeRate,
+      clbTokenAmount: amounts[binIndex],
+      receipient: address,
+    })))
+    await fetchReceipts()
+    await fetchWalletBalances()
   };
 
   return {

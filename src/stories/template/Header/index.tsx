@@ -7,6 +7,7 @@ import { Account } from "~/typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "~/typings/pools";
 import { Link } from "react-router-dom";
+import { isValid } from "../../../utils/valid";
 
 interface HeaderProps {
   account?: Account;
@@ -46,7 +47,7 @@ export const Header = ({
         {/* dropdown */}
       </div>
       <div>
-        {account ? (
+        {isValid(account?.walletAddress) ? (
           <>
             <WalletPopover
               account={account}

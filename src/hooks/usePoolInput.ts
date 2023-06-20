@@ -2,7 +2,7 @@ import {
   ChromaticRouter,
   IERC20__factory,
   getDeployedContract,
-} from "@chromatic-protocol/sdk";
+} from "@chromatic-protocol/sdk/contracts";
 import { useMemo, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
@@ -15,12 +15,17 @@ import { useSelectedToken } from "./useSettlementToken";
 import usePoolReceipt from "./usePoolReceipt";
 import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
+import { useChromaticClient } from "./useChromaticClient";
 
 const usePoolInput = () => {
   const { pool } = useSelectedLiquidityPool();
   const [market] = useSelectedMarket();
+  const { client } = useChromaticClient();
+  const routerApi = client?.router();
   const [token] = useSelectedToken();
   const { address } = useAccount();
+  
+  
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
@@ -108,6 +113,10 @@ const usePoolInput = () => {
       errorLog("wallet not connected");
       return;
     }
+    if (!isValid(routerApi)) {
+      errorLog("no router apis")
+      return
+    }
     const marketAddress = market?.address;
     const filteredFeeRates = feeRates.filter(
       (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
@@ -119,25 +128,20 @@ const usePoolInput = () => {
       errorLog("amount is invalid");
       return;
     }
-    const dividedAmount = expandedAmount.div(bins);
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      "anvil",
-      signer
-    ) as ChromaticRouter;
-    const erc20 = IERC20__factory.connect(token.address, signer);
-    const allowance = await erc20.allowance(address, router.address);
-    if (allowance.lte(expandedAmount)) {
-      await erc20.approve(router.address, expandedAmount);
-    }
-    const tx = await router.addLiquidityBatch(
-      marketAddress,
-      filteredFeeRates,
-      Array.from({ length: bins }).map(() => dividedAmount),
-      Array.from({ length: bins }).map(() => address)
-    );
 
-    handleTx(tx, fetchReceipts, fetchWalletBalances);
+    const erc20 = IERC20__factory.connect(token.address, signer);
+    const routerAddress = routerApi.routerContract.address
+    const allowance = await erc20.allowance(address,routerAddress );
+    if (allowance.lte(expandedAmount)) {
+      await erc20.approve(routerAddress, expandedAmount);
+    }
+  
+    const dividedAmount = expandedAmount.div(bins);
+    await routerApi.addLiquidities(marketAddress, filteredFeeRates.map(feeRate => ({
+      feeRate, amount: dividedAmount
+    })))
+    await fetchReceipts()
+    await fetchWalletBalances()
   };
 
   return {

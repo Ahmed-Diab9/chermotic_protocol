@@ -1,7 +1,7 @@
 import {
   IOracleProvider__factory,
   ChromaticMarket__factory,
-} from "@chromatic-protocol/sdk";
+} from "@chromatic-protocol/sdk/contracts";
 import { useMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
 import { useProvider } from "wagmi";

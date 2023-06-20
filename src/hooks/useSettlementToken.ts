@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { useProvider } from "wagmi";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useProvider, useSigner, useAccount } from "wagmi";
 import useSWR from "swr";
+import { useChromaticClient } from "./useChromaticClient";
 
-import { IERC20Metadata__factory } from "@chromatic-protocol/sdk";
+import { IERC20Metadata__factory } from "@chromatic-protocol/sdk/contracts";
 
 import { Token } from "~/typings/market";
 
@@ -17,41 +18,21 @@ import { isValid } from "~/utils/valid";
 
 export const useSettlementToken = () => {
   const provider = useProvider();
-  const [marketFactory] = useMarketFactory();
-
-  const fetchKey = useMemo(
-    () => (isValid(marketFactory) ? ([marketFactory] as const) : undefined),
-    [marketFactory]
-  );
-
+  const {client} = useChromaticClient()
+  const marketFactoryApi = client?.marketFactory()
+  const fetchKey = `settlementTokens`
+  const {address} = useAccount()
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
-  } = useSWR(fetchKey, async ([marketFactory]) => {
-    const addresses = await marketFactory.registeredSettlementTokens();
-    const promise = addresses.map(async (address) => {
-      const { symbol, decimals } = IERC20Metadata__factory.connect(
-        address,
-        provider
-      );
-
-      return {
-        name: await symbol(),
-        address,
-        decimals: await decimals(),
-      } satisfies Token;
-    });
-
-    const response = await Promise.allSettled(promise);
-    const fulfilled = response
-      .filter(
-        (result): result is PromiseFulfilledResult<Token> =>
-          result.status === "fulfilled"
-      )
-      .map(({ value }) => value);
-
-    return fulfilled;
+  } = useSWR([fetchKey, address], async ()=> {
+    if(!marketFactoryApi) return []
+    const tokens = await marketFactoryApi.registeredSettlementTokens();
+    console.log('settlement ', tokens)
+    return tokens
+  }, {
+    dedupingInterval: 5 * 60 * 1000
   });
 
   if (error) {
@@ -66,9 +47,9 @@ export const useSelectedToken = () => {
 
   const [tokens] = useSettlementToken();
 
-  const selectedToken = useAppSelector((state) => state.market.selectedToken);
+  // const selectedToken = useAppSelector((state) => state.market.selectedToken);
 
-  const { state: storedToken, setState: setStoredToken } =
+  const { state: storedToken, setState: setStoredToken, deleteState: deleteToken } =
     useLocalStorage<string>("usum:token");
 
   const onTokenSelect = useCallback(
@@ -76,6 +57,7 @@ export const useSelectedToken = () => {
       const nextToken = tokens?.find((token) => token.address === address);
       if (!isValid(nextToken)) {
         errorLog("Settlement Token:selected token is invalid.");
+        deleteToken()
         return;
       }
       setStoredToken(nextToken.address);
@@ -85,12 +67,16 @@ export const useSelectedToken = () => {
   );
 
   useEffect(() => {
-    if (isValid(selectedToken) || !isValid(tokens)) return;
+    if (!isValid(tokens)) return;
     else if (isValid(storedToken)) onTokenSelect(storedToken);
-    else onTokenSelect(tokens[0].address);
+    else {
+      if (tokens[0]?.address) {
+        onTokenSelect(tokens[0].address);
+      }
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedToken, tokens, onTokenSelect]);
 
-  return [selectedToken, onTokenSelect] as const;
+  return [undefined, onTokenSelect] as const;
 };

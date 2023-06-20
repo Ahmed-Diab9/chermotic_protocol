@@ -3,7 +3,7 @@ import { useAccount, useSigner } from "wagmi";
 import { BigNumber } from "ethers";
 import useSWR from "swr";
 
-import { IERC20__factory } from "@chromatic-protocol/sdk";
+import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 
 import { isValid } from "~/utils/valid";
 import { errorLog, infoLog } from "~/utils/log";
