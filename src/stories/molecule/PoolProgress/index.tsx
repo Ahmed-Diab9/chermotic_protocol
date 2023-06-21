@@ -5,8 +5,9 @@ import { Button } from "~/stories/atom/Button";
 import { Progress } from "~/stories/atom/Progress";
 import { Loading } from "~/stories/atom/Loading";
 import { Tab } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/20/solid";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { Guide } from "~/stories/atom/Guide";
 import { Disclosure } from "@headlessui/react";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
@@ -36,8 +37,15 @@ export const PoolProgress = ({
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="relative flex items-center justify-center py-5">
+            <Disclosure.Button className="relative flex items-center py-5">
+              <div className="ml-10 text-left">
                 <h4 className="font-bold">IN PROGRESS ({receipts.length})</h4>
+                {open && (
+                  <p className="mt-1 ml-auto text-sm text-black/30">
+                    Last oracle update: 00h 00m 00s ago
+                  </p>
+                )}
+              </div>
               <ChevronDownIcon
                 className={`${
                   open ? "rotate-180 transform" : ""
@@ -46,20 +54,40 @@ export const PoolProgress = ({
             </Disclosure.Button>
             <Disclosure.Panel className="px-5 text-gray-500 border-t">
               <Tab.Group>
-                <Tab.List className="!justify-start !gap-8 pt-5 px-7">
-                  <Tab>All</Tab>
-                  <Tab>Minting (2)</Tab>
-                  <Tab>Burning (3)</Tab>
-                </Tab.List>
-                <div className="mt-4">
+                <div className="relative flex items-end">
+                  <Tab.List className="!justify-start !gap-8 pt-5 px-7">
+                    <Tab>All</Tab>
+                    <Tab>Minting (2)</Tab>
+                    <Tab>Burning (3)</Tab>
+                  </Tab.List>
                   <Button
+                    label="Claim All"
+                    className="absolute right-0 border-gray"
+                    size="base"
+                    onClick={() => onReceiptClaimBatch?.()}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  {/* <Button
                     label="Claim All"
                     className="w-full border-gray"
                     size="xl"
                     onClick={() => onReceiptClaimBatch?.()}
+                  /> */}
+                </div>
+                <div className="mt-5">
+                  <Guide
+                    title="Standby.."
+                    // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                    paragraph="Waiting for the next oracle round. The next oracle round is updated
+        whenever the Chainlink price moves by
+        0.00% or more, and it is updated at least once a day."
+                    outLink="/pool"
+                    outLinkAbout="Next Oracle Round"
                   />
                 </div>
-                <Tab.Panels className="flex-auto mt-5">
+                <Tab.Panels className="flex-auto mt-3">
                   {/* tab1 - all */}
                   <Tab.Panel className="flex flex-col gap-3 mb-5">
                     {isValid(market) &&
@@ -234,10 +262,12 @@ const ProgressItem = (props: ProgressItemProps) => {
         <div className="border-t" />
       )}
       <div className="flex items-end gap-3 mt-1">
-        <Thumbnail className="rounded" />
-        <div>
-          <Avatar label={token} size="xs" gap="1" />
-          <p className="mt-1 text-left text-black/30">{name}</p>
+        <div className="flex items-end gap-3">
+          <Thumbnail className="rounded" />
+          <div>
+            <Avatar label={token} size="xs" gap="1" />
+            <p className="mt-1 text-left text-black/30">{name}</p>
+          </div>
         </div>
         {status === "standby" ? (
           <Button
