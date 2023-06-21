@@ -119,7 +119,7 @@ const Pool = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20 drop-shadow-md">
+      <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount?.address }}
           status={status}
