@@ -1,11 +1,10 @@
 import { PoolPanel } from "~/stories/template/PoolPanel";
 
+import usePoolInput from "~/hooks/usePoolInput";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
-import { useSelectedMarket } from "~/hooks/useMarket";
 import { useSelectedToken } from "~/hooks/useSettlementToken";
 import { useWalletBalances } from "~/hooks/useBalances";
-import usePoolInput from "~/hooks/usePoolInput";
 
 const PoolPanelDemo = () => {
   useConnectOnce();

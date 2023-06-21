@@ -18,8 +18,6 @@ import { Tooltip } from "~/stories/atom/Tooltip";
 import { OptionInput } from "~/stories/atom/OptionInput";
 import { RangeChart } from "~/stories/atom/RangeChart";
 
-import { usePrevious } from "~/hooks/usePrevious";
-
 import {
   bigNumberify,
   expandDecimals,
@@ -29,6 +27,8 @@ import {
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
 import { infoLog } from "~/utils/log";
+
+import { usePrevious } from "~/hooks/usePrevious";
 
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
