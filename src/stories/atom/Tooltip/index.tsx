@@ -6,6 +6,7 @@ interface TooltipProps {
   label?: string;
   tip?: string;
   outLink?: string;
+  outLinkAbout?: string;
   // size?: "xs" | "sm" | "base" | "lg" | "xl";
   position?: "top" | "right" | "bottom" | "left";
   align?: "center" | "left" | "right";
@@ -18,6 +19,7 @@ export const Tooltip = (props: TooltipProps) => {
     label,
     tip,
     outLink,
+    outLinkAbout,
     position = "top",
     align = "center",
     className,
@@ -33,7 +35,9 @@ export const Tooltip = (props: TooltipProps) => {
         {/* 추후 - 링크 선택 가능하도록 떠있게 설정 추가 */}
         {outLink && (
           <a href={outLink} className="inline-flex">
-            Read more <ArrowUpRightIcon className="w-3 ml-1" />
+            Learn more
+            {outLinkAbout && `about "${outLinkAbout}"`}
+            <ArrowUpRightIcon className="w-3 ml-1" />
           </a>
         )}
       </div>

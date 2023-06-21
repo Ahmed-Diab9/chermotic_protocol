@@ -1,5 +1,5 @@
 .tooltip {
-  @apply flex items-center gap-1 relative;
+  @apply inline-flex items-center gap-1 relative;
 
   .tooltip-tip {
     @apply z-40 absolute max-w-[400px] min-h-[28px] whitespace-normal;

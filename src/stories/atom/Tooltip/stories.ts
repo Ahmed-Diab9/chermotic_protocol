@@ -29,3 +29,12 @@ export const WithLink: Story = {
     outLink: "/trade",
   },
 };
+
+export const WithLinkAbout: Story = {
+  args: {
+    label: "hover",
+    tip: "tooltip",
+    outLink: "/trade",
+    outLinkAbout: "Example",
+  },
+};
