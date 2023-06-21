@@ -24,7 +24,7 @@ const usePoolInput = () => {
   const [_, fetchWalletBalances] = useWalletBalances();
 
   const {
-    data: { max, min, values: bins },
+    data: { values: bins },
     setData: onRangeChange,
     ref: rangeChartRef,
     move,
@@ -41,20 +41,13 @@ const usePoolInput = () => {
     if (!isValid(pool)) {
       return;
     }
-    // FIXME: 패키지의 min, max output을 index로 변경
-    const minIndex = pool.bins.findIndex(({ feeRate }) => {
-      return feeRate.toNumber() === min * 100;
-    });
-    const maxIndex = pool.bins.findIndex(({ feeRate }) => {
-      return feeRate.toNumber() === min * 100;
-    });
 
-    const slicedPool = pool.bins.slice(minIndex, maxIndex + 1);
-
-    const binTotal = slicedPool.reduce(
-      (acc, { binValue }) => acc.add(binValue),
-      bigNumberify(0)
-    );
+    const binTotal = bins.reduce((acc, bin) => {
+      const binValue = pool.bins.find(({ baseFeeRate }) => {
+        return baseFeeRate / 100 === bin;
+      }).binValue;
+      return acc.add(binValue);
+    }, bigNumberify(0));
 
     return binTotal.div(bins.length);
   }, [pool, bins]);
