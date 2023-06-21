@@ -1,6 +1,6 @@
 import "~/stories/atom/Tabs/style.css";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { BigNumber } from "ethers";
@@ -205,6 +205,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
     infoLog(selectedBins);
   }, [selectedBins]);
 
+  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
+
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
@@ -247,8 +249,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <div className="toggle-wrapper">
                         <Switch.Label className="">Bin Values</Switch.Label>
                         <Switch
-                          checked={undefined}
-                          onChange={undefined}
+                          onChange={setIsBinValueVisible}
                           className="toggle toggle-xs"
                         />
                       </div>

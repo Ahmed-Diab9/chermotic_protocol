@@ -1,18 +1,26 @@
-import { useState } from "react";
-import { Switch } from "@headlessui/react";
 import "./style.css";
+import { Switch } from "@headlessui/react";
 
 interface ToggleProps {
   label?: string;
   size?: "xs" | "sm" | "base" | "lg";
   fontSize?: string;
   disabled?: boolean;
-  onClick?: () => unknown;
+  checked?: boolean;
+  defaultChecked?: boolean;
+  onChange: (checked: boolean) => void;
 }
 
 export const Toggle = (props: ToggleProps) => {
-  const { label, size = "base", fontSize = "base", disabled = false } = props;
-  const [enabled, setEnabled] = useState(false);
+  const {
+    label,
+    size = "base",
+    fontSize = "base",
+    disabled = false,
+    checked,
+    defaultChecked = false,
+    onChange,
+  } = props;
 
   return (
     <Switch.Group>
@@ -21,8 +29,9 @@ export const Toggle = (props: ToggleProps) => {
           <Switch.Label className={`text-${fontSize}`}>{label}</Switch.Label>
         )}
         <Switch
-          checked={enabled}
-          onChange={setEnabled}
+          checked={checked}
+          defaultChecked={defaultChecked}
+          onChange={onChange}
           disabled={disabled}
           className={`toggle toggle-${size}`}
         ></Switch>
