@@ -44,7 +44,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
   // 현재는 연이율을 1년에 해당하는 시간 값으로 나눗셈
   return (
-    <div className="MarketSelect">
+    <div className="z-20 bg-white MarketSelect drop-shadow-md">
       <Popover>
         {!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}
       </Popover>

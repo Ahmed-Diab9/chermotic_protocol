@@ -32,12 +32,12 @@ export const PoolProgress = ({
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
   return (
-    <div className="!flex flex-col border PoolProgress tabs tabs-line tabs-base rounded-2xl">
+    <div className="!flex flex-col border PoolProgress drop-shadow-xl tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
         {({ open }) => (
           <>
             <Disclosure.Button className="relative flex items-center justify-center py-5">
-              <h4 className="font-bold">IN PROGRESS ({receipts.length})</h4>
+                <h4 className="font-bold">IN PROGRESS ({receipts.length})</h4>
               <ChevronDownIcon
                 className={`${
                   open ? "rotate-180 transform" : ""

@@ -49,6 +49,7 @@ export const TradeBar = ({
         <div className="relative">
           {open ? (
             <>
+              {/* backdrop */}
               <div
                 className="fixed inset-0 z-0 bg-white/80"
                 aria-hidden="true"
@@ -68,21 +69,21 @@ export const TradeBar = ({
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
                         <div className="select min-w-[298px] ml-auto mb-[-8px]">
-                          <Listbox
-                            value={selectedItem}
-                            onChange={setSelectedItem}
-                          >
-                            <Listbox.Button>
-                              {selectedItem.title}
-                            </Listbox.Button>
-                            <Listbox.Options>
-                              {listitem.map((item) => (
-                                <Listbox.Option key={item.id} value={item}>
-                                  {item.title}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Listbox>
+                            <Listbox
+                              value={selectedItem}
+                              onChange={setSelectedItem}
+                            >
+                              <Listbox.Button>
+                                {selectedItem.title}
+                              </Listbox.Button>
+                              <Listbox.Options>
+                                {listitem.map((item) => (
+                                  <Listbox.Option key={item.id} value={item}>
+                                    {item.title}
+                                  </Listbox.Option>
+                                ))}
+                              </Listbox.Options>
+                            </Listbox>
                         </div>
                       </div>
                       <Tab.Panels className="pb-20 pt-9">
