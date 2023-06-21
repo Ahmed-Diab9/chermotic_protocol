@@ -82,14 +82,6 @@ export const useLiquidityPool = () => {
   } = useSWR(
     fetchKey,
     async ([walletAddress, tokenAddresses, oracleVersions]) => {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as any
-      );
-      const factory = getDeployedContract(
-        "ChromaticMarketFactory",
-        "anvil",
-        provider
-      ) as ChromaticMarketFactory;
       const lens = getDeployedContract(
         "ChromaticLens",
         "anvil",
@@ -97,12 +89,12 @@ export const useLiquidityPool = () => {
       ) as ChromaticLens;
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
-        ...LONG_FEE_RATES,
         ...SHORT_FEE_RATES.map((rate) => rate * -1),
+        ...LONG_FEE_RATES,
       ];
       const feeRates = [
-        ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
         ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+        ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
       ];
       const promises = tokenAddresses.map(async (tokenAddress) => {
         const marketAddresses = await marketFactoy.getMarketsBySettlmentToken(
