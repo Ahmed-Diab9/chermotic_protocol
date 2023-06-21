@@ -84,6 +84,9 @@ interface PoolPanelProps {
 
   rangeChartRef?: any;
 
+  binValue?: any[];
+  liquidity?: any[];
+
   rates: [number, number];
   onRangeChange: (data: RangeChartData) => unknown;
   onMinIncrease: () => void;
@@ -126,6 +129,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMultiAmountChange,
     onRemoveLiquidityBatch,
 
+    binValue,
+    liquidity,
     onRangeChange,
     rangeChartRef,
     onMinIncrease,
@@ -309,9 +314,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <article>
                   {/* chart with range */}
                   <RangeChart
+                    barData={liquidity}
+                    dotData={binValue}
                     rangeChartRef={rangeChartRef}
                     height={200}
                     onChange={onRangeChange}
+                    isDotVisible={isBinValueVisible}
                   />
                 </article>
 

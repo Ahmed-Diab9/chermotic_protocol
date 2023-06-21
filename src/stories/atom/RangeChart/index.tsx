@@ -1,7 +1,6 @@
 import {
   RangeChart as Chart,
   RangeChartData,
-  RangeChartRef,
 } from "@chromatic-protocol/react-compound-charts";
 import "./style.css";
 
@@ -27,7 +26,7 @@ interface RangeChartProps {
 export function RangeChart({
   barData = [],
   dotData = [],
-  defaultValues = [-0.1, 0.1],
+  defaultValues = [-0.09, 0.09],
   onChange = () => {},
   height,
   width,
@@ -40,7 +39,7 @@ export function RangeChart({
       <Chart
         ref={rangeChartRef}
         barData={barData}
-        dotData={isDotVisible ? dotData : []}
+        dotData={isDotVisible ? dotData ?? [] : undefined}
         trackConfig={RANGE_CONFIG}
         labels={RANGE_TICKS}
         defaultValues={defaultValues}

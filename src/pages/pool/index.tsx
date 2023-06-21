@@ -40,6 +40,7 @@ import {
   useMultiPoolRemoveInput,
   usePoolRemoveInput,
 } from "~/hooks/usePoolRemoveInput";
+import useChartData from "~/hooks/useChartData";
 
 const Pool = () => {
   useConnectOnce();
@@ -79,14 +80,14 @@ const Pool = () => {
   } = useSelectedLiquidityPool();
   const {
     amount,
-    indexes,
     rates,
-    bins,
-    averageBin,
+    binCount,
+    binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
+    move,
+    rangeChartRef,
   } = usePoolInput();
   const {
     amount: removeAmount,
