@@ -28,7 +28,7 @@ const useConnectOnce = () => {
       return connector.id === connectorId;
     });
     await connectAsync({
-      connector: storedConnector || new InjectedConnector(),
+      connector: new InjectedConnector(),
       // FIXME
       chainId: 31337,
     });

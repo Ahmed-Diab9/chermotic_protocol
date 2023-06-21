@@ -52,6 +52,7 @@ export const WalletPopover = ({
   onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
+  console.log("WALLET POPOVER", balances, tokens, );
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover>
@@ -139,7 +140,6 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {balances &&
-                                  priceFeed &&
                                   tokens?.map((token) => (
                                     <div
                                       key={token.address}
@@ -158,7 +158,7 @@ export const WalletPopover = ({
                                             formatBalance(
                                               balances[token.name],
                                               token,
-                                              priceFeed[token.name]
+                                              markets?.find(market => market.address === token.address)?.value.price
                                             )
                                           )}
                                         </p>

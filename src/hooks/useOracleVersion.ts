@@ -12,7 +12,7 @@ import { errorLog } from "~/utils/log";
 import { OracleVersion } from "~/typings/oracleVersion";
 
 const useOracleVersion = () => {
-  const [markets] = useMarket();
+  const {markets} = useMarket();
   const provider = useProvider();
   const fetchKey = useMemo(() => {
     if (isValid(markets) && isValid(provider)) {
@@ -25,9 +25,9 @@ const useOracleVersion = () => {
     error,
     mutate: fetchOracleVersions,
   } = useSWR(
-    fetchKey,
-    async ([markets, provider]) => {
-      const promise = markets.map(async (market) => {
+    "ORACLE_VERSION",
+    async () => {
+      const promise = (markets ?? []).map(async (market) => {
         const marketContract = ChromaticMarket__factory.connect(
           market.address,
           provider
@@ -55,7 +55,7 @@ const useOracleVersion = () => {
       }, {} as Record<string, OracleVersion & { decimals: number }>);
     },
     {
-      refreshInterval: 10000,
+      refreshInterval: 1000 * 60,
     }
   );
 

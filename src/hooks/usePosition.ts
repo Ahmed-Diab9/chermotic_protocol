@@ -4,7 +4,6 @@ import useSWR from "swr";
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 
-
 import { useProvider } from "wagmi";
 import { useMarket } from "~/hooks/useMarket";
 import { useRouter } from "~/hooks/useRouter";
@@ -16,16 +15,19 @@ import { filterIfFulfilled } from "~/utils/array";
 import useOracleVersion from "./useOracleVersion";
 import { bigNumberify } from "~/utils/number";
 import { useFeeRate } from "./useFeeRate";
-import { useSelectedToken } from "./useSettlementToken";
+import { useAppSelector } from "../store";
 import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
-import { ChromaticMarket__factory, IOracleProvider__factory } from "@chromatic-protocol/sdk/contracts";
+import {
+  ChromaticMarket__factory,
+  IOracleProvider__factory,
+} from "@chromatic-protocol/sdk/contracts";
 
 export const usePosition = () => {
   const { account: usumAccount } = useUsumAccount();
   const { fetchUsumBalances } = useUsumBalances();
-  const [token] = useSelectedToken();
-  const [markets] = useMarket();
+  const token = useAppSelector((state) => state.market.selectedToken);
+  const {markets} = useMarket();
   const provider = useProvider();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();

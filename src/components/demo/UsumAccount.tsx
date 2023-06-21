@@ -13,10 +13,10 @@ const UsumAccount = () => {
   useAccount();
   const feeRate = useFeeRate();
   const { account, createAccount } = useUsumAccount();
-  const [markets] = useMarket();
-  const [tokens] = useSettlementToken();
+  const { markets } = useMarket();
+  const { tokens } = useSettlementToken();
   const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [selectedMarket, onMarketSelect] = useSelectedMarket();
+  const { selectedMarket, onMarketSelect } = useSelectedMarket();
 
   useEffect(() => {
     infoLog("feeRate", feeRate);

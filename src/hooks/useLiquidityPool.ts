@@ -3,40 +3,35 @@ import {
   ChromaticLens,
   ChromaticMarketFactory,
   ChromaticMarket__factory,
-  ChromaticRouter,
-  getDeployedContract,
+  getDeployedContract
 } from "@chromatic-protocol/sdk/contracts";
 import { ethers } from "ethers";
-import { useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useSigner } from "wagmi";
+import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
+import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { useAppDispatch } from "../store";
-import { poolsAction } from "../store/reducer/pools";
+import { useAppDispatch, useAppSelector } from "../store";
 import {
   Bin,
   CLBTokenBatch,
-  LiquidityPool,
-  LiquidityPoolSummary,
+  LiquidityPool
 } from "../typings/pools";
 import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
-import { useChromaticClient } from "./useChromaticClient";
-import { useMarket, useSelectedMarket } from "./useMarket";
-import { useSelectedToken, useSettlementToken } from "./useSettlementToken";
-import usePoolReceipt from "./usePoolReceipt";
-import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
-import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
+import { useChromaticClient } from "./useChromaticClient";
 import useOracleVersion from "./useOracleVersion";
-import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
+import usePoolReceipt from "./usePoolReceipt";
+import { useSettlementToken } from "./useSettlementToken";
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
-  const [tokens] = useSettlementToken();
-  const {client} = useChromaticClient()
-  const marketFactoryApi = client?.marketFactory()
+  const { tokens } = useSettlementToken();
+  const { client } = useChromaticClient();
+  // const marketFactoryApi = useMemo(()=>client?.marketFactory(), [client]);
   const tokenAddresses = tokens?.map((token) => token.address);
   const { oracleVersions } = useOracleVersion();
   const fetchKey =
@@ -144,9 +139,9 @@ export const useLiquidityPool = () => {
 };
 
 export const useSelectedLiquidityPool = () => {
-  const {client} = useChromaticClient()
-  const [market] = useSelectedMarket();
-  const [token] = useSelectedToken();
+  const { client } = useChromaticClient();
+  const market = useAppSelector((state) => state.market.selectedMarket);
+  const token = useAppSelector((state) => state.market.selectedToken);
   const [pools] = useLiquidityPool();
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
@@ -154,7 +149,7 @@ export const useSelectedLiquidityPool = () => {
   const { address } = useAccount();
   const dispatch = useAppDispatch();
 
-  const routerApi = client?.router()
+  const routerApi = useMemo(()=>client?.router(), [client]);
 
   const pool = useMemo(() => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
@@ -194,13 +189,13 @@ export const useSelectedLiquidityPool = () => {
     );
   }, [pool]);
 
-  useEffect(() => {
-    if (isValid(pool)) {
-      dispatch(poolsAction.onPoolSelect(pool));
-    }
-  }, [dispatch, pool]);
+  // useEffect(() => {
+  //   if (isValid(pool)) {
+  //     dispatch(poolsAction.onPoolSelect(pool));
+  //   }
+  // }, [dispatch, pool]);
 
-  const onRemoveLiquidity = async (feeRate: number, amount: number) => {
+  const onRemoveLiquidity = useCallback(async (feeRate: number, amount: number) => {
     if (!isValid(signer) || !isValid(address)) {
       return;
     }
@@ -208,10 +203,10 @@ export const useSelectedLiquidityPool = () => {
       return;
     }
     if (!isValid(routerApi)) {
-      errorLog("no clients")
-      return
+      errorLog("no clients");
+      return;
     }
-    const routerAddress = routerApi.routerContract.address
+    const routerAddress = routerApi.routerContract.address;
 
     const clbToken = CLBToken__factory.connect(pool.address, signer);
     const isApproved = await clbToken.isApprovedForAll(address, routerAddress);
@@ -223,19 +218,16 @@ export const useSelectedLiquidityPool = () => {
       expandDecimals(token?.decimals ?? 1)
     );
 
-    await routerApi.removeLiquidity(
-      pool.marketAddress,
-      {
-        feeRate,
-        receipient: address,
-        clbTokenAmount: expandedAmount
-      },
-    );
-    await fetchReceipts()
-    await fetchWalletBalances()
-  };
+    await routerApi.removeLiquidity(pool.marketAddress, {
+      feeRate,
+      receipient: address,
+      clbTokenAmount: expandedAmount,
+    });
+    await fetchReceipts();
+    await fetchWalletBalances();
+  },[]);
 
-  const onRemoveLiquidityBatch = async (bins: Bin[], type: MULTI_TYPE) => {
+  const onRemoveLiquidityBatch = useCallback(async (bins: Bin[], type: MULTI_TYPE) => {
     if (!isValid(signer) || !isValid(address) || !isValid(market)) {
       return;
     }
@@ -243,7 +235,7 @@ export const useSelectedLiquidityPool = () => {
       return;
     }
     if (!isValid(routerApi)) {
-      return
+      return;
     }
     const amounts = bins.map((bin) => {
       const { balance, binValue, freeLiquidity } = bin;
@@ -256,14 +248,17 @@ export const useSelectedLiquidityPool = () => {
 
       return type === MULTI_ALL ? balance : removable;
     });
-    await routerApi.removeLiquidities(market.address, bins.map((bin, binIndex) => ({
-      feeRate: bin.baseFeeRate,
-      clbTokenAmount: amounts[binIndex],
-      receipient: address,
-    })))
-    await fetchReceipts()
-    await fetchWalletBalances()
-  };
+    await routerApi.removeLiquidities(
+      market.address,
+      bins.map((bin, binIndex) => ({
+        feeRate: bin.baseFeeRate,
+        clbTokenAmount: amounts[binIndex],
+        receipient: address,
+      }))
+    );
+    await fetchReceipts();
+    await fetchWalletBalances();
+  },[]);
 
   return {
     pool,
@@ -279,50 +274,55 @@ export const useSelectedLiquidityPool = () => {
 };
 
 export const useLiquidityPoolSummary = () => {
-  const [pools] = useLiquidityPool();
-  const [markets] = useMarket();
-  const [tokens] = useSettlementToken();
+  // const [pools] = useLiquidityPool();
+  // const { markets } = useMarket();
+  // const { tokens } = useSettlementToken();
 
-  const poolSummary = useMemo(() => {
-    if (!isValid(pools)) {
-      return [];
-    }
-    const array = [] as LiquidityPoolSummary[];
-    for (const pool of pools) {
-      const { tokenAddress, marketAddress, bins } = pool;
-      const market = markets?.find(
-        (market) => market.address === marketAddress
-      );
-      const token = tokens?.find((token) => token.address === tokenAddress);
-      if (!isValid(market) || !isValid(token)) {
-        infoLog("token and market loading");
-        return [];
-      }
-      const { description: marketDescription } = market;
-      let liquiditySum = bigNumberify(0);
-      let binSize = 0;
-      for (let index = 0; index < bins.length; index++) {
-        const bin = bins[index];
-        if (bin.balance.gt(0)) {
-          const addValue = bin.balance
-            .mul(bin.binValue)
-            .div(expandDecimals(BIN_VALUE_DECIMAL));
-          binSize += 1;
-          liquiditySum = liquiditySum.add(addValue);
-        }
-      }
-      array.push({
-        token: {
-          name: token.name,
-          decimals: token.decimals,
-        },
-        market: marketDescription,
-        liquidity: liquiditySum,
-        bins: binSize,
-      });
-    }
-    return array;
-  }, [pools, markets, tokens]);
+  // const poolSummary = useMemo(() => {
+  //   if (!isValid(pools)) {
+  //     return [];
+  //   }
+  //   const array = [] as LiquidityPoolSummary[];
+  //   for (const pool of pools) {
+  //     const { tokenAddress, marketAddress, bins } = pool;
+  //     const market = markets?.find(
+  //       (market) => market.address === marketAddress
+  //     );
+  //     const token = tokens?.find((token) => token.address === tokenAddress);
+  //     if (!isValid(market) || !isValid(token)) {
+  //       infoLog("token and market loading");
+  //       return [];
+  //     }
+  //     const { description: marketDescription } = market;
+  //     let liquiditySum = bigNumberify(0);
+  //     let binSize = 0;
+  //     for (let index = 0; index < bins.length; index++) {
+  //       const bin = bins[index];
+  //       if (bin.balance.gt(0)) {
+  //         const addValue = bin.balance
+  //           .mul(bin.binValue)
+  //           .div(expandDecimals(BIN_VALUE_DECIMAL));
+  //         binSize += 1;
+  //         liquiditySum = liquiditySum.add(addValue);
+  //       }
+  //     }
+  //     array.push({
+  //       token: {
+  //         name: token.name,
+  //         decimals: token.decimals,
+  //       },
+  //       market: marketDescription,
+  //       liquidity: liquiditySum,
+  //       bins: binSize,
+  //     });
+  //   }
+  //   return [array];
+  // }, [pools, markets, tokens]);
 
-  return poolSummary;
+  return [] as {
+    token: any;
+    market: any;
+    liquidity: any;
+    bins: any;
+  }[];
 };

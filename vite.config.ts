@@ -13,4 +13,9 @@ export default defineConfig({
   define: {
     "process.env": process.env,
   },
+  server: {
+    proxy: {
+      "/api": "http://127.0.0.1:8545"
+    },
+  }
 });

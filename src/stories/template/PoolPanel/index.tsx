@@ -1,41 +1,37 @@
 import { Tab } from "@headlessui/react";
-import { Counter } from "../../atom/Counter";
-import { Avatar } from "../../atom/Avatar";
-import { Button } from "../../atom/Button";
-import { Checkbox } from "../../atom/Checkbox";
-import { Thumbnail } from "../../atom/Thumbnail";
-import { Tooltip } from "../../atom/Tooltip";
-import { Toggle } from "~/stories/atom/Toggle";
-import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
-import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
-import { Bin, LiquidityPool } from "../../../typings/pools";
-import { Market, Token } from "../../../typings/market";
+import { useMemo } from "react";
+import { createPortal } from "react-dom";
 import {
-  bigNumberify,
+  BIN_VALUE_DECIMAL,
+  PERCENT_DECIMALS
+} from "~/configs/decimals";
+import { MULTI_TYPE } from "~/configs/pool";
+import { usePrevious } from "~/hooks/usePrevious";
+import { useAppDispatch } from "~/store";
+import { poolsAction } from "~/store/reducer/pools";
+import { Toggle } from "~/stories/atom/Toggle";
+import { isValid } from "~/utils/valid";
+import { MILLION_UNITS } from "../../../configs/token";
+import { Market, Token } from "../../../typings/market";
+import { Bin, LiquidityPool } from "../../../typings/pools";
+import {
   expandDecimals,
   formatDecimals,
   formatFeeRate,
-  withComma,
+  withComma
 } from "../../../utils/number";
-import {
-  BIN_VALUE_DECIMAL,
-  FEE_RATE_DECIMAL,
-  PERCENT_DECIMALS,
-} from "~/configs/decimals";
-import { useEffect, useMemo, useState } from "react";
-import { MILLION_UNITS } from "../../../configs/token";
-import { createPortal } from "react-dom";
-import { isValid } from "~/utils/valid";
+import { Avatar } from "../../atom/Avatar";
+import { Button } from "../../atom/Button";
+import { Checkbox } from "../../atom/Checkbox";
+import { Counter } from "../../atom/Counter";
+import { OptionInput } from "../../atom/OptionInput";
+import "../../atom/Tabs/style.css";
+import { Thumbnail } from "../../atom/Thumbnail";
+import { Tooltip } from "../../atom/Tooltip";
 import { RemoveLiquidityModal } from "../RemoveLiquidityModal";
-import { useAppDispatch } from "~/store";
-import { poolsAction } from "~/store/reducer/pools";
-import { usePrevious } from "~/hooks/usePrevious";
-import { LPReceipt } from "~/typings/receipt";
-import { infoLog } from "~/utils/log";
 import { RemoveMultiLiquidityModal } from "../RemoveMultiLiquidityModal";
-import { MULTI_TYPE } from "~/configs/pool";
 
 interface PoolPanelProps {
   token?: Token;
@@ -124,58 +120,64 @@ export const PoolPanel = (props: PoolPanelProps) => {
    * @TODO
    * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
    */
-  const {
-    liquidityValue: totalLiquidityValue,
-    liquidity: totalLiquidity,
-    removableLiquidity: totalFreeLiquidity,
-  } = useMemo(() => {
-    return (pool?.bins ?? []).reduce(
-      (record, bin) => {
-        const { balance, binValue, liquidity, freeLiquidity } = bin;
-        const liquidityValue = balance
-          .mul(binValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-        return {
-          balance: record.balance.add(balance),
-          liquidityValue: record.liquidityValue.add(liquidityValue),
-          liquidity: record.liquidity.add(liquidity),
-          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
-        };
-      },
-      {
-        balance: bigNumberify(0),
-        liquidityValue: bigNumberify(0),
-        liquidity: bigNumberify(0),
-        removableLiquidity: bigNumberify(0),
-      }
-    );
-  }, [pool?.bins]);
+  // const {
+  //   liquidityValue: totalLiquidityValue,
+  //   liquidity: totalLiquidity,
+  //   removableLiquidity: totalFreeLiquidity,
+  // } = useMemo(() => {
+  //   return (pool?.bins ?? []).reduce(
+  //     (record, bin) => {
+  //       const { balance, binValue, liquidity, freeLiquidity } = bin;
+  //       const liquidityValue = balance
+  //         .mul(binValue)
+  //         .div(expandDecimals(BIN_VALUE_DECIMAL));
+  //       return {
+  //         balance: record.balance.add(balance),
+  //         liquidityValue: record.liquidityValue.add(liquidityValue),
+  //         liquidity: record.liquidity.add(liquidity),
+  //         removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+  //       };
+  //     },
+  //     {
+  //       balance: bigNumberify(0),
+  //       liquidityValue: bigNumberify(0),
+  //       liquidity: bigNumberify(0),
+  //       removableLiquidity: bigNumberify(0),
+  //     }
+  //   );
+  // }, [pool?.bins]);
 
-  /**
-   * @TODO
-   * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
-   */
-  const totalRemovableRate = totalLiquidityValue.eq(0)
-    ? bigNumberify(0)
-    : totalFreeLiquidity
-        .mul(expandDecimals(FEE_RATE_DECIMAL))
-        .div(totalLiquidityValue);
+  // /**
+  //  * @TODO
+  //  * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
+  //  */
+  // const totalRemovableRate = totalLiquidityValue.eq(0)
+  //   ? bigNumberify(0)
+  //   : totalFreeLiquidity
+  //       .mul(expandDecimals(FEE_RATE_DECIMAL))
+  //       .div(totalLiquidityValue);
 
-  const onBinCheck = (bin: Bin) => {
-    infoLog("Running check");
-    const found = selectedBins.find(
-      (selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate
-    );
-    if (isValid(found)) {
-      dispatch(poolsAction.onBinsUnselect(bin));
-    } else {
-      dispatch(poolsAction.onBinsSelect(bin));
-    }
-  };
+  // const onBinCheck = (bin: Bin) => {
+  //   infoLog("Running check");
+  //   const found = selectedBins.find(
+  //     (selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate
+  //   );
+  //   if (isValid(found)) {
+  //     dispatch(poolsAction.onBinsUnselect(bin));
+  //   } else {
+  //     dispatch(poolsAction.onBinsSelect(bin));
+  //   }
+  // };
 
-  useEffect(() => {
-    infoLog(selectedBins);
-  }, [selectedBins]);
+  // useEffect(() => {
+  //   infoLog(selectedBins);
+  // }, [selectedBins]);
+
+  const totalLiquidity = 0
+  const totalLiquidityValue = 0
+  const totalFreeLiquidity = 0
+  const totalRemovableRate = 0
+  const onBinCheck = () => {}
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -403,7 +405,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <p className="text-right">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
                       {token?.name} (
-                      {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
+                      {formatDecimals(0, PERCENT_DECIMALS, 2)}
                       %)
                     </p>
                   </div>

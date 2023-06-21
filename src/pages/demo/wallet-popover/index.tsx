@@ -13,8 +13,8 @@ import useOracleVersion from "../../../hooks/useOracleVersion";
 const WalletPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
-  const [tokens] = useSettlementToken();
-  const [markets] = useMarket();
+  const { tokens } = useSettlementToken();
+  const {markets} = useMarket();
   const { account } = useUsumAccount();
   const [walletBalances] = useWalletBalances();
   const pools = useLiquidityPoolSummary();

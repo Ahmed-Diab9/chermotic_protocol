@@ -1,3 +1,4 @@
+import { IOracleProvider } from "@chromatic-protocol/sdk/contracts";
 import { BigNumber } from "ethers";
 
 export interface Token {
@@ -14,5 +15,6 @@ export interface Price {
 export interface Market {
   address: string;
   description: string;
-  getPrice: () => Promise<Price>;
+  value: IOracleProvider.OracleVersionStructOutput;
+  // getPrice: () => Promise<Price>;
 }

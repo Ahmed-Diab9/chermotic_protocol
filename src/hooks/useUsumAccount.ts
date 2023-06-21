@@ -37,51 +37,49 @@ export const useUsumAccount = () => {
     error,
     isLoading,
   } = useSWR(fetchKey, async ([router, signer]) => {
-    console.log('router!!!', router);
-    console.log('router signerOrProvider', router.signer || router.provider)
-    try{
+    console.log("router!!!", router);
+    console.log("router signerOrProvider", router.signer || router.provider);
+    try {
       const address = await router?.getAccount();
-      
-      console.log('router addr' , address)
+
+      console.log("router addr", address);
       if (!address || address === ADDRESS_ZERO) {
         return;
       }
       return ChromaticAccount__factory.connect(address, signer);
-    }catch(e){
-      
-      console.log(e)
-      console.log('ee', router.signer, signer)
+    } catch (e) {
+      console.log(e);
+      console.log("ee", router.signer, signer);
     }
-    
-
   });
+  const isValidAccount = isValid(account) && isValid(account.address)
 
   useEffect(() => {
     if (isLoading) {
       return;
     }
-    if (isValid(account) && isValid(account.address)) {
+    if (isValidAccount) {
       infoLog("loading chromatic accounts");
       setStatus(ACCOUNT_COMPLETED);
       return;
     } else {
       setStatus(ACCOUNT_NONE);
     }
-  }, [isLoading, account]);
+  }, [isLoading, isValidAccount]);
 
-  useEffect(() => {
-    let timerId: NodeJS.Timeout | undefined;
-    if (status === ACCOUNT_COMPLETING) {
-      infoLog("account is now created");
-      timerId = setTimeout(() => {
-        setStatus(ACCOUNT_COMPLETED);
-      }, 3000);
-    }
+  // useEffect(() => {
+  //   let timerId: NodeJS.Timeout | undefined;
+  //   if (status === ACCOUNT_COMPLETING) {
+  //     infoLog("account is now created");
+  //     timerId = setTimeout(() => {
+  //       setStatus(ACCOUNT_COMPLETED);
+  //     }, 3000);
+  //   }
 
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [status]);
+  //   return () => {
+  //     clearTimeout(timerId);
+  //   };
+  // }, [status]);
 
   // if (error) {
   //   errorLog(error);

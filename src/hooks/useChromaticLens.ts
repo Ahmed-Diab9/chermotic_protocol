@@ -1,4 +1,7 @@
-import { ChromaticLens, getDeployedContract } from "@chromatic-protocol/sdk/contracts";
+import {
+  ChromaticLens,
+  getDeployedContract,
+} from "@chromatic-protocol/sdk/contracts";
 import { useMemo } from "react";
 import { useProvider } from "wagmi";
 

@@ -41,8 +41,8 @@ const Trade = () => {
     createAccount: createUsumAccount,
     status,
   } = useUsumAccount();
-  const [tokens] = useSettlementToken();
-  const [markets] = useMarket();
+  const { tokens } = useSettlementToken();
+  const {markets} = useMarket();
   const [selectedToken, onTokenSelect] = useSelectedToken();
   const [selectedMarket, onMarketSelect] = useSelectedMarket();
   const feeRate = useFeeRate();

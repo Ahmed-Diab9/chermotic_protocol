@@ -1,31 +1,26 @@
 import {
-  ChromaticRouter,
-  IERC20__factory,
-  getDeployedContract,
+  IERC20__factory
 } from "@chromatic-protocol/sdk/contracts";
 import { useMemo, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { useAppSelector } from "../store";
 import { errorLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
-import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { useSelectedMarket } from "./useMarket";
-import { useSelectedToken } from "./useSettlementToken";
-import usePoolReceipt from "./usePoolReceipt";
-import { handleTx } from "~/utils/tx";
 import { useWalletBalances } from "./useBalances";
 import { useChromaticClient } from "./useChromaticClient";
+import { useSelectedLiquidityPool } from "./useLiquidityPool";
+import usePoolReceipt from "./usePoolReceipt";
 
 const usePoolInput = () => {
   const { pool } = useSelectedLiquidityPool();
-  const [market] = useSelectedMarket();
+  const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
   const routerApi = client?.router();
-  const [token] = useSelectedToken();
+  const token = useAppSelector((state) => state.market.selectedToken);
   const { address } = useAccount();
-  
-  
+
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
@@ -114,8 +109,8 @@ const usePoolInput = () => {
       return;
     }
     if (!isValid(routerApi)) {
-      errorLog("no router apis")
-      return
+      errorLog("no router apis");
+      return;
     }
     const marketAddress = market?.address;
     const filteredFeeRates = feeRates.filter(
@@ -130,18 +125,22 @@ const usePoolInput = () => {
     }
 
     const erc20 = IERC20__factory.connect(token.address, signer);
-    const routerAddress = routerApi.routerContract.address
-    const allowance = await erc20.allowance(address,routerAddress );
+    const routerAddress = routerApi.routerContract.address;
+    const allowance = await erc20.allowance(address, routerAddress);
     if (allowance.lte(expandedAmount)) {
       await erc20.approve(routerAddress, expandedAmount);
     }
-  
+
     const dividedAmount = expandedAmount.div(bins);
-    await routerApi.addLiquidities(marketAddress, filteredFeeRates.map(feeRate => ({
-      feeRate, amount: dividedAmount
-    })))
-    await fetchReceipts()
-    await fetchWalletBalances()
+    await routerApi.addLiquidities(
+      marketAddress,
+      filteredFeeRates.map((feeRate) => ({
+        feeRate,
+        amount: dividedAmount,
+      }))
+    );
+    await fetchReceipts();
+    await fetchWalletBalances();
   };
 
   return {

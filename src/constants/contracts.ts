@@ -1,4 +1,7 @@
-import { getAllDeployedContracts, deployedAddress } from "@chromatic-protocol/sdk/contracts";
+import {
+  getAllDeployedContracts,
+  deployedAddress,
+} from "@chromatic-protocol/sdk/contracts";
 
 export const CHAIN = "anvil";
 

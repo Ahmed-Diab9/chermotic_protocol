@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { BigNumber } from "ethers";
 import useSWR from "swr";
+import { useAppSelector } from "../store";
 
 import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 
@@ -31,7 +32,7 @@ function filterResponse(
 }
 
 export const useWalletBalances = () => {
-  const [tokens] = useSettlementToken();
+  const { tokens } = useSettlementToken();
 
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
@@ -52,7 +53,9 @@ export const useWalletBalances = () => {
       return [token.name, balance] as const;
     });
     const response = await Promise.allSettled(promise);
-    return filterResponse(response);
+    const result = filterResponse(response);
+    console.log("useBalance", result);
+    return result;
   });
 
   if (error) {
@@ -63,7 +66,7 @@ export const useWalletBalances = () => {
 };
 
 export const useUsumBalances = () => {
-  const [tokens] = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const { account } = useUsumAccount();
 
   const fetchKey = useMemo(
@@ -96,7 +99,7 @@ export const useUsumBalances = () => {
 export const useUsumMargins = () => {
   const { usumBalances } = useUsumBalances();
   const { positions = [] } = usePosition();
-  const [token] = useSelectedToken();
+  const token = useAppSelector((state) => state.market.selectedToken);
 
   const [totalBalance, totalAsset] = useMemo(() => {
     if (!isValid(usumBalances) || !isValid(token)) {

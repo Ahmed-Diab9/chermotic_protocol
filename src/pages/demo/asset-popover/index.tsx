@@ -16,7 +16,7 @@ const AssetPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
   const { account: usumAccount } = useUsumAccount();
-  const [tokens] = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const { usumBalances } = useUsumBalances();
   const [walletBalances] = useWalletBalances();
   const [selectedToken, onTokenSelect] = useSelectedToken();

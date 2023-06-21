@@ -31,14 +31,6 @@ interface MarketSelectProps {
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const { isGroupLegacy, selectedMarket, feeRate, selectedToken } = props;
-  const [marketPrice, setMarketPrice] = useState<string>();
-  useEffect(() => {
-    selectedMarket?.getPrice().then((price) => {
-      setMarketPrice(
-        "$" + withComma(formatDecimals(price.value, price.decimals, 2))
-      );
-    });
-  }, [selectedToken, selectedMarket]);
 
   // TODO
   // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
@@ -60,7 +52,16 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
           </h4>
           <p>Interest Rate</p>
         </div>
-        <h2 className="text-2xl">{marketPrice}</h2>
+        <h2 className="text-2xl">
+          {"$" +
+            withComma(
+              formatDecimals(
+                selectedMarket?.value?.price || 0,
+                selectedToken?.decimals,
+                2
+              )
+            )}
+        </h2>
       </div>
     </div>
   );
@@ -83,8 +84,13 @@ export const PopoverMain = (
       return;
     }
     const promise = markets.map(async (market) => {
-      const price = await market.getPrice();
-      return "$" + withComma(formatDecimals(price.value, price.decimals, 2));
+      const price = market.value;
+      return (
+        "$" +
+        withComma(
+          formatDecimals(market.value.price, selectedToken?.decimals, 2)
+        )
+      );
     });
     const prices = await filterIfFulfilled(promise);
     setMarketPrices(prices);
@@ -154,7 +160,14 @@ export const PopoverMain = (
                   gap="2"
                   size="sm"
                 />
-                <p>{marketPrices[marketIndex]}</p>
+                <p>
+                  {"$" +
+                    formatDecimals(
+                      market.value.price,
+                      selectedToken?.decimals,
+                      2
+                    )}
+                </p>
               </button>
             ))}
           </article>

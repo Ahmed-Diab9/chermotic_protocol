@@ -11,13 +11,14 @@ import { useLiquidityPool } from "./useLiquidityPool";
 import { useChromaticClient } from "./useChromaticClient";
 import { LPReceipt } from "~/typings/receipt";
 import useOracleVersion from "./useOracleVersion";
+import { useAppSelector } from "../store";
 import { useAccount } from "wagmi";
 
 const usePoolReceipt = () => {
-  const [market] = useSelectedMarket();
+  const market = useAppSelector((state) => state.market.selectedMarket);
   const [_, fetchLiquidityPools] = useLiquidityPool();
-  const {client} = useChromaticClient()
-  const lensApi = client?.lens()
+  const { client } = useChromaticClient();
+  const lensApi = client?.lens();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();

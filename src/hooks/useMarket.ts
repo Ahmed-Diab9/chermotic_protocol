@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { useProvider } from "wagmi";
 
@@ -18,95 +18,64 @@ import { useSelectedToken } from "~/hooks/useSettlementToken";
 
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import { ChromaticMarket__factory, IOracleProvider__factory } from "@chromatic-protocol/sdk/contracts";
+import {
+  ChromaticMarket__factory,
+  IOracleProvider__factory,
+} from "@chromatic-protocol/sdk/contracts";
 
 export const useMarket = (_interval?: number) => {
-  const provider = useProvider();
-  const {client} = useChromaticClient()
-
-  const selectedToken = useAppSelector((state) => state.market.selectedToken)
-
-  
+  const { client } = useChromaticClient();
+  const selectedToken = useAppSelector((state) => state.market.selectedToken);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
-  } = useSWR(`market#${selectedToken?.address}`, async () => {
-    client?.marketFactory().contract.getMarketsBySettlmentToken()
-    // const response = await Promise.allSettled(
-    //   (
-    //     await marketFactory.getMarketsBySettlmentToken(
-    //       selectedToken.address as string
-    //     )
-    //   ).map(async (marketAddress) => {
-    //     const market = ChromaticMarket__factory.connect(
-    //       marketAddress,
-    //       provider
-    //     );
+  } = useSWR(
+    `market#${selectedToken?.address}`,
+    async () => {
+      if (selectedToken === undefined) {
+        console.log("use market selected token", selectedToken);
+        return;
+      }
+      const markets = await client
+        ?.marketFactory()
+        .getMarkets(selectedToken?.address);
 
-    //     const oracleProviderAddress = await market.oracleProvider();
-    //     const oracleProvider = IOracleProvider__factory.connect(
-    //       oracleProviderAddress,
-    //       provider
-    //     );
-
-    //     // 오라클에서 제공하는 모든 가격 데이터는 소수점 18자리를 적용해야 함
-    //     async function getPrice() {
-    //       const { price } = await oracleProvider.currentVersion();
-    //       return { value: price, decimals: 18 };
-    //     }
-    //     const description = await oracleProvider.description();
-    //     return {
-    //       address: marketAddress,
-    //       description,
-    //       getPrice,
-    //     } satisfies Market;
-    //   })
-    );
-
-    const fulfilled = response
-      .filter(
-        (value): value is PromiseFulfilledResult<Market> =>
-          value.status === "fulfilled"
-      )
-      .map((result) => result.value);
-
-    return fulfilled;
-  });
+      console.log("Markets", markets);
+      return markets;
+    },
+    {
+      dedupingInterval: _interval || 1000,
+    }
+  );
 
   if (error) {
     errorLog(error);
   }
 
-  return [markets, fetchMarkets] as const;
+  return { markets, fetchMarkets, selectedMarket } as const;
 };
 
 export const useSelectedMarket = () => {
   const dispatch = useAppDispatch();
 
-  const [markets] = useMarket();
+  const { markets, selectedMarket } = useMarket();
 
-  // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const onMarketSelect = useCallback(
+    (address: string) => {
+      console.log("market selected");
+      const nextMarket = markets?.find((market) => market.address === address);
+      console.log("nextmarket", nextMarket);
+      if (!isValid(nextMarket)) {
+        errorLog("selected market is invalid.");
+        return;
+      }
+      console.log("Market Selected", nextMarket.description);
+      // dispatch(marketAction.onMarketSelect(nextMarket));
+    },
+    [markets]
+  );
 
-  const { state: storedMarket, setState: setStoredMarket } =
-    useLocalStorage<string>("usum:market");
-
-  useEffect(() => {
-    if (isValid(selectedMarket) || !isValid(markets)) return;
-    else if (isValid(storedMarket)) onMarketSelect(storedMarket);
-    else onMarketSelect(markets[0].address);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markets]);
-
-  const onMarketSelect = (address: string) => {
-    const nextMarket = markets?.find((market) => market.address === address);
-    if (!isValid(nextMarket)) {
-      errorLog("selected market is invalid.");
-      return;
-    }
-    setStoredMarket(nextMarket.address);
-    dispatch(marketAction.onMarketSelect(nextMarket));
-  };
-
-  return [selectedMarket, onMarketSelect] as const;
+  return { selectedMarket, onMarketSelect };
 };
