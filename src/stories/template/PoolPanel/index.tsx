@@ -7,7 +7,7 @@ import { Thumbnail } from "../../atom/Thumbnail";
 import { Tooltip } from "../../atom/Tooltip";
 import { Toggle } from "~/stories/atom/Toggle";
 import { OptionInput } from "../../atom/OptionInput";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
 import { Bin, LiquidityPool } from "../../../typings/pools";
@@ -418,13 +418,18 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
+                    <div className="ml-auto">
+                      {/* 전체 선택 */}
+                      <Button label="Select All" css="unstyled" />
+                      {/* 선택된 유동성 일괄 제거 */}
                       <Button
-                      label="Remove All"
-                      className="ml-auto"
+                        label="Remove"
+                        className="ml-2"
                         onClick={() => {
                           dispatch(poolsAction.onModalOpen());
                         }}
                       />
+                    </div>
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>

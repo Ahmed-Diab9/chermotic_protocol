@@ -1,5 +1,5 @@
-import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
-import { ChevronDoubleRightIcon } from "@heroicons/react/20/solid";
+import { ChevronDoubleLeftIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 
 interface CurvedButtonProps {
   direction: "right" | "left";

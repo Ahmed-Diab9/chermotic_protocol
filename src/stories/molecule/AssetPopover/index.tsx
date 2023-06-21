@@ -3,9 +3,9 @@ import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { OptionInput } from "../../atom/OptionInput";
 import { Loading } from "~/stories/atom/Loading";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
-import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleUpIcon } from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 import {
   ACCOUNT_COMPLETED,

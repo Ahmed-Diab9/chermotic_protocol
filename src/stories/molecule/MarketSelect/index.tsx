@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 import { Market, Token } from "../../../typings/market";
 import {

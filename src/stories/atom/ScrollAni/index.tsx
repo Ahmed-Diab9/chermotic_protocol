@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react";
-import { ChevronDoubleDownIcon } from "@heroicons/react/20/solid";
+import { ChevronDoubleDownIcon } from "@heroicons/react/24/outline";
 
 interface ScrollAniProps {
   disabled?: boolean;
