@@ -31,7 +31,7 @@ export const Tooltip = (props: TooltipProps) => {
       <div className="tooltip-tip">
         <p>{tip}</p>
 
-        {/* 추후 - 링크 선택 가능하도록 떠있게 설정 추가 */}
+        {/* todo - 링크 선택 가능하도록 떠있게 설정 추가 */}
         {outLink && (
           <a
             href={outLink}
@@ -42,7 +42,7 @@ export const Tooltip = (props: TooltipProps) => {
             <div className="flex items-center gap-1 text-sm font-semibold text-black/50">
               Learn more
               {outLinkAbout && ` about "${outLinkAbout}"`}
-              <ArrowUpRightIcon className="w-3 ml-1" />
+              <ArrowUpRightIcon className="w-3" />
             </div>
           </a>
         )}

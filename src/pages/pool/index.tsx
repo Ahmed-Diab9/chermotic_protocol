@@ -185,21 +185,9 @@ const Pool = () => {
               onMultiAmountChange={onMultiAmountChange}
             />
             {/* bottom */}
-            <article className="px-5 pt-5 pb-6 mx-auto mt-5 bg-white border rounded-2xl drop-shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <h4 className="font-bold">
-                    Token(ERC-1155) Contract Address
-                  </h4>
-                  {/* tooltip */}
-                </div>
-              </div>
-              <p className="mt-3 text-left text-black/30">
-                Please set additional values to apply to the basic formula in
-                Borrow Fee. Calculated based on open Interest and stop
-                profit/Loss rate.
-              </p>
-              <div className="flex justify-end gap-2 mt-6">
+            <article className="p-5 mx-auto mt-5 bg-white border rounded-2xl drop-shadow-lg">
+              <div className="flex items-center justify-between w-full gap-1">
+                <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <AddressCopyButton
                   address={
                     selectedToken && trimAddress(selectedToken.address, 6, 6)
@@ -210,15 +198,21 @@ const Pool = () => {
                     }
                   }}
                 />
-                <Link to={"/trade"}>
-                  <Button
-                    label="Trade on ETH/USDC Pool"
-                    iconRight={<ChevronRightIcon />}
-                    size="lg"
-                  />
-                </Link>
               </div>
+              <p className="mt-3 mb-3 text-left text-black/30">
+                Please set additional values to apply to the basic formula in
+                Borrow Fee. Calculated based on open Interest and stop
+                profit/Loss rate.
+              </p>
             </article>
+            <div className="mt-10">
+              <Link to={"/trade"}>
+                <Button
+                  label="Trade on ETH/USDC Pool"
+                  iconRight={<ChevronRightIcon />}
+                />
+              </Link>
+            </div>
           </div>
           <div className="w-2/5 max-w-[500px] min-w-[480px]">
             <PoolProgress

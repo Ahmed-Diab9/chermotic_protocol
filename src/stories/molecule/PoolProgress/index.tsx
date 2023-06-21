@@ -33,7 +33,7 @@ export const PoolProgress = ({
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
   return (
-    <div className="!flex flex-col border PoolProgress drop-shadow-md tabs tabs-line tabs-base rounded-2xl bg-white">
+    <div className="!flex flex-col border PoolProgress drop-shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
         {({ open }) => (
           <>
@@ -54,16 +54,17 @@ export const PoolProgress = ({
             </Disclosure.Button>
             <Disclosure.Panel className="px-5 text-gray-500 border-t">
               <Tab.Group>
-                <div className="relative flex items-end">
-                  <Tab.List className="!justify-start !gap-8 pt-5 px-7">
+                <div className="flex mt-5">
+                  <Tab.List className="!justify-start !gap-7 px-5">
                     <Tab>All</Tab>
                     <Tab>Minting (2)</Tab>
                     <Tab>Burning (3)</Tab>
                   </Tab.List>
                   <Button
                     label="Claim All"
-                    className="absolute right-0 border-gray"
+                    className="ml-auto"
                     size="base"
+                    css="gray"
                     onClick={() => onReceiptClaimBatch?.()}
                   />
                 </div>
@@ -262,7 +263,13 @@ const ProgressItem = (props: ProgressItemProps) => {
         <div className="border-t" />
       )}
       <div className="flex items-end gap-3 mt-1">
-        <div className="flex items-end gap-3">
+        <div
+          className={`flex items-end gap-3 ${
+            ((title === "minting" && status === "standby") ||
+              (title === "burning" && status === "completed")) &&
+            "opacity-30"
+          }`}
+        >
           <Thumbnail className="rounded" />
           <div>
             <Avatar label={token} size="xs" gap="1" />
