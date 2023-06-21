@@ -418,16 +418,26 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
+
+                    {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
                     <div className="ml-auto">
                       {/* 전체 선택 */}
-                      <Button label="Select All" css="unstyled" />
-                      {/* 선택된 유동성 일괄 제거 */}
+                      {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
                       <Button
-                        label="Remove"
+                        label="Select All"
+                        css="unstyled"
+                        className="text-black/50"
+                      />
+
+                      {/* 선택된 유동성 일괄 제거 */}
+                      {/* 선택된 항목이 없을 땐, disabled 상태 */}
+                      <Button
+                        label="Remove Selected"
                         className="ml-2"
                         onClick={() => {
                           dispatch(poolsAction.onModalOpen());
                         }}
+                        // disabled
                       />
                     </div>
                   </div>
