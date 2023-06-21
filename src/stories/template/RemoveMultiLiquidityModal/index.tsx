@@ -64,8 +64,9 @@ export const RemoveMultiLiquidityModal = (
         dispatch(poolsAction.onBinsReset());
       }}
     >
+      {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 drop-shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity

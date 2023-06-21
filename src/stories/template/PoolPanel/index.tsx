@@ -7,7 +7,7 @@ import { Thumbnail } from "../../atom/Thumbnail";
 import { Tooltip } from "../../atom/Tooltip";
 import { Toggle } from "~/stories/atom/Toggle";
 import { OptionInput } from "../../atom/OptionInput";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
 import { Bin, LiquidityPool } from "../../../typings/pools";
@@ -178,7 +178,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   }, [selectedBins]);
 
   return (
-    <div className="inline-flex flex-col w-full border rounded-2xl">
+    <div className="inline-flex flex-col w-full bg-white border rounded-2xl drop-shadow-md">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
           <Tab.List className="w-[50vw] max-w-[840px] mx-auto pt-4 flex !justify-center">
@@ -218,7 +218,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Toggle label="Bin Values" size="sm" />
                   </div>
                   <div className="flex justify-between mt-6">
-                    <div>
+                    <div className="text-left">
                       <p className="mb-1 text-black/30">Short Counter LP</p>
                       {/**
                        * @TODO
@@ -254,7 +254,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       {longTotalMaxLiquidity &&
                         longTotalUnusedLiquidity &&
                         token && (
-                          <p className="text-center">
+                          <p>
                             {formatDecimals(
                               longTotalUnusedLiquidity,
                               token.decimals + MILLION_UNITS,
@@ -418,13 +418,18 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
-                    <Button
-                      label="Remove All"
-                      className="ml-auto"
-                      onClick={() => {
-                        dispatch(poolsAction.onModalOpen());
-                      }}
-                    />
+                    <div className="ml-auto">
+                      {/* 전체 선택 */}
+                      <Button label="Select All" css="unstyled" />
+                      {/* 선택된 유동성 일괄 제거 */}
+                      <Button
+                        label="Remove"
+                        className="ml-2"
+                        onClick={() => {
+                          dispatch(poolsAction.onModalOpen());
+                        }}
+                      />
+                    </div>
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>

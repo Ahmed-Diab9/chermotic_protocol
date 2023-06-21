@@ -5,7 +5,8 @@ import { Tag } from "~/stories/atom/Tag";
 import { TextRow } from "~/stories/atom/TextRow";
 import { Tooltip } from "~/stories/atom/Tooltip";
 import { Loading } from "~/stories/atom/Loading";
-import { CheckIcon, ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
+import { Guide } from "~/stories/atom/Guide";
+import { CheckIcon, ChevronDoubleUpIcon } from "@heroicons/react/24/outline";
 import { Popover, Transition } from "@headlessui/react";
 import { Tab } from "@headlessui/react";
 import { Listbox } from "@headlessui/react";
@@ -49,6 +50,7 @@ export const TradeBar = ({
         <div className="relative">
           {open ? (
             <>
+              {/* backdrop */}
               <div
                 className="fixed inset-0 z-0 bg-white/80"
                 aria-hidden="true"
@@ -61,34 +63,50 @@ export const TradeBar = ({
                   />
                 </Popover.Button>
                 <Popover.Panel>
-                  <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left">
+                  <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
                       <div className="flex items-end">
                         <Tab.List className="pt-4 text-lg">
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
-                        <div className="select min-w-[298px] ml-auto mb-[-8px]">
-                          <Listbox
-                            value={selectedItem}
-                            onChange={setSelectedItem}
-                          >
-                            <Listbox.Button>
-                              {selectedItem.title}
-                            </Listbox.Button>
-                            <Listbox.Options>
-                              {listitem.map((item) => (
-                                <Listbox.Option key={item.id} value={item}>
-                                  {item.title}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Listbox>
+                        <div className="flex items-center gap-5 ml-auto mb-[-8px]">
+                          <p className="text-sm text-black/30">
+                            Last oracle update: 00h 00m 00s ago
+                          </p>
+                          <div className="select min-w-[298px]">
+                            <Listbox
+                              value={selectedItem}
+                              onChange={setSelectedItem}
+                            >
+                              <Listbox.Button>
+                                {selectedItem.title}
+                              </Listbox.Button>
+                              <Listbox.Options>
+                                {listitem.map((item) => (
+                                  <Listbox.Option key={item.id} value={item}>
+                                    {item.title}
+                                  </Listbox.Option>
+                                ))}
+                              </Listbox.Options>
+                            </Listbox>
+                          </div>
                         </div>
                       </div>
-                      <Tab.Panels className="pb-20 pt-9">
+                      <Tab.Panels className="pb-20 overflow-auto mt-7 max-h-[50vh]">
                         <Tab.Panel>
-                          {/* position table */}
                           <article>
+                            {/* guide next round */}
+                            <Guide
+                              title="Standby.."
+                              // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                              paragraph="Waiting for the next oracle round. The next oracle round is updated
+        whenever the Chainlink price moves by
+        0.00% or more, and it is updated at least once a day."
+                              outLink="/pool"
+                              outLinkAbout="Next Oracle Round"
+                              flex
+                            />
+                            {/* position list */}
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               <div>

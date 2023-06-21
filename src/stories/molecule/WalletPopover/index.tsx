@@ -71,6 +71,7 @@ export const WalletPopover = ({
               />
             </Popover.Button>
             {open && (
+              // backdrop
               <div
                 className="fixed inset-0 z-40 bg-white/80"
                 aria-hidden="true"
