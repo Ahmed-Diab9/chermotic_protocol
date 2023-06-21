@@ -185,7 +185,7 @@ const Pool = () => {
               onMultiAmountChange={onMultiAmountChange}
             />
             {/* bottom */}
-            <article className="px-5 pt-5 pb-6 mx-auto mt-5 bg-white border rounded-2xl drop-shadow-md">
+            <article className="px-5 pt-5 pb-6 mx-auto mt-5 bg-white border rounded-2xl drop-shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <h4 className="font-bold">

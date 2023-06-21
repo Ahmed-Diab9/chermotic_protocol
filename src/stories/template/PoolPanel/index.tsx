@@ -178,7 +178,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   }, [selectedBins]);
 
   return (
-    <div className="inline-flex flex-col w-full bg-white border rounded-2xl drop-shadow-md">
+    <div className="inline-flex flex-col w-full bg-white border rounded-2xl drop-shadow-lg">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
           <Tab.List className="w-[50vw] max-w-[840px] mx-auto pt-4 flex !justify-center">

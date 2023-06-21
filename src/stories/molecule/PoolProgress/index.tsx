@@ -33,7 +33,7 @@ export const PoolProgress = ({
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
   return (
-    <div className="!flex flex-col border PoolProgress drop-shadow-md tabs tabs-line tabs-base rounded-2xl bg-white">
+    <div className="!flex flex-col border PoolProgress drop-shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
         {({ open }) => (
           <>

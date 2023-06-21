@@ -62,7 +62,7 @@ export const AssetPopover = ({
 }: AssetPopoverProps) => {
   const isLoaded = isValid(account) && isValid(token);
   return (
-    <div className="AssetPopover z-20 drop-shadow-md relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white">
+    <div className="AssetPopover z-20 drop-shadow-lg relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white">
       <div className="ml-10">
         <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
       </div>
