@@ -86,7 +86,7 @@ export const WalletPopover = ({
               // leaveFrom="opacity-100 translate-x-20"
               // leaveTo="opacity-100 translate-x-0"
             >
-              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel ">
+              <Popover.Panel className="z-40 transform border-l shadow-xl shadow-white popover-panel">
                 <div className="relative flex flex-col h-full ">
                   {/* Network */}
                   <Avatar
