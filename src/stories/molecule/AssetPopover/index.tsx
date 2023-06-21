@@ -154,7 +154,9 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${open ? "border-black" : null}`}
+            className={`btn btn-default btn-sm ${
+              open ? "border-black !text-black" : ""
+            }`}
           >
             {title}
           </Popover.Button>

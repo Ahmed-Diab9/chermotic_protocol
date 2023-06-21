@@ -2,7 +2,6 @@
   @apply flex items-center;
   @apply font-semibold leading-[1];
   @apply inline-block cursor-pointer;
-  background-color: #fff;
   border-radius: 100px;
   > div {
     justify-content: center;
@@ -12,7 +11,7 @@
     @apply inline-block;
   }
   &:disabled {
-    @apply opacity-50 cursor-not-allowed;
+    @apply cursor-not-allowed;
   }
   &.toggle-on {
     @apply border border-black text-black;
@@ -33,15 +32,21 @@
 .btn-active {
   @apply bg-black text-white dark:text-black;
   @apply border border-black;
+  &:disabled {
+    @apply text-black/30 bg-[#F9F9F9];
+  }
 }
 .btn-gray {
-  @apply border border-gray;
+  @apply border border-gray bg-white;
 }
 .btn-default {
-  @apply border;
+  @apply border text-black/50 bg-white;
+  &:disabled {
+    @apply text-gray;
+  }
 }
 .btn-unstyled {
-  @apply bg-transparent hover:bg-black/20;
+  @apply bg-transparent;
 }
 .btn-circle {
   @apply border border-[#eee] bg-white !rounded-full;

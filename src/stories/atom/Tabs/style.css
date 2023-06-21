@@ -3,6 +3,7 @@
   [role="tablist"] {
     @apply flex;
     [role="tab"] {
+      @apply m-0;
       &:disabled {
         @apply border-none opacity-30;
       }
@@ -64,10 +65,7 @@
   &.tabs-base {
     [role="tablist"] {
       button {
-        width: auto;
-        max-width: none;
-        padding: 8px 0;
-        font-weight: 600;
+        @apply w-auto max-w-none font-bold py-[6px] px-0;
       }
     }
   }
