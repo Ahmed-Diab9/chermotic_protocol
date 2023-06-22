@@ -1,11 +1,11 @@
 import { Tab } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import { Counter } from "../../atom/Counter";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { Checkbox } from "../../atom/Checkbox";
 import { Thumbnail } from "../../atom/Thumbnail";
 import { Tooltip } from "../../atom/Tooltip";
-import { Toggle } from "~/stories/atom/Toggle";
 import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import "../../atom/Tabs/style.css";
@@ -215,7 +215,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <article>
                   <div className="flex justify-between">
                     <h4>Liquidity Pool Range</h4>
-                    <Toggle label="Bin Values" size="sm" />
+                    <Switch.Group>
+                      <div className="toggle-wrapper">
+                        <Switch.Label className="">Bin Values</Switch.Label>
+                        <Switch
+                          checked={undefined}
+                          onChange={undefined}
+                          className="toggle toggle-xs"
+                        />
+                      </div>
+                    </Switch.Group>
                   </div>
                   <div className="flex justify-between mt-6">
                     <div className="text-left">

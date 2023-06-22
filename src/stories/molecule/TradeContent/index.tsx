@@ -184,7 +184,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
             <Switch.Group>
-              <div className="flex items-center gap-[6px]">
+              <div className="toggle-wrapper">
                 <Switch.Label className="">Slider</Switch.Label>
                 <Switch
                   checked={isSliderOpen}
