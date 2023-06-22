@@ -16,11 +16,11 @@ export const useSettlementToken = () => {
     error,
     mutate: fetchTokens,
   } = useSWR(["SETTLEMENT_TOKENS", address], async () => {
-      if (!marketFactoryApi) {
+    if (!marketFactoryApi) {
       return;
-      }
-      const tokens = await marketFactoryApi.registeredSettlementTokens();
-      return tokens;
+    }
+    const tokens = await marketFactoryApi.registeredSettlementTokens();
+    return tokens;
   });
 
   if (error) {
@@ -30,26 +30,15 @@ export const useSettlementToken = () => {
   return { tokens, fetchTokens };
 };
 
-export const useSelectedToken = () => {
+export const useTokenSelect = () => {
   const dispatch = useAppDispatch();
 
-  const { tokens } = useSettlementToken();
-
-  // const selectedToken = useAppSelector((state) => state.market.selectedToken);
-
   const onTokenSelect = useCallback(
-    (address: string) => {
-      const nextToken = tokens?.find((token) => token.address === address);
-      if (!isValid(nextToken)) {
-        errorLog("Settlement Token:selected token is invalid.");
-        // deleteToken();
-        return;
-      }
-      // setStoredToken(nextToken.address);
-      dispatch(marketAction.onTokenSelect(nextToken));
+    (token: Token) => {
+      dispatch(tokenAction.onTokenSelect(token));
     },
-    [tokens, dispatch]
+    [dispatch]
   );
 
-  return [undefined, onTokenSelect] as const;
+  return onTokenSelect;
 };

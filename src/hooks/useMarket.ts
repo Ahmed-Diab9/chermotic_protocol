@@ -30,25 +30,17 @@ export const useMarket = (_interval?: number) => {
   return { markets, fetchMarkets } as const;
 };
 
-export const useSelectedMarket = () => {
+export const useMarketSelect = () => {
   const dispatch = useAppDispatch();
 
-  const { markets, selectedMarket } = useMarket();
-
   const onMarketSelect = useCallback(
-    (address: string) => {
+    (market: Market) => {
       console.log("market selected");
-      const nextMarket = markets?.find((market) => market.address === address);
-      console.log("nextmarket", nextMarket);
-      if (!isValid(nextMarket)) {
-        errorLog("selected market is invalid.");
-        return;
-      }
-      console.log("Market Selected", nextMarket.description);
-      // dispatch(marketAction.onMarketSelect(nextMarket));
+
+      dispatch(marketAction.onMarketSelect(market));
     },
-    [markets]
+    [dispatch]
   );
 
-  return { selectedMarket, onMarketSelect };
+  return onMarketSelect;
 };
