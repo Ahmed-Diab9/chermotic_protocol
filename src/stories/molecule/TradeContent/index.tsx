@@ -1,20 +1,26 @@
 // import { Popover } from "@headlessui/react";
-// import { Avatar } from "../../atom/Avatar";
-// import { Button } from "../../atom/Button";
-// import { OptionInput } from "../../atom/OptionInput";
+// import { Avatar } from "~/atom/Avatar";
+// import { Button } from "~/atom/Button";
+// import { OptionInput } from "~/atom/OptionInput";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { Input } from "../../atom/Input";
-import { Button } from "../../atom/Button";
-import { Tooltip } from "../../atom/Tooltip";
-import { Slider } from "../../atom/Slider";
-import { LeverageOption } from "../../atom/LeverageOption";
+import { BigNumber } from "ethers";
+
 import { Listbox } from "@headlessui/react";
 import { Switch } from "@headlessui/react";
+import "~/stories/atom/Select/style.css";
+import "~/stories/atom/Toggle/style.css";
+
+import { Input } from "~/stories/atom/Input";
+import { Button } from "~/stories/atom/Button";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { Slider } from "~/stories/atom/Slider";
+import { LeverageOption } from "~/stories/atom/LeverageOption";
 import { FillUpChart } from "~/stories/atom/FillUpChart";
 
 import { isValid } from "~/utils/valid";
-import { BigNumber } from "ethers";
 import { formatDecimals, numberBuffer, withComma } from "~/utils/number";
+
+import { TradeInput } from "~/typings/trade";
 import { Market, Price, Token } from "~/typings/market";
 
 interface TradeContentProps {
@@ -202,18 +208,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <div className="mt-[-8px]">
                   <Slider
                     value={input?.leverage === 0 ? 1 : input?.leverage}
-                    onChange={(values) => {
-                      onLeverageChange?.(values);
-                    }}
+                    onUpdate={onLeverageChange}
                     tick={SLIDER_TICK}
                   />
                 </div>
               ) : (
                 <LeverageOption
                   value={input?.leverage}
-                  onClick={(value) => {
-                    onLeverageChange?.(value);
-                  }}
+                  onClick={onLeverageChange}
                 />
               )}
             </div>
@@ -250,9 +252,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   value={input.takeProfit === 0 ? 1 : input.takeProfit}
-                  onChange={(values) => {
-                    onTakeProfitChange?.(values);
-                  }}
+                  onUpdate={onTakeProfitChange}
                   tick={SLIDER_TICK}
                 />
               )}
@@ -280,9 +280,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   value={input.stopLoss === 0 ? 1 : input.stopLoss}
-                  onChange={(values) => {
-                    onStopLossChange?.(values);
-                  }}
+                  onUpdate={onStopLossChange}
                   tick={SLIDER_TICK}
                 />
               )}

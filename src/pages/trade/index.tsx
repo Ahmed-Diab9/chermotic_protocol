@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
-import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/MainBar";
-import { TradePanel } from "../../stories/template/TradePanel";
-import { TradeBar } from "~/stories/template/TradeBar";
-import { Button } from "../../stories/atom/Button";
-import { Outlink } from "~/stories/atom/Outlink";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import "./style.css";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+
+import { Header } from "~/stories/template/Header";
+import { MainBar } from "~/stories/template/MainBar";
+import { TradePanel } from "~/stories/template/TradePanel";
+import { TradeBar } from "~/stories/template/TradeBar";
+import { Button } from "~/stories/atom/Button";
+import { Outlink } from "~/stories/atom/Outlink";
+
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import {
   useSelectedToken,
@@ -24,16 +28,15 @@ import {
   useLiquidityPoolSummary,
   useSelectedLiquidityPool,
 } from "~/hooks/useLiquidityPool";
-import { copyText } from "~/utils/clipboard";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useFeeRate } from "~/hooks/useFeeRate";
 import useTokenTransaction from "~/hooks/useTokenTransaction";
 import { useTradeInput } from "~/hooks/useTradeInput";
-import { Link } from "react-router-dom";
 import { usePosition } from "~/hooks/usePosition";
-import { infoLog } from "~/utils/log";
 import useOracleVersion from "~/hooks/useOracleVersion";
 import useChartData from "~/hooks/useChartData";
+
+import { copyText } from "~/utils/clipboard";
 
 const Trade = () => {
   useConnectOnce();
@@ -128,12 +131,8 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
-          onTokenSelect={(token) => {
-            onTokenSelect(token);
-          }}
-          onMarketSelect={(market) => {
-            onMarketSelect(market);
-          }}
+          onTokenSelect={onTokenSelect}
+          onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
@@ -197,12 +196,8 @@ const Trade = () => {
         markets={markets}
         positions={positions}
         oracleVersions={oracleVersions}
-        onPositionClose={(marketAddress, positionId) => {
-          onClosePosition(marketAddress, positionId);
-        }}
-        onPositionClaim={(marketAddress, positionId) => {
-          onClaimPosition(marketAddress, positionId);
-        }}
+        onPositionClose={onClosePosition}
+        onPositionClaim={onClaimPosition}
       />
     </div>
   );
