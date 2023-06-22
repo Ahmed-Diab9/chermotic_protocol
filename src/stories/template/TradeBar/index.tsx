@@ -154,37 +154,57 @@ export const TradeBar = ({
                                             {createCurrentDate()}
                                           </div>
 
-                                          <div className="flex items-center gap-2 ml-auto">
+                                          <div className="flex items-center gap-1 ml-auto">
                                             {/* 상태에 따라 내용 변동 */}
                                             {position.status === OPENING && (
                                               <>
                                                 <Loading size="xs" />
-                                                <p className="text-black/30">
-                                                  Opening in progress
+                                                <p className="flex text-black/30">
+                                                  {/* Opening in progress */}
+                                                  Waiting for the next oracle
+                                                  round
+                                                  <Tooltip
+                                                    // todo: tip 내 퍼센트값 불러오기
+                                                    tip="Waiting for the next oracle round to open the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                                                    outLink="#"
+                                                  />
                                                 </p>
                                               </>
                                             )}
                                             {position.status === OPENED && (
                                               <>
                                                 <CheckIcon className="w-4" />
-                                                <p className="text-black/30">
+                                                <p className="flex text-black/30">
                                                   Opening completed
+                                                  <Tooltip
+                                                    tip="The opening process has been completed. Now the position is in live status."
+                                                    outLink="#"
+                                                  />
                                                 </p>
                                               </>
                                             )}
                                             {position.status === CLOSING && (
                                               <>
                                                 <Loading size="xs" />
-                                                <p className="text-black/30">
+                                                <p className="flex text-black/30">
                                                   Closing in progress
+                                                  <Tooltip
+                                                    // todo: tip 내 퍼센트값 불러오기
+                                                    tip="Waiting for the next oracle round to close the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                                                    outLink="#"
+                                                  />
                                                 </p>
                                               </>
                                             )}
                                             {position.status === CLOSED && (
                                               <>
                                                 <CheckIcon className="w-4" />
-                                                <p className="text-black/30">
+                                                <p className="flex text-black/30">
                                                   Closing completed
+                                                  <Tooltip
+                                                    tip="The closing process has been completed. You can claim the assets and transfer them to your account."
+                                                    outLink="#"
+                                                  />
                                                 </p>
                                               </>
                                             )}

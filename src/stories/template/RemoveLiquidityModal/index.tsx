@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
+import { Tooltip } from "~/stories/atom/Tooltip";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
@@ -95,7 +96,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             {/* info bottom */}
             <article className="flex flex-col gap-2 pb-5 border-b">
               <div className="flex justify-between">
-                <p className="text-black/30">My Liquidity Value</p>
+                <p className="flex text-black/30">
+                  My Liquidity Value
+                  <Tooltip tip="The value of my CLB tokens converted into the current token value." />
+                </p>
                 {selectedBin && (
                   <p>
                     {formatDecimals(
@@ -111,7 +115,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               </div>
 
               <div className="flex justify-between">
-                <p className="text-black/30">Removable Liquidity</p>
+                <p className="flex text-black/30">
+                  Removable Liquidity
+                  <Tooltip
+                    tip="The amount of liquidity that is currently removable due to not being utilized."
+                    outLink="#"
+                  />
+                </p>
                 {selectedBin && token && (
                   <p>
                     {formatDecimals(
@@ -202,9 +212,12 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </div>
               </div>
               <p className="mt-4 text-xs text-black/30">
-                Please set additional values to apply to the basic formula in
-                Borrow Fee. Calculated based on open Interest and stop
-                profit/Loss rate.
+                Holders can immediately withdraw liquidity by burning the CLB
+                tokens that is not collateralized by maker margin. Since the
+                withdrawal takes place in the next oracle round, the final
+                amount of removable liquidity is determined based on the
+                utilization status of the liquidity bins in the next oracle
+                round.
               </p>
             </article>
           </Dialog.Description>

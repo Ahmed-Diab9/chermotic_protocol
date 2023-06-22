@@ -5,6 +5,7 @@ import { PoolPanel } from "../../stories/template/PoolPanel";
 import { PoolProgress } from "~/stories/molecule/PoolProgress";
 import { Footer } from "../../stories/template/Footer";
 import { Button } from "../../stories/atom/Button";
+import { Outlink } from "~/stories/atom/Outlink";
 import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -200,9 +201,11 @@ const Pool = () => {
                 />
               </div>
               <p className="mt-3 mb-3 text-left text-black/30">
-                Please set additional values to apply to the basic formula in
-                Borrow Fee. Calculated based on open Interest and stop
-                profit/Loss rate.
+                When providing liquidity to the liquidity bins of the Chromatic
+                protocol, providers are rewarded by minting CLB tokens. CLB
+                tokens follow the ERC-1155 standard and have one token contract
+                per market, with each bin having its own unique token ID.
+                <Outlink outLink="#" color="black" className="ml-2" />
               </p>
             </article>
             <div className="mt-10">

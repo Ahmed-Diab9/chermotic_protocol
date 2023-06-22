@@ -4,6 +4,8 @@ import { MainBar } from "../../stories/template/MainBar";
 import { TradePanel } from "../../stories/template/TradePanel";
 import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "../../stories/atom/Button";
+import { Outlink } from "~/stories/atom/Outlink";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
@@ -168,12 +170,17 @@ const Trade = () => {
         <article className="max-w-[680px] w-full mt-8 mx-auto">
           <div className="mb-12">
             <p className="my-6 text-center text-black/30">
-              Please set additional values to apply to the basic formula in
-              Borrow Fee. <br /> Calculated based on open Interest and stop
-              profit/Loss rate.
+              The Trade Fee is calculated by summing up the different fees from
+              the Liquidi- ty Bins that accept the positions. The EST. Trade Fee
+              is calculated based on the current oracle price, and the actual
+              fee paid is determined by the next oracle price.
+              <Outlink color="black" outLink="#" className="ml-2" />
             </p>
             <Link to={"/pool"}>
-              <Button label="Provide Liquidity" />
+              <Button
+                label="Provide Liquidity"
+                iconRight={<ChevronRightIcon />}
+              />
             </Link>
           </div>
         </article>

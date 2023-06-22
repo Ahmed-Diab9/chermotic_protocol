@@ -1,6 +1,7 @@
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Tag } from "~/stories/atom/Tag";
+import { Tooltip } from "~/stories/atom/Tooltip";
 import { Button } from "~/stories/atom/Button";
 import { Progress } from "~/stories/atom/Progress";
 import { Loading } from "~/stories/atom/Loading";
@@ -39,7 +40,11 @@ export const PoolProgress = ({
           <>
             <Disclosure.Button className="relative flex items-center py-5">
               <div className="ml-10 text-left">
-                <h4 className="font-bold">IN PROGRESS ({receipts.length})</h4>
+                <h4 className="flex font-bold">
+                  IN PROGRESS
+                  <span className="ml-[2px] mr-1">({receipts.length})</span>
+                  <Tooltip tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.' />
+                </h4>
                 {open && (
                   <p className="mt-1 ml-auto text-sm text-black/30">
                     Last oracle update: 00h 00m 00s ago
@@ -230,20 +235,41 @@ const ProgressItem = (props: ProgressItemProps) => {
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
           {title}
-          <span className="mr-1">
+          <span className="flex mr-1">
             {status === "standby" ? (
-              <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
+              // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
+              <Tag label="standby" className="text-black/50 bg-gray/20" />
             ) : status === "completed" ? (
-              <Tag
-                label="completed"
-                className="text-[#03C239] bg-[#23F85F]/10"
-              />
+              // <Tag
+              //   label="completed"
+              //   className="text-[#03C239] bg-[#23F85F]/10"
+              // />
+              <Tag label="completed" className="text-black/50 bg-gray/20" />
             ) : (
-              <Tag
-                label="in progress"
-                className="text-[#13D2C7] bg-[#1EFCEF]/10"
-              />
+              // <Tag
+              //   label="in progress"
+              //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
+              // />
+              <Tag label="in progress" className="text-black/50 bg-gray/20" />
             )}
+            <Tooltip
+              outLink="#"
+              outLinkAbout="Next Oracle Round"
+              tip={
+                // todo: 퍼센트값 불러오기 (백틱 표시)
+                title === "minting" && status === "standby"
+                  ? `Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day.`
+                  : title === "minting" && status === "completed"
+                  ? "The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
+                  : title === "burning" && status === "standby"
+                  ? `Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day.`
+                  : title === "burning" && status === "in progress"
+                  ? "The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
+                  : title === "burning" && status === "completed"
+                  ? "The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
+                  : ""
+              }
+            />
           </span>
         </h4>
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
