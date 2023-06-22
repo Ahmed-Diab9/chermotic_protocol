@@ -4,7 +4,6 @@ import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 import { useAccount, useSigner } from "wagmi";
 import { isValid } from "../utils/valid";
 import { errorLog } from "../utils/log";
-import { useSelectedToken } from "./useSettlementToken";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { useAppSelector } from "../store";
 
@@ -12,7 +11,7 @@ const useTokenTransaction = () => {
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
   const { account: usumAccount } = useUsumAccount();
-  const token = useAppSelector((state) => state.market.selectedToken);
+  const token = useAppSelector((state) => state.token.selectedToken);
   const [amount, setAmount] = useState("");
   const tokenContract = useMemo(() => {
     if (isValid(token) && isValid(signer)) {
@@ -35,7 +34,7 @@ const useTokenTransaction = () => {
       return;
     }
     tokenContract?.transfer(usumAccount.address, expanded);
-  }, []);
+  }, [walletAddress, usumAccount?.address]);
 
   const onWithdraw = useCallback(async () => {
     if (!isValid(usumAccount)) {
@@ -61,7 +60,7 @@ const useTokenTransaction = () => {
     }
     setAmount(nextValue);
   }, []);
-  return [amount, onAmountChange, onDeposit, onWithdraw] as const;
+  return { amount, onAmountChange, onDeposit, onWithdraw } as const;
 };
 
 export default useTokenTransaction;

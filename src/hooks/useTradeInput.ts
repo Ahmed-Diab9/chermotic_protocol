@@ -1,8 +1,5 @@
-import { ChromaticRouter } from "@chromatic-protocol/sdk/contracts";
-import { getDeployedContract } from "@chromatic-protocol/sdk/contracts";
 import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
-import { CHAIN } from "~/constants/contracts";
 import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
 import {
@@ -15,10 +12,7 @@ import { isValid } from "~/utils/valid";
 import { errorLog } from "../utils/log";
 import { useChromaticClient } from "./useChromaticClient";
 import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { useSelectedMarket } from "./useMarket";
-import { useSelectedToken } from "./useSettlementToken";
 import { usePosition } from "./usePosition";
-import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
 import { useAppSelector } from "../store";
@@ -218,8 +212,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
 };
 
 export const useTradeInput = () => {
-  const token = useAppSelector((state) => state.market.selectedToken);
-  const market = useAppSelector((state) => state.market.selectedMarket)
+  const token = useAppSelector((state) => state.token.selectedToken);
+  const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
   const { fetchUsumBalances } = useUsumBalances();

@@ -41,15 +41,15 @@ export const useWalletBalances = () => {
       if (!isValid(signer)) {
         return;
       }
-    const promise = tokens.map(async (token) => {
-      const contract = IERC20__factory.connect(token.address, signer);
-      const balance = await contract.balanceOf(address);
-      return [token.name, balance] as const;
-    });
-    const response = await Promise.allSettled(promise);
-    const result = filterResponse(response);
-    console.log("useBalance", result);
-    return result;
+      const promise = tokens.map(async (token) => {
+        const contract = IERC20__factory.connect(token.address, signer);
+        const balance = await contract.balanceOf(address);
+        return [token.name, balance] as const;
+      });
+      const response = await Promise.allSettled(promise);
+      const result = filterResponse(response);
+      console.log("useBalance", result);
+      return result;
     }
   );
 
@@ -73,12 +73,12 @@ export const useUsumBalances = () => {
       if (!isValid(account)) {
         return;
       }
-    const promise = tokens.map(async (token) => {
-      const balance = await account.balance(token.address);
-      return [token.name, balance] as const;
-    });
-    const response = await Promise.allSettled(promise);
-    return filterResponse(response);
+      const promise = tokens.map(async (token) => {
+        const balance = await account.balance(token.address);
+        return [token.name, balance] as const;
+      });
+      const response = await Promise.allSettled(promise);
+      return filterResponse(response);
     }
   );
 
@@ -92,7 +92,7 @@ export const useUsumBalances = () => {
 export const useUsumMargins = () => {
   const { usumBalances } = useUsumBalances();
   const { positions = [] } = usePosition();
-  const token = useAppSelector((state) => state.market.selectedToken);
+  const token = useAppSelector((state) => state.token.selectedToken);
 
   const [totalBalance, totalAsset] = useMemo(() => {
     if (!isValid(usumBalances) || !isValid(token)) {
