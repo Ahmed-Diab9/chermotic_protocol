@@ -75,7 +75,7 @@ export const Slider = ({
         </Rail>
         <Handles>
           {({ handles, getHandleProps }) => (
-            <div className="px-[11px] slider-handles">
+            <div className="slider-handles">
               <div className="relative">
                 {handles.map((handle) => (
                   <Handle
@@ -91,7 +91,7 @@ export const Slider = ({
         </Handles>
         <Tracks right={false}>
           {({ tracks, getTrackProps }) => (
-            <div className="px-3 slider-tracks">
+            <div className="slider-tracks">
               <div className="relative">
                 {tracks.map(({ id, source, target }) => (
                   <Track
@@ -107,7 +107,7 @@ export const Slider = ({
         </Tracks>
         <Ticks {...ticksProps}>
           {({ ticks }) => (
-            <div className="px-[11px] slider-ticks">
+            <div className="slider-ticks">
               <div className="relative">
                 {ticks.map((tick) => (
                   <Tick key={tick.id} tick={tick} count={ticks.length} />
