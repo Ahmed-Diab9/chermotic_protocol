@@ -15,7 +15,6 @@ interface FillUpChartProps {
   positive?: boolean;
   data?: BarData[];
   selectedAmount?: number;
-  selectableLabel: string;
   height: number;
   width?: number;
   tooltip?: React.ReactElement<any>;
@@ -26,7 +25,6 @@ export function FillUpChart({
   positive = true,
   data = [],
   selectedAmount = 0,
-  selectableLabel,
   height,
   width,
   tooltip,
@@ -35,6 +33,8 @@ export function FillUpChart({
 
   const trackConfig = isNegative ? FILLUP_NEG_CONFIG : FILLUP_POS_CONFIG;
   const labels = isNegative ? FILLUP_NEG_TICKS : FILLUP_POS_TICKS;
+
+  const SELECTABLE_LABEL = "available";
 
   return (
     <div className="flex justify-center ">
@@ -46,7 +46,7 @@ export function FillUpChart({
         reverse={isNegative}
         height={height}
         width={width}
-        selectableLabel={selectableLabel}
+        selectableLabel={SELECTABLE_LABEL}
         tooltipComponent={tooltip}
       />
     </div>

@@ -10,9 +10,8 @@ import { Slider } from "../../atom/Slider";
 import { LeverageOption } from "../../atom/LeverageOption";
 import { Listbox } from "@headlessui/react";
 import { Switch } from "@headlessui/react";
-import "./../../atom/Select/style.css";
-import "./../../atom/Toggle/style.css";
-import { TradeInput } from "~/typings/trade";
+import { FillUpChart } from "~/stories/atom/FillUpChart";
+
 import { isValid } from "~/utils/valid";
 import { BigNumber } from "ethers";
 import { formatDecimals, numberBuffer, withComma } from "~/utils/number";
@@ -29,6 +28,7 @@ interface TradeContentProps {
   totalUnusedLiquidity?: BigNumber;
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
+  liquidityData?: any[];
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -57,6 +57,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     totalUnusedLiquidity,
     tradeFee,
     tradeFeePercent,
+    liquidityData,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -304,6 +305,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           )}
         </div>
         {/* graph */}
+        <FillUpChart
+          positive={direction === "long"}
+          height={300}
+          data={liquidityData}
+          selectedAmount={input.quantity}
+        />
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
             <div className="flex justify-between">

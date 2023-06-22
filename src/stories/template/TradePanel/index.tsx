@@ -44,6 +44,9 @@ export interface TradePanelProps {
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
 
+  longLiquidityData?: any[];
+  shortLiquidityData?: any[];
+
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
 }
@@ -74,6 +77,8 @@ export const TradePanel = (props: TradePanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    longLiquidityData,
+    shortLiquidityData,
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
@@ -121,6 +126,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
+                liquidityData={shortLiquidityData}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -146,6 +152,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
+                liquidityData={longLiquidityData}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -204,6 +211,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={shortInput}
+                  liquidityData={shortLiquidityData}
                   totalMaxLiquidity={shortTotalMaxLiquidity}
                   totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   tradeFee={shortTradeFee}
@@ -224,6 +232,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={longInput}
+                  liquidityData={longLiquidityData}
                   totalMaxLiquidity={longTotalMaxLiquidity}
                   totalUnusedLiquidity={longTotalUnusedLiquidity}
                   tradeFee={longTradeFee}

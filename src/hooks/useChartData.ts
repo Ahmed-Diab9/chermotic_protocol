@@ -48,9 +48,20 @@ const useChartData = () => {
     }
   );
 
+  const PIVOT_INDEX = 36;
+
+  const [negative, positive] = useMemo(() => {
+    if (!data?.liquidity) return [];
+    const negative = data?.liquidity.slice(0, PIVOT_INDEX);
+    const positive = data?.liquidity.slice(PIVOT_INDEX);
+    return [negative, positive];
+  }, [data?.liquidity]);
+
   return {
     binValue: data?.binValue,
     liquidity: data?.liquidity,
+    negative,
+    positive,
   };
 };
 

@@ -33,6 +33,7 @@ import { Link } from "react-router-dom";
 import { usePosition } from "~/hooks/usePosition";
 import { infoLog } from "~/utils/log";
 import useOracleVersion from "~/hooks/useOracleVersion";
+import useChartData from "~/hooks/useChartData";
 
 const Trade = () => {
   useConnectOnce();
@@ -94,6 +95,8 @@ const Trade = () => {
     }
   }, [shortInput.direction, onShortDirectionToggle]);
   const { positions, onClosePosition, onClaimPosition } = usePosition();
+
+  const { negative, positive } = useChartData();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -165,6 +168,8 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+            shortLiquidityData={negative}
+            longLiquidityData={positive}
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />
