@@ -1,3 +1,4 @@
+import { Outlink } from "../Outlink";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import "./style.css";
@@ -8,6 +9,7 @@ interface TooltipProps {
   outLink?: string;
   outLinkAbout?: string;
   position?: "top" | "right" | "bottom" | "left";
+  size?: "sm" | "md" | "lg";
   align?: "center" | "left" | "right";
   className?: string;
   onClick?: () => unknown;
@@ -20,31 +22,27 @@ export const Tooltip = (props: TooltipProps) => {
     outLink,
     outLinkAbout,
     position = "top",
-    // align = "center",
+    size = "md",
+    align = "left",
     className,
   } = props;
 
   return (
-    <div className={`tooltip tooltip-${position} ${className} text-black/30`}>
+    <div
+      className={`tooltip tooltip-${position} ${className} text-black/30 !z-50 relative self-center ${
+        label || "ml-1"
+      }`}
+    >
       {label}
       <InformationCircleIcon className="w-4" />
-      <div className="tooltip-tip">
-        <p>{tip}</p>
-
-        {/* todo - 링크 선택 가능하도록 떠있게 설정 추가 */}
+      <div className={`tooltip-tip tip-${size} text-${align}`}>
+        <p className="text-white">{tip}</p>
         {outLink && (
-          <a
-            href={outLink}
-            className="inline-flex"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <div className="flex items-center gap-1 text-sm font-semibold text-black/50">
-              Learn more
-              {outLinkAbout && ` about "${outLinkAbout}"`}
-              <ArrowUpRightIcon className="w-3" />
-            </div>
-          </a>
+          <Outlink
+            outLink={outLink}
+            outLinkAbout={outLinkAbout}
+            className="mt-2"
+          />
         )}
       </div>
     </div>

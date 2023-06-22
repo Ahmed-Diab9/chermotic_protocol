@@ -1,10 +1,8 @@
 import { useState } from "react";
+import { Outlink } from "../Outlink";
 import { Button } from "~/stories/atom/Button";
-import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { BellIcon } from "@heroicons/react/24/outline";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 interface GuideProps {
   title?: string;
@@ -36,28 +34,21 @@ export const Guide = (props: GuideProps) => {
       {guideVisible && (
         <div
           className={`relative px-5 text-left rounded-xl bg-gray/20 ${
-            flex ? "flex gap-4 py-2" : "pt-4 pb-5"
+            flex ? "flex gap-4 py-2 !pr-12" : "py-4"
           }`}
         >
           <div className="flex items-center gap-1">
-            {/* <BellIcon className="w-4" /> */}
-            <InformationCircleIcon className="w-4" />
+            <BellIcon className="w-4" />
+            {/* <InformationCircleIcon className="w-4" /> */}
             <p>{title}</p>
           </div>
           <p className="my-2 text-sm text-black/30">{paragraph}</p>
           {outLink && (
-            <a
-              href={outLink}
-              className="inline-flex"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="flex items-center gap-1 text-sm font-semibold text-black/50">
-                Learn more
-                {outLinkAbout && ` about "${outLinkAbout}"`}
-                <ArrowUpRightIcon className="w-3" />
-              </div>
-            </a>
+            <Outlink
+              outLink={outLink}
+              outLinkAbout={outLinkAbout}
+              color="black"
+            />
           )}
           {/* todo: 버튼 누르면 닫힘 */}
           <Button
