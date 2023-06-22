@@ -1,9 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import useSWR from "swr";
-
-import { DEPLOYED_ADDRESSES } from "~/constants/contracts";
-import { useChromaticClient } from "./useChromaticClient";
 import { useRouter } from "~/hooks/useRouter";
 
 import { errorLog, infoLog } from "~/utils/log";
@@ -26,33 +23,28 @@ export const useUsumAccount = () => {
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
   const [router] = useRouter();
 
-  const fetchKey = useMemo(() => {
-    return isValid(router) && isValid(signer) && isValid(address)
-      ? ([router, signer] as const)
-      : undefined;
-  }, [router, signer, address]);
+  const fetchKey = isValid(address) && ["USUM_ACCOUNT", address];
 
   const {
     data: account,
     error,
     isLoading,
-  } = useSWR(fetchKey, async ([router, signer]) => {
-    console.log("router!!!", router);
-    console.log("router signerOrProvider", router.signer || router.provider);
+  } = useSWR(fetchKey, async ([_, address]) => {
+    if (!isValid(signer)) {
+      return;
+    }
     try {
       const address = await router?.getAccount();
 
-      console.log("router addr", address);
       if (!address || address === ADDRESS_ZERO) {
         return;
       }
       return ChromaticAccount__factory.connect(address, signer);
-    } catch (e) {
-      console.log(e);
-      console.log("ee", router.signer, signer);
+    } catch (error) {
+      errorLog(error);
     }
   });
-  const isValidAccount = isValid(account) && isValid(account.address)
+  const isValidAccount = isValid(account) && isValid(account.address);
 
   useEffect(() => {
     if (isLoading) {
@@ -67,23 +59,23 @@ export const useUsumAccount = () => {
     }
   }, [isLoading, isValidAccount]);
 
-  // useEffect(() => {
-  //   let timerId: NodeJS.Timeout | undefined;
-  //   if (status === ACCOUNT_COMPLETING) {
-  //     infoLog("account is now created");
-  //     timerId = setTimeout(() => {
-  //       setStatus(ACCOUNT_COMPLETED);
-  //     }, 3000);
-  //   }
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined;
+    if (status === ACCOUNT_COMPLETING) {
+      infoLog("account is now created");
+      timerId = setTimeout(() => {
+        setStatus(ACCOUNT_COMPLETED);
+      }, 3000);
+    }
 
-  //   return () => {
-  //     clearTimeout(timerId);
-  //   };
-  // }, [status]);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [status]);
 
-  // if (error) {
-  //   errorLog(error);
-  // }
+  if (error) {
+    errorLog(error);
+  }
 
   const createAccount = async () => {
     if (!isValid(signer)) {

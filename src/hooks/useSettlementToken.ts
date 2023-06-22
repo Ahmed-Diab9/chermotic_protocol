@@ -1,37 +1,27 @@
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 import { useChromaticClient } from "./useChromaticClient";
-
-
-
 import { useAppDispatch } from "~/store";
-import { marketAction } from "~/store/reducer/market";
-
-
 import { errorLog } from "~/utils/log";
-import { isValid } from "~/utils/valid";
+import { Token } from "~/typings/market";
+import { tokenAction } from "~/store/reducer/token";
+import { useAccount } from "wagmi";
 
 export const useSettlementToken = () => {
   const { client } = useChromaticClient();
-  const marketFactoryApi = useMemo(()=>client?.marketFactory(), [client])
-  // const fetchKey = `settlementTokens`;
+  const { address } = useAccount();
+  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
-  } = useSWR(
-    ['settlementTokens', marketFactoryApi],
-    async () => {
-      console.log("Client?", client === undefined)
+  } = useSWR(["SETTLEMENT_TOKENS", address], async () => {
       if (!marketFactoryApi) {
-        console.log("marketFactoryApi not exists");
-        throw new Error("marketFactoryApi not exists");
+      return;
       }
       const tokens = await marketFactoryApi.registeredSettlementTokens();
-      console.log("Tokens", tokens);
       return tokens;
-    } 
-  );
+  });
 
   if (error) {
     errorLog(error);

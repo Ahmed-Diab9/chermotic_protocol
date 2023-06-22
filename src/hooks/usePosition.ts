@@ -26,8 +26,8 @@ import {
 export const usePosition = () => {
   const { account: usumAccount } = useUsumAccount();
   const { fetchUsumBalances } = useUsumBalances();
-  const token = useAppSelector((state) => state.market.selectedToken);
-  const {markets} = useMarket();
+  const token = useAppSelector((state) => state.token.selectedToken);
+  const { markets } = useMarket();
   const provider = useProvider();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
@@ -53,11 +53,20 @@ export const usePosition = () => {
     data: positions,
     error,
     mutate: fetchPositions,
-  } = useSWR(fetchKey, async ([account, markets, oracleVersions, provider]) => {
-    const positionsPromise = markets.map(async (marketAddress) => {
-      const positionIds = await account.getPositionIds(marketAddress);
+  } = useSWR(["POSITIONS"], async () => {
+    if (!isValid(markets)) {
+      return;
+    }
+    if (!isValid(usumAccount)) {
+      return;
+    }
+    if (!isValid(oracleVersions)) {
+      return;
+    }
+    const positionsPromise = markets.map(async (market) => {
+      const positionIds = await usumAccount.getPositionIds(market.address);
       const marketContract = ChromaticMarket__factory.connect(
-        marketAddress,
+        market.address,
         provider
       );
       const oracleProviderAddress = await marketContract.oracleProvider();
@@ -75,13 +84,13 @@ export const usePosition = () => {
           response.closeVersion
         );
 
-        const newPosition = new Position(response, marketAddress);
+        const newPosition = new Position(response, market.address);
         newPosition.updateCollateral(feeRate ?? bigNumberify(0));
         newPosition.updateTakeProfit();
         newPosition.updateStopLoss();
 
         const { price: currentPrice, decimals: oracleDecimals } =
-          oracleVersions[marketAddress];
+          oracleVersions?.[market.address];
         newPosition.updateCurrentPrice(currentPrice);
         newPosition.updateOraclePrice([openPrice, closePrice]);
         newPosition.updateLiquidationPrice(token?.decimals);

@@ -3,17 +3,11 @@ import { useAccount, useSigner } from "wagmi";
 import { BigNumber } from "ethers";
 import useSWR from "swr";
 import { useAppSelector } from "../store";
-
 import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
-
 import { isValid } from "~/utils/valid";
 import { errorLog, infoLog } from "~/utils/log";
-
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
+import { useSettlementToken } from "~/hooks/useSettlementToken";
 import { usePosition } from "./usePosition";
 import { bigNumberify } from "~/utils/number";
 
@@ -32,21 +26,21 @@ function filterResponse(
 }
 
 export const useWalletBalances = () => {
-  const { tokens } = useSettlementToken();
+  const { tokens = [] } = useSettlementToken();
 
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
 
-  const fetchKey =
-    isValid(signer) && isValid(tokens) && isValid(walletAddress)
-      ? ([signer, tokens, walletAddress] as const)
-      : undefined;
-
   const {
-    data: accountBalance,
+    data: walletBalances,
     error,
-    mutate,
-  } = useSWR(fetchKey, async ([signer, tokens, address]) => {
+    mutate: fetchWalletBalances,
+  } = useSWR(
+    isValid(walletAddress) ? ["WALLET_BALANCES", walletAddress] : undefined,
+    async ([_, address]) => {
+      if (!isValid(signer)) {
+        return;
+      }
     const promise = tokens.map(async (token) => {
       const contract = IERC20__factory.connect(token.address, signer);
       const balance = await contract.balanceOf(address);
@@ -56,38 +50,37 @@ export const useWalletBalances = () => {
     const result = filterResponse(response);
     console.log("useBalance", result);
     return result;
-  });
+    }
+  );
 
   if (error) {
     errorLog(error);
   }
 
-  return [accountBalance, mutate] as const;
+  return { walletBalances, fetchWalletBalances } as const;
 };
 
 export const useUsumBalances = () => {
-  const { tokens } = useSettlementToken();
+  const { tokens = [] } = useSettlementToken();
   const { account } = useUsumAccount();
-
-  const fetchKey = useMemo(
-    () =>
-      isValid(tokens) && isValid(account)
-        ? ([tokens, account] as const)
-        : undefined,
-    [tokens, account]
-  );
   const {
     data: usumBalances,
     error,
     mutate: fetchUsumBalances,
-  } = useSWR(fetchKey, async ([tokens, account]) => {
+  } = useSWR(
+    isValid(account) ? ["USUM_BALANCES", account.address] : undefined,
+    async ([_, address]) => {
+      if (!isValid(account)) {
+        return;
+      }
     const promise = tokens.map(async (token) => {
       const balance = await account.balance(token.address);
       return [token.name, balance] as const;
     });
     const response = await Promise.allSettled(promise);
     return filterResponse(response);
-  });
+    }
+  );
 
   if (error) {
     errorLog(error);

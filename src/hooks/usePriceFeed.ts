@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 import { useAppSelector } from "../store";
-import { Price } from "../typings/market";
+import { Market, Price } from "../typings/market";
 import { errorLog } from "../utils/log";
 import { isValid } from "../utils/valid";
 import { useChromaticClient } from "./useChromaticClient";
@@ -9,19 +9,21 @@ import { useSettlementToken } from "./useSettlementToken";
 
 const usePriceFeed = () => {
   const { address } = useAccount();
-  const fetchKey = isValid(address) ? [address] : undefined;
+  const fetchKey = isValid(address) ? ["PRICE_FEED", address] : undefined;
   const { client } = useChromaticClient();
-  // const { tokens } = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const market = useAppSelector((state) => state.market.selectedMarket);
   const {
-    data: feed,
+    data: priceFeed,
     error,
-    mutate: fetchFeed,
-  } = useSWR(fetchKey, async ([walletAddress]) => {
-    if (client && market ) {
-      // const tokenAddresses = tokens?.map((token) => token.address);
-      // console.log("[usePriceFeed] ", tokenAddresses);
-      // if (tokenAddresses) {
+    mutate: fetchPriceFeed,
+  } = useSWR(
+    fetchKey,
+    async ([_, walletAddress]) => {
+      if (client && market) {
+        // const tokenAddresses = tokens?.map((token) => token.address);
+        // console.log("[usePriceFeed] ", tokenAddresses);
+        // if (tokenAddresses) {
         // const response = await client.market().getCurrentPrices(tokenAddresses);
         // response.reduce((record, currentResponse) => {
         //   record[currentResponse.market] = {
@@ -65,7 +67,7 @@ const usePriceFeed = () => {
     errorLog(error);
   }
 
-  return [feed, fetchFeed] as const;
+  return { priceFeed, fetchPriceFeed } as const;
 };
 
 export default usePriceFeed;

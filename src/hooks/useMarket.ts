@@ -1,52 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 import useSWR from "swr";
-import { useProvider } from "wagmi";
-
-// import {
-//   ChromaticMarket__factory,
-//   IOracleProvider__factory,
-// } from "@chromatic-protocol/sdk/contracts";
 import { useChromaticClient } from "./useChromaticClient";
 import { Market } from "~/typings/market";
-
 import { useAppDispatch, useAppSelector } from "~/store";
 import { marketAction } from "~/store/reducer/market";
-
-import useLocalStorage from "~/hooks/useLocalStorage";
-import { useMarketFactory } from "~/hooks/useMarketFactory";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import {
-  ChromaticMarket__factory,
-  IOracleProvider__factory,
-} from "@chromatic-protocol/sdk/contracts";
 
 export const useMarket = (_interval?: number) => {
   const { client } = useChromaticClient();
-  const selectedToken = useAppSelector((state) => state.market.selectedToken);
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const {
     data: markets,
     error,
     mutate: fetchMarkets,
   } = useSWR(
-    `market#${selectedToken?.address}`,
-    async () => {
-      if (selectedToken === undefined) {
-        console.log("use market selected token", selectedToken);
-        return;
-      }
-      const markets = await client
-        ?.marketFactory()
-        .getMarkets(selectedToken?.address);
+    isValid(selectedToken) ? ["MARKET", selectedToken.address] : undefined,
+    async ([_, tokenAddress]) => {
+      const markets = await client?.marketFactory().getMarkets(tokenAddress);
 
-      console.log("Markets", markets);
       return markets;
-    },
-    {
-      dedupingInterval: _interval || 1000,
     }
   );
 
@@ -54,7 +27,7 @@ export const useMarket = (_interval?: number) => {
     errorLog(error);
   }
 
-  return { markets, fetchMarkets, selectedMarket } as const;
+  return { markets, fetchMarkets } as const;
 };
 
 export const useSelectedMarket = () => {

@@ -1,10 +1,8 @@
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
 import useSWR from "swr";
 import { AppError } from "~/typings/error";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import { useSelectedMarket } from "./useMarket";
 import { useRouter } from "./useRouter";
 import { handleTx } from "~/utils/tx";
 import { useLiquidityPool } from "./useLiquidityPool";
@@ -16,33 +14,33 @@ import { useAccount } from "wagmi";
 
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const [_, fetchLiquidityPools] = useLiquidityPool();
+  const { fetchLiquidityPools } = useLiquidityPool();
   const { client } = useChromaticClient();
   const lensApi = client?.lens();
   const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
 
-  const fetchKey = useMemo(() => {
-    if (
-      isValid(market) &&
-      isValid(oracleVersions) &&
-      isValid(lensApi) &&
-      isValid(address)
-    ) {
-      return [market, oracleVersions, lensApi, address] as const;
-    }
-  }, [market, oracleVersions, lensApi, address]);
-
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
-  } = useSWR(fetchKey, async ([market, oracleVersions, lensApi, address]) => {
-    const receipts = await lensApi.lpReceipts(market.address, address);
-    return receipts.map((receipt) => {
+  } = useSWR(["RECEIPT", address], async ([_, address]) => {
+    if (
+      address === undefined ||
+      market === undefined ||
+      oracleVersions === undefined
+    ) {
+      return;
+    }
+    const version = oracleVersions[market.address]?.version;
+    if (!isValid(version)) {
+      return;
+    }
+    const receipts = await lensApi?.lpReceipts(market.address, address);
+    return receipts?.map((receipt) => {
       const instance = new LPReceipt(receipt);
-      instance.updateIsCompleted(oracleVersions[market.address].version);
+      instance.updateIsCompleted(version);
 
       return instance;
     });

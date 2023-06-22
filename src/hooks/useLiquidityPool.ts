@@ -1,14 +1,8 @@
-import {
-  CLBToken__factory,
-  ChromaticLens,
-  ChromaticMarketFactory,
-  ChromaticMarket__factory,
-  getDeployedContract
-} from "@chromatic-protocol/sdk/contracts";
+import { CLBToken__factory } from "@chromatic-protocol/sdk/contracts";
 import { ethers } from "ethers";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import useSWR from "swr";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useProvider, useSigner } from "wagmi";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
@@ -16,7 +10,8 @@ import { useAppDispatch, useAppSelector } from "../store";
 import {
   Bin,
   CLBTokenBatch,
-  LiquidityPool
+  LiquidityPool,
+  LiquidityPoolSummary,
 } from "../typings/pools";
 import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
@@ -26,39 +21,42 @@ import { useChromaticClient } from "./useChromaticClient";
 import useOracleVersion from "./useOracleVersion";
 import usePoolReceipt from "./usePoolReceipt";
 import { useSettlementToken } from "./useSettlementToken";
+import { poolsAction } from "~/store/reducer/pools";
+import { useMarket } from "./useMarket";
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
+  const provider = useProvider();
   const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
-  // const marketFactoryApi = useMemo(()=>client?.marketFactory(), [client]);
   const tokenAddresses = tokens?.map((token) => token.address);
   const { oracleVersions } = useOracleVersion();
+
   const fetchKey =
-    isValid(walletAddress) && isValid(tokenAddresses) && isValid(oracleVersions)
-      ? ([walletAddress, tokenAddresses, oracleVersions] as const)
+    isValid(walletAddress) && isValid(tokenAddresses)
+      ? (["LIQUIDITY_POOL", walletAddress, tokenAddresses] as const)
       : undefined;
 
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(
-    fetchKey,
-    async ([walletAddress, tokenAddresses, oracleVersions]) => {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as any
-      );
-      const factory = getDeployedContract(
-        "ChromaticMarketFactory",
-        "anvil",
-        provider
-      ) as ChromaticMarketFactory;
-      const lens = getDeployedContract(
-        "ChromaticLens",
-        "anvil",
-        provider
-      ) as ChromaticLens;
+  } = useSWR(fetchKey, async ([_, walletAddress, tokenAddresses]) => {
+    infoLog("Fetching...");
+    if (!isValid(oracleVersions)) {
+      infoLog("OracleVersions");
+      return;
+    }
+    if (!isValid(client)) {
+      infoLog("Client");
+      return;
+    }
+    if (!isValid(provider)) {
+      infoLog("Provider");
+      return;
+    }
+    const factory = client.marketFactory();
+    const lens = client.lens();
       const precision = bigNumberify(10).pow(10);
       const baseFeeRates = [
         ...LONG_FEE_RATES,
@@ -69,26 +67,25 @@ export const useLiquidityPool = () => {
         ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
       ];
       const promises = tokenAddresses.map(async (tokenAddress) => {
-        const marketAddresses = await factory.getMarketsBySettlmentToken(
-          tokenAddress
-        );
-        const promise = marketAddresses.map(async (marketAddress) => {
-          const market = ChromaticMarket__factory.connect(
-            marketAddress,
-            provider
-          );
-          const version = oracleVersions[marketAddress].version;
-          const clbTokenAddress = await market.clbToken();
+      const markets = await factory.getMarkets(tokenAddress);
+      const promise = markets.map(async ({ address: marketAddress }) => {
+        infoLog("MarketAddress", marketAddress);
+        const market = client.market();
+        infoLog("Market from Client");
+        infoLog("Provider", provider);
+        const clbTokenAddress = await market.contract.clbToken();
+        infoLog("CLB Address", clbTokenAddress);
           const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
           const clbTokenBatch = new CLBTokenBatch(
             clbToken,
             lens,
             clbTokenAddress,
             tokenAddress,
-            market.address,
+          market.contract.address,
             baseFeeRates,
             feeRates
           );
+        infoLog("CLB Address", clbTokenAddress);
           await clbTokenBatch.updateBalances(walletAddress);
           await clbTokenBatch.updateMetadata();
           await clbTokenBatch.updateLiquidities();
@@ -123,19 +120,13 @@ export const useLiquidityPool = () => {
           array.push(...currentValue);
           return array;
         }, []);
-    },
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  });
 
   if (error) {
     errorLog(error);
   }
 
-  return [liquidityPools, fetchLiquidityPools] as const;
+  return { liquidityPools, fetchLiquidityPools } as const;
 };
 
 export const useSelectedLiquidityPool = () => {

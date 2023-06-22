@@ -12,20 +12,15 @@ import { errorLog } from "~/utils/log";
 import { OracleVersion } from "~/typings/oracleVersion";
 
 const useOracleVersion = () => {
-  const {markets} = useMarket();
+  const { markets } = useMarket();
   const provider = useProvider();
-  const fetchKey = useMemo(() => {
-    if (isValid(markets) && isValid(provider)) {
-      return [markets, provider] as const;
-    }
-  }, [markets, provider]);
 
   const {
     data: oracleVersions,
     error,
     mutate: fetchOracleVersions,
   } = useSWR(
-    "ORACLE_VERSION",
+    ["ORACLE_VERSION"],
     async () => {
       const promise = (markets ?? []).map(async (market) => {
         const marketContract = ChromaticMarket__factory.connect(
