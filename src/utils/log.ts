@@ -9,3 +9,9 @@ export const errorLog = (...args: any[]) => {
     console.error(...args);
   }
 };
+
+export const traceLog = (...args: any[]) => {
+  if (!import.meta.env.PROD) {
+    console.error("IGNORE :::", ...args);
+  }
+};
