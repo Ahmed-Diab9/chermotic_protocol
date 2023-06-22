@@ -110,6 +110,7 @@ const Pool = () => {
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
+  useMarketLocal();
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
