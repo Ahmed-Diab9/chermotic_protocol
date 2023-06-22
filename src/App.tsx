@@ -37,15 +37,7 @@ const client = createClient({
 
 function App() {
   return (
-    <SWRConfig
-      value={{
-        refreshWhenHidden: false,
-        refreshWhenOffline: false,
-        revalidateIfStale: false,
-        revalidateOnMount: false,
-        revalidateOnReconnect: false,
-      }}
-    >
+    <SWRConfig value={{}}>
       <Provider store={store}>
         <WagmiConfig client={client}>
           <div className="App">
