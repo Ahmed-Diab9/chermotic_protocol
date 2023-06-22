@@ -1,10 +1,7 @@
 import { useEffect } from "react";
-import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import { useMarket, useMarketSelect } from "~/hooks/useMarket";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
+import { useSettlementToken, useTokenSelect } from "~/hooks/useSettlementToken";
 import { useAccount } from "wagmi";
 import { useFeeRate } from "~/hooks/useFeeRate";
 import { infoLog } from "~/utils/log";
@@ -15,8 +12,8 @@ const UsumAccount = () => {
   const { account, createAccount } = useUsumAccount();
   const { markets } = useMarket();
   const { tokens } = useSettlementToken();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
-  const { selectedMarket, onMarketSelect } = useSelectedMarket();
+  const onTokenSelect = useTokenSelect();
+  const onMarketSelect = useMarketSelect();
 
   useEffect(() => {
     infoLog("feeRate", feeRate);
@@ -29,7 +26,7 @@ const UsumAccount = () => {
       <button onClick={() => createAccount()}>Create Account</button>
       <button
         onClick={() => {
-          onTokenSelect(tokens?.[0].address as string);
+          tokens && onTokenSelect(tokens[0]);
         }}
       >
         Select Token
@@ -39,7 +36,7 @@ const UsumAccount = () => {
           <div
             key={market.address}
             onClick={() => {
-              onMarketSelect(market.address);
+              onMarketSelect(market);
             }}
           >
             {market.description}

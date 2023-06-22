@@ -10,13 +10,13 @@ export function useChromaticClient() {
 
   useEffect(() => {
     if (!client.current) {
-      console.log("new client");
+      // console.log("new client");
       client.current = new Client("anvil", signer || provider);
     }
   }, []);
 
   useEffect(() => {
-    console.log('client useEffect', provider, signer, isConnected)
+    // console.log('client useEffect', provider, signer, isConnected)
     if (client.current) {
       if (isConnected && signer) client.current.signer = signer;
       if (provider) client.current.provider = provider;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Header } from "../../stories/template/Header";
 import { MainBar } from "../../stories/template/MainBar";
 import { PoolPanel } from "../../stories/template/PoolPanel";
@@ -13,11 +13,8 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
-import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import { useTokenSelect, useSettlementToken } from "~/hooks/useSettlementToken";
+import { useMarket, useMarketSelect } from "~/hooks/useMarket";
 import {
   useUsumBalances,
   useUsumMargins,
@@ -40,6 +37,7 @@ import {
   useMultiPoolRemoveInput,
   usePoolRemoveInput,
 } from "~/hooks/usePoolRemoveInput";
+import { infoLog } from "~/utils/log";
 
 const Pool = () => {
   useConnectOnce();
@@ -51,24 +49,27 @@ const Pool = () => {
     status,
   } = useUsumAccount();
   const { tokens } = useSettlementToken();
-  console.log("[pool] tokens", tokens);
   const { markets } = useMarket();
-  const [_, onTokenSelect] = useSelectedToken();
-  // const selectedToken = useAppSelector((state) => state.market.selectedToken);
-  const { selectedMarket, onMarketSelect } = useSelectedMarket();
-  console.log("[pool] selectedMarket", selectedMarket);
-  // const feeRate = useFeeRate();
-  const [walletBalances] = useWalletBalances();
+  const onTokenSelect = useTokenSelect();
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const onMarketSelect = useMarketSelect();
+  const feeRate = useFeeRate();
+  const { walletBalances } = useWalletBalances();
   const { usumBalances } = useUsumBalances();
-  const [priceFeed] = usePriceFeed();
+  const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
-    useTokenTransaction();
+  const {
+    amount: balanceAmount,
+    onAmountChange: onBalanceAmountChange,
+    onDeposit,
+    onWithdraw,
+  } = useTokenTransaction();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
-  // const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
-  //   usePoolReceipt();
+  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
+    usePoolReceipt();
   const {
     pool,
     liquidity: {
@@ -108,11 +109,8 @@ const Pool = () => {
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
-
-  console.log("pool rerendering");
-  console.log("WALLET BLAANCES", walletBalances);
-  // console.log("[pool] tokens", tokens);
-  // console.log("[pool] priceFeed", priceFeed);
+  infoLog("Pool Page Rendering...");
+  infoLog("Pools", pool);
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
@@ -138,9 +136,9 @@ const Pool = () => {
           status={status}
           tokens={tokens}
           markets={markets}
-          // selectedToken={selectedToken}
-          // selectedMarket={selectedMarket}
-          // feeRate={feeRate}
+          selectedToken={selectedToken}
+          selectedMarket={selectedMarket}
+          feeRate={feeRate}
           walletBalances={walletBalances}
           usumBalances={usumBalances}
           amount={balanceAmount}
@@ -158,7 +156,7 @@ const Pool = () => {
         <div className="flex items-stretch gap-5">
           <div className="flex-auto w-3/5">
             <PoolPanel
-              // token={selectedToken}
+              token={selectedToken}
               market={selectedMarket}
               balances={walletBalances}
               pool={pool}
@@ -208,16 +206,14 @@ const Pool = () => {
               </p>
               <div className="flex justify-end gap-2 mt-6">
                 <AddressCopyButton
-                  address="ADDRESS"
-                  onClick={() => {}}
-                  // address={
-                  //   selectedToken && trimAddress(selectedToken.address, 6, 6)
-                  // }
-                  // onClick={() => {
-                  //   if (selectedToken) {
-                  //     copyText(selectedToken.address);
-                  //   }
-                  // }}
+                  address={
+                    selectedToken && trimAddress(selectedToken.address, 6, 6)
+                  }
+                  onClick={() => {
+                    if (selectedToken) {
+                      copyText(selectedToken.address);
+                    }
+                  }}
                 />
                 <Link to={"/trade"}>
                   <Button
@@ -231,11 +227,11 @@ const Pool = () => {
           </div>
           <div className="w-2/5 max-w-[500px] min-w-[480px]">
             <PoolProgress
-              // token={selectedToken}
+              token={selectedToken}
               market={selectedMarket}
-              // receipts={receipts}
-              // onReceiptClaim={onClaimCLBTokens}
-              // onReceiptClaimBatch={onClaimCLBTokensBatch}
+              receipts={receipts}
+              onReceiptClaim={onClaimCLBTokens}
+              onReceiptClaimBatch={onClaimCLBTokensBatch}
             />
           </div>
         </div>
