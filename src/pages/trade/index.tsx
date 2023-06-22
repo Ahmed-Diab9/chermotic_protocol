@@ -29,6 +29,8 @@ import { usePosition } from "~/hooks/usePosition";
 import { infoLog } from "~/utils/log";
 import useOracleVersion from "~/hooks/useOracleVersion";
 import { useAppSelector } from "~/store";
+import { useTokenLocal } from "~/hooks/useTokenLocal";
+import { useMarketLocal } from "~/hooks/useMarketLocal";
 
 const Trade = () => {
   useConnectOnce();
@@ -93,6 +95,8 @@ const Trade = () => {
     }
   }, [shortInput.direction, onShortDirectionToggle]);
   const { positions, onClosePosition, onClaimPosition } = usePosition();
+  useTokenLocal();
+  useMarketLocal();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
