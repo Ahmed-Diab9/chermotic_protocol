@@ -76,6 +76,7 @@ export class CLBTokenBatch {
 
   async updateBalances(walletAddress: string) {
     const walletAddresses = this.feeRates.map(() => walletAddress);
+    //FIXME direct contract call
     this.balances = await this.clb.balanceOfBatch(
       walletAddresses,
       this.feeRates

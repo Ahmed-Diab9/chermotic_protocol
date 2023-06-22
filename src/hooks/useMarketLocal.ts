@@ -13,7 +13,6 @@ export const useMarketLocal = () => {
 
   const onMount = useCallback(() => {
     let market = markets?.find((market) => market.description === storedMarket);
-    traceLog("tokens", markets);
     if (isValid(market)) {
       dispatch(marketAction.onMarketSelect(market));
       return;

@@ -10,16 +10,18 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Disclosure } from "@headlessui/react";
 import "../../atom/Tabs/style.css";
 import { BigNumber } from "ethers";
-import { LPReceipt } from "~/typings/receipt";
+// import { LPReceipt } from "~/typings/receipt";
 import { Market, Token } from "~/typings/market";
 import { isValid } from "~/utils/valid";
 import { usePrevious } from "~/hooks/usePrevious";
+import { LpReceipt, LpReceiptAction } from "../../../hooks/usePoolReceipt";
+import { useMemo } from "react";
 
 interface PoolProgressProps {
   token?: Token;
   market?: Market;
-  receipts?: LPReceipt[];
-  onReceiptClaim?: (id: BigNumber) => unknown;
+  receipts?: LpReceipt[];
+  onReceiptClaim?: (id: BigNumber, action: LpReceiptAction) => unknown;
   onReceiptClaimBatch?: () => unknown;
 }
 
@@ -66,104 +68,17 @@ export const PoolProgress = ({
                       (receipts || previousReceipts).map((receipt) => (
                         <ProgressItem
                           key={receipt.id.toString()}
-                          title={receipt.title}
+                          // title={receipt.title}
                           status={receipt.status}
                           detail="Waiting for the next oracle round"
-                          name={receipt.renderName(market)}
+                          name={receipt.name}
                           progressPercent={0}
+                          action={receipt.action}
                           onClick={() => {
-                            onReceiptClaim?.(receipt.id);
+                            onReceiptClaim?.(receipt.id, receipt.action);
                           }}
                         />
                       ))}
-                    {
-                      /**
-                       * TODO
-                       * CLB 토큰이 소각되고 있는 과정을 보여줄 수 있어야 합니다.
-                       * Receipt의 동작이 토큰 발행인지 소각인지 구분할 수 있어야 합니다.
-                       * Amount의 단위 파악이 필요합니다. CLB 또는 세틀먼트 토큰
-                       */
-                      <>
-                        <ProgressItem
-                          title="minting"
-                          status="standby"
-                          detail="Waiting for the next oracle round"
-                          name="ETH/USD +0.03%"
-                          progressPercent={0}
-                        />
-                        <ProgressItem
-                          title="minting"
-                          status="completed"
-                          detail="3,000.45 CLB"
-                          name="ETH/USD +0.03%"
-                          progressPercent={0}
-                        />
-                        <ProgressItem
-                          title="burning"
-                          status="standby"
-                          detail="Waiting for the next oracle round"
-                          name="ETH/USD +0.03%"
-                          progressPercent={0}
-                        />
-                        <ProgressItem
-                          title="burning"
-                          status="in progress"
-                          detail="456.00/1,000.00 CLB (46.50%)"
-                          name="ETH/USD +0.03%"
-                          progressPercent={46.5}
-                        />
-                        <ProgressItem
-                          title="burning"
-                          status="completed"
-                          detail="1,000.00/1,000.00 CLB (100.00%)"
-                          name="ETH/USD +0.03%"
-                          progressPercent={100}
-                        />
-                      </>
-                    }
-                  </Tab.Panel>
-
-                  {/* tab2 - minting */}
-                  <Tab.Panel className="flex flex-col gap-3 mb-5">
-                    <ProgressItem
-                      title="minting"
-                      status="standby"
-                      detail="Waiting for the next oracle round"
-                      name="ETH/USD +0.03%"
-                      progressPercent={0}
-                    />
-                    <ProgressItem
-                      title="minting"
-                      status="completed"
-                      detail="3,000.45 CLB"
-                      name="ETH/USD +0.03%"
-                      progressPercent={0}
-                    />
-                  </Tab.Panel>
-
-                  {/* tab3 - burning */}
-                  <Tab.Panel className="flex flex-col gap-3 mb-5">
-                    <ProgressItem
-                      title="burning"
-                      status="standby"
-                      detail="Waiting for the next oracle round"
-                      name="ETH/USD +0.03%"
-                      progressPercent={0}
-                    />
-                    <ProgressItem
-                      title="burning"
-                      status="in progress"
-                      detail="456.00/1,000.00 CLB (46.50%)"
-                      name="ETH/USD +0.03%"
-                      progressPercent={46.5}
-                    />
-                    <ProgressItem
-                      title="burning"
-                      status="completed"
-                      detail="1,000.00/1,000.00 CLB (100.00%)"
-                      name="ETH/USD +0.03%"
-                      progressPercent={100}
-                    />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
@@ -176,12 +91,13 @@ export const PoolProgress = ({
 };
 
 interface ProgressItemProps {
-  title: "minting" | "burning";
-  status: "standby" | "in progress" | "completed";
+  title?: string;
+  status: LpReceipt["status"];
   detail: string;
   token?: string;
   name: string;
   progressPercent?: number;
+  action: LpReceipt["action"];
   onClick?: () => unknown;
 }
 
@@ -192,15 +108,21 @@ const ProgressItem = (props: ProgressItemProps) => {
     detail,
     token = "USDC",
     name,
+    action,
     progressPercent,
     onClick,
   } = props;
 
+  const renderTitle = useMemo(() => {
+    return action === "add" ? "minting" : action === "remove" ? "burning" : "";
+  }, [action]);
+
+  
   return (
     <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
-          {title}
+          {renderTitle}
           <span className="mr-1">
             {status === "standby" ? (
               <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
@@ -228,7 +150,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           <p className="">{detail}</p>
         </div>
       </div>
-      {title === "burning" ? (
+      {action === "add" ? (
         <Progress value={progressPercent} max={100} />
       ) : (
         <div className="border-t" />
@@ -241,7 +163,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         {status === "standby" ? (
           <Button
-            label={title === "burning" ? `Claim ${token}` : "Claim Tokens"}
+            label={action === "add" ? `Claim ${token}` : "Claim Tokens"}
             size="sm"
             className="ml-auto !text-gray"
             disabled
@@ -249,7 +171,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         ) : (
           <Button
             label={
-              title === "burning"
+              action === "remove"
                 ? status === "in progress"
                   ? `Stop Process & Claim ${token}`
                   : `Claim ${token}`

@@ -150,6 +150,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
     );
   }, [pool?.bins]);
 
+  const ownedLongLiquidityBins = useMemo(
+    () =>
+      pool?.bins?.filter((bin) => bin.balance.gt(0) && bin.baseFeeRate > 0) ||
+      [],
+    [pool]
+  );
+
+  const ownedShortLiquidityBins = useMemo(
+    () =>
+      pool?.bins?.filter((bin) => bin.balance.gt(0) && bin.baseFeeRate < 0) ||
+      [],
+    [pool]
+  );
   /**
    * @TODO
    * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
@@ -428,38 +441,34 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Tab.Panel>
                       <article>
                         <div className="flex flex-col gap-3">
-                          {(pool?.bins ?? previousPools ?? [])
-                            .filter((bin) => bin.baseFeeRate > 0)
-                            .map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                              />
-                            ))}
+                          {ownedLongLiquidityBins.map((bin, binIndex) => (
+                            <BinItem
+                              key={bin.baseFeeRate}
+                              index={binIndex}
+                              token={token}
+                              market={market}
+                              bin={bin}
+                              selectedBins={selectedBins}
+                              onBinCheck={onBinCheck}
+                            />
+                          ))}
                         </div>
                       </article>
                     </Tab.Panel>
                     <Tab.Panel>
                       <article>
                         <div className="flex flex-col gap-3">
-                          {(pool?.bins ?? previousPools ?? [])
-                            .filter((bin) => bin.baseFeeRate < 0)
-                            .map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                              />
-                            ))}
+                          {ownedShortLiquidityBins.map((bin, binIndex) => (
+                            <BinItem
+                              key={bin.baseFeeRate}
+                              index={binIndex}
+                              token={token}
+                              market={market}
+                              bin={bin}
+                              selectedBins={selectedBins}
+                              onBinCheck={onBinCheck}
+                            />
+                          ))}
                         </div>
                       </article>
                     </Tab.Panel>

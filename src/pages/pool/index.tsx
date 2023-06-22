@@ -38,6 +38,8 @@ import {
   usePoolRemoveInput,
 } from "~/hooks/usePoolRemoveInput";
 import { infoLog } from "~/utils/log";
+import { useTokenLocal } from "../../hooks/useTokenLocal";
+import { useMarketLocal } from "../../hooks/useMarketLocal";
 
 const Pool = () => {
   useConnectOnce();
@@ -117,7 +119,7 @@ const Pool = () => {
         account={{ walletAddress, usumAddress: usumAccount?.address }}
         tokens={tokens}
         markets={markets}
-        priceFeed={undefined}
+        priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
         onConnect={() => {

@@ -44,6 +44,7 @@ export class LPReceipt {
     }
     if (isCompleted && this.title === "burning") {
       // Burning Updaing Logic needed.
+      // 얼마나 Burning 되었는지 파악할 필요
     }
   }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import useSWR from "swr";
 import { useRouter } from "~/hooks/useRouter";
-
+import { useChromaticClient } from "./useChromaticClient";
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { ADDRESS_ZERO } from "~/utils/address";
@@ -21,30 +21,30 @@ export const useUsumAccount = () => {
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-  const [router] = useRouter();
+  const { client } = useChromaticClient()
 
-  const fetchKey = isValid(address) && ["USUM_ACCOUNT", address];
+  const fetchKey = isValid(address) ? ["USUM_ACCOUNT", address] as const : undefined;
 
   const {
     data: account,
     error,
     isLoading,
   } = useSWR(fetchKey, async ([_, address]) => {
-    if (!isValid(signer)) {
+    if (!isValid(client?.signer)) {
       return;
     }
     try {
-      const address = await router?.getAccount();
+      const address = await client?.router().routerContract.getAccount()
 
       if (!address || address === ADDRESS_ZERO) {
         return;
       }
-      return ChromaticAccount__factory.connect(address, signer);
+      return ChromaticAccount__factory.connect(address, router.signer);
     } catch (error) {
       errorLog(error);
     }
   });
-  const isValidAccount = isValid(account) && isValid(account.address);
+  const isValidAccount = isValid(account) && isValid(account.address) && account.address !== ADDRESS_ZERO;
 
   useEffect(() => {
     if (isLoading) {

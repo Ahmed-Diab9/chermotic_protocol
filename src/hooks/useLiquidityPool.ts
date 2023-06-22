@@ -13,7 +13,7 @@ import {
   LiquidityPool,
   LiquidityPoolSummary,
 } from "../typings/pools";
-import { errorLog, infoLog } from "../utils/log";
+// import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useWalletBalances } from "./useBalances";
@@ -23,12 +23,15 @@ import usePoolReceipt from "./usePoolReceipt";
 import { useSettlementToken } from "./useSettlementToken";
 import { poolsAction } from "~/store/reducer/pools";
 import { useMarket } from "./useMarket";
+import { Logger } from "../utils/log";
+const logger = Logger("useLiquidityPool.ts");
 
 export const useLiquidityPool = () => {
   const { address: walletAddress } = useAccount();
   const provider = useProvider();
   const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const tokenAddresses = tokens?.map((token) => token.address);
   const { oracleVersions } = useOracleVersion();
 
@@ -42,17 +45,20 @@ export const useLiquidityPool = () => {
     error,
     mutate: fetchLiquidityPools,
   } = useSWR(fetchKey, async ([_, walletAddress, tokenAddresses]) => {
-    infoLog("Fetching...");
+    if (!selectedMarket) {
+      logger.log("useSWR", "selected market is undefined");
+      return [];
+    }
     if (!isValid(oracleVersions)) {
-      infoLog("OracleVersions");
+      logger.info("OracleVersions");
       return;
     }
     if (!isValid(client)) {
-      infoLog("Client");
+      logger.info("Client");
       return;
     }
     if (!isValid(provider)) {
-      infoLog("Provider");
+      logger.info("Provider");
       return;
     }
     const factory = client.marketFactory();
@@ -69,43 +75,68 @@ export const useLiquidityPool = () => {
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);
       const promise = markets.map(async ({ address: marketAddress }) => {
-        infoLog("MarketAddress", marketAddress);
+        logger.log("MarketAddress", marketAddress);
         const market = client.market();
-        infoLog("Market from Client");
-        infoLog("Provider", provider);
-        const clbTokenAddress = await market.contract.clbToken();
-        infoLog("CLB Address", clbTokenAddress);
-        const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
-        const clbTokenBatch = new CLBTokenBatch(
-          clbToken,
-          lens,
-          clbTokenAddress,
-          tokenAddress,
-          market.contract.address,
-          baseFeeRates,
-          feeRates
-        );
-        infoLog("CLB Address", clbTokenAddress);
-        await clbTokenBatch.updateBalances(walletAddress);
-        await clbTokenBatch.updateMetadata();
-        await clbTokenBatch.updateLiquidities();
-        clbTokenBatch.updateLiquidityValues();
-        clbTokenBatch.updateRemovableRates();
+        // TODO refactoring remove CLBTokenBatch instance
 
-        return {
-          address: clbTokenAddress,
-          tokenAddress,
-          marketAddress,
-          bins: clbTokenBatch.toBins(),
-        } satisfies LiquidityPool;
+        try {
+          const clbTokenAddress = await market
+            .getContract(marketAddress)
+            .clbToken();
+
+          logger.log("CLB Address", clbTokenAddress);
+          const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
+          const clbTokenBatch = new CLBTokenBatch(
+            clbToken,
+            lens.getContract(),
+            clbTokenAddress,
+            tokenAddress,
+            marketAddress,
+            baseFeeRates,
+            feeRates
+          );
+          logger.log("CLB Address", clbTokenAddress);
+          await clbTokenBatch.updateBalances(walletAddress);
+          await clbTokenBatch.updateMetadata();
+          await clbTokenBatch.updateLiquidities();
+          clbTokenBatch.updateLiquidityValues();
+          clbTokenBatch.updateRemovableRates();
+
+          const bins = {
+            clbToken: {
+              // clbTokenBalance
+              // clbTokenName,
+              // clbTokenImage,
+              // clbTokenDescription
+              // clbTokenDecimal
+              // clbTokenValue   =   myLiquidityValue / clbTokenBalance
+            },
+
+            // sdk 를 이용해서 얻어오기
+            // FIXME
+            // Liquidity
+            // binLiquidity
+            // binFreeLiquidity
+            // myLiquidityTotalValue
+            // removaleRate
+          };
+          return {
+            address: clbTokenAddress,
+            tokenAddress,
+            marketAddress,
+            bins: clbTokenBatch.toBins(),
+          } satisfies LiquidityPool;
+        } catch (e) {
+          logger.error(e);
+        }
       });
       const response = await Promise.allSettled(promise).catch((err) => {
-        errorLog(err);
+        logger.error(err);
         return undefined!;
       });
       return response
         .filter((result): result is PromiseFulfilledResult<LiquidityPool> => {
-          return result.status === "fulfilled";
+          return result.status === "fulfilled" && result.value !== undefined;
         })
         .map(({ value }) => value);
     });
@@ -123,7 +154,7 @@ export const useLiquidityPool = () => {
   });
 
   if (error) {
-    errorLog(error);
+    logger.error(error);
   }
 
   return { liquidityPools, fetchLiquidityPools } as const;
@@ -184,44 +215,46 @@ export const useSelectedLiquidityPool = () => {
     if (isValid(pool)) {
       dispatch(poolsAction.onPoolSelect(pool));
     }
-  }, [dispatch, pool]);
+  }, [pool]);
 
   const onRemoveLiquidity = useCallback(
     async (feeRate: number, amount: number) => {
       if (!isValid(signer) || !isValid(address)) {
+        logger.info("no signer or address", signer, address);
         return;
       }
       if (!isValid(pool)) {
+        logger.info("no pool");
         return;
       }
       if (!isValid(routerApi)) {
-        errorLog("no clients");
+        logger.info("no clients");
         return;
       }
       const routerAddress = routerApi.routerContract.address;
 
-      const clbToken = CLBToken__factory.connect(pool.address, signer);
-      const isApproved = await clbToken.isApprovedForAll(
-        address,
-        routerAddress
-      );
-      if (!isApproved) {
-        infoLog("Approving all lp tokens");
-        await clbToken.setApprovalForAll(routerAddress, true);
-      }
+      // const clbToken = CLBToken__factory.connect(pool.address, signer);
+      // const isApproved = await clbToken.isApprovedForAll(
+      //   address,
+      //   routerAddress
+      // );
+      // if (!isApproved) {
+      //   logger.info("Approving all lp tokens");
+      //   await clbToken.setApprovalForAll(routerAddress, true);
+      // }
       const expandedAmount = bigNumberify(amount).mul(
         expandDecimals(token?.decimals ?? 1)
       );
 
       await routerApi.removeLiquidity(pool.marketAddress, {
         feeRate,
-        receipient: address,
+      receipient: address,
         clbTokenAmount: expandedAmount,
       });
       await fetchReceipts();
       await fetchWalletBalances();
     },
-    []
+    [signer, address, pool, routerApi]
   );
 
   const onRemoveLiquidityBatch = useCallback(
@@ -257,7 +290,7 @@ export const useSelectedLiquidityPool = () => {
       await fetchReceipts();
       await fetchWalletBalances();
     },
-    []
+    [signer, market, pool, routerApi]
   );
 
   return {
@@ -279,32 +312,32 @@ export const useLiquidityPoolSummary = () => {
   const { tokens } = useSettlementToken();
 
   const poolSummary = useMemo(() => {
+    logger.log("useLIquidityPoolSummary", pools);
     if (!isValid(pools)) {
       return [];
     }
     const array = [] as LiquidityPoolSummary[];
     for (const pool of pools) {
+      if (!pool) continue;
       const { tokenAddress, marketAddress, bins } = pool;
       const market = markets?.find(
         (market) => market.address === marketAddress
       );
       const token = tokens?.find((token) => token.address === tokenAddress);
       if (!isValid(market) || !isValid(token)) {
-        infoLog("token and market loading");
+        logger.info("token and market loading");
         return [];
       }
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
-      let binSize = 0;
-      for (let index = 0; index < bins.length; index++) {
+      const myBins = bins.filter((bin) => bin.balance.gt(0));
+      logger.log("myBins", myBins);
+      for (let index = 0; index < myBins.length; index++) {
         const bin = bins[index];
-        if (bin.balance.gt(0)) {
-          const addValue = bin.balance
-            .mul(bin.binValue)
-            .div(expandDecimals(BIN_VALUE_DECIMAL));
-          binSize += 1;
-          liquiditySum = liquiditySum.add(addValue);
-        }
+        const addValue = bin.balance
+          .mul(bin.binValue)
+          .div(expandDecimals(BIN_VALUE_DECIMAL));
+        liquiditySum = liquiditySum.add(addValue);
       }
       array.push({
         token: {
@@ -313,7 +346,7 @@ export const useLiquidityPoolSummary = () => {
         },
         market: marketDescription,
         liquidity: liquiditySum,
-        bins: binSize,
+        bins: myBins.length,
       });
     }
     return array;

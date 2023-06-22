@@ -22,7 +22,8 @@ import {
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "../../../typings/pools";
-
+import debug from 'debug'
+const log = debug('WalletPopOver')
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
@@ -52,6 +53,8 @@ export const WalletPopover = ({
   onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
+  log("[WalletPopover]", tokens, priceFeed, balances);
+  log(`[${WalletPopover.name}]`, pools);
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover>
@@ -139,6 +142,7 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {balances &&
+                                  priceFeed &&
                                   tokens?.map((token) => (
                                     <div
                                       key={token.address}
@@ -152,18 +156,16 @@ export const WalletPopover = ({
                                       />
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
-                                          $
-                                          {withComma(
-                                            formatBalance(
-                                              balances[token.name],
-                                              token,
-                                              markets?.find(
-                                                (market) =>
-                                                  market.address ===
-                                                  token.address
-                                              )?.value.price
-                                            )
-                                          )}
+                                          {priceFeed[token.name] &&
+                                            "$" +
+                                              withComma(
+                                                formatBalance(
+                                                  balances[token.name],
+                                                  token,
+                                                  priceFeed[token.name]
+                                                  // MARKET ETH / USD
+                                                )
+                                              )}
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
                                           {withComma(

@@ -4,7 +4,7 @@ import {
 } from "@chromatic-protocol/sdk/contracts";
 import { useMarket } from "./useMarket";
 import { isValid } from "../utils/valid";
-import { useProvider } from "wagmi";
+import { useProvider, useAccount } from "wagmi";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { filterIfFulfilled } from "~/utils/array";
@@ -14,17 +14,19 @@ import { OracleVersion } from "~/typings/oracleVersion";
 const useOracleVersion = () => {
   const { markets } = useMarket();
   const provider = useProvider();
+  const { address } = useAccount()
+  const marketAddresses = (markets ?? []).map((market) => market.address);
 
   const {
     data: oracleVersions,
     error,
     mutate: fetchOracleVersions,
   } = useSWR(
-    ["ORACLE_VERSION"],
+    ["ORACLE_VERSION", address, ...marketAddresses],
     async () => {
-      const promise = (markets ?? []).map(async (market) => {
+      const promise = (marketAddresses ?? []).map(async (marketAddress) => {
         const marketContract = ChromaticMarket__factory.connect(
-          market.address,
+          marketAddress,
           provider
         );
         const oracleProviderAddress = await marketContract.oracleProvider();
@@ -35,7 +37,7 @@ const useOracleVersion = () => {
         const { price, version, timestamp } =
           await oracleProvider.currentVersion();
         return {
-          address: market.address,
+          address: marketAddress,
           price,
           version,
           timestamp,

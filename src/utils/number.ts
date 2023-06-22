@@ -98,10 +98,9 @@ export const expandDecimals = (decimals?: number) => {
 export const formatBalance = (
   balance: BigNumber,
   token: Token,
-  price: BigNumber
+  price: Price
 ) => {
-  console.log(price);
-  return balance.mul(price).div(expandDecimals(token.decimals));
+  return balance.mul(price.value).div(expandDecimals(token.decimals)).div(expandDecimals(price.decimals));
 };
 
 export const formatFeeRate = (feeRate: number) => {
