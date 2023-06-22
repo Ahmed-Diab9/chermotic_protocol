@@ -184,7 +184,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
             <Switch.Group>
-              <div className="flex items-center gap-[6px]">
+              <div className="toggle-wrapper">
                 <Switch.Label className="">Slider</Switch.Label>
                 <Switch
                   checked={isSliderOpen}
@@ -307,16 +307,19 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
             <div className="flex justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex">
                 <p>EST. Execution Price</p>
-                <Tooltip tip="tooltip" />
+                <Tooltip
+                  tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
               </div>
               <p>$ {executionPrice}</p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Take Profit Price</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 $ {takeProfitPrice}
@@ -328,7 +331,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Stop Loss Price</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 $ {stopLossPrice}
@@ -342,7 +344,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{" "}
@@ -350,9 +351,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
             <div className="flex justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center">
                 <p>Max Fee Allowance</p>
-                <Tooltip tip="tooltip" />
+                <Tooltip
+                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
               </div>
               <div className="w-20">
                 <Input size="sm" unit="%" />
@@ -401,10 +406,13 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               onAmountChange?.("collateral", event);
             }}
           />
-          <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip tip="tooltip" />
+          <div className="flex items-center justify-end mt-2">
+            <Tooltip
+              tip="Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss."
+              outLink="#"
+            />
             <p>Contract Qty</p>
-            <p className="text-black/30">{input?.quantity} USDC</p>
+            <p className="ml-2 text-black/30">{input?.quantity} USDC</p>
           </div>
         </div>
       );
@@ -419,10 +427,13 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               onAmountChange("quantity", event);
             }}
           />
-          <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip tip="tooltip" />
+          <div className="flex items-center justify-end mt-2">
+            <Tooltip
+              tip="Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position."
+              outLink="#"
+            />
             <p>Collateral</p>
-            <p className="text-black/30">{input.collateral} USDC</p>
+            <p className="ml-2 text-black/30">{input.collateral} USDC</p>
           </div>
         </div>
       );

@@ -1,11 +1,11 @@
 import { Tab } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import { Counter } from "../../atom/Counter";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { Checkbox } from "../../atom/Checkbox";
 import { Thumbnail } from "../../atom/Thumbnail";
 import { Tooltip } from "../../atom/Tooltip";
-import { Toggle } from "~/stories/atom/Toggle";
 import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import "../../atom/Tabs/style.css";
@@ -215,7 +215,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <article>
                   <div className="flex justify-between">
                     <h4>Liquidity Pool Range</h4>
-                    <Toggle label="Bin Values" size="sm" />
+                    <Switch.Group>
+                      <div className="toggle-wrapper">
+                        <Switch.Label className="">Bin Values</Switch.Label>
+                        <Switch
+                          checked={undefined}
+                          onChange={undefined}
+                          className="toggle toggle-xs"
+                        />
+                      </div>
+                    </Switch.Group>
                   </div>
                   <div className="flex justify-between mt-6">
                     <div className="text-left">
@@ -307,10 +316,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       onClick={() => onFullRangeSelect?.()}
                     />
                     <p className="mt-3 text-sm text-left text-black/30">
-                      The percentage of price range means the gap from index
-                      price when your liquidity occupied by takers. When
-                      fluidity is supplied to the fluid pool, a separate PLP
-                      (ERC-1155) token is received for each slot.
+                      The percentage on the price range represents the trade fee
+                      (or price gap from the index price) when your liquidity is
+                      utilized by takers. When liquidity is supplied to the
+                      bins, separate CLB (ERC-1155) tokens are minted for each
+                      bin.
                     </p>
                   </div>
                 </article>
@@ -318,11 +328,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article>
                 <div className="flex flex-col gap-2 mb-10 border-dotted mt-9">
                   <div className="flex items-center justify-between">
-                    <p>Number of LP Bins</p>
+                    <p className="flex">
+                      Number of Liquidity Bins
+                      <Tooltip tip="This is the total count of target Bins I am about to provide liquidity for." />
+                    </p>
                     <p>{bins ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p>Trade Fee Range</p>
+                    <p className="flex">
+                      Trade Fee Range
+                      <Tooltip tip="This is the range of target Bins I am about to provide liquidity for." />
+                    </p>
                     <p>
                       {rates &&
                         (rates[0] !== rates[1]
@@ -333,7 +349,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p>Average Bin Values</p>
+                    <p className="flex">
+                      Average Bin Token Values
+                      <Tooltip tip="This is the average token value of the target Bins I am about to provide liquidity for." />
+                    </p>
                     <p>
                       {formatDecimals(averageBin ?? 0, token?.decimals, 2)} USDC
                     </p>
@@ -363,8 +382,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* liquidity value */}
                 <article className="flex items-center justify-between flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
-                    <p className="mb-2 font-semibold text-black/30">
-                      Liquidity Value
+                    <p className="flex mb-2 font-semibold text-black/30">
+                      Total Liquidity Value
+                      <Tooltip tip="The value of my CLB tokens converted into the current token value." />
                     </p>
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
@@ -380,16 +400,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* info */}
                 <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
+                    <div className="flex items-center font-medium text-black/30">
                       LP Bins
-                      <Tooltip tip="tooltip" />
                     </div>
                     <p className="text-right">{binLength.toFixed(2)} Bins</p>
                   </div>
                   <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
-                      Liquidity Principal
-                      <Tooltip tip="tooltip" />
+                    <div className="flex items-center font-medium text-black/30">
+                      My Liquidity Value
+                      <Tooltip tip="The value of my CLB tokens converted into the current token value." />
                     </div>
                     <p className="text-right">
                       {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
@@ -397,8 +416,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                   </div>
                   <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
-                      Removable Liquidity
+                    <div className="flex font-medium text-left text-black/30">
+                      <p>Removable Liquidity</p>
+                      <Tooltip
+                        tip="The amount of liquidity that is currently removable due to not being utilized."
+                        outLink="#"
+                      />
                     </div>
                     <p className="text-right">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
