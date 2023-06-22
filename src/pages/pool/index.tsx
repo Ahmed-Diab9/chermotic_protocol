@@ -205,7 +205,7 @@ const Pool = () => {
                 protocol, providers are rewarded by minting CLB tokens. CLB
                 tokens follow the ERC-1155 standard and have one token contract
                 per market, with each bin having its own unique token ID.
-                <Outlink outLink="#" color="black" className="ml-2" />
+                <Outlink outLink="#" className="ml-2" />
               </p>
             </article>
             <div className="mt-10">

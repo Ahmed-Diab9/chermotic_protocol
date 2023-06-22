@@ -4,30 +4,21 @@ interface OutlinkProps {
   label?: string;
   outLink?: string;
   outLinkAbout?: string;
-  color?: "white" | "black";
   className?: string;
   onClick?: () => unknown;
 }
 
 export const Outlink = (props: OutlinkProps) => {
-  const {
-    label = "Learn more",
-    outLink,
-    outLinkAbout,
-    color = "white",
-    className,
-  } = props;
+  const { label = "Learn more", outLink, outLinkAbout, className } = props;
 
   return (
     <a
       href={outLink}
-      className={`inline-flex ${className} text-${
-        color === "white" ? "white/60" : "black/50"
-      }`}
+      className={`inline-flex hover:underline cursor-pointer text-black/50 ${className}`}
       target="_blank"
       rel="noreferrer"
     >
-      <div className="self-center text-sm font-semibold hover:underline">
+      <div className="self-center text-sm font-semibold">
         <p className="inline">
           {label}
           {outLinkAbout && ` about "${outLinkAbout}"`}

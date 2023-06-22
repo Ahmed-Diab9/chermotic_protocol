@@ -174,7 +174,7 @@ const Trade = () => {
               the Liquidi- ty Bins that accept the positions. The EST. Trade Fee
               is calculated based on the current oracle price, and the actual
               fee paid is determined by the next oracle price.
-              <Outlink color="black" outLink="#" className="ml-2" />
+              <Outlink outLink="#" className="ml-2" />
             </p>
             <Link to={"/pool"}>
               <Button

@@ -370,7 +370,7 @@ unrealized PnL."
                         to deposit the required amount of settlement assets into
                         your account.
                       </p>
-                      <Outlink outLink="#" color="black" />
+                      <Outlink outLink="#" />
                     </div>
                   </article>
                 </section>

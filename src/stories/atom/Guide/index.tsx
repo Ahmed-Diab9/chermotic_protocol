@@ -43,13 +43,7 @@ export const Guide = (props: GuideProps) => {
             <p>{title}</p>
           </div>
           <p className="my-2 text-sm text-black/30">{paragraph}</p>
-          {outLink && (
-            <Outlink
-              outLink={outLink}
-              outLinkAbout={outLinkAbout}
-              color="black"
-            />
-          )}
+          {outLink && <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />}
           {/* todo: 버튼 누르면 닫힘 */}
           <Button
             iconOnly={<XMarkIcon />}

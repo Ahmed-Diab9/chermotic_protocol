@@ -30,7 +30,7 @@ export const Tooltip = (props: TooltipProps) => {
   return (
     <div
       className={`tooltip tooltip-${position} ${className} text-black/30 !z-50 relative self-center ${
-        label || "ml-1"
+        label || "mx-1"
       }`}
     >
       {label}
@@ -41,7 +41,7 @@ export const Tooltip = (props: TooltipProps) => {
           <Outlink
             outLink={outLink}
             outLinkAbout={outLinkAbout}
-            className="mt-2"
+            className="mt-2 !text-white/60"
           />
         )}
       </div>
