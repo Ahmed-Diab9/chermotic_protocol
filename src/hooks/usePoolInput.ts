@@ -128,9 +128,9 @@ const usePoolInput = () => {
     const routerAddress = routerApi.routerContract.address;
     const allowance = await erc20.allowance(address, routerAddress);
     if (allowance.lte(expandedAmount)) {
-      await erc20.approve(routerAddress, expandedAmount);
+      const tx = await erc20.approve(routerAddress, expandedAmount);
+      tx.wait();
     }
-
     const dividedAmount = expandedAmount.div(bins);
     await routerApi.addLiquidities(
       marketAddress,
