@@ -1,11 +1,9 @@
-import {
-  IERC20__factory
-} from "@chromatic-protocol/sdk/contracts";
+import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 import { useMemo, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
 import { useAppSelector } from "../store";
-import { errorLog } from "../utils/log";
+import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useWalletBalances } from "./useBalances";
@@ -18,14 +16,14 @@ const usePoolInput = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
   const routerApi = client?.router();
-  const token = useAppSelector((state) => state.market.selectedToken);
+  const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
 
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
-  const [_, fetchWalletBalances] = useWalletBalances();
+  const { fetchWalletBalances } = useWalletBalances();
   const feeRates = useMemo(() => {
-    return LONG_FEE_RATES.concat(SHORT_FEE_RATES.map((rate) => rate * -1));
+    return SHORT_FEE_RATES.map((rate) => rate * -1).concat(LONG_FEE_RATES);
   }, []);
   const [amount, setAmount] = useState("");
   const [indexes, setIndexes] = useState<[number, number]>([35, 36]);
