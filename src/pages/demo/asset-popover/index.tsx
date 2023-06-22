@@ -2,8 +2,8 @@ import { useAccount } from "wagmi";
 import { useUsumAccount } from "../../../hooks/useUsumAccount";
 import { AssetPopover } from "../../../stories/molecule/AssetPopover";
 import {
-  useSelectedToken,
   useSettlementToken,
+  useTokenSelect,
 } from "../../../hooks/useSettlementToken";
 import useTokenTransaction from "../../../hooks/useTokenTransaction";
 import { useEffect, useMemo } from "react";
@@ -11,6 +11,7 @@ import { bigNumberify, expandDecimals } from "../../../utils/number";
 import { isValid } from "../../../utils/valid";
 import useConnectOnce from "../../../hooks/useConnectOnce";
 import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
+import { useAppSelector } from "~/store";
 
 const AssetPopoverDemo = () => {
   useConnectOnce();
@@ -18,9 +19,11 @@ const AssetPopoverDemo = () => {
   const { account: usumAccount } = useUsumAccount();
   const { tokens } = useSettlementToken();
   const { usumBalances } = useUsumBalances();
-  const [walletBalances] = useWalletBalances();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
+  const { walletBalances } = useWalletBalances();
+  const onTokenSelect = useTokenSelect();
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const { amount, onAmountChange, onDeposit, onWithdraw } =
+    useTokenTransaction();
 
   const isAllowed = useMemo(() => {
     if (!isValid(usumBalances) || !isValid(selectedToken)) {
@@ -37,7 +40,7 @@ const AssetPopoverDemo = () => {
 
   useEffect(() => {
     if (isValid(tokens) && isValid(tokens[0])) {
-      onTokenSelect(tokens[0].address);
+      onTokenSelect(tokens[0]);
     }
   }, [tokens, onTokenSelect]);
 
@@ -61,7 +64,7 @@ const AssetPopoverDemo = () => {
             (_, tokenIndex) => tokenIndex === index
           );
           if (isValid(nextToken)) {
-            onTokenSelect(nextToken.address);
+            onTokenSelect(nextToken);
           }
         }}
       >

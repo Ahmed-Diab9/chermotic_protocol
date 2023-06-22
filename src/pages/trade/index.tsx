@@ -7,11 +7,8 @@ import { Button } from "../../stories/atom/Button";
 import "./style.css";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
-import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import { useTokenSelect, useSettlementToken } from "~/hooks/useSettlementToken";
+import { useMarket, useMarketSelect } from "~/hooks/useMarket";
 import usePriceFeed from "~/hooks/usePriceFeed";
 import {
   useUsumBalances,
@@ -31,6 +28,7 @@ import { Link } from "react-router-dom";
 import { usePosition } from "~/hooks/usePosition";
 import { infoLog } from "~/utils/log";
 import useOracleVersion from "~/hooks/useOracleVersion";
+import { useAppSelector } from "~/store";
 
 const Trade = () => {
   useConnectOnce();
@@ -42,16 +40,19 @@ const Trade = () => {
     status,
   } = useUsumAccount();
   const { tokens } = useSettlementToken();
-  const {markets} = useMarket();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [selectedMarket, onMarketSelect] = useSelectedMarket();
+  const { markets } = useMarket();
+  const onTokenSelect = useTokenSelect();
+  const onMarketSelect = useMarketSelect();
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const feeRate = useFeeRate();
-  const [walletBalances] = useWalletBalances();
+  const { walletBalances } = useWalletBalances();
   const { usumBalances } = useUsumBalances();
-  const [priceFeed] = usePriceFeed();
+  const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
+  const { amount, onAmountChange, onDeposit, onWithdraw } =
+    useTokenTransaction();
   const {
     state: longInput,
     tradeFee: longTradeFee,
@@ -99,7 +100,7 @@ const Trade = () => {
         account={{ walletAddress, usumAddress: usumAccount?.address }}
         tokens={tokens}
         markets={markets}
-        priceFeed={priceFeed}
+        // priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
         onConnect={connectAsync}
@@ -155,7 +156,7 @@ const Trade = () => {
           onShortTakeProfitChange={onShortTakeProfitChange}
           onShortStopLossChange={onShortStopLossChange}
           balances={usumBalances}
-          priceFeed={priceFeed}
+          // priceFeed={priceFeed}
           token={selectedToken}
           market={selectedMarket}
           longTotalMaxLiquidity={longTotalMaxLiquidity}
