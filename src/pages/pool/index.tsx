@@ -109,8 +109,7 @@ const Pool = () => {
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
-  infoLog("Pool Page Rendering...");
-  infoLog("Pools", pool);
+  useTokenLocal();
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
