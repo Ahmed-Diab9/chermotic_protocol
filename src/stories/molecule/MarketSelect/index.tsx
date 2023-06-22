@@ -21,8 +21,8 @@ interface MarketSelectProps {
   selectedMarket?: Market;
   feeRate?: BigNumber;
   isGroupLegacy?: boolean;
-  onTokenClick?: (token: string) => unknown;
-  onMarketClick?: (market: string) => unknown;
+  onTokenClick?: (token: Token) => unknown;
+  onMarketClick?: (market: Market) => unknown;
 }
 
 /**
@@ -130,7 +130,7 @@ export const PopoverMain = (
                   "text-white bg-black rounded-lg" // the token selected
                 }`}
                 onClick={() => {
-                  onTokenClick?.(token.address);
+                  onTokenClick?.(token);
                 }}
                 title={token.name}
               >
@@ -152,7 +152,7 @@ export const PopoverMain = (
                   market.address === selectedMarket?.address &&
                   "text-white bg-black rounded-lg" // the market selected
                 }`}
-                onClick={() => onMarketClick?.(market.address)}
+                onClick={() => onMarketClick?.(market)}
               >
                 <Avatar
                   label={market.description}

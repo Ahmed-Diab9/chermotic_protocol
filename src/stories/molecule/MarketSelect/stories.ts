@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-
 import { MarketSelect } from ".";
 import { BigNumber } from "ethers";
+import { Market } from "~/typings/market";
 
 const meta = {
   title: "Molecule/MarketSelect",
@@ -19,17 +19,29 @@ const markets = [
   {
     address: "0x0000000000000000000",
     description: "ETH/USD",
-    getPrice: async () => ({ value: BigNumber.from(1500), decimals: 18 }),
+    value: {
+      price: BigNumber.from(1500),
+      version: BigNumber.from(10),
+      timestamp: BigNumber.from(100000),
+    },
   },
   {
     address: "0x4445556667778889999",
     description: "AAVE/USD",
-    getPrice: async () => ({ value: BigNumber.from(500), decimals: 18 }),
+    value: {
+      price: BigNumber.from(1500),
+      version: BigNumber.from(10),
+      timestamp: BigNumber.from(100000),
+    },
   },
   {
     address: "0x1111111111111111111",
     description: "GALA/USD",
-    getPrice: async () => ({ value: BigNumber.from(200), decimals: 18 }),
+    value: {
+      price: BigNumber.from(1500),
+      version: BigNumber.from(10),
+      timestamp: BigNumber.from(100000),
+    },
   },
 ];
 
@@ -39,9 +51,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     tokens,
-    markets,
+    markets: markets as Market[],
     selectedToken: tokens[0],
-    selectedMarket: markets[0],
+    selectedMarket: markets[0] as Market,
     isGroupLegacy: false,
   },
 };

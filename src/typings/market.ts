@@ -16,5 +16,4 @@ export interface Market {
   address: string;
   description: string;
   value: IOracleProvider.OracleVersionStructOutput;
-  // getPrice: () => Promise<Price>;
 }
