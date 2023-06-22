@@ -94,7 +94,7 @@ const usePoolInput = () => {
 
     const tx = await router.addLiquidityBatch(
       marketAddress,
-      bins.map((bin) => +(bin * 100).toFixed(0)),
+      bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
       Array(bins.length).fill(dividedAmount),
       Array(bins.length).fill(address)
     );

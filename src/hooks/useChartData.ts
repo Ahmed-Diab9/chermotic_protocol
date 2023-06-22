@@ -3,7 +3,10 @@ import useSWR from "swr";
 
 import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
 
+import { trimDecimals } from "~/utils/number";
 import { isValid } from "~/utils/valid";
+
+import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 
 // FIXME: 임시 chart data reducing 로직
 const useChartData = () => {
@@ -19,20 +22,34 @@ const useChartData = () => {
     fetchKey,
     (bins) => {
       return bins.reduce(
-        (acc, { liquidity, freeLiquidity, binValue, baseFeeRate }) => {
-          const key = baseFeeRate / 100;
+        (
+          acc,
+          { liquidity, freeLiquidity, binValue: _binValue, baseFeeRate }
+        ) => {
+          const key = trimDecimals(baseFeeRate, 2);
+
+          const binValue = trimDecimals(
+            _binValue,
+            BIN_VALUE_DECIMAL
+          ).toNumber();
           acc.binValue.push({
             key,
-            value: binValue.toNumber(),
+            value: binValue,
           });
+
+          const available = trimDecimals(
+            freeLiquidity,
+            BIN_VALUE_DECIMAL
+          ).toNumber();
+          const utilized = trimDecimals(
+            liquidity.sub(freeLiquidity),
+            BIN_VALUE_DECIMAL
+          ).toNumber();
           acc.liquidity.push({
             key,
             value: [
-              { label: "available", amount: freeLiquidity.toNumber() },
-              {
-                label: "utilized",
-                amount: liquidity.sub(freeLiquidity).toNumber(),
-              },
+              { label: "available", amount: available },
+              { label: "utilized", amount: utilized },
             ],
           });
           return acc;
