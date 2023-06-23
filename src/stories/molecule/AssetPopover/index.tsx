@@ -67,7 +67,7 @@ export const AssetPopover = ({
 
   return (
     <>
-      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white">
+      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white shadow-lg">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
         </div>
