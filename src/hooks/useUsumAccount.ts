@@ -13,7 +13,6 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
 } from "~/typings/account";
-import { handleTx } from "~/utils/tx";
 import { ethers } from "ethers";
 import { CHAIN } from "~/constants/contracts";
 import { useChromaticClient } from "./useChromaticClient";
@@ -99,7 +98,7 @@ export const useUsumAccount = () => {
       setStatus(ACCOUNT_CREATING);
       const tx = await router.routerContract.createAccount();
 
-      handleTx(tx, () => {
+      tx.wait().then(() => {
         setStatus(ACCOUNT_COMPLETING);
         return undefined!;
       });

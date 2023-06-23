@@ -3,16 +3,13 @@ import useSWR from "swr";
 import { AppError } from "~/typings/error";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import { useRouter } from "./useRouter";
-import { handleTx } from "~/utils/tx";
 import { useLiquidityPool } from "./useLiquidityPool";
 import { useChromaticClient } from "./useChromaticClient";
-import { LPReceipt } from "~/typings/receipt";
 import useOracleVersion from "./useOracleVersion";
 import { useAppSelector } from "../store";
 import { useAccount } from "wagmi";
-import { useCallback, useMemo, useEffect } from "react";
-import { CLB_TOKEN_DECIMALS, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { useCallback, useMemo } from "react";
+import { FEE_RATE_DECIMAL } from "~/configs/decimals";
 import { percentage, numberBuffer } from "../utils/number";
 
 export type LpReceiptAction = "add" | "remove";
@@ -164,7 +161,7 @@ const usePoolReceipt = () => {
       AppError.reject("No completed receupts", "onPoolReceipt");
       return;
     }
-    const tx = await router?.claimLiquidites(market.address, completed);
+    await router?.claimLiquidites(market.address, completed);
 
     await fetchReceipts();
     await fetchLiquidityPools();

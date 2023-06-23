@@ -16,7 +16,6 @@ import useOracleVersion from "./useOracleVersion";
 import { bigNumberify } from "~/utils/number";
 import { useFeeRate } from "./useFeeRate";
 import { useAppSelector } from "../store";
-import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
 import {
   ChromaticMarket__factory,
@@ -134,12 +133,9 @@ export const usePosition = () => {
       return AppError.reject("no positions", "onClosePosition");
     }
     try {
-      const tx = await router?.closePosition(
-        position.marketAddress,
-        position.id
-      );
+      await router?.closePosition(position.marketAddress, position.id);
 
-      handleTx(tx, fetchPositions);
+      fetchPositions();
     } catch (error) {
       errorLog(error);
 
@@ -171,9 +167,10 @@ export const usePosition = () => {
       );
     }
 
-    const tx = await router?.claimPosition(position.marketAddress, position.id);
+    await router?.claimPosition(position.marketAddress, position.id);
 
-    handleTx(tx, fetchPositions, fetchUsumBalances);
+    await fetchPositions();
+    await fetchUsumBalances();
   };
 
   if (error) {
