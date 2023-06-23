@@ -17,7 +17,7 @@ import {
 } from "~/hooks/useBalances";
 import {
   useLiquidityPoolSummary,
-  useSelectedLiquidityPool,
+  useBinsBySelectedMarket,
 } from "~/hooks/useLiquidityPool";
 import { copyText } from "~/utils/clipboard";
 import useConnectOnce from "~/hooks/useConnectOnce";
@@ -85,7 +85,7 @@ const Trade = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
   const { oracleVersions } = useOracleVersion();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
@@ -104,7 +104,7 @@ const Trade = () => {
         account={{ walletAddress, usumAddress: usumAccount?.address }}
         tokens={tokens}
         markets={markets}
-        // priceFeed={priceFeed}
+        priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
         onConnect={connectAsync}
@@ -128,19 +128,13 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
-          onTokenSelect={(token) => {
-            onTokenSelect(token);
-          }}
-          onMarketSelect={(market) => {
-            onMarketSelect(market);
-          }}
+          onTokenSelect={onTokenSelect}
+          onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
-          onStatusUpdate={() => {
-            createUsumAccount();
-          }}
+          onStatusUpdate={createUsumAccount}
         />
         <TradePanel
           longInput={longInput}

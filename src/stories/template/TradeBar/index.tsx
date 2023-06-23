@@ -1,22 +1,24 @@
-import { useMemo, useState } from "react";
-import { Button } from "../../atom/Button";
-import { Avatar } from "~/stories/atom/Avatar";
-import { Tag } from "~/stories/atom/Tag";
-import { TextRow } from "~/stories/atom/TextRow";
-import { Tooltip } from "~/stories/atom/Tooltip";
-import { Loading } from "~/stories/atom/Loading";
-import { CheckIcon, ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
-import { Popover, Transition } from "@headlessui/react";
-import { Tab } from "@headlessui/react";
-import { Listbox } from "@headlessui/react";
-import "../../atom/Tabs/style.css";
-import { CLOSED, CLOSING, OPENED, OPENING, Position } from "~/typings/position";
-import { Market, Token } from "~/typings/market";
-import { usePrevious } from "~/hooks/usePrevious";
-import { BigNumber } from "ethers";
-import { createCurrentDate } from "~/utils/date";
-import { OracleVersion } from "~/typings/oracleVersion";
-import { isValid } from "~/utils/valid";
+import { useCallback, useMemo, useState } from 'react';
+import { Button } from '../../atom/Button';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Tag } from '~/stories/atom/Tag';
+import { TextRow } from '~/stories/atom/TextRow';
+import { Tooltip } from '~/stories/atom/Tooltip';
+import { Loading } from '~/stories/atom/Loading';
+import { CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/20/solid';
+import { Popover, Transition } from '@headlessui/react';
+import { Tab } from '@headlessui/react';
+import { Listbox } from '@headlessui/react';
+import '../../atom/Tabs/style.css';
+import { CLOSED, CLOSING, OPENED, OPENING } from '~/typings/position';
+import { Market, Token } from '~/typings/market';
+import { usePrevious } from '~/hooks/usePrevious';
+import { BigNumber, BigNumberish } from 'ethers';
+import { createCurrentDate } from '~/utils/date';
+import { OracleVersion } from '~/typings/oracleVersion';
+import { isValid } from '~/utils/valid';
+import { withComma, formatDecimals } from '../../../utils/number';
+import { Position } from '../../../hooks/usePosition';
 
 interface TradeBarProps {
   token?: Token;
@@ -28,8 +30,8 @@ interface TradeBarProps {
 }
 
 const listitem = [
-  { id: 1, title: "Positions in all USDC Markets" },
-  { id: 2, title: "Positions only in ETH/USD market" },
+  { id: 1, title: 'Positions in all USDC Markets' },
+  { id: 2, title: 'Positions only in ETH/USD market' },
 ];
 
 export const TradeBar = ({
@@ -43,22 +45,48 @@ export const TradeBar = ({
   const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
+  const oracleDecimals = 18;
+  const printNumber = useCallback((number: BigNumberish = 0, decimals: number = 18) => {
+    return withComma(formatDecimals(number, decimals, 2));
+  }, []);
+
+  const priceTo = useCallback((position: Position, type: 'profit' | 'loss') => {
+    const propName = type === 'profit' ? 'toProfit' : 'toLoss';
+    const value = printNumber(position[propName], oracleDecimals);
+    const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
+    if (higherCondition) {
+      return '+' + value + '% higher';
+    } else {
+      return value + '% lower';
+    }
+  }, []);
+
+  const stopLoss = useCallback((position: Position) => {
+    return position.takerMargin.div(position.qty.abs()).toNumber();
+  }, []);
+
+  const takeProfit = useCallback((position: Position) => {
+    const qty = position.qty.abs();
+    if (qty.eq(0)) {
+      return 0;
+    } else {
+      return position.makerMargin.div(qty).toNumber();
+    }
+  }, []);
+
+  const direction = useCallback((position: Position) => {
+    return position.qty.gt(0) ? 'Long' : 'Short';
+  }, []);
   return (
     <Popover className="fixed bottom-0 z-30 w-full">
       {({ open }) => (
         <div className="relative">
           {open ? (
             <>
-              <div
-                className="fixed inset-0 z-0 bg-white/80"
-                aria-hidden="true"
-              />
+              <div className="fixed inset-0 z-0 bg-white/80" aria-hidden="true" />
               <div className="relative">
                 <Popover.Button className="absolute right-10 top-[-20px]">
-                  <Button
-                    iconOnly={<ChevronDoubleUpIcon />}
-                    className="transform rotate-180"
-                  />
+                  <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" />
                 </Popover.Button>
                 <Popover.Panel>
                   <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left">
@@ -68,13 +96,8 @@ export const TradeBar = ({
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
                         <div className="select min-w-[298px] ml-auto mb-[-8px]">
-                          <Listbox
-                            value={selectedItem}
-                            onChange={setSelectedItem}
-                          >
-                            <Listbox.Button>
-                              {selectedItem.title}
-                            </Listbox.Button>
+                          <Listbox value={selectedItem} onChange={setSelectedItem}>
+                            <Listbox.Button>{selectedItem.title}</Listbox.Button>
                             <Listbox.Options>
                               {listitem.map((item) => (
                                 <Listbox.Option key={item.id} value={item}>
@@ -92,188 +115,163 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               <div>
-                                {(positions ?? previousPositions ?? []).map(
-                                  (position) => {
-                                    return (
-                                      <div
-                                        key={position.id.toString()}
-                                        className="border rounded-xl"
-                                      >
-                                        <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
-                                          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
-                                            <Avatar
-                                              label={token?.name}
-                                              size="xs"
-                                              gap="1"
-                                              fontSize="base"
-                                              fontWeight="bold"
-                                            />
-                                            <Avatar
-                                              label={
-                                                markets?.find(
-                                                  (market) =>
-                                                    market.address ===
-                                                    position.marketAddress
-                                                )?.description
-                                              }
-                                              size="xs"
-                                              gap="1"
-                                              fontSize="base"
-                                              fontWeight="bold"
-                                            />
-                                            <Tag label={position.direction} />
-                                          </div>
-                                          <div className="flex items-center gap-8 pl-6 border-l">
-                                            <p className="text-black/50">
-                                              Entry Price
-                                            </p>
-                                            ${position.renderOpenPrice(18)}
-                                          </div>
-                                          <div className="flex items-center gap-8 pl-6 border-l">
-                                            <p className="text-black/50">
-                                              Entry Time
-                                            </p>
-                                            {createCurrentDate()}
-                                          </div>
-
-                                          <div className="flex items-center gap-2 ml-auto">
-                                            {/* 상태에 따라 내용 변동 */}
-                                            {position.status === OPENING && (
-                                              <>
-                                                <Loading size="xs" />
-                                                <p className="text-black/30">
-                                                  Opening in progress
-                                                </p>
-                                              </>
-                                            )}
-                                            {position.status === OPENED && (
-                                              <>
-                                                <CheckIcon className="w-4" />
-                                                <p className="text-black/30">
-                                                  Opening completed
-                                                </p>
-                                              </>
-                                            )}
-                                            {position.status === CLOSING && (
-                                              <>
-                                                <Loading size="xs" />
-                                                <p className="text-black/30">
-                                                  Closing in progress
-                                                </p>
-                                              </>
-                                            )}
-                                            {position.status === CLOSED && (
-                                              <>
-                                                <CheckIcon className="w-4" />
-                                                <p className="text-black/30">
-                                                  Closing completed
-                                                </p>
-                                              </>
-                                            )}
-                                            <Tooltip tip="tooltip" />
-                                          </div>
+                                {(positions ?? previousPositions ?? []).map((position) => {
+                                  return (
+                                    <div key={position.id.toString()} className="border rounded-xl">
+                                      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
+                                        <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
+                                          <Avatar
+                                            label={token?.name}
+                                            size="xs"
+                                            gap="1"
+                                            fontSize="base"
+                                            fontWeight="bold"
+                                          />
+                                          <Avatar
+                                            label={
+                                              markets?.find(
+                                                (market) =>
+                                                  market.address === position.marketAddress
+                                              )?.description
+                                            }
+                                            size="xs"
+                                            gap="1"
+                                            fontSize="base"
+                                            fontWeight="bold"
+                                          />
+                                          <Tag label={direction(position)} />
                                         </div>
-                                        <div className="flex items-stretch justify-between gap-6 px-5 py-4">
-                                          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
-                                            <TextRow
-                                              label="Contract Qty"
-                                              labelClass="text-black/50"
-                                              value={position.renderQty(
-                                                token?.decimals
-                                              )}
-                                            />
-                                            <TextRow
-                                              label="Collateral"
-                                              labelClass="text-black/50"
-                                              value={position.renderCollateral(
-                                                token?.decimals
-                                              )}
-                                            />
-                                          </div>
-                                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="Take Profit"
-                                              labelClass="text-black/50"
-                                              value={`${position.takeProfit}%`}
-                                            />
-                                            <TextRow
-                                              label="Liq. Price"
-                                              labelClass="text-black/50"
-                                              value={position.renderProfitPrice(
-                                                18
-                                              )}
-                                              subValueLeft={`(${position.renderToProfit(
-                                                18
-                                              )})`}
-                                            />
-                                          </div>
-                                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="Stop Loss"
-                                              labelClass="text-black/50"
-                                              value={`${position.stopLoss}%`}
-                                            />
-                                            <TextRow
-                                              label="Liq. Price"
-                                              labelClass="text-black/50"
-                                              value={position.renderLossPrice(
-                                                18
-                                              )}
-                                              subValueLeft={`(${position.renderToLoss(
-                                                18
-                                              )})`}
-                                            />
-                                          </div>
-                                          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="PnL"
-                                              labelClass="text-black/50"
-                                              value={position.renderPNL(18)}
-                                            />
-                                          </div>
-                                          <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
-                                            {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
-                                            {/* Close / Claim USDC */}
-                                            {(position.status === OPENED ||
-                                              position.status === OPENING) && (
-                                              <Button
-                                                label="Close"
-                                                size="sm"
-                                                onClick={() => {
-                                                  onPositionClose?.(
-                                                    position.marketAddress,
-                                                    position.id
-                                                  );
-                                                }}
-                                              />
-                                            )}
-                                            {position.status === CLOSED && (
-                                              <Button
-                                                label="Claim"
-                                                css="active"
-                                                size="sm"
-                                                onClick={() => {
-                                                  onPositionClaim?.(
-                                                    position.marketAddress,
-                                                    position.id
-                                                  );
-                                                }}
-                                              />
-                                            )}
-                                            {position.status === CLOSING && (
-                                              <Button
-                                                label="Claim"
-                                                size="sm"
-                                                disabled={true}
-                                                css="gray"
-                                              />
-                                            )}
-                                          </div>
+                                        <div className="flex items-center gap-8 pl-6 border-l">
+                                          <p className="text-black/50">Entry Price</p>$
+                                          {printNumber(position.openPrice || 0, 18)}
+                                        </div>
+                                        <div className="flex items-center gap-8 pl-6 border-l">
+                                          <p className="text-black/50">Entry Time</p>
+                                          {createCurrentDate()}
+                                        </div>
+
+                                        <div className="flex items-center gap-2 ml-auto">
+                                          {/* 상태에 따라 내용 변동 */}
+                                          {position.status === OPENING && (
+                                            <>
+                                              <Loading size="xs" />
+                                              <p className="text-black/30">Opening in progress</p>
+                                            </>
+                                          )}
+                                          {position.status === OPENED && (
+                                            <>
+                                              <CheckIcon className="w-4" />
+                                              <p className="text-black/30">Opening completed</p>
+                                            </>
+                                          )}
+                                          {position.status === CLOSING && (
+                                            <>
+                                              <Loading size="xs" />
+                                              <p className="text-black/30">Closing in progress</p>
+                                            </>
+                                          )}
+                                          {position.status === CLOSED && (
+                                            <>
+                                              <CheckIcon className="w-4" />
+                                              <p className="text-black/30">Closing completed</p>
+                                            </>
+                                          )}
+                                          <Tooltip tip="tooltip" />
                                         </div>
                                       </div>
-                                    );
-                                  }
-                                )}
+                                      <div className="flex items-stretch justify-between gap-6 px-5 py-4">
+                                        <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
+                                          <TextRow
+                                            label="Contract Qty"
+                                            labelClass="text-black/50"
+                                            value={printNumber(position.qty.abs(), 4)}
+                                          />
+                                          <TextRow
+                                            label="Collateral"
+                                            labelClass="text-black/50"
+                                            value={printNumber(
+                                              position.collateral,
+                                              token?.decimals
+                                            )}
+                                          />
+                                        </div>
+                                        <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+                                          <TextRow
+                                            label="Take Profit"
+                                            labelClass="text-black/50"
+                                            value={`${takeProfit(position)}%`}
+                                          />
+                                          <TextRow
+                                            label="Liq. Price"
+                                            labelClass="text-black/50"
+                                            value={printNumber(position.profitPrice, 18)}
+                                            subValueLeft={`(${priceTo(position, 'profit')})`}
+                                          />
+                                        </div>
+                                        <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+                                          <TextRow
+                                            label="Stop Loss"
+                                            labelClass="text-black/50"
+                                            value={`${stopLoss(position)}%`}
+                                          />
+                                          <TextRow
+                                            label="Liq. Price"
+                                            labelClass="text-black/50"
+                                            value={printNumber(position.lossPrice, 18)}
+                                            subValueLeft={`(${priceTo(position, 'loss')})`}
+                                          />
+                                        </div>
+                                        <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
+                                          <TextRow
+                                            label="PnL"
+                                            labelClass="text-black/50"
+                                            value={`${
+                                              BigNumber.from(position.pnl).gt(0) ? '+' : ''
+                                            }${printNumber(position.pnl, token?.decimals)}%`}
+                                          />
+                                        </div>
+                                        <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
+                                          {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
+                                          {/* Close / Claim USDC */}
+                                          {(position.status === OPENED ||
+                                            position.status === OPENING) && (
+                                            <Button
+                                              label="Close"
+                                              size="sm"
+                                              onClick={() => {
+                                                onPositionClose?.(
+                                                  position.marketAddress,
+                                                  position.id
+                                                );
+                                              }}
+                                            />
+                                          )}
+                                          {position.status === CLOSED && (
+                                            <Button
+                                              label="Claim"
+                                              css="active"
+                                              size="sm"
+                                              onClick={() => {
+                                                onPositionClaim?.(
+                                                  position.marketAddress,
+                                                  position.id
+                                                );
+                                              }}
+                                            />
+                                          )}
+                                          {position.status === CLOSING && (
+                                            <Button
+                                              label="Claim"
+                                              size="sm"
+                                              disabled={true}
+                                              css="gray"
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           </article>

@@ -5,12 +5,12 @@ import useSWR from "swr";
 import { useAppSelector } from "../store";
 import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 import { isValid } from "~/utils/valid";
-import { errorLog, infoLog } from "~/utils/log";
+import { Logger, errorLog, infoLog } from "~/utils/log";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { useSettlementToken } from "~/hooks/useSettlementToken";
 import { usePosition } from "./usePosition";
 import { bigNumberify } from "~/utils/number";
-
+const logger = Logger("useBalances");
 function filterResponse(
   response: PromiseSettledResult<readonly [string, BigNumber]>[]
 ) {
@@ -43,17 +43,18 @@ export const useWalletBalances = () => {
     mutate: fetchWalletBalances,
   } = useSWR(
     isValid(walletAddress)
-      ? ["WALLET_BALANCES", walletAddress, tokenKey]
+      ? ["WALLET_BALANCES", signer, walletAddress, tokenKey]
       : undefined,
-    async ([_, address, tokenKey]) => {
+    async () => {
       const tokens: { address: string; name: string }[] = JSON.parse(tokenKey);
-      if (!isValid(signer)) {
+      if (!isValid(signer) || !isValid(walletAddress)) {
         infoLog("No signers", "Wallet Balances");
         return;
       }
       const promise = tokens.map(async (token) => {
         const contract = IERC20__factory.connect(token.address, signer);
-        const balance = await contract.balanceOf(address);
+        logger.info(walletAddress);
+        const balance = await contract.balanceOf(walletAddress);
         return [token.name, balance] as const;
       });
       const response = await Promise.allSettled(promise);
@@ -108,14 +109,15 @@ export const useUsumMargins = () => {
       return [bigNumberify(0), bigNumberify(0)];
     }
     const balance = usumBalances[token.name];
-    const [totalCollateral, totalCollateralAdded] = positions.reduce(
-      (record, position) => {
-        const added = position.addProfitAndLoss(18);
-        return [record[0].add(position.collateral), record[1].add(added)];
-      },
-      [bigNumberify(0), bigNumberify(0)]
-    );
-    return [balance.add(totalCollateral), balance.add(totalCollateralAdded)];
+    // const [totalCollateral, totalCollateralAdded] = positions.reduce(
+    //   (record, position) => {
+    //     const added = position.addProfitAndLoss(18);
+    //     return [record[0].add(position.collateral), record[1].add(added)];
+    //   },
+    //   [bigNumberify(0), bigNumberify(0)]
+    // );
+    // return [balance.add(totalCollateral), balance.add(totalCollateralAdded)];
+    return [balance, balance]
   }, [usumBalances, token, positions]);
 
   const totalMargin = useMemo(() => {

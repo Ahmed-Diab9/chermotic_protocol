@@ -1,5 +1,5 @@
 import useConnectOnce from "../../../hooks/useConnectOnce";
-import { useSelectedLiquidityPool } from "../../../hooks/useLiquidityPool";
+import { useBinsBySelectedMarket } from "../../../hooks/useLiquidityPool";
 import { PoolPanel } from "../../../stories/template/PoolPanel";
 import { useWalletBalances } from "../../../hooks/useBalances";
 import usePoolInput from "../../../hooks/usePoolInput";
@@ -15,7 +15,7 @@ const PoolPanelDemo = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
   const token = useAppSelector((state) => state.token.selectedToken);
   const { walletBalances } = useWalletBalances();
   const {

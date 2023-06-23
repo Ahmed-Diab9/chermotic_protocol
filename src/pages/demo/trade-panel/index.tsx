@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useUsumBalances } from "~/hooks/useBalances";
 import useConnectOnce from "~/hooks/useConnectOnce";
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { useBinsBySelectedMarket } from "~/hooks/useLiquidityPool";
 import { usePosition } from "~/hooks/usePosition";
 import { useTradeInput } from "~/hooks/useTradeInput";
 import { useAppSelector } from "~/store";
@@ -37,7 +37,7 @@ const TradePanelDemo = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
   const { positions } = usePosition();
 
   useEffect(() => {

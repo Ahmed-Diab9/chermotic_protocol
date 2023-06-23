@@ -11,8 +11,8 @@ export const useFeeRate = () => {
   const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
 
-  const { data: feeRate, error } = useSWR("FEE_RATE", async () => {
-    if (selectedToken)
+  const { data: feeRate, error } = useSWR(["FEE_RATE", selectedToken?.address], async () => {
+    if (selectedToken?.address)
       return await marketFactoryApi?.currentInterestRate(
         selectedToken?.address
       );

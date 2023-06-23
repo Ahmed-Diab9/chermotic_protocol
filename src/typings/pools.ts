@@ -1,22 +1,28 @@
 import { BigNumber } from "ethers";
+import { LiquidityBinResult } from "@chromatic-protocol/sdk"
+import { CLBToken } from "@chromatic-protocol/sdk/contracts"
 
 export interface Bin {
   liquidity: BigNumber;
   freeLiquidity: BigNumber;
-  removableRate: number;
   clbTokenName: string;
   clbTokenImage: string;
   clbTokenDescription: string;
   clbTokenDecimals: number;
-  clbTokenBalance: BigNumber;
-  clbTokenValue: number;
   baseFeeRate: number;
-  feeRate: BigNumber;
-  binValue: BigNumber;
+  tokenId: BigNumber;
+}
+
+export interface OwnedBin extends Bin {
+  clbTokenBalance: BigNumber
+  clbTokenValue: number
+  clbTotalSupply: BigNumber
+  binValue: BigNumber
+  removableRate: number
 }
 
 export interface LiquidityPool {
-  address: string;
+  // address: string;
   tokenAddress: string;
   marketAddress: string;
   bins: Bin[];

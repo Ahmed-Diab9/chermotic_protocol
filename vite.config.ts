@@ -14,6 +14,7 @@ export default defineConfig({
     "process.env": process.env,
   },
   server: {
+    // hmr: false,
     proxy: {
       "/api": "http://127.0.0.1:8545"
     },

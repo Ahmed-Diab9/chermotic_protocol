@@ -357,6 +357,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                     css="active"
                     className="w-full"
                     onClick={() => {
+                      console.log('wt...', title)
                       if (title === "Deposit") {
                         onDeposit && onDeposit();
                       } else {

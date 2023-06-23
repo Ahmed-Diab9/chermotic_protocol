@@ -34,7 +34,7 @@ const usePoolReceipt = () => {
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
   const currentOracleVersion =
-    market && oracleVersions?.[market.address].version.toNumber();
+    market && oracleVersions?.[market.address]?.version.toNumber();
   const marketAddress = market?.address;
 
   const binName = useCallback((feeRate: number, description?: string) => {

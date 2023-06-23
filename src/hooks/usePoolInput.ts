@@ -8,11 +8,11 @@ import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useWalletBalances } from "./useBalances";
 import { useChromaticClient } from "./useChromaticClient";
-import { useSelectedLiquidityPool } from "./useLiquidityPool";
+import { useBinsBySelectedMarket } from "./useLiquidityPool";
 import usePoolReceipt from "./usePoolReceipt";
 
 const usePoolInput = () => {
-  const { pool } = useSelectedLiquidityPool();
+  const { pool } = useBinsBySelectedMarket();
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
   const routerApi = client?.router();
@@ -37,18 +37,21 @@ const usePoolInput = () => {
   const bins = useMemo(() => {
     return indexes[1] - indexes[0] + 1;
   }, [indexes]);
-  const averageBin = useMemo(() => {
-    if (!isValid(pool)) {
-      return;
-    }
-    let index = indexes[0];
-    let totalBin = bigNumberify(0);
-    while (index <= indexes[1]) {
-      totalBin.add(pool.bins[index].binValue);
-      index++;
-    }
-    return totalBin.div(rates[1] - rates[0] + 1);
-  }, [pool, indexes, rates]);
+
+  // FIXME
+  const averageBin = bigNumberify(0);
+  // const averageBin = useMemo(() => {
+  //   if (!isValid(pool)) {
+  //     return;
+  //   }
+  //   let index = indexes[0];
+  //   let totalBin = bigNumberify(0);
+  //   while (index <= indexes[1]) {
+  //     totalBin.add(pool.bins[index].binValue);
+  //     index++;
+  //   }
+  //   return totalBin.div(rates[1] - rates[0] + 1);
+  // }, [pool, indexes, rates]);
 
   const onAmountChange = (value: string) => {
     const parsed = Number(value);
@@ -128,13 +131,6 @@ const usePoolInput = () => {
         return;
       }
 
-      const erc20 = IERC20__factory.connect(token.address, signer);
-      const routerAddress = routerApi.routerContract.address;
-      const allowance = await erc20.allowance(address, routerAddress);
-      if (allowance.lte(expandedAmount)) {
-        const tx = await erc20.approve(routerAddress, expandedAmount);
-        tx.wait();
-      }
       const dividedAmount = expandedAmount.div(bins);
       await routerApi.addLiquidities(
         marketAddress,

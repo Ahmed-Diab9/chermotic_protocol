@@ -2,6 +2,7 @@ import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
 import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
+import { BigNumber } from "ethers";
 import {
   bigNumberify,
   expandDecimals,
@@ -9,14 +10,16 @@ import {
   trimLeftZero,
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
-import { errorLog } from "../utils/log";
+import { Logger, errorLog } from "../utils/log";
 import { useChromaticClient } from "./useChromaticClient";
-import { useSelectedLiquidityPool } from "./useLiquidityPool";
+import { useBinsBySelectedMarket } from "./useLiquidityPool";
 import { usePosition } from "./usePosition";
 import { useUsumBalances } from "./useBalances";
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
 import { useAppSelector } from "../store";
+import { useOwnedLiquidityPoolByMarket } from "./useOwnedLiquidityPoolByMarket";
 
+const logger = Logger("useTradeInput");
 const initialTradeInput = {
   direction: "long",
   method: "collateral",
@@ -220,15 +223,31 @@ export const useTradeInput = () => {
   const { client } = useChromaticClient();
   const routerApi = client?.router();
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
-  const {
-    pool,
-    liquidity: {
-      longTotalMaxLiquidity,
-      longTotalUnusedLiquidity,
-      shortTotalMaxLiquidity,
-      shortTotalUnusedLiquidity,
-    },
-  } = useSelectedLiquidityPool();
+  // const {
+  //   pool,
+  //   liquidity: {
+  //     longTotalMaxLiquidity,
+  //     longTotalUnusedLiquidity,
+  //     shortTotalMaxLiquidity,
+  //     shortTotalUnusedLiquidity,
+  //   },
+  // } = useBinsBySelectedMarket();
+  const {ownedPool} = useOwnedLiquidityPoolByMarket({
+    marketAddress: market?.address
+  })
+  const {longTotalUnusedLiquidity, shortTotalUnusedLiquidity} = useMemo(() => {
+    let longTotalUnusedLiquidity = BigNumber.from(0)
+    let shortTotalUnusedLiquidity = BigNumber.from(0)
+    ownedPool?.bins.forEach((bin) => {
+      if (bin.baseFeeRate > 0) {
+        longTotalUnusedLiquidity = longTotalUnusedLiquidity.add(bin.freeLiquidity)
+      } else {
+        shortTotalUnusedLiquidity = shortTotalUnusedLiquidity.add(bin.freeLiquidity)
+      }
+    })
+    console.log("LIQUIDITIES", longTotalUnusedLiquidity, shortTotalUnusedLiquidity)
+    return {longTotalUnusedLiquidity, shortTotalUnusedLiquidity}
+  } ,[ownedPool])
 
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
@@ -251,7 +270,7 @@ export const useTradeInput = () => {
     }
     let tradeFee = bigNumberify(0);
     const bins =
-      pool?.bins.filter((bin) => {
+      ownedPool?.bins.filter((bin) => {
         if (state.direction === "long") {
           return bin.baseFeeRate > 0;
         } else {
@@ -287,7 +306,7 @@ export const useTradeInput = () => {
     state.makerMargin,
     state.direction,
     token?.decimals,
-    pool?.bins,
+    ownedPool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
   ]);
@@ -406,7 +425,8 @@ export const useTradeInput = () => {
       state.direction === "short" &&
       shortTotalUnusedLiquidity.lte(makerMargin)
     ) {
-      errorLog("the short liquidity is too low");
+      logger.error("the short liquidity is too low", );
+      logger.error(shortTotalUnusedLiquidity)
       return AppError.reject(
         "the short liquidity is too low",
         "onOpenPosition"

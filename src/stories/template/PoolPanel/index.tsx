@@ -117,66 +117,72 @@ export const PoolPanel = (props: PoolPanelProps) => {
   } = props;
   const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
-  const binLength = (pool?.bins ?? []).filter((bin) =>
-    bin.clbTokenBalance.gt(0)
-  ).length;
+  // const binLength = (pool?.bins ?? []).filter((bin) =>
+  //   bin.clbTokenBalance.gt(0)
+  // ).length;
 
   /**
    * @TODO
    * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
    */
-  const {
-    liquidityValue: totalLiquidityValue,
-    liquidity: totalLiquidity,
-    removableLiquidity: totalFreeLiquidity,
-  } = useMemo(() => {
-    return (pool?.bins ?? []).reduce(
-      (record, bin) => {
-        const { clbTokenBalance, clbTokenValue, liquidity, freeLiquidity } =
-          bin;
-        const liquidityValue = clbTokenBalance
-          .mul(clbTokenValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-        return {
-          balance: record.balance.add(clbTokenBalance),
-          liquidityValue: record.liquidityValue.add(liquidityValue),
-          liquidity: record.liquidity.add(liquidity),
-          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
-        };
-      },
-      {
-        balance: bigNumberify(0),
-        liquidityValue: bigNumberify(0),
-        liquidity: bigNumberify(0),
-        removableLiquidity: bigNumberify(0),
-      }
-    );
-  }, [pool?.bins]);
+  // const {
+  //   liquidityValue: totalLiquidityValue,
+  //   liquidity: totalLiquidity,
+  //   removableLiquidity: totalFreeLiquidity,
+  // } = useMemo(() => {
+  //   return (pool?.bins ?? []).reduce(
+  //     (record, bin) => {
+  //       const { clbTokenBalance, clbTokenValue, liquidity, freeLiquidity } =
+  //         bin;
+  //       const liquidityValue = clbTokenBalance
+  //         .mul(clbTokenValue)
+  //         .div(expandDecimals(BIN_VALUE_DECIMAL));
+  //       return {
+  //         balance: record.balance.add(clbTokenBalance),
+  //         liquidityValue: record.liquidityValue.add(liquidityValue),
+  //         liquidity: record.liquidity.add(liquidity),
+  //         removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+  //       };
+  //     },
+  //     {
+  //       balance: bigNumberify(0),
+  //       liquidityValue: bigNumberify(0),
+  //       liquidity: bigNumberify(0),
+  //       removableLiquidity: bigNumberify(0),
+  //     }
+  //   );
+  // }, [pool?.bins]);
 
-  const ownedLongLiquidityBins = useMemo(
-    () =>
-      pool?.bins?.filter(
-        (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0
-      ) || [],
-    [pool]
-  );
+  // const ownedLongLiquidityBins = useMemo(
+  //   () =>
+  //     pool?.bins?.filter(
+  //       (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0
+  //     ) || [],
+  //   [pool]
+  // );
 
-  const ownedShortLiquidityBins = useMemo(
-    () =>
-      pool?.bins?.filter(
-        (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0
-      ) || [],
-    [pool]
-  );
-  /**
-   * @TODO
-   * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
-   */
-  const totalRemovableRate = totalLiquidityValue.eq(0)
-    ? bigNumberify(0)
-    : totalFreeLiquidity
-        .mul(expandDecimals(FEE_RATE_DECIMAL))
-        .div(totalLiquidityValue);
+  // const ownedShortLiquidityBins = useMemo(
+  //   () =>
+  //     pool?.bins?.filter(
+  //       (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0
+  //     ) || [],
+  //   [pool]
+  // );
+  // /**
+  //  * @TODO
+  //  * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
+  //  */
+  // const totalRemovableRate = totalLiquidityValue.eq(0)
+  //   ? bigNumberify(0)
+  //   : totalFreeLiquidity
+  //       .mul(expandDecimals(FEE_RATE_DECIMAL))
+  //       .div(totalLiquidityValue);
+  const totalLiquidity = bigNumberify(1)
+  const totalFreeLiquidity = bigNumberify(1)
+  const totalLiquidityValue = bigNumberify(1)
+  const ownedLongLiquidityBins = [] as any[]
+  const ownedShortLiquidityBins = [] as any[]
+  const binLength = 1
 
   const onBinCheck = (bin: Bin) => {
     infoLog("Running check");
@@ -570,9 +576,9 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              if (bin?.clbTokenBalance.gt(0)) {
-                dispatch(poolsAction.onBinSelect(bin));
-              }
+              // if (bin?.clbTokenBalance.gt(0)) {
+              //   dispatch(poolsAction.onBinSelect(bin));
+              // }
             }}
           />
           <Button className="ml-2" iconOnly={<ArrowTopRightOnSquareIcon />} />
@@ -586,31 +592,31 @@ const BinItem = (props: BinItemProps) => {
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
             <p>
-              {bin &&
-                formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}
+              {/* {bin &&
+                formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)} */}
             </p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{bin?.removableRate}%</p>
+            {/* <p>{bin?.removableRate}%</p> */}
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p>
+            {/* <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p> */}
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {bin &&
+              {/* {bin &&
                 formatDecimals(
                   bin.clbTokenBalance
                     .mul(bin.binValue)
                     .div(expandDecimals(BIN_VALUE_DECIMAL)),
                   token?.decimals,
                   2
-                )}
+                )} */}
             </p>
           </div>
         </div>

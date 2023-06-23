@@ -1117,10 +1117,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk@^0.1.0-rc.33":
-  version "0.1.0-rc.33"
-  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.33/8d8563b7f25f3aa87a0f4aab9cdedda931336528#8d8563b7f25f3aa87a0f4aab9cdedda931336528"
-  integrity sha512-LQgXsmCODg6NDQ4HN2PPZGhoxFyYxFB9muEn6rNHWRko+VCikR9D7q1G8tgf7QdculwO9s28PcLfun3wEc2EvQ==
+"@chromatic-protocol/sdk@^0.1.0-rc.36":
+  version "0.1.0-rc.36"
+  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.36/a055964a747f335378b591ac11ce67015b3d9c28#a055964a747f335378b591ac11ce67015b3d9c28"
+  integrity sha512-Xt5xK9IlBJIkmmwieKpNv6PMpjyoCrIaEXZlQTvzY0H4YKGxoiCpBh+JD5s6ko7qfAGw4XgaF4MK/UlkFnxpUQ==
 
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.6.6"

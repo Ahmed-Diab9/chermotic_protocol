@@ -23,7 +23,7 @@ import {
 import usePriceFeed from "~/hooks/usePriceFeed";
 import {
   useLiquidityPoolSummary,
-  useSelectedLiquidityPool,
+  useBinsBySelectedMarket,
 } from "~/hooks/useLiquidityPool";
 import useTokenTransaction from "~/hooks/useTokenTransaction";
 import { copyText } from "~/utils/clipboard";
@@ -39,6 +39,7 @@ import {
 } from "~/hooks/usePoolRemoveInput";
 import { useTokenLocal } from "../../hooks/useTokenLocal";
 import { useMarketLocal } from "../../hooks/useMarketLocal";
+import { useOwnedLiquidityPool } from "../../hooks/useOwnedLiquidityPool";
 
 const Pool = () => {
   useConnectOnce();
@@ -81,7 +82,7 @@ const Pool = () => {
     },
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
 
   const {
     amount,
@@ -113,6 +114,7 @@ const Pool = () => {
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
+  const {ownedPools} = useOwnedLiquidityPool()
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">

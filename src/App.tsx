@@ -37,7 +37,9 @@ const client = createClient({
 
 function App() {
   return (
-    <SWRConfig value={{}}>
+    <SWRConfig value={{
+      keepPreviousData: true
+    }}>
       <Provider store={store}>
         <WagmiConfig client={client}>
           <div className="App">
