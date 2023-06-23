@@ -30,24 +30,15 @@ export const useLiquidityPool = () => {
   const { oracleVersions } = useOracleVersion();
 
   const fetchKey =
-    isValid(walletAddress) &&
-    isValid(tokenAddresses) &&
-    isValid(selectedMarket?.address)
-      ? ([
-          "LIQUIDITY_POOL",
-          walletAddress,
-          tokenAddresses,
-          selectedMarket?.address,
-        ] as const)
+    isValid(walletAddress) && isValid(tokenAddresses)
+      ? (["LIQUIDITY_POOL", walletAddress, tokenAddresses] as const)
       : undefined;
 
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(
-    fetchKey,
-    async ([_, walletAddress, tokenAddresses, marketAddress]) => {
+  } = useSWR(fetchKey, async ([_, walletAddress, tokenAddresses]) => {
     if (!isValid(oracleVersions)) {
       logger.info("OracleVersions");
       return;
@@ -62,71 +53,72 @@ export const useLiquidityPool = () => {
     }
     const factory = client.marketFactory();
     const precision = bigNumberify(10).pow(10);
-    const baseFeeRates = [
-        ...FEE_RATES,
-        ...FEE_RATES.map((rate) => rate * -1),
-    ];
+    const baseFeeRates = [...FEE_RATES, ...FEE_RATES.map((rate) => rate * -1)];
     const feeRates = [
-        ...FEE_RATES.map((rate) => bigNumberify(rate)),
-        ...FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+      ...FEE_RATES.map((rate) => bigNumberify(rate)),
+      ...FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
     ];
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);
       const promise = markets.map(async ({ address: marketAddress }) => {
         logger.log("MarketAddress", marketAddress);
         const market = client.market();
-        // TODO refactoring remove CLBTokenBatch instance
+        const lensApi = client.lens();
+        const clbTokenAddress = await market
+          .getContract(marketAddress)
+          .clbToken();
+        const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
+        const results = await lensApi.liquidityBins(marketAddress);
+        const ownedBins = await lensApi.ownedLiquidityBins(
+          marketAddress,
+          walletAddress
+        );
+        logger.log("ownedBins", ownedBins);
 
-        try {
-          const clbTokenAddress = await market
-            .getContract(marketAddress)
-            .clbToken();
-
-          logger.log("CLB Address", clbTokenAddress);
-          const clbToken = CLBToken__factory.connect(clbTokenAddress, provider);
-          const clbTokenBatch = new CLBTokenBatch(
-            clbToken,
-            lens.getContract(),
-            clbTokenAddress,
-            tokenAddress,
-            marketAddress,
-            baseFeeRates,
-            feeRates
-          );
-          logger.log("CLB Address", clbTokenAddress);
-          await clbTokenBatch.updateBalances(walletAddress);
-          await clbTokenBatch.updateMetadata();
-          await clbTokenBatch.updateLiquidities();
-          clbTokenBatch.updateLiquidityValues();
-          clbTokenBatch.updateRemovableRates();
-
-          const bins = {
-            clbToken: {
-              // clbTokenBalance
-              // clbTokenName,
-              // clbTokenImage,
-              // clbTokenDescription
-              // clbTokenDecimal
-              // clbTokenValue   =   myLiquidityValue / clbTokenBalance
-            },
-
-            // sdk 를 이용해서 얻어오기
-            // FIXME
-            // Liquidity
-            // binLiquidity
-            // binFreeLiquidity
-            // myLiquidityTotalValue
-            // removaleRate
-          };
+        const binsResponse = results.map(async (result, index) => {
           return {
-            address: clbTokenAddress,
-            tokenAddress,
-            marketAddress,
-            bins: clbTokenBatch.toBins(),
-          } satisfies LiquidityPool;
-        } catch (e) {
-          logger.error(e);
+            liquidity: result.liquidity,
+            freeLiquidity: result.freeLiquidity,
+            clbTokenName: await clbToken.name(feeRates[index]),
+            clbTokenImage: await clbToken.image(feeRates[index]),
+            clbTokenDescription: await clbToken.description(feeRates[index]),
+            clbTokenDecimals: await clbToken.decimals(),
+            clbTokenBalance: bigNumberify(0),
+            clbTokenValue: 0,
+            binValue: bigNumberify(0),
+            removableRate: 0,
+            baseFeeRate: baseFeeRates[index],
+            feeRate: feeRates[index],
+          } as Bin;
+        });
+        const bins = await filterIfFulfilled(binsResponse);
+
+        let binIndex = 0;
+        let ownedBinIndex = 0;
+        while (ownedBinIndex < ownedBins.length) {
+          console.log("Rolling", ownedBinIndex);
+          if (
+            bins[binIndex].baseFeeRate !==
+            ownedBins[ownedBinIndex].tradingFeeRate
+          ) {
+            binIndex++;
+            continue;
+          }
+          bins[binIndex].removableRate = ownedBins[ownedBinIndex].removableRate;
+          bins[binIndex].clbTokenBalance = ownedBins[ownedBinIndex].clbBalance;
+          bins[binIndex].clbTokenValue = ownedBins[ownedBinIndex].clbValue;
+          bins[binIndex].binValue = ownedBins[binIndex].clbBalance.mul(
+            ownedBins[ownedBinIndex].clbValue
+          );
+          binIndex++;
+          ownedBinIndex++;
         }
+        return {
+          address: clbTokenAddress,
+          tokenAddress,
+          marketAddress,
+          bins: bins as Bin[],
+        } satisfies LiquidityPool;
       });
       const response = await Promise.allSettled(promise).catch((err) => {
         logger.error(err);
