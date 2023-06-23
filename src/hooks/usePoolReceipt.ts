@@ -159,7 +159,12 @@ const usePoolReceipt = () => {
     const completed = receipts
       .filter((receipt) => receipt.status === "completed")
       .map((receipt) => receipt.id);
-    await router?.claimLiquidites(market.address, completed);
+    if (completed.length <= 0) {
+      errorLog("No receipts");
+      AppError.reject("No completed receupts", "onPoolReceipt");
+      return;
+    }
+    const tx = await router?.claimLiquidites(market.address, completed);
 
     await fetchReceipts();
     await fetchLiquidityPools();
