@@ -100,7 +100,7 @@ export const TradePanel = (props: TradePanelProps) => {
   };
 
   return (
-    <div className="inline-flex flex-col mx-auto bg-white border rounded-2xl drop-shadow-lg">
+    <div className="inline-flex flex-col mx-auto bg-white border shadow-lg rounded-2xl">
       {isWideView ? (
         <div className="relative min-w-[1120px]">
           <div className="flex">

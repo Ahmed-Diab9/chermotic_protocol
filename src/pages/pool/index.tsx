@@ -186,7 +186,7 @@ const Pool = () => {
               onMultiAmountChange={onMultiAmountChange}
             />
             {/* bottom */}
-            <article className="p-5 mx-auto mt-5 bg-white border rounded-2xl drop-shadow-lg">
+            <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <AddressCopyButton

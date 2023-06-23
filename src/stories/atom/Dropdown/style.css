@@ -8,7 +8,6 @@
   [role="menu"] {
     @apply flex flex-col;
     @apply p-2 border rounded;
-    @apply z-10;
   }
   [role="menuitem"] {
     @apply px-2;

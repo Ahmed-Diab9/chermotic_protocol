@@ -45,16 +45,13 @@ export const TradeBar = ({
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
   return (
-    <Popover className="fixed bottom-0 z-30 w-full">
+    <Popover className="fixed bottom-0 w-full">
       {({ open }) => (
         <div className="relative">
           {open ? (
             <>
               {/* backdrop */}
-              <div
-                className="fixed inset-0 z-0 bg-white/80"
-                aria-hidden="true"
-              />
+              <Popover.Overlay className="fixed inset-0 bg-white/80" />
               <div className="relative">
                 <Popover.Button className="absolute right-10 top-[-20px]">
                   <Button
@@ -62,7 +59,7 @@ export const TradeBar = ({
                     className="transform rotate-180"
                   />
                 </Popover.Button>
-                <Popover.Panel>
+                <Popover.Panel className="popover-panel">
                   <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
                       <div className="flex items-end">

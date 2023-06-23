@@ -29,7 +29,7 @@ export const Tooltip = (props: TooltipProps) => {
 
   return (
     <div
-      className={`tooltip tooltip-${position} ${className} text-black/30 !z-50 relative self-center ${
+      className={`tooltip tooltip-${position} ${className} text-black/30 relative self-center ${
         label || "mx-1"
       }`}
     >

@@ -15,8 +15,7 @@
   /* Select(listbox) panel */
   ul[role="listbox"] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
-    @apply p-2 bg-white border border-gray rounded-lg drop-shadow-md;
-    @apply z-10;
+    @apply p-2 bg-white border border-gray rounded-lg shadow-md;
   }
   li[role="option"] {
     @apply flex items-center px-2;

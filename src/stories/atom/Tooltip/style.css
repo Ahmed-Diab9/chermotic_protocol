@@ -1,7 +1,7 @@
 .tooltip {
   @apply inline-flex items-center gap-1;
   &:hover::before {
-    @apply absolute m-[-40px] w-[calc(100%+80px)] h-[calc(100%+80px)];
+    @apply absolute m-[-80px] w-[calc(100%+160px)] h-[calc(100%+160px)];
     content: " ";
   }
 
@@ -24,7 +24,7 @@
 }
 .tooltip-top {
   &:hover::before {
-    @apply !mb-0 !h-[calc(100%+40px)];
+    @apply !mb-0 !h-[calc(100%+80px)];
   }
   .tooltip-tip {
     @apply translate-x-[-50%] left-[50%];
@@ -39,7 +39,7 @@
 }
 .tooltip-right {
   &:hover::before {
-    @apply !ml-0 !w-[calc(100%+40px)];
+    @apply !ml-0 !w-[calc(100%+80px)];
   }
   .tooltip-tip {
     top: -5px;
@@ -54,7 +54,7 @@
 }
 .tooltip-bottom {
   &:hover::before {
-    @apply !mt-0 !h-[calc(100%+40px)];
+    @apply !mt-0 !h-[calc(100%+80px)];
   }
   .tooltip-tip {
     @apply translate-x-[-50%] left-[50%];
@@ -69,7 +69,7 @@
 }
 .tooltip-left {
   &:hover::before {
-    @apply !mr-0 !w-[calc(100%+40px)];
+    @apply !mr-0 !w-[calc(100%+80px)];
   }
   .tooltip-tip {
     top: -5px;

@@ -67,7 +67,7 @@ export const RemoveMultiLiquidityModal = (
     >
       {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 drop-shadow-xl">
+      <div className="fixed inset-0 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -178,13 +178,13 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto border-gray drop-shadow-md"
+                    className="flex-auto shadow-md border-gray"
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}
                   />
                   <Button
-                    className="flex-auto border-gray drop-shadow-md"
+                    className="flex-auto shadow-md border-gray"
                     label="Removable"
                     size="sm"
                     onClick={() => {
