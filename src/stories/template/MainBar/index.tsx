@@ -51,7 +51,7 @@ export const MainBar = ({
 }: MainBarProps) => (
   <div className="relative py-5">
     <div className="flex gap-5 justify-stretch">
-      <div className="flex-auto w-3/5">
+      <div className="flex-auto w-3/5 min-w-[620px]">
         <MarketSelect
           tokens={tokens}
           markets={markets}

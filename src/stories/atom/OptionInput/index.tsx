@@ -47,7 +47,40 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`inline-flex flex-col ${className}`}>
+    <div className={`inline-flex flex-col-reverse ${className}`}>
+      <div className="flex gap-1 mt-2">
+        {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
+        <Button
+          className="flex-auto shadow-md"
+          label="25%"
+          size="sm"
+          css={ratio === 25 ? "active" : "gray"}
+          onClick={() => {
+            onClick(25);
+          }}
+        />
+        <Button
+          className="flex-auto shadow-md"
+          label="50%"
+          size="sm"
+          css={ratio === 50 ? "active" : "gray"}
+          onClick={() => onClick(50)}
+        />
+        <Button
+          className="flex-auto shadow-md"
+          label="75%"
+          size="sm"
+          css={ratio === 75 ? "active" : "gray"}
+          onClick={() => onClick(75)}
+        />
+        <Button
+          className="flex-auto shadow-md"
+          label="Max"
+          size="sm"
+          css={ratio === 100 ? "active" : "gray"}
+          onClick={() => onClick(100)}
+        />
+      </div>
       <Input
         label={label}
         placeholder={placeholder}
@@ -61,42 +94,9 @@ export const OptionInput = (props: OptionInputProps) => {
           setRatio(undefined);
           onChange?.(event);
         }}
-        className="z-10 border-gray"
+        className="relative border-gray"
         onClickAway={onClickAway}
       />
-      <div className="flex gap-1 mt-2">
-        {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
-        <Button
-          className="flex-auto drop-shadow-md"
-          label="25%"
-          size="sm"
-          css={ratio === 25 ? "active" : "gray"}
-          onClick={() => {
-            onClick(25);
-          }}
-        />
-        <Button
-          className="flex-auto drop-shadow-md"
-          label="50%"
-          size="sm"
-          css={ratio === 50 ? "active" : "gray"}
-          onClick={() => onClick(50)}
-        />
-        <Button
-          className="flex-auto drop-shadow-md"
-          label="75%"
-          size="sm"
-          css={ratio === 75 ? "active" : "gray"}
-          onClick={() => onClick(75)}
-        />
-        <Button
-          className="flex-auto drop-shadow-md"
-          label="Max"
-          size="sm"
-          css={ratio === 100 ? "active" : "gray"}
-          onClick={() => onClick(100)}
-        />
-      </div>
     </div>
   );
 };

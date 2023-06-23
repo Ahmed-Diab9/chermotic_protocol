@@ -40,3 +40,23 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* z-index */
+.tooltip .tooltip-tip {
+  @apply z-50;
+}
+.modal {
+  @apply z-40;
+}
+.popover-panel {
+  @apply z-20;
+}
+.WalletPopover {
+  .backdrop {
+    @apply z-10;
+  }
+}
+.select ul[role="listbox"],
+.dropdown [role="menu"] {
+  @apply z-20;
+}

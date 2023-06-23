@@ -23,13 +23,13 @@ export const CurvedButton = (props: CurvedButtonProps) => {
         <CurvedLineBg direction={direction} position={position} />
         {direction === "right" ? (
           <ChevronDoubleRightIcon
-            className={`w-4 z-10 ${
+            className={`w-4 relative ${
               position === direction ? "mr-[-12px]" : "mr-[-4px]"
             }`}
           />
         ) : (
           <ChevronDoubleLeftIcon
-            className={`w-4 z-10 ${
+            className={`w-4 relative ${
               position === direction ? "ml-[-12px]" : "ml-[-4px]"
             }`}
           />
@@ -55,7 +55,7 @@ const CurvedLineBg = (props: CurvedLineBgProps) => {
       height="53"
       fill="none"
       viewBox="0 0 55 53"
-      className={`absolute top-0 z-0 ${
+      className={`absolute top-0 ${
         direction === "right"
           ? position === direction
             ? "mr-[-21px]"
