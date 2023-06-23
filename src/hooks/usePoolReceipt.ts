@@ -1,16 +1,16 @@
 import { BigNumber } from "ethers";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
+import { useAccount } from "wagmi";
+import { FEE_RATE_DECIMAL } from "~/configs/decimals";
 import { AppError } from "~/typings/error";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import { useLiquidityPool } from "./useLiquidityPool";
-import { useChromaticClient } from "./useChromaticClient";
-import useOracleVersion from "./useOracleVersion";
 import { useAppSelector } from "../store";
-import { useAccount } from "wagmi";
-import { useCallback, useMemo } from "react";
-import { FEE_RATE_DECIMAL } from "~/configs/decimals";
-import { percentage, numberBuffer } from "../utils/number";
+import { numberBuffer, percentage } from "../utils/number";
+import { useChromaticClient } from "./useChromaticClient";
+import { useLiquidityPool } from "./useLiquidityPool";
+import useOracleVersion from "./useOracleVersion";
 
 export type LpReceiptAction = "add" | "remove";
 export interface LpReceipt {
@@ -20,7 +20,6 @@ export interface LpReceipt {
   recipient: string;
   feeRate: number;
   status: "standby" | "in progress" | "completed"; // "standby";
-  // title: string;
   name: string;
   action: LpReceiptAction;
 }
