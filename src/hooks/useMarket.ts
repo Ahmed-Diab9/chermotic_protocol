@@ -37,8 +37,6 @@ export const useMarketSelect = () => {
 
   const onMarketSelect = useCallback(
     (market: Market) => {
-      console.log("market selected");
-
       dispatch(marketAction.onMarketSelect(market));
       setStoredMarket(market.description);
     },
