@@ -116,9 +116,6 @@ const usePoolInput = () => {
     }
     setIsLoading(true);
     try {
-    } catch (error) {
-      console.error(error);
-    } finally {
       const marketAddress = market?.address;
       const filteredFeeRates = feeRates.filter(
         (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
@@ -146,9 +143,12 @@ const usePoolInput = () => {
           amount: dividedAmount,
         }))
       );
-      setIsLoading(false);
+
       await fetchReceipts();
       await fetchWalletBalances();
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };
