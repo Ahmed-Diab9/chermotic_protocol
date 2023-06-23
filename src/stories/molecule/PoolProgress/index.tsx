@@ -33,6 +33,10 @@ export const PoolProgress = ({
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
+  const isClaimEnabled =
+    receipts
+      .filter((receipt) => receipt.isCompleted)
+      .map((receipt) => receipt.id).length !== 0;
   return (
     <div className="!flex flex-col border PoolProgress tabs tabs-line tabs-base rounded-2xl">
       <Disclosure>
@@ -59,6 +63,7 @@ export const PoolProgress = ({
                     className="w-full border-gray"
                     size="xl"
                     onClick={() => onReceiptClaimBatch?.()}
+                    disabled={!isClaimEnabled}
                   />
                 </div>
                 <Tab.Panels className="flex-auto mt-5">
