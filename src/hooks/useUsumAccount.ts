@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
 import useSWR from "swr";
-import { useRouter } from "~/hooks/useRouter";
-import { useChromaticClient } from "./useChromaticClient";
 import { errorLog, infoLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
 import { ADDRESS_ZERO } from "~/utils/address";
@@ -16,35 +14,46 @@ import {
   ACCOUNT_STATUS,
 } from "~/typings/account";
 import { handleTx } from "~/utils/tx";
+import { ethers } from "ethers";
+import { CHAIN } from "~/constants/contracts";
+import { useChromaticClient } from "./useChromaticClient";
+import { Client } from "@chromatic-protocol/sdk";
 
 export const useUsumAccount = () => {
   const { data: signer } = useSigner();
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-  const { client } = useChromaticClient()
+  const { client } = useChromaticClient();
+  const router = client?.router();
 
-  const fetchKey = isValid(address) ? ["USUM_ACCOUNT", address] as const : undefined;
+  const fetchKey = isValid(address) ? ["USUM_ACCOUNT", address] : undefined;
 
   const {
     data: account,
     error,
     isLoading,
   } = useSWR(fetchKey, async ([_, address]) => {
-    if (!isValid(client?.signer)) {
-      return;
-    }
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum as any
+    ).getSigner(address);
+    const innerClient = new Client(CHAIN, signer);
+    const router = innerClient.router();
     try {
-      const address = await client?.router().routerContract.getAccount()
+      const address = await router.routerContract.getAccount();
+      console.log("ADDRESS", address);
 
       if (!address || address === ADDRESS_ZERO) {
         return;
       }
-      return ChromaticAccount__factory.connect(address, router.signer);
+      return ChromaticAccount__factory.connect(address, signer);
     } catch (error) {
       errorLog(error);
     }
   });
-  const isValidAccount = isValid(account) && isValid(account.address) && account.address !== ADDRESS_ZERO;
+  const isValidAccount =
+    isValid(account) &&
+    isValid(account.address) &&
+    account.address !== ADDRESS_ZERO;
 
   useEffect(() => {
     if (isLoading) {
@@ -88,7 +97,7 @@ export const useUsumAccount = () => {
     try {
       infoLog("Creating accounts");
       setStatus(ACCOUNT_CREATING);
-      const tx = await router.createAccount();
+      const tx = await router.routerContract.createAccount();
 
       handleTx(tx, () => {
         setStatus(ACCOUNT_COMPLETING);

@@ -26,19 +26,29 @@ function filterResponse(
 }
 
 export const useWalletBalances = () => {
-  const { tokens = [] } = useSettlementToken();
+  const { tokens } = useSettlementToken();
 
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
+  const tokenKey = JSON.stringify(
+    (tokens ?? []).map((token) => ({
+      address: token.address,
+      name: token.name,
+    }))
+  );
 
   const {
     data: walletBalances,
     error,
     mutate: fetchWalletBalances,
   } = useSWR(
-    isValid(walletAddress) ? ["WALLET_BALANCES", walletAddress] : undefined,
-    async ([_, address]) => {
+    isValid(walletAddress)
+      ? ["WALLET_BALANCES", walletAddress, tokenKey]
+      : undefined,
+    async ([_, address, tokenKey]) => {
+      const tokens: { address: string; name: string }[] = JSON.parse(tokenKey);
       if (!isValid(signer)) {
+        infoLog("No signers", "Wallet Balances");
         return;
       }
       const promise = tokens.map(async (token) => {
@@ -48,7 +58,6 @@ export const useWalletBalances = () => {
       });
       const response = await Promise.allSettled(promise);
       const result = filterResponse(response);
-      console.log("useBalance", result);
       return result;
     }
   );
