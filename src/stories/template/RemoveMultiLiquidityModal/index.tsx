@@ -3,7 +3,6 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { ScrollAni } from "~/stories/atom/ScrollAni";
-import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
 import "../Modal/style.css";
 import {
@@ -16,9 +15,7 @@ import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
 import { Bin } from "~/typings/pools";
 import { Token } from "~/typings/market";
-import { isValid } from "~/utils/valid";
 import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
-import { infoLog } from "~/utils/log";
 import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
 import { BigNumber } from "ethers";
 
@@ -28,7 +25,7 @@ export interface RemoveMultiLiquidityModalProps {
   token?: Token;
   type?: MULTI_TYPE;
   balance?: BigNumber;
-  binValue?: BigNumber;
+  clbTokenValue?: BigNumber;
   liquidityValue?: BigNumber;
   freeLiquidity?: BigNumber;
   removableRate?: BigNumber;
@@ -45,7 +42,7 @@ export const RemoveMultiLiquidityModal = (
     token,
     amount = 0,
     balance = bigNumberify(0),
-    binValue = bigNumberify(0),
+    clbTokenValue = bigNumberify(0),
     liquidityValue = bigNumberify(0),
     freeLiquidity = bigNumberify(0),
     removableRate = bigNumberify(0),
@@ -54,7 +51,9 @@ export const RemoveMultiLiquidityModal = (
   } = props;
   const dispatch = useAppDispatch();
   const binDecimals =
-    selectedBins.length > 0 ? selectedBins[0].decimals : BIN_VALUE_DECIMAL;
+    selectedBins.length > 0
+      ? selectedBins[0].clbTokenDecimals
+      : BIN_VALUE_DECIMAL;
 
   return (
     <Dialog
@@ -88,10 +87,10 @@ export const RemoveMultiLiquidityModal = (
                    * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
                    */
                   const utilizedRate = 100 - bin.removableRate;
-                  const utilized = bin.balance
+                  const utilized = bin.clbTokenBalance
                     .mul(Math.round(utilizedRate * percentage()))
                     .div(expandDecimals(FEE_RATE_DECIMAL));
-                  const removable = bin.balance
+                  const removable = bin.clbTokenBalance
                     .mul(Math.round(bin.removableRate * percentage()))
                     .div(expandDecimals(FEE_RATE_DECIMAL));
 
@@ -99,15 +98,19 @@ export const RemoveMultiLiquidityModal = (
                     <LiquidityItem
                       key={bin.baseFeeRate}
                       token={token?.name}
-                      name={bin.description}
+                      name={bin.clbTokenDescription}
                       qty={Number(
-                        formatDecimals(bin.balance, bin?.decimals, 2)
+                        formatDecimals(
+                          bin.clbTokenBalance,
+                          bin?.clbTokenDecimals,
+                          2
+                        )
                       )}
                       utilizedValue={Number(
-                        formatDecimals(utilized, bin?.decimals, 2)
+                        formatDecimals(utilized, bin?.clbTokenDecimals, 2)
                       )}
                       removableValue={Number(
-                        formatDecimals(removable, bin?.decimals, 2)
+                        formatDecimals(removable, bin?.clbTokenDecimals, 2)
                       )}
                     />
                   );
@@ -188,7 +191,7 @@ export const RemoveMultiLiquidityModal = (
                     (
                     {amount &&
                       formatDecimals(
-                        bigNumberify(amount).mul(binValue),
+                        bigNumberify(amount).mul(clbTokenValue),
                         BIN_VALUE_DECIMAL,
                         2
                       )}{" "}
