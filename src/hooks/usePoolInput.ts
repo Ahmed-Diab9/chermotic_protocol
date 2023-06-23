@@ -18,6 +18,7 @@ const usePoolInput = () => {
   const routerApi = client?.router();
   const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
@@ -110,35 +111,43 @@ const usePoolInput = () => {
       errorLog("no router apis");
       return;
     }
-    const marketAddress = market?.address;
-    const filteredFeeRates = feeRates.filter(
-      (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
-    );
-    const expandedAmount = bigNumberify(amount)?.mul(
-      expandDecimals(token.decimals)
-    );
-    if (!isValid(expandedAmount)) {
-      errorLog("amount is invalid");
-      return;
-    }
+    setIsLoading(true);
+    try {
+    } catch (error) {
+      console.error(error);
+    } finally {
+      const marketAddress = market?.address;
+      const filteredFeeRates = feeRates.filter(
+        (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
+      );
+      const expandedAmount = bigNumberify(amount)?.mul(
+        expandDecimals(token.decimals)
+      );
+      if (!isValid(expandedAmount)) {
+        errorLog("amount is invalid");
+        return;
+      }
 
-    const erc20 = IERC20__factory.connect(token.address, signer);
-    const routerAddress = routerApi.routerContract.address;
-    const allowance = await erc20.allowance(address, routerAddress);
-    if (allowance.lte(expandedAmount)) {
-      const tx = await erc20.approve(routerAddress, expandedAmount);
-      tx.wait();
+      const erc20 = IERC20__factory.connect(token.address, signer);
+      const routerAddress = routerApi.routerContract.address;
+      const allowance = await erc20.allowance(address, routerAddress);
+      if (allowance.lte(expandedAmount)) {
+        const tx = await erc20.approve(routerAddress, expandedAmount);
+        tx.wait();
+      }
+      const dividedAmount = expandedAmount.div(bins);
+      await routerApi.addLiquidities(
+        marketAddress,
+        filteredFeeRates.map((feeRate) => ({
+          feeRate,
+          amount: dividedAmount,
+        }))
+      );
+      setIsLoading(false);
+      await fetchReceipts();
+      await fetchWalletBalances();
+      setIsLoading(false);
     }
-    const dividedAmount = expandedAmount.div(bins);
-    await routerApi.addLiquidities(
-      marketAddress,
-      filteredFeeRates.map((feeRate) => ({
-        feeRate,
-        amount: dividedAmount,
-      }))
-    );
-    await fetchReceipts();
-    await fetchWalletBalances();
   };
 
   return {
@@ -147,6 +156,7 @@ const usePoolInput = () => {
     rates,
     bins,
     averageBin,
+    isLoading,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,

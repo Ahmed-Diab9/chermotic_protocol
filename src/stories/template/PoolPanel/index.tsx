@@ -52,6 +52,7 @@ interface PoolPanelProps {
   shortTotalUnusedLiquidity?: BigNumber;
   selectedBins?: Bin[];
   isModalOpen?: boolean;
+  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onRangeChange?: (
     minmax: "min" | "max",
@@ -103,6 +104,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiLiquidityValue,
     multiFreeLiquidity,
     multiRemovableRate,
+    isLoading,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
@@ -186,8 +188,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
   };
 
   useEffect(() => {
-    infoLog(selectedBins);
-  }, [selectedBins]);
+    console.log("Rates", rates);
+  }, [rates]);
 
   return (
     <div className="inline-flex flex-col w-full border rounded-2xl">
@@ -365,6 +367,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   css="active"
                   size="2xl"
                   onClick={onAddLiquidity}
+                  disabled={isLoading}
                 />
               </div>
             </Tab.Panel>
