@@ -35,7 +35,7 @@ export const PoolProgress = ({
   const previousReceipts = usePrevious(receipts, true);
   const isClaimEnabled =
     receipts
-      .filter((receipt) => receipt.isCompleted)
+      .filter((receipt) => receipt.status === "completed")
       .map((receipt) => receipt.id).length !== 0;
   return (
     <div className="!flex flex-col border PoolProgress tabs tabs-line tabs-base rounded-2xl">
@@ -122,7 +122,6 @@ const ProgressItem = (props: ProgressItemProps) => {
     return action === "add" ? "minting" : action === "remove" ? "burning" : "";
   }, [action]);
 
-  
   return (
     <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
       <div className="flex items-center justify-between gap-2">

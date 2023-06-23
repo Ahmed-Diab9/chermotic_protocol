@@ -15,5 +15,8 @@ export interface Price {
 export interface Market {
   address: string;
   description: string;
-  value: IOracleProvider.OracleVersionStructOutput;
+  value: Pick<
+    IOracleProvider.OracleVersionStructOutput,
+    "timestamp" | "version" | "price"
+  >;
 }

@@ -21,8 +21,8 @@ interface MarketSelectProps {
   selectedMarket?: Market;
   feeRate?: BigNumber;
   isGroupLegacy?: boolean;
-  onTokenClick?: (token: Token) => unknown;
-  onMarketClick?: (market: Market) => unknown;
+  onTokenClick?: (token: Token) => void;
+  onMarketClick?: (market: Market) => void;
 }
 
 /**

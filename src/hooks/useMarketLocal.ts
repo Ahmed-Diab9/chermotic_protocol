@@ -2,7 +2,6 @@ import { isValid } from "~/utils/valid";
 import useLocalStorage from "./useLocalStorage";
 import { useAppDispatch } from "~/store";
 import { useCallback, useEffect } from "react";
-import { traceLog } from "~/utils/log";
 import { useMarket } from "./useMarket";
 import { marketAction } from "~/store/reducer/market";
 

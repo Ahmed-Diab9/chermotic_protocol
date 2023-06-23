@@ -45,11 +45,11 @@ const MarketSelectDemo = () => {
     setMarket(newMarket);
   }, [markets]);
 
-  const onTokenClick = (address: string) => {
-    if (token?.address === address) {
+  const onTokenClick = (_token: Token) => {
+    if (token?.address === _token.address) {
       return;
     }
-    const nextToken = tokens.find((token) => token.address === address);
+    const nextToken = tokens.find((token) => token.address === _token.address);
     if (!isValid(nextToken)) {
       errorLog("no settlement tokens selected");
       return;
@@ -57,8 +57,8 @@ const MarketSelectDemo = () => {
     setToken(nextToken);
   };
 
-  const onMarketClick = (address: string) => {
-    setMarket(markets.find((market) => market.address === address)!);
+  const onMarketClick = (_market:Market) => {
+    setMarket(markets.find((market) => market.address === _market.address)!);
   };
 
   return (
