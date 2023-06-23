@@ -139,51 +139,53 @@ const Trade = () => {
             createUsumAccount();
           }}
         />
-        <TradePanel
-          longInput={longInput}
-          longTradeFee={longTradeFee}
-          longTradeFeePercent={longFeePercent}
-          onLongChange={onLongChange}
-          onLongMethodToggle={onLongMethodToggle}
-          onLongLeverageChange={onLongLeverageChange}
-          onLongTakeProfitChange={onLongTakeProfitChange}
-          onLongStopLossChange={onLongStopLossChange}
-          shortInput={shortInput}
-          shortTradeFee={shortTradeFee}
-          shortTradeFeePercent={shortFeePercent}
-          onShortChange={onShortChange}
-          onShortMethodToggle={onShortMethodToggle}
-          onShortLeverageChange={onShortLeverageChange}
-          onShortTakeProfitChange={onShortTakeProfitChange}
-          onShortStopLossChange={onShortStopLossChange}
-          balances={usumBalances}
-          priceFeed={priceFeed}
-          token={selectedToken}
-          market={selectedMarket}
-          longTotalMaxLiquidity={longTotalMaxLiquidity}
-          longTotalUnusedLiquidity={longTotalUnusedLiquidity}
-          shortTotalMaxLiquidity={shortTotalMaxLiquidity}
-          shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-          onOpenLongPosition={onOpenLongPosition}
-          onOpenShortPosition={onOpenShortPosition}
-        />
-        <article className="max-w-[680px] w-full mt-8 mx-auto">
-          <div className="mb-12">
-            <p className="my-6 text-center text-black/30">
-              The Trade Fee is calculated by summing up the different fees from
-              the Liquidi- ty Bins that accept the positions. The EST. Trade Fee
-              is calculated based on the current oracle price, and the actual
-              fee paid is determined by the next oracle price.
-              <Outlink outLink="#" className="ml-2" />
-            </p>
-            <Link to={"/pool"}>
-              <Button
-                label="Provide Liquidity"
-                iconRight={<ChevronRightIcon />}
-              />
-            </Link>
-          </div>
-        </article>
+        <div className="w-full min-w-[620px]">
+          <TradePanel
+            longInput={longInput}
+            longTradeFee={longTradeFee}
+            longTradeFeePercent={longFeePercent}
+            onLongChange={onLongChange}
+            onLongMethodToggle={onLongMethodToggle}
+            onLongLeverageChange={onLongLeverageChange}
+            onLongTakeProfitChange={onLongTakeProfitChange}
+            onLongStopLossChange={onLongStopLossChange}
+            shortInput={shortInput}
+            shortTradeFee={shortTradeFee}
+            shortTradeFeePercent={shortFeePercent}
+            onShortChange={onShortChange}
+            onShortMethodToggle={onShortMethodToggle}
+            onShortLeverageChange={onShortLeverageChange}
+            onShortTakeProfitChange={onShortTakeProfitChange}
+            onShortStopLossChange={onShortStopLossChange}
+            balances={usumBalances}
+            priceFeed={priceFeed}
+            token={selectedToken}
+            market={selectedMarket}
+            longTotalMaxLiquidity={longTotalMaxLiquidity}
+            longTotalUnusedLiquidity={longTotalUnusedLiquidity}
+            shortTotalMaxLiquidity={shortTotalMaxLiquidity}
+            shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+            onOpenLongPosition={onOpenLongPosition}
+            onOpenShortPosition={onOpenShortPosition}
+          />
+          <article className="w-full mx-auto mt-8 max-w-[840px]">
+            <div className="mb-12">
+              <p className="my-6 text-center text-black/30">
+                The Trade Fee is calculated by summing up the different fees
+                from the Liquidi- ty Bins that accept the positions. The EST.
+                Trade Fee is calculated based on the current oracle price, and
+                the actual fee paid is determined by the next oracle price.
+                <Outlink outLink="#" className="ml-2" />
+              </p>
+              <Link to={"/pool"}>
+                <Button
+                  label="Provide Liquidity"
+                  iconRight={<ChevronRightIcon />}
+                />
+              </Link>
+            </div>
+          </article>
+        </div>
       </section>
       <TradeBar
         token={selectedToken}

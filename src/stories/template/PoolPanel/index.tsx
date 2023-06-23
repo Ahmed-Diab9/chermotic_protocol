@@ -181,7 +181,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     <div className="inline-flex flex-col w-full bg-white border rounded-2xl drop-shadow-lg">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
-          <Tab.List className="w-[50vw] max-w-[840px] mx-auto pt-4 flex !justify-center">
+          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
             <Tab className="text-2xl">ADD</Tab>
             <Tab className="text-2xl">REMOVE</Tab>
           </Tab.List>
@@ -380,15 +380,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex items-center justify-between flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <article className="flex flex-col xl:flex-row xl:items-center xl:justify-between justify-around flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
-                    <p className="flex mb-2 font-semibold text-black/30">
+                    <p className="flex mb-2 font-semibold text-left text-black/30">
                       Total Liquidity Value
                       <Tooltip tip="The value of my CLB tokens converted into the current token value." />
                     </p>
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
-                  <h4 className="text-xl">
+                  <h4 className="text-xl text-left xl:text-right">
                     {/**
                      * @TODO
                      * 총 유동성 보여주는 로직
@@ -398,32 +398,35 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl">
-                  <div className="flex justify-between">
-                    <div className="flex items-center font-medium text-black/30">
+                <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl text-left">
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                    <div className="flex items-center font-medium text-left text-black/30">
                       LP Bins
                     </div>
-                    <p className="text-right">{binLength.toFixed(2)} Bins</p>
+                    <p className="">{binLength.toFixed(2)} Bins</p>
                   </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center font-medium text-black/30">
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                    <div className="flex items-center font-medium text-left text-black/30">
                       My Liquidity Value
-                      <Tooltip tip="The value of my CLB tokens converted into the current token value." />
+                      <Tooltip
+                        tip="The value of my CLB tokens converted into the current token value."
+                        className="inline"
+                      />
                     </div>
-                    <p className="text-right">
+                    <p className="">
                       {formatDecimals(totalLiquidity, token?.decimals, 2)}{" "}
                       {token?.name}
                     </p>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
                     <div className="flex font-medium text-left text-black/30">
-                      <p>Removable Liquidity</p>
+                      Removable Liquidity
                       <Tooltip
                         tip="The amount of liquidity that is currently removable due to not being utilized."
                         outLink="#"
                       />
                     </div>
-                    <p className="text-right">
+                    <p className="">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)}{" "}
                       {token?.name} (
                       {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
@@ -436,7 +439,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
               {/* inner tab */}
               <section className="tabs-line tabs-base">
                 <Tab.Group>
-                  <div className="flex items-baseline">
+                  <div className="flex flex-wrap items-baseline">
                     <Tab.List className="pt-[36px] !justify-start !gap-10">
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>

@@ -102,10 +102,10 @@ export const TradePanel = (props: TradePanelProps) => {
   return (
     <div className="inline-flex flex-col mx-auto bg-white border rounded-2xl drop-shadow-lg">
       {isWideView ? (
-        <div className="relative">
+        <div className="relative min-w-[1120px]">
           <div className="flex">
             <div className="px-0 pt-6 pb-10 border-r">
-              <div className="w-[50vw] max-w-[680px] mb-10">
+              <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                   SHORT
                 </h2>
@@ -130,7 +130,7 @@ export const TradePanel = (props: TradePanelProps) => {
               />
             </div>
             <div className="px-0 pt-6 pb-10">
-              <div className="w-[50vw] max-w-[680px] mb-10">
+              <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                   LONG
                 </h2>
@@ -179,24 +179,24 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
         </div>
       ) : (
-        <div className="relative tabs tabs-line tabs-lg">
+        <div className="relative w-full tabs tabs-line tabs-lg">
           <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-            <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-4 flex gap-10">
+            <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
               <Tab
                 value="short"
-                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
               >
                 SHORT
               </Tab>
               <Tab
                 value="long"
-                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
               >
                 LONG
               </Tab>
             </Tab.List>
             <Tab.Panels className="flex flex-col items-center w-full">
-              <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
+              <Tab.Panel className="w-full px-0 py-10">
                 <TradeContent
                   direction="short"
                   balances={balances}
@@ -216,7 +216,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   onOpenPosition={onOpenShortPosition}
                 />
               </Tab.Panel>
-              <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
+              <Tab.Panel className="w-full px-0 py-10">
                 <TradeContent
                   direction="long"
                   balances={balances}
