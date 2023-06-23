@@ -13,7 +13,6 @@ import {
   LiquidityPool,
   LiquidityPoolSummary,
 } from "../typings/pools";
-// import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useWalletBalances } from "./useBalances";
@@ -66,11 +65,11 @@ export const useLiquidityPool = () => {
     const precision = bigNumberify(10).pow(10);
     const baseFeeRates = [
       ...LONG_FEE_RATES,
-      ...SHORT_FEE_RATES.map((rate) => rate * -1),
+      ...LONG_FEE_RATES.map((rate) => rate * -1),
     ];
     const feeRates = [
       ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
-      ...SHORT_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+      ...LONG_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
     ];
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);
@@ -248,7 +247,7 @@ export const useSelectedLiquidityPool = () => {
 
       await routerApi.removeLiquidity(pool.marketAddress, {
         feeRate,
-      receipient: address,
+        receipient: address,
         clbTokenAmount: expandedAmount,
       });
       await fetchReceipts();

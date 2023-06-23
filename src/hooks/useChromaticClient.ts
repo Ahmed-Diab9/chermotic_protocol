@@ -22,7 +22,7 @@ export function useChromaticClient() {
       if (isConnected && signer) client.signer = signer;
       if (provider) client.provider = provider;
     }
-  }, [provider, signer, isConnected]);
+  }, [provider]);
 
   return {
     client,
