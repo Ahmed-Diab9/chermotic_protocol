@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
@@ -40,17 +40,19 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
-  const balance = isValid(selectedBin) ? selectedBin.balance : bigNumberify(0);
+  const balance = isValid(selectedBin)
+    ? selectedBin.clbTokenBalance
+    : bigNumberify(0);
   const utilizedRate = isValid(selectedBin)
     ? 100 - selectedBin.removableRate
     : 0;
   const utilized = isValid(selectedBin)
-    ? selectedBin.balance
+    ? selectedBin.clbTokenBalance
         .mul(Math.round(utilizedRate * percentage()))
         .div(expandDecimals(FEE_RATE_DECIMAL))
     : bigNumberify(0);
   const removable = isValid(selectedBin)
-    ? selectedBin?.balance
+    ? selectedBin?.clbTokenBalance
         .mul(Math.round(selectedBin.removableRate * percentage()))
         .div(expandDecimals(FEE_RATE_DECIMAL))
     : bigNumberify(0);
@@ -80,13 +82,15 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             <article className="flex flex-col border border-gray rounded-xl">
               <LiquidityItem
                 token={token?.name}
-                name={selectedBin?.description}
-                qty={Number(formatDecimals(balance, selectedBin?.decimals, 2))}
+                name={selectedBin?.clbTokenDescription}
+                qty={Number(
+                  formatDecimals(balance, selectedBin?.clbTokenDecimals, 2)
+                )}
                 utilizedValue={Number(
-                  formatDecimals(utilized, selectedBin?.decimals, 2)
+                  formatDecimals(utilized, selectedBin?.clbTokenDecimals, 2)
                 )}
                 removableValue={Number(
-                  formatDecimals(removable, selectedBin?.decimals, 2)
+                  formatDecimals(removable, selectedBin?.clbTokenDecimals, 2)
                 )}
               />
             </article>
@@ -98,7 +102,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 {selectedBin && (
                   <p>
                     {formatDecimals(
-                      selectedBin.balance
+                      selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
                         .div(expandDecimals(BIN_VALUE_DECIMAL)),
                       token?.decimals,
@@ -148,7 +152,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const liquidityValue = selectedBin.balance
+                      const liquidityValue = selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
                         .div(expandDecimals(BIN_VALUE_DECIMAL));
                       const nextAmount = liquidityValue?.lt(
