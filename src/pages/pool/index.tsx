@@ -104,7 +104,7 @@ const Pool = () => {
   const {
     type: multiType,
     amount: multiAmount,
-    balance: multiBalance,
+    clbTokenBalance: multiClbTokenBalance,
     liquidityValue: multiLiquidityValue,
     removableLiquidity: multiFreeLiquidity,
     removableRate: multiRemovableRate,
@@ -187,7 +187,7 @@ const Pool = () => {
               onRemoveLiquidityBatch={onRemoveLiquidityBatch}
               multiType={multiType}
               multiAmount={multiAmount}
-              multiBalance={multiBalance}
+              multiBalance={multiClbTokenBalance}
               multiLiquidityValue={multiLiquidityValue}
               multiFreeLiquidity={multiFreeLiquidity}
               multiRemovableRate={multiRemovableRate}

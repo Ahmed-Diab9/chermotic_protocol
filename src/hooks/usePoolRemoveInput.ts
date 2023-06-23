@@ -14,7 +14,10 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return record + bin.balance.div(expandDecimals(bin.decimals)).toNumber();
+      return (
+        record +
+        bin.clbTokenBalance.div(expandDecimals(bin.clbTokenDecimals)).toNumber()
+      );
     }, 0);
   }, [bins]);
 
@@ -43,40 +46,42 @@ export const usePoolRemoveInput = () => {
 export const useMultiPoolRemoveInput = () => {
   const [type, setType] = useState<MULTI_TYPE>(MULTI_ALL);
   const bins = useAppSelector((state) => state.pools.selectedBins);
-  const binDecimals = bins.length > 0 ? bins[0].decimals : BIN_VALUE_DECIMAL;
-  const { balance, liquidityValue, removableLiquidity } = useMemo(() => {
-    return bins.reduce(
-      (record, bin) => {
-        const { balance, binValue, freeLiquidity } = bin;
-        const liquidityValue = balance
-          .mul(binValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
-        return {
-          balance: record.balance.add(balance),
-          liquidityValue: record.liquidityValue.add(liquidityValue),
-          removableLiquidity: record.removableLiquidity.add(freeLiquidity),
-        };
-      },
-      {
-        balance: bigNumberify(0),
-        liquidityValue: bigNumberify(0),
-        removableLiquidity: bigNumberify(0),
-      }
-    );
-  }, [bins]);
+  const binDecimals =
+    bins.length > 0 ? bins[0].clbTokenDecimals : BIN_VALUE_DECIMAL;
+  const { clbTokenBalance, liquidityValue, removableLiquidity } =
+    useMemo(() => {
+      return bins.reduce(
+        (record, bin) => {
+          const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
+          const liquidityValue = clbTokenBalance
+            .mul(clbTokenValue)
+            .div(expandDecimals(BIN_VALUE_DECIMAL));
+          return {
+            clbTokenBalance: record.clbTokenBalance.add(clbTokenBalance),
+            liquidityValue: record.liquidityValue.add(liquidityValue),
+            removableLiquidity: record.removableLiquidity.add(freeLiquidity),
+          };
+        },
+        {
+          clbTokenBalance: bigNumberify(0),
+          liquidityValue: bigNumberify(0),
+          removableLiquidity: bigNumberify(0),
+        }
+      );
+    }, [bins]);
   const removableRate = removableLiquidity
     .mul(expandDecimals(FEE_RATE_DECIMAL))
     .div(liquidityValue.eq(0) ? 1 : liquidityValue);
   const binValue = liquidityValue
     .mul(expandDecimals(BIN_VALUE_DECIMAL))
-    .div(balance.eq(0) ? 1 : balance);
+    .div(clbTokenBalance.eq(0) ? 1 : clbTokenBalance);
   const removable = removableLiquidity.lt(liquidityValue)
     ? removableLiquidity
     : liquidityValue;
 
   const amount =
     type === MULTI_ALL
-      ? balance
+      ? clbTokenBalance
       : removable.mul(expandDecimals(BIN_VALUE_DECIMAL)).div(binValue);
   const onAmountChange = (type: MULTI_TYPE) => {
     setType(type);
@@ -85,7 +90,7 @@ export const useMultiPoolRemoveInput = () => {
   return {
     type,
     amount: amount.div(expandDecimals(binDecimals)).toNumber(),
-    balance,
+    clbTokenBalance,
     liquidityValue,
     removableLiquidity,
     removableRate,

@@ -132,6 +132,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <p className="text-black/30">
               {balances &&
                 token &&
+                balances[token.name] &&
                 withComma(
                   formatDecimals(balances[token.name], token.decimals, 2)
                 )}{" "}
