@@ -35,6 +35,7 @@ interface TradeContentProps {
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
   liquidityData?: any[];
+  tooltip: React.ReactElement<any>;
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -64,6 +65,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    tooltip,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -308,6 +310,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           height={300}
           data={liquidityData}
           selectedAmount={input.quantity}
+          tooltip={tooltip}
         />
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">

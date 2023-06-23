@@ -11,6 +11,10 @@ import { TradePanel } from "~/stories/template/TradePanel";
 import { TradeBar } from "~/stories/template/TradeBar";
 import { Button } from "~/stories/atom/Button";
 import { Outlink } from "~/stories/atom/Outlink";
+import {
+  LiquidityTooltip,
+  LiquidityTooltipData,
+} from "~/stories/molecule/LiquidityTooltip";
 
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import {
@@ -99,7 +103,11 @@ const Trade = () => {
   }, [shortInput.direction, onShortDirectionToggle]);
   const { positions, onClosePosition, onClaimPosition } = usePosition();
 
-  const { negative, positive } = useChartData();
+  const { positive, negative } = useChartData();
+
+  const getTooltipGetter =
+    (tooltip: LiquidityTooltipData[]) => (index: number) =>
+      tooltip[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -167,8 +175,18 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-            shortLiquidityData={negative}
-            longLiquidityData={positive}
+            shortLiquidityData={negative.liquidity}
+            longLiquidityData={positive.liquidity}
+            shortTooltip={
+              <LiquidityTooltip
+                getByIndex={getTooltipGetter(negative.tooltip)}
+              />
+            }
+            longTooltip={
+              <LiquidityTooltip
+                getByIndex={getTooltipGetter(positive.tooltip)}
+              />
+            }
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />

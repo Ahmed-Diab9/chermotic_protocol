@@ -52,6 +52,9 @@ export interface TradePanelProps {
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
 
+  shortTooltip: React.ReactElement<any>;
+  longTooltip: React.ReactElement<any>;
+
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
 }
@@ -84,6 +87,8 @@ export const TradePanel = (props: TradePanelProps) => {
     shortTotalUnusedLiquidity,
     longLiquidityData,
     shortLiquidityData,
+    shortTooltip,
+    longTooltip,
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
@@ -132,6 +137,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={shortLiquidityData}
+                tooltip={shortTooltip}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -158,6 +164,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
                 liquidityData={longLiquidityData}
+                tooltip={longTooltip}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -221,6 +228,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   tradeFee={shortTradeFee}
                   tradeFeePercent={shortTradeFeePercent}
+                  tooltip={shortTooltip}
                   onMethodToggle={onShortMethodToggle}
                   onInputChange={onShortChange}
                   onLeverageChange={onShortLeverageChange}
@@ -242,6 +250,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   totalUnusedLiquidity={longTotalUnusedLiquidity}
                   tradeFee={longTradeFee}
                   tradeFeePercent={longTradeFeePercent}
+                  tooltip={longTooltip}
                   onMethodToggle={onLongMethodToggle}
                   onInputChange={onLongChange}
                   onLeverageChange={onLongLeverageChange}

@@ -12,6 +12,7 @@ import { Footer } from "~/stories/template/Footer";
 import { Button } from "~/stories/atom/Button";
 import { Outlink } from "~/stories/atom/Outlink";
 import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
+import { LiquidityTooltip } from "~/stories/molecule/LiquidityTooltip";
 
 // import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -112,7 +113,9 @@ const Pool = () => {
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
-  const { liquidity, binValue } = useChartData();
+  const { liquidity, binValue, tooltip } = useChartData();
+
+  const getTooltipByIndex = (index: number) => tooltip[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -180,6 +183,7 @@ const Pool = () => {
               onMaxIncrease={move.right.next}
               onMaxDecrease={move.right.prev}
               onFullRange={move.full}
+              tooltip={<LiquidityTooltip getByIndex={getTooltipByIndex} />}
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}

@@ -94,6 +94,8 @@ interface PoolPanelProps {
   onMaxIncrease: () => void;
   onMaxDecrease: () => void;
   onFullRange?: () => unknown;
+
+  tooltip: React.ReactElement<any>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -138,6 +140,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMaxIncrease,
     onMaxDecrease,
     onFullRange,
+    tooltip,
   } = props;
 
   const dispatch = useAppDispatch();
@@ -321,6 +324,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     height={200}
                     onChange={onRangeChange}
                     isDotVisible={isBinValueVisible}
+                    tooltip={tooltip}
                   />
                 </article>
 
