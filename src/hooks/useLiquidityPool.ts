@@ -1,18 +1,12 @@
 import { CLBToken__factory } from "@chromatic-protocol/sdk/contracts";
-import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo } from "react";
 import useSWR from "swr";
 import { useAccount, useProvider, useSigner } from "wagmi";
 import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
 import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
-import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { FEE_RATES } from "../configs/feeRate";
 import { useAppDispatch, useAppSelector } from "../store";
-import {
-  Bin,
-  CLBTokenBatch,
-  LiquidityPool,
-  LiquidityPoolSummary,
-} from "../typings/pools";
+import { Bin, LiquidityPool, LiquidityPoolSummary } from "../typings/pools";
 import { bigNumberify, expandDecimals } from "../utils/number";
 import { isValid } from "../utils/valid";
 import { useWalletBalances } from "./useBalances";
@@ -23,6 +17,7 @@ import { useSettlementToken } from "./useSettlementToken";
 import { poolsAction } from "~/store/reducer/pools";
 import { useMarket } from "./useMarket";
 import { Logger } from "../utils/log";
+import { filterIfFulfilled } from "~/utils/array";
 const logger = Logger("useLiquidityPool.ts");
 
 export const useLiquidityPool = () => {
@@ -35,19 +30,24 @@ export const useLiquidityPool = () => {
   const { oracleVersions } = useOracleVersion();
 
   const fetchKey =
-    isValid(walletAddress) && isValid(tokenAddresses)
-      ? (["LIQUIDITY_POOL", walletAddress, tokenAddresses] as const)
+    isValid(walletAddress) &&
+    isValid(tokenAddresses) &&
+    isValid(selectedMarket?.address)
+      ? ([
+          "LIQUIDITY_POOL",
+          walletAddress,
+          tokenAddresses,
+          selectedMarket?.address,
+        ] as const)
       : undefined;
 
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(fetchKey, async ([_, walletAddress, tokenAddresses]) => {
-    if (!selectedMarket) {
-      logger.log("useSWR", "selected market is undefined");
-      return [];
-    }
+  } = useSWR(
+    fetchKey,
+    async ([_, walletAddress, tokenAddresses, marketAddress]) => {
     if (!isValid(oracleVersions)) {
       logger.info("OracleVersions");
       return;
@@ -61,15 +61,14 @@ export const useLiquidityPool = () => {
       return;
     }
     const factory = client.marketFactory();
-    const lens = client.lens();
     const precision = bigNumberify(10).pow(10);
     const baseFeeRates = [
-      ...LONG_FEE_RATES,
-      ...LONG_FEE_RATES.map((rate) => rate * -1),
+        ...FEE_RATES,
+        ...FEE_RATES.map((rate) => rate * -1),
     ];
     const feeRates = [
-      ...LONG_FEE_RATES.map((rate) => bigNumberify(rate)),
-      ...LONG_FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
+        ...FEE_RATES.map((rate) => bigNumberify(rate)),
+        ...FEE_RATES.map((rate) => bigNumberify(rate).add(precision)),
     ];
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);

@@ -1,7 +1,7 @@
 import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
 import { useMemo, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
-import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
+import { FEE_RATES } from "../configs/feeRate";
 import { useAppSelector } from "../store";
 import { errorLog, infoLog } from "../utils/log";
 import { bigNumberify, expandDecimals } from "../utils/number";
@@ -24,7 +24,10 @@ const usePoolInput = () => {
   const { fetchReceipts } = usePoolReceipt();
   const { fetchWalletBalances } = useWalletBalances();
   const feeRates = useMemo(() => {
-    return SHORT_FEE_RATES.map((rate) => rate * -1).concat(LONG_FEE_RATES);
+    return [...FEE_RATES]
+      .reverse()
+      .map((rate) => rate * -1)
+      .concat(FEE_RATES);
   }, []);
   const [amount, setAmount] = useState("");
   const [indexes, setIndexes] = useState<[number, number]>([35, 36]);
