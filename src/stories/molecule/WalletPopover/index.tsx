@@ -22,8 +22,8 @@ import {
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "../../../typings/pools";
-import debug from 'debug'
-const log = debug('WalletPopOver')
+import debug from "debug";
+const log = debug("WalletPopOver");
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
@@ -156,16 +156,14 @@ export const WalletPopover = ({
                                       />
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
-                                          {priceFeed[token.name] &&
-                                            "$" +
-                                              withComma(
-                                                formatBalance(
-                                                  balances[token.name],
-                                                  token,
-                                                  priceFeed[token.name]
-                                                  // MARKET ETH / USD
-                                                )
-                                              )}
+                                          $
+                                          {withComma(
+                                            formatBalance(
+                                              balances[token.name],
+                                              token,
+                                              priceFeed[token.name]
+                                            )
+                                          )}
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
                                           {withComma(

@@ -37,7 +37,6 @@ import {
   useMultiPoolRemoveInput,
   usePoolRemoveInput,
 } from "~/hooks/usePoolRemoveInput";
-import { infoLog } from "~/utils/log";
 import { useTokenLocal } from "../../hooks/useTokenLocal";
 import { useMarketLocal } from "../../hooks/useMarketLocal";
 
@@ -90,6 +89,7 @@ const Pool = () => {
     rates,
     bins,
     averageBin,
+    isLoading,
     onAmountChange,
     onRangeChange,
     onFullRangeSelect,
@@ -113,6 +113,7 @@ const Pool = () => {
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
+
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
@@ -173,6 +174,7 @@ const Pool = () => {
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
               selectedBins={selectedBins}
               isModalOpen={isRemoveModalOpen}
+              isLoading={isLoading}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
               onFullRangeSelect={onFullRangeSelect}

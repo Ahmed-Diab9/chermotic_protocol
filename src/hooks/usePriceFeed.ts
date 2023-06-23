@@ -2,12 +2,9 @@ import useSWR from "swr";
 import { ethers, BigNumber } from "ethers";
 import { useAccount } from "wagmi";
 import { AggregatorV3Interface__factory } from "@chromatic-protocol/sdk/contracts";
-import { useAppSelector } from "../store";
-import { Market, Price } from "../typings/market";
+import { Price } from "../typings/market";
 import { errorLog } from "../utils/log";
 import { isValid } from "../utils/valid";
-import { useChromaticClient } from "./useChromaticClient";
-import { useSettlementToken } from "./useSettlementToken";
 import { PRICE_FEED } from "../configs/token";
 
 const usePriceFeed = () => {
@@ -17,9 +14,7 @@ const usePriceFeed = () => {
     data: priceFeed,
     error,
     mutate: fetchPriceFeed,
-  } = useSWR(
-    fetchKey,
-    async ([_, walletAddress]) => {
+  } = useSWR(fetchKey, async ([_, walletAddress]) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum as any);
     const signer = provider.getSigner(walletAddress);
     const tokens = Object.keys(PRICE_FEED);
@@ -46,7 +41,7 @@ const usePriceFeed = () => {
         acc[token] = { value, decimals };
         return acc;
       }, {} as Record<string, Price>);
-    });
+  });
 
   if (error) {
     errorLog(error);
