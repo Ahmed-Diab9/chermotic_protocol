@@ -70,7 +70,7 @@ interface PoolPanelProps {
   multiType?: MULTI_TYPE;
   multiAmount?: number;
   multiBalance?: BigNumber;
-  multiBinValue?: BigNumber;
+  multiClbTokenValue?: BigNumber;
   multiLiquidityValue?: BigNumber;
   multiFreeLiquidity?: BigNumber;
   multiRemovableRate?: BigNumber;
@@ -100,7 +100,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiType,
     multiAmount,
     multiBalance,
-    multiBinValue,
+    multiClbTokenValue,
     multiLiquidityValue,
     multiFreeLiquidity,
     multiRemovableRate,
@@ -118,7 +118,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
   const binLength = (pool?.bins ?? []).filter((bin) =>
-    bin.balance.gt(0)
+    bin.clbTokenBalance.gt(0)
   ).length;
 
   /**
@@ -132,12 +132,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
   } = useMemo(() => {
     return (pool?.bins ?? []).reduce(
       (record, bin) => {
-        const { balance, binValue, liquidity, freeLiquidity } = bin;
-        const liquidityValue = balance
-          .mul(binValue)
+        const { clbTokenBalance, clbTokenValue, liquidity, freeLiquidity } =
+          bin;
+        const liquidityValue = clbTokenBalance
+          .mul(clbTokenValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
         return {
-          balance: record.balance.add(balance),
+          balance: record.balance.add(clbTokenBalance),
           liquidityValue: record.liquidityValue.add(liquidityValue),
           liquidity: record.liquidity.add(liquidity),
           removableLiquidity: record.removableLiquidity.add(freeLiquidity),
@@ -154,15 +155,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
   const ownedLongLiquidityBins = useMemo(
     () =>
-      pool?.bins?.filter((bin) => bin.balance.gt(0) && bin.baseFeeRate > 0) ||
-      [],
+      pool?.bins?.filter(
+        (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0
+      ) || [],
     [pool]
   );
 
   const ownedShortLiquidityBins = useMemo(
     () =>
-      pool?.bins?.filter((bin) => bin.balance.gt(0) && bin.baseFeeRate < 0) ||
-      [],
+      pool?.bins?.filter(
+        (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0
+      ) || [],
     [pool]
   );
   /**
@@ -208,6 +211,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <p className="text-black/30">
                     {balances &&
                       token &&
+                      balances[token.name] &&
                       withComma(
                         formatDecimals(balances[token.name], token.decimals, 0)
                       )}{" "}
@@ -219,6 +223,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   maxValue={
                     balances &&
                     token &&
+                    balances[token.name] &&
                     formatDecimals(balances[token.name], token.decimals, 0)
                   }
                   onChange={(event) => onAmountChange?.(event.target.value)}
@@ -505,7 +510,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             type={multiType}
             amount={multiAmount}
             balance={multiBalance}
-            binValue={multiBinValue}
+            clbTokenValue={multiClbTokenValue}
             liquidityValue={multiLiquidityValue}
             freeLiquidity={multiFreeLiquidity}
             removableRate={multiRemovableRate}
@@ -565,7 +570,7 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              if (bin?.balance.gt(0)) {
+              if (bin?.clbTokenBalance.gt(0)) {
                 dispatch(poolsAction.onBinSelect(bin));
               }
             }}
@@ -580,7 +585,10 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
-            <p>{bin && formatDecimals(bin.balance, bin?.decimals, 2)}</p>
+            <p>
+              {bin &&
+                formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}
+            </p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
@@ -597,7 +605,7 @@ const BinItem = (props: BinItemProps) => {
             <p>
               {bin &&
                 formatDecimals(
-                  bin.balance
+                  bin.clbTokenBalance
                     .mul(bin.binValue)
                     .div(expandDecimals(BIN_VALUE_DECIMAL)),
                   token?.decimals,
