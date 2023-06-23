@@ -152,18 +152,32 @@ const usePoolReceipt = () => {
       errorLog("no router contracts");
       return AppError.reject("no router contracts", "onPoolReceipt");
     }
-    const completed = receipts
-      .filter((receipt) => receipt.status === "completed")
+    const addCompleted = receipts
+      .filter(
+        (receipt) => receipt.action === "add" && receipt.status === "completed"
+      )
       .map((receipt) => receipt.id);
-    if (completed.length <= 0) {
+    const removeCompleted = receipts
+      .filter((receipt) => receipt.action === "remove")
+      .map((receipt) => receipt.id);
+    if (addCompleted.length <= 0 && removeCompleted.length <= 0) {
       errorLog("No receipts");
       AppError.reject("No completed receupts", "onPoolReceipt");
       return;
     }
-    await router?.claimLiquidites(market.address, completed);
-
-    await fetchReceipts();
-    await fetchLiquidityPools();
+    try {
+      const response = await Promise.allSettled([
+        addCompleted.length > 0
+          ? router?.claimLiquidites(market.address, addCompleted)
+          : undefined,
+        removeCompleted.length > 0
+          ? router?.withdrawLiquidity(market.address, removeCompleted)
+          : undefined,
+      ]);
+      response.filter(({ status }) => status === "rejected").map(console.error);
+      await fetchReceipts();
+      await fetchLiquidityPools();
+    } catch (error) {}
   }, [market, receipts, router]);
 
   if (error) {
