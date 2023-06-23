@@ -267,15 +267,15 @@ export const useSelectedLiquidityPool = () => {
         return;
       }
       const amounts = bins.map((bin) => {
-        const { balance, binValue, freeLiquidity } = bin;
-        const liquidityValue = balance
-          .mul(binValue)
+        const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
+        const liquidityValue = clbTokenBalance
+          .mul(clbTokenValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
         const removable = liquidityValue.lt(freeLiquidity)
           ? liquidityValue
           : freeLiquidity;
 
-        return type === MULTI_ALL ? balance : removable;
+        return type === MULTI_ALL ? clbTokenBalance : removable;
       });
       await routerApi.removeLiquidities(
         market.address,
@@ -328,11 +328,11 @@ export const useLiquidityPoolSummary = () => {
       }
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
-      const myBins = bins.filter((bin) => bin.balance.gt(0));
+      const myBins = bins.filter((bin) => bin.clbTokenBalance.gt(0));
       logger.log("myBins", myBins);
       for (let index = 0; index < myBins.length; index++) {
         const bin = bins[index];
-        const addValue = bin.balance
+        const addValue = bin.clbTokenBalance
           .mul(bin.binValue)
           .div(expandDecimals(BIN_VALUE_DECIMAL));
         liquiditySum = liquiditySum.add(addValue);
