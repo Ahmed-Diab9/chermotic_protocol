@@ -33,7 +33,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
   } = props;
 
   return (
-    <>
+    <div className="tooltip">
       {tipOnly || (
         <span
           className={`self-center mx-1 tooltip-${label} tooltip-icon ${className}`}
@@ -44,7 +44,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
       {iconOnly || (
         <Tooltip
           anchorSelect={`.tooltip-${label}`}
-          className={`z-50 text-${align} !bg-black`}
+          className={`z-50 text-${align} !bg-black !rounded-lg`}
           place={position}
           clickable
           // isOpen
@@ -62,6 +62,6 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
           </div>
         </Tooltip>
       )}
-    </>
+    </div>
   );
 };
