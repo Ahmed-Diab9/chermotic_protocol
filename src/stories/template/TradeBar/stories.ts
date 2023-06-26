@@ -13,10 +13,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ViewAssetBalance: Story = {
-  args: {
-    positions: [],
-  },
-};
-
 export const Empty: Story = {};
