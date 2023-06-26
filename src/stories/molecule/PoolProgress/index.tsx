@@ -1,7 +1,7 @@
 import { Thumbnail } from "~/stories/atom/Thumbnail";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Tag } from "~/stories/atom/Tag";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { Button } from "~/stories/atom/Button";
 import { Progress } from "~/stories/atom/Progress";
 import { Loading } from "~/stories/atom/Loading";
@@ -43,7 +43,10 @@ export const PoolProgress = ({
                 <h4 className="flex font-bold">
                   IN PROGRESS
                   <span className="ml-[2px] mr-1">({receipts.length})</span>
-                  <Tooltip tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.' />
+                  <TooltipGuide
+                    label="in-progress"
+                    tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
+                  />
                 </h4>
                 {open && (
                   <p className="mt-1 ml-auto text-sm text-black/30">
@@ -127,6 +130,13 @@ export const PoolProgress = ({
                         />
                         <ProgressItem
                           title="minting"
+                          status="standby"
+                          detail="Waiting for the next oracle round"
+                          name="ETH/USD +0.03%"
+                          progressPercent={0}
+                        />
+                        <ProgressItem
+                          title="minting"
                           status="completed"
                           detail="3,000.45 CLB"
                           name="ETH/USD +0.03%"
@@ -199,6 +209,45 @@ export const PoolProgress = ({
                       progressPercent={100}
                     />
                   </Tab.Panel>
+                  <div>
+                    <TooltipGuide
+                      tipOnly
+                      label="minting-standby"
+                      // todo: 퍼센트값 불러오기
+                      tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                      outLink="#"
+                      outLinkAbout="Next Oracle Round"
+                    />
+                    <TooltipGuide
+                      tipOnly
+                      label="minting-completed"
+                      tip="The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
+                      outLink="#"
+                      outLinkAbout="Next Oracle Round"
+                    />
+                    <TooltipGuide
+                      tipOnly
+                      label="burning-standby"
+                      // todo: 퍼센트값 불러오기
+                      tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
+                      outLink="#"
+                      outLinkAbout="Next Oracle Round"
+                    />
+                    <TooltipGuide
+                      tipOnly
+                      label="buring-in-progress"
+                      tip="The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
+                      outLink="#"
+                      outLinkAbout="Next Oracle Round"
+                    />
+                    <TooltipGuide
+                      tipOnly
+                      label="buring-completed"
+                      tip="The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
+                      outLink="#"
+                      outLinkAbout="Next Oracle Round"
+                    />
+                  </div>
                 </Tab.Panels>
               </Tab.Group>
             </Disclosure.Panel>
@@ -252,24 +301,19 @@ const ProgressItem = (props: ProgressItemProps) => {
               // />
               <Tag label="in progress" className="text-black/50 bg-gray/20" />
             )}
-            <Tooltip
-              outLink="#"
-              outLinkAbout="Next Oracle Round"
-              tip={
-                // todo: 퍼센트값 불러오기 (백틱 표시)
-                title === "minting" && status === "standby"
-                  ? `Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day.`
-                  : title === "minting" && status === "completed"
-                  ? "The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
-                  : title === "burning" && status === "standby"
-                  ? `Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day.`
-                  : title === "burning" && status === "in progress"
-                  ? "The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
-                  : title === "burning" && status === "completed"
-                  ? "The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
-                  : ""
-              }
-            />
+            {title === "minting" && status === "standby" ? (
+              <TooltipGuide iconOnly label="minting-standby" />
+            ) : title === "minting" && status === "completed" ? (
+              <TooltipGuide iconOnly label="minting-completed" />
+            ) : title === "burning" && status === "standby" ? (
+              <TooltipGuide iconOnly label="burning-standby" />
+            ) : title === "burning" && status === "in progress" ? (
+              <TooltipGuide iconOnly label="buring-in-progress" />
+            ) : title === "burning" && status === "completed" ? (
+              <TooltipGuide iconOnly label="buring-completed" />
+            ) : (
+              ""
+            )}
           </span>
         </h4>
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">

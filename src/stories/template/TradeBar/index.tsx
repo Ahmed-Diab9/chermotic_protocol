@@ -3,7 +3,7 @@ import { Button } from "../../atom/Button";
 import { Avatar } from "~/stories/atom/Avatar";
 import { Tag } from "~/stories/atom/Tag";
 import { TextRow } from "~/stories/atom/TextRow";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { Loading } from "~/stories/atom/Loading";
 import { Guide } from "~/stories/atom/Guide";
 import { CheckIcon, ChevronDoubleUpIcon } from "@heroicons/react/24/outline";
@@ -150,7 +150,6 @@ export const TradeBar = ({
                                             </p>
                                             {createCurrentDate()}
                                           </div>
-
                                           <div className="flex items-center gap-1 ml-auto">
                                             {/* 상태에 따라 내용 변동 */}
                                             {position.status === OPENING && (
@@ -160,10 +159,9 @@ export const TradeBar = ({
                                                   {/* Opening in progress */}
                                                   Waiting for the next oracle
                                                   round
-                                                  <Tooltip
-                                                    // todo: tip 내 퍼센트값 불러오기
-                                                    tip="Waiting for the next oracle round to open the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                                                    outLink="#"
+                                                  <TooltipGuide
+                                                    iconOnly
+                                                    label="opening-in-progress"
                                                   />
                                                 </p>
                                               </>
@@ -173,9 +171,9 @@ export const TradeBar = ({
                                                 <CheckIcon className="w-4" />
                                                 <p className="flex text-black/30">
                                                   Opening completed
-                                                  <Tooltip
-                                                    tip="The opening process has been completed. Now the position is in live status."
-                                                    outLink="#"
+                                                  <TooltipGuide
+                                                    iconOnly
+                                                    label="opening-completed"
                                                   />
                                                 </p>
                                               </>
@@ -185,10 +183,9 @@ export const TradeBar = ({
                                                 <Loading size="xs" />
                                                 <p className="flex text-black/30">
                                                   Closing in progress
-                                                  <Tooltip
-                                                    // todo: tip 내 퍼센트값 불러오기
-                                                    tip="Waiting for the next oracle round to close the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                                                    outLink="#"
+                                                  <TooltipGuide
+                                                    iconOnly
+                                                    label="closing-in-progress"
                                                   />
                                                 </p>
                                               </>
@@ -198,14 +195,14 @@ export const TradeBar = ({
                                                 <CheckIcon className="w-4" />
                                                 <p className="flex text-black/30">
                                                   Closing completed
-                                                  <Tooltip
-                                                    tip="The closing process has been completed. You can claim the assets and transfer them to your account."
-                                                    outLink="#"
+                                                  <TooltipGuide
+                                                    iconOnly
+                                                    label="closing-completed"
                                                   />
                                                 </p>
                                               </>
                                             )}
-                                            <Tooltip tip="tooltip" />
+                                            d
                                           </div>
                                         </div>
                                         <div className="flex items-stretch justify-between gap-6 px-5 py-4">
@@ -309,6 +306,34 @@ export const TradeBar = ({
                                     );
                                   }
                                 )}
+                              </div>
+                              <div>
+                                <TooltipGuide
+                                  tipOnly
+                                  label="opening-in-progress"
+                                  // todo: tip 내 퍼센트값 불러오기
+                                  tip="Waiting for the next oracle round to open the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                                  outLink="#"
+                                />
+                                <TooltipGuide
+                                  tipOnly
+                                  label="opening-completed"
+                                  tip="The opening process has been completed. Now the position is in live status."
+                                  outLink="#"
+                                />
+                                <TooltipGuide
+                                  tipOnly
+                                  label="closing-in-progress"
+                                  // todo: tip 내 퍼센트값 불러오기
+                                  tip="Waiting for the next oracle round to close the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                                  outLink="#"
+                                />
+                                <TooltipGuide
+                                  tipOnly
+                                  label="closing-completed"
+                                  tip="The closing process has been completed. You can claim the assets and transfer them to your account."
+                                  outLink="#"
+                                />
                               </div>
                             </div>
                           </article>

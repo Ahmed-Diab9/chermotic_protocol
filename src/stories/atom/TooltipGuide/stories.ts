@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Tooltip } from ".";
+import { TooltipGuide } from ".";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/Tooltip",
-  component: Tooltip,
+  title: "Atom/TooltipGuide",
+  component: TooltipGuide,
   tags: ["autodocs"],
   argTypes: {
     // backgroundColor: { control: "color" },
   },
-} satisfies Meta<typeof Tooltip>;
+} satisfies Meta<typeof TooltipGuide>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
