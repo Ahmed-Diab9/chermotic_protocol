@@ -3,7 +3,7 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { ScrollAni } from "~/stories/atom/ScrollAni";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
 import "../Modal/style.css";
@@ -129,7 +129,10 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="flex text-black/30">
                   Total CLB
-                  <Tooltip tip="The sum of the quantity of the above liquidity tokens (CLB)." />
+                  <TooltipGuide
+                    label="total-clb"
+                    tip="The sum of the quantity of the above liquidity tokens (CLB)."
+                  />
                 </p>
                 <p>{formatDecimals(balance, binDecimals, 2)} CLB</p>
               </div>
@@ -140,7 +143,10 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="flex text-black/30">
                   Total Liquidity Value
-                  <Tooltip tip="The total value of the above liquidity tokens, converted into the current value." />
+                  <TooltipGuide
+                    label="total-liquidity-value"
+                    tip="The total value of the above liquidity tokens, converted into the current value."
+                  />
                 </p>
                 <p>
                   {formatDecimals(liquidityValue, token?.decimals, 2)}{" "}
@@ -154,7 +160,8 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex justify-between">
                 <p className="flex text-black/30">
                   Removable Liquidity
-                  <Tooltip
+                  <TooltipGuide
+                    label="removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="#"
                   />

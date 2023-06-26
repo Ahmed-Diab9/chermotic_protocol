@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
@@ -98,7 +98,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex justify-between">
                 <p className="flex text-black/30">
                   My Liquidity Value
-                  <Tooltip tip="The value of my CLB tokens converted into the current token value." />
+                  <TooltipGuide
+                    label="my-liquidity-value"
+                    tip="The value of my CLB tokens converted into the current token value."
+                  />
                 </p>
                 {selectedBin && (
                   <p>
@@ -117,7 +120,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex justify-between">
                 <p className="flex text-black/30">
                   Removable Liquidity
-                  <Tooltip
+                  <TooltipGuide
+                    label="removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="#"
                   />

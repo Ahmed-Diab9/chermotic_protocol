@@ -5,7 +5,7 @@ import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
 import { Checkbox } from "../../atom/Checkbox";
 import { Thumbnail } from "../../atom/Thumbnail";
-import { Tooltip } from "../../atom/Tooltip";
+import { TooltipGuide } from "../../atom/TooltipGuide";
 import { OptionInput } from "../../atom/OptionInput";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import "../../atom/Tabs/style.css";
@@ -330,14 +330,20 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex items-center justify-between">
                     <p className="flex">
                       Number of Liquidity Bins
-                      <Tooltip tip="This is the total count of target Bins I am about to provide liquidity for." />
+                      <TooltipGuide
+                        label="number-of-liquidity-bins"
+                        tip="This is the total count of target Bins I am about to provide liquidity for."
+                      />
                     </p>
                     <p>{bins ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="flex">
                       Trade Fee Range
-                      <Tooltip tip="This is the range of target Bins I am about to provide liquidity for." />
+                      <TooltipGuide
+                        label="trade-fee-range"
+                        tip="This is the range of target Bins I am about to provide liquidity for."
+                      />
                     </p>
                     <p>
                       {rates &&
@@ -351,7 +357,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex items-center justify-between">
                     <p className="flex">
                       Average Bin Token Values
-                      <Tooltip tip="This is the average token value of the target Bins I am about to provide liquidity for." />
+                      <TooltipGuide
+                        label="average-bin-token-values"
+                        tip="This is the average token value of the target Bins I am about to provide liquidity for."
+                      />
                     </p>
                     <p>
                       {formatDecimals(averageBin ?? 0, token?.decimals, 2)} USDC
@@ -384,7 +393,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div>
                     <p className="flex mb-2 font-semibold text-left text-black/30">
                       Total Liquidity Value
-                      <Tooltip tip="The value of my CLB tokens converted into the current token value." />
+                      <TooltipGuide
+                        label="total-liquidity-value"
+                        tip="The value of my CLB tokens converted into the current token value."
+                      />
                     </p>
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
@@ -408,7 +420,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex flex-col justify-between xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-black/30">
                       My Liquidity Value
-                      <Tooltip
+                      <TooltipGuide
+                        label="my-liquidity-value"
                         tip="The value of my CLB tokens converted into the current token value."
                         className="inline"
                       />
@@ -421,7 +434,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <div className="flex flex-col justify-between xl:text-right xl:flex-row">
                     <div className="flex font-medium text-left text-black/30">
                       Removable Liquidity
-                      <Tooltip
+                      <TooltipGuide
+                        label="removable-liquidity"
                         tip="The amount of liquidity that is currently removable due to not being utilized."
                         outLink="#"
                       />
@@ -574,8 +588,6 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center justify-between gap-10 px-5 py-3 border-b bg-grayL/20">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
-          gap="5"
-          className="text-black/30"
           isChecked={isChecked}
           onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
