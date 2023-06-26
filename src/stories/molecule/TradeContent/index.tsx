@@ -4,7 +4,6 @@
 // import { OptionInput } from "~/atom/OptionInput";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
-
 import { Listbox } from "@headlessui/react";
 import { Switch } from "@headlessui/react";
 import "~/stories/atom/Select/style.css";
@@ -12,7 +11,7 @@ import "~/stories/atom/Toggle/style.css";
 
 import { Input } from "~/stories/atom/Input";
 import { Button } from "~/stories/atom/Button";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "../../atom/TooltipGuide";
 import { Slider } from "~/stories/atom/Slider";
 import { LeverageOption } from "~/stories/atom/LeverageOption";
 import { FillUpChart } from "~/stories/atom/FillUpChart";
@@ -308,7 +307,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
-                <Tooltip
+                <TooltipGuide
+                  label="execution-price"
                   tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
                   outLink="#"
                   outLinkAbout="Next Oracle Round"
@@ -352,7 +352,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex items-center">
                 <p>Max Fee Allowance</p>
-                <Tooltip
+                <TooltipGuide
+                  label="max-fee-allowance"
                   tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
                   outLink="#"
                   outLinkAbout="Next Oracle Round"
@@ -406,7 +407,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             }}
           />
           <div className="flex items-center justify-end mt-2">
-            <Tooltip
+            <TooltipGuide
+              label="contract-qty"
               tip="Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss."
               outLink="#"
             />
@@ -427,7 +429,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             }}
           />
           <div className="flex items-center justify-end mt-2">
-            <Tooltip
+            <TooltipGuide
+              label="collateral"
               tip="Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position."
               outLink="#"
             />

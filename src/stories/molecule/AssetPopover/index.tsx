@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
-import { Tooltip } from "~/stories/atom/Tooltip";
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { Outlink } from "~/stories/atom/Outlink";
 import { OptionInput } from "../../atom/OptionInput";
 import { Loading } from "~/stories/atom/Loading";
@@ -317,11 +316,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                     <div>
                       <p className="flex mb-1 text-black/30">
                         Available Margin
-                        <Tooltip
-                          tip="Available Margin is the amount
-that can be immediately withdrawn.
-Available Margin = Balance - Taker
-Margin"
+                        <TooltipGuide
+                          label="available-margin"
+                          tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
                         />
                       </p>
                       <p>
@@ -332,11 +329,9 @@ Margin"
                     <div>
                       <p className="flex mb-1 text-black/30">
                         Asset Value
-                        <Tooltip
-                          tip="This is the total sum of the asset in
-my account, including the amount
-collateralized by taker margin and
-unrealized PnL."
+                        <TooltipGuide
+                          label="asset-value"
+                          tip="This is the total sum of the asset in my account, including the amount collateralized by taker margin and unrealized PnL."
                         />
                       </p>
                       <p>

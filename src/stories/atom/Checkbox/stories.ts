@@ -17,6 +17,13 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
   args: {
-    label: "Checkbox",
+    label: "1",
+  },
+};
+
+export const WithTitle: Story = {
+  args: {
+    label: "2",
+    title: "Checkbox",
   },
 };

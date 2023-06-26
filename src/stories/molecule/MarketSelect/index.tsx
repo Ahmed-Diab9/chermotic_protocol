@@ -2,7 +2,7 @@ import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Tooltip } from '~/stories/atom/Tooltip';
+import { TooltipGuide } from "~/stories/atom/TooltipGuide";
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
@@ -51,10 +51,9 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
             </h4>
             <div className="flex">
               <p>Interest Rate</p>
-              <Tooltip
-                tip="This is the rate of Borrow Fee that needs to be paid to the LP
-            while the position is open. The Interest Rate is determined by
-            the Dao for each settlement asset."
+              <TooltipGuide
+                label="interest-rate"
+                tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."
                 outLink="#"
               />
             </div>
