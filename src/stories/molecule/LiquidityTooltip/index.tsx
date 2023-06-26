@@ -22,7 +22,7 @@ export const LiquidityTooltip = ({
   getByIndex,
   index,
 }: LiquidityTooltipProps) => {
-  const { feeRate, liquidity, utilization } = getByIndex(index);
+  const { feeRate, liquidity, utilization } = getByIndex(index) ?? {};
 
   const feeRateString = isValid(feeRate) ? feeRate.toString() : "-";
   const liquidityString = isValid(liquidity) ? withComma(liquidity) : "-";

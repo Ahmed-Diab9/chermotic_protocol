@@ -115,7 +115,7 @@ const Pool = () => {
 
   const { liquidity, binValue, tooltip } = useChartData();
 
-  const getTooltipByIndex = (index: number) => tooltip[index];
+  const getTooltipByIndex = (index: number) => tooltip?.[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
