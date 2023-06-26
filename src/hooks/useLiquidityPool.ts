@@ -77,8 +77,7 @@ export const useLiquidityPool = () => {
         const lensApi = client!.lens();
 
         const results = await lensApi.liquidityBins(marketAddress);
-        logger.log('RESULTS', results.length);
-        logger.log('ownedLiquidityBins?', lensApi);
+        logger.info('all liquidity bins', results)
         const ownedBins = await lensApi.ownedLiquidityBins(marketAddress, walletAddress);
         logger.log('OWNED BINS', ownedBins.length);
 

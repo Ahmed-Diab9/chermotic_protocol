@@ -11,6 +11,9 @@ import { useChromaticClient } from './useChromaticClient';
 import { useBinsBySelectedMarket } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
+import { BigNumber, logger } from 'ethers';
+import { isNil } from 'ramda';
+import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 
 const usePoolInput = () => {
   const { pool } = useBinsBySelectedMarket();
@@ -23,7 +26,7 @@ const usePoolInput = () => {
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchWalletBalances } = useWalletBalances();
-
+  
   const {
     data: { values: binFeeRates },
     setData: onRangeChange,
@@ -34,23 +37,30 @@ const usePoolInput = () => {
   const [amount, setAmount] = useState('');
 
   const rates = useMemo<[number, number]>(
-    () => [binFeeRates[0], binFeeRates[binFeeRates.length - 1]],
+    () => [binFeeRates[0], binFeeRates[binFeeRates!.length - 1]],
     [binFeeRates]
   );
 
-  const binAverage = useMemo(() => {
-    if (!isValid(pool)) {
+  const clbTokenAverage = useMemo(() => {
+    if (isNil(pool)) {
       return;
     }
+    logger.info('binFeeRates', binFeeRates);
+    const totalCLBTokenValue = binFeeRates.reduce((acc, bin) => {
+      const clbTokenValue = BigNumber.from(
+        Math.floor(
+          (pool.bins.find(({ baseFeeRate }) => {
+            return baseFeeRate / 100 === bin;
+          })?.clbTokenValue || 0) *
+            10 ** CLB_TOKEN_VALUE_DECIMALS
+        )
+      );
 
-    const binTotal = binFeeRates.reduce((acc, bin) => {
-      const binValue = pool.bins.find(({ baseFeeRate }) => {
-        return baseFeeRate / 100 === bin;
-      }).binValue;
-      return acc.add(binValue);
-    }, bigNumberify(0));
+      logger.info('clbTokenValue', clbTokenValue);
+      return acc.add(clbTokenValue);
+    }, BigNumber.from(0));
 
-    return binTotal.div(binFeeRates.length);
+    return totalCLBTokenValue.div(binFeeRates.length);
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
@@ -125,7 +135,7 @@ const usePoolInput = () => {
     amount,
     rates,
     binCount: binFeeRates.length,
-    binAverage,
+    binAverage: clbTokenAverage,
     isLoading,
     onAmountChange,
     onRangeChange,

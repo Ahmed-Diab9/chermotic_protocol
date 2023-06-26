@@ -1,14 +1,11 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-
 import { useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
-
 import { trimDecimals } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-
-import { BIN_VALUE_DECIMAL } from '~/configs/decimals';
-
+import { BIN_VALUE_DECIMAL, CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
+import { isNil } from 'ramda';
 import { LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
+import { Logger } from '../utils/log';
 
 // FIXME: 임시 chart data reducing 로직
 
@@ -26,30 +23,33 @@ type Liquidity = {
     }
   ];
 };
-
+const logger = Logger('useChartData');
 const useChartData = () => {
   const { pool } = useBinsBySelectedMarket();
-
+  logger.info('pool', pool);
   const fetchKey = useMemo(() => {
-    if (isValid(pool?.bins)) {
+    if (!isNil(pool?.bins)) {
       return pool?.bins;
     }
-  }, [pool?.bins]);
-
-  const { data } = useSWR(
+  }, [pool, pool?.bins]);
+  logger.info('fetchKey', fetchKey);
+  const { data, error } = useSWR(
     fetchKey,
     (bins) => {
+      logger.info('bins', bins);
       return bins.reduce<{
         clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
         tooltip: LiquidityTooltipData[];
-      }>( 
-        
+      }>(
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
-          const key = trimDecimals(baseFeeRate, 2).toNumber() ;
-
-          const binValue = trimDecimals(clbTokenValue, BIN_VALUE_DECIMAL).toNumber();
+          logger.info('useChartData', liquidity);
+          const key = baseFeeRate / 100;
+          const binValue = trimDecimals(
+            Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
+            BIN_VALUE_DECIMAL
+          ).toNumber();
           acc.clbTokenValue.push({
             key,
             value: binValue,
@@ -83,6 +83,7 @@ const useChartData = () => {
     }
   );
 
+  logger.error(error);
   const PIVOT_INDEX = 36;
 
   const [negativeLiquidity, positiveLiquidity] = useMemo(() => {
