@@ -1,28 +1,26 @@
-import React, { useEffect, useMemo, useRef } from "react";
 import { Dialog } from "@headlessui/react";
-import { Button } from "../../atom/Button";
+import { BigNumber } from "ethers";
+import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
+import { useAppDispatch } from "~/store";
+import { poolsAction } from "~/store/reducer/pools";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { ScrollAni } from "~/stories/atom/ScrollAni";
 import { TooltipGuide } from "~/stories/atom/TooltipGuide";
-import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
-import "../Modal/style.css";
+import { Token } from "~/typings/market";
+import { Bin, OwnedBin } from "~/typings/pools";
 import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
   percentage,
 } from "~/utils/number";
-import { useAppDispatch } from "~/store";
-import { poolsAction } from "~/store/reducer/pools";
-import { Bin } from "~/typings/pools";
-import { Token } from "~/typings/market";
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
-import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
-import { BigNumber } from "ethers";
+import { Button } from "../../atom/Button";
+import "../Modal/style.css";
 
 export interface RemoveMultiLiquidityModalProps {
-  selectedBins?: Bin[];
+  selectedBins?: OwnedBin[];
   amount?: number;
   token?: Token;
   type?: MULTI_TYPE;

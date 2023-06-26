@@ -1,34 +1,34 @@
-import { useMemo } from "react";
-import useSWR from "swr";
+import { useMemo } from 'react';
+import useSWR from 'swr';
 
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
 
-import { trimDecimals } from "~/utils/number";
-import { isValid } from "~/utils/valid";
+import { trimDecimals } from '~/utils/number';
+import { isValid } from '~/utils/valid';
 
-import { BIN_VALUE_DECIMAL } from "~/configs/decimals";
+import { BIN_VALUE_DECIMAL } from '~/configs/decimals';
 
-import { LiquidityTooltipData } from "~/stories/molecule/LiquidityTooltip";
+import { LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
 
 // FIXME: 임시 chart data reducing 로직
 
-type BinValue = { key: number; value: number };
+type CLBTokenValue = { key: number; value: number };
 type Liquidity = {
   key: number;
   value: [
     {
-      label: "available";
+      label: 'available';
       amount: number;
     },
     {
-      label: "utilized";
+      label: 'utilized';
       amount: number;
     }
   ];
 };
 
 const useChartData = () => {
-  const { pool } = useSelectedLiquidityPool();
+  const { pool } = useBinsBySelectedMarket();
 
   const fetchKey = useMemo(() => {
     if (isValid(pool?.bins)) {
@@ -40,38 +40,28 @@ const useChartData = () => {
     fetchKey,
     (bins) => {
       return bins.reduce<{
-        binValue: BinValue[];
+        clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
         tooltip: LiquidityTooltipData[];
-      }>(
-        (
-          acc,
-          { liquidity, freeLiquidity, binValue: _binValue, baseFeeRate }
-        ) => {
-          const key = trimDecimals(baseFeeRate, 2);
+      }>( 
+        
+        // 1 => 0.01
+        (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
+          const key = trimDecimals(baseFeeRate, 2).toNumber() ;
 
-          const binValue = trimDecimals(
-            _binValue,
-            BIN_VALUE_DECIMAL
-          ).toNumber();
-          acc.binValue.push({
+          const binValue = trimDecimals(clbTokenValue, BIN_VALUE_DECIMAL).toNumber();
+          acc.clbTokenValue.push({
             key,
             value: binValue,
           });
 
-          const available = trimDecimals(
-            freeLiquidity,
-            BIN_VALUE_DECIMAL
-          ).toNumber();
-          const utilized = trimDecimals(
-            liquidity.sub(freeLiquidity),
-            BIN_VALUE_DECIMAL
-          ).toNumber();
+          const available = trimDecimals(freeLiquidity, BIN_VALUE_DECIMAL).toNumber();
+          const utilized = trimDecimals(liquidity.sub(freeLiquidity), BIN_VALUE_DECIMAL).toNumber();
           acc.liquidity.push({
             key,
             value: [
-              { label: "available", amount: available },
-              { label: "utilized", amount: utilized },
+              { label: 'available', amount: available },
+              { label: 'utilized', amount: utilized },
             ],
           });
           acc.tooltip.push({
@@ -82,7 +72,7 @@ const useChartData = () => {
           return acc;
         },
         {
-          binValue: [],
+          clbTokenValue: [],
           liquidity: [],
           tooltip: [],
         }
@@ -110,9 +100,9 @@ const useChartData = () => {
   }, [data?.tooltip]);
 
   return {
-    binValue: data?.binValue,
-    liquidity: data?.liquidity,
-    tooltip: data?.tooltip,
+    clbTokenValue: data?.clbTokenValue || [],
+    liquidity: data?.liquidity || [],
+    tooltip: data?.tooltip || [],
     negative: {
       tooltip: negativeTooltip,
       liquidity: negativeLiquidity,

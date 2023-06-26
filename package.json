@@ -13,8 +13,8 @@
     "automigrate": "storybook automigrate"
   },
   "dependencies": {
-    "@chromatic-protocol/sdk": "^0.1.0-rc.38",
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.4",
+    "@chromatic-protocol/sdk": "^0.1.0-rc.40",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",

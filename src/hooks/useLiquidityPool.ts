@@ -89,6 +89,7 @@ export const useLiquidityPool = () => {
           );
           return {
             liquidity: result.liquidity,
+            clbTokenValue :result.clbValue,
             freeLiquidity: result.freeLiquidity,
             clbTokenName: name,
             clbTokenImage: image,
@@ -210,16 +211,6 @@ export const useBinsBySelectedMarket = () => {
         return;
       }
       const routerAddress = routerApi.routerContract.address;
-
-      // const clbToken = CLBToken__factory.connect(pool.address, signer);
-      // const isApproved = await clbToken.isApprovedForAll(
-      //   address,
-      //   routerAddress
-      // );
-      // if (!isApproved) {
-      //   logger.info("Approving all lp tokens");
-      //   await clbToken.setApprovalForAll(routerAddress, true);
-      // }
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
       await routerApi.removeLiquidity(pool.marketAddress, {

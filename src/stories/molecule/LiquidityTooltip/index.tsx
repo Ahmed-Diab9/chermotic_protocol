@@ -17,7 +17,11 @@ interface LiquidityTooltipProps {
   selected?: boolean;
 }
 
-export const LiquidityTooltip = ({ getByIndex, index, selected }: LiquidityTooltipProps) => {
+export const LiquidityTooltip = ({
+  getByIndex,
+  index = 0,
+  selected
+}: LiquidityTooltipProps) => {
   const { feeRate, liquidity, utilization } = getByIndex(index) ?? {};
 
   const feeRateString = isValid(feeRate) ? feeRate.toString() : '-';
