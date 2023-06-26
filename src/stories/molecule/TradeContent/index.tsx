@@ -35,7 +35,7 @@ interface TradeContentProps {
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
   liquidityData?: any[];
-  tooltip: React.ReactElement<any>;
+  tooltip?: React.ReactElement<any>;
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -309,7 +309,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           positive={direction === "long"}
           height={300}
           data={liquidityData}
-          selectedAmount={input.quantity}
+          selectedAmount={input?.quantity}
           tooltip={tooltip}
         />
         <article className="mt-5">
@@ -429,7 +429,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       return (
         <div>
           <Input
-            value={input.quantity.toString()}
+            value={input?.quantity.toString()}
             onChange={(event) => {
               event.preventDefault();
               onAmountChange("quantity", event);
