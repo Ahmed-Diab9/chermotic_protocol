@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useMarket, useMarketSelect } from "~/hooks/useMarket";
-import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useSettlementToken, useTokenSelect } from "~/hooks/useSettlementToken";
-import { useAccount } from "wagmi";
-import { useFeeRate } from "~/hooks/useFeeRate";
-import { infoLog } from "~/utils/log";
-
+import { useEffect } from 'react';
+import { useAccount } from 'wagmi';
+import { useFeeRate } from '~/hooks/useFeeRate';
+import { useMarket, useMarketSelect } from '~/hooks/useMarket';
+import { useSettlementToken, useTokenSelect } from '~/hooks/useSettlementToken';
+import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { Logger } from '~/utils/log';
+const logger = Logger('UsumAccount');
 const UsumAccount = () => {
   useAccount();
   const feeRate = useFeeRate();
@@ -16,7 +16,7 @@ const UsumAccount = () => {
   const onMarketSelect = useMarketSelect();
 
   useEffect(() => {
-    infoLog("feeRate", feeRate);
+    logger.info('feeRate', feeRate);
   }, [feeRate]);
 
   return (

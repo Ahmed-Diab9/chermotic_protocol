@@ -1,12 +1,12 @@
-import { useCallback } from "react";
-import useSWR from "swr";
-import { useChromaticClient } from "./useChromaticClient";
-import { Market } from "~/typings/market";
-import { useAppDispatch, useAppSelector } from "~/store";
-import { marketAction } from "~/store/reducer/market";
-import { errorLog } from "~/utils/log";
-import { isValid } from "~/utils/valid";
-import useLocalStorage from "./useLocalStorage";
+import { useCallback } from 'react';
+import useSWR from 'swr';
+import { useChromaticClient } from './useChromaticClient';
+import { Market } from '~/typings/market';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { marketAction } from '~/store/reducer/market';
+import { errorLog } from '~/utils/log';
+import { isValid } from '~/utils/valid';
+import useLocalStorage from './useLocalStorage';
 
 export const useMarket = (_interval?: number) => {
   const { client } = useChromaticClient();
@@ -16,7 +16,7 @@ export const useMarket = (_interval?: number) => {
     error,
     mutate: fetchMarkets,
   } = useSWR(
-    isValid(selectedToken) ? ["MARKET", selectedToken.address] : undefined,
+    isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
       const markets = await client?.marketFactory().getMarkets(tokenAddress);
 
@@ -33,7 +33,7 @@ export const useMarket = (_interval?: number) => {
 
 export const useMarketSelect = () => {
   const dispatch = useAppDispatch();
-  const { setState: setStoredMarket } = useLocalStorage("usum:market");
+  const { setState: setStoredMarket } = useLocalStorage('usum:market');
 
   const onMarketSelect = useCallback(
     (market: Market) => {

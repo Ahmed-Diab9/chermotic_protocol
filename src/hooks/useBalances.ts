@@ -1,28 +1,23 @@
-import { useMemo } from "react";
-import { useAccount, useSigner } from "wagmi";
-import { BigNumber } from "ethers";
-import useSWR from "swr";
-import { useAppSelector } from "../store";
-import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
-import { isValid } from "~/utils/valid";
-import { Logger, errorLog, infoLog } from "~/utils/log";
-import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useSettlementToken } from "~/hooks/useSettlementToken";
-import { usePosition } from "./usePosition";
-import { bigNumberify } from "~/utils/number";
-const logger = Logger("useBalances");
-function filterResponse(
-  response: PromiseSettledResult<readonly [string, BigNumber]>[]
-) {
+import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
+import { BigNumber } from 'ethers';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { useAccount, useBalance, useSigner } from 'wagmi';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { Logger } from '~/utils/log';
+import { bigNumberify } from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { useAppSelector } from '../store';
+import { usePosition } from './usePosition';
+import { fromPairs } from 'ramda';
+const logger = Logger('useBalances');
+function filterResponse<T>(response: PromiseSettledResult<T>[]) {
   return response
-    .filter((result): result is PromiseFulfilledResult<[string, BigNumber]> => {
-      return result.status === "fulfilled";
+    .filter((result): result is PromiseFulfilledResult<T> => {
+      return result.status === 'fulfilled';
     })
-    .reduce((acc, { value }) => {
-      const [token, balance] = value;
-      acc[token] = balance;
-      return acc;
-    }, {} as Record<string, BigNumber>);
+    .map((r) => r.value);
 }
 
 export const useWalletBalances = () => {
@@ -30,43 +25,46 @@ export const useWalletBalances = () => {
 
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
-  const tokenKey = JSON.stringify(
-    (tokens ?? []).map((token) => ({
-      address: token.address,
-      name: token.name,
-    }))
-  );
+  const tokenAddresses = useMemo(() => tokens?.map((t) => t.address) || [], [tokens]);
 
   const {
     data: walletBalances,
     error,
     mutate: fetchWalletBalances,
   } = useSWR(
-    isValid(walletAddress)
-      ? ["WALLET_BALANCES", signer, walletAddress, tokenKey]
-      : undefined,
+    isValid(walletAddress) ? ['WALLET_BALANCES', signer, walletAddress, tokenAddresses] : undefined,
     async () => {
-      const tokens: { address: string; name: string }[] = JSON.parse(tokenKey);
       if (!isValid(signer) || !isValid(walletAddress)) {
-        infoLog("No signers", "Wallet Balances");
+        logger.info('No signers', 'Wallet Balances');
         return;
       }
-      const promise = tokens.map(async (token) => {
+      logger.info('tokens', tokens);
+      const promise = (tokens || []).map(async (token) => {
         const contract = IERC20__factory.connect(token.address, signer);
-        logger.info(walletAddress);
-        const balance = await contract.balanceOf();
-        return [token.name, balance] as const;
+        logger.info('signer', signer);
+        logger.info('wallet address', walletAddress);
+        try {
+          const balance = await contract.balanceOf(walletAddress);
+          logger.info('balance', balance);
+          return [token.name, balance] as const;
+        } catch (e: unknown) {
+          Error.captureStackTrace(e as object);
+          logger.error(e);
+          return [token.name, BigNumber.from(0)] as const;
+        }
       });
+
       const response = await Promise.allSettled(promise);
+
       const result = filterResponse(response);
-      return result;
+      return fromPairs(result);
     }
   );
 
   if (error) {
-    errorLog(error);
+    logger.error(error);
   }
-
+  // logger.info('user wallet balance', walletBalances);
   return { walletBalances, fetchWalletBalances } as const;
 };
 
@@ -78,7 +76,7 @@ export const useUsumBalances = () => {
     error,
     mutate: fetchUsumBalances,
   } = useSWR(
-    isValid(account) ? ["USUM_BALANCES", account.address] : undefined,
+    isValid(account) ? ['USUM_BALANCES', account.address] : undefined,
     async ([_, address]) => {
       if (!isValid(account)) {
         return;
@@ -88,12 +86,12 @@ export const useUsumBalances = () => {
         return [token.name, balance] as const;
       });
       const response = await Promise.allSettled(promise);
-      return filterResponse(response);
+      return fromPairs(filterResponse(response));
     }
   );
 
   if (error) {
-    errorLog(error);
+    logger.error(error);
   }
 
   return { usumBalances, fetchUsumBalances };
@@ -109,15 +107,7 @@ export const useUsumMargins = () => {
       return [bigNumberify(0), bigNumberify(0)];
     }
     const balance = usumBalances[token.name];
-    // const [totalCollateral, totalCollateralAdded] = positions.reduce(
-    //   (record, position) => {
-    //     const added = position.addProfitAndLoss(18);
-    //     return [record[0].add(position.collateral), record[1].add(added)];
-    //   },
-    //   [bigNumberify(0), bigNumberify(0)]
-    // );
-    // return [balance.add(totalCollateral), balance.add(totalCollateralAdded)];
-    return [balance, balance]
+    return [balance, balance];
   }, [usumBalances, token, positions]);
 
   const totalMargin = useMemo(() => {

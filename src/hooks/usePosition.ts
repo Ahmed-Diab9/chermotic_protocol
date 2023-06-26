@@ -56,29 +56,29 @@ export const usePosition = () => {
     ['POSITIONS', usumAccount?.address, markets, JSON.stringify(oracleVersions)],
     async () => {
       if (!isValid(markets)) {
-        console.error('NO MARKETS');
+        logger.error('NO MARKETS');
         return;
       }
       if (!isValid(usumAccount)) {
-        console.error('NO USUMACCOUNT');
+        logger.error('NO USUMACCOUNT');
         return;
       }
       if (!isValid(oracleVersions)) {
-        console.error('NO ORACLE VERSIONS');
+        logger.error('NO ORACLE VERSIONS');
         return;
       }
       if (!isValid(positionApi)) {
-        console.error('NO POSITION APIS');
+        logger.error('NO POSITION APIS');
         return;
       }
-      console.log('PASSED ARGUMENTS');
-      console.log('MARKETS', markets?.length);
+      logger.log('PASSED ARGUMENTS');
+      logger.log('MARKETS', markets?.length);
       const positionsPromise = markets.map(async (market) => {
         const positionIds = await usumAccount.getPositionIds(market.address);
-        console.log('POSITION IDS', positionIds);
+        logger.log('POSITION IDS', positionIds);
         const marketContract = ChromaticMarket__factory.connect(market.address, provider);
         const oracleProviderAddress = await marketContract.oracleProvider();
-        console.log('ORACLE PROVIDER', oracleProviderAddress);
+        logger.log('ORACLE PROVIDER', oracleProviderAddress);
         const marketOracleProvider = IOracleProvider__factory.connect(
           oracleProviderAddress,
           provider
@@ -86,11 +86,11 @@ export const usePosition = () => {
         const positions = await positionApi
           ?.getPositions(market.address, positionIds)
           .catch((err) => {
-            console.error(err);
+            logger.error(err);
             return [];
           });
 
-        console.log('POSITIONS', positions?.length);
+        logger.log('POSITIONS', positions?.length);
         return Promise.all(
           positions?.map(async (position) => {
             const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
