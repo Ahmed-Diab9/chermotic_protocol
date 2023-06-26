@@ -1,8 +1,8 @@
 export const RANGE_CONFIG = [
   {
-    start: -100,
+    start: -50,
     end: -10,
-    interval: 10,
+    interval: 5,
     color: {
       available:
         "linear-gradient(180deg, rgba(133, 145, 255, 0.3) 0%, rgba(81, 95, 217, 0.11) 100%)",
@@ -92,8 +92,8 @@ export const RANGE_CONFIG = [
   },
   {
     start: 10,
-    end: 100,
-    interval: 10,
+    end: 50,
+    interval: 5,
     color: {
       available:
         "linear-gradient(180deg, rgba(255, 206, 148, 0.3) 0%, rgba(255, 196, 126, 0.11) 100%)",

@@ -1,52 +1,58 @@
-import {
-  ChromaticRouter,
-  IERC20__factory,
-  getDeployedContract,
-} from "@chromatic-protocol/sdk";
 import { useMemo, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
-import { LONG_FEE_RATES, SHORT_FEE_RATES } from "../configs/feeRate";
-import { errorLog } from "../utils/log";
-import { bigNumberify, expandDecimals } from "../utils/number";
-import { isValid } from "../utils/valid";
-import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { useSelectedMarket } from "./useMarket";
-import { useSelectedToken } from "./useSettlementToken";
-import usePoolReceipt from "./usePoolReceipt";
+import { IERC20__factory } from "@chromatic-protocol/sdk";
+import { useRangeChart } from "@chromatic-protocol/react-compound-charts";
+
+import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
+import { useSelectedMarket } from "~/hooks/useMarket";
+import { useSelectedToken } from "~/hooks/useSettlementToken";
+import usePoolReceipt from "~/hooks/usePoolReceipt";
+import { useWalletBalances } from "~/hooks/useBalances";
+import { useRouter } from "~/hooks/useRouter";
+
+import { errorLog } from "~/utils/log";
+import { isValid } from "~/utils/valid";
 import { handleTx } from "~/utils/tx";
-import { useWalletBalances } from "./useBalances";
+import { bigNumberify, expandDecimals } from "~/utils/number";
 
 const usePoolInput = () => {
   const { pool } = useSelectedLiquidityPool();
   const [market] = useSelectedMarket();
   const [token] = useSelectedToken();
   const { address } = useAccount();
+  const [router] = useRouter();
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const [_, fetchWalletBalances] = useWalletBalances();
-  const feeRates = useMemo(() => {
-    return LONG_FEE_RATES.concat(SHORT_FEE_RATES.map((rate) => rate * -1));
-  }, []);
+
+  const {
+    data: { values: bins },
+    setData: onRangeChange,
+    ref: rangeChartRef,
+    move,
+  } = useRangeChart();
+
   const [amount, setAmount] = useState("");
-  const [indexes, setIndexes] = useState<[number, number]>([35, 36]);
-  const rates = useMemo(() => {
-    return [feeRates[indexes[0]], feeRates[indexes[1]]] as [number, number];
-  }, [feeRates, indexes]);
-  const bins = useMemo(() => {
-    return indexes[1] - indexes[0] + 1;
-  }, [indexes]);
-  const averageBin = useMemo(() => {
+
+  const rates = useMemo<[number, number]>(
+    () => [bins[0], bins[bins.length - 1]],
+    [bins]
+  );
+
+  const binAverage = useMemo(() => {
     if (!isValid(pool)) {
       return;
     }
-    let index = indexes[0];
-    let totalBin = bigNumberify(0);
-    while (index <= indexes[1]) {
-      totalBin.add(pool.bins[index].binValue);
-      index++;
-    }
-    return totalBin.div(rates[1] - rates[0] + 1);
-  }, [pool, indexes, rates]);
+
+    const binTotal = bins.reduce((acc, bin) => {
+      const binValue = pool.bins.find(({ baseFeeRate }) => {
+        return baseFeeRate / 100 === bin;
+      }).binValue;
+      return acc.add(binValue);
+    }, bigNumberify(0));
+
+    return binTotal.div(bins.length);
+  }, [pool, bins]);
 
   const onAmountChange = (value: string) => {
     const parsed = Number(value);
@@ -54,41 +60,6 @@ const usePoolInput = () => {
       return;
     }
     setAmount(value);
-  };
-
-  const onRangeChange = (
-    minmax: "min" | "max",
-    direction: "increment" | "decrement"
-  ) => {
-    const [min, max] = indexes;
-    if (minmax === "min" && direction === "decrement") {
-      const nextRate = feeRates[min - 1];
-      if (isValid(nextRate)) {
-        setIndexes([min - 1, max]);
-      }
-    }
-    if (minmax === "min" && direction === "increment") {
-      const nextRate = feeRates[min + 1];
-      if (isValid(nextRate) && min + 1 <= max) {
-        setIndexes([min + 1, max]);
-      }
-    }
-    if (minmax === "max" && direction === "decrement") {
-      const nextRate = feeRates[max - 1];
-      if (isValid(nextRate) && min <= max - 1) {
-        setIndexes([min, max - 1]);
-      }
-    }
-    if (minmax === "max" && direction === "increment") {
-      const nextRate = feeRates[max + 1];
-      if (isValid(nextRate)) {
-        setIndexes([min, max + 1]);
-      }
-    }
-  };
-
-  const onFullRangeSelect = () => {
-    setIndexes([0, feeRates.length - 1]);
   };
 
   const onAddLiquidity = async () => {
@@ -109,9 +80,6 @@ const usePoolInput = () => {
       return;
     }
     const marketAddress = market?.address;
-    const filteredFeeRates = feeRates.filter(
-      (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
-    );
     const expandedAmount = bigNumberify(amount)?.mul(
       expandDecimals(token.decimals)
     );
@@ -119,22 +87,18 @@ const usePoolInput = () => {
       errorLog("amount is invalid");
       return;
     }
-    const dividedAmount = expandedAmount.div(bins);
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      "anvil",
-      signer
-    ) as ChromaticRouter;
+    const dividedAmount = expandedAmount.div(bins.length);
     const erc20 = IERC20__factory.connect(token.address, signer);
     const allowance = await erc20.allowance(address, router.address);
     if (allowance.lte(expandedAmount)) {
       await erc20.approve(router.address, expandedAmount);
     }
+
     const tx = await router.addLiquidityBatch(
       marketAddress,
-      filteredFeeRates,
-      Array.from({ length: bins }).map(() => dividedAmount),
-      Array.from({ length: bins }).map(() => address)
+      bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
+      Array(bins.length).fill(dividedAmount),
+      Array(bins.length).fill(address)
     );
 
     handleTx(tx, fetchReceipts, fetchWalletBalances);
@@ -142,14 +106,14 @@ const usePoolInput = () => {
 
   return {
     amount,
-    indexes,
     rates,
-    bins,
-    averageBin,
+    binCount: bins.length,
+    binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
+    rangeChartRef,
+    move: move(),
   };
 };
 

@@ -11,15 +11,16 @@ const railOuterStyle = {
   width: "100%",
   height: 42,
   transform: "translate(0%, -50%)",
-  borderRadius: 7,
+  // borderRadius: 7,
   cursor: "pointer",
 };
 
 // background line
 const railInnerStyle = {
   position: "absolute" as React.CSSProperties["position"],
-  width: "100%",
+  width: "calc(100% + 20px)",
   height: 20,
+  marginLeft: "-10px",
   transform: "translate(0%, -50%)",
   backgroundColor: "#ffffff",
   border: "1px solid #d4d4d4",
@@ -60,7 +61,6 @@ export function Handle({
           width: 28,
           height: 42,
           cursor: "pointer",
-          // border: '1px solid white',
           backgroundColor: "none",
         }}
         {...getHandleProps(id)}
@@ -115,8 +115,8 @@ export function Track({
             backgroundColor: disabled ? "#999" : "#030303",
             borderRadius: "8px 0 0 8px",
             cursor: "pointer",
-            left: `${source.percent}%`,
-            width: `calc(${target.percent - source.percent}% + 8px)`,
+            left: `calc(${source.percent}% + 3px)`,
+            width: `calc(${target.percent - source.percent}% + 5px)`,
             opacity: target.percent === 0 && 0,
           }}
           {...getTrackProps()}

@@ -71,6 +71,16 @@ export const applyDecimals = (value: BigNumberish, decimals: number) => {
   return multiplier?.mul(multiplicand);
 };
 
+export const trimDecimals = <T extends BigNumber | number>(value: T, decimals: number): T => {
+  if (typeof value === "number") {
+    if (+value === 0) return value;
+    return (+value / 10 ** decimals) as T;
+  }
+
+  const multiplicand = bigNumberify(10).pow(decimals);
+  return (bigNumberify(value ?? 0).div(multiplicand)) as T;
+};
+
 export const formatDecimals = (
   value: BigNumberish,
   tokenDecimals?: number,
