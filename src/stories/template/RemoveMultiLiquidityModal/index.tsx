@@ -3,6 +3,8 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../../atom/Button";
 import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
 import { ScrollAni } from "~/stories/atom/ScrollAni";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { Input } from "~/stories/atom/Input";
 import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
 import "../Modal/style.css";
 import {
@@ -63,8 +65,9 @@ export const RemoveMultiLiquidityModal = (
         dispatch(poolsAction.onBinsReset());
       }}
     >
+      {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
+      <div className="fixed inset-0 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -128,7 +131,10 @@ export const RemoveMultiLiquidityModal = (
                * LP 토큰 총합 밸런스
                */}
               <div className="flex justify-between">
-                <p className="text-black/30">Total CLB</p>
+                <p className="flex text-black/30">
+                  Total CLB
+                  <Tooltip tip="The sum of the quantity of the above liquidity tokens (CLB)." />
+                </p>
                 <p>{formatDecimals(balance, binDecimals, 2)} CLB</p>
               </div>
               {/**
@@ -136,7 +142,10 @@ export const RemoveMultiLiquidityModal = (
                * 총합 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="text-black/30">Total Liquidity Value</p>
+                <p className="flex text-black/30">
+                  Total Liquidity Value
+                  <Tooltip tip="The total value of the above liquidity tokens, converted into the current value." />
+                </p>
                 <p>
                   {formatDecimals(liquidityValue, token?.decimals, 2)}{" "}
                   {token?.name}
@@ -147,7 +156,13 @@ export const RemoveMultiLiquidityModal = (
                * 총합 제거 가능한 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="text-black/30">Removable Liquidity</p>
+                <p className="flex text-black/30">
+                  Removable Liquidity
+                  <Tooltip
+                    tip="The amount of liquidity that is currently removable due to not being utilized."
+                    outLink="#"
+                  />
+                </p>
                 <p>
                   {formatDecimals(freeLiquidity, token?.decimals, 2)} CLB
                   <span className="ml-1 text-black/30">
@@ -167,13 +182,13 @@ export const RemoveMultiLiquidityModal = (
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto border-gray drop-shadow-md"
+                    className="flex-auto shadow-md border-gray"
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}
                   />
                   <Button
-                    className="flex-auto border-gray drop-shadow-md"
+                    className="flex-auto shadow-md border-gray"
                     label="Removable"
                     size="sm"
                     onClick={() => {
@@ -221,9 +236,12 @@ export const RemoveMultiLiquidityModal = (
                 </div>
               </div>
               <p className="mt-4 text-xs text-black/30">
-                Please set additional values to apply to the basic formula in
-                Borrow Fee. Calculated based on open Interest and stop
-                profit/Loss rate.
+                Holders can immediately withdraw liquidity by burning the CLB
+                tokens that is not collateralized by maker margin. Since the
+                withdrawal takes place in the next oracle round, the final
+                amount of removable liquidity is determined based on the
+                utilization status of the liquidity bins in the next oracle
+                round.
               </p>
             </article>
           </Dialog.Description>

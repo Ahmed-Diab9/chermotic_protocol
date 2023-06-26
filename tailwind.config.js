@@ -26,6 +26,7 @@ export const theme = {
       black: "#030303",
       gray: "#D4D4D4",
       grayL: "#EEEEEE",
+      grayD: "#4D4D4D",
 
       standby: "#FF8A00",
       completed: "#00E23F",
@@ -34,8 +35,7 @@ export const theme = {
       long: "#a6d85b",
       short: "#fb6115",
     },
-    dropShadow: {
-      // sm: "4px 4px 32px rgba(121, 121, 121, 0.25)",
+    boxShadow: {
       md: "4px 4px 20px rgba(121, 121, 121, 0.08)",
       lg: "4px 4px 32px rgba(229, 229, 229, 0.18)",
       xl: "4px 4px 60px rgba(229, 229, 229, 0.16)",

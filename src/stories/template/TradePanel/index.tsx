@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Tab } from "@headlessui/react";
-import { TradeContent } from "../../molecule/TradeContent";
-import { CurvedButton } from "~/stories/atom/CurvedButton";
-import "../../atom/Tabs/style.css";
-import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
+
+import { Tab } from "@headlessui/react";
+import "~/stories/atom/Tabs/style.css";
+
+import { TradeContent } from "~/stories/molecule/TradeContent";
+import { CurvedButton } from "~/stories/atom/CurvedButton";
+
+import { TradeInput } from "~/typings/trade";
 import { Market, Price, Token } from "~/typings/market";
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
+
 import { errorLog } from "~/utils/log";
+
+import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
 
 export interface TradePanelProps {
   longInput?: TradeInput;
@@ -44,6 +49,12 @@ export interface TradePanelProps {
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
 
+  longLiquidityData?: any[];
+  shortLiquidityData?: any[];
+
+  shortTooltip: React.ReactElement<any>;
+  longTooltip: React.ReactElement<any>;
+
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
 }
@@ -74,6 +85,10 @@ export const TradePanel = (props: TradePanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    longLiquidityData,
+    shortLiquidityData,
+    shortTooltip,
+    longTooltip,
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
@@ -100,12 +115,12 @@ export const TradePanel = (props: TradePanelProps) => {
   };
 
   return (
-    <div className="inline-flex flex-col mx-auto border rounded-2xl">
+    <div className="inline-flex flex-col mx-auto bg-white border shadow-lg rounded-2xl">
       {isWideView ? (
-        <div className="relative">
+        <div className="relative min-w-[1120px]">
           <div className="flex">
             <div className="px-0 pt-6 pb-10 border-r">
-              <div className="w-[50vw] max-w-[680px] mb-10">
+              <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                   SHORT
                 </h2>
@@ -121,6 +136,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
+                liquidityData={shortLiquidityData}
+                tooltip={shortTooltip}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -130,7 +147,7 @@ export const TradePanel = (props: TradePanelProps) => {
               />
             </div>
             <div className="px-0 pt-6 pb-10">
-              <div className="w-[50vw] max-w-[680px] mb-10">
+              <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2">
                   LONG
                 </h2>
@@ -146,6 +163,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
+                liquidityData={longLiquidityData}
+                tooltip={longTooltip}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -179,24 +198,24 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
         </div>
       ) : (
-        <div className="relative tabs tabs-line tabs-lg">
+        <div className="relative w-full tabs tabs-line tabs-lg">
           <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-            <Tab.List className="w-[100vw] max-w-[680px] mx-auto px-10 pt-4 flex gap-10">
+            <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
               <Tab
                 value="short"
-                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
               >
                 SHORT
               </Tab>
               <Tab
                 value="long"
-                className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-bold pb-2"
+                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
               >
                 LONG
               </Tab>
             </Tab.List>
             <Tab.Panels className="flex flex-col items-center w-full">
-              <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
+              <Tab.Panel className="w-full px-0 py-10">
                 <TradeContent
                   direction="short"
                   balances={balances}
@@ -204,10 +223,12 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={shortInput}
+                  liquidityData={shortLiquidityData}
                   totalMaxLiquidity={shortTotalMaxLiquidity}
                   totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   tradeFee={shortTradeFee}
                   tradeFeePercent={shortTradeFeePercent}
+                  tooltip={shortTooltip}
                   onMethodToggle={onShortMethodToggle}
                   onInputChange={onShortChange}
                   onLeverageChange={onShortLeverageChange}
@@ -216,7 +237,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   onOpenPosition={onOpenShortPosition}
                 />
               </Tab.Panel>
-              <Tab.Panel className="w-[100vw] max-w-[680px] px-0 py-10">
+              <Tab.Panel className="w-full px-0 py-10">
                 <TradeContent
                   direction="long"
                   balances={balances}
@@ -224,10 +245,12 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={longInput}
+                  liquidityData={longLiquidityData}
                   totalMaxLiquidity={longTotalMaxLiquidity}
                   totalUnusedLiquidity={longTotalUnusedLiquidity}
                   tradeFee={longTradeFee}
                   tradeFeePercent={longTradeFeePercent}
+                  tooltip={longTooltip}
                   onMethodToggle={onLongMethodToggle}
                   onInputChange={onLongChange}
                   onLeverageChange={onLongLeverageChange}

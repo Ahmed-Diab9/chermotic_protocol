@@ -20,13 +20,14 @@ const PoolPanelDemo = () => {
   const { walletBalances } = useWalletBalances();
   const {
     amount,
-    indexes,
     rates,
-    bins,
+    binCount,
+    binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
+    move,
+    rangeChartRef,
   } = usePoolInput();
 
   return (
@@ -35,17 +36,22 @@ const PoolPanelDemo = () => {
       balances={walletBalances}
       pool={pool}
       amount={amount}
-      indexes={indexes}
-      rates={rates}
-      bins={bins}
+      binCount={binCount}
+      binAverage={binAverage}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}
       shortTotalMaxLiquidity={shortTotalMaxLiquidity}
       shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+      rates={rates}
       onAmountChange={onAmountChange}
       onRangeChange={onRangeChange}
-      onFullRangeSelect={onFullRangeSelect}
       onAddLiquidity={onAddLiquidity}
+      rangeChartRef={rangeChartRef}
+      onMinIncrease={move.left.next}
+      onMinDecrease={move.left.prev}
+      onMaxIncrease={move.right.next}
+      onMaxDecrease={move.right.prev}
+      onFullRange={move.full}
     />
   );
 };

@@ -73,12 +73,8 @@ export const WalletPopover = ({
                 gap="3"
               />
             </Popover.Button>
-            {open && (
-              <div
-                className="fixed inset-0 z-40 bg-white/80"
-                aria-hidden="true"
-              />
-            )}
+            {/* backdrop */}
+            <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
@@ -88,7 +84,7 @@ export const WalletPopover = ({
               // leaveFrom="opacity-100 translate-x-20"
               // leaveTo="opacity-100 translate-x-0"
             >
-              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel ">
+              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel">
                 <div className="relative flex flex-col h-full ">
                   {/* Network */}
                   <Avatar

@@ -1,15 +1,16 @@
-import { IERC20__factory } from "@chromatic-protocol/sdk/contracts";
-import { useMemo, useState } from "react";
-import { useAccount, useSigner } from "wagmi";
-import { FEE_RATES } from "../configs/feeRate";
-import { useAppSelector } from "../store";
-import { errorLog, infoLog } from "../utils/log";
-import { bigNumberify, expandDecimals } from "../utils/number";
-import { isValid } from "../utils/valid";
-import { useWalletBalances } from "./useBalances";
-import { useChromaticClient } from "./useChromaticClient";
-import { useBinsBySelectedMarket } from "./useLiquidityPool";
-import usePoolReceipt from "./usePoolReceipt";
+import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
+import { useMemo, useState } from 'react';
+import { useAccount, useSigner } from 'wagmi';
+import { FEE_RATES } from '../configs/feeRate';
+import { useAppSelector } from '../store';
+import { errorLog, infoLog } from '../utils/log';
+import { bigNumberify, expandDecimals } from '../utils/number';
+import { isValid } from '../utils/valid';
+import { useWalletBalances } from './useBalances';
+import { useChromaticClient } from './useChromaticClient';
+import { useBinsBySelectedMarket } from './useLiquidityPool';
+import usePoolReceipt from './usePoolReceipt';
+import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 
 const usePoolInput = () => {
   const { pool } = useBinsBySelectedMarket();
@@ -19,39 +20,38 @@ const usePoolInput = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
-
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchWalletBalances } = useWalletBalances();
-  const feeRates = useMemo(() => {
-    return [...FEE_RATES]
-      .reverse()
-      .map((rate) => rate * -1)
-      .concat(FEE_RATES);
-  }, []);
-  const [amount, setAmount] = useState("");
-  const [indexes, setIndexes] = useState<[number, number]>([35, 36]);
-  const rates = useMemo(() => {
-    return [feeRates[indexes[0]], feeRates[indexes[1]]] as [number, number];
-  }, [feeRates, indexes]);
-  const bins = useMemo(() => {
-    return indexes[1] - indexes[0] + 1;
-  }, [indexes]);
 
-  // FIXME
-  const averageBin = bigNumberify(0);
-  // const averageBin = useMemo(() => {
-  //   if (!isValid(pool)) {
-  //     return;
-  //   }
-  //   let index = indexes[0];
-  //   let totalBin = bigNumberify(0);
-  //   while (index <= indexes[1]) {
-  //     totalBin.add(pool.bins[index].binValue);
-  //     index++;
-  //   }
-  //   return totalBin.div(rates[1] - rates[0] + 1);
-  // }, [pool, indexes, rates]);
+  const {
+    data: { values: binFeeRates },
+    setData: onRangeChange,
+    ref: rangeChartRef,
+    move,
+  } = useRangeChart();
+
+  const [amount, setAmount] = useState('');
+
+  const rates = useMemo<[number, number]>(
+    () => [binFeeRates[0], binFeeRates[binFeeRates.length - 1]],
+    [binFeeRates]
+  );
+
+  const binAverage = useMemo(() => {
+    if (!isValid(pool)) {
+      return;
+    }
+
+    const binTotal = binFeeRates.reduce((acc, bin) => {
+      const binValue = pool.bins.find(({ baseFeeRate }) => {
+        return baseFeeRate / 100 === bin;
+      }).binValue;
+      return acc.add(binValue);
+    }, bigNumberify(0));
+
+    return binTotal.div(binFeeRates.length);
+  }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
     const parsed = Number(value);
@@ -61,81 +61,53 @@ const usePoolInput = () => {
     setAmount(value);
   };
 
-  const onRangeChange = (
-    minmax: "min" | "max",
-    direction: "increment" | "decrement"
-  ) => {
-    const [min, max] = indexes;
-    if (minmax === "min" && direction === "decrement") {
-      const nextRate = feeRates[min - 1];
-      if (isValid(nextRate)) {
-        setIndexes([min - 1, max]);
-      }
-    }
-    if (minmax === "min" && direction === "increment") {
-      const nextRate = feeRates[min + 1];
-      if (isValid(nextRate) && min + 1 <= max) {
-        setIndexes([min + 1, max]);
-      }
-    }
-    if (minmax === "max" && direction === "decrement") {
-      const nextRate = feeRates[max - 1];
-      if (isValid(nextRate) && min <= max - 1) {
-        setIndexes([min, max - 1]);
-      }
-    }
-    if (minmax === "max" && direction === "increment") {
-      const nextRate = feeRates[max + 1];
-      if (isValid(nextRate)) {
-        setIndexes([min, max + 1]);
-      }
-    }
-  };
-
-  const onFullRangeSelect = () => {
-    setIndexes([0, feeRates.length - 1]);
-  };
-
   const onAddLiquidity = async () => {
     if (!isValid(signer)) {
-      errorLog("signer is invalid");
+      errorLog('signer is invalid');
       return;
     }
     if (!isValid(token)) {
-      errorLog("token is not selected");
+      errorLog('token is not selected');
       return;
     }
     if (!isValid(market)) {
-      errorLog("market is not selected");
+      errorLog('market is not selected');
       return;
     }
     if (!isValid(address)) {
-      errorLog("wallet not connected");
+      errorLog('wallet not connected');
       return;
     }
     if (!isValid(routerApi)) {
-      errorLog("no router apis");
+      errorLog('no router apis');
       return;
     }
     setIsLoading(true);
     try {
       const marketAddress = market?.address;
-      const filteredFeeRates = feeRates.filter(
-        (rate, rateIndex) => rateIndex >= indexes[0] && rateIndex <= indexes[1]
-      );
-      const expandedAmount = bigNumberify(amount)?.mul(
-        expandDecimals(token.decimals)
-      );
+      const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(token.decimals));
       if (!isValid(expandedAmount)) {
-        errorLog("amount is invalid");
+        errorLog('amount is invalid');
         return;
       }
+      const dividedAmount = expandedAmount.div(binFeeRates.length);
+      // const erc20 = IERC20__factory.connect(token.address, signer);
+      // const allowance = await erc20.allowance(address, router.address);
+      // if (allowance.lte(expandedAmount)) {
+      //   await erc20.approve(router.address, expandedAmount);
+      // }
 
-      const dividedAmount = expandedAmount.div(bins);
+      // const tx = await router.addLiquidityBatch(
+      //   marketAddress,
+      //   bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
+      //   Array(bins.length).fill(dividedAmount),
+      //   Array(bins.length).fill(address)
+      // );
+
       await routerApi.addLiquidities(
         marketAddress,
-        filteredFeeRates.map((feeRate) => ({
-          feeRate,
+        binFeeRates.map((feeRate) => ({
+          feeRate: +(feeRate * 10 ** 2).toFixed(0),
           amount: dividedAmount,
         }))
       );
@@ -151,15 +123,15 @@ const usePoolInput = () => {
 
   return {
     amount,
-    indexes,
     rates,
-    bins,
-    averageBin,
+    binCount: binFeeRates.length,
+    binAverage,
     isLoading,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
+    rangeChartRef,
+    move: move(),
   };
 };
 

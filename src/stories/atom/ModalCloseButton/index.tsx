@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
 import { Button } from "../Button";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ModalCloseButtonProps {
   disabled?: boolean;

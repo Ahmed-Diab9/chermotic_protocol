@@ -1,14 +1,14 @@
 .tooltip {
-  @apply flex items-center gap-1 relative;
+  @apply inline-flex items-center gap-1;
+  &:hover::before {
+    @apply absolute m-[-80px] w-[calc(100%+160px)] h-[calc(100%+160px)];
+    content: " ";
+  }
 
   .tooltip-tip {
-    @apply z-40 absolute max-w-[400px] min-h-[28px] whitespace-normal;
-    @apply bg-black text-white;
+    @apply absolute max-w-[400px] min-h-[28px] whitespace-normal;
+    @apply bg-black text-white px-5 py-3 rounded-xl w-max text-sm leading-4;
     visibility: hidden;
-    width: max-content;
-    text-align: left;
-    padding: 6px 16px;
-    border-radius: 6px;
 
     &::after {
       content: " ";
@@ -22,43 +22,63 @@
     visibility: visible;
   }
 }
-.tooltip-top .tooltip-tip {
-  @apply translate-x-[-50%] left-[50%];
-  bottom: calc(100% + 8px);
-  &::after {
-    top: 100%; /* At the bottom of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-color: black transparent transparent transparent;
+.tooltip-top {
+  &:hover::before {
+    @apply !mb-0 !h-[calc(100%+80px)];
+  }
+  .tooltip-tip {
+    @apply translate-x-[-50%] left-[50%];
+    bottom: calc(100% + 8px);
+    &::after {
+      top: 100%; /* At the bottom of the tooltip */
+      left: 50%;
+      margin-left: -5px;
+      border-color: black transparent transparent transparent;
+    }
   }
 }
-.tooltip-right .tooltip-tip {
-  top: -5px;
-  left: calc(100% + 16px);
-  &::after {
-    top: 50%;
-    right: 100%; /* To the left of the tooltip */
-    margin-top: -5px;
-    border-color: transparent black transparent transparent;
+.tooltip-right {
+  &:hover::before {
+    @apply !ml-0 !w-[calc(100%+80px)];
+  }
+  .tooltip-tip {
+    top: -5px;
+    left: calc(100% + 16px);
+    &::after {
+      top: 50%;
+      right: 100%; /* To the left of the tooltip */
+      margin-top: -5px;
+      border-color: transparent black transparent transparent;
+    }
   }
 }
-.tooltip-bottom .tooltip-tip {
-  @apply translate-x-[-50%] left-[50%];
-  top: calc(100% + 8px);
-  &::after {
-    bottom: 100%; /* At the top of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-color: transparent transparent black transparent;
+.tooltip-bottom {
+  &:hover::before {
+    @apply !mt-0 !h-[calc(100%+80px)];
+  }
+  .tooltip-tip {
+    @apply translate-x-[-50%] left-[50%];
+    top: calc(100% + 8px);
+    &::after {
+      bottom: 100%; /* At the top of the tooltip */
+      left: 50%;
+      margin-left: -5px;
+      border-color: transparent transparent black transparent;
+    }
   }
 }
-.tooltip-left .tooltip-tip {
-  top: -5px;
-  right: calc(100% + 16px);
-  &::after {
-    top: 50%;
-    left: 100%;
-    margin-top: -5px;
-    border-color: transparent transparent transparent black;
+.tooltip-left {
+  &:hover::before {
+    @apply !mr-0 !w-[calc(100%+80px)];
+  }
+  .tooltip-tip {
+    top: -5px;
+    right: calc(100% + 16px);
+    &::after {
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-color: transparent transparent transparent black;
+    }
   }
 }

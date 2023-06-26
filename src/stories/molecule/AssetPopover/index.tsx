@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Popover } from "@headlessui/react";
 import { Avatar } from "../../atom/Avatar";
 import { Button } from "../../atom/Button";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { Outlink } from "~/stories/atom/Outlink";
 import { OptionInput } from "../../atom/OptionInput";
 import { Loading } from "~/stories/atom/Loading";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
-import { ChevronDoubleUpIcon } from "@heroicons/react/20/solid";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleUpIcon } from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import "./style.css";
 import {
   ACCOUNT_COMPLETED,
@@ -61,58 +64,61 @@ export const AssetPopover = ({
   ...props
 }: AssetPopoverProps) => {
   const isLoaded = isValid(account) && isValid(token);
+
   return (
-    <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px]">
-      <div className="ml-10">
-        <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
+    <>
+      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white shadow-lg">
+        <div className="ml-10">
+          <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
+        </div>
+        <div className="flex flex-col gap-2 mr-10 text-right">
+          {isLoaded ? (
+            <>
+              <h2 className="text-2xl">
+                {totalBalance &&
+                  withComma(formatDecimals(totalBalance, token.decimals, 2))}
+              </h2>
+              <Popover.Group className="flex gap-3">
+                <AssetPanel
+                  title="Deposit"
+                  account={account}
+                  status={status}
+                  token={token}
+                  walletBalances={walletBalances}
+                  usumBalances={usumBalances}
+                  amount={amount}
+                  availableMargin={availableMargin}
+                  assetValue={assetValue}
+                  onAmountChange={onAmountChange}
+                  onDeposit={onDeposit}
+                  onWithdraw={onWithdraw}
+                  onStatusUpdate={onStatusUpdate}
+                />
+                <AssetPanel
+                  title="Withdraw"
+                  account={account}
+                  status={status}
+                  token={token}
+                  walletBalances={walletBalances}
+                  usumBalances={usumBalances}
+                  amount={amount}
+                  availableMargin={availableMargin}
+                  assetValue={assetValue}
+                  onAmountChange={onAmountChange}
+                  onDeposit={onDeposit}
+                  onWithdraw={onWithdraw}
+                  onStatusUpdate={onStatusUpdate}
+                />
+              </Popover.Group>
+            </>
+          ) : (
+            <>
+              <Button label="Connect Wallet" size="sm" />
+            </>
+          )}
+        </div>
       </div>
-      <div className="flex flex-col gap-2 mr-10 text-right">
-        {isLoaded ? (
-          <>
-            <h2 className="text-2xl">
-              {totalBalance &&
-                withComma(formatDecimals(totalBalance, token.decimals, 2))}
-            </h2>
-            <Popover.Group className="flex gap-3">
-              <AssetPanel
-                title="Deposit"
-                account={account}
-                status={status}
-                token={token}
-                walletBalances={walletBalances}
-                usumBalances={usumBalances}
-                amount={amount}
-                availableMargin={availableMargin}
-                assetValue={assetValue}
-                onAmountChange={onAmountChange}
-                onDeposit={onDeposit}
-                onWithdraw={onWithdraw}
-                onStatusUpdate={onStatusUpdate}
-              />
-              <AssetPanel
-                title="Withdraw"
-                account={account}
-                status={status}
-                token={token}
-                walletBalances={walletBalances}
-                usumBalances={usumBalances}
-                amount={amount}
-                availableMargin={availableMargin}
-                assetValue={assetValue}
-                onAmountChange={onAmountChange}
-                onDeposit={onDeposit}
-                onWithdraw={onWithdraw}
-                onStatusUpdate={onStatusUpdate}
-              />
-            </Popover.Group>
-          </>
-        ) : (
-          <>
-            <Button label="Connect Wallet" size="sm" />
-          </>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -154,7 +160,9 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${open ? "border-black" : null}`}
+            className={`btn btn-default btn-sm ${
+              open ? "border-black !text-black" : ""
+            }`}
           >
             {title}
           </Popover.Button>
@@ -307,14 +315,30 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <p className="mb-1 text-black/30">Available Margin</p>
+                      <p className="flex mb-1 text-black/30">
+                        Available Margin
+                        <Tooltip
+                          tip="Available Margin is the amount
+that can be immediately withdrawn.
+Available Margin = Balance - Taker
+Margin"
+                        />
+                      </p>
                       <p>
                         {formatDecimals(availableMargin, token?.decimals, 2)}{" "}
                         {token?.name}
                       </p>
                     </div>
                     <div>
-                      <p className="mb-1 text-black/30">Asset Value</p>
+                      <p className="flex mb-1 text-black/30">
+                        Asset Value
+                        <Tooltip
+                          tip="This is the total sum of the asset in
+my account, including the amount
+collateralized by taker margin and
+unrealized PnL."
+                        />
+                      </p>
                       <p>
                         {formatDecimals(assetValue, token?.decimals, 2)}{" "}
                         {token?.name}
@@ -343,11 +367,14 @@ const AssetPanel = (props: AssetPanelProps) => {
                         onAmountChange?.(value);
                       }}
                     />
-                    <p className="text-xs text-black/30">
-                      Please set additional values to apply to the basic formula
-                      in Borrow Fee. Calculated based on open Interest and stop
-                      profit/Loss rate.
-                    </p>
+                    <div>
+                      <p className="mb-1 text-xs text-black/30">
+                        To open a position in the Chromatic Protocol, you need
+                        to deposit the required amount of settlement assets into
+                        your account.
+                      </p>
+                      <Outlink outLink="#" />
+                    </div>
                   </article>
                 </section>
                 <div className="mt-6 text-center">
@@ -357,7 +384,6 @@ const AssetPanel = (props: AssetPanelProps) => {
                     css="active"
                     className="w-full"
                     onClick={() => {
-                      console.log('wt...', title)
                       if (title === "Deposit") {
                         onDeposit && onDeposit();
                       } else {

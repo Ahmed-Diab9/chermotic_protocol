@@ -1,14 +1,14 @@
 import { Popover } from '@headlessui/react';
-import { Avatar } from '../../atom/Avatar';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import './style.css';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { BigNumber } from 'ethers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Tooltip } from '~/stories/atom/Tooltip';
+import { filterIfFulfilled } from '~/utils/array';
+import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
-import { useCallback, useEffect, useState } from 'react';
-import { filterIfFulfilled } from '~/utils/array';
-import { BigNumber } from 'ethers';
-import { isValid } from '~/utils/valid';
+import { Avatar } from '../../atom/Avatar';
+import './style.css';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -28,28 +28,41 @@ interface MarketSelectProps {
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const { isGroupLegacy, selectedMarket, feeRate, selectedToken } = props;
 
+  const marketPrice = useMemo(
+    () =>
+      `$${withComma(
+        formatDecimals(selectedMarket?.oracleValue?.price || 0, selectedToken?.decimals, 2)
+      )}`,
+    [selectedMarket, selectedToken]
+  );
+
   // TODO
   // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
   // 현재는 연이율을 1년에 해당하는 시간 값으로 나눗셈
   return (
-    <div className="MarketSelect">
-      <Popover>{!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}</Popover>
-      <div className="flex items-center gap-4 mr-10">
-        <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
-          <h4>
-            {formatDecimals(feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0, 4, 4)}
-            %/h
-          </h4>
-          <p>Interest Rate</p>
+    <>
+      <div className="relative bg-white shadow-lg MarketSelect">
+        <Popover>{!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}</Popover>
+        <div className="flex items-center gap-4 mr-10">
+          <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
+            <h4>
+              {formatDecimals(feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0, 4, 4)}
+              %/h
+            </h4>
+            <div className="flex">
+              <p>Interest Rate</p>
+              <Tooltip
+                tip="This is the rate of Borrow Fee that needs to be paid to the LP
+            while the position is open. The Interest Rate is determined by
+            the Dao for each settlement asset."
+                outLink="#"
+              />
+            </div>
+          </div>
+          <h2 className="text-2xl">{marketPrice}</h2>
         </div>
-        <h2 className="text-2xl">
-          {'$' +
-            withComma(
-              formatDecimals(selectedMarket?.oracleValue?.price || 0, selectedToken?.decimals, 2)
-            )}
-        </h2>
       </div>
-    </div>
+    </>
   );
 };
 

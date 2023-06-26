@@ -158,6 +158,7 @@ export const useBinsBySelectedMarket = () => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
       return;
     }
+
     return pools.find(
       (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
     );

@@ -1,47 +1,44 @@
-import { Tab } from '@headlessui/react';
+import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { BigNumber } from 'ethers';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
+import { PERCENT_DECIMALS } from '~/configs/decimals';
 import { MULTI_TYPE } from '~/configs/pool';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-import { Toggle } from '~/stories/atom/Toggle';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Button } from '~/stories/atom/Button';
+import { Checkbox } from '~/stories/atom/Checkbox';
+import { Counter } from '~/stories/atom/Counter';
+import { OptionInput } from '~/stories/atom/OptionInput';
+import { RangeChart } from '~/stories/atom/RangeChart';
+import '~/stories/atom/Tabs/style.css';
+import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { Tooltip } from '~/stories/atom/Tooltip';
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
 import { Bin, LiquidityPool } from '../../../typings/pools';
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  formatFeeRate,
-  withComma,
-} from '../../../utils/number';
-import { Avatar } from '../../atom/Avatar';
-import { Button } from '../../atom/Button';
-import { Checkbox } from '../../atom/Checkbox';
-import { Counter } from '../../atom/Counter';
-import { OptionInput } from '../../atom/OptionInput';
+
+import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { Logger } from '~/utils/log';
+import { bigNumberify, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
-import { Thumbnail } from '../../atom/Thumbnail';
-import { Tooltip } from '../../atom/Tooltip';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
-import { Logger } from '~/utils/log';
+
 const logger = Logger('PoolPanel');
+
 interface PoolPanelProps {
   token?: Token;
   market?: Market;
   balances?: Record<string, BigNumber>;
   pool?: LiquidityPool;
   amount?: string;
-  indexes?: [number, number];
-  rates?: [number, number];
-  bins?: number;
-  averageBin?: BigNumber;
+  binCount?: number;
+  binAverage?: BigNumber;
   longTotalMaxLiquidity?: BigNumber;
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
@@ -50,8 +47,6 @@ interface PoolPanelProps {
   isModalOpen?: boolean;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onRangeChange?: (minmax: 'min' | 'max', direction: 'increment' | 'decrement') => unknown;
-  onFullRangeSelect?: () => unknown;
   onAddLiquidity?: () => unknown;
 
   removeAmount?: number;
@@ -69,6 +64,21 @@ interface PoolPanelProps {
   multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
+
+  rangeChartRef?: any;
+
+  binValue?: any[];
+  liquidity?: any[];
+
+  rates: [number, number];
+  onRangeChange: (data: RangeChartData) => unknown;
+  onMinIncrease: () => void;
+  onMinDecrease: () => void;
+  onMaxIncrease: () => void;
+  onMaxDecrease: () => void;
+  onFullRange?: () => unknown;
+
+  tooltip: React.ReactElement<any>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -78,10 +88,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
     balances,
     pool,
     amount,
-    indexes,
     rates,
-    bins,
-    averageBin,
+    binCount = 0,
+    binAverage = 0,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -99,20 +108,32 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiRemovableRate,
     isLoading,
     onAmountChange,
-    onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
     onRemoveLiquidity,
     onMultiAmountChange,
     onRemoveLiquidityBatch,
+
+    binValue,
+    liquidity,
+    onRangeChange,
+    rangeChartRef,
+    onMinIncrease,
+    onMinDecrease,
+    onMaxIncrease,
+    onMaxDecrease,
+    onFullRange,
+    tooltip,
   } = props;
+
   const dispatch = useAppDispatch();
   const previousPools = usePrevious(pool?.bins, true);
   // const binLength = (pool?.bins ?? []).filter((bin) =>
   //   bin.clbTokenBalance.gt(0)
   // ).length;
+
+  const [minRate, maxRate] = rates;
 
   /**
    * @TODO
@@ -173,6 +194,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const totalLiquidity = bigNumberify(1);
   const totalFreeLiquidity = bigNumberify(1);
   const totalLiquidityValue = bigNumberify(1);
+  const totalRemovableRate = BigNumber.from(0);
   const ownedLongLiquidityBins = [] as any[];
   const ownedShortLiquidityBins = [] as any[];
   const binLength = 1;
@@ -191,11 +213,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
     logger.info('Rates', rates);
   }, [rates]);
 
+  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
+
   return (
-    <div className="inline-flex flex-col w-full border rounded-2xl">
+    <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
-          <Tab.List className="w-[50vw] max-w-[840px] mx-auto pt-4 flex !justify-center">
+          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
             <Tab className="text-2xl">ADD</Tab>
             <Tab className="text-2xl">REMOVE</Tab>
           </Tab.List>
@@ -229,10 +253,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <article>
                   <div className="flex justify-between">
                     <h4>Liquidity Pool Range</h4>
-                    <Toggle label="Bin Values" size="sm" />
+                    <Switch.Group>
+                      <div className="toggle-wrapper">
+                        <Switch.Label className="">Bin Values</Switch.Label>
+                        <Switch onChange={setIsBinValueVisible} className="toggle toggle-xs" />
+                      </div>
+                    </Switch.Group>
                   </div>
                   <div className="flex justify-between mt-6">
-                    <div>
+                    <div className="text-left">
                       <p className="mb-1 text-black/30">Short Counter LP</p>
                       {/**
                        * @TODO
@@ -262,7 +291,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
                        */}
                       {longTotalMaxLiquidity && longTotalUnusedLiquidity && token && (
-                        <p className="text-center">
+                        <p>
                           {formatDecimals(
                             longTotalUnusedLiquidity,
                             token.decimals + MILLION_UNITS,
@@ -280,28 +309,38 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                   </div>
                 </article>
-
-                {/* chart with range */}
+                <article>
+                  {/* chart with range */}
+                  <RangeChart
+                    barData={liquidity}
+                    dotData={binValue}
+                    rangeChartRef={rangeChartRef}
+                    height={200}
+                    onChange={onRangeChange}
+                    isDotVisible={isBinValueVisible}
+                    tooltip={tooltip}
+                  />
+                </article>
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
                     <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Min trade Fee</p>
                       <Counter
-                        value={rates && formatFeeRate(rates[0])}
+                        value={rates && minRate}
                         symbol="%"
-                        onDecrement={() => onRangeChange?.('min', 'decrement')}
-                        onIncrement={() => onRangeChange?.('min', 'increment')}
+                        onDecrement={onMinDecrease}
+                        onIncrement={onMinIncrease}
                       />
                     </div>
                     <p>-</p>
                     <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Max trade Fee</p>
                       <Counter
-                        value={rates && formatFeeRate(rates[1])}
+                        value={rates && maxRate}
                         symbol="%"
-                        onDecrement={() => onRangeChange?.('max', 'decrement')}
-                        onIncrement={() => onRangeChange?.('max', 'increment')}
+                        onDecrement={onMaxDecrease}
+                        onIncrement={onMaxIncrease}
                       />
                     </div>
                   </div>
@@ -310,12 +349,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       label="Full Range"
                       className="w-full !text-base !rounded-lg"
                       size="xl"
-                      onClick={() => onFullRangeSelect?.()}
+                      onClick={onFullRange}
                     />
                     <p className="mt-3 text-sm text-left text-black/30">
-                      The percentage of price range means the gap from index price when your
-                      liquidity occupied by takers. When fluidity is supplied to the fluid pool, a
-                      separate PLP (ERC-1155) token is received for each slot.
+                      The percentage on the price range represents the trade fee (or price gap from
+                      the index price) when your liquidity is utilized by takers. When liquidity is
+                      supplied to the bins, separate CLB (ERC-1155) tokens are minted for each bin.
                     </p>
                   </div>
                 </article>
@@ -323,21 +362,27 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article>
                 <div className="flex flex-col gap-2 mb-10 border-dotted mt-9">
                   <div className="flex items-center justify-between">
-                    <p>Number of LP Bins</p>
-                    <p>{bins ?? 0} Bins</p>
+                    <p className="flex">
+                      Number of Liquidity Bins
+                      <Tooltip tip="This is the total count of target Bins I am about to provide liquidity for." />
+                    </p>
+                    <p>{binCount ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p>Trade Fee Range</p>
+                    <p className="flex">
+                      Trade Fee Range
+                      <Tooltip tip="This is the range of target Bins I am about to provide liquidity for." />
+                    </p>
                     <p>
-                      {rates &&
-                        (rates[0] !== rates[1]
-                          ? `${formatFeeRate(rates[0])}% ~ ${formatFeeRate(rates[1])}%`
-                          : `${formatFeeRate(rates[0])}%`)}
+                      {rates && (minRate !== maxRate ? `${minRate}% ~ ${maxRate}%` : `${minRate}%`)}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p>Average Bin Values</p>
-                    <p>{formatDecimals(averageBin ?? 0, token?.decimals, 2)} USDC</p>
+                    <p className="flex">
+                      Average Bin Token Values
+                      <Tooltip tip="This is the average token value of the target Bins I am about to provide liquidity for." />
+                    </p>
+                    <p>{formatDecimals(binAverage ?? 0, token?.decimals, 2)} USDC</p>
                   </div>
                 </div>
                 {/* <div className="flex items-center justify-between">
@@ -363,12 +408,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex items-center justify-between flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <article className="flex flex-col xl:flex-row xl:items-center xl:justify-between justify-around flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
-                    <p className="mb-2 font-semibold text-black/30">Liquidity Value</p>
+                    <p className="flex mb-2 font-semibold text-left text-black/30">
+                      Total Liquidity Value
+                      <Tooltip tip="The value of my CLB tokens converted into the current token value." />
+                    </p>
                     <Avatar label="USDC" size="xs" gap="1" />
                   </div>
-                  <h4 className="text-xl">
+                  <h4 className="text-xl text-left xl:text-right">
                     {/**
                      * @TODO
                      * 총 유동성 보여주는 로직
@@ -377,30 +425,36 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl">
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
+                <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl text-left">
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                    <div className="flex items-center font-medium text-left text-black/30">
                       LP Bins
-                      <Tooltip tip="tooltip" />
                     </div>
-                    <p className="text-right">{binLength.toFixed(2)} Bins</p>
+                    <p className="">{binLength.toFixed(2)} Bins</p>
                   </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
-                      Liquidity Principal
-                      <Tooltip tip="tooltip" />
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                    <div className="flex items-center font-medium text-left text-black/30">
+                      My Liquidity Value
+                      <Tooltip
+                        tip="The value of my CLB tokens converted into the current token value."
+                        className="inline"
+                      />
                     </div>
-                    <p className="text-right">
+                    <p className="">
                       {formatDecimals(totalLiquidity, token?.decimals, 2)} {token?.name}
                     </p>
                   </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-1 font-medium text-black/30">
+                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                    <div className="flex font-medium text-left text-black/30">
                       Removable Liquidity
+                      <Tooltip
+                        tip="The amount of liquidity that is currently removable due to not being utilized."
+                        outLink="#"
+                      />
                     </div>
-                    <p className="text-right">
+                    <p className="">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
-                      {formatDecimals(0, PERCENT_DECIMALS, 2)}
+                      {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
                       %)
                     </p>
                   </div>
@@ -410,18 +464,29 @@ export const PoolPanel = (props: PoolPanelProps) => {
               {/* inner tab */}
               <section className="tabs-line tabs-base">
                 <Tab.Group>
-                  <div className="flex items-baseline">
+                  <div className="flex flex-wrap items-baseline">
                     <Tab.List className="pt-[36px] !justify-start !gap-10">
                       <Tab>Long Counter LP</Tab>
                       <Tab>Short Counter LP</Tab>
                     </Tab.List>
-                    <Button
-                      label="Remove All"
-                      className="ml-auto"
-                      onClick={() => {
-                        dispatch(poolsAction.onModalOpen());
-                      }}
-                    />
+
+                    {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
+                    <div className="ml-auto">
+                      {/* 전체 선택 */}
+                      {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
+                      <Button label="Select All" css="unstyled" className="text-black/50" />
+
+                      {/* 선택된 유동성 일괄 제거 */}
+                      {/* 선택된 항목이 없을 땐, disabled 상태 */}
+                      <Button
+                        label="Remove Selected"
+                        className="ml-2"
+                        onClick={() => {
+                          dispatch(poolsAction.onModalOpen());
+                        }}
+                        // disabled
+                      />
+                    </div>
                   </div>
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>

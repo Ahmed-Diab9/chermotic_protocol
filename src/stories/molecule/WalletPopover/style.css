@@ -1,5 +1,5 @@
 .WalletPopover {
   .popover-panel {
-    @apply fixed z-40 w-[320px] h-full top-0 right-0 bottom-0 px-5 py-7 bg-white text-left;
+    @apply fixed w-[320px] h-full top-0 right-0 bottom-0 px-5 py-7 bg-white text-left;
   }
 }

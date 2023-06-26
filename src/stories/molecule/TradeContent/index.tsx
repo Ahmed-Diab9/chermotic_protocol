@@ -1,21 +1,26 @@
 // import { Popover } from "@headlessui/react";
-// import { Avatar } from "../../atom/Avatar";
-// import { Button } from "../../atom/Button";
-// import { OptionInput } from "../../atom/OptionInput";
+// import { Avatar } from "~/atom/Avatar";
+// import { Button } from "~/atom/Button";
+// import { OptionInput } from "~/atom/OptionInput";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { Input } from "../../atom/Input";
-import { Button } from "../../atom/Button";
-import { Tooltip } from "../../atom/Tooltip";
-import { Slider } from "../../atom/Slider";
-import { LeverageOption } from "../../atom/LeverageOption";
+import { BigNumber } from "ethers";
+
 import { Listbox } from "@headlessui/react";
 import { Switch } from "@headlessui/react";
-import "./../../atom/Select/style.css";
-import "./../../atom/Toggle/style.css";
-import { TradeInput } from "~/typings/trade";
+import "~/stories/atom/Select/style.css";
+import "~/stories/atom/Toggle/style.css";
+
+import { Input } from "~/stories/atom/Input";
+import { Button } from "~/stories/atom/Button";
+import { Tooltip } from "~/stories/atom/Tooltip";
+import { Slider } from "~/stories/atom/Slider";
+import { LeverageOption } from "~/stories/atom/LeverageOption";
+import { FillUpChart } from "~/stories/atom/FillUpChart";
+
 import { isValid } from "~/utils/valid";
-import { BigNumber } from "ethers";
 import { formatDecimals, numberBuffer, withComma } from "~/utils/number";
+
+import { TradeInput } from "~/typings/trade";
 import { Market, Price, Token } from "~/typings/market";
 
 interface TradeContentProps {
@@ -29,6 +34,8 @@ interface TradeContentProps {
   totalUnusedLiquidity?: BigNumber;
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
+  liquidityData?: any[];
+  tooltip?: React.ReactElement<any>;
   onInputChange?: (
     key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
     event: ChangeEvent<HTMLInputElement>
@@ -57,6 +64,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     totalUnusedLiquidity,
     tradeFee,
     tradeFeePercent,
+    liquidityData,
+    tooltip,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -175,7 +184,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
             <Switch.Group>
-              <div className="flex items-center gap-[6px]">
+              <div className="toggle-wrapper">
                 <Switch.Label className="">Slider</Switch.Label>
                 <Switch
                   checked={isSliderOpen}
@@ -192,18 +201,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <div className="mt-[-8px]">
                   <Slider
                     value={input?.leverage === 0 ? 1 : input?.leverage}
-                    onChange={(values) => {
-                      onLeverageChange?.(values);
-                    }}
+                    onUpdate={onLeverageChange}
                     tick={SLIDER_TICK}
                   />
                 </div>
               ) : (
                 <LeverageOption
                   value={input?.leverage}
-                  onClick={(value) => {
-                    onLeverageChange?.(value);
-                  }}
+                  onClick={onLeverageChange}
                 />
               )}
             </div>
@@ -240,9 +245,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   value={input.takeProfit === 0 ? 1 : input.takeProfit}
-                  onChange={(values) => {
-                    onTakeProfitChange?.(values);
-                  }}
+                  onUpdate={onTakeProfitChange}
                   tick={SLIDER_TICK}
                 />
               )}
@@ -270,9 +273,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   value={input.stopLoss === 0 ? 1 : input.stopLoss}
-                  onChange={(values) => {
-                    onStopLossChange?.(values);
-                  }}
+                  onUpdate={onStopLossChange}
                   tick={SLIDER_TICK}
                 />
               )}
@@ -295,19 +296,29 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           )}
         </div>
         {/* graph */}
+        <FillUpChart
+          positive={direction === "long"}
+          height={300}
+          data={liquidityData}
+          selectedAmount={input?.quantity}
+          tooltip={tooltip}
+        />
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
             <div className="flex justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex">
                 <p>EST. Execution Price</p>
-                <Tooltip tip="tooltip" />
+                <Tooltip
+                  tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
               </div>
               <p>$ {executionPrice}</p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Take Profit Price</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 $ {takeProfitPrice}
@@ -319,7 +330,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Stop Loss Price</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 $ {stopLossPrice}
@@ -333,7 +343,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
-                {/* <Tooltip /> */}
               </div>
               <p>
                 {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{" "}
@@ -341,9 +350,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
             <div className="flex justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center">
                 <p>Max Fee Allowance</p>
-                <Tooltip tip="tooltip" />
+                <Tooltip
+                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
               </div>
               <div className="w-20">
                 <Input size="sm" unit="%" />
@@ -392,10 +405,13 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               onAmountChange?.("collateral", event);
             }}
           />
-          <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip tip="tooltip" />
+          <div className="flex items-center justify-end mt-2">
+            <Tooltip
+              tip="Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss."
+              outLink="#"
+            />
             <p>Contract Qty</p>
-            <p className="text-black/30">{input?.quantity} USDC</p>
+            <p className="ml-2 text-black/30">{input?.quantity} USDC</p>
           </div>
         </div>
       );
@@ -404,16 +420,19 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       return (
         <div>
           <Input
-            value={input.quantity.toString()}
+            value={input?.quantity.toString()}
             onChange={(event) => {
               event.preventDefault();
               onAmountChange("quantity", event);
             }}
           />
-          <div className="flex items-center justify-end gap-2 mt-2">
-            <Tooltip tip="tooltip" />
+          <div className="flex items-center justify-end mt-2">
+            <Tooltip
+              tip="Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position."
+              outLink="#"
+            />
             <p>Collateral</p>
-            <p className="text-black/30">{input.collateral} USDC</p>
+            <p className="ml-2 text-black/30">{input.collateral} USDC</p>
           </div>
         </div>
       );

@@ -13,8 +13,8 @@
     "automigrate": "storybook automigrate"
   },
   "dependencies": {
-    "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.1",
     "@chromatic-protocol/sdk": "^0.1.0-rc.38",
+    "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.4",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
@@ -28,6 +28,8 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.10.0",
+    "react-toastify": "^9.1.3",
+    "react-tooltip": "^5.15.0",
     "swr": "^2.1.3",
     "wagmi": "^0.12.12"
   },
