@@ -1,0 +1,11 @@
+.chart-tooltip {
+  .tooltip-icon {
+    @apply inline-flex relative;
+  }
+  .tooltip-base {
+    @apply max-w-[420px];
+  }
+  .react-tooltip-arrow {
+    @apply border-t border-l border-black mt-[-.5px];
+  }
+}
