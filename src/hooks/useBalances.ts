@@ -54,7 +54,7 @@ export const useWalletBalances = () => {
       const promise = tokens.map(async (token) => {
         const contract = IERC20__factory.connect(token.address, signer);
         logger.info(walletAddress);
-        const balance = await contract.balanceOf(walletAddress);
+        const balance = await contract.balanceOf();
         return [token.name, balance] as const;
       });
       const response = await Promise.allSettled(promise);
