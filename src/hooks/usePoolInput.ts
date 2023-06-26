@@ -26,7 +26,7 @@ const usePoolInput = () => {
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchWalletBalances } = useWalletBalances();
-  
+
   const {
     data: { values: binFeeRates },
     setData: onRangeChange,
