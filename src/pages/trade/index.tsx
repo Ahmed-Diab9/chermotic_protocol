@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
-import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/MainBar";
-import { TradePanel } from "../../stories/template/TradePanel";
-import { TradeBar } from "~/stories/template/TradeBar";
-import { Button } from "../../stories/atom/Button";
-import { Outlink } from "~/stories/atom/Outlink";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import "./style.css";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+
+import { Header } from "~/stories/template/Header";
+import { MainBar } from "~/stories/template/MainBar";
+import { TradePanel } from "~/stories/template/TradePanel";
+import { TradeBar } from "~/stories/template/TradeBar";
+import { Button } from "~/stories/atom/Button";
+import { Outlink } from "~/stories/atom/Outlink";
+import {
+  LiquidityTooltip,
+  LiquidityTooltipData,
+} from "~/stories/molecule/LiquidityTooltip";
+
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import {
   useSelectedToken,
@@ -24,15 +32,15 @@ import {
   useLiquidityPoolSummary,
   useSelectedLiquidityPool,
 } from "~/hooks/useLiquidityPool";
-import { copyText } from "~/utils/clipboard";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useFeeRate } from "~/hooks/useFeeRate";
 import useTokenTransaction from "~/hooks/useTokenTransaction";
 import { useTradeInput } from "~/hooks/useTradeInput";
-import { Link } from "react-router-dom";
 import { usePosition } from "~/hooks/usePosition";
-import { infoLog } from "~/utils/log";
 import useOracleVersion from "~/hooks/useOracleVersion";
+import useChartData from "~/hooks/useChartData";
+
+import { copyText } from "~/utils/clipboard";
 
 const Trade = () => {
   useConnectOnce();
@@ -95,6 +103,12 @@ const Trade = () => {
   }, [shortInput.direction, onShortDirectionToggle]);
   const { positions, onClosePosition, onClaimPosition } = usePosition();
 
+  const { positive, negative } = useChartData();
+
+  const getTooltipGetter =
+    (tooltip: LiquidityTooltipData[]) => (index: number) =>
+      tooltip[index];
+
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
@@ -125,12 +139,8 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
-          onTokenSelect={(token) => {
-            onTokenSelect(token);
-          }}
-          onMarketSelect={(market) => {
-            onMarketSelect(market);
-          }}
+          onTokenSelect={onTokenSelect}
+          onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
@@ -165,6 +175,18 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+            shortLiquidityData={negative.liquidity}
+            longLiquidityData={positive.liquidity}
+            shortTooltip={
+              <LiquidityTooltip
+                getByIndex={getTooltipGetter(negative.tooltip)}
+              />
+            }
+            longTooltip={
+              <LiquidityTooltip
+                getByIndex={getTooltipGetter(positive.tooltip)}
+              />
+            }
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />
@@ -192,12 +214,8 @@ const Trade = () => {
         markets={markets}
         positions={positions}
         oracleVersions={oracleVersions}
-        onPositionClose={(marketAddress, positionId) => {
-          onClosePosition(marketAddress, positionId);
-        }}
-        onPositionClaim={(marketAddress, positionId) => {
-          onClaimPosition(marketAddress, positionId);
-        }}
+        onPositionClose={onClosePosition}
+        onPositionClaim={onClaimPosition}
       />
     </div>
   );

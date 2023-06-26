@@ -1,16 +1,22 @@
-import React from "react";
-import { Header } from "../../stories/template/Header";
-import { MainBar } from "../../stories/template/MainBar";
-import { PoolPanel } from "../../stories/template/PoolPanel";
+import "./style.css";
+
+// import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+
+import { Header } from "~/stories/template/Header";
+import { MainBar } from "~/stories/template/MainBar";
+import { PoolPanel } from "~/stories/template/PoolPanel";
 import { PoolProgress } from "~/stories/molecule/PoolProgress";
-import { Footer } from "../../stories/template/Footer";
-import { Button } from "../../stories/atom/Button";
+import { Footer } from "~/stories/template/Footer";
+import { Button } from "~/stories/atom/Button";
 import { Outlink } from "~/stories/atom/Outlink";
 import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
-import { Square2StackIcon } from "@heroicons/react/24/outline";
+import { LiquidityTooltip } from "~/stories/molecule/LiquidityTooltip";
+
+// import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import "./style.css";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import {
@@ -29,17 +35,19 @@ import {
   useSelectedLiquidityPool,
 } from "~/hooks/useLiquidityPool";
 import useTokenTransaction from "~/hooks/useTokenTransaction";
-import { copyText } from "~/utils/clipboard";
 import { useFeeRate } from "~/hooks/useFeeRate";
-import { Link } from "react-router-dom";
-import { trimAddress } from "~/utils/address";
 import usePoolInput from "~/hooks/usePoolInput";
-import { useAppSelector } from "~/store";
 import usePoolReceipt from "~/hooks/usePoolReceipt";
 import {
   useMultiPoolRemoveInput,
   usePoolRemoveInput,
 } from "~/hooks/usePoolRemoveInput";
+import useChartData from "~/hooks/useChartData";
+
+import { copyText } from "~/utils/clipboard";
+import { trimAddress } from "~/utils/address";
+
+import { useAppSelector } from "~/store";
 
 const Pool = () => {
   useConnectOnce();
@@ -79,14 +87,14 @@ const Pool = () => {
   } = useSelectedLiquidityPool();
   const {
     amount,
-    indexes,
     rates,
-    bins,
-    averageBin,
+    binCount,
+    binAverage,
     onAmountChange,
     onRangeChange,
-    onFullRangeSelect,
     onAddLiquidity,
+    move,
+    rangeChartRef,
   } = usePoolInput();
   const {
     amount: removeAmount,
@@ -104,6 +112,10 @@ const Pool = () => {
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
+
+  const { liquidity, binValue, tooltip } = useChartData();
+
+  const getTooltipByIndex = (index: number) => tooltip?.[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -135,19 +147,13 @@ const Pool = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
-          onTokenSelect={(token) => {
-            onTokenSelect(token);
-          }}
-          onMarketSelect={(market) => {
-            onMarketSelect(market);
-          }}
+          onTokenSelect={onTokenSelect}
+          onMarketSelect={onMarketSelect}
           onAmountChange={onBalanceAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
-          onStatusUpdate={() => {
-            createUsumAccount();
-          }}
+          onStatusUpdate={createUsumAccount}
         />
         <div className="flex items-stretch gap-5">
           <div className="flex-auto w-3/5 min-w-[620px]">
@@ -157,10 +163,11 @@ const Pool = () => {
               balances={walletBalances}
               pool={pool}
               amount={amount}
-              indexes={indexes}
               rates={rates}
-              bins={bins}
-              averageBin={averageBin}
+              binCount={binCount}
+              binAverage={binAverage}
+              binValue={binValue}
+              liquidity={liquidity}
               longTotalMaxLiquidity={longTotalMaxLiquidity}
               longTotalUnusedLiquidity={longTotalUnusedLiquidity}
               shortTotalMaxLiquidity={shortTotalMaxLiquidity}
@@ -169,8 +176,14 @@ const Pool = () => {
               isModalOpen={isRemoveModalOpen}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
-              onFullRangeSelect={onFullRangeSelect}
               onAddLiquidity={onAddLiquidity}
+              rangeChartRef={rangeChartRef}
+              onMinIncrease={move.left.next}
+              onMinDecrease={move.left.prev}
+              onMaxIncrease={move.right.next}
+              onMaxDecrease={move.right.prev}
+              onFullRange={move.full}
+              tooltip={<LiquidityTooltip getByIndex={getTooltipByIndex} />}
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
@@ -222,12 +235,8 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               receipts={receipts}
-              onReceiptClaim={(id) => {
-                onClaimCLBTokens(id);
-              }}
-              onReceiptClaimBatch={() => {
-                onClaimCLBTokensBatch();
-              }}
+              onReceiptClaim={onClaimCLBTokens}
+              onReceiptClaimBatch={onClaimCLBTokensBatch}
             />
           </div>
         </div>

@@ -1,8 +1,10 @@
+import "./style.css";
 import { Tooltip } from "react-tooltip";
 import { Token } from "../../../typings/market";
-import "./style.css";
 
-interface ChartTooltipProps {
+import { PropsWithChildren } from "react";
+
+interface ChartTooltipProps extends PropsWithChildren {
   label?: string;
   token?: Token;
   makerMargin?: string;
@@ -16,6 +18,7 @@ interface ChartTooltipProps {
 
 export const ChartTooltip = (props: ChartTooltipProps) => {
   const {
+    children,
     label,
     token,
     makerMargin,

@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Tab } from "@headlessui/react";
-import { TradeContent } from "../../molecule/TradeContent";
-import { CurvedButton } from "~/stories/atom/CurvedButton";
-import "../../atom/Tabs/style.css";
-import { TradeInput } from "~/typings/trade";
 import { BigNumber } from "ethers";
+
+import { Tab } from "@headlessui/react";
+import "~/stories/atom/Tabs/style.css";
+
+import { TradeContent } from "~/stories/molecule/TradeContent";
+import { CurvedButton } from "~/stories/atom/CurvedButton";
+
+import { TradeInput } from "~/typings/trade";
 import { Market, Price, Token } from "~/typings/market";
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
+
 import { errorLog } from "~/utils/log";
+
+import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
 
 export interface TradePanelProps {
   longInput?: TradeInput;
@@ -44,6 +49,12 @@ export interface TradePanelProps {
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
 
+  longLiquidityData?: any[];
+  shortLiquidityData?: any[];
+
+  shortTooltip: React.ReactElement<any>;
+  longTooltip: React.ReactElement<any>;
+
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
 }
@@ -74,6 +85,10 @@ export const TradePanel = (props: TradePanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    longLiquidityData,
+    shortLiquidityData,
+    shortTooltip,
+    longTooltip,
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
@@ -121,6 +136,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
+                liquidityData={shortLiquidityData}
+                tooltip={shortTooltip}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -146,6 +163,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
+                liquidityData={longLiquidityData}
+                tooltip={longTooltip}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -204,10 +223,12 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={shortInput}
+                  liquidityData={shortLiquidityData}
                   totalMaxLiquidity={shortTotalMaxLiquidity}
                   totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   tradeFee={shortTradeFee}
                   tradeFeePercent={shortTradeFeePercent}
+                  tooltip={shortTooltip}
                   onMethodToggle={onShortMethodToggle}
                   onInputChange={onShortChange}
                   onLeverageChange={onShortLeverageChange}
@@ -224,10 +245,12 @@ export const TradePanel = (props: TradePanelProps) => {
                   market={market}
                   token={token}
                   input={longInput}
+                  liquidityData={longLiquidityData}
                   totalMaxLiquidity={longTotalMaxLiquidity}
                   totalUnusedLiquidity={longTotalUnusedLiquidity}
                   tradeFee={longTradeFee}
                   tradeFeePercent={longTradeFeePercent}
+                  tooltip={longTooltip}
                   onMethodToggle={onLongMethodToggle}
                   onInputChange={onLongChange}
                   onLeverageChange={onLongLeverageChange}
