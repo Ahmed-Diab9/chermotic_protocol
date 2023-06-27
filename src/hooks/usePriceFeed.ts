@@ -1,20 +1,20 @@
 import useSWR from "swr";
+import { ethers, BigNumber } from "ethers";
 import { useAccount } from "wagmi";
-import { isValid } from "../utils/valid";
-import { PRICE_FEED } from "../configs/token";
-import { AggregatorV3Interface__factory } from "@chromatic-protocol/sdk";
+import { AggregatorV3Interface__factory } from "@chromatic-protocol/sdk/contracts";
 import { Price } from "../typings/market";
 import { errorLog } from "../utils/log";
-import { BigNumber, ethers } from "ethers";
+import { isValid } from "../utils/valid";
+import { PRICE_FEED } from "../configs/token";
 
 const usePriceFeed = () => {
   const { address } = useAccount();
-  const fetchKey = isValid(address) ? [address] : undefined;
+  const fetchKey = isValid(address) ? ["PRICE_FEED", address] : undefined;
   const {
-    data: feed,
+    data: priceFeed,
     error,
-    mutate: fetchFeed,
-  } = useSWR(fetchKey, async ([walletAddress]) => {
+    mutate: fetchPriceFeed,
+  } = useSWR(fetchKey, async ([_, walletAddress]) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum as any);
     const signer = provider.getSigner(walletAddress);
     const tokens = Object.keys(PRICE_FEED);
@@ -47,7 +47,7 @@ const usePriceFeed = () => {
     errorLog(error);
   }
 
-  return [feed, fetchFeed] as const;
+  return { priceFeed, fetchPriceFeed } as const;
 };
 
 export default usePriceFeed;

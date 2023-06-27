@@ -18,8 +18,8 @@ interface MainBarProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
-  onTokenSelect?: (token: string) => unknown;
-  onMarketSelect?: (market: string) => unknown;
+  onTokenSelect?: (token: Token) => unknown;
+  onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;

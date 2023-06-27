@@ -1,79 +1,65 @@
-import "./style.css";
-
-// import { useMemo } from "react";
-import { Link } from "react-router-dom";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-
-import { Header } from "~/stories/template/Header";
-import { MainBar } from "~/stories/template/MainBar";
-import { PoolPanel } from "~/stories/template/PoolPanel";
-import { PoolProgress } from "~/stories/molecule/PoolProgress";
-import { Footer } from "~/stories/template/Footer";
-import { Button } from "~/stories/atom/Button";
-import { Outlink } from "~/stories/atom/Outlink";
-import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
-import { LiquidityTooltip } from "~/stories/molecule/LiquidityTooltip";
-
-// import { Square2StackIcon } from "@heroicons/react/24/outline";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
-
-import useConnectOnce from "~/hooks/useConnectOnce";
-import { useUsumAccount } from "~/hooks/useUsumAccount";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
-import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
-import {
-  useUsumBalances,
-  useUsumMargins,
-  useWalletBalances,
-} from "~/hooks/useBalances";
-import usePriceFeed from "~/hooks/usePriceFeed";
-import {
-  useLiquidityPoolSummary,
-  useSelectedLiquidityPool,
-} from "~/hooks/useLiquidityPool";
-import useTokenTransaction from "~/hooks/useTokenTransaction";
-import { useFeeRate } from "~/hooks/useFeeRate";
-import usePoolInput from "~/hooks/usePoolInput";
-import usePoolReceipt from "~/hooks/usePoolReceipt";
-import {
-  useMultiPoolRemoveInput,
-  usePoolRemoveInput,
-} from "~/hooks/usePoolRemoveInput";
-import useChartData from "~/hooks/useChartData";
-
-import { copyText } from "~/utils/clipboard";
-import { trimAddress } from "~/utils/address";
-
-import { useAppSelector } from "~/store";
+import React, { useEffect } from 'react';
+import { Header } from '../../stories/template/Header';
+import { MainBar } from '../../stories/template/MainBar';
+import { PoolPanel } from '../../stories/template/PoolPanel';
+import { PoolProgress } from '~/stories/molecule/PoolProgress';
+import { Footer } from '../../stories/template/Footer';
+import { Button } from '../../stories/atom/Button';
+import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { Square2StackIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import './style.css';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import useConnectOnce from '~/hooks/useConnectOnce';
+import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { useTokenSelect, useSettlementToken } from '~/hooks/useSettlementToken';
+import { useMarket, useMarketSelect } from '~/hooks/useMarket';
+import { useUsumBalances, useUsumMargins, useWalletBalances } from '~/hooks/useBalances';
+import usePriceFeed from '~/hooks/usePriceFeed';
+import { useLiquidityPoolSummary, useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
+import useTokenTransaction from '~/hooks/useTokenTransaction';
+import { copyText } from '~/utils/clipboard';
+import { useFeeRate } from '~/hooks/useFeeRate';
+import { Link } from 'react-router-dom';
+import { trimAddress } from '~/utils/address';
+import usePoolInput from '~/hooks/usePoolInput';
+import { useAppSelector } from '~/store';
+import usePoolReceipt from '~/hooks/usePoolReceipt';
+import { useMultiPoolRemoveInput, usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
+import { useTokenLocal } from '../../hooks/useTokenLocal';
+import { useMarketLocal } from '../../hooks/useMarketLocal';
+import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
+import useChartData from '../../hooks/useChartData';
+import { Outlink } from '../../stories/atom/Outlink';
+import { LiquidityTooltip } from '../../stories/molecule/LiquidityTooltip';
 
 const Pool = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const {
-    account: usumAccount,
-    createAccount: createUsumAccount,
-    status,
-  } = useUsumAccount();
-  const [tokens] = useSettlementToken();
-  const [markets] = useMarket();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [selectedMarket, onMarketSelect] = useSelectedMarket();
+  const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
+  const { tokens } = useSettlementToken();
+  const { markets } = useMarket();
+  const onTokenSelect = useTokenSelect();
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const onMarketSelect = useMarketSelect();
   const feeRate = useFeeRate();
-  const [walletBalances] = useWalletBalances();
+  const { walletBalances } = useWalletBalances();
   const { usumBalances } = useUsumBalances();
-  const [priceFeed] = usePriceFeed();
+  const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const [balanceAmount, onBalanceAmountChange, onDeposit, onWithdraw] =
-    useTokenTransaction();
+  const {
+    amount: balanceAmount,
+    onAmountChange: onBalanceAmountChange,
+    onDeposit,
+    onWithdraw,
+  } = useTokenTransaction();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
-  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } =
-    usePoolReceipt();
+  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = usePoolReceipt();
   const {
     pool,
     liquidity: {
@@ -84,7 +70,8 @@ const Pool = () => {
     },
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
+
   const {
     amount,
     rates,
@@ -94,6 +81,7 @@ const Pool = () => {
     onRangeChange,
     onAddLiquidity,
     move,
+    isLoading,
     rangeChartRef,
   } = usePoolInput();
   const {
@@ -105,13 +93,15 @@ const Pool = () => {
   const {
     type: multiType,
     amount: multiAmount,
-    balance: multiBalance,
+    clbTokenBalance: multiClbTokenBalance,
     liquidityValue: multiLiquidityValue,
     removableLiquidity: multiFreeLiquidity,
     removableRate: multiRemovableRate,
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
+  useTokenLocal();
+  useMarketLocal();
 
   const { liquidity, binValue, tooltip } = useChartData();
 
@@ -126,7 +116,11 @@ const Pool = () => {
         priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
-        onConnect={connectAsync}
+        onConnect={() => {
+          connectAsync({
+            connector: new InjectedConnector(),
+          });
+        }}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
         onWalletCopy={copyText}
@@ -174,6 +168,7 @@ const Pool = () => {
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
               selectedBins={selectedBins}
               isModalOpen={isRemoveModalOpen}
+              isLoading={isLoading}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
               onAddLiquidity={onAddLiquidity}
@@ -192,7 +187,7 @@ const Pool = () => {
               onRemoveLiquidityBatch={onRemoveLiquidityBatch}
               multiType={multiType}
               multiAmount={multiAmount}
-              multiBalance={multiBalance}
+              multiBalance={multiClbTokenBalance}
               multiLiquidityValue={multiLiquidityValue}
               multiFreeLiquidity={multiFreeLiquidity}
               multiRemovableRate={multiRemovableRate}
@@ -203,9 +198,7 @@ const Pool = () => {
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <AddressCopyButton
-                  address={
-                    selectedToken && trimAddress(selectedToken.address, 6, 6)
-                  }
+                  address={selectedToken && trimAddress(selectedToken.address, 6, 6)}
                   onClick={() => {
                     if (selectedToken) {
                       copyText(selectedToken.address);
@@ -214,19 +207,15 @@ const Pool = () => {
                 />
               </div>
               <p className="mt-3 mb-3 text-left text-black/30">
-                When providing liquidity to the liquidity bins of the Chromatic
-                protocol, providers are rewarded by minting CLB tokens. CLB
-                tokens follow the ERC-1155 standard and have one token contract
-                per market, with each bin having its own unique token ID.
+                When providing liquidity to the liquidity bins of the Chromatic protocol, providers
+                are rewarded by minting CLB tokens. CLB tokens follow the ERC-1155 standard and have
+                one token contract per market, with each bin having its own unique token ID.
                 <Outlink outLink="#" className="ml-2" />
               </p>
             </article>
             <div className="mt-10">
-              <Link to={"/trade"}>
-                <Button
-                  label="Trade on ETH/USDC Pool"
-                  iconRight={<ChevronRightIcon />}
-                />
+              <Link to={'/trade'}>
+                <Button label="Trade on ETH/USDC Pool" iconRight={<ChevronRightIcon />} />
               </Link>
             </div>
           </div>

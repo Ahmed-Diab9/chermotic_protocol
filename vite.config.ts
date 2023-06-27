@@ -7,10 +7,16 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [
     react(),
-    eslint(),
+    // eslint(),
     tsconfigPaths(),
   ],
   define: {
     "process.env": process.env,
   },
+  server: {
+    // hmr: false,
+    proxy: {
+      "/api": "http://127.0.0.1:8545"
+    },
+  }
 });

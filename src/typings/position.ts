@@ -1,4 +1,4 @@
-import { IOracleProvider } from "@chromatic-protocol/sdk";
+import { IOracleProvider } from "@chromatic-protocol/sdk/contracts";
 import { BigNumber } from "ethers";
 import {
   bigNumberify,
@@ -19,7 +19,7 @@ export const CLOSED = "CLOSED";
 
 type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
 
-interface BaseOutput {
+export interface BaseOutput {
   id: BigNumber;
   qty: BigNumber;
   leverage: number;
@@ -220,18 +220,18 @@ export class Position {
       .div(this.currentPrice);
   }
 
-  updateStatus(oracleVersions?: Record<string, OracleVersion>) {
-    if (!isValid(oracleVersions)) {
+  updateStatus(oracleVersion: number) {
+    const currentVersion = BigNumber.from(oracleVersion)
+    if (!isValid(currentVersion)) {
       return this.status;
     }
-    const version = oracleVersions[this.marketAddress].version;
-    if (version.eq(this.openVersion)) {
+    if (currentVersion.eq(this.openVersion)) {
       this.status = OPENING;
     }
-    if (!this.closeVersion.eq(0) && version.eq(this.closeVersion)) {
+    if (!this.closeVersion.eq(0) && currentVersion.eq(this.closeVersion)) {
       this.status = CLOSING;
     }
-    if (!this.closeVersion.eq(0) && version.gt(this.closeVersion)) {
+    if (!this.closeVersion.eq(0) && currentVersion.gt(this.closeVersion)) {
       this.status = CLOSED;
     }
     return this.status;

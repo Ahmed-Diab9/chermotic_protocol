@@ -13,13 +13,16 @@
     "automigrate": "storybook automigrate"
   },
   "dependencies": {
+    "@chromatic-protocol/sdk": "^0.1.0-rc.38",
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.4",
-    "@chromatic-protocol/sdk": "^0.1.0-rc.33",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
+    "@types/ramda": "^0.29.2",
+    "debug": "^4.3.4",
     "ethers": "^5",
     "normalize.css": "^8.0.1",
+    "ramda": "^0.29.0",
     "react": "^18.2.0",
     "react-compound-slider": "^3.4.0",
     "react-dom": "^18.2.0",

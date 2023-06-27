@@ -1,68 +1,145 @@
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
+import { useAccount } from "wagmi";
+import { FEE_RATE_DECIMAL } from "~/configs/decimals";
 import { AppError } from "~/typings/error";
 import { errorLog } from "~/utils/log";
 import { isValid } from "~/utils/valid";
-import { useSelectedMarket } from "./useMarket";
-import { useRouter } from "./useRouter";
-import { handleTx } from "~/utils/tx";
+import { useAppSelector } from "../store";
+import { numberBuffer, percentage } from "../utils/number";
+import { useChromaticClient } from "./useChromaticClient";
 import { useLiquidityPool } from "./useLiquidityPool";
-import { useChromaticLens } from "./useChromaticLens";
-import { LPReceipt } from "~/typings/receipt";
 import useOracleVersion from "./useOracleVersion";
-import { useAccount } from "wagmi";
+
+export type LpReceiptAction = "add" | "remove";
+export interface LpReceipt {
+  id: BigNumber;
+  version: BigNumber;
+  amount: BigNumber;
+  recipient: string;
+  feeRate: number;
+  status: "standby" | "in progress" | "completed"; // "standby";
+  name: string;
+  action: LpReceiptAction;
+}
 
 const usePoolReceipt = () => {
-  const [market] = useSelectedMarket();
-  const [_, fetchLiquidityPools] = useLiquidityPool();
-  const lens = useChromaticLens();
-  const [router] = useRouter();
+  const market = useAppSelector((state) => state.market.selectedMarket);
+  const { fetchLiquidityPools } = useLiquidityPool();
+  const { client } = useChromaticClient();
+  const lensApi = useMemo(() => client?.lens(), [client]);
+  const router = useMemo(() => client?.router(), [client]);
+  // const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
+  const currentOracleVersion =
+    market && oracleVersions?.[market.address]?.version.toNumber();
+  const marketAddress = market?.address;
 
-  const fetchKey = useMemo(() => {
-    if (
-      isValid(market) &&
-      isValid(oracleVersions) &&
-      isValid(lens) &&
-      isValid(address)
-    ) {
-      return [market, oracleVersions, lens, address] as const;
-    }
-  }, [market, oracleVersions, lens, address]);
+  const binName = useCallback((feeRate: number, description?: string) => {
+    const prefix = feeRate > 0 ? "+" : "";
+    return `${description || ""} ${prefix}${(
+      (feeRate * percentage()) /
+      numberBuffer(FEE_RATE_DECIMAL)
+    ).toFixed(2)}%`;
+  }, []);
 
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
-  } = useSWR(fetchKey, async ([market, oracleVersions, lens, address]) => {
-    const receipts = await lens.lpReceipts(market.address, address);
-    return receipts.map((receipt) => {
-      const instance = new LPReceipt(receipt);
-      instance.updateIsCompleted(oracleVersions[market.address].version);
+  } = useSWR(
+    ["RECEIPT", address, marketAddress, currentOracleVersion],
+    async () => {
+      if (
+        address === undefined ||
+        marketAddress === undefined ||
+        currentOracleVersion === undefined ||
+        lensApi === undefined
+      ) {
+        return [];
+      }
 
-      return instance;
-    });
-  });
+      const receipts = await lensApi
+        ?.getContract()
+        .lpReceipts(marketAddress, address);
+      if (!receipts) {
+        return [];
+      }
+      const ownedBinsParam = receipts.map((receipt) => ({
+        tradingFeeRate: receipt.tradingFeeRate,
+        oracleVersion: receipt.oracleVersion,
+      }));
+      const ownedBins = await lensApi.claimableLiquidities(
+        marketAddress,
+        ownedBinsParam
+      );
 
-  const onClaimCLBTokens = async (receiptId: BigNumber) => {
-    if (!isValid(router)) {
-      errorLog("no router contracts");
-      return AppError.reject("no router contracts", "onPoolReceipt");
+      return ownedBins
+        .map((bin) => {
+          const receipt = receipts.find(
+            (receipt) => bin.tradingFeeRate === receipt.tradingFeeRate
+          );
+          if (!receipt) return null;
+
+          const {
+            id,
+            oracleVersion: receiptOracleVersion,
+            action,
+            amount,
+            recipient,
+            tradingFeeRate,
+          } = receipt;
+          let status: LpReceipt["status"] = "standby";
+          if (action === 0 && receiptOracleVersion.lt(currentOracleVersion)) {
+            status = "completed";
+          } else if (action === 1) {
+            if (
+              bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount
+            )
+              status = "completed";
+          }
+
+          return {
+            id,
+            action: action === 0 ? "add" : "remove",
+            amount,
+            feeRate: tradingFeeRate,
+            status,
+            version: receiptOracleVersion,
+            recipient,
+            name: binName(tradingFeeRate, market?.description),
+          } satisfies LpReceipt;
+        })
+        .filter((bin): bin is NonNullable<typeof bin> => !!bin);
     }
-    if (!isValid(market)) {
-      errorLog("no selected markets");
-      return AppError.reject("no selected markets", "onPoolReceipt");
-    }
-    const tx = await router.claimLiquidity(market.address, receiptId);
+  );
 
-    handleTx(tx, fetchReceipts, fetchLiquidityPools);
+  const onClaimCLBTokens = useCallback(
+    async (receiptId: BigNumber, action?: LpReceipt["action"]) => {
+      if (!isValid(router)) {
+        errorLog("no router contracts");
+        return AppError.reject("no router contracts", "onPoolReceipt");
+      }
+      if (!isValid(market)) {
+        errorLog("no selected markets");
+        return AppError.reject("no selected markets", "onPoolReceipt");
+      }
+      if (action === "add") {
+        await router.claimLiquidity(market.address, receiptId);
+      } else if (action === "remove") {
+        await router.withdrawLiquidity(market.address, receiptId);
+      }
 
-    return Promise.resolve();
-  };
+      await fetchReceipts();
+      await fetchLiquidityPools();
+      return Promise.resolve();
+    },
+    [router, market]
+  );
 
-  const onClaimCLBTokensBatch = async () => {
+  const onClaimCLBTokensBatch = useCallback(async () => {
     if (!isValid(market)) {
       errorLog("no selected markets");
       return AppError.reject("no selected markets", "onPoolReceipt");
@@ -75,13 +152,33 @@ const usePoolReceipt = () => {
       errorLog("no router contracts");
       return AppError.reject("no router contracts", "onPoolReceipt");
     }
-    const completed = receipts
-      .filter((receipt) => receipt.isCompleted)
+    const addCompleted = receipts
+      .filter(
+        (receipt) => receipt.action === "add" && receipt.status === "completed"
+      )
       .map((receipt) => receipt.id);
-    const tx = await router?.claimLiquidityBatch(market.address, completed);
-
-    handleTx(tx, fetchReceipts, fetchLiquidityPools);
-  };
+    const removeCompleted = receipts
+      .filter((receipt) => receipt.action === "remove")
+      .map((receipt) => receipt.id);
+    if (addCompleted.length <= 0 && removeCompleted.length <= 0) {
+      errorLog("No receipts");
+      AppError.reject("No completed receupts", "onPoolReceipt");
+      return;
+    }
+    try {
+      const response = await Promise.allSettled([
+        addCompleted.length > 0
+          ? router?.claimLiquidites(market.address, addCompleted)
+          : undefined,
+        removeCompleted.length > 0
+          ? router?.withdrawLiquidity(market.address, removeCompleted)
+          : undefined,
+      ]);
+      response.filter(({ status }) => status === "rejected").map(console.error);
+      await fetchReceipts();
+      await fetchLiquidityPools();
+    } catch (error) {}
+  }, [market, receipts, router]);
 
   if (error) {
     errorLog(error);

@@ -13,13 +13,13 @@ import useOracleVersion from "../../../hooks/useOracleVersion";
 const WalletPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
-  const [tokens] = useSettlementToken();
-  const [markets] = useMarket();
+  const { tokens } = useSettlementToken();
+  const { markets } = useMarket();
   const { account } = useUsumAccount();
-  const [walletBalances] = useWalletBalances();
+  const { walletBalances } = useWalletBalances();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const [feed] = usePriceFeed();
+  const { priceFeed } = usePriceFeed();
   useOracleVersion();
 
   return (
@@ -30,7 +30,7 @@ const WalletPopoverDemo = () => {
         markets={markets}
         balances={walletBalances}
         pools={pools}
-        priceFeed={feed}
+        priceFeed={priceFeed}
         onUsumCopy={copyText}
         onWalletCopy={copyText}
         onDisconnect={() => {

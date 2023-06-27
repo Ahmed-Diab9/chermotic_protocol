@@ -17,11 +17,8 @@ import {
 } from "~/stories/molecule/LiquidityTooltip";
 
 import { useUsumAccount } from "~/hooks/useUsumAccount";
-import {
-  useSelectedToken,
-  useSettlementToken,
-} from "~/hooks/useSettlementToken";
-import { useMarket, useSelectedMarket } from "~/hooks/useMarket";
+import { useTokenSelect, useSettlementToken } from "~/hooks/useSettlementToken";
+import { useMarket, useMarketSelect } from "~/hooks/useMarket";
 import usePriceFeed from "~/hooks/usePriceFeed";
 import {
   useUsumBalances,
@@ -30,7 +27,7 @@ import {
 } from "~/hooks/useBalances";
 import {
   useLiquidityPoolSummary,
-  useSelectedLiquidityPool,
+  useBinsBySelectedMarket,
 } from "~/hooks/useLiquidityPool";
 import useConnectOnce from "~/hooks/useConnectOnce";
 import { useFeeRate } from "~/hooks/useFeeRate";
@@ -38,6 +35,9 @@ import useTokenTransaction from "~/hooks/useTokenTransaction";
 import { useTradeInput } from "~/hooks/useTradeInput";
 import { usePosition } from "~/hooks/usePosition";
 import useOracleVersion from "~/hooks/useOracleVersion";
+import { useAppSelector } from "~/store";
+import { useTokenLocal } from "~/hooks/useTokenLocal";
+import { useMarketLocal } from "~/hooks/useMarketLocal";
 import useChartData from "~/hooks/useChartData";
 
 import { copyText } from "~/utils/clipboard";
@@ -51,17 +51,20 @@ const Trade = () => {
     createAccount: createUsumAccount,
     status,
   } = useUsumAccount();
-  const [tokens] = useSettlementToken();
-  const [markets] = useMarket();
-  const [selectedToken, onTokenSelect] = useSelectedToken();
-  const [selectedMarket, onMarketSelect] = useSelectedMarket();
+  const { tokens } = useSettlementToken();
+  const { markets } = useMarket();
+  const onTokenSelect = useTokenSelect();
+  const onMarketSelect = useMarketSelect();
+  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const feeRate = useFeeRate();
-  const [walletBalances] = useWalletBalances();
+  const { walletBalances } = useWalletBalances();
   const { usumBalances } = useUsumBalances();
-  const [priceFeed] = usePriceFeed();
+  const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const [amount, onAmountChange, onDeposit, onWithdraw] = useTokenTransaction();
+  const { amount, onAmountChange, onDeposit, onWithdraw } =
+    useTokenTransaction();
   const {
     state: longInput,
     tradeFee: longTradeFee,
@@ -92,7 +95,7 @@ const Trade = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useSelectedLiquidityPool();
+  } = useBinsBySelectedMarket();
   const { oracleVersions } = useOracleVersion();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
@@ -102,6 +105,8 @@ const Trade = () => {
     }
   }, [shortInput.direction, onShortDirectionToggle]);
   const { positions, onClosePosition, onClaimPosition } = usePosition();
+  useTokenLocal();
+  useMarketLocal();
 
   const { positive, negative } = useChartData();
 
@@ -145,9 +150,7 @@ const Trade = () => {
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
-          onStatusUpdate={() => {
-            createUsumAccount();
-          }}
+          onStatusUpdate={createUsumAccount}
         />
         <div className="w-full min-w-[620px]">
           <TradePanel

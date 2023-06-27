@@ -1,96 +1,48 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useProvider } from "wagmi";
 import useSWR from "swr";
-
-import { IERC20Metadata__factory } from "@chromatic-protocol/sdk";
-
-import { Token } from "~/typings/market";
-
-import { useAppDispatch, useAppSelector } from "~/store";
-import { marketAction } from "~/store/reducer/market";
-
-import useLocalStorage from "~/hooks/useLocalStorage";
-import { useMarketFactory } from "~/hooks/useMarketFactory";
-
+import { useChromaticClient } from "./useChromaticClient";
+import { useAppDispatch } from "~/store";
 import { errorLog } from "~/utils/log";
+import { Token } from "~/typings/market";
+import { tokenAction } from "~/store/reducer/token";
+import { useAccount } from "wagmi";
+import useLocalStorage from "./useLocalStorage";
 import { isValid } from "~/utils/valid";
 
 export const useSettlementToken = () => {
-  const provider = useProvider();
-  const [marketFactory] = useMarketFactory();
-
-  const fetchKey = useMemo(
-    () => (isValid(marketFactory) ? ([marketFactory] as const) : undefined),
-    [marketFactory]
-  );
-
+  const { client } = useChromaticClient();
+  const { address } = useAccount();
+  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
-  } = useSWR(fetchKey, async ([marketFactory]) => {
-    const addresses = await marketFactory.registeredSettlementTokens();
-    const promise = addresses.map(async (address) => {
-      const { symbol, decimals } = IERC20Metadata__factory.connect(
-        address,
-        provider
-      );
-
-      return {
-        name: await symbol(),
-        address,
-        decimals: await decimals(),
-      } satisfies Token;
-    });
-
-    const response = await Promise.allSettled(promise);
-    const fulfilled = response
-      .filter(
-        (result): result is PromiseFulfilledResult<Token> =>
-          result.status === "fulfilled"
-      )
-      .map(({ value }) => value);
-
-    return fulfilled;
+  } = useSWR(["SETTLEMENT_TOKENS", address], async () => {
+    if (!marketFactoryApi) {
+      return;
+    }
+    const tokens = await marketFactoryApi.registeredSettlementTokens();
+    return tokens;
   });
 
   if (error) {
     errorLog(error);
   }
 
-  return [tokens, fetchTokens] as const;
+  return { tokens, fetchTokens };
 };
 
-export const useSelectedToken = () => {
+export const useTokenSelect = () => {
   const dispatch = useAppDispatch();
-
-  const [tokens] = useSettlementToken();
-
-  const selectedToken = useAppSelector((state) => state.market.selectedToken);
-
-  const { state: storedToken, setState: setStoredToken } =
-    useLocalStorage<string>("usum:token");
+  const { setState: setStoredToken } = useLocalStorage("usum:token");
 
   const onTokenSelect = useCallback(
-    (address: string) => {
-      const nextToken = tokens?.find((token) => token.address === address);
-      if (!isValid(nextToken)) {
-        errorLog("Settlement Token:selected token is invalid.");
-        return;
-      }
-      setStoredToken(nextToken.address);
-      dispatch(marketAction.onTokenSelect(nextToken));
+    (token: Token) => {
+      dispatch(tokenAction.onTokenSelect(token));
+      setStoredToken(token.name);
     },
-    [tokens, setStoredToken, dispatch]
+    [dispatch]
   );
 
-  useEffect(() => {
-    if (isValid(selectedToken) || !isValid(tokens)) return;
-    else if (isValid(storedToken)) onTokenSelect(storedToken);
-    else onTokenSelect(tokens[0].address);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storedToken, tokens, onTokenSelect]);
-
-  return [selectedToken, onTokenSelect] as const;
+  return onTokenSelect;
 };

@@ -108,30 +108,33 @@ export const expandDecimals = (decimals?: number) => {
 export const formatBalance = (
   balance: BigNumber,
   token: Token,
-  price?: Price
+  price: Price
 ) => {
   return balance
-    .mul(price?.value ?? 1)
+    .mul(price.value)
     .div(expandDecimals(token.decimals))
-    .div(expandDecimals(price?.decimals));
+    .div(expandDecimals(price.decimals));
 };
 
 export const formatFeeRate = (feeRate: number) => {
   const percentage = (feeRate / Math.pow(10, FEE_RATE_DECIMAL)) * 100;
-  const converted = percentage.toString();
   const plus = percentage > 0 ? "+" : "";
   if (Math.abs(percentage) >= 10) {
     const endIndex = percentage > 0 ? 2 : 3;
+    const converted = percentage.toFixed(endIndex);
     return plus + converted.slice(0, endIndex);
   }
   if (Math.abs(percentage) >= 1) {
     const endIndex = percentage > 0 ? 1 : 2;
+    const converted = percentage.toFixed(endIndex);
     return plus + converted.slice(0, endIndex);
   }
   if (Math.abs(percentage) >= 0.1) {
+    const converted = percentage.toFixed(2);
     const [integer, decimals] = converted.split(".");
     return plus + integer + "." + decimals[0];
   }
+  const converted = percentage.toFixed(2);
   const [integer, decimals] = converted.split(".");
   return plus + integer + "." + decimals.slice(0, 2);
 };

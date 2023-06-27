@@ -1,42 +1,41 @@
-import { useMemo, useState } from "react";
-import { useAccount, useSigner } from "wagmi";
-import { IERC20__factory } from "@chromatic-protocol/sdk";
-import { useRangeChart } from "@chromatic-protocol/react-compound-charts";
-
-import { useSelectedLiquidityPool } from "~/hooks/useLiquidityPool";
-import { useSelectedMarket } from "~/hooks/useMarket";
-import { useSelectedToken } from "~/hooks/useSettlementToken";
-import usePoolReceipt from "~/hooks/usePoolReceipt";
-import { useWalletBalances } from "~/hooks/useBalances";
-import { useRouter } from "~/hooks/useRouter";
-
-import { errorLog } from "~/utils/log";
-import { isValid } from "~/utils/valid";
-import { handleTx } from "~/utils/tx";
-import { bigNumberify, expandDecimals } from "~/utils/number";
+import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
+import { useMemo, useState } from 'react';
+import { useAccount, useSigner } from 'wagmi';
+import { FEE_RATES } from '../configs/feeRate';
+import { useAppSelector } from '../store';
+import { errorLog, infoLog } from '../utils/log';
+import { bigNumberify, expandDecimals } from '../utils/number';
+import { isValid } from '../utils/valid';
+import { useWalletBalances } from './useBalances';
+import { useChromaticClient } from './useChromaticClient';
+import { useBinsBySelectedMarket } from './useLiquidityPool';
+import usePoolReceipt from './usePoolReceipt';
+import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 
 const usePoolInput = () => {
-  const { pool } = useSelectedLiquidityPool();
-  const [market] = useSelectedMarket();
-  const [token] = useSelectedToken();
+  const { pool } = useBinsBySelectedMarket();
+  const market = useAppSelector((state) => state.market.selectedMarket);
+  const { client } = useChromaticClient();
+  const routerApi = client?.router();
+  const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
-  const [router] = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
-  const [_, fetchWalletBalances] = useWalletBalances();
+  const { fetchWalletBalances } = useWalletBalances();
 
   const {
-    data: { values: bins },
+    data: { values: binFeeRates },
     setData: onRangeChange,
     ref: rangeChartRef,
     move,
   } = useRangeChart();
 
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
 
   const rates = useMemo<[number, number]>(
-    () => [bins[0], bins[bins.length - 1]],
-    [bins]
+    () => [binFeeRates[0], binFeeRates[binFeeRates.length - 1]],
+    [binFeeRates]
   );
 
   const binAverage = useMemo(() => {
@@ -44,15 +43,15 @@ const usePoolInput = () => {
       return;
     }
 
-    const binTotal = bins.reduce((acc, bin) => {
+    const binTotal = binFeeRates.reduce((acc, bin) => {
       const binValue = pool.bins.find(({ baseFeeRate }) => {
         return baseFeeRate / 100 === bin;
       }).binValue;
       return acc.add(binValue);
     }, bigNumberify(0));
 
-    return binTotal.div(bins.length);
-  }, [pool, bins]);
+    return binTotal.div(binFeeRates.length);
+  }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
     const parsed = Number(value);
@@ -64,51 +63,70 @@ const usePoolInput = () => {
 
   const onAddLiquidity = async () => {
     if (!isValid(signer)) {
-      errorLog("signer is invalid");
+      errorLog('signer is invalid');
       return;
     }
     if (!isValid(token)) {
-      errorLog("token is not selected");
+      errorLog('token is not selected');
       return;
     }
     if (!isValid(market)) {
-      errorLog("market is not selected");
+      errorLog('market is not selected');
       return;
     }
     if (!isValid(address)) {
-      errorLog("wallet not connected");
+      errorLog('wallet not connected');
       return;
     }
-    const marketAddress = market?.address;
-    const expandedAmount = bigNumberify(amount)?.mul(
-      expandDecimals(token.decimals)
-    );
-    if (!isValid(expandedAmount)) {
-      errorLog("amount is invalid");
+    if (!isValid(routerApi)) {
+      errorLog('no router apis');
       return;
     }
-    const dividedAmount = expandedAmount.div(bins.length);
-    const erc20 = IERC20__factory.connect(token.address, signer);
-    const allowance = await erc20.allowance(address, router.address);
-    if (allowance.lte(expandedAmount)) {
-      await erc20.approve(router.address, expandedAmount);
+    setIsLoading(true);
+    try {
+      const marketAddress = market?.address;
+      const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(token.decimals));
+      if (!isValid(expandedAmount)) {
+        errorLog('amount is invalid');
+        return;
+      }
+      const dividedAmount = expandedAmount.div(binFeeRates.length);
+      // const erc20 = IERC20__factory.connect(token.address, signer);
+      // const allowance = await erc20.allowance(address, router.address);
+      // if (allowance.lte(expandedAmount)) {
+      //   await erc20.approve(router.address, expandedAmount);
+      // }
+
+      // const tx = await router.addLiquidityBatch(
+      //   marketAddress,
+      //   bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
+      //   Array(bins.length).fill(dividedAmount),
+      //   Array(bins.length).fill(address)
+      // );
+
+      await routerApi.addLiquidities(
+        marketAddress,
+        binFeeRates.map((feeRate) => ({
+          feeRate: +(feeRate * 10 ** 2).toFixed(0),
+          amount: dividedAmount,
+        }))
+      );
+
+      await fetchReceipts();
+      await fetchWalletBalances();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-
-    const tx = await router.addLiquidityBatch(
-      marketAddress,
-      bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
-      Array(bins.length).fill(dividedAmount),
-      Array(bins.length).fill(address)
-    );
-
-    handleTx(tx, fetchReceipts, fetchWalletBalances);
   };
 
   return {
     amount,
     rates,
-    binCount: bins.length,
+    binCount: binFeeRates.length,
     binAverage,
+    isLoading,
     onAmountChange,
     onRangeChange,
     onAddLiquidity,

@@ -1,9 +1,8 @@
-import { ChromaticRouter, getDeployedContract } from "@chromatic-protocol/sdk";
 import { ChangeEvent, useMemo, useReducer } from "react";
 import { useSigner } from "wagmi";
-import { CHAIN } from "~/constants/contracts";
 import { AppError } from "~/typings/error";
 import { TradeInput, TradeInputAction } from "~/typings/trade";
+import { BigNumber } from "ethers";
 import {
   bigNumberify,
   expandDecimals,
@@ -11,15 +10,16 @@ import {
   trimLeftZero,
 } from "~/utils/number";
 import { isValid } from "~/utils/valid";
-import { errorLog } from "../utils/log";
-import { useSelectedLiquidityPool } from "./useLiquidityPool";
-import { useSelectedMarket } from "./useMarket";
-import { useSelectedToken } from "./useSettlementToken";
+import { Logger, errorLog } from "../utils/log";
+import { useChromaticClient } from "./useChromaticClient";
+import { useBinsBySelectedMarket } from "./useLiquidityPool";
 import { usePosition } from "./usePosition";
-import { handleTx } from "~/utils/tx";
 import { useUsumBalances } from "./useBalances";
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
+import { useAppSelector } from "../store";
+import { useOwnedLiquidityPoolByMarket } from "./useOwnedLiquidityPoolByMarket";
 
+const logger = Logger("useTradeInput");
 const initialTradeInput = {
   direction: "long",
   method: "collateral",
@@ -215,22 +215,39 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
 };
 
 export const useTradeInput = () => {
-  const [token] = useSelectedToken();
-  const [market] = useSelectedMarket();
+  const token = useAppSelector((state) => state.token.selectedToken);
+  const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
   const { fetchUsumBalances } = useUsumBalances();
-
+  const { client } = useChromaticClient();
+  const routerApi = client?.router();
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
-  const {
-    pool,
-    liquidity: {
-      longTotalMaxLiquidity,
-      longTotalUnusedLiquidity,
-      shortTotalMaxLiquidity,
-      shortTotalUnusedLiquidity,
-    },
-  } = useSelectedLiquidityPool();
+  // const {
+  //   pool,
+  //   liquidity: {
+  //     longTotalMaxLiquidity,
+  //     longTotalUnusedLiquidity,
+  //     shortTotalMaxLiquidity,
+  //     shortTotalUnusedLiquidity,
+  //   },
+  // } = useBinsBySelectedMarket();
+  const {ownedPool} = useOwnedLiquidityPoolByMarket({
+    marketAddress: market?.address
+  })
+  const {longTotalUnusedLiquidity, shortTotalUnusedLiquidity} = useMemo(() => {
+    let longTotalUnusedLiquidity = BigNumber.from(0)
+    let shortTotalUnusedLiquidity = BigNumber.from(0)
+    ownedPool?.bins.forEach((bin) => {
+      if (bin.baseFeeRate > 0) {
+        longTotalUnusedLiquidity = longTotalUnusedLiquidity.add(bin.freeLiquidity)
+      } else {
+        shortTotalUnusedLiquidity = shortTotalUnusedLiquidity.add(bin.freeLiquidity)
+      }
+    })
+    console.log("LIQUIDITIES", longTotalUnusedLiquidity, shortTotalUnusedLiquidity)
+    return {longTotalUnusedLiquidity, shortTotalUnusedLiquidity}
+  } ,[ownedPool])
 
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
@@ -253,7 +270,7 @@ export const useTradeInput = () => {
     }
     let tradeFee = bigNumberify(0);
     const bins =
-      pool?.bins.filter((bin) => {
+      ownedPool?.bins.filter((bin) => {
         if (state.direction === "long") {
           return bin.baseFeeRate > 0;
         } else {
@@ -289,7 +306,7 @@ export const useTradeInput = () => {
     state.makerMargin,
     state.direction,
     token?.decimals,
-    pool?.bins,
+    ownedPool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
   ]);
@@ -375,11 +392,10 @@ export const useTradeInput = () => {
       errorLog("no signers");
       return;
     }
-    const router = getDeployedContract(
-      "ChromaticRouter",
-      CHAIN,
-      signer
-    ) as ChromaticRouter;
+    if (!isValid(routerApi)) {
+      errorLog("no routers");
+      return;
+    }
 
     const quantity = bigNumberify(state.quantity * numberBuffer())
       .mul(expandDecimals(4))
@@ -409,7 +425,8 @@ export const useTradeInput = () => {
       state.direction === "short" &&
       shortTotalUnusedLiquidity.lte(makerMargin)
     ) {
-      errorLog("the short liquidity is too low");
+      logger.error("the short liquidity is too low", );
+      logger.error(shortTotalUnusedLiquidity)
       return AppError.reject(
         "the short liquidity is too low",
         "onOpenPosition"
@@ -420,16 +437,15 @@ export const useTradeInput = () => {
     // Trading Fee
     const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
-    const tx = await router.openPosition(
-      market?.address,
-      quantity.mul(state.direction === "long" ? 1 : -1),
+    await routerApi.openPosition(market.address, {
+      quantity: quantity.mul(state.direction === "long" ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
-      tradingFee
-    );
-
-    handleTx(tx, fetchPositions, fetchUsumBalances);
+      tradingFee,
+    });
+    await fetchPositions();
+    await fetchUsumBalances();
   };
 
   return {

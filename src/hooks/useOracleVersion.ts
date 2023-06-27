@@ -1,63 +1,42 @@
-import {
-  IOracleProvider__factory,
-  ChromaticMarket__factory,
-} from "@chromatic-protocol/sdk";
-import { useMarket } from "./useMarket";
-import { isValid } from "../utils/valid";
-import { useProvider } from "wagmi";
-import { useMemo } from "react";
-import useSWR from "swr";
-import { filterIfFulfilled } from "~/utils/array";
-import { errorLog } from "~/utils/log";
-import { OracleVersion } from "~/typings/oracleVersion";
-
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { useAccount, useProvider } from 'wagmi';
+import { OracleVersion } from '~/typings/oracleVersion';
+import { Logger, errorLog } from '~/utils/log';
+import { useChromaticClient } from './useChromaticClient';
+import { useMarket } from './useMarket';
+const logger = Logger('useOracleVersion')
 const useOracleVersion = () => {
-  const [markets] = useMarket();
+  const { markets } = useMarket();
+  const { address } = useAccount();
+  const { client } = useChromaticClient();
+
+  const marketApi = useMemo(() => {
+    return client?.market();
+  }, [client]);
   const provider = useProvider();
-  const fetchKey = useMemo(() => {
-    if (isValid(markets) && isValid(provider)) {
-      return [markets, provider] as const;
-    }
-  }, [markets, provider]);
+  const marketAddresses = (markets ?? []).map((market) => market.address);
 
   const {
     data: oracleVersions,
     error,
     mutate: fetchOracleVersions,
-  } = useSWR(
-    fetchKey,
-    async ([markets, provider]) => {
-      const promise = markets.map(async (market) => {
-        const marketContract = ChromaticMarket__factory.connect(
-          market.address,
-          provider
-        );
-        const oracleProviderAddress = await marketContract.oracleProvider();
-        const oracleProvider = IOracleProvider__factory.connect(
-          oracleProviderAddress,
-          provider
-        );
-        const { price, version, timestamp } =
-          await oracleProvider.currentVersion();
-        return {
-          address: market.address,
-          price,
-          version,
-          timestamp,
-          decimals: 18,
-        };
-      });
-      const response = await filterIfFulfilled(promise);
+  } = useSWR(['ORACLE_VERSION', address, ...marketAddresses], async () => {
+    logger.log('Market', markets, ...marketAddresses);
+    if (!marketApi) return {};
 
-      return response.reduce((record, { address, ...oracle }) => {
-        record[address] = oracle;
-        return record;
-      }, {} as Record<string, OracleVersion & { decimals: number }>);
-    },
-    {
-      refreshInterval: 10000,
-    }
-  );
+    const oraclePrices = await marketApi.getCurrentPrices(marketAddresses);
+    oraclePrices.reduce((record, { market, value }) => {
+      const { version, timestamp, price } = value;
+      record[market] = {
+        version,
+        timestamp,
+        price,
+        decimals: 18,
+      };
+      return record;
+    }, {} as Record<string, OracleVersion & { decimals: number }>);
+  });
 
   if (error) {
     errorLog(error);

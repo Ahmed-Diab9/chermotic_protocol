@@ -79,16 +79,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     undefined,
     undefined,
   ] as [string | undefined, string | undefined]);
-  useEffect(() => {
-    market?.getPrice().then((price) => {
-      const nextPrice = withComma(
-        formatDecimals(price.value, price.decimals, 2)
-      );
-      if (isValid(nextPrice)) {
-        setPrice(nextPrice);
-      }
-    });
-  }, [market]);
 
   // TODO
   // 청산가 계산이 올바른지 점검해야 합니다.
@@ -97,11 +87,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       return setPrices([undefined, undefined]);
     }
     const { quantity, takeProfit, stopLoss } = input;
-    const price = await market.getPrice();
+    const price = await market.value.price;
     if (input.collateral === 0) {
       return setPrices([
-        withComma(formatDecimals(price.value, price.decimals, 2)),
-        withComma(formatDecimals(price.value, price.decimals, 2)),
+        withComma(formatDecimals(price, token.decimals, 2)),
+        withComma(formatDecimals(price, token.decimals, 2)),
       ]);
     }
 
@@ -127,12 +117,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     );
 
     // 현재 가격에 비율 곱하여 예상 청산가격을 계산
-    const takeProfitPrice = price.value.mul(profitRate);
-    const stopLossPrice = price.value.mul(lossRate);
+    const takeProfitPrice = price.mul(profitRate);
+    const stopLossPrice = price.mul(lossRate);
 
     setPrices([
-      withComma(formatDecimals(takeProfitPrice, price.decimals + decimals, 2)),
-      withComma(formatDecimals(stopLossPrice, price.decimals + decimals, 2)),
+      withComma(formatDecimals(takeProfitPrice, token.decimals + decimals, 2)),
+      withComma(formatDecimals(stopLossPrice, token.decimals + decimals, 2)),
     ]);
   }, [input, market, token]);
   useEffect(() => {
@@ -150,6 +140,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <p className="text-black/30">
               {balances &&
                 token &&
+                balances[token.name] &&
                 withComma(
                   formatDecimals(balances[token.name], token.decimals, 2)
                 )}{" "}

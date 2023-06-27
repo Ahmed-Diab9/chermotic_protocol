@@ -22,7 +22,8 @@ import {
 import { Account } from "../../../typings/account";
 import { BigNumber } from "ethers";
 import { LiquidityPoolSummary } from "../../../typings/pools";
-
+import debug from "debug";
+const log = debug("WalletPopOver");
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
@@ -52,6 +53,8 @@ export const WalletPopover = ({
   onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
+  log("[WalletPopover]", tokens, priceFeed, balances);
+  log(`[${WalletPopover.name}]`, pools);
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover>
