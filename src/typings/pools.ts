@@ -1,6 +1,4 @@
 import { BigNumber } from 'ethers';
-import { LiquidityBinResult } from '@chromatic-protocol/sdk';
-import { CLBToken } from '@chromatic-protocol/sdk/contracts';
 
 export interface Bin {
   liquidity: BigNumber;

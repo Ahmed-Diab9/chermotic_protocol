@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
-import useSWR from 'swr';
-import { Logger, errorLog, infoLog } from '~/utils/log';
-import { isValid } from '~/utils/valid';
-import { ADDRESS_ZERO } from '~/utils/address';
-import { AppError } from '~/typings/error';
+import { Client } from '@chromatic-protocol/sdk';
 import { ChromaticAccount__factory } from '@chromatic-protocol/sdk/contracts';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { useAccount, useSigner } from 'wagmi';
+import { CHAIN } from '~/constants/contracts';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -13,10 +12,11 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
 } from '~/typings/account';
-import { ethers } from 'ethers';
-import { CHAIN } from '~/constants/contracts';
+import { AppError } from '~/typings/error';
+import { ADDRESS_ZERO } from '~/utils/address';
+import { Logger } from '~/utils/log';
+import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { Client } from '@chromatic-protocol/sdk';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { data: signer } = useSigner();
@@ -44,7 +44,7 @@ export const useUsumAccount = () => {
       }
       return ChromaticAccount__factory.connect(address, signer);
     } catch (error) {
-      errorLog(error);
+      logger.error(error);
     }
   });
   const isValidAccount =
@@ -55,7 +55,7 @@ export const useUsumAccount = () => {
       return;
     }
     if (isValidAccount) {
-      infoLog('loading chromatic accounts');
+      logger.info('loading chromatic accounts');
       setStatus(ACCOUNT_COMPLETED);
       return;
     } else {
@@ -66,7 +66,7 @@ export const useUsumAccount = () => {
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined;
     if (status === ACCOUNT_COMPLETING) {
-      infoLog('account is now created');
+      logger.info('account is now created');
       timerId = setTimeout(() => {
         setStatus(ACCOUNT_COMPLETED);
       }, 3000);
@@ -78,7 +78,7 @@ export const useUsumAccount = () => {
   }, [status]);
 
   if (error) {
-    errorLog(error);
+    logger.error(error);
   }
 
   const createAccount = async () => {
@@ -90,7 +90,7 @@ export const useUsumAccount = () => {
     }
 
     try {
-      infoLog('Creating accounts');
+      logger.info('Creating accounts');
       setStatus(ACCOUNT_CREATING);
       const tx = await router.routerContract.createAccount();
 
@@ -101,7 +101,7 @@ export const useUsumAccount = () => {
       return Promise.resolve();
     } catch (error) {
       setStatus(ACCOUNT_NONE);
-      errorLog(error);
+      logger.error(error);
 
       return AppError.reject(error, 'createAccount');
     }

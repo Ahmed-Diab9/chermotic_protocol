@@ -11,6 +11,11 @@ import useLocalStorage from './useLocalStorage';
 export const useMarket = (_interval?: number) => {
   const { client } = useChromaticClient();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const currentMarket = useAppSelector((state) => state.market.selectedMarket);
+
+  const dispatch = useAppDispatch();
+  const { setState: setStoredMarket } = useLocalStorage('usum:market');
+
   const {
     data: markets,
     error,
@@ -19,7 +24,6 @@ export const useMarket = (_interval?: number) => {
     isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
       const markets = await client?.marketFactory().getMarkets(tokenAddress);
-
       return markets;
     }
   );
@@ -27,13 +31,6 @@ export const useMarket = (_interval?: number) => {
   if (error) {
     errorLog(error);
   }
-
-  return { markets, fetchMarkets } as const;
-};
-
-export const useMarketSelect = () => {
-  const dispatch = useAppDispatch();
-  const { setState: setStoredMarket } = useLocalStorage('usum:market');
 
   const onMarketSelect = useCallback(
     (market: Market) => {
@@ -43,5 +40,20 @@ export const useMarketSelect = () => {
     [dispatch]
   );
 
-  return onMarketSelect;
+  return { markets, currentMarket, fetchMarkets, onMarketSelect } as const;
 };
+
+// export const useMarketSelect = () => {
+//   const dispatch = useAppDispatch();
+//   const { setState: setStoredMarket } = useLocalStorage('usum:market');
+
+//   const onMarketSelect = useCallback(
+//     (market: Market) => {
+//       dispatch(marketAction.onMarketSelect(market));
+//       setStoredMarket(market.description);
+//     },
+//     [dispatch]
+//   );
+
+//   return onMarketSelect;
+// };

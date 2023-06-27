@@ -1,14 +1,15 @@
-import { FillUpChart as Chart } from "@chromatic-protocol/react-compound-charts";
-import "./style.css";
+import { FillUpChart as Chart } from '@chromatic-protocol/react-compound-charts';
+import './style.css';
 
-import type { BarData } from "@chromatic-protocol/react-compound-charts";
+import type { BarData } from '@chromatic-protocol/react-compound-charts';
 
 import {
   FILLUP_NEG_CONFIG,
   FILLUP_NEG_TICKS,
   FILLUP_POS_CONFIG,
   FILLUP_POS_TICKS,
-} from "~/configs/chart";
+} from '~/configs/chart';
+import React from 'react';
 
 interface FillUpChartProps {
   negative?: boolean;
@@ -18,6 +19,7 @@ interface FillUpChartProps {
   height: number;
   width?: number;
   tooltip?: React.ReactElement<any>;
+  selectableLabel?: string;
 }
 
 export function FillUpChart({
@@ -34,7 +36,7 @@ export function FillUpChart({
   const trackConfig = isNegative ? FILLUP_NEG_CONFIG : FILLUP_POS_CONFIG;
   const labels = isNegative ? FILLUP_NEG_TICKS : FILLUP_POS_TICKS;
 
-  const SELECTABLE_LABEL = "available";
+  const SELECTABLE_LABEL = 'available';
 
   return (
     <div className="flex justify-center ">

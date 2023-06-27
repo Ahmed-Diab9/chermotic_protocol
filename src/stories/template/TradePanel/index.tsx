@@ -52,8 +52,8 @@ export interface TradePanelProps {
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
 
-  shortTooltip: React.ReactElement<any>;
-  longTooltip: React.ReactElement<any>;
+  shortTooltip?: React.ReactElement<any>;
+  longTooltip?: React.ReactElement<any>;
 
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;

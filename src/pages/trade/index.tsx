@@ -1,60 +1,46 @@
-import "./style.css";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import './style.css';
 
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import { Header } from "~/stories/template/Header";
-import { MainBar } from "~/stories/template/MainBar";
-import { TradePanel } from "~/stories/template/TradePanel";
-import { TradeBar } from "~/stories/template/TradeBar";
-import { Button } from "~/stories/atom/Button";
-import { Outlink } from "~/stories/atom/Outlink";
-import {
-  LiquidityTooltip,
-  LiquidityTooltipData,
-} from "~/stories/molecule/LiquidityTooltip";
+import { Button } from '~/stories/atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
+import { LiquidityTooltip, LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
+import { Header } from '~/stories/template/Header';
+import { MainBar } from '~/stories/template/MainBar';
+import { TradeBar } from '~/stories/template/TradeBar';
+import { TradePanel } from '~/stories/template/TradePanel';
 
-import { useUsumAccount } from "~/hooks/useUsumAccount";
-import { useTokenSelect, useSettlementToken } from "~/hooks/useSettlementToken";
-import { useMarket, useMarketSelect } from "~/hooks/useMarket";
-import usePriceFeed from "~/hooks/usePriceFeed";
-import {
-  useUsumBalances,
-  useUsumMargins,
-  useWalletBalances,
-} from "~/hooks/useBalances";
-import {
-  useLiquidityPoolSummary,
-  useBinsBySelectedMarket,
-} from "~/hooks/useLiquidityPool";
-import useConnectOnce from "~/hooks/useConnectOnce";
-import { useFeeRate } from "~/hooks/useFeeRate";
-import useTokenTransaction from "~/hooks/useTokenTransaction";
-import { useTradeInput } from "~/hooks/useTradeInput";
-import { usePosition } from "~/hooks/usePosition";
-import useOracleVersion from "~/hooks/useOracleVersion";
-import { useAppSelector } from "~/store";
-import { useTokenLocal } from "~/hooks/useTokenLocal";
-import { useMarketLocal } from "~/hooks/useMarketLocal";
-import useChartData from "~/hooks/useChartData";
+import { useUsumBalances, useUsumMargins, useWalletBalances } from '~/hooks/useBalances';
+import useChartData from '~/hooks/useChartData';
+import useConnectOnce from '~/hooks/useConnectOnce';
+import { useFeeRate } from '~/hooks/useFeeRate';
+import { useBinsBySelectedMarket, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useMarket } from '~/hooks/useMarket';
+import { useMarketLocal } from '~/hooks/useMarketLocal';
+import useOracleVersion from '~/hooks/useOracleVersion';
+import { usePosition } from '~/hooks/usePosition';
+import usePriceFeed from '~/hooks/usePriceFeed';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useTokenLocal } from '~/hooks/useTokenLocal';
+import useTokenTransaction from '~/hooks/useTokenTransaction';
+import { useTradeInput } from '~/hooks/useTradeInput';
+import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useAppSelector } from '~/store';
 
-import { copyText } from "~/utils/clipboard";
+import { copyText } from '~/utils/clipboard';
 
 const Trade = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const {
-    account: usumAccount,
-    createAccount: createUsumAccount,
-    status,
-  } = useUsumAccount();
-  const { tokens } = useSettlementToken();
-  const { markets } = useMarket();
-  const onTokenSelect = useTokenSelect();
-  const onMarketSelect = useMarketSelect();
+  const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
+  const { tokens ,onTokenSelect} = useSettlementToken();
+  const { markets, onMarketSelect } = useMarket();
+  // const onTokenSelect = useTokenSelect();
+  // const onMarketSelect = useMarketSelect();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const feeRate = useFeeRate();
@@ -63,8 +49,7 @@ const Trade = () => {
   const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
-  const { amount, onAmountChange, onDeposit, onWithdraw } =
-    useTokenTransaction();
+  const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const {
     state: longInput,
     tradeFee: longTradeFee,
@@ -100,7 +85,7 @@ const Trade = () => {
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   useEffect(() => {
-    if (shortInput.direction === "long") {
+    if (shortInput.direction === 'long') {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
@@ -110,9 +95,7 @@ const Trade = () => {
 
   const { positive, negative } = useChartData();
 
-  const getTooltipGetter =
-    (tooltip: LiquidityTooltipData[]) => (index: number) =>
-      tooltip[index];
+  const getTooltipGetter = (tooltip: LiquidityTooltipData[]) => (index: number) => tooltip[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -180,33 +163,22 @@ const Trade = () => {
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
             shortLiquidityData={negative.liquidity}
             longLiquidityData={positive.liquidity}
-            shortTooltip={
-              <LiquidityTooltip
-                getByIndex={getTooltipGetter(negative.tooltip)}
-              />
-            }
-            longTooltip={
-              <LiquidityTooltip
-                getByIndex={getTooltipGetter(positive.tooltip)}
-              />
-            }
+            shortTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(negative.tooltip)} />}
+            longTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(positive.tooltip)} />}
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12">
               <p className="my-6 text-center text-black/30">
-                The Trade Fee is calculated by summing up the different fees
-                from the Liquidi- ty Bins that accept the positions. The EST.
-                Trade Fee is calculated based on the current oracle price, and
-                the actual fee paid is determined by the next oracle price.
+                The Trade Fee is calculated by summing up the different fees from the Liquidi- ty
+                Bins that accept the positions. The EST. Trade Fee is calculated based on the
+                current oracle price, and the actual fee paid is determined by the next oracle
+                price.
                 <Outlink outLink="#" className="ml-2" />
               </p>
-              <Link to={"/pool"}>
-                <Button
-                  label="Provide Liquidity"
-                  iconRight={<ChevronRightIcon />}
-                />
+              <Link to={'/pool'}>
+                <Button label="Provide Liquidity" iconRight={<ChevronRightIcon />} />
               </Link>
             </div>
           </article>

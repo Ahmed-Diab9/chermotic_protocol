@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
+import { useBinsBySelectedMarket, useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { trimDecimals } from '~/utils/number';
 import { BIN_VALUE_DECIMAL, CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { isNil } from 'ramda';
@@ -26,17 +26,17 @@ type Liquidity = {
 const logger = Logger('useChartData');
 const useChartData = () => {
   const { pool } = useBinsBySelectedMarket();
-  logger.info('pool', pool);
+  // logger.info('pool', pool);
   const fetchKey = useMemo(() => {
     if (!isNil(pool?.bins)) {
       return pool?.bins;
     }
   }, [pool, pool?.bins]);
-  logger.info('fetchKey', fetchKey);
+  // logger.info('fetchKey', fetchKey);
   const { data, error } = useSWR(
     fetchKey,
     (bins) => {
-      logger.info('bins', bins);
+      // logger.info('bins', bins);
       return bins.reduce<{
         clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
@@ -44,7 +44,6 @@ const useChartData = () => {
       }>(
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
-          logger.info('useChartData', liquidity);
           const key = baseFeeRate / 100;
           const binValue = trimDecimals(
             Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
@@ -83,7 +82,10 @@ const useChartData = () => {
     }
   );
 
-  logger.error(error);
+  if (error) {
+    logger.error(error);
+  }
+
   const PIVOT_INDEX = 36;
 
   const [negativeLiquidity, positiveLiquidity] = useMemo(() => {

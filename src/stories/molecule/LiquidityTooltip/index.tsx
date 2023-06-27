@@ -13,7 +13,7 @@ export type LiquidityTooltipData = {
 //  Pool 페이지 차트 tooltip 컴포넌트
 interface LiquidityTooltipProps {
   getByIndex: (index: number) => LiquidityTooltipData;
-  index: number;
+  index?: number;
   selected?: boolean;
 }
 

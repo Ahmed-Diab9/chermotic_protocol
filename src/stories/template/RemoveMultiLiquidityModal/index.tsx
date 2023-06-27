@@ -30,7 +30,7 @@ export interface RemoveMultiLiquidityModalProps {
   freeLiquidity?: BigNumber;
   removableRate?: BigNumber;
   onAmountChange?: (type: MULTI_TYPE) => unknown;
-  onRemoveLiquidity?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
+  onRemoveLiquidity?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
 export const RemoveMultiLiquidityModal = (

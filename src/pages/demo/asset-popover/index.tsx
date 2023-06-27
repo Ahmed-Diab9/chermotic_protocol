@@ -1,37 +1,34 @@
-import { useAccount } from "wagmi";
-import { useUsumAccount } from "../../../hooks/useUsumAccount";
-import { AssetPopover } from "../../../stories/molecule/AssetPopover";
+import { useAccount } from 'wagmi';
+import { useUsumAccount } from '../../../hooks/useUsumAccount';
+import { AssetPopover } from '../../../stories/molecule/AssetPopover';
 import {
   useSettlementToken,
-  useTokenSelect,
-} from "../../../hooks/useSettlementToken";
-import useTokenTransaction from "../../../hooks/useTokenTransaction";
-import { useEffect, useMemo } from "react";
-import { bigNumberify, expandDecimals } from "../../../utils/number";
-import { isValid } from "../../../utils/valid";
-import useConnectOnce from "../../../hooks/useConnectOnce";
-import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
-import { useAppSelector } from "~/store";
+  // useTokenSelect,
+} from '../../../hooks/useSettlementToken';
+import useTokenTransaction from '../../../hooks/useTokenTransaction';
+import { useEffect, useMemo } from 'react';
+import { bigNumberify, expandDecimals } from '../../../utils/number';
+import { isValid } from '../../../utils/valid';
+import useConnectOnce from '../../../hooks/useConnectOnce';
+import { useUsumBalances, useWalletBalances } from '../../../hooks/useBalances';
+import { useAppSelector } from '~/store';
 
 const AssetPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
   const { account: usumAccount } = useUsumAccount();
-  const { tokens } = useSettlementToken();
+  const { tokens, onTokenSelect } = useSettlementToken();
   const { usumBalances } = useUsumBalances();
   const { walletBalances } = useWalletBalances();
-  const onTokenSelect = useTokenSelect();
+  // const onTokenSelect = useTokenSelect();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
-  const { amount, onAmountChange, onDeposit, onWithdraw } =
-    useTokenTransaction();
+  const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
 
   const isAllowed = useMemo(() => {
     if (!isValid(usumBalances) || !isValid(selectedToken)) {
       return false;
     }
-    const expandedAmount = bigNumberify(amount)?.mul(
-      expandDecimals(selectedToken.decimals)
-    );
+    const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(selectedToken.decimals));
     if (!isValid(expandedAmount)) {
       return false;
     }
@@ -60,9 +57,7 @@ const AssetPopoverDemo = () => {
         value={selectedToken?.name}
         onChange={(event) => {
           const index = Number(event.target.value);
-          const nextToken = tokens?.find(
-            (_, tokenIndex) => tokenIndex === index
-          );
+          const nextToken = tokens?.find((_, tokenIndex) => tokenIndex === index);
           if (isValid(nextToken)) {
             onTokenSelect(nextToken);
           }

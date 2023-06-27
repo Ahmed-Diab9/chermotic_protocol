@@ -8,12 +8,13 @@ import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
 import { useWalletBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
-import { useBinsBySelectedMarket } from './useLiquidityPool';
+// import { useBinsBySelectedMarket } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 import { BigNumber, logger } from 'ethers';
 import { isNil } from 'ramda';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
+import { useBinsBySelectedMarket, useLiquidityPool } from './useLiquidityPool';
 
 const usePoolInput = () => {
   const { pool } = useBinsBySelectedMarket();
@@ -55,8 +56,6 @@ const usePoolInput = () => {
             10 ** CLB_TOKEN_VALUE_DECIMALS
         )
       );
-
-      logger.info('clbTokenValue', clbTokenValue);
       return acc.add(clbTokenValue);
     }, BigNumber.from(0));
 

@@ -220,7 +220,7 @@ const ProgressItem = (props: ProgressItemProps) => {
               // />
               <Tag label="in progress" className="text-black/50 bg-gray/20" />
             )}
-            <Tooltip
+            <TooltipGuide
               outLink="#"
               outLinkAbout="Next Oracle Round"
               tip={

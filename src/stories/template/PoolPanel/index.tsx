@@ -19,7 +19,7 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
-import { Bin, LiquidityPool } from '../../../typings/pools';
+import { Bin, LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import '~/stories/atom/Tabs/style.css';
@@ -44,7 +44,7 @@ interface PoolPanelProps {
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
-  selectedBins?: Bin[];
+  selectedBins?: OwnedBin[];
   isModalOpen?: boolean;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
@@ -64,7 +64,7 @@ interface PoolPanelProps {
   multiFreeLiquidity?: BigNumber;
   multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
-  onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
+  onRemoveLiquidityBatch?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 
   rangeChartRef?: any;
 
@@ -79,7 +79,7 @@ interface PoolPanelProps {
   onMaxDecrease: () => void;
   onFullRange?: () => unknown;
 
-  tooltip: React.ReactElement<any>;
+  tooltip?: React.ReactElement<any>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -141,7 +141,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const ownedShortLiquidityBins = [] as any[];
   const binLength = 1;
 
-  const onBinCheck = (bin: Bin) => {
+  const onBinCheck = (bin: OwnedBin) => {
     logger.info('Running check');
     const found = selectedBins.find((selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate);
     if (isValid(found)) {
@@ -151,9 +151,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }
   };
 
-  useEffect(() => {
-    logger.info('Rates', rates);
-  }, [rates]);
+  // useEffect(() => {
+  //   logger.info('Rates', rates);
+  // }, [rates]);
 
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
 
@@ -521,9 +521,9 @@ interface BinItemProps {
   index?: number;
   token?: Token;
   market?: Market;
-  bin?: Bin;
-  selectedBins?: Bin[];
-  onBinCheck?: (bin: Bin) => unknown;
+  bin?: OwnedBin;
+  selectedBins?: OwnedBin[];
+  onBinCheck?: (bin: OwnedBin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {

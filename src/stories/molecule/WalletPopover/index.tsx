@@ -1,29 +1,21 @@
-import { Popover, Transition } from "@headlessui/react";
-import { Tab } from "@headlessui/react";
-import { Avatar } from "../../atom/Avatar";
-import { Thumbnail } from "../../atom/Thumbnail";
-import { Button } from "../../atom/Button";
-import { AddressCopyButton } from "~/stories/atom/AddressCopyButton";
-import { Square2StackIcon } from "@heroicons/react/24/outline";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
-import { Fragment } from "react";
-import "../../atom/Tabs/style.css";
-import "./style.css";
-import { trimAddress } from "../../../utils/address";
-import { isValid } from "../../../utils/valid";
-import { Market, Price, Token } from "../../../typings/market";
-import {
-  expandDecimals,
-  formatBalance,
-  formatDecimals,
-  withComma,
-} from "../../../utils/number";
-import { Account } from "../../../typings/account";
-import { BigNumber } from "ethers";
-import { LiquidityPoolSummary } from "../../../typings/pools";
-import debug from "debug";
-const log = debug("WalletPopOver");
+import { Popover, Tab, Transition } from '@headlessui/react';
+import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
+import { BigNumber } from 'ethers';
+import { Fragment } from 'react';
+import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { Account } from '../../../typings/account';
+import { Market, Price, Token } from '../../../typings/market';
+import { LiquidityPoolSummary } from '../../../typings/pools';
+import { trimAddress } from '../../../utils/address';
+import { Logger } from '../../../utils/log';
+import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../../utils/number';
+import { isValid } from '../../../utils/valid';
+import { Avatar } from '../../atom/Avatar';
+import { Button } from '../../atom/Button';
+import '../../atom/Tabs/style.css';
+import { Thumbnail } from '../../atom/Thumbnail';
+import './style.css';
+const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
@@ -53,8 +45,8 @@ export const WalletPopover = ({
   onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
-  log("[WalletPopover]", tokens, priceFeed, balances);
-  log(`[${WalletPopover.name}]`, pools);
+  // logger.info('[WalletPopover]', tokens, priceFeed, balances);
+  // logger.info(`[${WalletPopover.name}]`, pools);
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover>
@@ -62,10 +54,7 @@ export const WalletPopover = ({
           <>
             <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
               <Avatar
-                label={
-                  account?.walletAddress &&
-                  trimAddress(account?.walletAddress, 7, 5)
-                }
+                label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
                 src="/src/assets/images/arbitrum.svg"
                 className="!w-[44px] !h-[44px]"
                 fontSize="sm"
@@ -98,15 +87,13 @@ export const WalletPopover = ({
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-grayL/20">
-                      <h4 className="mb-3 text-base text-center text-black/30">
-                        Connected Wallet
-                      </h4>
+                      <h4 className="mb-3 text-base text-center text-black/30">Connected Wallet</h4>
                       <div className="flex items-center justify-between gap-2">
                         <AddressCopyButton
                           address={
                             account?.walletAddress
                               ? trimAddress(account?.walletAddress, 7, 5)
-                              : "Create Account"
+                              : 'Create Account'
                           }
                           onClick={() => {
                             const address = account?.walletAddress;
@@ -140,10 +127,7 @@ export const WalletPopover = ({
                                 {balances &&
                                   priceFeed &&
                                   tokens?.map((token) => (
-                                    <div
-                                      key={token.address}
-                                      className="flex items-center"
-                                    >
+                                    <div key={token.address} className="flex items-center">
                                       <Avatar
                                         label={token.name}
                                         size="xs"
@@ -164,11 +148,9 @@ export const WalletPopover = ({
                                         <p className="mt-1 text-base font-medium text-gray-900">
                                           {withComma(
                                             balances[token.name]
-                                              .div(
-                                                expandDecimals(token.decimals)
-                                              )
+                                              .div(expandDecimals(token.decimals))
                                               .toString()
-                                          )}{" "}
+                                          )}{' '}
                                           {token.name}
                                         </p>
                                       </div>
@@ -194,11 +176,7 @@ export const WalletPopover = ({
                                     <div className="flex mt-3">
                                       <div className="mr-auto">
                                         <p className="text-base font-medium text-black/30">
-                                          {formatDecimals(
-                                            pool.liquidity,
-                                            pool.token.decimals,
-                                            2
-                                          )}{" "}
+                                          {formatDecimals(pool.liquidity, pool.token.decimals, 2)}{' '}
                                           {pool.token.name}
                                         </p>
                                         <p className="mt-2 text-base text-black">
@@ -219,15 +197,13 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL/20">
-                    <h4 className="mb-3 text-base text-center text-black/30">
-                      My Account
-                    </h4>
+                    <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
                     <div className="flex items-center justify-between gap-2">
                       <AddressCopyButton
                         address={
                           account?.usumAddress
                             ? trimAddress(account?.usumAddress, 7, 5)
-                            : "Create Account"
+                            : 'Create Account'
                         }
                         onClick={() => {
                           const address = account?.usumAddress;
