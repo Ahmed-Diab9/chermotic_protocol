@@ -1,8 +1,8 @@
-import "./style.css";
-import { Tooltip } from "react-tooltip";
-import { Token } from "../../../typings/market";
+import './style.css';
+import { Tooltip } from 'react-tooltip';
+import { Token } from '../../../typings/market';
 
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 
 interface ChartTooltipProps extends PropsWithChildren {
   label?: string;
@@ -28,13 +28,12 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
     className,
     selected,
   } = props;
+  const utilizationPercent = (utilization && liquidity ? (utilization / liquidity) * 100 : 0) ?? 0;
 
   return (
     <div className="chart-tooltip">
       {/* todo: className "chart-tooltip-${label}" 을 chart 내 영역에 동일하게 적용해야함 */}
-      <span
-        className={` self-center mx-1 chart-tooltip-${label} tooltip-icon ${className}`}
-      >
+      <span className={` self-center mx-1 chart-tooltip-${label} tooltip-icon ${className}`}>
         bin
       </span>
       <Tooltip
@@ -53,7 +52,7 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
         ) : (
           <div className={``}>
             <p className="font-semibold text-black">
-              Liquidity Bin {binPercent >= 0 && "+"}
+              Liquidity Bin
               {binPercent}%
             </p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black/30">
@@ -61,8 +60,7 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
                 Liquidity: {liquidity} {token?.name}
               </p>
               <p>
-                Utilization: {utilization} {token?.name} (
-                {(utilization / liquidity) * 100}%)
+                Utilization: {utilization} {token?.name} ({utilizationPercent}%)
               </p>
             </div>
           </div>
