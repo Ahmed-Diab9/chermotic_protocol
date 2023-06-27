@@ -7,7 +7,7 @@ import { PropsWithChildren } from "react";
 interface ChartTooltipProps extends PropsWithChildren {
   label?: string;
   token?: Token;
-  makerMargin?: string;
+  makerMargin?: number;
   binPercent?: number;
   liquidity?: number;
   utilization?: number;
@@ -53,7 +53,8 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
         ) : (
           <div className={``}>
             <p className="font-semibold text-black">
-              Liquidity Bin {binPercent}%
+              Liquidity Bin {binPercent >= 0 && "+"}
+              {binPercent}%
             </p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black/30">
               <p>

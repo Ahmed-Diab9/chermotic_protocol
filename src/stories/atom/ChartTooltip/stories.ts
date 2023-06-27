@@ -18,5 +18,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: "1",
+    binPercent: 0.03,
+    liquidity: 100,
+    utilization: 30,
+  },
+};
+export const Selected: Story = {
+  args: {
+    label: "1",
+    makerMargin: 100,
+    selected: true,
   },
 };
