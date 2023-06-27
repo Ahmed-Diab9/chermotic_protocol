@@ -1,6 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { BigNumber } from "ethers";
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from "~/configs/decimals";
 import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
 import { useAppDispatch } from "~/store";
 import { poolsAction } from "~/store/reducer/pools";
@@ -53,7 +53,7 @@ export const RemoveMultiLiquidityModal = (
   const binDecimals =
     selectedBins.length > 0
       ? selectedBins[0].clbTokenDecimals
-      : BIN_VALUE_DECIMAL;
+      : CLB_TOKEN_VALUE_DECIMALS;
 
   return (
     <Dialog
@@ -212,7 +212,7 @@ export const RemoveMultiLiquidityModal = (
                     {amount &&
                       formatDecimals(
                         bigNumberify(amount).mul(clbTokenValue),
-                        BIN_VALUE_DECIMAL,
+                        CLB_TOKEN_VALUE_DECIMALS,
                         2
                       )}{" "}
                     {token?.name})

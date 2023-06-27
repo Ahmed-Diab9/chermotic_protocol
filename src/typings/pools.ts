@@ -19,11 +19,10 @@ export interface OwnedBin extends Bin {
   removableRate: number;
 }
 
-export interface LiquidityPool {
-  // address: string;
+export interface LiquidityPool<T = Bin> {
   tokenAddress: string;
   marketAddress: string;
-  bins: Bin[];
+  bins: Array<T>;
 }
 
 export interface CLBTokenMetadata {

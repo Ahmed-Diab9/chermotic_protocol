@@ -18,7 +18,7 @@ import { poolsAction } from '~/store/reducer/pools';
 import { Bin, OwnedBin } from '~/typings/pools';
 import { Token } from '~/typings/market';
 import { isValid } from '~/utils/valid';
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -95,7 +95,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     {formatDecimals(
                       selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
-                        .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
                       token?.decimals,
                       2
                     )}{' '}
@@ -145,7 +145,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       }
                       const liquidityValue = selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
-                        .div(expandDecimals(BIN_VALUE_DECIMAL));
+                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
                       const nextAmount = liquidityValue?.lt(selectedBin.freeLiquidity)
                         ? liquidityValue
                         : selectedBin.freeLiquidity;
@@ -164,7 +164,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       amount &&
                       formatDecimals(
                         bigNumberify(amount).mul(selectedBin.binValue),
-                        BIN_VALUE_DECIMAL,
+                        CLB_TOKEN_VALUE_DECIMALS,
                         2
                       )}{' '}
                     {token?.name})

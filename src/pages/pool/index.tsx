@@ -34,6 +34,7 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
+import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 
 const Pool = () => {
   useConnectOnce();
@@ -42,11 +43,6 @@ const Pool = () => {
   const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
   const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
-
-  // const onTokenSelect = useTokenSelect();
-  // const selectedToken = useAppSelector((state) => state.token.selectedToken);
-  // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
-  // const onMarketSelect = useMarketSelect();
   const feeRate = useFeeRate();
   const { walletBalances } = useWalletBalances();
   const { usumBalances } = useUsumBalances();
@@ -62,7 +58,7 @@ const Pool = () => {
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = usePoolReceipt();
-  // const { liquidityPools: pool } = useLiquidityPool();
+  
   const {
     pool,
     liquidity: {
@@ -74,7 +70,7 @@ const Pool = () => {
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
   } = useBinsBySelectedMarket();
-
+  const { ownedPool } = useOwnedLiquidityPool();
   const {
     amount,
     rates,
@@ -106,7 +102,7 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { liquidity, clbTokenValue: binValue, tooltip } = useChartData();
+  const { liquidity, clbTokenValue, tooltip } = useChartData();
 
   const getTooltipByIndex = (index: number) => tooltip[index];
 
@@ -158,12 +154,12 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               balances={walletBalances}
-              pool={pool}
+              ownedPool={ownedPool}
               amount={amount}
               rates={rates}
               binCount={binCount}
               binAverage={binAverage}
-              binValue={binValue}
+              clbTokenValue={clbTokenValue}
               liquidity={liquidity}
               longTotalMaxLiquidity={longTotalMaxLiquidity}
               longTotalUnusedLiquidity={longTotalUnusedLiquidity}
@@ -195,6 +191,7 @@ const Pool = () => {
               multiFreeLiquidity={multiFreeLiquidity}
               multiRemovableRate={multiRemovableRate}
               onMultiAmountChange={onMultiAmountChange}
+              // ownedPool={ownedPool}
             />
             {/* bottom */}
             <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">

@@ -7,7 +7,7 @@ import { useAppSelector } from '~/store';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
-import { BIN_VALUE_DECIMAL } from '../configs/decimals';
+import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '../configs/pool';
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
@@ -134,7 +134,7 @@ export const useOwnedLiquidityPools = () => {
         const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
         const liquidityValue = clbTokenBalance
           .mul(clbTokenValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
         const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
         return type === MULTI_ALL ? clbTokenBalance : removable;

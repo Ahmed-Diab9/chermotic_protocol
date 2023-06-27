@@ -1,10 +1,10 @@
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useBinsBySelectedMarket, useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { trimDecimals } from '~/utils/number';
-import { BIN_VALUE_DECIMAL, CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-import { isNil } from 'ramda';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
+import { useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
 import { LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
+import { trimDecimals } from '~/utils/number';
 import { Logger } from '../utils/log';
 
 // FIXME: 임시 chart data reducing 로직
@@ -47,15 +47,15 @@ const useChartData = () => {
           const key = baseFeeRate / 100;
           const binValue = trimDecimals(
             Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
-            BIN_VALUE_DECIMAL
+            CLB_TOKEN_VALUE_DECIMALS
           ).toNumber();
           acc.clbTokenValue.push({
             key,
             value: binValue,
           });
 
-          const available = trimDecimals(freeLiquidity, BIN_VALUE_DECIMAL).toNumber();
-          const utilized = trimDecimals(liquidity.sub(freeLiquidity), BIN_VALUE_DECIMAL).toNumber();
+          const available = trimDecimals(freeLiquidity, CLB_TOKEN_VALUE_DECIMALS).toNumber();
+          const utilized = trimDecimals(liquidity.sub(freeLiquidity), CLB_TOKEN_VALUE_DECIMALS).toNumber();
           acc.liquidity.push({
             key,
             value: [

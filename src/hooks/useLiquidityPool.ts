@@ -3,7 +3,7 @@ import { CLBToken__factory, CLBToken } from '@chromatic-protocol/sdk/contracts';
 import { useCallback, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount, useProvider, useSigner } from 'wagmi';
-import { BIN_VALUE_DECIMAL } from '~/configs/decimals';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -183,7 +183,7 @@ export const useLiquidityPool = () => {
   //       const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
   //       const liquidityValue = clbTokenBalance
   //         .mul(clbTokenValue)
-  //         .div(expandDecimals(BIN_VALUE_DECIMAL));
+  //         .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
   //       const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
   //       return type === MULTI_ALL ? clbTokenBalance : removable;
@@ -300,7 +300,7 @@ export const useBinsBySelectedMarket = () => {
         const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
         const liquidityValue = clbTokenBalance
           .mul(clbTokenValue)
-          .div(expandDecimals(BIN_VALUE_DECIMAL));
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
         const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
         return type === MULTI_ALL ? clbTokenBalance : removable;

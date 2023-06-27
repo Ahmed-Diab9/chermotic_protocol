@@ -24,7 +24,7 @@ export const Default: Story = {
     balances: {
       USDC: BigNumber.from(100),
     },
-    pool: {
+    ownedPool: {
       // address: '0x8888888888888888888888888888888888888888',
       tokenAddress: '0x8888888888888888888888888888888888888888',
       marketAddress: '0x8888888888888888888888888888888888888888',
@@ -36,10 +36,11 @@ export const Default: Story = {
           clbTokenDecimals: 18,
           baseFeeRate: 100,
           // feeRate: BigNumber.from(100 * 100000000000),
-          // clbTokenBalance: BigNumber.from(50000000000),
-          // binValue: BigNumber.from(10000000000),
+          clbTokenBalance: BigNumber.from(50000000000),
+          binValue: BigNumber.from(10000000000),
           clbTokenValue: 1000,
-          // removableRate: 87.54,
+          removableRate: 87.54,
+          clbTotalSupply: BigNumber.from(1000),
           liquidity: BigNumber.from(3000000000),
           freeLiquidity: BigNumber.from(2000000000),
           tokenId: BigNumber.from(100),

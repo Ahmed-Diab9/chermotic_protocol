@@ -1,40 +1,42 @@
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount, useSigner } from 'wagmi';
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
-import { useAppSelector } from '~/store';
-import { isValid } from '~/utils/valid';
-import { filterIfFulfilled } from '~/utils/array';
 import { OwnedBin } from '~/typings/pools';
-import { useCallback, useMemo } from 'react';
+import { filterIfFulfilled } from '~/utils/array';
+import { isValid } from '~/utils/valid';
 import { Logger } from '../utils/log';
+import { useAppSelector } from '../store';
+import { useSettlementToken } from './useSettlementToken';
+import { isNil } from 'ramda';
 
 interface Props {
   marketAddress?: string;
 }
 
 const logger = Logger('useOwneLiquidityPoolByMarket');
-export const useOwnedLiquidityPool = (props: Props) => {
+export const useOwnedLiquidityPool = () => {
   const { encodeTokenId } = ChromaticUtils;
   const { address } = useAccount();
-  const { marketAddress: previousMarketAddress } = props;
-  // const market = useAppSelector((state) => state.market.selectedMarket);
-  const { client } = useChromaticClient();
-  const { data: signer } = useSigner();
-  const routerApi = useMemo(() => client?.router(), [client]);
-
-  const marketAddress = previousMarketAddress;
+  // let { marketAddress } = props;
+  const marketAddress = useAppSelector((state) => state.market.selectedMarket)?.address;
+  const { currentSelectedToken } = useSettlementToken();
+  // marketAddress = marketAddress || currentMarket?.address;
   const fetchKey =
     isValid(address) && isValid(marketAddress) ? [address, marketAddress] : undefined;
+
+  const { client } = useChromaticClient();
 
   const {
     data: ownedPool,
     error,
     mutate: fetchOwnedPool,
   } = useSWR(fetchKey, async ([address, marketAddress]) => {
-    if (!isValid(client)) {
-      return;
+    if (isNil(client) || isNil(currentSelectedToken)) {
+      return { bins: [], marketAddress: '0x', tokenAddress: '0x' };
     }
+
     const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
     const binsResponse = bins.map(async (bin) => {
       const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
@@ -59,72 +61,11 @@ export const useOwnedLiquidityPool = (props: Props) => {
     });
     const filteredBins = await filterIfFulfilled(binsResponse);
     return {
+      tokenAddress: currentSelectedToken.address,
       marketAddress,
       bins: filteredBins,
     };
   });
-
-  // const onRemoveLiquidity = useCallback(
-  //   async (feeRate: number, amount: number) => {
-  //     if (!isValid(signer) || !isValid(address)) {
-  //       logger.info('no signer or address', signer, address);
-  //       return;
-  //     }
-  //     if (!isValid(ownedPools)) {
-  //       logger.info('no pool');
-  //       return;
-  //     }
-  //     if (!isValid(routerApi)) {
-  //       logger.info('no clients');
-  //       return;
-  //     }
-  //     const routerAddress = routerApi.routerContract.address;
-  //     const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
-
-  //     await routerApi.removeLiquidity(ownedPools.marketAddress, {
-  //       feeRate,
-  //       receipient: address,
-  //       clbTokenAmount: expandedAmount,
-  //     });
-  //     await fetchReceipts();
-  //     await fetchWalletBalances();
-  //   },
-  //   [signer, address, pool, routerApi]
-  // );
-
-  // const onRemoveLiquidityBatch = useCallback(
-  //   async (bins: Bin[], type: MULTI_TYPE) => {
-  //     if (!isValid(signer) || !isValid(address) || !isValid(market)) {
-  //       return;
-  //     }
-  //     if (!isValid(pool)) {
-  //       return;
-  //     }
-  //     if (!isValid(routerApi)) {
-  //       return;
-  //     }
-  //     const amounts = bins.map((bin) => {
-  //       const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-  //       const liquidityValue = clbTokenBalance
-  //         .mul(clbTokenValue)
-  //         .div(expandDecimals(BIN_VALUE_DECIMAL));
-  //       const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
-
-  //       return type === MULTI_ALL ? clbTokenBalance : removable;
-  //     });
-  //     await routerApi.removeLiquidities(
-  //       market.address,
-  //       bins.map((bin, binIndex) => ({
-  //         feeRate: bin.baseFeeRate,
-  //         clbTokenAmount: amounts[binIndex],
-  //         receipient: address,
-  //       }))
-  //     );
-  //     await fetchReceipts();
-  //     await fetchWalletBalances();
-  //   },
-  //   [signer, market, pool, routerApi]
-  // );
 
   return {
     ownedPool,

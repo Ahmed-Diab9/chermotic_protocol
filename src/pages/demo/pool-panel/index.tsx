@@ -34,7 +34,7 @@ const PoolPanelDemo = () => {
     <PoolPanel
       token={token}
       balances={walletBalances}
-      pool={pool}
+      // ownedPool={pool}
       amount={amount}
       binCount={binCount}
       binAverage={binAverage}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from "~/configs/decimals";
 import { MULTI_ALL, MULTI_TYPE } from "~/configs/pool";
 import { useAppSelector } from "~/store";
 import { infoLog } from "~/utils/log";
@@ -47,7 +47,7 @@ export const useMultiPoolRemoveInput = () => {
   const [type, setType] = useState<MULTI_TYPE>(MULTI_ALL);
   const bins = useAppSelector((state) => state.pools.selectedBins);
   const binDecimals =
-    bins.length > 0 ? bins[0].clbTokenDecimals : BIN_VALUE_DECIMAL;
+    bins.length > 0 ? bins[0].clbTokenDecimals : CLB_TOKEN_VALUE_DECIMALS;
   const { clbTokenBalance, liquidityValue, removableLiquidity } =
     useMemo(() => {
       return bins.reduce(
@@ -55,7 +55,7 @@ export const useMultiPoolRemoveInput = () => {
           const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
           const liquidityValue = clbTokenBalance
             .mul(clbTokenValue)
-            .div(expandDecimals(BIN_VALUE_DECIMAL));
+            .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
           return {
             clbTokenBalance: record.clbTokenBalance.add(clbTokenBalance),
             liquidityValue: record.liquidityValue.add(liquidityValue),
@@ -73,7 +73,7 @@ export const useMultiPoolRemoveInput = () => {
     .mul(expandDecimals(FEE_RATE_DECIMAL))
     .div(liquidityValue.eq(0) ? 1 : liquidityValue);
   const binValue = liquidityValue
-    .mul(expandDecimals(BIN_VALUE_DECIMAL))
+    .mul(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
     .div(clbTokenBalance.eq(0) ? 1 : clbTokenBalance);
   const removable = removableLiquidity.lt(liquidityValue)
     ? removableLiquidity
@@ -82,7 +82,7 @@ export const useMultiPoolRemoveInput = () => {
   const amount =
     type === MULTI_ALL
       ? clbTokenBalance
-      : removable.mul(expandDecimals(BIN_VALUE_DECIMAL)).div(binValue);
+      : removable.mul(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)).div(binValue);
   const onAmountChange = (type: MULTI_TYPE) => {
     setType(type);
   };
