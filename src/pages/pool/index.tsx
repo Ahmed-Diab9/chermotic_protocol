@@ -181,7 +181,6 @@ const Pool = () => {
               onMaxIncrease={move.right.next}
               onMaxDecrease={move.right.prev}
               onFullRange={move.full}
-              tooltip={<LiquidityTooltip getByIndex={getTooltipByIndex} />}
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}

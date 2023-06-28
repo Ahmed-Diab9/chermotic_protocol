@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { BigNumber, logger } from "ethers";
+import { useState } from 'react';
+import { BigNumber, logger } from 'ethers';
 
-import { Tab } from "@headlessui/react";
-import "~/stories/atom/Tabs/style.css";
+import { Tab } from '@headlessui/react';
+import '~/stories/atom/Tabs/style.css';
 
-import { TradeContent } from "~/stories/molecule/TradeContent";
-import { CurvedButton } from "~/stories/atom/CurvedButton";
+import { TradeContent } from '~/stories/molecule/TradeContent';
+import { CurvedButton } from '~/stories/atom/CurvedButton';
 
-import { TradeInput } from "~/typings/trade";
-import { Market, Price, Token } from "~/typings/market";
+import { TradeInput } from '~/typings/trade';
+import { Market, Price, Token } from '~/typings/market';
 
-import { errorLog } from "~/utils/log";
+import { errorLog } from '~/utils/log';
 
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from "~/configs/tab";
+import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 
 export interface TradePanelProps {
   longInput?: TradeInput;
   longTradeFee?: BigNumber;
   longTradeFeePercent?: BigNumber;
   onLongChange?: (
-    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
   ) => unknown;
   onLongMethodToggle?: () => unknown;
@@ -31,7 +31,7 @@ export interface TradePanelProps {
   shortTradeFee?: BigNumber;
   shortTradeFeePercent?: BigNumber;
   onShortChange?: (
-    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
   ) => unknown;
   onShortMethodToggle?: () => unknown;
@@ -51,9 +51,6 @@ export interface TradePanelProps {
 
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
-
-  shortTooltip?: React.ReactElement<any>;
-  longTooltip?: React.ReactElement<any>;
 
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
@@ -87,8 +84,6 @@ export const TradePanel = (props: TradePanelProps) => {
     shortTotalUnusedLiquidity,
     longLiquidityData,
     shortLiquidityData,
-    shortTooltip,
-    longTooltip,
     onOpenLongPosition,
     onOpenShortPosition,
   } = props;
@@ -108,14 +103,12 @@ export const TradePanel = (props: TradePanelProps) => {
         return setSelectedTab(LONG_TAB);
       }
       default: {
-        errorLog("You selected wrong tab");
+        errorLog('You selected wrong tab');
         return;
       }
     }
   };
 
-  logger.info('short ', shortLiquidityData)
-  logger.info('long', longLiquidityData)
   return (
     <div className="inline-flex flex-col mx-auto bg-white border shadow-lg rounded-2xl">
       {isWideView ? (
@@ -139,7 +132,6 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={shortLiquidityData}
-                tooltip={shortTooltip}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -166,7 +158,6 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
                 liquidityData={longLiquidityData}
-                tooltip={longTooltip}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -209,10 +200,7 @@ export const TradePanel = (props: TradePanelProps) => {
               >
                 SHORT
               </Tab>
-              <Tab
-                value="long"
-                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
-              >
+              <Tab value="long" className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black">
                 LONG
               </Tab>
             </Tab.List>
@@ -230,7 +218,6 @@ export const TradePanel = (props: TradePanelProps) => {
                   totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   tradeFee={shortTradeFee}
                   tradeFeePercent={shortTradeFeePercent}
-                  tooltip={shortTooltip}
                   onMethodToggle={onShortMethodToggle}
                   onInputChange={onShortChange}
                   onLeverageChange={onShortLeverageChange}
@@ -252,7 +239,6 @@ export const TradePanel = (props: TradePanelProps) => {
                   totalUnusedLiquidity={longTotalUnusedLiquidity}
                   tradeFee={longTradeFee}
                   tradeFeePercent={longTradeFeePercent}
-                  tooltip={longTooltip}
                   onMethodToggle={onLongMethodToggle}
                   onInputChange={onLongChange}
                   onLeverageChange={onLongLeverageChange}
@@ -265,18 +251,10 @@ export const TradePanel = (props: TradePanelProps) => {
           </Tab.Group>
           <div>
             <div className="absolute left-0 top-8">
-              <CurvedButton
-                direction="left"
-                position="left"
-                onClick={onToggleView}
-              />
+              <CurvedButton direction="left" position="left" onClick={onToggleView} />
             </div>
             <div className="absolute right-0 top-8">
-              <CurvedButton
-                direction="right"
-                position="right"
-                onClick={onToggleView}
-              />
+              <CurvedButton direction="right" position="right" onClick={onToggleView} />
             </div>
           </div>
         </div>

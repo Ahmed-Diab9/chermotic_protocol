@@ -44,7 +44,7 @@ interface PoolPanelProps {
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
-  binAverage?: BigNumber;
+  binAverage?: number | BigNumber;
   longTotalMaxLiquidity?: BigNumber;
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
@@ -83,8 +83,6 @@ interface PoolPanelProps {
   onMaxIncrease: () => void;
   onMaxDecrease: () => void;
   onFullRange?: () => unknown;
-
-  tooltip?: React.ReactElement<any>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -130,7 +128,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMaxIncrease,
     onMaxDecrease,
     onFullRange,
-    tooltip,
   } = props;
 
   const dispatch = useAppDispatch();
@@ -266,7 +263,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     height={200}
                     onChange={onRangeChange}
                     isDotVisible={isBinValueVisible}
-                    tooltip={tooltip}
                   />
                 </article>
 

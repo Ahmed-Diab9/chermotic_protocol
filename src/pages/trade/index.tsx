@@ -98,9 +98,7 @@ const Trade = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { positive, negative } = useChartData();
-
-  const getTooltipGetter = (tooltip: LiquidityTooltipData[]) => (index: number) => tooltip[index];
+  const { liquidity, positive, negative } = useChartData();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -166,10 +164,8 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-            shortLiquidityData={negative.liquidity}
-            longLiquidityData={positive.liquidity}
-            shortTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(negative.tooltip)} />}
-            longTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(positive.tooltip)} />}
+            shortLiquidityData={negative}
+            longLiquidityData={positive}
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />

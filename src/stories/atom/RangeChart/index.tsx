@@ -16,7 +16,6 @@ interface RangeChartProps {
   height: number;
   width?: number;
   isDotVisible?: boolean;
-  tooltip?: React.ReactElement<any>;
   rangeChartRef?: any;
 }
 
@@ -28,7 +27,6 @@ export function RangeChart({
   height,
   width,
   isDotVisible = false,
-  tooltip,
   rangeChartRef,
 }: RangeChartProps) {
   return (
@@ -44,7 +42,6 @@ export function RangeChart({
         height={height}
         width={width}
         isGridVisible={isDotVisible}
-        tooltipComponent={tooltip}
       />
     </div>
   );
