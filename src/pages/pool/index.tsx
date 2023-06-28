@@ -40,7 +40,7 @@ const Pool = () => {
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
   const {
-    accountAddress: usumAccount,
+    accountAddress: chromaticAccountAddress,
     createAccount: createUsumAccount,
     status,
     balances
@@ -113,7 +113,7 @@ const Pool = () => {
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
-        account={{ walletAddress, usumAddress: usumAccount?.address }}
+        account={{ walletAddress, usumAddress: chromaticAccountAddress }}
         tokens={tokens}
         markets={markets}
         priceFeed={priceFeed}
@@ -131,7 +131,7 @@ const Pool = () => {
       />
       <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
-          account={{ walletAddress, usumAddress: usumAccount?.address }}
+          account={{ walletAddress, usumAddress: chromaticAccountAddress }}
           status={status}
           tokens={tokens}
           markets={markets}
