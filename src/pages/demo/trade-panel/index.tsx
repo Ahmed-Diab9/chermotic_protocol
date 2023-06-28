@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useUsumBalances } from "~/hooks/useBalances";
-import useConnectOnce from "~/hooks/useConnectOnce";
-import { useBinsBySelectedMarket } from "~/hooks/useLiquidityPool";
-import { usePosition } from "~/hooks/usePosition";
-import { useTradeInput } from "~/hooks/useTradeInput";
-import { useAppSelector } from "~/store";
-import { TradePanel } from "~/stories/template/TradePanel";
+import { useEffect } from 'react';
+import useConnectOnce from '~/hooks/useConnectOnce';
+import { useLiquiditiyPool } from '~/hooks/useLiquidityPool';
+import { usePosition } from '~/hooks/usePosition';
+import { useTradeInput } from '~/hooks/useTradeInput';
+import { useAppSelector } from '~/store';
+import { TradePanel } from '~/stories/template/TradePanel';
+import { useUsumAccount } from '../../../hooks/useUsumAccount';
 
 const TradePanelDemo = () => {
   useConnectOnce();
@@ -28,7 +28,8 @@ const TradePanelDemo = () => {
     onStopLossChange: onShortStopLossChange,
     onOpenPosition: onOpenShortPosition,
   } = useTradeInput();
-  const { usumBalances } = useUsumBalances();
+  // const { usumBalances } = useUsumBalances();
+  const { balances } = useUsumAccount();
   const token = useAppSelector((state) => state.token.selectedToken);
   const {
     liquidity: {
@@ -37,11 +38,11 @@ const TradePanelDemo = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useBinsBySelectedMarket();
+  } = useLiquiditiyPool();
   const { positions } = usePosition();
 
   useEffect(() => {
-    if (shortInput.direction !== "short") {
+    if (shortInput.direction !== 'short') {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
@@ -60,7 +61,7 @@ const TradePanelDemo = () => {
       onShortLeverageChange={onShortLeverageChange}
       onShortTakeProfitChange={onShortTakeProfitChange}
       onShortStopLossChange={onShortStopLossChange}
-      balances={usumBalances}
+      balances={balances}
       token={token}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}

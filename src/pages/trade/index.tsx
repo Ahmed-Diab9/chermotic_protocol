@@ -13,11 +13,11 @@ import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
-import { useUsumBalances, useUsumMargins, useWalletBalances } from '~/hooks/useBalances';
+import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
 import useChartData from '~/hooks/useChartData';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useBinsBySelectedMarket, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import useOracleVersion from '~/hooks/useOracleVersion';
@@ -36,16 +36,21 @@ const Trade = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
-  const { tokens ,onTokenSelect} = useSettlementToken();
+  const {
+    accountAddress: usumAccount,
+    createAccount: createUsumAccount,
+    status,
+    balances,
+  } = useUsumAccount();
+  const { tokens, onTokenSelect } = useSettlementToken();
   const { markets, onMarketSelect } = useMarket();
   // const onTokenSelect = useTokenSelect();
   // const onMarketSelect = useMarketSelect();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const feeRate = useFeeRate();
-  const { walletBalances } = useWalletBalances();
-  const { usumBalances } = useUsumBalances();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
+  // const { usumBalances } = useUsumBalances();
   const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -80,7 +85,7 @@ const Trade = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useBinsBySelectedMarket();
+  } = useLiquiditiyPool();
   const { oracleVersions } = useOracleVersion();
   const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
@@ -100,7 +105,7 @@ const Trade = () => {
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
-        account={{ walletAddress, usumAddress: usumAccount?.address }}
+        account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
         markets={markets}
         priceFeed={priceFeed}
@@ -114,7 +119,7 @@ const Trade = () => {
       />
       <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
-          account={{ walletAddress, usumAddress: usumAccount?.address }}
+          account={{ walletAddress, usumAddress: usumAccount }}
           status={status}
           tokens={tokens}
           markets={markets}
@@ -122,7 +127,7 @@ const Trade = () => {
           selectedMarket={selectedMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
-          usumBalances={usumBalances}
+          usumBalances={balances}
           amount={amount}
           totalBalance={totalBalance}
           availableMargin={totalMargin}
@@ -153,7 +158,7 @@ const Trade = () => {
             onShortLeverageChange={onShortLeverageChange}
             onShortTakeProfitChange={onShortTakeProfitChange}
             onShortStopLossChange={onShortStopLossChange}
-            balances={usumBalances}
+            balances={balances}
             priceFeed={priceFeed}
             token={selectedToken}
             market={selectedMarket}

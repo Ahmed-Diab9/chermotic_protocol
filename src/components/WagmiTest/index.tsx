@@ -1,15 +1,15 @@
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useUsumBalances, useWalletBalances } from "~/hooks/useBalances";
-import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { useEffect } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useTokenBalances } from "~/hooks/useBalances";
+import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { useAppSelector } from "~/store";
 
 function WagmiTest() {
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { account } = useUsumAccount();
+  const { accountAddress ,balances} = useUsumAccount();
 
-  const { walletBalances } = useWalletBalances();
-  const { usumBalances } = useUsumBalances();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
+  // const { usumBalances } = useUsumBalances();
 
   const { isConnected, isDisconnected, address } = useAccount();
   const { connect, connectors } = useConnect();
@@ -20,8 +20,8 @@ function WagmiTest() {
   }, [walletBalances]);
 
   useEffect(() => {
-    console.log(usumBalances);
-  }, [usumBalances]);
+    console.log(balances);
+  }, [balances]);
 
   return (
     <>
@@ -41,7 +41,7 @@ function WagmiTest() {
         <>
           <h1 className="font-bold">Connect Info</h1>
           <div>Wallet: {address}</div>
-          <div>Acoount: {account?.address}</div>
+          <div>Acoount: {accountAddress}</div>
           <button onClick={() => disconnect()}>disconnect</button>
         </>
       )}

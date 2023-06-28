@@ -1,39 +1,38 @@
+import { useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
-import { useUsumAccount } from '../../../hooks/useUsumAccount';
-import { AssetPopover } from '../../../stories/molecule/AssetPopover';
+import { useAppSelector } from '~/store';
+import { useTokenBalances } from '../../../hooks/useBalances';
+import useConnectOnce from '../../../hooks/useConnectOnce';
 import {
   useSettlementToken,
-  // useTokenSelect,
 } from '../../../hooks/useSettlementToken';
 import useTokenTransaction from '../../../hooks/useTokenTransaction';
-import { useEffect, useMemo } from 'react';
+import { useUsumAccount } from '../../../hooks/useUsumAccount';
+import { AssetPopover } from '../../../stories/molecule/AssetPopover';
 import { bigNumberify, expandDecimals } from '../../../utils/number';
 import { isValid } from '../../../utils/valid';
-import useConnectOnce from '../../../hooks/useConnectOnce';
-import { useUsumBalances, useWalletBalances } from '../../../hooks/useBalances';
-import { useAppSelector } from '~/store';
 
 const AssetPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
-  const { account: usumAccount } = useUsumAccount();
+  const { accountAddress: usumAccount ,balances} = useUsumAccount();
   const { tokens, onTokenSelect } = useSettlementToken();
-  const { usumBalances } = useUsumBalances();
-  const { walletBalances } = useWalletBalances();
+  // const { usumBalances } = useUsumBalances();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
   // const onTokenSelect = useTokenSelect();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
 
   const isAllowed = useMemo(() => {
-    if (!isValid(usumBalances) || !isValid(selectedToken)) {
+    if (!isValid(balances) || !isValid(selectedToken)) {
       return false;
     }
     const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(selectedToken.decimals));
     if (!isValid(expandedAmount)) {
       return false;
     }
-    return usumBalances[selectedToken.name].gt(expandedAmount);
-  }, [usumBalances, selectedToken, amount]);
+    return balances[selectedToken.name].gt(expandedAmount);
+  }, [balances, selectedToken, amount]);
 
   useEffect(() => {
     if (isValid(tokens) && isValid(tokens[0])) {
@@ -47,7 +46,7 @@ const AssetPopoverDemo = () => {
         account={{ walletAddress, usumAddress: usumAccount?.address }}
         token={selectedToken}
         walletBalances={walletBalances}
-        usumBalances={usumBalances}
+        usumBalances={balances}
         amount={amount}
         onAmountChange={onAmountChange}
         onDeposit={onDeposit}

@@ -2,13 +2,12 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useUsumBalances, useUsumMargins, useWalletBalances } from '~/hooks/useBalances';
+import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import {
-  useBinsBySelectedMarket,
-  useLiquidityPool,
-  useLiquidityPoolSummary,
+  useLiquiditiyPool,
+  useLiquidityPoolSummary
 } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import usePoolInput from '~/hooks/usePoolInput';
@@ -25,6 +24,7 @@ import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import useChartData from '../../hooks/useChartData';
 import { useMarketLocal } from '../../hooks/useMarketLocal';
+import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 import { useTokenLocal } from '../../hooks/useTokenLocal';
 import { Button } from '../../stories/atom/Button';
 import { Outlink } from '../../stories/atom/Outlink';
@@ -34,18 +34,22 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
-import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 
 const Pool = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
+  const {
+    accountAddress: usumAccount,
+    createAccount: createUsumAccount,
+    status,
+    balances
+  } = useUsumAccount();
   const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
   const feeRate = useFeeRate();
-  const { walletBalances } = useWalletBalances();
-  const { usumBalances } = useUsumBalances();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
+  // const { usumBalances } = useUsumBalances();
   const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -58,7 +62,7 @@ const Pool = () => {
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = usePoolReceipt();
-  
+
   const {
     pool,
     liquidity: {
@@ -69,7 +73,7 @@ const Pool = () => {
     },
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
-  } = useBinsBySelectedMarket();
+  } = useLiquiditiyPool();
   const { ownedPool } = useOwnedLiquidityPool();
   const {
     amount,
@@ -135,7 +139,7 @@ const Pool = () => {
           selectedMarket={selectedMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
-          usumBalances={usumBalances}
+          usumBalances={balances}
           amount={balanceAmount}
           totalBalance={totalBalance}
           availableMargin={totalMargin}

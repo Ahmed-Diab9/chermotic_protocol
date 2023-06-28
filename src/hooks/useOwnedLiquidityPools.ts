@@ -11,7 +11,7 @@ import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '../configs/pool';
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
-import { useWalletBalances } from './useBalances';
+import { useTokenBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
@@ -69,12 +69,11 @@ export const useOwnedLiquidityPools = () => {
           } satisfies OwnedBin;
         });
         const filteredBins = await filterIfFulfilled(binsResponse);
-        logger.log('BINS FILTERED', filteredBins);
         return { marketAddress, bins: filteredBins };
       });
 
       const awaitedResponse = await filterIfFulfilled(poolsResponse);
-      logger.log('RESPONSE', awaitedResponse);
+      
 
       const ownedPools = awaitedResponse.reduce((record, currentPool) => {
         record[currentPool.marketAddress] = currentPool.bins;
@@ -89,7 +88,7 @@ export const useOwnedLiquidityPools = () => {
   }
 
   const { fetchReceipts } = usePoolReceipt();
-  const { fetchWalletBalances } = useWalletBalances();
+  const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
   const onRemoveLiquidity = useCallback(
     async (feeRate: number, amount: number) => {
       if (isNil(signer) || isNil(address)) {
@@ -108,7 +107,7 @@ export const useOwnedLiquidityPools = () => {
         logger.info('no selected market');
         return;
       }
-      const routerAddress = routerApi.routerContract.address;
+  
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
       await routerApi.removeLiquidity(currentMarket.address, {

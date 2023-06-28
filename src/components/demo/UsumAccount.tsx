@@ -9,7 +9,7 @@ const logger = Logger('UsumAccount');
 const UsumAccount = () => {
   useAccount();
   const feeRate = useFeeRate();
-  const { account, createAccount } = useUsumAccount();
+  const { accountAddress, createAccount } = useUsumAccount();
   const { markets, onMarketSelect } = useMarket();
   const { tokens, onTokenSelect } = useSettlementToken();
   // const onTokenSelect = useTokenSelect();
@@ -22,7 +22,7 @@ const UsumAccount = () => {
   return (
     <div>
       <h2>Account</h2>
-      <p>{account?.address}</p>
+      <p>{accountAddress}</p>
       <button onClick={() => createAccount()}>Create Account</button>
       <button
         onClick={() => {

@@ -1,23 +1,22 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
 import { useMemo, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
-import { FEE_RATES } from '../configs/feeRate';
 import { useAppSelector } from '../store';
-import { errorLog, infoLog } from '../utils/log';
+import { Logger, errorLog } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useWalletBalances } from './useBalances';
+import { useTokenBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
 // import { useBinsBySelectedMarket } from './useLiquidityPool';
-import usePoolReceipt from './usePoolReceipt';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
-import { BigNumber, logger } from 'ethers';
+import { BigNumber } from 'ethers';
 import { isNil } from 'ramda';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
-import { useBinsBySelectedMarket, useLiquidityPool } from './useLiquidityPool';
+import { useLiquiditiyPool } from './useLiquidityPool';
+import usePoolReceipt from './usePoolReceipt';
 
+const logger = Logger('usePoolInput');
 const usePoolInput = () => {
-  const { pool } = useBinsBySelectedMarket();
+  const { pool } = useLiquiditiyPool();
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
   const routerApi = client?.router();
@@ -26,7 +25,7 @@ const usePoolInput = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
-  const { fetchWalletBalances } = useWalletBalances();
+  const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
   const {
     data: { values: binFeeRates },

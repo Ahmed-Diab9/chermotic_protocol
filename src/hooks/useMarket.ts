@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import useSWR from 'swr';
-import { useChromaticClient } from './useChromaticClient';
-import { Market } from '~/typings/market';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
+import { Market } from '~/typings/market';
 import { errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
+import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
 
 export const useMarket = (_interval?: number) => {
@@ -23,8 +23,8 @@ export const useMarket = (_interval?: number) => {
   } = useSWR(
     isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
-      const markets = await client?.marketFactory().getMarkets(tokenAddress);
-      return markets;
+      const markets = (await client?.marketFactory().getMarkets(tokenAddress)) || [];
+      return markets
     }
   );
 

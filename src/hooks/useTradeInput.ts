@@ -7,10 +7,10 @@ import { bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/util
 import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
-import { useUsumBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
-import { useBinsBySelectedMarket } from './useLiquidityPool';
+import { useLiquiditiyPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
+import { useUsumAccount } from './useUsumAccount';
 
 const logger = Logger('useTradeInput');
 const initialTradeInput = {
@@ -209,7 +209,8 @@ export const useTradeInput = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  const { fetchUsumBalances } = useUsumBalances();
+  // const { fetchUsumBalances } = useUsumBalances();
+  const { fetchBalances } = useUsumAccount();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
@@ -221,7 +222,7 @@ export const useTradeInput = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useBinsBySelectedMarket();
+  } = useLiquiditiyPool();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -392,7 +393,7 @@ export const useTradeInput = () => {
       tradingFee,
     });
     await fetchPositions();
-    await fetchUsumBalances();
+    await fetchBalances();
   };
 
   return {

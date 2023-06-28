@@ -1,22 +1,22 @@
 import { useAccount, useDisconnect } from "wagmi";
-import { WalletPopover } from "../../../stories/molecule/WalletPopover";
-import { useUsumAccount } from "../../../hooks/useUsumAccount";
-import { copyText } from "../../../utils/clipboard";
-import usePriceFeed from "../../../hooks/usePriceFeed";
+import { useTokenBalances } from "../../../hooks/useBalances";
 import useConnectOnce from "../../../hooks/useConnectOnce";
 import { useLiquidityPoolSummary } from "../../../hooks/useLiquidityPool";
-import { useSettlementToken } from "../../../hooks/useSettlementToken";
-import { useUsumBalances, useWalletBalances } from "../../../hooks/useBalances";
 import { useMarket } from "../../../hooks/useMarket";
 import useOracleVersion from "../../../hooks/useOracleVersion";
+import usePriceFeed from "../../../hooks/usePriceFeed";
+import { useSettlementToken } from "../../../hooks/useSettlementToken";
+import { useUsumAccount } from "../../../hooks/useUsumAccount";
+import { WalletPopover } from "../../../stories/molecule/WalletPopover";
+import { copyText } from "../../../utils/clipboard";
 
 const WalletPopoverDemo = () => {
   useConnectOnce();
   const { address: walletAddress } = useAccount();
   const { tokens } = useSettlementToken();
   const { markets } = useMarket();
-  const { account } = useUsumAccount();
-  const { walletBalances } = useWalletBalances();
+  const { accountAddress : account } = useUsumAccount();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
   const { priceFeed } = usePriceFeed();

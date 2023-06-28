@@ -9,7 +9,7 @@ import { isValid } from "~/utils/valid";
 import { useAppSelector } from "../store";
 import { numberBuffer, percentage } from "../utils/number";
 import { useChromaticClient } from "./useChromaticClient";
-import { useLiquidityPool } from "./useLiquidityPool";
+import { useLiquiditiyPools } from "./useLiquidityPool";
 import useOracleVersion from "./useOracleVersion";
 
 export type LpReceiptAction = "add" | "remove";

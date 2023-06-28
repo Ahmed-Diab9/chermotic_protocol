@@ -2,7 +2,7 @@ import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-import { useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
+import { useLiquiditiyPool } from '~/hooks/useLiquidityPool';
 import { LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
 import { trimDecimals } from '~/utils/number';
 import { Logger } from '../utils/log';
@@ -25,7 +25,7 @@ type Liquidity = {
 };
 const logger = Logger('useChartData');
 const useChartData = () => {
-  const { pool } = useBinsBySelectedMarket();
+  const { pool } = useLiquiditiyPool();
   // logger.info('pool', pool);
   const fetchKey = useMemo(() => {
     if (!isNil(pool?.bins)) {
@@ -37,7 +37,7 @@ const useChartData = () => {
     fetchKey,
     (bins) => {
       // logger.info('bins', bins);
-      return bins.reduce<{
+      const chartData = bins.reduce<{
         clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
         tooltip: LiquidityTooltipData[];
@@ -55,7 +55,10 @@ const useChartData = () => {
           });
 
           const available = trimDecimals(freeLiquidity, CLB_TOKEN_VALUE_DECIMALS).toNumber();
-          const utilized = trimDecimals(liquidity.sub(freeLiquidity), CLB_TOKEN_VALUE_DECIMALS).toNumber();
+          const utilized = trimDecimals(
+            liquidity.sub(freeLiquidity),
+            CLB_TOKEN_VALUE_DECIMALS
+          ).toNumber();
           acc.liquidity.push({
             key,
             value: [
@@ -76,6 +79,8 @@ const useChartData = () => {
           tooltip: [],
         }
       );
+      logger.info('chart data', chartData);
+      return chartData;
     },
     {
       keepPreviousData: true,
