@@ -1,8 +1,9 @@
 import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
 import { BigNumber } from 'ethers';
+import { fromPairs, isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, useBalance, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { Logger } from '~/utils/log';
@@ -10,8 +11,6 @@ import { bigNumberify } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { usePosition } from './usePosition';
-import { fromPairs, isNil, isNotNil } from 'ramda';
-import { useChromaticClient } from './useChromaticClient';
 const logger = Logger('useBalances');
 function filterResponse<T>(response: PromiseSettledResult<T>[]) {
   return response

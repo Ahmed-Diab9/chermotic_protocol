@@ -9,7 +9,6 @@ import { isValid } from "~/utils/valid";
 import { useAppSelector } from "../store";
 import { numberBuffer, percentage } from "../utils/number";
 import { useChromaticClient } from "./useChromaticClient";
-import { useLiquiditiyPools } from "./useLiquidityPool";
 import useOracleVersion from "./useOracleVersion";
 
 export type LpReceiptAction = "add" | "remove";
@@ -62,7 +61,7 @@ const usePoolReceipt = () => {
       }
 
       const receipts = await lensApi
-        ?.getContract()
+        .contracts().lens
         .lpReceipts(marketAddress, address);
       if (!receipts) {
         return [];

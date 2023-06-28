@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
-import { useChromaticClient } from './useChromaticClient';
-import { useAppDispatch, useAppSelector } from '~/store';
-import { errorLog } from '~/utils/log';
-import { Token } from '~/typings/market';
-import { tokenAction } from '~/store/reducer/token';
 import { useAccount } from 'wagmi';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { tokenAction } from '~/store/reducer/token';
+import { Token } from '~/typings/market';
+import { errorLog } from '~/utils/log';
+import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
-import { isValid } from '~/utils/valid';
 
 export const useSettlementToken = () => {
   const { address } = useAccount();

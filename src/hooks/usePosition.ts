@@ -13,9 +13,7 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { createPositionsMock } from '~/mock/positions';
 import { AppError } from '~/typings/error';
 import { filterIfFulfilled } from '~/utils/array';
-import { useAppSelector } from '../store';
 import { useChromaticClient } from './useChromaticClient';
-import { useFeeRate } from './useFeeRate';
 import useOracleVersion from './useOracleVersion';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
@@ -32,15 +30,12 @@ export interface Position extends IChromaticPosition {
 }
 export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
-  // const { fetchUsumBalances } = useUsumBalances();
-  const token = useAppSelector((state) => state.token.selectedToken);
   const { markets } = useMarket();
   const provider = useProvider();
 
   // const [router] = useRouter();
 
   const { oracleVersions } = useOracleVersion();
-  const feeRate = useFeeRate();
   const { client } = useChromaticClient();
   const positionApi = useMemo(() => client?.position(), [client]);
   const accountApi = useMemo(() => client?.account(), [client]);
@@ -186,11 +181,8 @@ export const usePosition = () => {
       return AppError.reject('the selected position is not closed', 'onClaimPosition');
     }
 
-    // await client?.lens()?.claimPosition(position.marketAddress, position.id);
-
     await fetchPositions();
     await fetchBalances();
-    // await fetchUsumBalances();
   };
 
   if (error) {
@@ -207,13 +199,13 @@ export const usePosition = () => {
 };
 
 export const usePositionsMock = () => {
-  const { account } = useUsumAccount();
+  const { accountAddress } = useUsumAccount();
 
   const fetchKey = useMemo(() => {
-    if (isValid(account)) {
-      return [account] as const;
+    if (isValid(accountAddress)) {
+      return [accountAddress] as const;
     }
-  }, [account]);
+  }, [accountAddress]);
 
   const {
     data: positions,
