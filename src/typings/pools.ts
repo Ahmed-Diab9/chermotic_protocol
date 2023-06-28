@@ -1,6 +1,4 @@
-import { BigNumber } from "ethers";
-import { LiquidityBinResult } from "@chromatic-protocol/sdk"
-import { CLBToken } from "@chromatic-protocol/sdk/contracts"
+import { BigNumber } from 'ethers';
 
 export interface Bin {
   liquidity: BigNumber;
@@ -9,23 +7,22 @@ export interface Bin {
   clbTokenImage: string;
   clbTokenDescription: string;
   clbTokenDecimals: number;
+  clbTokenValue: number;
   baseFeeRate: number;
   tokenId: BigNumber;
 }
 
 export interface OwnedBin extends Bin {
-  clbTokenBalance: BigNumber
-  clbTokenValue: number
-  clbTotalSupply: BigNumber
-  binValue: BigNumber
-  removableRate: number
+  clbTokenBalance: BigNumber;
+  clbTotalSupply: BigNumber;
+  binValue: BigNumber;
+  removableRate: number;
 }
 
-export interface LiquidityPool {
-  // address: string;
+export interface LiquidityPool<T = Bin> {
   tokenAddress: string;
   marketAddress: string;
-  bins: Bin[];
+  bins: Array<T>;
 }
 
 export interface CLBTokenMetadata {
@@ -43,5 +40,5 @@ export interface LiquidityPoolSummary {
   thumbnail?: string;
 }
 
-export type ADD_LIQUIDITY_STATUS = "IDLE" | "PENDING" | "FINISHED";
-export type REMOVE_LIQUIDITY_STATUS = "IDLE" | "PENDING" | "FINISHED";
+export type ADD_LIQUIDITY_STATUS = 'IDLE' | 'PENDING' | 'FINISHED';
+export type REMOVE_LIQUIDITY_STATUS = 'IDLE' | 'PENDING' | 'FINISHED';

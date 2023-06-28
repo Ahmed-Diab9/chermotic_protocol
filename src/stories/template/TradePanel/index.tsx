@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BigNumber } from "ethers";
+import { BigNumber, logger } from "ethers";
 
 import { Tab } from "@headlessui/react";
 import "~/stories/atom/Tabs/style.css";
@@ -52,8 +52,8 @@ export interface TradePanelProps {
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
 
-  shortTooltip: React.ReactElement<any>;
-  longTooltip: React.ReactElement<any>;
+  shortTooltip?: React.ReactElement<any>;
+  longTooltip?: React.ReactElement<any>;
 
   onOpenLongPosition?: () => unknown;
   onOpenShortPosition?: () => unknown;
@@ -114,6 +114,8 @@ export const TradePanel = (props: TradePanelProps) => {
     }
   };
 
+  logger.info('short ', shortLiquidityData)
+  logger.info('long', longLiquidityData)
   return (
     <div className="inline-flex flex-col mx-auto bg-white border shadow-lg rounded-2xl">
       {isWideView ? (

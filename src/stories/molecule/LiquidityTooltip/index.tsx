@@ -13,11 +13,15 @@ export type LiquidityTooltipData = {
 //  Pool 페이지 차트 tooltip 컴포넌트
 interface LiquidityTooltipProps {
   getByIndex: (index: number) => LiquidityTooltipData;
-  index: number;
+  index?: number;
   selected?: boolean;
 }
 
-export const LiquidityTooltip = ({ getByIndex, index, selected }: LiquidityTooltipProps) => {
+export const LiquidityTooltip = ({
+  getByIndex,
+  index = 0,
+  selected
+}: LiquidityTooltipProps) => {
   const { feeRate, liquidity, utilization } = getByIndex(index) ?? {};
 
   const feeRateString = isValid(feeRate) ? feeRate.toString() : '-';

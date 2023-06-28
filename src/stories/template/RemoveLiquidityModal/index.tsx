@@ -1,27 +1,27 @@
-import React from "react";
-import { Dialog } from "@headlessui/react";
-import { Button } from "../../atom/Button";
-import { TooltipGuide } from "~/stories/atom/TooltipGuide";
-import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
-import { Input } from "~/stories/atom/Input";
-import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
-import "../Modal/style.css";
+import React from 'react';
+import { Dialog } from '@headlessui/react';
+import { Button } from '../../atom/Button';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { Input } from '~/stories/atom/Input';
+import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
+import '../Modal/style.css';
 import {
   bigNumberify,
   expandDecimals,
   formatDecimals,
   percentage,
   trimLeftZero,
-} from "~/utils/number";
-import { useAppDispatch } from "~/store";
-import { poolsAction } from "~/store/reducer/pools";
-import { Bin } from "~/typings/pools";
-import { Token } from "~/typings/market";
-import { isValid } from "~/utils/valid";
-import { BIN_VALUE_DECIMAL, FEE_RATE_DECIMAL } from "~/configs/decimals";
+} from '~/utils/number';
+import { useAppDispatch } from '~/store';
+import { poolsAction } from '~/store/reducer/pools';
+import { Bin, OwnedBin } from '~/typings/pools';
+import { Token } from '~/typings/market';
+import { isValid } from '~/utils/valid';
+import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
 
 export interface RemoveLiquidityModalProps {
-  selectedBin?: Bin;
+  selectedBin?: OwnedBin;
   token?: Token;
   amount?: number;
   maxAmount?: number;
@@ -31,22 +31,11 @@ export interface RemoveLiquidityModalProps {
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
-  const {
-    selectedBin,
-    token,
-    amount,
-    maxAmount,
-    onAmountChange,
-    onMaxChange,
-    onRemoveLiquidity,
-  } = props;
+  const { selectedBin, token, amount, maxAmount, onAmountChange, onMaxChange, onRemoveLiquidity } =
+    props;
   const dispatch = useAppDispatch();
-  const balance = isValid(selectedBin)
-    ? selectedBin.clbTokenBalance
-    : bigNumberify(0);
-  const utilizedRate = isValid(selectedBin)
-    ? 100 - selectedBin.removableRate
-    : 0;
+  const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : bigNumberify(0);
+  const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
   const utilized = isValid(selectedBin)
     ? selectedBin.clbTokenBalance
         .mul(Math.round(utilizedRate * percentage()))
@@ -85,15 +74,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <LiquidityItem
                 token={token?.name}
                 name={selectedBin?.clbTokenDescription}
-                qty={Number(
-                  formatDecimals(balance, selectedBin?.clbTokenDecimals, 2)
-                )}
-                utilizedValue={Number(
-                  formatDecimals(utilized, selectedBin?.clbTokenDecimals, 2)
-                )}
-                removableValue={Number(
-                  formatDecimals(removable, selectedBin?.clbTokenDecimals, 2)
-                )}
+                qty={Number(formatDecimals(balance, selectedBin?.clbTokenDecimals, 2))}
+                utilizedValue={Number(formatDecimals(utilized, selectedBin?.clbTokenDecimals, 2))}
+                removableValue={Number(formatDecimals(removable, selectedBin?.clbTokenDecimals, 2))}
               />
             </article>
 
@@ -112,10 +95,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     {formatDecimals(
                       selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
-                        .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
                       token?.decimals,
                       2
-                    )}{" "}
+                    )}{' '}
                     {token?.name}
                   </p>
                 )}
@@ -132,15 +115,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </p>
                 {selectedBin && token && (
                   <p>
-                    {formatDecimals(
-                      selectedBin.freeLiquidity,
-                      token.decimals,
-                      2
-                    )}{" "}
-                    {token.name}
-                    <span className="ml-1 text-black/30">
-                      ({selectedBin.removableRate}%)
-                    </span>
+                    {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
+                    <span className="ml-1 text-black/30">({selectedBin.removableRate}%)</span>
                   </p>
                 )}
               </div>
@@ -169,15 +145,11 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       }
                       const liquidityValue = selectedBin.clbTokenBalance
                         .mul(selectedBin.binValue)
-                        .div(expandDecimals(BIN_VALUE_DECIMAL));
-                      const nextAmount = liquidityValue?.lt(
-                        selectedBin.freeLiquidity
-                      )
+                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
+                      const nextAmount = liquidityValue?.lt(selectedBin.freeLiquidity)
                         ? liquidityValue
                         : selectedBin.freeLiquidity;
-                      onAmountChange?.(
-                        nextAmount.div(selectedBin.binValue).toNumber()
-                      );
+                      onAmountChange?.(nextAmount.div(selectedBin.binValue).toNumber());
                     }}
                   />
                 </div>
@@ -192,9 +164,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       amount &&
                       formatDecimals(
                         bigNumberify(amount).mul(selectedBin.binValue),
-                        BIN_VALUE_DECIMAL,
+                        CLB_TOKEN_VALUE_DECIMALS,
                         2
-                      )}{" "}
+                      )}{' '}
                     {token?.name})
                   </p>
                   <Input
@@ -220,12 +192,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </div>
               </div>
               <p className="mt-4 text-xs text-black/30">
-                Holders can immediately withdraw liquidity by burning the CLB
-                tokens that is not collateralized by maker margin. Since the
-                withdrawal takes place in the next oracle round, the final
-                amount of removable liquidity is determined based on the
-                utilization status of the liquidity bins in the next oracle
-                round.
+                Holders can immediately withdraw liquidity by burning the CLB tokens that is not
+                collateralized by maker margin. Since the withdrawal takes place in the next oracle
+                round, the final amount of removable liquidity is determined based on the
+                utilization status of the liquidity bins in the next oracle round.
               </p>
             </article>
           </Dialog.Description>

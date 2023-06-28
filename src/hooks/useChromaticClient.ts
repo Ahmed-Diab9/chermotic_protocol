@@ -1,5 +1,5 @@
-import { Client } from "@chromatic-protocol/sdk";
 import { useEffect } from "react";
+import { Client } from "@chromatic-protocol/sdk";
 import { useAccount, useProvider, useSigner } from "wagmi";
 
 let client: Client | undefined;

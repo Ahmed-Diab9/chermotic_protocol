@@ -5,7 +5,7 @@ import { OracleVersion } from '~/typings/oracleVersion';
 import { Logger, errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
-const logger = Logger('useOracleVersion')
+const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
   const { markets } = useMarket();
   const { address } = useAccount();
@@ -26,7 +26,7 @@ const useOracleVersion = () => {
     if (!marketApi) return {};
 
     const oraclePrices = await marketApi.getCurrentPrices(marketAddresses);
-    oraclePrices.reduce((record, { market, value }) => {
+    return oraclePrices.reduce((record, { market, value }) => {
       const { version, timestamp, price } = value;
       record[market] = {
         version,

@@ -33,7 +33,7 @@ export const LoggedIn: Story = {
       {
         address: "0x8888888888888888888888888888888888888888",
         description: "ETH/USD",
-        value: {
+        oracleValue: {
           price: BigNumber.from(10000),
           timestamp: BigNumber.from(1000000),
           version: BigNumber.from(10),

@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { Bin, LiquidityPool } from "../../../typings/pools";
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { Bin, LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 interface PoolState {
   selectedPool?: LiquidityPool;
-  selectedBins: Bin[];
+  selectedBins: OwnedBin[];
   isModalOpen: boolean;
 }
 
@@ -15,20 +15,20 @@ const initialState: PoolState = {
 };
 
 const poolsSlice = createSlice({
-  name: "pools",
+  name: 'pools',
   initialState,
   reducers: {
     onPoolSelect: (state, action: PayloadAction<LiquidityPool>) => {
       state.selectedPool = action.payload;
     },
-    onBinSelect: (state, action: PayloadAction<Bin>) => {
+    onBinSelect: (state, action: PayloadAction<OwnedBin>) => {
       state.selectedBins = [action.payload];
       state.isModalOpen = true;
     },
-    onBinsSelect: (state, action: PayloadAction<Bin>) => {
+    onBinsSelect: (state, action: PayloadAction<OwnedBin>) => {
       state.selectedBins = state.selectedBins.concat(action.payload);
     },
-    onBinsUnselect: (state, action: PayloadAction<Bin>) => {
+    onBinsUnselect: (state, action: PayloadAction<OwnedBin>) => {
       const filtered = state.selectedBins.filter(
         (bin) => bin.baseFeeRate !== action.payload.baseFeeRate
       );

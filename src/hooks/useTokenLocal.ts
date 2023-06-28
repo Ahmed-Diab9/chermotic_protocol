@@ -1,9 +1,9 @@
+import { useCallback, useEffect } from "react";
+import { useAppDispatch } from "~/store";
+import { tokenAction } from "~/store/reducer/token";
 import { isValid } from "~/utils/valid";
 import useLocalStorage from "./useLocalStorage";
 import { useSettlementToken } from "./useSettlementToken";
-import { useAppDispatch } from "~/store";
-import { tokenAction } from "~/store/reducer/token";
-import { useCallback, useEffect } from "react";
 
 export const useTokenLocal = () => {
   const { tokens } = useSettlementToken();

@@ -1,86 +1,67 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
+import { isNil } from 'ramda';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
-import { useAppSelector } from '~/store';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
-import { BIN_VALUE_DECIMAL } from '../configs/decimals';
-import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
+import { useAppSelector } from '../store';
 import { Logger } from '../utils/log';
+import { useSettlementToken } from './useSettlementToken';
 
+const logger = Logger('useOwneLiquidityPoolByMarket');
 export const useOwnedLiquidityPool = () => {
   const { encodeTokenId } = ChromaticUtils;
   const { address } = useAccount();
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const { markets } = useMarket();
-  const { client } = useChromaticClient();
-  const logger = Logger(useOwnedLiquidityPool);
+  const marketAddress = useAppSelector((state) => state.market.selectedMarket)?.address;
+  const { currentSelectedToken } = useSettlementToken();
   const fetchKey =
-    isValid(address) && isValid(token) && isValid(markets)
-      ? [address, token.address, ...markets.map((market) => market.address)]
-      : undefined;
+    isValid(address) && isValid(marketAddress) ? [address, marketAddress] : undefined;
+
+  const { client } = useChromaticClient();
 
   const {
-    data: ownedPools,
+    data: ownedPool,
     error,
-    isLoading,
-    mutate: fetchOwnedPools,
-  } = useSWR(
-    fetchKey,
-    async ([address, tokenAddress, ...marketAddresses]): Promise<Record<string, OwnedBin[]>> => {
-      if (!isValid(client)) {
-        return {};
-      }
-      const poolsResponse = marketAddresses.map(async (marketAddress) => {
-        const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
-        logger.info('sdk response bins', bins);
-        const binsResponse = bins.map(async (bin) => {
-          const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
-          logger.info('token id ', tokenId);
-          const { name, decimals, description, image } = await client
-            .market()
-            .clbTokenMeta(marketAddress, tokenId);
-          logger.info('NAME', name);
-          return {
-            liquidity: bin.liquidity,
-            freeLiquidity: bin.freeLiquidity,
-            removableRate: bin.removableRate,
-            clbTokenName: name,
-            clbTokenImage: image,
-            clbTokenDescription: description,
-            clbTokenDecimals: decimals,
-            clbTokenBalance: bin.clbBalance,
-            clbTokenValue: bin.clbValue,
-            clbTotalSupply: bin.clbTotalSupply,
-            binValue: bin.clbBalance.mul(bin.clbValue),
-            baseFeeRate: bin.tradingFeeRate,
-            tokenId: tokenId,
-          } satisfies OwnedBin;
-        });
-        const filteredBins = await filterIfFulfilled(binsResponse);
-        logger.log('BINS FILTERED', filteredBins);
-        return { marketAddress, bins: filteredBins };
-      });
-
-      const awaitedResponse = await filterIfFulfilled(poolsResponse);
-      logger.log('RESPONSE', awaitedResponse);
-
-      const ownedPools = awaitedResponse.reduce((record, currentPool) => {
-        record[currentPool.marketAddress] = currentPool.bins;
-        return record;
-      }, {} as Record<string, OwnedBin[]>);
-      return ownedPools;
+    mutate: fetchOwnedPool,
+  } = useSWR(fetchKey, async ([address, marketAddress]) => {
+    if (isNil(client) || isNil(currentSelectedToken)) {
+      return { bins: [], marketAddress: '0x', tokenAddress: '0x' };
     }
-  );
 
-  if (error) {
-    logger.error(error);
-  }
+    const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
+    const binsResponse = bins.map(async (bin) => {
+      const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
+      const { name, decimals, description, image } = await client
+        .market()
+        .clbTokenMeta(marketAddress, tokenId);
+      return {
+        liquidity: bin.liquidity,
+        freeLiquidity: bin.freeLiquidity,
+        removableRate: bin.removableRate,
+        clbTokenName: name,
+        clbTokenImage: image,
+        clbTokenDescription: description,
+        clbTokenDecimals: decimals,
+        clbTokenBalance: bin.clbBalance,
+        clbTokenValue: bin.clbValue,
+        clbTotalSupply: bin.clbTotalSupply,
+        binValue: bin.clbBalance.mul(bin.clbValue),
+        baseFeeRate: bin.tradingFeeRate,
+        tokenId: tokenId,
+      } satisfies OwnedBin;
+    });
+    const filteredBins = await filterIfFulfilled(binsResponse);
+    return {
+      tokenAddress: currentSelectedToken.address,
+      marketAddress,
+      bins: filteredBins,
+    };
+  });
 
   return {
-    ownedPools,
-    fetchOwnedPools,
+    ownedPool,
+    fetchOwnedPool,
   };
 };

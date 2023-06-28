@@ -19,7 +19,7 @@ export const marketsMock: Record<string, Market[]> = {
     {
       address: "0x0000000000000000000",
       description: "ETH/USD",
-      value: {
+      oracleValue: {
         price: BigNumber.from(1500),
         timestamp: BigNumber.from(1000000),
         version: BigNumber.from(10),
@@ -28,7 +28,7 @@ export const marketsMock: Record<string, Market[]> = {
     {
       address: "0x4445556667778889999",
       description: "AAVE/USD",
-      value: {
+      oracleValue: {
         price: BigNumber.from(500),
         timestamp: BigNumber.from(1000000),
         version: BigNumber.from(10),
@@ -37,7 +37,7 @@ export const marketsMock: Record<string, Market[]> = {
     {
       address: "0x1111111111111111111",
       description: "GALA/USD",
-      value: {
+      oracleValue: {
         price: BigNumber.from(200),
         timestamp: BigNumber.from(1000000),
         version: BigNumber.from(10),
@@ -48,7 +48,7 @@ export const marketsMock: Record<string, Market[]> = {
     {
       address: "0x9999999999999999999",
       description: "ETH/USD",
-      value: {
+      oracleValue: {
         price: BigNumber.from(750),
         timestamp: BigNumber.from(1000000),
         version: BigNumber.from(10),
@@ -57,7 +57,7 @@ export const marketsMock: Record<string, Market[]> = {
     {
       address: "0x8888888888888888888",
       description: "ARB/USD",
-      value: {
+      oracleValue: {
         price: BigNumber.from(500),
         timestamp: BigNumber.from(1000000),
         version: BigNumber.from(10),

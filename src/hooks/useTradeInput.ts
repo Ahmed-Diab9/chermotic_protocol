@@ -1,28 +1,21 @@
-import { ChangeEvent, useMemo, useReducer } from "react";
-import { useSigner } from "wagmi";
-import { AppError } from "~/typings/error";
-import { TradeInput, TradeInputAction } from "~/typings/trade";
-import { BigNumber } from "ethers";
-import {
-  bigNumberify,
-  expandDecimals,
-  numberBuffer,
-  trimLeftZero,
-} from "~/utils/number";
-import { isValid } from "~/utils/valid";
-import { Logger, errorLog } from "../utils/log";
-import { useChromaticClient } from "./useChromaticClient";
-import { useBinsBySelectedMarket } from "./useLiquidityPool";
-import { usePosition } from "./usePosition";
-import { useUsumBalances } from "./useBalances";
-import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from "~/configs/decimals";
-import { useAppSelector } from "../store";
-import { useOwnedLiquidityPoolByMarket } from "./useOwnedLiquidityPoolByMarket";
+import { ChangeEvent, useMemo, useReducer } from 'react';
+import { useSigner } from 'wagmi';
+import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
+import { AppError } from '~/typings/error';
+import { TradeInput, TradeInputAction } from '~/typings/trade';
+import { bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { useAppSelector } from '../store';
+import { Logger, errorLog } from '../utils/log';
+import { useChromaticClient } from './useChromaticClient';
+import { useLiquiditiyPool } from './useLiquidityPool';
+import { usePosition } from './usePosition';
+import { useUsumAccount } from './useUsumAccount';
 
-const logger = Logger("useTradeInput");
+const logger = Logger('useTradeInput');
 const initialTradeInput = {
-  direction: "long",
-  method: "collateral",
+  direction: 'long',
+  method: 'collateral',
   quantity: 0,
   collateral: 0,
   takeProfit: 10,
@@ -37,11 +30,10 @@ const trimDecimals = (num: number, decimals: number) => {
 };
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
-  if (action.type === "method") {
-    const nextMethod =
-      state.method === "collateral" ? "quantity" : "collateral";
+  if (action.type === 'method') {
+    const nextMethod = state.method === 'collateral' ? 'quantity' : 'collateral';
     switch (nextMethod) {
-      case "collateral": {
+      case 'collateral': {
         const { direction, collateral, leverage, takeProfit } = state;
         const defaultLeverage = 2;
         if (leverage === 0) {
@@ -71,7 +63,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         }
         break;
       }
-      case "quantity": {
+      case 'quantity': {
         const { direction, quantity, leverage, takeProfit, stopLoss } = state;
         state = {
           direction,
@@ -94,7 +86,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   const { method } = state;
 
   switch (type) {
-    case "collateral": {
+    case 'collateral': {
       const { collateral } = payload;
       state = {
         ...state,
@@ -105,7 +97,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       };
       break;
     }
-    case "quantity": {
+    case 'quantity': {
       const { quantity } = payload;
       state = {
         ...state,
@@ -116,9 +108,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       };
       break;
     }
-    case "takeProfit": {
+    case 'takeProfit': {
       const { takeProfit } = payload;
-      if (method === "collateral") {
+      if (method === 'collateral') {
         state = {
           ...state,
           takeProfit,
@@ -133,9 +125,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
-    case "stopLoss": {
+    case 'stopLoss': {
       const { stopLoss } = payload;
-      if (method === "collateral") {
+      if (method === 'collateral') {
         if (stopLoss === 0) {
           state = {
             ...state,
@@ -150,8 +142,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: stopLoss,
             leverage: 100 / stopLoss,
             quantity: state.collateral * (100 / stopLoss),
-            makerMargin:
-              state.collateral * (100 / stopLoss) * (state.takeProfit / 100),
+            makerMargin: state.collateral * (100 / stopLoss) * (state.takeProfit / 100),
           };
         }
       } else {
@@ -164,9 +155,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
-    case "leverage": {
+    case 'leverage': {
       const { leverage } = payload;
-      if (method === "collateral") {
+      if (method === 'collateral') {
         if (leverage === 0) {
           state = {
             ...state,
@@ -180,8 +171,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             ...state,
             leverage: leverage,
             quantity: state.collateral * leverage,
-            stopLoss:
-              Math.round((100 * numberBuffer()) / leverage) / numberBuffer(),
+            stopLoss: Math.round((100 * numberBuffer()) / leverage) / numberBuffer(),
             makerMargin: state.collateral * leverage * (state.takeProfit / 100),
           };
         }
@@ -193,7 +183,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
-    case "direction": {
+    case 'direction': {
       const { direction } = payload;
       state = {
         ...state,
@@ -219,36 +209,20 @@ export const useTradeInput = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  const { fetchUsumBalances } = useUsumBalances();
+  // const { fetchUsumBalances } = useUsumBalances();
+  const { fetchBalances } = useUsumAccount();
   const { client } = useChromaticClient();
-  const routerApi = client?.router();
+  const routerApi = useMemo(() => client?.router(), [client]);
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
-  // const {
-  //   pool,
-  //   liquidity: {
-  //     longTotalMaxLiquidity,
-  //     longTotalUnusedLiquidity,
-  //     shortTotalMaxLiquidity,
-  //     shortTotalUnusedLiquidity,
-  //   },
-  // } = useBinsBySelectedMarket();
-  const {ownedPool} = useOwnedLiquidityPoolByMarket({
-    marketAddress: market?.address
-  })
-  const {longTotalUnusedLiquidity, shortTotalUnusedLiquidity} = useMemo(() => {
-    let longTotalUnusedLiquidity = BigNumber.from(0)
-    let shortTotalUnusedLiquidity = BigNumber.from(0)
-    ownedPool?.bins.forEach((bin) => {
-      if (bin.baseFeeRate > 0) {
-        longTotalUnusedLiquidity = longTotalUnusedLiquidity.add(bin.freeLiquidity)
-      } else {
-        shortTotalUnusedLiquidity = shortTotalUnusedLiquidity.add(bin.freeLiquidity)
-      }
-    })
-    console.log("LIQUIDITIES", longTotalUnusedLiquidity, shortTotalUnusedLiquidity)
-    return {longTotalUnusedLiquidity, shortTotalUnusedLiquidity}
-  } ,[ownedPool])
-
+  const {
+    pool,
+    liquidity: {
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    },
+  } = useLiquiditiyPool();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -256,28 +230,22 @@ export const useTradeInput = () => {
     let makerMargin = bigNumberify(Math.round(state.makerMargin)).mul(
       expandDecimals(token?.decimals)
     );
-    if (
-      state.direction === "long" &&
-      makerMargin.gt(longTotalUnusedLiquidity)
-    ) {
+    if (state.direction === 'long' && makerMargin.gt(longTotalUnusedLiquidity)) {
       return [];
     }
-    if (
-      state.direction === "short" &&
-      makerMargin.gt(shortTotalUnusedLiquidity)
-    ) {
+    if (state.direction === 'short' && makerMargin.gt(shortTotalUnusedLiquidity)) {
       return [];
     }
     let tradeFee = bigNumberify(0);
     const bins =
-      ownedPool?.bins.filter((bin) => {
-        if (state.direction === "long") {
+      pool?.bins.filter((bin) => {
+        if (state.direction === 'long') {
           return bin.baseFeeRate > 0;
         } else {
           return bin.baseFeeRate < 0;
         }
       }) ?? [];
-    if (state.direction === "short") {
+    if (state.direction === 'short') {
       bins.reverse();
     }
     for (const token of bins) {
@@ -287,14 +255,10 @@ export const useTradeInput = () => {
       const { baseFeeRate, freeLiquidity } = token;
       const feeRate = Math.abs(baseFeeRate);
       if (makerMargin.gte(freeLiquidity)) {
-        tradeFee = tradeFee.add(
-          freeLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
-        );
+        tradeFee = tradeFee.add(freeLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL)));
         makerMargin = makerMargin.sub(freeLiquidity);
       } else {
-        tradeFee = tradeFee.add(
-          makerMargin.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL))
-        );
+        tradeFee = tradeFee.add(makerMargin.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL)));
         makerMargin = bigNumberify(0);
       }
     }
@@ -306,20 +270,17 @@ export const useTradeInput = () => {
     state.makerMargin,
     state.direction,
     token?.decimals,
-    ownedPool?.bins,
+    pool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
   ]);
 
   const onMethodToggle = () => {
-    dispatch({ type: "method" });
+    dispatch({ type: 'method' });
   };
 
   const onChange = (
-    key: keyof Omit<
-      TradeInput,
-      "direction" | "method" | "takerMargin" | "makerMargin"
-    >,
+    key: keyof Omit<TradeInput, 'direction' | 'method' | 'takerMargin' | 'makerMargin'>,
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
@@ -348,7 +309,7 @@ export const useTradeInput = () => {
   // TODO: handler function for using leverage slider
   const onLeverageChange = (value: number) => {
     dispatch({
-      type: "leverage",
+      type: 'leverage',
       payload: {
         leverage: value,
       },
@@ -357,7 +318,7 @@ export const useTradeInput = () => {
 
   const onTakeProfitChange = (value: number) => {
     dispatch({
-      type: "takeProfit",
+      type: 'takeProfit',
       payload: {
         takeProfit: value,
       },
@@ -366,7 +327,7 @@ export const useTradeInput = () => {
 
   const onStopLossChange = (value: number) => {
     dispatch({
-      type: "stopLoss",
+      type: 'stopLoss',
       payload: {
         stopLoss: value,
       },
@@ -376,24 +337,24 @@ export const useTradeInput = () => {
   const onDirectionToggle = () => {
     const { direction } = state;
     dispatch({
-      type: "direction",
+      type: 'direction',
       payload: {
-        direction: direction === "long" ? "short" : "long",
+        direction: direction === 'long' ? 'short' : 'long',
       },
     });
   };
 
   const onOpenPosition = async () => {
     if (!isValid(market)) {
-      errorLog("no markets selected");
+      errorLog('no markets selected');
       return;
     }
     if (!isValid(signer)) {
-      errorLog("no signers");
+      errorLog('no signers');
       return;
     }
     if (!isValid(routerApi)) {
-      errorLog("no routers");
+      errorLog('no routers');
       return;
     }
 
@@ -403,34 +364,21 @@ export const useTradeInput = () => {
     const leverage = bigNumberify(state.leverage * numberBuffer())
       .mul(expandDecimals(2))
       .div(numberBuffer());
-    const takerMargin = bigNumberify(
-      Math.floor(state.takerMargin * numberBuffer())
-    )
+    const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
       .mul(expandDecimals(token?.decimals))
       .div(numberBuffer());
-    const makerMargin = bigNumberify(
-      Math.floor(state.makerMargin * numberBuffer())
-    )
+    const makerMargin = bigNumberify(Math.floor(state.makerMargin * numberBuffer()))
       .mul(expandDecimals(token?.decimals))
       .div(numberBuffer());
 
-    if (
-      state.direction === "long" &&
-      longTotalUnusedLiquidity.lte(makerMargin)
-    ) {
-      errorLog("the long liquidity is too low");
-      return AppError.reject("the long liquidity is too low", "onOpenPosition");
+    if (state.direction === 'long' && longTotalUnusedLiquidity.lte(makerMargin)) {
+      errorLog('the long liquidity is too low');
+      return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
-    if (
-      state.direction === "short" &&
-      shortTotalUnusedLiquidity.lte(makerMargin)
-    ) {
-      logger.error("the short liquidity is too low", );
-      logger.error(shortTotalUnusedLiquidity)
-      return AppError.reject(
-        "the short liquidity is too low",
-        "onOpenPosition"
-      );
+    if (state.direction === 'short' && shortTotalUnusedLiquidity.lte(makerMargin)) {
+      logger.error('the short liquidity is too low');
+      logger.error(shortTotalUnusedLiquidity);
+      return AppError.reject('the short liquidity is too low', 'onOpenPosition');
     }
 
     // FIXME
@@ -438,14 +386,14 @@ export const useTradeInput = () => {
     const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
     await routerApi.openPosition(market.address, {
-      quantity: quantity.mul(state.direction === "long" ? 1 : -1),
+      quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
       tradingFee,
     });
     await fetchPositions();
-    await fetchUsumBalances();
+    await fetchBalances();
   };
 
   return {

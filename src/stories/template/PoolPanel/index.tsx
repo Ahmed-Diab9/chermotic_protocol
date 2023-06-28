@@ -1,11 +1,10 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { BigNumber } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { PERCENT_DECIMALS } from '~/configs/decimals';
+import { CLB_TOKEN_VALUE_DECIMALS, PERCENT_DECIMALS } from '~/configs/decimals';
 import { MULTI_TYPE } from '~/configs/pool';
-import { usePrevious } from '~/hooks/usePrevious';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -19,29 +18,30 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
-import { Bin, LiquidityPool } from '../../../typings/pools';
+import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
-import "~/stories/atom/Tabs/style.css";
+import '~/stories/atom/Tabs/style.css';
 import { Logger } from '~/utils/log';
-import { bigNumberify, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
+import {
+  bigNumberify,
+  expandDecimals,
+  formatDecimals,
+  formatFeeRate,
+  withComma,
+} from '../../../utils/number';
 import '../../atom/Tabs/style.css';
+import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
-import { TooltipGuide } from "../../atom/TooltipGuide";
 
 const logger = Logger('PoolPanel');
-
-
-
-
-
 
 interface PoolPanelProps {
   token?: Token;
   market?: Market;
   balances?: Record<string, BigNumber>;
-  pool?: LiquidityPool;
+  ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
   binAverage?: BigNumber;
@@ -49,7 +49,7 @@ interface PoolPanelProps {
   longTotalUnusedLiquidity?: BigNumber;
   shortTotalMaxLiquidity?: BigNumber;
   shortTotalUnusedLiquidity?: BigNumber;
-  selectedBins?: Bin[];
+  selectedBins?: OwnedBin[];
   isModalOpen?: boolean;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
@@ -69,11 +69,11 @@ interface PoolPanelProps {
   multiFreeLiquidity?: BigNumber;
   multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
-  onRemoveLiquidityBatch?: (bins: Bin[], type: MULTI_TYPE) => Promise<unknown>;
+  onRemoveLiquidityBatch?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 
   rangeChartRef?: any;
 
-  binValue?: any[];
+  clbTokenValue?: any[];
   liquidity?: any[];
 
   rates: [number, number];
@@ -84,7 +84,7 @@ interface PoolPanelProps {
   onMaxDecrease: () => void;
   onFullRange?: () => unknown;
 
-  tooltip: React.ReactElement<any>;
+  tooltip?: React.ReactElement<any>;
 }
 
 export const PoolPanel = (props: PoolPanelProps) => {
@@ -92,7 +92,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     token,
     market,
     balances,
-    pool,
+    ownedPool,
     amount,
     rates,
     binCount = 0,
@@ -121,7 +121,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMultiAmountChange,
     onRemoveLiquidityBatch,
 
-    binValue,
+    clbTokenValue: binValue,
     liquidity,
     onRangeChange,
     rangeChartRef,
@@ -134,78 +134,25 @@ export const PoolPanel = (props: PoolPanelProps) => {
   } = props;
 
   const dispatch = useAppDispatch();
-  const previousPools = usePrevious(pool?.bins, true);
-  // const binLength = (pool?.bins ?? []).filter((bin) =>
-  //   bin.clbTokenBalance.gt(0)
-  // ).length;
 
   const [minRate, maxRate] = rates;
 
-  /**
-   * @TODO
-   * CLB 토큰에 대한 유동성 가치, 총 유동성, 제거 가능한 유동성 구하는 로직입니다.
-   */
-  // const {
-  //   liquidityValue: totalLiquidityValue,
-  //   liquidity: totalLiquidity,
-  //   removableLiquidity: totalFreeLiquidity,
-  // } = useMemo(() => {
-  //   return (pool?.bins ?? []).reduce(
-  //     (record, bin) => {
-  //       const { clbTokenBalance, clbTokenValue, liquidity, freeLiquidity } =
-  //         bin;
-  //       const liquidityValue = clbTokenBalance
-  //         .mul(clbTokenValue)
-  //         .div(expandDecimals(BIN_VALUE_DECIMAL));
-  //       return {
-  //         balance: record.balance.add(clbTokenBalance),
-  //         liquidityValue: record.liquidityValue.add(liquidityValue),
-  //         liquidity: record.liquidity.add(liquidity),
-  //         removableLiquidity: record.removableLiquidity.add(freeLiquidity),
-  //       };
-  //     },
-  //     {
-  //       balance: bigNumberify(0),
-  //       liquidityValue: bigNumberify(0),
-  //       liquidity: bigNumberify(0),
-  //       removableLiquidity: bigNumberify(0),
-  //     }
-  //   );
-  // }, [pool?.bins]);
-
-  // const ownedLongLiquidityBins = useMemo(
-  //   () =>
-  //     pool?.bins?.filter(
-  //       (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0
-  //     ) || [],
-  //   [pool]
-  // );
-
-  // const ownedShortLiquidityBins = useMemo(
-  //   () =>
-  //     pool?.bins?.filter(
-  //       (bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0
-  //     ) || [],
-  //   [pool]
-  // );
-  // /**
-  //  * @TODO
-  //  * 제거 가능한 유동성 비율 평균 구하는 로직입니다.
-  //  */
-  // const totalRemovableRate = totalLiquidityValue.eq(0)
-  //   ? bigNumberify(0)
-  //   : totalFreeLiquidity
-  //       .mul(expandDecimals(FEE_RATE_DECIMAL))
-  //       .div(totalLiquidityValue);
+  logger.info('liquidity', liquidity);
   const totalLiquidity = bigNumberify(1);
   const totalFreeLiquidity = bigNumberify(1);
   const totalLiquidityValue = bigNumberify(1);
   const totalRemovableRate = BigNumber.from(0);
-  const ownedLongLiquidityBins = [] as any[];
-  const ownedShortLiquidityBins = [] as any[];
-  const binLength = 1;
+  const ownedLongLiquidityBins = useMemo(
+    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0) || [],
+    [ownedPool]
+  );
+  const ownedShortLiquidityBins = useMemo(
+    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0) || [],
+    [ownedPool]
+  );
+  const binLength = ownedPool?.bins.length || 0;
 
-  const onBinCheck = (bin: Bin) => {
+  const onBinCheck = (bin: OwnedBin) => {
     logger.info('Running check');
     const found = selectedBins.find((selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate);
     if (isValid(found)) {
@@ -215,11 +162,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }
   };
 
-  useEffect(() => {
-    logger.info('Rates', rates);
-  }, [rates]);
+  // useEffect(() => {
+  //   logger.info('Rates', rates);
+  // }, [rates]);
 
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
+
+  const settlementTokenBalance = useMemo(() => {
+    if (balances && token && balances[token.name])
+      return withComma(formatDecimals(balances[token.name], token.decimals, 0));
+    return '-';
+  }, [balances, token, balances?.[token?.name || 'default']]);
 
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
@@ -235,22 +188,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
                   <h4>Account Balance</h4>
-                  <p className="text-black/30">
-                    {balances &&
-                      token &&
-                      balances[token.name] &&
-                      withComma(formatDecimals(balances[token.name], token.decimals, 0))}{' '}
-                    {token?.name}
-                  </p>
+                  <p className="text-black/30">{`${settlementTokenBalance} ${token?.name}`}</p>
                 </div>
                 <OptionInput
                   value={amount}
-                  maxValue={
-                    balances &&
-                    token &&
-                    balances[token.name] &&
-                    formatDecimals(balances[token.name], token.decimals, 0)
-                  }
+                  maxValue={settlementTokenBalance}
                   onChange={(event) => onAmountChange?.(event.target.value)}
                   onButtonClick={(value) => onAmountChange?.(value)}
                 />
@@ -590,9 +532,9 @@ interface BinItemProps {
   index?: number;
   token?: Token;
   market?: Market;
-  bin?: Bin;
-  selectedBins?: Bin[];
-  onBinCheck?: (bin: Bin) => unknown;
+  bin?: OwnedBin;
+  selectedBins?: OwnedBin[];
+  onBinCheck?: (bin: OwnedBin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
@@ -625,9 +567,9 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              // if (bin?.clbTokenBalance.gt(0)) {
-              //   dispatch(poolsAction.onBinSelect(bin));
-              // }
+              if (bin?.clbTokenBalance.gt(0)) {
+                dispatch(poolsAction.onBinSelect(bin));
+              }
             }}
           />
           <Button className="ml-2" iconOnly={<ArrowTopRightOnSquareIcon />} />
@@ -640,32 +582,29 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
-            <p>
-              {/* {bin &&
-                formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)} */}
-            </p>
+            <p>{bin && formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            {/* <p>{bin?.removableRate}%</p> */}
+            <p>{bin?.removableRate}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            {/* <p>{bin && formatDecimals(bin.binValue, BIN_VALUE_DECIMAL, 2)}</p> */}
+            <p>{bin && bin.clbTokenValue}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {/* {bin &&
+              {bin &&
                 formatDecimals(
                   bin.clbTokenBalance
-                    .mul(bin.binValue)
-                    .div(expandDecimals(BIN_VALUE_DECIMAL)),
+                    .mul(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS)
+                    .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
                   token?.decimals,
                   2
-                )} */}
+                )}
             </p>
           </div>
         </div>

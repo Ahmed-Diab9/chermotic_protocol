@@ -1,19 +1,22 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
 import { useMemo, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
-import { FEE_RATES } from '../configs/feeRate';
 import { useAppSelector } from '../store';
-import { errorLog, infoLog } from '../utils/log';
+import { Logger, errorLog } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useWalletBalances } from './useBalances';
+import { useTokenBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
-import { useBinsBySelectedMarket } from './useLiquidityPool';
-import usePoolReceipt from './usePoolReceipt';
+// import { useBinsBySelectedMarket } from './useLiquidityPool';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
+import { BigNumber } from 'ethers';
+import { isNil } from 'ramda';
+import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
+import { useLiquiditiyPool } from './useLiquidityPool';
+import usePoolReceipt from './usePoolReceipt';
 
+const logger = Logger('usePoolInput');
 const usePoolInput = () => {
-  const { pool } = useBinsBySelectedMarket();
+  const { pool } = useLiquiditiyPool();
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
   const routerApi = client?.router();
@@ -22,7 +25,7 @@ const usePoolInput = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: signer } = useSigner();
   const { fetchReceipts } = usePoolReceipt();
-  const { fetchWalletBalances } = useWalletBalances();
+  const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
   const {
     data: { values: binFeeRates },
@@ -34,23 +37,28 @@ const usePoolInput = () => {
   const [amount, setAmount] = useState('');
 
   const rates = useMemo<[number, number]>(
-    () => [binFeeRates[0], binFeeRates[binFeeRates.length - 1]],
+    () => [binFeeRates[0], binFeeRates[binFeeRates!.length - 1]],
     [binFeeRates]
   );
 
-  const binAverage = useMemo(() => {
-    if (!isValid(pool)) {
+  const clbTokenAverage = useMemo(() => {
+    if (isNil(pool)) {
       return;
     }
+    logger.info('binFeeRates', binFeeRates);
+    const totalCLBTokenValue = binFeeRates.reduce((acc, bin) => {
+      const clbTokenValue = BigNumber.from(
+        Math.floor(
+          (pool.bins.find(({ baseFeeRate }) => {
+            return baseFeeRate / 100 === bin;
+          })?.clbTokenValue || 0) *
+            10 ** CLB_TOKEN_VALUE_DECIMALS
+        )
+      );
+      return acc.add(clbTokenValue);
+    }, BigNumber.from(0));
 
-    const binTotal = binFeeRates.reduce((acc, bin) => {
-      const binValue = pool.bins.find(({ baseFeeRate }) => {
-        return baseFeeRate / 100 === bin;
-      }).binValue;
-      return acc.add(binValue);
-    }, bigNumberify(0));
-
-    return binTotal.div(binFeeRates.length);
+    return binFeeRates.length ? totalCLBTokenValue.div(binFeeRates.length) : 0;
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
@@ -125,7 +133,7 @@ const usePoolInput = () => {
     amount,
     rates,
     binCount: binFeeRates.length,
-    binAverage,
+    binAverage: clbTokenAverage,
     isLoading,
     onAmountChange,
     onRangeChange,

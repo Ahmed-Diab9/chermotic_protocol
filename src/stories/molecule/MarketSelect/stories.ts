@@ -19,7 +19,7 @@ const markets = [
   {
     address: "0x0000000000000000000",
     description: "ETH/USD",
-    value: {
+    oracleValue: {
       price: BigNumber.from(1500),
       version: BigNumber.from(10),
       timestamp: BigNumber.from(100000),
@@ -28,7 +28,7 @@ const markets = [
   {
     address: "0x4445556667778889999",
     description: "AAVE/USD",
-    value: {
+    oracleValue: {
       price: BigNumber.from(1500),
       version: BigNumber.from(10),
       timestamp: BigNumber.from(100000),
@@ -37,7 +37,7 @@ const markets = [
   {
     address: "0x1111111111111111111",
     description: "GALA/USD",
-    value: {
+    oracleValue: {
       price: BigNumber.from(1500),
       version: BigNumber.from(10),
       timestamp: BigNumber.from(100000),

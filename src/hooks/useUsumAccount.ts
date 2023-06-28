@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
-import useSWR from 'swr';
-import { Logger, errorLog, infoLog } from '~/utils/log';
-import { isValid } from '~/utils/valid';
-import { ADDRESS_ZERO } from '~/utils/address';
-import { AppError } from '~/typings/error';
+import { Client, ChromaticAccount, TokenBalancesResult } from '@chromatic-protocol/sdk';
 import { ChromaticAccount__factory } from '@chromatic-protocol/sdk/contracts';
+import { BigNumber, ethers, utils } from 'ethers';
+import { useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
+import { useAccount, useSigner } from 'wagmi';
+import { CHAIN } from '~/constants/contracts';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -13,60 +12,75 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
 } from '~/typings/account';
-import { ethers } from 'ethers';
-import { CHAIN } from '~/constants/contracts';
+import { AppError } from '~/typings/error';
+import { ADDRESS_ZERO } from '~/utils/address';
+import { Logger } from '~/utils/log';
+import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { Client } from '@chromatic-protocol/sdk';
+import { fromPairs, isNil } from 'ramda';
+import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
-  const { data: signer } = useSigner();
+  // const { data: signer } = useSigner();
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
+  const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
-  const router = client?.router();
+  const accountApi = useMemo(() => client?.account(), [client]);
 
   const fetchKey = isValid(address) ? ['USUM_ACCOUNT', address] : undefined;
 
   const {
-    data: account,
+    data: accountAddress,
     error,
     isLoading,
   } = useSWR(fetchKey, async ([_, address]) => {
-    const signer = new ethers.providers.Web3Provider(window.ethereum as any).getSigner(address);
-    const innerClient = new Client(CHAIN, signer);
-    const router = innerClient.router();
-    try {
-      const address = await router.routerContract.getAccount();
-      logger.log('ADDRESS', address);
-
-      if (!address || address === ADDRESS_ZERO) {
-        return;
-      }
-      return ChromaticAccount__factory.connect(address, signer);
-    } catch (error) {
-      errorLog(error);
-    }
-  });
-  const isValidAccount =
-    isValid(account) && isValid(account.address) && account.address !== ADDRESS_ZERO;
-
-  useEffect(() => {
-    if (isLoading) {
-      return;
-    }
-    if (isValidAccount) {
-      infoLog('loading chromatic accounts');
-      setStatus(ACCOUNT_COMPLETED);
-      return;
-    } else {
+    if (isNil(accountApi)) return ethers.constants.AddressZero;
+    // const signer = new ethers.providers.Web3Provider(window.ethereum as any).getSigner(address);
+    const accountAddress = await accountApi.getAccount();
+    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
       setStatus(ACCOUNT_NONE);
     }
-  }, [isLoading, isValidAccount]);
+    setStatus(ACCOUNT_COMPLETED);
+    return accountAddress;
+  });
+
+  const {
+    data: balances,
+    error: balanceError,
+    mutate: fetchBalances,
+  } = useSWR(['ChromaticAccBal', address], async () => {
+    if (
+      isNil(tokens) ||
+      isNil(accountApi) ||
+      isNil(address) ||
+      address === ethers.constants.AddressZero
+    ) {
+      return {};
+    }
+    const result = await accountApi.balances(tokens.map((token) => token.address));
+    return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
+  });
+  // const isValidAccount =
+  //   isValid(account) && isValid(account.address) && account.address !== ADDRESS_ZERO;
+
+  // useEffect(() => {
+  //   // if (isLoading) {
+  //   //   return;
+  //   // }
+  //   if (isValidAccount) {
+  //     logger.info('loading chromatic accounts');
+  //     setStatus(ACCOUNT_COMPLETED);
+  //     return;
+  //   } else {
+  //     setStatus(ACCOUNT_NONE);
+  //   }
+  // }, [isLoading, isValidAccount]);
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined;
     if (status === ACCOUNT_COMPLETING) {
-      infoLog('account is now created');
+      logger.info('account is now created');
       timerId = setTimeout(() => {
         setStatus(ACCOUNT_COMPLETED);
       }, 3000);
@@ -78,34 +92,37 @@ export const useUsumAccount = () => {
   }, [status]);
 
   if (error) {
-    errorLog(error);
+    logger.error(error);
   }
 
   const createAccount = async () => {
-    if (!isValid(signer)) {
-      return AppError.reject('no signers', 'createAccount');
-    }
-    if (!isValid(router)) {
-      return AppError.reject('no routers', 'createAcccount');
+    // if (isNil(signer)) {
+    //   return AppError.reject('no signers', 'createAccount');
+    // }
+    // if (isNil(router)) {
+    //   return AppError.reject('no routers', 'createAcccount');
+    // }
+    if (isNil(accountApi)) {
+      return AppError.reject('no accountApi', 'createAcccount');
     }
 
     try {
-      infoLog('Creating accounts');
+      logger.info('Creating accounts');
       setStatus(ACCOUNT_CREATING);
-      const tx = await router.routerContract.createAccount();
+      await accountApi.createAccount();
 
-      tx.wait().then(() => {
-        setStatus(ACCOUNT_COMPLETING);
-        return undefined!;
-      });
-      return Promise.resolve();
+      // tx.wait().then(() => {
+      setStatus(ACCOUNT_COMPLETING);
+      //   return undefined!;
+      // });
+      // return Promise.resolve();
     } catch (error) {
       setStatus(ACCOUNT_NONE);
-      errorLog(error);
+      logger.error(error);
 
       return AppError.reject(error, 'createAccount');
     }
   };
 
-  return { account, status, createAccount, setStatus };
+  return { accountAddress, balances, status, createAccount, setStatus, fetchBalances };
 };

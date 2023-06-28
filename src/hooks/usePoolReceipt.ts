@@ -9,7 +9,6 @@ import { isValid } from "~/utils/valid";
 import { useAppSelector } from "../store";
 import { numberBuffer, percentage } from "../utils/number";
 import { useChromaticClient } from "./useChromaticClient";
-import { useLiquidityPool } from "./useLiquidityPool";
 import useOracleVersion from "./useOracleVersion";
 
 export type LpReceiptAction = "add" | "remove";
@@ -26,7 +25,7 @@ export interface LpReceipt {
 
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { fetchLiquidityPools } = useLiquidityPool();
+  // const { fetchLiquidityPools } = useLiquidityPool();
   const { client } = useChromaticClient();
   const lensApi = useMemo(() => client?.lens(), [client]);
   const router = useMemo(() => client?.router(), [client]);
@@ -62,7 +61,7 @@ const usePoolReceipt = () => {
       }
 
       const receipts = await lensApi
-        ?.getContract()
+        .contracts().lens
         .lpReceipts(marketAddress, address);
       if (!receipts) {
         return [];
@@ -133,7 +132,7 @@ const usePoolReceipt = () => {
       }
 
       await fetchReceipts();
-      await fetchLiquidityPools();
+      // await fetchLiquidityPools();
       return Promise.resolve();
     },
     [router, market]
@@ -176,7 +175,7 @@ const usePoolReceipt = () => {
       ]);
       response.filter(({ status }) => status === "rejected").map(console.error);
       await fetchReceipts();
-      await fetchLiquidityPools();
+      // await fetchLiquidityPools();
     } catch (error) {}
   }, [market, receipts, router]);
 

@@ -1,53 +1,55 @@
-import React, { useEffect } from 'react';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
+import useConnectOnce from '~/hooks/useConnectOnce';
+import { useFeeRate } from '~/hooks/useFeeRate';
+import {
+  useLiquiditiyPool,
+  useLiquidityPoolSummary
+} from '~/hooks/useLiquidityPool';
+import { useMarket } from '~/hooks/useMarket';
+import usePoolInput from '~/hooks/usePoolInput';
+import usePoolReceipt from '~/hooks/usePoolReceipt';
+import { useMultiPoolRemoveInput, usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
+import usePriceFeed from '~/hooks/usePriceFeed';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+import useTokenTransaction from '~/hooks/useTokenTransaction';
+import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useAppSelector } from '~/store';
+import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { PoolProgress } from '~/stories/molecule/PoolProgress';
+import { trimAddress } from '~/utils/address';
+import { copyText } from '~/utils/clipboard';
+import useChartData from '../../hooks/useChartData';
+import { useMarketLocal } from '../../hooks/useMarketLocal';
+import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
+import { useTokenLocal } from '../../hooks/useTokenLocal';
+import { Button } from '../../stories/atom/Button';
+import { Outlink } from '../../stories/atom/Outlink';
+import { LiquidityTooltip } from '../../stories/molecule/LiquidityTooltip';
+import { Footer } from '../../stories/template/Footer';
 import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
-import { PoolProgress } from '~/stories/molecule/PoolProgress';
-import { Footer } from '../../stories/template/Footer';
-import { Button } from '../../stories/atom/Button';
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
-import { Square2StackIcon } from '@heroicons/react/24/outline';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import './style.css';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import useConnectOnce from '~/hooks/useConnectOnce';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useTokenSelect, useSettlementToken } from '~/hooks/useSettlementToken';
-import { useMarket, useMarketSelect } from '~/hooks/useMarket';
-import { useUsumBalances, useUsumMargins, useWalletBalances } from '~/hooks/useBalances';
-import usePriceFeed from '~/hooks/usePriceFeed';
-import { useLiquidityPoolSummary, useBinsBySelectedMarket } from '~/hooks/useLiquidityPool';
-import useTokenTransaction from '~/hooks/useTokenTransaction';
-import { copyText } from '~/utils/clipboard';
-import { useFeeRate } from '~/hooks/useFeeRate';
-import { Link } from 'react-router-dom';
-import { trimAddress } from '~/utils/address';
-import usePoolInput from '~/hooks/usePoolInput';
-import { useAppSelector } from '~/store';
-import usePoolReceipt from '~/hooks/usePoolReceipt';
-import { useMultiPoolRemoveInput, usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
-import { useTokenLocal } from '../../hooks/useTokenLocal';
-import { useMarketLocal } from '../../hooks/useMarketLocal';
-import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
-import useChartData from '../../hooks/useChartData';
-import { Outlink } from '../../stories/atom/Outlink';
-import { LiquidityTooltip } from '../../stories/molecule/LiquidityTooltip';
 
 const Pool = () => {
   useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
-  const { account: usumAccount, createAccount: createUsumAccount, status } = useUsumAccount();
-  const { tokens } = useSettlementToken();
-  const { markets } = useMarket();
-  const onTokenSelect = useTokenSelect();
-  const selectedToken = useAppSelector((state) => state.token.selectedToken);
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
-  const onMarketSelect = useMarketSelect();
+  const {
+    accountAddress: chromaticAccountAddress,
+    createAccount: createUsumAccount,
+    status,
+    balances
+  } = useUsumAccount();
+  const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
+  const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
   const feeRate = useFeeRate();
-  const { walletBalances } = useWalletBalances();
-  const { usumBalances } = useUsumBalances();
+  const { useTokenBalances: walletBalances } = useTokenBalances();
+  // const { usumBalances } = useUsumBalances();
   const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -60,6 +62,7 @@ const Pool = () => {
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = usePoolReceipt();
+
   const {
     pool,
     liquidity: {
@@ -70,8 +73,8 @@ const Pool = () => {
     },
     onRemoveLiquidity,
     onRemoveLiquidityBatch,
-  } = useBinsBySelectedMarket();
-
+  } = useLiquiditiyPool();
+  const { ownedPool } = useOwnedLiquidityPool();
   const {
     amount,
     rates,
@@ -103,14 +106,14 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { liquidity, binValue, tooltip } = useChartData();
+  const { liquidity, clbTokenValue, tooltip } = useChartData();
 
-  const getTooltipByIndex = (index: number) => tooltip?.[index];
+  const getTooltipByIndex = (index: number) => tooltip[index];
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header
-        account={{ walletAddress, usumAddress: usumAccount?.address }}
+        account={{ walletAddress, usumAddress: chromaticAccountAddress }}
         tokens={tokens}
         markets={markets}
         priceFeed={priceFeed}
@@ -128,7 +131,7 @@ const Pool = () => {
       />
       <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
-          account={{ walletAddress, usumAddress: usumAccount?.address }}
+          account={{ walletAddress, usumAddress: chromaticAccountAddress }}
           status={status}
           tokens={tokens}
           markets={markets}
@@ -136,7 +139,7 @@ const Pool = () => {
           selectedMarket={selectedMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
-          usumBalances={usumBalances}
+          usumBalances={balances}
           amount={balanceAmount}
           totalBalance={totalBalance}
           availableMargin={totalMargin}
@@ -155,12 +158,12 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               balances={walletBalances}
-              pool={pool}
+              ownedPool={ownedPool}
               amount={amount}
               rates={rates}
               binCount={binCount}
               binAverage={binAverage}
-              binValue={binValue}
+              clbTokenValue={clbTokenValue}
               liquidity={liquidity}
               longTotalMaxLiquidity={longTotalMaxLiquidity}
               longTotalUnusedLiquidity={longTotalUnusedLiquidity}
@@ -192,6 +195,7 @@ const Pool = () => {
               multiFreeLiquidity={multiFreeLiquidity}
               multiRemovableRate={multiRemovableRate}
               onMultiAmountChange={onMultiAmountChange}
+              // ownedPool={ownedPool}
             />
             {/* bottom */}
             <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">
