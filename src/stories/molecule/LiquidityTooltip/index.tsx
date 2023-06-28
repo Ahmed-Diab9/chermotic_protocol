@@ -2,55 +2,78 @@ import { ChartTooltip } from '~/stories/atom/ChartTooltip';
 
 import { withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
+import { Liquidity } from '~/typings/chart';
 
 export type LiquidityTooltipData = {
-  feeRate: number;
-  liquidity: number;
-  utilization: number;
+  available: number;
+  utilized: number;
   selected?: boolean;
 };
 
-//  Pool 페이지 차트 tooltip 컴포넌트
 interface LiquidityTooltipProps {
-  getByIndex: (index: number) => LiquidityTooltipData;
-  index?: number;
-  selected?: boolean;
+  data?: Liquidity[];
 }
 
-export const LiquidityTooltip = ({
-  getByIndex,
-  index = 0,
-  selected
-}: LiquidityTooltipProps) => {
-  const { feeRate, liquidity, utilization } = getByIndex(index) ?? {};
+export const LiquidityTooltip = ({ data }: LiquidityTooltipProps) => {
+  if (!data) return null;
 
-  const feeRateString = isValid(feeRate) ? feeRate.toString() : '-';
-  const liquidityString = isValid(liquidity) ? withComma(liquidity) : '-';
-  const utilizedString = isValid(utilization) ? withComma(utilization) : '-';
-  const ratio = liquidity !== 0 ? (utilization / liquidity).toString() : '-';
+  function toString(num?: number) {
+    return isValid(num) ? withComma(num) : '-';
+  }
+
+  function getLiquidity(feeRate: number) {
+    const foundData = data!.find(({ key }) => key === feeRate);
+    const available = foundData?.value.find(({ label }) => label === 'available')?.amount ?? 0;
+    const utilized = foundData?.value.find(({ label }) => label === 'utilized')?.amount ?? 0;
+
+    const liquidity = utilized + available;
+    const ratio = liquidity !== 0 ? utilized / liquidity : undefined;
+
+    return {
+      liquidity: toString(liquidity),
+      utilized: toString(utilized),
+      ratio: toString(ratio),
+    };
+  }
+
+  function getMakerMargin(_feeRate: number) {
+    const makerMargin = undefined;
+    return toString(makerMargin);
+  }
 
   return (
     // todo: 아래 label을 chart 내 hover 영역 className에 "chart-tooltip-${label}" 형식으로 동일하게 적용해야함
-    <ChartTooltip
-      label={isValid(index) ? index + 1 : 0}
-      tip={
-        selected ? (
-          // 선택된 영역 마우스오버시, Maker Margin 정보 보임
-          <div className={``}>
-            <p className="font-semibold text-black">Maker Margin:</p>
-          </div>
-        ) : (
-          <div className={``}>
-            <p className="font-semibold text-black">Liquidity Bin {feeRateString}</p>
-            <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black/30">
-              <p>Liquidity: {liquidityString}</p>
-              <p>
-                Utilization: {utilizedString} ({ratio}%)
-              </p>
+    <>
+      <ChartTooltip
+        anchor={'.react_range__bar_stack.available, .react_range__bar_stack.utilized'}
+        render={({ content }) => {
+          const feeRate = +(content ?? 0);
+          const { liquidity, utilized, ratio } = getLiquidity(feeRate);
+          return (
+            <div>
+              <p className="font-semibold text-black">Liquidity Bin {feeRate}</p>
+              <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black/30">
+                <p>Liquidity: {liquidity}</p>
+                <p>
+                  Utilization: {utilized} ({ratio}%)
+                </p>
+              </div>
             </div>
-          </div>
-        )
-      }
-    />
+          );
+        }}
+      />
+      <ChartTooltip
+        anchor={'.react_range__bar_stack.selected'}
+        render={({ content }) => {
+          const feeRate = +(content ?? 0);
+          const makerMargin = getMakerMargin(feeRate);
+          return (
+            <div>
+              <p className="font-semibold text-black">Maker Margin: {makerMargin}</p>
+            </div>
+          );
+        }}
+      />
+    </>
   );
 };
