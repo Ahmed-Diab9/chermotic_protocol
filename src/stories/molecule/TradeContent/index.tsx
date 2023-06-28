@@ -1,26 +1,22 @@
-// import { Popover } from "@headlessui/react";
-// import { Avatar } from "~/atom/Avatar";
-// import { Button } from "~/atom/Button";
-// import { OptionInput } from "~/atom/OptionInput";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+
+import { Listbox, Switch } from "@headlessui/react";
 import { BigNumber } from "ethers";
-import { Listbox } from "@headlessui/react";
-import { Switch } from "@headlessui/react";
+import { ChangeEvent, useState } from "react";
 import "~/stories/atom/Select/style.css";
 import "~/stories/atom/Toggle/style.css";
 
-import { Input } from "~/stories/atom/Input";
 import { Button } from "~/stories/atom/Button";
-import { TooltipGuide } from "../../atom/TooltipGuide";
-import { Slider } from "~/stories/atom/Slider";
-import { LeverageOption } from "~/stories/atom/LeverageOption";
 import { FillUpChart } from "~/stories/atom/FillUpChart";
+import { Input } from "~/stories/atom/Input";
+import { LeverageOption } from "~/stories/atom/LeverageOption";
+import { Slider } from "~/stories/atom/Slider";
+import { TooltipGuide } from "../../atom/TooltipGuide";
 
+import { formatDecimals, withComma } from "~/utils/number";
 import { isValid } from "~/utils/valid";
-import { formatDecimals, numberBuffer, withComma } from "~/utils/number";
 
-import { TradeInput } from "~/typings/trade";
 import { Market, Price, Token } from "~/typings/market";
+import { TradeInput } from "~/typings/trade";
 
 interface TradeContentProps {
   direction?: "long" | "short";

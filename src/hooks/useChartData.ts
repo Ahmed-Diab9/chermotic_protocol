@@ -26,13 +26,14 @@ type Liquidity = {
 const logger = Logger('useChartData');
 const useChartData = () => {
   const { pool } = useLiquiditiyPool();
-  // logger.info('pool', pool);
+  logger.info('pool', pool);
   const fetchKey = useMemo(() => {
     if (!isNil(pool?.bins)) {
       return pool?.bins;
     }
   }, [pool, pool?.bins]);
   // logger.info('fetchKey', fetchKey);
+
   const { data, error } = useSWR(
     fetchKey,
     (bins) => {
@@ -95,8 +96,8 @@ const useChartData = () => {
 
   const [negativeLiquidity, positiveLiquidity] = useMemo(() => {
     if (!data?.liquidity) return [[], []];
-    const negative = data?.liquidity.slice(0, PIVOT_INDEX);
-    const positive = data?.liquidity.slice(PIVOT_INDEX);
+    const negative = data?.liquidity.filter((liq) => liq.key < 0);
+    const positive = data?.liquidity.filter((liq) => liq.key > 0);
     return [negative, positive];
   }, [data?.liquidity]);
 

@@ -58,7 +58,7 @@ const usePoolInput = () => {
       return acc.add(clbTokenValue);
     }, BigNumber.from(0));
 
-    return totalCLBTokenValue.div(binFeeRates.length);
+    return binFeeRates.length ? totalCLBTokenValue.div(binFeeRates.length) : 0;
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {

@@ -10,6 +10,8 @@ import {
   FILLUP_POS_TICKS,
 } from '~/configs/chart';
 import React from 'react';
+import { Logger } from '../../../utils/log';
+const logger = Logger('fillupChart');
 
 interface FillUpChartProps {
   negative?: boolean;
@@ -37,6 +39,7 @@ export function FillUpChart({
   const labels = isNegative ? FILLUP_NEG_TICKS : FILLUP_POS_TICKS;
 
   const SELECTABLE_LABEL = 'available';
+  logger.info('data', data);
 
   return (
     <div className="flex justify-center ">
