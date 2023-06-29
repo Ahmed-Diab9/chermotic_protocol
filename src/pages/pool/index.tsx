@@ -41,6 +41,9 @@ const Pool = () => {
     createAccount: createUsumAccount,
     status,
     balances,
+    totalBalance,
+    totalAsset,
+    totalMargin,
   } = useUsumAccount();
   const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
@@ -99,7 +102,7 @@ const Pool = () => {
     removableRate: multiRemovableRate,
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
-  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
+  // const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
 

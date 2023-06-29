@@ -70,6 +70,7 @@ const usePoolInput = () => {
   };
 
   const onAddLiquidity = async () => {
+    logger.info('add liq');
     if (!isValid(signer)) {
       errorLog('signer is invalid');
       return;
@@ -99,22 +100,10 @@ const usePoolInput = () => {
         return;
       }
       const dividedAmount = expandedAmount.div(binFeeRates.length);
-      // const erc20 = IERC20__factory.connect(token.address, signer);
-      // const allowance = await erc20.allowance(address, router.address);
-      // if (allowance.lte(expandedAmount)) {
-      //   await erc20.approve(router.address, expandedAmount);
-      // }
-
-      // const tx = await router.addLiquidityBatch(
-      //   marketAddress,
-      //   bins.map((bin) => +(bin * 10 ** 2).toFixed(0)),
-      //   Array(bins.length).fill(dividedAmount),
-      //   Array(bins.length).fill(address)
-      // );
 
       await routerApi.addLiquidities(
         marketAddress,
-        binFeeRates.map((feeRate) => ({
+        binFeeRates.map((feeRate: any) => ({
           feeRate: +(feeRate * 10 ** 2).toFixed(0),
           amount: dividedAmount,
         }))

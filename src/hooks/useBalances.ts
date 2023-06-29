@@ -73,7 +73,7 @@ export const useUsumMargins = () => {
   const { balances } = useUsumAccount();
   const { positions = [] } = usePosition();
   const token = useAppSelector((state) => state.token.selectedToken);
-
+  logger.info('useUsumMargin balance', balances)
   const [totalBalance, totalAsset] = useMemo(() => {
     if (!isValid(balances) || !isValid(token)) {
       return [bigNumberify(0), bigNumberify(0)];
@@ -88,7 +88,7 @@ export const useUsumMargins = () => {
     }
     return bigNumberify(0);
   }, [balances, token]);
-
+  logger.info('useUsumMargin balance', balances, totalMargin, token?.name)
   return {
     totalBalance,
     totalAsset,

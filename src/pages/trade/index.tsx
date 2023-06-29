@@ -41,6 +41,9 @@ const Trade = () => {
     createAccount: createUsumAccount,
     status,
     balances,
+    totalBalance,
+    totalAsset,
+    totalMargin,
   } = useUsumAccount();
   const { tokens, onTokenSelect } = useSettlementToken();
   const { markets, onMarketSelect } = useMarket();
@@ -87,7 +90,7 @@ const Trade = () => {
     },
   } = useLiquiditiyPool();
   const { oracleVersions } = useOracleVersion();
-  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
+  // const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   useEffect(() => {
     if (shortInput.direction === 'long') {

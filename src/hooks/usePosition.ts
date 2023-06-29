@@ -49,6 +49,9 @@ export const usePosition = () => {
       logger.error('NO MARKETS');
       return [];
     }
+    if (isNil(client?.signer)) {
+      return [];
+    }
     if (isNil(usumAccount)) {
       logger.error('NO USUMACCOUNT');
       return [];
@@ -67,12 +70,12 @@ export const usePosition = () => {
     // logger.log('PASSED ARGUMENTS');
     // logger.log('MARKETS', markets?.length);
     const positionsPromise = markets.map(async (market) => {
-      logger.info('market addr', market.address);
+
       const positionIds = await accountApi.getPositionIds(market.address);
-      logger.log('POSITION IDS', positionIds);
+      
       const marketContract = ChromaticMarket__factory.connect(market.address, provider);
       const oracleProviderAddress = await marketContract.oracleProvider();
-      logger.log('ORACLE PROVIDER', oracleProviderAddress);
+      
 
       const positions = await positionApi
         ?.getPositions(market.address, positionIds)
@@ -81,7 +84,7 @@ export const usePosition = () => {
           return [];
         });
 
-      logger.log('POSITIONS', positions?.length);
+      logger.log('POSITIONS', positions);
       return Promise.all(
         positions?.map(async (position) => {
           const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(

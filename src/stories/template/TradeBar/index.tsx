@@ -14,12 +14,14 @@ import '../../atom/Tabs/style.css';
 import { CLOSED, CLOSING, OPENED, OPENING } from '~/typings/position';
 import { Market, Token } from '~/typings/market';
 import { usePrevious } from '~/hooks/usePrevious';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish, logger } from 'ethers';
 import { createCurrentDate } from '~/utils/date';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { isValid } from '~/utils/valid';
 import { formatDecimals, withComma } from '../../../utils/number';
 import { Position } from '../../../hooks/usePosition';
+import { isNil } from 'ramda';
+import memoizeOne from 'memoize-one';
 
 interface TradeBarProps {
   token?: Token;
@@ -43,44 +45,55 @@ export const TradeBar = ({
   onPositionClose,
   onPositionClaim,
 }: TradeBarProps) => {
-  const previousPositions = usePrevious(positions, true);
+  // const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
   const oracleDecimals = 18;
-  const printNumber = useCallback((number: BigNumberish = 0, decimals: number = 18) => {
+  const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
+    if (isNil(number)) return '-';
     return withComma(formatDecimals(number, decimals, 2));
   }, []);
 
-  const priceTo = useCallback((position: Position, type: 'profit' | 'loss') => {
-    const propName = type === 'profit' ? 'toProfit' : 'toLoss';
-    const value = printNumber(position[propName], oracleDecimals);
-    const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
-    if (higherCondition) {
-      return '+' + value + '% higher';
-    } else {
-      return value + '% lower';
-    }
-  }, []);
-
-  const viewProp = useCallback((position: Position) => {
-    return {
-      qty: BigNumber.from(0).toString(),
-      collateral: BigNumber.from(0).toString(),
-    };
-  }, []);
-
-  const stopLoss = useCallback((position: Position) => {
-    return position.takerMargin.div(position.qty.abs()).toNumber();
-  }, []);
-
-  const takeProfit = useCallback((position: Position) => {
-    const qty = position.qty.abs();
-    if (qty.eq(0)) {
-      return 0;
-    } else {
-      return position.makerMargin.div(qty).toNumber();
-    }
-  }, []);
+  const calculatedData = useCallback(
+    (position: Position) => {
+      // return memoizeOne((position: Position) => {
+      function priceTo(type: 'profit' | 'loss') {
+        const propName = type === 'profit' ? 'toProfit' : 'toLoss';
+        const value = printNumber(position[propName], oracleDecimals);
+        const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
+        if (higherCondition) {
+          return '+' + value + '% higher';
+        } else {
+          return value + '% lower';
+        }
+      }
+      const { takerMargin, qty, leverage, makerMargin } = position;
+      const props = {
+        qty: printNumber(qty.abs(), 4),
+        collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
+        stopLoss: takerMargin.div(qty.abs()).toNumber(),
+        takeProfit: qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber(),
+        profitPriceTo: priceTo('profit'),
+        lossPriceTo: priceTo('loss'),
+        pnl: `${BigNumber.from(position.pnl).gt(0) ? '+' : ''}${printNumber(
+          position.pnl,
+          token?.decimals
+        )}`,
+        lossPrice: printNumber(
+          BigNumber.from(position.lossPrice || 0).abs(),
+          (token?.decimals || 0) + 6
+        ),
+        profitPrice: printNumber(
+          BigNumber.from(position.profitPrice || 0).abs(),
+          (token?.decimals || 0) + 6
+        ),
+      };
+      logger.info('view prop', props);
+      return props;
+      // });
+    },
+    [token]
+  );
 
   const direction = useCallback((position: Position) => {
     return position.qty.gt(0) ? 'Long' : 'Short';
@@ -140,7 +153,7 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               <div>
-                                {(positions ?? previousPositions ?? []).map((position) => {
+                                {(positions ?? []).map((position) => {
                                   return (
                                     <div key={position.id.toString()} className="border rounded-xl">
                                       <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
@@ -173,7 +186,7 @@ export const TradeBar = ({
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Price</p>$
-                                            {printNumber(position.openPrice || 0, 18)}
+                                            {printNumber(position.openPrice || 0, token?.decimals)}
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>
@@ -237,47 +250,49 @@ export const TradeBar = ({
                                             <TextRow
                                               label="Contract Qty"
                                               labelClass="text-black/50"
-                                              value={viewProp(position).qty}
+                                              value={calculatedData(position).qty}
                                             />
                                             <TextRow
                                               label="Collateral"
                                               labelClass="text-black/50"
-                                              value={viewProp(position).collateral}
+                                              value={calculatedData(position).collateral}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
                                             <TextRow
                                               label="Take Profit"
                                               labelClass="text-black/50"
-                                              value={`${takeProfit(position)}%`}
+                                              value={`${calculatedData(position).takeProfit}%`}
                                             />
                                             <TextRow
                                               label="Liq. Price"
                                               labelClass="text-black/50"
-                                              value={printNumber(position.profitPrice, 18)}
-                                              subValueLeft={`(${priceTo(position, 'profit')})`}
+                                              value={calculatedData(position).profitPrice}
+                                              subValueLeft={`(${
+                                                calculatedData(position).profitPriceTo
+                                              })`}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
                                             <TextRow
                                               label="Stop Loss"
                                               labelClass="text-black/50"
-                                              value={`${stopLoss(position)}%`}
+                                              value={`${calculatedData(position).stopLoss}%`}
                                             />
                                             <TextRow
                                               label="Liq. Price"
                                               labelClass="text-black/50"
-                                              value={printNumber(position.lossPrice, 18)}
-                                              subValueLeft={`(${priceTo(position, 'loss')})`}
+                                              value={calculatedData(position).lossPrice}
+                                              subValueLeft={`(${
+                                                calculatedData(position).lossPriceTo
+                                              })`}
                                             />
                                           </div>
                                           <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
                                             <TextRow
                                               label="PnL"
                                               labelClass="text-black/50"
-                                              value={`${
-                                                BigNumber.from(position.pnl).gt(0) ? '+' : ''
-                                              }${printNumber(position.pnl, token?.decimals)}%`}
+                                              value={`${calculatedData(position).pnl}%`}
                                             />
                                           </div>
                                         </div>

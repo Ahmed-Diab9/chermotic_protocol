@@ -159,10 +159,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }
   };
 
-  // useEffect(() => {
-  //   logger.info('Rates', rates);
-  // }, [rates]);
-
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
 
   const settlementTokenBalance = useMemo(() => {
