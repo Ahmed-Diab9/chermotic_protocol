@@ -20,7 +20,6 @@ interface FillUpChartProps {
   selectedAmount?: number;
   height: number;
   width?: number;
-  tooltip?: React.ReactElement<any>;
   selectableLabel?: string;
 }
 
@@ -31,7 +30,6 @@ export function FillUpChart({
   selectedAmount = 0,
   height,
   width,
-  tooltip,
 }: FillUpChartProps) {
   const isNegative = negative === true || positive === false;
 
@@ -52,7 +50,6 @@ export function FillUpChart({
         height={height}
         width={width}
         selectableLabel={SELECTABLE_LABEL}
-        tooltipComponent={tooltip}
       />
     </div>
   );

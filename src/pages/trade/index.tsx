@@ -7,7 +7,6 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
-import { LiquidityTooltip, LiquidityTooltipData } from '~/stories/molecule/LiquidityTooltip';
 import { Header } from '~/stories/template/Header';
 import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
@@ -31,6 +30,7 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { useAppSelector } from '~/store';
 
 import { copyText } from '~/utils/clipboard';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 
 const Trade = () => {
   useConnectOnce();
@@ -98,12 +98,11 @@ const Trade = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { positive, negative } = useChartData();
-
-  const getTooltipGetter = (tooltip: LiquidityTooltipData[]) => (index: number) => tooltip[index];
+  const { liquidity, positive, negative } = useChartData();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
+      <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
@@ -166,10 +165,8 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
-            shortLiquidityData={negative.liquidity}
-            longLiquidityData={positive.liquidity}
-            shortTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(negative.tooltip)} />}
-            longTooltip={<LiquidityTooltip getByIndex={getTooltipGetter(positive.tooltip)} />}
+            shortLiquidityData={negative}
+            longLiquidityData={positive}
             onOpenLongPosition={onOpenLongPosition}
             onOpenShortPosition={onOpenShortPosition}
           />

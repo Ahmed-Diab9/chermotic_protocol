@@ -1,30 +1,46 @@
 import './style.css';
-import { Tooltip } from 'react-tooltip';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
+import { Tooltip, ITooltip } from 'react-tooltip';
+import { shift, Middleware } from '@floating-ui/dom';
 
 interface ChartTooltipProps extends PropsWithChildren {
-  label: number | string;
-  tip: ReactNode;
+  anchor: string;
   className?: string;
   onClick?: () => unknown;
+  offset?: number;
+  render?: ITooltip['render'];
 }
 
 export const ChartTooltip = (props: ChartTooltipProps) => {
-  const { children, label, tip, className } = props;
+  const { anchor, className, offset = 12, render } = props;
+
+  const fixToBottom: Middleware = {
+    name: 'fixToBottom',
+    fn({ x, y, elements, platform }) {
+      if (!elements.reference) return { x, y };
+      const slot = platform.getOffsetParent?.(elements.reference);
+      const bottom = (slot?.getBoundingClientRect().bottom ?? 0) + window.scrollY;
+
+      return {
+        x,
+        y: bottom + offset,
+      };
+    },
+  };
 
   return (
     <div className="chart-tooltip">
-      {/* todo: className "chart-tooltip-${label}" 을 chart 내 hover 영역에 동일하게 적용해야함 */}
-      {/* 아래 span은 임시로 넣어둠 */}
-      <span className={`self-center chart-tooltip-${label} ${className}`}>bin</span>
       <Tooltip
-        anchorSelect={`.chart-tooltip-${label}`}
-        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px]`}
+        middlewares={[shift(), fixToBottom]}
+        anchorSelect={anchor}
+        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${
+          className ? className : ''
+        }`}
         place="bottom"
+        render={render}
+        positionStrategy="absolute"
         // isOpen
-      >
-        <div className="text-black">{tip}</div>
-      </Tooltip>
+      />
     </div>
   );
 };

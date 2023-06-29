@@ -1,3 +1,4 @@
+import './style.css';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
@@ -5,10 +6,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import {
-  useLiquiditiyPool,
-  useLiquidityPoolSummary
-} from '~/hooks/useLiquidityPool';
+import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import usePoolInput from '~/hooks/usePoolInput';
 import usePoolReceipt from '~/hooks/usePoolReceipt';
@@ -28,12 +26,11 @@ import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 import { useTokenLocal } from '../../hooks/useTokenLocal';
 import { Button } from '../../stories/atom/Button';
 import { Outlink } from '../../stories/atom/Outlink';
-import { LiquidityTooltip } from '../../stories/molecule/LiquidityTooltip';
 import { Footer } from '../../stories/template/Footer';
 import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
-import './style.css';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 
 const Pool = () => {
   useConnectOnce();
@@ -43,7 +40,7 @@ const Pool = () => {
     accountAddress: chromaticAccountAddress,
     createAccount: createUsumAccount,
     status,
-    balances
+    balances,
   } = useUsumAccount();
   const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
@@ -106,12 +103,11 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { liquidity, clbTokenValue, tooltip } = useChartData();
-
-  const getTooltipByIndex = (index: number) => tooltip[index];
+  const { liquidity, clbTokenValue } = useChartData();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
+      <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: chromaticAccountAddress }}
         tokens={tokens}
@@ -181,7 +177,6 @@ const Pool = () => {
               onMaxIncrease={move.right.next}
               onMaxDecrease={move.right.prev}
               onFullRange={move.full}
-              tooltip={<LiquidityTooltip getByIndex={getTooltipByIndex} />}
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}

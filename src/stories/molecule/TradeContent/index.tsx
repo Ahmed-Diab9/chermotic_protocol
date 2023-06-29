@@ -1,25 +1,25 @@
+import { Listbox, Switch } from '@headlessui/react';
+import { BigNumber } from 'ethers';
+import { ChangeEvent, useState } from 'react';
+import '~/stories/atom/Select/style.css';
+import '~/stories/atom/Toggle/style.css';
 
-import { Listbox, Switch } from "@headlessui/react";
-import { BigNumber } from "ethers";
-import { ChangeEvent, useState } from "react";
-import "~/stories/atom/Select/style.css";
-import "~/stories/atom/Toggle/style.css";
+import { Button } from '~/stories/atom/Button';
+import { FillUpChart } from '~/stories/atom/FillUpChart';
+import { Input } from '~/stories/atom/Input';
+import { LeverageOption } from '~/stories/atom/LeverageOption';
+import { Slider } from '~/stories/atom/Slider';
+import { TooltipGuide } from '../../atom/TooltipGuide';
 
-import { Button } from "~/stories/atom/Button";
-import { FillUpChart } from "~/stories/atom/FillUpChart";
-import { Input } from "~/stories/atom/Input";
-import { LeverageOption } from "~/stories/atom/LeverageOption";
-import { Slider } from "~/stories/atom/Slider";
-import { TooltipGuide } from "../../atom/TooltipGuide";
+import { formatDecimals, withComma } from '~/utils/number';
+import { isValid } from '~/utils/valid';
 
-import { formatDecimals, withComma } from "~/utils/number";
-import { isValid } from "~/utils/valid";
-
-import { Market, Price, Token } from "~/typings/market";
-import { TradeInput } from "~/typings/trade";
+import { Market, Price, Token } from '~/typings/market';
+import { TradeInput } from '~/typings/trade';
+import { Liquidity } from '~/typings/chart';
 
 interface TradeContentProps {
-  direction?: "long" | "short";
+  direction?: 'long' | 'short';
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
   token?: Token;
@@ -29,10 +29,9 @@ interface TradeContentProps {
   totalUnusedLiquidity?: BigNumber;
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
-  liquidityData?: any[];
-  tooltip?: React.ReactElement<any>;
+  liquidityData?: Liquidity[];
   onInputChange?: (
-    key: "quantity" | "collateral" | "takeProfit" | "stopLoss" | "leverage",
+    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: ChangeEvent<HTMLInputElement>
   ) => unknown;
   onMethodToggle?: () => unknown;
@@ -43,8 +42,8 @@ interface TradeContentProps {
 }
 
 const methodMap: Record<string, string> = {
-  collateral: "Collateral",
-  quantity: "Contract Qty",
+  collateral: 'Collateral',
+  quantity: 'Contract Qty',
 };
 
 export const TradeContent = ({ ...props }: TradeContentProps) => {
@@ -60,7 +59,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
-    tooltip,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -70,11 +68,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   } = props;
 
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  const [executionPrice, setPrice] = useState("");
-  const [[takeProfitPrice, stopLossPrice], setPrices] = useState([
-    undefined,
-    undefined,
-  ] as [string | undefined, string | undefined]);
+  const [executionPrice, setPrice] = useState('');
+  const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
+    string | undefined,
+    string | undefined
+  ]);
 
   // TODO
   // 청산가 계산이 올바른지 점검해야 합니다.
@@ -137,9 +135,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {balances &&
                 token &&
                 balances[token.name] &&
-                withComma(
-                  formatDecimals(balances[token.name], token.decimals, 2)
-                )}{" "}
+                withComma(formatDecimals(balances[token.name], token.decimals, 2))}{' '}
               {token?.name}
             </p>
           </div>
@@ -149,15 +145,15 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <Listbox
               value={input?.method}
               onChange={(value) => {
-                console.log("changed", value, input?.method);
+                console.log('changed', value, input?.method);
                 if (input?.method !== value) {
                   onMethodToggle?.();
                 }
               }}
             >
-              <Listbox.Button>{methodMap[input?.method ?? ""]}</Listbox.Button>
+              <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
               <Listbox.Options>
-                {["collateral", "quantity"].map((method) => (
+                {['collateral', 'quantity'].map((method) => (
                   <Listbox.Option key={method} value={method}>
                     {methodMap[method]}
                   </Listbox.Option>
@@ -201,10 +197,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   />
                 </div>
               ) : (
-                <LeverageOption
-                  value={input?.leverage}
-                  onClick={onLeverageChange}
-                />
+                <LeverageOption value={input?.leverage} onClick={onLeverageChange} />
               )}
             </div>
             <div className="w-2/5 max-w-[160px]">
@@ -212,7 +205,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 unit="x"
                 className="w-full"
                 value={input?.leverage}
-                onChange={(event) => onInputChange?.("leverage", event)}
+                onChange={(event) => onInputChange?.('leverage', event)}
               />
             </div>
           </div>
@@ -231,7 +224,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   className="w-full"
                   value={input?.takeProfit}
                   onChange={(event) => {
-                    onInputChange?.("takeProfit", event);
+                    onInputChange?.('takeProfit', event);
                   }}
                 />
               </div>
@@ -259,7 +252,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   className="w-full"
                   value={input?.stopLoss}
                   onChange={(event) => {
-                    onInputChange?.("stopLoss", event);
+                    onInputChange?.('stopLoss', event);
                   }}
                 />
               </div>
@@ -277,7 +270,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </div>
       </section>
       <section className="px-10 py-7">
-        <div className={`flex gap-3 ${direction === "long" && "justify-end"}`}>
+        <div className={`flex gap-3 ${direction === 'long' && 'justify-end'}`}>
           <p className="text-black/30">LP Volume</p>
           {totalMaxLiquidity && totalUnusedLiquidity && token && (
             <p>
@@ -285,18 +278,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
                 token.decimals + 6,
                 1
-              )}{" "}
+              )}{' '}
               M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
             </p>
           )}
         </div>
         {/* graph */}
         <FillUpChart
-          positive={direction === "long"}
+          positive={direction === 'long'}
           height={300}
           data={liquidityData}
           selectedAmount={input?.quantity}
-          tooltip={tooltip}
         />
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
@@ -318,9 +310,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black/30">
-                  (+{input?.takeProfit.toFixed(2)}%)
-                </span>
+                <span className="ml-2 text-black/30">(+{input?.takeProfit.toFixed(2)}%)</span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -329,9 +319,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black/30">
-                  (-{input?.stopLoss.toFixed(2)}%)
-                </span>
+                <span className="ml-2 text-black/30">(-{input?.stopLoss.toFixed(2)}%)</span>
               </p>
             </div>
           </div>
@@ -341,7 +329,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
               </div>
               <p>
-                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{" "}
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
                 {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
               </p>
             </div>
@@ -364,7 +352,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       </section>
       <div className="px-10">
         <Button
-          label={direction === "long" ? "Buy" : "Sell"}
+          label={direction === 'long' ? 'Buy' : 'Sell'}
           size="2xl"
           className="w-full"
           css="active"
@@ -381,7 +369,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 interface AmountSwitchProps {
   input?: TradeInput;
   onAmountChange?: (
-    key: "collateral" | "quantity",
+    key: 'collateral' | 'quantity',
     event: ChangeEvent<HTMLInputElement>
   ) => unknown;
 }
@@ -392,14 +380,14 @@ const AmountSwitch = (props: AmountSwitchProps) => {
     return <></>;
   }
   switch (input?.method) {
-    case "collateral": {
+    case 'collateral': {
       return (
         <div>
           <Input
             value={input.collateral.toString()}
             onChange={(event) => {
               event.preventDefault();
-              onAmountChange?.("collateral", event);
+              onAmountChange?.('collateral', event);
             }}
           />
           <div className="flex items-center justify-end mt-2">
@@ -414,14 +402,14 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         </div>
       );
     }
-    case "quantity": {
+    case 'quantity': {
       return (
         <div>
           <Input
             value={input?.quantity.toString()}
             onChange={(event) => {
               event.preventDefault();
-              onAmountChange("quantity", event);
+              onAmountChange('quantity', event);
             }}
           />
           <div className="flex items-center justify-end mt-2">
