@@ -78,13 +78,10 @@ export const TradeBar = ({
           position.pnl,
           token?.decimals
         )}`,
-        lossPrice: printNumber(
-          BigNumber.from(position.lossPrice || 0).abs(),
-          (token?.decimals || 0) + 6
-        ),
+        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), token?.decimals || 0),
         profitPrice: printNumber(
           BigNumber.from(position.profitPrice || 0).abs(),
-          (token?.decimals || 0) + 6
+          token?.decimals || 0
         ),
       };
       logger.info('view prop', props);
