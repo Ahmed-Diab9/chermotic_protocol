@@ -92,14 +92,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </p>
                 {selectedBin && (
                   <p>
-                    {formatDecimals(
-                      selectedBin.clbTokenBalance
-                        .mul(selectedBin.binValue)
-                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
-                      token?.decimals,
-                      2
-                    )}{' '}
-                    {token?.name}
+                    {formatDecimals(selectedBin.binValue, token?.decimals, 2)} {token?.name}
                   </p>
                 )}
               </div>
@@ -143,13 +136,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const liquidityValue = selectedBin.clbTokenBalance
-                        .mul(selectedBin.binValue)
-                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
-                      const nextAmount = liquidityValue?.lt(selectedBin.freeLiquidity)
-                        ? liquidityValue
+                      const nextAmount = selectedBin.binValue.lt(selectedBin.freeLiquidity)
+                        ? selectedBin.binValue
                         : selectedBin.freeLiquidity;
-                      onAmountChange?.(nextAmount.div(selectedBin.binValue).toNumber());
+                      onAmountChange?.(nextAmount.div(expandDecimals(token?.decimals)).toNumber());
                     }}
                   />
                 </div>
@@ -163,8 +153,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     {selectedBin &&
                       amount &&
                       formatDecimals(
-                        bigNumberify(amount).mul(selectedBin.binValue),
-                        CLB_TOKEN_VALUE_DECIMALS,
+                        bigNumberify(amount).mul(selectedBin.clbTokenValue),
+                        0,
                         2
                       )}{' '}
                     {token?.name})

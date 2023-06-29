@@ -1,5 +1,5 @@
-import { IOracleProvider } from "@chromatic-protocol/sdk/contracts";
-import { BigNumber } from "ethers";
+import { IOracleProvider } from '@chromatic-protocol/sdk/contracts';
+import { BigNumber } from 'ethers';
 import {
   bigNumberify,
   createAnnualSeconds,
@@ -7,15 +7,15 @@ import {
   formatDecimals,
   numberBuffer,
   withComma,
-} from "~/utils/number";
-import { isValid } from "~/utils/valid";
-import { OracleVersion } from "./oracleVersion";
-import { PERCENT_DECIMALS } from "~/configs/decimals";
+} from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { OracleVersion } from './oracleVersion';
+import { PERCENT_DECIMALS } from '~/configs/decimals';
 
-export const OPENING = "OPENING";
-export const OPENED = "OPENED";
-export const CLOSING = "CLOSING";
-export const CLOSED = "CLOSED";
+export const OPENING = 'opening';
+export const OPENED = 'opened';
+export const CLOSING = 'closing';
+export const CLOSED = 'closed';
 
 type Status = typeof OPENING | typeof OPENED | typeof CLOSING | typeof CLOSED;
 
@@ -40,7 +40,7 @@ interface BaseMargin {
 export class Position {
   id: BigNumber;
   marketAddress: string;
-  direction: "long" | "short";
+  direction: 'long' | 'short';
   qty: BigNumber;
   collateral: BigNumber;
   leverage: number;
@@ -77,7 +77,7 @@ export class Position {
     } = output;
     this.id = id;
     this.marketAddress = marketAddress;
-    this.direction = qty.gt(0) ? "long" : "short";
+    this.direction = qty.gt(0) ? 'long' : 'short';
     this.qty = qty;
     this.leverage = leverage;
     this.takerMargin = takerMargin;
@@ -121,9 +121,7 @@ export class Position {
 
     // 초당 토큰 수수료 = 포지션 증거금 * (연이율을 초 단위로 변환한 값)
     // FIXME @austin-builds 언더플로우 대처가 필요함
-    const tokenFeeBasis = this.collateral.mul(
-      feeRate.mul(expandDecimals(10)).div(annualSeconds)
-    );
+    const tokenFeeBasis = this.collateral.mul(feeRate.mul(expandDecimals(10)).div(annualSeconds));
 
     // 진입 시 증거금에서 초당 토큰 수수료에 진행률을 곱한 값
     this.collateral = this.collateral
@@ -153,10 +151,7 @@ export class Position {
     this.currentPrice = price;
   }
   updateOraclePrice(
-    output: [
-      IOracleProvider.OracleVersionStructOutput,
-      IOracleProvider.OracleVersionStructOutput
-    ]
+    output: [IOracleProvider.OracleVersionStructOutput, IOracleProvider.OracleVersionStructOutput]
   ) {
     this.openPrice = output[0].price;
     this.closePrice = output[1].price;
@@ -165,35 +160,26 @@ export class Position {
   // TODO
   // 청산가를 구하는 메소드
   updateLiquidationPrice(tokenDecimals?: number) {
-    const quantity = this.qty
-      .abs()
-      .div(expandDecimals(tokenDecimals))
-      .toNumber();
+    const quantity = this.qty.abs().div(expandDecimals(tokenDecimals)).toNumber();
     const takeProfit = this.makerMargin.div(this.qty.abs()).toNumber();
     const stopLoss = this.takerMargin.div(this.qty.abs()).toNumber();
     const addedProfit =
-      this.direction === "long"
+      this.direction === 'long'
         ? quantity + quantity * (takeProfit / 100)
         : quantity - quantity * (takeProfit / 100);
     const addedLoss =
-      this.direction === "long"
+      this.direction === 'long'
         ? quantity - quantity * (stopLoss / 100)
         : quantity + quantity * (stopLoss / 100);
 
     // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
     // 추가 소수점 5 적용
     const decimals = 5;
-    const profitRate = Math.round(
-      (addedProfit / quantity) * numberBuffer(decimals)
-    );
-    const lossRate = Math.round(
-      (addedLoss / quantity) * numberBuffer(decimals)
-    );
+    const profitRate = Math.round((addedProfit / quantity) * numberBuffer(decimals));
+    const lossRate = Math.round((addedLoss / quantity) * numberBuffer(decimals));
 
     // 현재 가격에 비율 곱하여 예상 청산가격을 계산
-    this.profitPrice = this.openPrice
-      .mul(profitRate)
-      .div(numberBuffer(decimals));
+    this.profitPrice = this.openPrice.mul(profitRate).div(numberBuffer(decimals));
     this.lossPrice = this.openPrice.mul(lossRate).div(numberBuffer(decimals));
   }
 
@@ -203,7 +189,7 @@ export class Position {
     this.profitAndLoss = this.currentPrice
       .sub(this.openPrice)
       .mul(expandDecimals(oracleDecimals + 2))
-      .mul(this.direction === "long" ? 1 : -1)
+      .mul(this.direction === 'long' ? 1 : -1)
       .div(this.openPrice);
   }
 
@@ -221,7 +207,7 @@ export class Position {
   }
 
   updateStatus(oracleVersion: number) {
-    const currentVersion = BigNumber.from(oracleVersion)
+    const currentVersion = BigNumber.from(oracleVersion);
     if (!isValid(currentVersion)) {
       return this.status;
     }
@@ -254,47 +240,36 @@ export class Position {
     return withComma(formatDecimals(this.collateral, tokenDecimals, 2));
   }
   renderProfitPrice(oracleDecimals: number) {
-    return "$" + withComma(formatDecimals(this.profitPrice, oracleDecimals, 2));
+    return '$' + withComma(formatDecimals(this.profitPrice, oracleDecimals, 2));
   }
   renderLossPrice(oracleDecimals: number) {
-    return "$" + withComma(formatDecimals(this.lossPrice, oracleDecimals, 2));
+    return '$' + withComma(formatDecimals(this.lossPrice, oracleDecimals, 2));
   }
   renderToProfit(oracleDecimals: number) {
-    const toProfit = withComma(
-      formatDecimals(this.toProfitPrice, oracleDecimals, 2)
-    );
-    if (this.direction === "long") {
-      return "+" + toProfit + "% higher";
+    const toProfit = withComma(formatDecimals(this.toProfitPrice, oracleDecimals, 2));
+    if (this.direction === 'long') {
+      return '+' + toProfit + '% higher';
     } else {
-      return toProfit + "% lower";
+      return toProfit + '% lower';
     }
   }
   renderToLoss(oracleDecimals: number) {
-    const toLoss = withComma(
-      formatDecimals(this.toLossPrice, oracleDecimals, 2)
-    );
-    if (this.direction === "long") {
-      return toLoss + "% lower";
+    const toLoss = withComma(formatDecimals(this.toLossPrice, oracleDecimals, 2));
+    if (this.direction === 'long') {
+      return toLoss + '% lower';
     } else {
-      return "+" + toLoss + "% higher";
+      return '+' + toLoss + '% higher';
     }
   }
   renderPNL(oracleDecimals: number) {
-    const prefix = this.profitAndLoss.gt(0) ? "+" : "";
-    return (
-      prefix +
-      withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) +
-      "%"
-    );
+    const prefix = this.profitAndLoss.gt(0) ? '+' : '';
+    return prefix + withComma(formatDecimals(this.profitAndLoss, oracleDecimals, 2)) + '%';
   }
   isClaimable(oracleVersions?: Record<string, OracleVersion>) {
     if (!isValid(oracleVersions)) {
       return false;
     }
     const isClosed = !this.closeVersion.eq(0);
-    return (
-      isClosed &&
-      this.closeVersion.lt(oracleVersions[this.marketAddress].version)
-    );
+    return isClosed && this.closeVersion.lt(oracleVersions[this.marketAddress].version);
   }
 }

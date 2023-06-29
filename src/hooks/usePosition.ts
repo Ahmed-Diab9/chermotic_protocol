@@ -15,6 +15,7 @@ import { AppError } from '~/typings/error';
 import { filterIfFulfilled } from '~/utils/array';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
+import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
@@ -30,6 +31,7 @@ export interface Position extends IChromaticPosition {
 }
 export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
+  const { currentSelectedToken } = useSettlementToken();
   const { markets } = useMarket();
   const provider = useProvider();
 
@@ -67,15 +69,17 @@ export const usePosition = () => {
     if (isNil(accountApi)) {
       return [];
     }
+    if (isNil(currentSelectedToken)) {
+      logger.error('No Settlemet tokens');
+      return [];
+    }
     // logger.log('PASSED ARGUMENTS');
     // logger.log('MARKETS', markets?.length);
     const positionsPromise = markets.map(async (market) => {
-
       const positionIds = await accountApi.getPositionIds(market.address);
-      
+
       const marketContract = ChromaticMarket__factory.connect(market.address, provider);
       const oracleProviderAddress = await marketContract.oracleProvider();
-      
 
       const positions = await positionApi
         ?.getPositions(market.address, positionIds)
@@ -90,7 +94,8 @@ export const usePosition = () => {
           const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
             market.address,
             position.openPrice,
-            position
+            position,
+            currentSelectedToken.decimals
           );
           const currentPrice = oracleVersions[market.address].price;
           const currentVersion = oracleVersions[market.address].version;
@@ -168,7 +173,8 @@ export const usePosition = () => {
   };
 
   const onClaimPosition = async (marketAddress: string, positionId: BigNumber) => {
-    if (isNil(client?.router())) {
+    const routerApi = client?.router();
+    if (isNil(routerApi)) {
       return AppError.reject('no router contractsd', 'onClaimPosition');
     }
     const position = positions?.find(
@@ -183,6 +189,7 @@ export const usePosition = () => {
 
       return AppError.reject('the selected position is not closed', 'onClaimPosition');
     }
+    await routerApi.claimPosition(marketAddress, positionId);
 
     await fetchPositions();
     await fetchBalances();

@@ -1,23 +1,19 @@
-import { Dialog } from "@headlessui/react";
-import { BigNumber } from "ethers";
-import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from "~/configs/decimals";
-import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from "~/configs/pool";
-import { useAppDispatch } from "~/store";
-import { poolsAction } from "~/store/reducer/pools";
-import { ModalCloseButton } from "~/stories/atom/ModalCloseButton";
-import { ScrollAni } from "~/stories/atom/ScrollAni";
-import { TooltipGuide } from "~/stories/atom/TooltipGuide";
-import { LiquidityItem } from "~/stories/molecule/LiquidityItem";
-import { Token } from "~/typings/market";
-import { Bin, OwnedBin } from "~/typings/pools";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  percentage,
-} from "~/utils/number";
-import { Button } from "../../atom/Button";
-import "../Modal/style.css";
+import { Dialog } from '@headlessui/react';
+import { BigNumber } from 'ethers';
+import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from '~/configs/pool';
+import { useAppDispatch } from '~/store';
+import { poolsAction } from '~/store/reducer/pools';
+import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { ScrollAni } from '~/stories/atom/ScrollAni';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
+import { Token } from '~/typings/market';
+import { Bin, OwnedBin } from '~/typings/pools';
+import { bigNumberify, expandDecimals, formatDecimals, percentage } from '~/utils/number';
+import { Button } from '../../atom/Button';
+import '../Modal/style.css';
+import { useMemo } from 'react';
 
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: OwnedBin[];
@@ -33,9 +29,7 @@ export interface RemoveMultiLiquidityModalProps {
   onRemoveLiquidity?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
-export const RemoveMultiLiquidityModal = (
-  props: RemoveMultiLiquidityModalProps
-) => {
+export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps) => {
   const {
     selectedBins = [],
     type = MULTI_ALL,
@@ -51,9 +45,7 @@ export const RemoveMultiLiquidityModal = (
   } = props;
   const dispatch = useAppDispatch();
   const binDecimals =
-    selectedBins.length > 0
-      ? selectedBins[0].clbTokenDecimals
-      : CLB_TOKEN_VALUE_DECIMALS;
+    selectedBins.length > 0 ? selectedBins[0].clbTokenDecimals : CLB_TOKEN_VALUE_DECIMALS;
 
   return (
     <Dialog
@@ -100,19 +92,9 @@ export const RemoveMultiLiquidityModal = (
                       key={bin.baseFeeRate}
                       token={token?.name}
                       name={bin.clbTokenDescription}
-                      qty={Number(
-                        formatDecimals(
-                          bin.clbTokenBalance,
-                          bin?.clbTokenDecimals,
-                          2
-                        )
-                      )}
-                      utilizedValue={Number(
-                        formatDecimals(utilized, bin?.clbTokenDecimals, 2)
-                      )}
-                      removableValue={Number(
-                        formatDecimals(removable, bin?.clbTokenDecimals, 2)
-                      )}
+                      qty={Number(formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2))}
+                      utilizedValue={Number(formatDecimals(utilized, bin?.clbTokenDecimals, 2))}
+                      removableValue={Number(formatDecimals(removable, bin?.clbTokenDecimals, 2))}
                     />
                   );
                 })}
@@ -151,8 +133,7 @@ export const RemoveMultiLiquidityModal = (
                   />
                 </p>
                 <p>
-                  {formatDecimals(liquidityValue, token?.decimals, 2)}{" "}
-                  {token?.name}
+                  {formatDecimals(liquidityValue, token?.decimals, 2)} {token?.name}
                 </p>
               </div>
               {/**
@@ -208,13 +189,7 @@ export const RemoveMultiLiquidityModal = (
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    (
-                    {amount &&
-                      formatDecimals(
-                        bigNumberify(amount).mul(clbTokenValue),
-                        CLB_TOKEN_VALUE_DECIMALS,
-                        2
-                      )}{" "}
+                    ({amount && formatDecimals(bigNumberify(amount).mul(clbTokenValue), 0, 2)}{' '}
                     {token?.name})
                   </p>
                   <p className="text-lg text-black/30">{amount} CLB</p>
@@ -241,12 +216,10 @@ export const RemoveMultiLiquidityModal = (
                 </div>
               </div>
               <p className="mt-4 text-xs text-black/30">
-                Holders can immediately withdraw liquidity by burning the CLB
-                tokens that is not collateralized by maker margin. Since the
-                withdrawal takes place in the next oracle round, the final
-                amount of removable liquidity is determined based on the
-                utilization status of the liquidity bins in the next oracle
-                round.
+                Holders can immediately withdraw liquidity by burning the CLB tokens that is not
+                collateralized by maker margin. Since the withdrawal takes place in the next oracle
+                round, the final amount of removable liquidity is determined based on the
+                utilization status of the liquidity bins in the next oracle round.
               </p>
             </article>
           </Dialog.Description>

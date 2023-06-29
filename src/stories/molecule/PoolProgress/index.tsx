@@ -39,6 +39,18 @@ export const PoolProgress = ({
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
+  const { mintings, burnings } = useMemo(() => {
+    let mintings = 0;
+    let burnings = 0;
+    (receipts ?? previousReceipts).forEach((receipt) => {
+      if (receipt.action === 'add') {
+        mintings++;
+      } else {
+        burnings++;
+      }
+    });
+    return { mintings, burnings };
+  }, [receipts]);
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
@@ -71,8 +83,8 @@ export const PoolProgress = ({
                 <div className="flex mt-5">
                   <Tab.List className="!justify-start !gap-7 px-5">
                     <Tab>All</Tab>
-                    <Tab>Minting (2)</Tab>
-                    <Tab>Burning (3)</Tab>
+                    <Tab>Minting ({mintings})</Tab>
+                    <Tab>Burning ({burnings})</Tab>
                   </Tab.List>
                   <Button
                     label="Claim All"
@@ -108,10 +120,14 @@ export const PoolProgress = ({
                     {isValid(market) &&
                       (receipts || previousReceipts).map((receipt) => (
                         <ProgressItem
-                          key={receipt.id.toString()}
+                          key={'all' + receipt.id.toString()}
                           // title={receipt.title}
                           status={receipt.status}
-                          detail="Waiting for the next oracle round"
+                          detail={
+                            receipt.status === 'standby'
+                              ? 'Waiting for the next oracle round'
+                              : receipt.amount.toString()
+                          }
                           name={receipt.name}
                           progressPercent={0}
                           action={receipt.action}
@@ -120,6 +136,54 @@ export const PoolProgress = ({
                           }}
                         />
                       ))}
+                  </Tab.Panel>
+                  {/* tab1 - minting */}
+                  <Tab.Panel className="flex flex-col gap-3 mb-5">
+                    {isValid(market) &&
+                      (receipts || previousReceipts)
+                        .filter((receipt) => receipt.action === 'add')
+                        .map((receipt) => (
+                          <ProgressItem
+                            key={'minting' + receipt.id.toString()}
+                            // title={receipt.title}
+                            status={receipt.status}
+                            detail={
+                              receipt.status === 'standby'
+                                ? 'Waiting for the next oracle round'
+                                : receipt.amount.toString()
+                            }
+                            name={receipt.name}
+                            progressPercent={0}
+                            action={receipt.action}
+                            onClick={() => {
+                              onReceiptClaim?.(receipt.id, receipt.action);
+                            }}
+                          />
+                        ))}
+                  </Tab.Panel>
+                  {/* tab1 - burning */}
+                  <Tab.Panel className="flex flex-col gap-3 mb-5">
+                    {isValid(market) &&
+                      (receipts || previousReceipts)
+                        .filter((receipt) => receipt.action === 'remove')
+                        .map((receipt) => (
+                          <ProgressItem
+                            key={'burning' + receipt.id.toString()}
+                            // title={receipt.title}
+                            status={receipt.status}
+                            detail={
+                              receipt.status === 'standby'
+                                ? 'Waiting for the next oracle round'
+                                : receipt.amount.toString()
+                            }
+                            name={receipt.name}
+                            progressPercent={0}
+                            action={receipt.action}
+                            onClick={() => {
+                              onReceiptClaim?.(receipt.id, receipt.action);
+                            }}
+                          />
+                        ))}
                   </Tab.Panel>
                   <div>
                     <TooltipGuide
@@ -234,7 +298,9 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="">
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="xs" />}
           </span>
-          <p className="">{detail}</p>
+          <p className="">
+            {detail} {token}
+          </p>
         </div>
       </div>
       {action === 'add' ? (

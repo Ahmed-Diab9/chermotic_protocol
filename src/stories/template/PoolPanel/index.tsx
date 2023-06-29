@@ -578,13 +578,13 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{bin?.removableRate}%</p>
+            <p>{bin?.removableRate.toFixed(2)}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>{bin && bin.clbTokenValue}</p>
+            <p>{bin && bin.clbTokenValue.toFixed(2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
@@ -592,7 +592,7 @@ const BinItem = (props: BinItemProps) => {
               {bin &&
                 formatDecimals(
                   bin.clbTokenBalance
-                    .mul(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS)
+                    .mul(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))
                     .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
                   token?.decimals,
                   2

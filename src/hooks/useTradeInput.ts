@@ -359,16 +359,16 @@ export const useTradeInput = () => {
     }
 
     const quantity = bigNumberify(state.quantity * numberBuffer())
-      .mul(expandDecimals(4))
+      .mul(expandDecimals(4)) // 10000
       .div(numberBuffer());
     const leverage = bigNumberify(state.leverage * numberBuffer())
-      .mul(expandDecimals(2))
+      .mul(expandDecimals(2)) // 100
       .div(numberBuffer());
     const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(token?.decimals)) // 10 ** 6
       .div(numberBuffer());
     const makerMargin = bigNumberify(Math.floor(state.makerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(token?.decimals)) // 10 ** 6
       .div(numberBuffer());
 
     if (state.direction === 'long' && longTotalUnusedLiquidity.lte(makerMargin)) {
