@@ -204,21 +204,21 @@ const ProgressItem = (props: ProgressItemProps) => {
         <h4 className="flex items-center gap-2 capitalize">
           {renderTitle}
           <span className="flex mr-1">
-            {status === "standby" ? (
+            {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/50 bg-gray/20" />
-            ) : status === "completed" ? (
+              <Tag label="standby" className="text-black/40 bg-gray/20" />
+            ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
               //   className="text-[#03C239] bg-[#23F85F]/10"
               // />
-              <Tag label="completed" className="text-black/50 bg-gray/20" />
+              <Tag label="completed" className="text-white bg-grayD" />
             ) : (
               // <Tag
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-black/50 bg-gray/20" />
+              <Tag label="in progress" className="text-grayD bg-gray/20" />
             )}
             <TooltipGuide
               outLink="#"
