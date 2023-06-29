@@ -12,7 +12,7 @@ import { Bin, LiquidityPool, LiquidityPoolSummary, OwnedBin } from '../typings/p
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useBalances';
+import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';

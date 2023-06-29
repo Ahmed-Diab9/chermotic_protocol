@@ -4,7 +4,7 @@ import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useBalances';
+import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 // import { useBinsBySelectedMarket } from './useLiquidityPool';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';

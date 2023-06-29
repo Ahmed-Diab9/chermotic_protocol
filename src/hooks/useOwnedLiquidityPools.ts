@@ -11,7 +11,7 @@ import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '../configs/pool';
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
-import { useTokenBalances } from './useBalances';
+import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';

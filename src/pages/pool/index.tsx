@@ -3,7 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
+import { useUsumMargins, useTokenBalances } from '~/hooks/useTokenBalance';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';

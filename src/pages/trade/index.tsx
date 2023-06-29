@@ -12,7 +12,7 @@ import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
-import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
+import { useUsumMargins, useTokenBalances } from '~/hooks/useTokenBalance';
 import useChartData from '~/hooks/useChartData';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
