@@ -58,6 +58,9 @@ const usePoolReceipt = () => {
     }
 
     const receipts = await lensApi.contracts().lens.lpReceipts(marketAddress, address);
+    // 330 CLB
+    // 330
+    // 330 * 10 ** 6 => 330
     if (!receipts) {
       return [];
     }
@@ -86,7 +89,7 @@ const usePoolReceipt = () => {
         } else if (action === 1) {
           if (receiptOracleVersion.gte(currentOracleVersion)) {
             status = 'in progress';
-          } else if (bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount)
+          } else if (bin.burningCLBTokenAmountRequested.eq(bin.burningCLBTokenAmount))
             status = 'completed';
           else {
             status = 'in progress';

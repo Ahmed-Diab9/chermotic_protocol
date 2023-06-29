@@ -21,7 +21,7 @@ export const useUsumAccount = () => {
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
   const { tokens, currentSelectedToken } = useSettlementToken();
   const { client } = useChromaticClient();
-  const accountApi = useMemo(() => client?.account(), [client]);
+  // const accountApi = useMemo(() => client?.account(), [client]);
 
   const fetchKey = isValid(address) ? ['USUM_ACCOUNT', address] : undefined;
 
@@ -29,22 +29,32 @@ export const useUsumAccount = () => {
     data: accountAddress,
     error,
     isLoading,
-  } = useSWR(fetchKey, async ([_, address]) => {
-    if (isNil(accountApi)) return ethers.constants.AddressZero;
-    // const signer = new ethers.providers.Web3Provider(window.ethereum as any).getSigner(address);
-    const accountAddress = await accountApi.getAccount();
-    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
-      setStatus(ACCOUNT_NONE);
+  } = useSWR(
+    fetchKey,
+    async ([_, address]) => {
+      const accountApi = client?.account();
+      if (isNil(accountApi)) {
+        return;
+      }
+      const accountAddress = await accountApi.getAccount();
+      if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+        setStatus(ACCOUNT_NONE);
+      } else {
+        setStatus(ACCOUNT_COMPLETED);
+        return accountAddress;
+      }
+    },
+    {
+      keepPreviousData: false,
     }
-    setStatus(ACCOUNT_COMPLETED);
-    return accountAddress;
-  });
+  );
 
   const {
     data: balances,
     error: balanceError,
     mutate: fetchBalances,
   } = useSWR(['ChromaticAccBal', address], async () => {
+    const accountApi = client?.account();
     if (
       isNil(tokens) ||
       isNil(accountApi) ||
@@ -76,6 +86,7 @@ export const useUsumAccount = () => {
   }
 
   const createAccount = async () => {
+    const accountApi = client?.account();
     if (isNil(accountApi)) {
       return AppError.reject('no accountApi', 'createAcccount');
     }

@@ -3,7 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useUsumMargins, useTokenBalances } from '~/hooks/useTokenBalance';
+import { useTokenBalances } from '~/hooks/useTokenBalance';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
@@ -31,6 +31,7 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { useMargins } from '~/hooks/useMargins';
 
 const Pool = () => {
   useConnectOnce();
@@ -41,9 +42,6 @@ const Pool = () => {
     createAccount: createUsumAccount,
     status,
     balances,
-    totalBalance,
-    totalAsset,
-    totalMargin,
   } = useUsumAccount();
   const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
@@ -105,6 +103,7 @@ const Pool = () => {
   // const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
+  const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   const { liquidity, clbTokenValue } = useChartData();
 

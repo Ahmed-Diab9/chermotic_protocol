@@ -68,32 +68,3 @@ export const useTokenBalances = () => {
   }
   return { useTokenBalances, fetchTokenBalances } as const;
 };
-
-
-//TOFO refactoring move somewhere
-export const useUsumMargins = () => {
-  const { balances } = useUsumAccount();
-  const { positions = [] } = usePosition();
-  const token = useAppSelector((state) => state.token.selectedToken);
-  logger.info('useUsumMargin balance', balances)
-  const [totalBalance, totalAsset] = useMemo(() => {
-    if (!isValid(balances) || !isValid(token)) {
-      return [bigNumberify(0), bigNumberify(0)];
-    }
-    const balance = balances[token.name];
-    return [balance, balance];
-  }, [balances, token, positions]);
-
-  const totalMargin = useMemo(() => {
-    if (isValid(balances) && isValid(token)) {
-      return balances[token.name];
-    }
-    return bigNumberify(0);
-  }, [balances, token]);
-  logger.info('useUsumMargin balance', balances, totalMargin, token?.name)
-  return {
-    totalBalance,
-    totalAsset,
-    totalMargin,
-  };
-};

@@ -58,7 +58,7 @@ export const usePosition = () => {
       logger.error('NO USUMACCOUNT');
       return [];
     }
-    if (isNil(oracleVersions)) {
+    if (isNil(oracleVersions) || Object.keys(oracleVersions).length <= 0) {
       logger.error('NO ORACLE VERSIONS');
       return [];
     }
@@ -112,7 +112,7 @@ export const usePosition = () => {
             lossPrice: lossCutPrice,
             profitPrice: profitStopPrice,
             pnl,
-            collateral: 0, //TODO ,
+            collateral: position.takerMargin, //TODO ,
             status: determinePositionStatus(position, currentVersion),
             toLoss: lossCutPrice.sub(currentPrice),
             toProfit: profitStopPrice.sub(currentPrice),
@@ -162,10 +162,7 @@ export const usePosition = () => {
       return AppError.reject('no positions', 'onClosePosition');
     }
     try {
-      await client?.router()?.closePosition(position.marketAddress, {
-        positionId: position.id,
-        marketAdddress: position.marketAddress,
-      });
+      await client?.router()?.closePosition(position.marketAddress, position.id);
 
       fetchPositions();
     } catch (error) {

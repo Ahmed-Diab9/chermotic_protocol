@@ -65,9 +65,6 @@ interface PoolPanelProps {
   multiAmount?: number;
   multiBalance?: BigNumber;
   multiClbTokenValue?: BigNumber;
-  multiLiquidityValue?: BigNumber;
-  multiFreeLiquidity?: BigNumber;
-  multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidityBatch?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 
@@ -107,9 +104,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiAmount,
     multiBalance,
     multiClbTokenValue,
-    multiLiquidityValue,
-    multiFreeLiquidity,
-    multiRemovableRate,
     isLoading,
     onAmountChange,
     onAddLiquidity,
@@ -507,10 +501,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
             type={multiType}
             amount={multiAmount}
             balance={multiBalance}
-            clbTokenValue={multiClbTokenValue}
-            liquidityValue={multiLiquidityValue}
-            freeLiquidity={multiFreeLiquidity}
-            removableRate={multiRemovableRate}
             onAmountChange={onMultiAmountChange}
             onRemoveLiquidity={onRemoveLiquidityBatch}
           />,

@@ -383,14 +383,14 @@ export const useTradeInput = () => {
 
     // FIXME
     // Trading Fee
-    const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
+    const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
     await routerApi.openPosition(market.address, {
       quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
-      tradingFee,
+      maxAllowableTradingFee,
     });
     await fetchPositions();
     await fetchBalances();

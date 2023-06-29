@@ -19,6 +19,7 @@ import { usePrevious } from '~/hooks/usePrevious';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import { useMemo } from 'react';
 import { Tooltip } from 'react-tooltip';
+import { formatDecimals } from '~/utils/number';
 
 interface PoolProgressProps {
   token?: Token;
@@ -126,7 +127,7 @@ export const PoolProgress = ({
                           detail={
                             receipt.status === 'standby'
                               ? 'Waiting for the next oracle round'
-                              : receipt.amount.toString()
+                              : formatDecimals(receipt.amount, token?.decimals, 2)
                           }
                           name={receipt.name}
                           progressPercent={0}
@@ -237,7 +238,7 @@ export const PoolProgress = ({
 interface ProgressItemProps {
   title?: string;
   status: LpReceipt['status'];
-  detail: string;
+  detail?: string;
   token?: string;
   name: string;
   progressPercent?: number;

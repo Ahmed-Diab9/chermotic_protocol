@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch } from '~/store';
@@ -10,21 +10,28 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { Bin, OwnedBin } from '~/typings/pools';
-import { bigNumberify, expandDecimals, formatDecimals, percentage } from '~/utils/number';
+import {
+  bigNumberify,
+  expandDecimals,
+  formatDecimals,
+  numberBuffer,
+  percentage,
+} from '~/utils/number';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
 import { useMemo } from 'react';
+import { Logger } from '~/utils/log';
 
+const logger = Logger('RemoveMultiLiquidityModal');
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: OwnedBin[];
   amount?: number;
   token?: Token;
   type?: MULTI_TYPE;
   balance?: BigNumber;
-  clbTokenValue?: BigNumber;
-  liquidityValue?: BigNumber;
-  freeLiquidity?: BigNumber;
-  removableRate?: BigNumber;
+  // liquidityValue?: BigNumber;
+  // freeLiquidity?: BigNumber;
+  // removableRate?: BigNumber;
   onAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidity?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 }
@@ -36,16 +43,60 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     token,
     amount = 0,
     balance = bigNumberify(0),
-    clbTokenValue = bigNumberify(0),
-    liquidityValue = bigNumberify(0),
-    freeLiquidity = bigNumberify(0),
-    removableRate = bigNumberify(0),
+    // liquidityValue = bigNumberify(0),
+    // freeLiquidity = bigNumberify(0),
+    // removableRate = bigNumberify(0),
     onAmountChange,
     onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
-  const binDecimals =
-    selectedBins.length > 0 ? selectedBins[0].clbTokenDecimals : CLB_TOKEN_VALUE_DECIMALS;
+  const convertedAmount = useMemo(() => {
+    if (type === MULTI_ALL) {
+      return selectedBins.reduce((sum, current) => {
+        sum = sum.add(
+          current.clbTokenBalance
+            .mul(Math.round(current.clbTokenValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
+            .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS))
+        );
+        return sum;
+      }, BigNumber.from(0));
+    } else {
+      return selectedBins.reduce((sum, current) => {
+        sum = sum.add(
+          current.freeLiquidity.gt(current.binValue) ? current.binValue : current.freeLiquidity
+        );
+        return sum;
+      }, BigNumber.from(0));
+    }
+  }, [type, selectedBins]);
+
+  const calculatedLiquidities = useMemo(() => {
+    logger.info('selected bin length', selectedBins.length);
+
+    const totalLiquidityBalance = selectedBins
+      .map((bin) => bin.liquidity)
+      .reduce((b, curr) => b.add(curr), BigNumber.from(0));
+    const totalLiquidityValue = selectedBins.reduce((sum, current) => {
+      return sum.add(current.binValue);
+    }, BigNumber.from(0));
+    const totalRemovableLiquidity = selectedBins
+      .map((bin) => {
+        console.log('RemovableRate', bin.removableRate);
+        return bin.clbTokenBalance
+          .mul(Math.round(bin.removableRate * 10 ** 10))
+          .div(expandDecimals(10))
+          .div(expandDecimals(2));
+      })
+      .reduce((removableBalance, curr) => removableBalance.add(curr), BigNumber.from(0));
+    return {
+      totalLiquidity: totalLiquidityBalance,
+      totalRemovableLiquidity,
+      totalLiquidityValue,
+      avgRemovableRate: ethers.utils.formatUnits(totalRemovableLiquidity.div(balance), 8),
+    };
+  }, [type, selectedBins]);
+
+  console.log(amount);
 
   return (
     <Dialog
@@ -118,7 +169,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                     tip="The sum of the quantity of the above liquidity tokens (CLB)."
                   />
                 </p>
-                <p>{formatDecimals(balance, binDecimals, 2)} CLB</p>
+                <p>{formatDecimals(balance, token?.decimals, 2)} CLB</p>
               </div>
               {/**
                * @TODO
@@ -133,7 +184,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </p>
                 <p>
-                  {formatDecimals(liquidityValue, token?.decimals, 2)} {token?.name}
+                  {formatDecimals(calculatedLiquidities.totalLiquidityValue, token?.decimals, 2)}{' '}
+                  {token?.name}
                 </p>
               </div>
               {/**
@@ -150,13 +202,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </p>
                 <p>
-                  {formatDecimals(freeLiquidity, token?.decimals, 2)} CLB
+                  {formatDecimals(
+                    calculatedLiquidities.totalRemovableLiquidity,
+                    token?.decimals,
+                    2
+                  )}{' '}
+                  CLB
                   <span className="ml-1 text-black/30">
-                    {/**
-                     * @TODO
-                     * 평균 제거 가능한 비율
-                     */}
-                    ({formatDecimals(removableRate, 2, 2)}%)
+                    {`${calculatedLiquidities.avgRemovableRate}%`}
                   </span>
                 </p>
               </div>
@@ -189,8 +242,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    ({amount && formatDecimals(bigNumberify(amount).mul(clbTokenValue), 0, 2)}{' '}
-                    {token?.name})
+                    {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name}
                   </p>
                   <p className="text-lg text-black/30">{amount} CLB</p>
                   {/* <Input
