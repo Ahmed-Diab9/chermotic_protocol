@@ -95,9 +95,6 @@ const Pool = () => {
     type: multiType,
     amount: multiAmount,
     clbTokenBalance: multiClbTokenBalance,
-    liquidityValue: multiLiquidityValue,
-    removableLiquidity: multiFreeLiquidity,
-    removableRate: multiRemovableRate,
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
   // const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
@@ -188,9 +185,6 @@ const Pool = () => {
               multiType={multiType}
               multiAmount={multiAmount}
               multiBalance={multiClbTokenBalance}
-              multiLiquidityValue={multiLiquidityValue}
-              multiFreeLiquidity={multiFreeLiquidity}
-              multiRemovableRate={multiRemovableRate}
               onMultiAmountChange={onMultiAmountChange}
               // ownedPool={ownedPool}
             />
