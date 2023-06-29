@@ -131,7 +131,7 @@ export const usePosition = () => {
       if (!position.closeVersion.eq(0) && currentOracleVersion.gt(position.closeVersion)) {
         return 'closed';
       }
-      return 'opening';
+      return 'opened';
     },
     []
   );
