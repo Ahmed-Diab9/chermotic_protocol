@@ -46,80 +46,89 @@ export const usePosition = () => {
     data: positions,
     error,
     mutate: fetchPositions,
-  } = useSWR(['POSITIONS', usumAccount, markets, JSON.stringify(oracleVersions)], async () => {
-    if (isNil(markets)) {
-      logger.error('NO MARKETS');
-      return [];
-    }
-    if (isNil(client?.signer)) {
-      return [];
-    }
-    if (isNil(usumAccount)) {
-      logger.error('NO USUMACCOUNT');
-      return [];
-    }
-    if (isNil(oracleVersions)) {
-      logger.error('NO ORACLE VERSIONS');
-      return [];
-    }
-    if (isNil(positionApi)) {
-      logger.error('NO POSITION APIS');
-      return [];
-    }
-    if (isNil(accountApi)) {
-      return [];
-    }
-    if (isNil(currentSelectedToken)) {
-      logger.error('No Settlemet tokens');
-      return [];
-    }
-    // logger.log('PASSED ARGUMENTS');
-    // logger.log('MARKETS', markets?.length);
-    const positionsPromise = markets.map(async (market) => {
-      const positionIds = await accountApi.getPositionIds(market.address);
+  } = useSWR(
+    ['POSITIONS', usumAccount, markets, JSON.stringify(oracleVersions)],
+    async () => {
+      if (isNil(markets)) {
+        logger.error('NO MARKETS');
+        return [];
+      }
+      if (isNil(client?.signer)) {
+        return [];
+      }
+      if (isNil(usumAccount)) {
+        logger.error('NO USUMACCOUNT');
+        return [];
+      }
+      if (isNil(oracleVersions)) {
+        logger.error('NO ORACLE VERSIONS');
+        return [];
+      }
+      if (isNil(positionApi)) {
+        logger.error('NO POSITION APIS');
+        return [];
+      }
+      if (isNil(accountApi)) {
+        return [];
+      }
+      if (isNil(currentSelectedToken)) {
+        logger.error('No Settlemet tokens');
+        return [];
+      }
+      // logger.log('PASSED ARGUMENTS');
+      // logger.log('MARKETS', markets?.length);
+      const positionsPromise = markets.map(async (market) => {
+        const positionIds = await accountApi.getPositionIds(market.address);
 
-      const marketContract = ChromaticMarket__factory.connect(market.address, provider);
-      const oracleProviderAddress = await marketContract.oracleProvider();
+        const marketContract = ChromaticMarket__factory.connect(market.address, provider);
+        const oracleProviderAddress = await marketContract.oracleProvider();
 
-      const positions = await positionApi
-        ?.getPositions(market.address, positionIds)
-        .catch((err) => {
-          logger.error(err);
-          return [];
-        });
+        const positions = await positionApi
+          ?.getPositions(market.address, positionIds)
+          .catch((err) => {
+            logger.error(err);
+            return [];
+          });
 
-      logger.log('POSITIONS', positions);
-      return Promise.all(
-        positions?.map(async (position) => {
-          const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
-            market.address,
-            position.openPrice,
-            position,
-            currentSelectedToken.decimals
-          );
-          const currentPrice = oracleVersions[market.address].price;
-          const currentVersion = oracleVersions[market.address].version;
-          const pnl = position.openPrice
-            ? await positionApi.getPnl(market.address, position.openPrice, currentPrice, position)
-            : 0;
-          logger.info('pnl', pnl);
-          return {
-            ...position,
-            marketAddress: market.address,
-            lossPrice: lossCutPrice,
-            profitPrice: profitStopPrice,
-            pnl,
-            collateral: 0, //TODO ,
-            status: determinePositionStatus(position, currentVersion),
-            toLoss: lossCutPrice.sub(currentPrice),
-            toProfit: profitStopPrice.sub(currentPrice),
-          } satisfies Position;
-        })
-      );
-    });
-    const positions = await filterIfFulfilled(positionsPromise);
-    return positions.flat(1);
-  });
+        logger.log('POSITIONS', positions);
+        return Promise.all(
+          positions?.map(async (position) => {
+            const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
+              market.address,
+              position.openPrice,
+              position,
+              currentSelectedToken.decimals
+            );
+            const currentPrice = oracleVersions[market.address].price;
+            const currentVersion = oracleVersions[market.address].version;
+            const targetPrice =
+              position.closePrice && !position.closePrice.isZero()
+                ? position.closePrice
+                : currentPrice;
+            const pnl = position.openPrice
+              ? await positionApi.getPnl(market.address, position.openPrice, targetPrice, position)
+              : 0;
+            return {
+              ...position,
+              marketAddress: market.address,
+              lossPrice: lossCutPrice,
+              profitPrice: profitStopPrice,
+              pnl,
+              collateral: 0, //TODO ,
+              status: determinePositionStatus(position, currentVersion),
+              toLoss: lossCutPrice.sub(currentPrice),
+              toProfit: profitStopPrice.sub(currentPrice),
+            } satisfies Position;
+          })
+        );
+      });
+      const positions = await filterIfFulfilled(positionsPromise);
+      return positions.flat(1);
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
   const determinePositionStatus = useCallback(
     (position: IChromaticPosition, currentOracleVersion: BigNumber) => {
       if (currentOracleVersion.eq(position.openVersion)) {

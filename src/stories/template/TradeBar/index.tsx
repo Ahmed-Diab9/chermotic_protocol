@@ -14,7 +14,7 @@ import '../../atom/Tabs/style.css';
 import { CLOSED, CLOSING, OPENED, OPENING } from '~/typings/position';
 import { Market, Token } from '~/typings/market';
 import { usePrevious } from '~/hooks/usePrevious';
-import { BigNumber, BigNumberish, logger } from 'ethers';
+import { BigNumber, BigNumberish, ethers, logger } from 'ethers';
 import { createCurrentDate } from '~/utils/date';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { isValid } from '~/utils/valid';
@@ -22,6 +22,7 @@ import { formatDecimals, withComma } from '../../../utils/number';
 import { Position } from '../../../hooks/usePosition';
 import { isNil } from 'ramda';
 import memoizeOne from 'memoize-one';
+import { PNL_RATE_DECIMALS as PNL_RATE_DECIMALS } from '../../../configs/decimals';
 
 interface TradeBarProps {
   token?: Token;
@@ -67,6 +68,9 @@ export const TradeBar = ({
         }
       }
       const { takerMargin, qty, leverage, makerMargin } = position;
+      const pnlPercentage = BigNumber.from(position.pnl)
+        .mul(10 ** PNL_RATE_DECIMALS)
+        .div(BigNumber.from(position.takerMargin));
       const props = {
         qty: printNumber(qty.abs(), 4),
         collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
@@ -74,10 +78,7 @@ export const TradeBar = ({
         takeProfit: qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber(),
         profitPriceTo: priceTo('profit'),
         lossPriceTo: priceTo('loss'),
-        pnl: `${BigNumber.from(position.pnl).gt(0) ? '+' : ''}${printNumber(
-          position.pnl,
-          token?.decimals
-        )}`,
+        pnl: printNumber(pnlPercentage, 2),
         lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), token?.decimals || 0),
         profitPrice: printNumber(
           BigNumber.from(position.profitPrice || 0).abs(),
@@ -88,13 +89,6 @@ export const TradeBar = ({
       return props;
     });
   }, [token]);
-
-  // const calculatedData = useCallback(
-  //   (position: Position) => {
-  //     return memoizeFn(position);
-  //   },
-  //   [token]
-  // );
 
   const direction = useCallback((position: Position) => {
     return position.qty.gt(0) ? 'Long' : 'Short';
