@@ -1,24 +1,24 @@
-import { Thumbnail } from "~/stories/atom/Thumbnail";
-import { Avatar } from "~/stories/atom/Avatar";
-import { Tag } from "~/stories/atom/Tag";
-import { TooltipGuide } from "~/stories/atom/TooltipGuide";
-import { Button } from "~/stories/atom/Button";
-import { Progress } from "~/stories/atom/Progress";
-import { Loading } from "~/stories/atom/Loading";
-import { Tab } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Guide } from "~/stories/atom/Guide";
-import { Disclosure } from "@headlessui/react";
-import "../../atom/Tabs/style.css";
-import { BigNumber } from "ethers";
+import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Tag } from '~/stories/atom/Tag';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { Button } from '~/stories/atom/Button';
+import { Progress } from '~/stories/atom/Progress';
+import { Loading } from '~/stories/atom/Loading';
+import { Tab } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { Guide } from '~/stories/atom/Guide';
+import { Disclosure } from '@headlessui/react';
+import '../../atom/Tabs/style.css';
+import { BigNumber } from 'ethers';
 // import { LPReceipt } from "~/typings/receipt";
-import { Market, Token } from "~/typings/market";
-import { isValid } from "~/utils/valid";
-import { usePrevious } from "~/hooks/usePrevious";
-import { LpReceipt, LpReceiptAction } from "../../../hooks/usePoolReceipt";
-import { useMemo } from "react";
-import { Tooltip } from "react-tooltip";
+import { Market, Token } from '~/typings/market';
+import { isValid } from '~/utils/valid';
+import { usePrevious } from '~/hooks/usePrevious';
+import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
+import { useMemo } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 interface PoolProgressProps {
   token?: Token;
@@ -37,9 +37,8 @@ export const PoolProgress = ({
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
   const isClaimEnabled =
-    receipts
-      .filter((receipt) => receipt.status === "completed")
-      .map((receipt) => receipt.id).length !== 0;
+    receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
+      .length !== 0;
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
@@ -63,7 +62,7 @@ export const PoolProgress = ({
               </div>
               <ChevronDownIcon
                 className={`${
-                  open ? "rotate-180 transform" : ""
+                  open ? 'rotate-180 transform' : ''
                 } w-6 text-black/30 absolute right-6`}
               />
             </Disclosure.Button>
@@ -173,29 +172,20 @@ export const PoolProgress = ({
 
 interface ProgressItemProps {
   title?: string;
-  status: LpReceipt["status"];
+  status: LpReceipt['status'];
   detail: string;
   token?: string;
   name: string;
   progressPercent?: number;
-  action: LpReceipt["action"];
+  action: LpReceipt['action'];
   onClick?: () => unknown;
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const {
-    title,
-    status,
-    detail,
-    token = "USDC",
-    name,
-    action,
-    progressPercent,
-    onClick,
-  } = props;
+  const { title, status, detail, token = 'USDC', name, action, progressPercent, onClick } = props;
 
   const renderTitle = useMemo(() => {
-    return action === "add" ? "minting" : action === "remove" ? "burning" : "";
+    return action === 'add' ? 'minting' : action === 'remove' ? 'burning' : '';
   }, [action]);
 
   return (
@@ -225,33 +215,29 @@ const ProgressItem = (props: ProgressItemProps) => {
               outLinkAbout="Next Oracle Round"
               tip={
                 // todo: 퍼센트값 불러오기 (백틱 표시)
-                action === "add" && status === "standby"
+                action === 'add' && status === 'standby'
                   ? `Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day.`
-                  : action === "add" && status === "completed"
-                  ? "The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
-                  : action === "remove" && status === "standby"
+                  : action === 'add' && status === 'completed'
+                  ? 'The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them.'
+                  : action === 'remove' && status === 'standby'
                   ? `Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day.`
-                  : action === "remove" && status === "in progress"
-                  ? "The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
-                  : action === "remove" && status === "completed"
+                  : action === 'remove' && status === 'in progress'
+                  ? 'The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed.'
+                  : action === 'remove' && status === 'completed'
                   ? "The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
-                  : ""
+                  : ''
               }
             />
           </span>
         </h4>
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
           <span className="">
-            {status === "completed" ? (
-              <CheckIcon className="w-4" />
-            ) : (
-              <Loading size="xs" />
-            )}
+            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="xs" />}
           </span>
           <p className="">{detail}</p>
         </div>
       </div>
-      {action === "add" ? (
+      {action === 'add' ? (
         <Progress value={progressPercent} max={100} />
       ) : (
         <div className="border-t" />
@@ -259,9 +245,9 @@ const ProgressItem = (props: ProgressItemProps) => {
       <div className="flex items-end gap-3 mt-1">
         <div
           className={`flex items-end gap-3 ${
-            ((action === "add" && status === "standby") ||
-              (action === "remove" && status === "completed")) &&
-            "opacity-30"
+            ((action === 'add' && status === 'standby') ||
+              (action === 'remove' && status === 'completed')) &&
+            'opacity-30'
           }`}
         >
           <Thumbnail className="rounded" />
@@ -270,9 +256,9 @@ const ProgressItem = (props: ProgressItemProps) => {
             <p className="mt-1 text-left text-black/30">{name}</p>
           </div>
         </div>
-        {status === "standby" ? (
+        {status === 'standby' ? (
           <Button
-            label={action === "add" ? `Claim ${token}` : "Claim Tokens"}
+            label={action === 'add' ? `Claim ${token}` : 'Claim Tokens'}
             size="sm"
             className="ml-auto !text-gray"
             disabled
@@ -280,11 +266,11 @@ const ProgressItem = (props: ProgressItemProps) => {
         ) : (
           <Button
             label={
-              action === "remove"
-                ? status === "in progress"
+              action === 'remove'
+                ? status === 'in progress'
                   ? `Stop Process & Claim ${token}`
                   : `Claim ${token}`
-                : "Claim Tokens"
+                : 'Claim Tokens'
             }
             css="active"
             size="sm"
