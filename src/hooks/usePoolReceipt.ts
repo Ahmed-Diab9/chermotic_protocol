@@ -56,9 +56,6 @@ const usePoolReceipt = () => {
     }
 
     const receipts = await lensApi.contracts().lens.lpReceipts(marketAddress, address);
-    // 330 CLB
-    // 330
-    // 330 * 10 ** 6 => 330
     if (!receipts) {
       return [];
     }
