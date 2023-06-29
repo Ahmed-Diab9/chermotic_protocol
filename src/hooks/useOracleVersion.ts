@@ -36,6 +36,8 @@ const useOracleVersion = () => {
       };
       return record;
     }, {} as Record<string, OracleVersion & { decimals: number }>);
+  },{
+    refreshInterval: 1000 * 30 
   });
 
   if (error) {
