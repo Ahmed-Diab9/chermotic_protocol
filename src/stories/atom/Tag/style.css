@@ -3,10 +3,12 @@
   @apply tracking-tight;
 }
 .tag-long {
-  color: #a6d85b;
-  background: rgba(166, 216, 91, 0.3);
+  @apply text-white bg-grayD;
+  /* color: #a6d85b;
+  background: rgba(166, 216, 91, 0.3); */
 }
 .tag-short {
-  color: #ff3232;
-  background: rgba(255, 50, 50, 0.1);
+  @apply text-grayD bg-gray/20;
+  /* color: #ff3232;
+  background: rgba(255, 50, 50, 0.1); */
 }
