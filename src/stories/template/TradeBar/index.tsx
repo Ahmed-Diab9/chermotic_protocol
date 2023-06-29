@@ -54,9 +54,8 @@ export const TradeBar = ({
     return withComma(formatDecimals(number, decimals, 2));
   }, []);
 
-  const calculatedData = useCallback(
-    (position: Position) => {
-      // return memoizeOne((position: Position) => {
+  const calculatedData = useMemo(() => {
+    return memoizeOne((position: Position) => {
       function priceTo(type: 'profit' | 'loss') {
         const propName = type === 'profit' ? 'toProfit' : 'toLoss';
         const value = printNumber(position[propName], oracleDecimals);
@@ -90,10 +89,15 @@ export const TradeBar = ({
       };
       logger.info('view prop', props);
       return props;
-      // });
-    },
-    [token]
-  );
+    });
+  }, [token]);
+
+  // const calculatedData = useCallback(
+  //   (position: Position) => {
+  //     return memoizeFn(position);
+  //   },
+  //   [token]
+  // );
 
   const direction = useCallback((position: Position) => {
     return position.qty.gt(0) ? 'Long' : 'Short';
