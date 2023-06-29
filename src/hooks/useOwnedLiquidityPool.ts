@@ -9,6 +9,8 @@ import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { Logger } from '../utils/log';
 import { useSettlementToken } from './useSettlementToken';
+import { numberBuffer } from '~/utils/number';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 
 const logger = Logger('useOwneLiquidityPoolByMarket');
 export const useOwnedLiquidityPool = () => {
@@ -39,7 +41,7 @@ export const useOwnedLiquidityPool = () => {
       return {
         liquidity: bin.liquidity,
         freeLiquidity: bin.freeLiquidity,
-        removableRate: bin.removableRate,
+        removableRate: bin.removableRate * 100,
         clbTokenName: name,
         clbTokenImage: image,
         clbTokenDescription: description,
@@ -47,7 +49,9 @@ export const useOwnedLiquidityPool = () => {
         clbTokenBalance: bin.clbBalance,
         clbTokenValue: bin.clbValue,
         clbTotalSupply: bin.clbTotalSupply,
-        binValue: bin.clbBalance.mul(bin.clbValue),
+        binValue: bin.clbBalance
+          .mul(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
+          .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
         baseFeeRate: bin.tradingFeeRate,
         tokenId: tokenId,
       } satisfies OwnedBin;

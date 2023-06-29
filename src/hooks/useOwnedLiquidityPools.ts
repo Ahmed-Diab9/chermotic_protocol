@@ -10,7 +10,7 @@ import { isValid } from '~/utils/valid';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '../configs/pool';
 import { Logger } from '../utils/log';
-import { bigNumberify, expandDecimals } from '../utils/number';
+import { bigNumberify, expandDecimals, numberBuffer } from '../utils/number';
 import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
@@ -55,7 +55,7 @@ export const useOwnedLiquidityPools = () => {
           return {
             liquidity: bin.liquidity,
             freeLiquidity: bin.freeLiquidity,
-            removableRate: bin.removableRate,
+            removableRate: bin.removableRate * 100,
             clbTokenName: name,
             clbTokenImage: image,
             clbTokenDescription: description,
@@ -63,7 +63,9 @@ export const useOwnedLiquidityPools = () => {
             clbTokenBalance: bin.clbBalance,
             clbTokenValue: bin.clbValue,
             clbTotalSupply: bin.clbTotalSupply,
-            binValue: bin.clbBalance.mul(bin.clbValue),
+            binValue: bin.clbBalance
+              .mul(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
+              .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
             baseFeeRate: bin.tradingFeeRate,
             tokenId: tokenId,
           } satisfies OwnedBin;
@@ -73,7 +75,6 @@ export const useOwnedLiquidityPools = () => {
       });
 
       const awaitedResponse = await filterIfFulfilled(poolsResponse);
-      
 
       const ownedPools = awaitedResponse.reduce((record, currentPool) => {
         record[currentPool.marketAddress] = currentPool.bins;
@@ -107,7 +108,7 @@ export const useOwnedLiquidityPools = () => {
         logger.info('no selected market');
         return;
       }
-  
+
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
       await routerApi.removeLiquidity(currentMarket.address, {
