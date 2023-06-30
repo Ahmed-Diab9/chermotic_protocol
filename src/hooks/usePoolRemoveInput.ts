@@ -1,10 +1,9 @@
 import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
-import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { infoLog } from '~/utils/log';
-import { bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
+import { expandDecimals, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 export const usePoolRemoveInput = () => {
@@ -51,11 +50,7 @@ export const useMultiPoolRemoveInput = () => {
       return balance.add(clbTokenBalance);
     }, BigNumber.from(0));
   }, [bins]);
-  // const removableRate = removableLiquidity
-  //   .mul(expandDecimals(FEE_RATE_DECIMAL))
-  //   .div(liquidityValue.eq(0) ? 1 : liquidityValue);
-  // const removable = removableLiquidity.lt(liquidityValue) ? removableLiquidity : liquidityValue;
-
+  
   const amount =
     type === MULTI_ALL
       ? clbTokenBalance
@@ -75,9 +70,6 @@ export const useMultiPoolRemoveInput = () => {
     type,
     amount: amount.div(expandDecimals(token?.decimals)).toNumber(),
     clbTokenBalance,
-    // liquidityValue,
-    // removableLiquidity,
-    // removableRate,
     onAmountChange,
   };
 };

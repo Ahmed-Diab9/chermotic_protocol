@@ -1,5 +1,5 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
@@ -80,6 +80,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     string | undefined
   ]);
 
+  const lpVolume = useMemo(() => {
+    const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
+    const freeLiq =
+      formatDecimals(
+        totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+        (token?.decimals || 0) + 6,
+        8
+      ) || '0';
+    const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+    return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
+  }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
   // TODO
   // 청산가 계산이 올바른지 점검해야 합니다.
   const createLiquidation = useCallback(async () => {
@@ -288,16 +299,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token && (
-              <p>
-                {formatDecimals(
-                  totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
-                  token.decimals + 6,
-                  1
-                )}{' '}
-                M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
-              </p>
-            )}
+            {totalMaxLiquidity && totalUnusedLiquidity && token && <p>{lpVolume} M</p>}
           </div>
         </div>
         <article className="mt-5">

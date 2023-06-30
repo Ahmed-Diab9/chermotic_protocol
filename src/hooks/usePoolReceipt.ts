@@ -25,11 +25,9 @@ export interface LpReceipt {
 
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
-  // const { fetchLiquidityPools } = useLiquidityPool();
   const { client } = useChromaticClient();
   const lensApi = useMemo(() => client?.lens(), [client]);
   const router = useMemo(() => client?.router(), [client]);
-  // const [router] = useRouter();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version.toNumber();

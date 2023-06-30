@@ -209,7 +209,6 @@ export const useTradeInput = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  // const { fetchUsumBalances } = useUsumBalances();
   const { fetchBalances } = useUsumAccount();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
@@ -217,9 +216,7 @@ export const useTradeInput = () => {
   const {
     pool,
     liquidity: {
-      longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
-      shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
   } = useLiquiditiyPool();

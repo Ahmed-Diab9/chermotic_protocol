@@ -12,13 +12,13 @@ import { Bin, LiquidityPool, LiquidityPoolSummary, OwnedBin } from '../typings/p
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
+import { useTokenBalances } from './useTokenBalance';
 
 
 const logger = Logger('useLiquidityPool.ts');
@@ -30,13 +30,9 @@ export const useLiquiditiyPools = () => {
   const { client } = useChromaticClient();
 
   const { tokens, currentSelectedToken } = useSettlementToken();
-  const { markets, currentMarket } = useMarket();
-
   // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
   const { oracleVersions } = useOracleVersion();
-  const { data: signer } = useSigner();
-  const routerApi = useMemo(() => client?.router(), [client]);
   const fetchKey = useMemo(
     () =>
       isValid(walletAddress) && isValid(tokenAddresses)
@@ -179,6 +175,7 @@ export const useLiquiditiyPool = () => {
       [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
+  // logger.info('shortTotalMaxLiq', shortTotalMaxLiquidity)
 
   useEffect(() => {
     if (isValid(pool)) {

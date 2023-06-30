@@ -5,12 +5,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount, useSigner } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { Logger } from '~/utils/log';
-import { bigNumberify } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-import { useAppSelector } from '../store';
-import { usePosition } from './usePosition';
 const logger = Logger('useBalances');
 function filterResponse<T>(response: PromiseSettledResult<T>[]) {
   return response

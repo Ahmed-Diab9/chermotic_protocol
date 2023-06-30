@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, useProvider } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Logger, errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
@@ -14,7 +14,6 @@ const useOracleVersion = () => {
   const marketApi = useMemo(() => {
     return client?.market();
   }, [client]);
-  const provider = useProvider();
   const marketAddresses = (markets ?? []).map((market) => market.address);
 
   const {

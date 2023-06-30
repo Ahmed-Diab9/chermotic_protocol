@@ -4,12 +4,12 @@ export type Liquidity = {
   key: number;
   value: [
     {
-      label: 'available';
+      label: 'utilized';
       amount: number;
     },
     {
-      label: 'utilized';
+      label: 'available';
       amount: number;
-    }
+    },
   ];
 };

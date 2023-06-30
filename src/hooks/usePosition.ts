@@ -5,7 +5,6 @@ import { Logger, errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 
 import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk';
-import { ChromaticMarket__factory } from '@chromatic-protocol/sdk/contracts';
 import { isNil } from 'ramda';
 import { useProvider } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
@@ -22,7 +21,6 @@ export interface Position extends IChromaticPosition {
   marketAddress: string;
   lossPrice: BigNumberish;
   profitPrice: BigNumberish;
-  // stopLoss: BigNumberish;
   status: string;
   toProfit: BigNumberish;
   collateral: BigNumberish;
@@ -33,10 +31,6 @@ export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
   const { currentSelectedToken } = useSettlementToken();
   const { markets } = useMarket();
-  const provider = useProvider();
-
-  // const [router] = useRouter();
-
   const { oracleVersions } = useOracleVersion();
   const { client } = useChromaticClient();
   const positionApi = useMemo(() => client?.position(), [client]);
@@ -73,13 +67,9 @@ export const usePosition = () => {
       logger.error('No Settlemet tokens');
       return [];
     }
-    // logger.log('PASSED ARGUMENTS');
-    // logger.log('MARKETS', markets?.length);
+    
     const positionsPromise = markets.map(async (market) => {
       const positionIds = await accountApi.getPositionIds(market.address);
-
-      const marketContract = ChromaticMarket__factory.connect(market.address, provider);
-      const oracleProviderAddress = await marketContract.oracleProvider();
 
       const positions = await positionApi
         ?.getPositions(market.address, positionIds)
