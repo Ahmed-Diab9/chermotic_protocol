@@ -260,7 +260,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     barData={liquidity}
                     dotData={binValue}
                     rangeChartRef={rangeChartRef}
-                    height={200}
+                    height={180}
                     onChange={onRangeChange}
                     isDotVisible={isBinValueVisible}
                   />

@@ -286,7 +286,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         {/* graph */}
         <FillUpChart
           positive={direction === 'long'}
-          height={300}
+          height={140}
           data={liquidityData}
           selectedAmount={input?.quantity}
         />
