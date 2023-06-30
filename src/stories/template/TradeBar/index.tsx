@@ -88,11 +88,8 @@ export const TradeBar = ({
          * 퍼센트 값이라 소수점 2를 더 적용해야 함
          */
         pnl: printNumber(pnlPercentage, 4),
-        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), token?.decimals || 0),
-        profitPrice: printNumber(
-          BigNumber.from(position.profitPrice || 0).abs(),
-          token?.decimals || 0
-        ),
+        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), 18),
+        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), 18),
       };
       logger.info('view prop', props);
       return props;

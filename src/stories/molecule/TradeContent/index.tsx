@@ -73,7 +73,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     if (isNil(market)) {
       return '-';
     }
-    return withComma(formatDecimals(market.oracleValue.price, token?.decimals, 2));
+    return withComma(formatDecimals(market.oracleValue.price, 18, 2));
   }, [market, token]);
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
     string | undefined,
@@ -101,8 +101,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const price = await market.oracleValue.price;
     if (input.collateral === 0) {
       return setPrices([
-        withComma(formatDecimals(price, token.decimals, 2)),
-        withComma(formatDecimals(price, token.decimals, 2)),
+        withComma(formatDecimals(price, 18, 2)),
+        withComma(formatDecimals(price, 18, 2)),
       ]);
     }
 
@@ -128,8 +128,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const stopLossPrice = price.mul(lossRate);
 
     setPrices([
-      withComma(formatDecimals(takeProfitPrice, token.decimals + decimals, 2)),
-      withComma(formatDecimals(stopLossPrice, token.decimals + decimals, 2)),
+      withComma(formatDecimals(takeProfitPrice, 18 + decimals, 2)),
+      withComma(formatDecimals(stopLossPrice, 18 + decimals, 2)),
     ]);
   }, [input, market, token]);
   useEffect(() => {
@@ -341,8 +341,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
               </div>
               <p>
-                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
-                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
+                {formatDecimals(tradeFee ?? 0, 18, 2)} USDC /{' '}
+                {formatDecimals(tradeFeePercent ?? 0, 18, 3)}%
               </p>
             </div>
             <div className="flex justify-between">
