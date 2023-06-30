@@ -95,7 +95,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
         totalRemovableLiquidity
           .mul(expandDecimals(token?.decimals))
           .mul(expandDecimals(2))
-          .div(balance),
+          .div(balance.isZero() ? 1 : balance),
         token?.decimals,
         2
       ),
