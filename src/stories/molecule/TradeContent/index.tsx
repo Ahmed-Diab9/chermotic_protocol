@@ -281,7 +281,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 
           {/* LP volume */}
           <div
-            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-white ${
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-white/60 ${
               direction === 'long' ? 'items-end right-0' : 'items-start left-0'
             }`}
           >
