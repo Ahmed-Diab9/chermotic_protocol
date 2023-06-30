@@ -2,13 +2,15 @@ import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { TooltipGuide } from "~/stories/atom/TooltipGuide";
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import './style.css';
+import { OracleVersion } from '~/typings/oracleVersion';
+import { isNil } from 'ramda';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -17,6 +19,12 @@ interface MarketSelectProps {
   selectedMarket?: Market;
   feeRate?: BigNumber;
   isGroupLegacy?: boolean;
+  oracleVersions?: Record<
+    string,
+    OracleVersion & {
+      decimals: number;
+    }
+  >;
   onTokenClick?: (token: Token) => void;
   onMarketClick?: (market: Market) => void;
 }
@@ -27,12 +35,11 @@ interface MarketSelectProps {
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const { isGroupLegacy, selectedMarket, feeRate, selectedToken } = props;
+  const oracleDecimals = 18;
 
   const marketPrice = useMemo(
     () =>
-      `$${withComma(
-        formatDecimals(selectedMarket?.oracleValue?.price || 0, 18, 2)
-      )}`,
+      `$${withComma(formatDecimals(selectedMarket?.oracleValue?.price || 0, oracleDecimals, 2))}`,
     [selectedMarket, selectedToken]
   );
 

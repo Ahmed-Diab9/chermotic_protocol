@@ -68,12 +68,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onOpenPosition,
   } = props;
 
+  const oracleDecimals = 18;
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const executionPrice = useMemo(() => {
     if (isNil(market)) {
       return '-';
     }
-    return withComma(formatDecimals(market.oracleValue.price, 18, 2));
+    return withComma(formatDecimals(market.oracleValue.price, oracleDecimals, 2));
   }, [market, token]);
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
     string | undefined,
@@ -101,8 +102,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const price = await market.oracleValue.price;
     if (input.collateral === 0) {
       return setPrices([
-        withComma(formatDecimals(price, 18, 2)),
-        withComma(formatDecimals(price, 18, 2)),
+        withComma(formatDecimals(price, oracleDecimals, 2)),
+        withComma(formatDecimals(price, oracleDecimals, 2)),
       ]);
     }
 
@@ -128,8 +129,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const stopLossPrice = price.mul(lossRate);
 
     setPrices([
-      withComma(formatDecimals(takeProfitPrice, 18 + decimals, 2)),
-      withComma(formatDecimals(stopLossPrice, 18 + decimals, 2)),
+      withComma(formatDecimals(takeProfitPrice, oracleDecimals + decimals, 2)),
+      withComma(formatDecimals(stopLossPrice, oracleDecimals + decimals, 2)),
     ]);
   }, [input, market, token]);
   useEffect(() => {
