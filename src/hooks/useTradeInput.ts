@@ -209,7 +209,6 @@ export const useTradeInput = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: signer } = useSigner();
-  // const { fetchUsumBalances } = useUsumBalances();
   const { fetchBalances } = useUsumAccount();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
@@ -217,9 +216,7 @@ export const useTradeInput = () => {
   const {
     pool,
     liquidity: {
-      longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
-      shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
   } = useLiquiditiyPool();
@@ -359,16 +356,16 @@ export const useTradeInput = () => {
     }
 
     const quantity = bigNumberify(state.quantity * numberBuffer())
-      .mul(expandDecimals(4))
+      .mul(expandDecimals(4)) // 10000
       .div(numberBuffer());
     const leverage = bigNumberify(state.leverage * numberBuffer())
-      .mul(expandDecimals(2))
+      .mul(expandDecimals(2)) // 100
       .div(numberBuffer());
     const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(token?.decimals)) // 10 ** 6
       .div(numberBuffer());
     const makerMargin = bigNumberify(Math.floor(state.makerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(token?.decimals)) // 10 ** 6
       .div(numberBuffer());
 
     if (state.direction === 'long' && longTotalUnusedLiquidity.lte(makerMargin)) {
@@ -383,14 +380,14 @@ export const useTradeInput = () => {
 
     // FIXME
     // Trading Fee
-    const tradingFee = makerMargin.add(expandDecimals(token?.decimals));
+    const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
     await routerApi.openPosition(market.address, {
       quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
       leverage,
       takerMargin,
       makerMargin,
-      tradingFee,
+      maxAllowableTradingFee,
     });
     await fetchPositions();
     await fetchBalances();

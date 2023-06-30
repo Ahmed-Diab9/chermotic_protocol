@@ -1117,10 +1117,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk@^0.1.0-rc.49":
-  version "0.1.0-rc.49"
-  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.49/292811f8a0a7a89f8d03c67824ccd73c1b4eae4e#292811f8a0a7a89f8d03c67824ccd73c1b4eae4e"
-  integrity sha512-fHTAsbDgzDuvkYOiM/HL/1AFgiEvj/R4mk09+va2Sk7yREh9udplDN6Sgk+a/F0cil5JJ7EyMhAajeAoSbqVSw==
+"@chromatic-protocol/sdk@^0.1.0-rc.58":
+  version "0.1.0-rc.58"
+  resolved "https://npm.pkg.github.com/download/@chromatic-protocol/sdk/0.1.0-rc.58/cf79543f0e70556b9db0b9f9d29eaea7e238461f#cf79543f0e70556b9db0b9f9d29eaea7e238461f"
+  integrity sha512-Js1UtdoPhb6Fmy5UnZNIJP629nRRxdC8lMt/daYS2seAwKwOYHyw2Bopg0ld1sORvW2MweC4BtNqrqxxvfxU8g==
 
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.6.6"
@@ -7828,6 +7828,11 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==
+
+memoize-one@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-6.0.0.tgz#b2591b871ed82948aee4727dc6abceeeac8c1045"
+  integrity sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==
 
 memoizerific@^1.11.3:
   version "1.11.3"

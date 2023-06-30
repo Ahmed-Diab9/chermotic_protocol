@@ -12,14 +12,13 @@ import { Bin, LiquidityPool, LiquidityPoolSummary, OwnedBin } from '../typings/p
 import { Logger } from '../utils/log';
 import { bigNumberify, expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useBalances';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
-
+import { useTokenBalances } from './useTokenBalance';
 
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId, decodeTokenId } = ChromaticUtils;
@@ -30,13 +29,9 @@ export const useLiquiditiyPools = () => {
   const { client } = useChromaticClient();
 
   const { tokens, currentSelectedToken } = useSettlementToken();
-  const { markets, currentMarket } = useMarket();
-
   // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
   const { oracleVersions } = useOracleVersion();
-  const { data: signer } = useSigner();
-  const routerApi = useMemo(() => client?.router(), [client]);
   const fetchKey = useMemo(
     () =>
       isValid(walletAddress) && isValid(tokenAddresses)
@@ -79,7 +74,6 @@ export const useLiquiditiyPools = () => {
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);
       const promise = markets.map(async ({ address: marketAddress }) => {
-        
         const marketApi = client!.market();
         const lensApi = client!.lens();
 
@@ -129,7 +123,7 @@ export const useLiquiditiyPools = () => {
   if (error) {
     logger.error(error);
   }
-  
+
   return { liquidityPools, fetchLiquidityPools } as const;
 };
 
@@ -179,6 +173,7 @@ export const useLiquiditiyPool = () => {
       [bigNumberify(0), bigNumberify(0)] as const
     );
   }, [pool]);
+  // logger.info('shortTotalMaxLiq', shortTotalMaxLiquidity)
 
   useEffect(() => {
     if (isValid(pool)) {
@@ -227,8 +222,9 @@ export const useLiquiditiyPool = () => {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
         const liquidityValue = clbTokenBalance
-          .mul(clbTokenValue)
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
+          .mul(Math.round(clbTokenValue * 10 ** 2))
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(2));
         const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
         return type === MULTI_ALL ? clbTokenBalance : removable;

@@ -12,7 +12,6 @@ import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
-import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
 import useChartData from '~/hooks/useChartData';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
@@ -23,14 +22,14 @@ import useOracleVersion from '~/hooks/useOracleVersion';
 import { usePosition } from '~/hooks/usePosition';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
-import { useAppSelector } from '~/store';
 
-import { copyText } from '~/utils/clipboard';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { copyText } from '~/utils/clipboard';
 
 const Trade = () => {
   useConnectOnce();
@@ -41,16 +40,15 @@ const Trade = () => {
     createAccount: createUsumAccount,
     status,
     balances,
+    totalBalance,
+    totalAsset,
+    totalMargin,
   } = useUsumAccount();
-  const { tokens, onTokenSelect } = useSettlementToken();
-  const { markets, onMarketSelect } = useMarket();
-  // const onTokenSelect = useTokenSelect();
-  // const onMarketSelect = useMarketSelect();
-  const selectedToken = useAppSelector((state) => state.token.selectedToken);
-  const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
+  const { tokens, onTokenSelect, currentSelectedToken } = useSettlementToken();
+  const { markets, onMarketSelect, currentMarket } = useMarket();
   const feeRate = useFeeRate();
   const { useTokenBalances: walletBalances } = useTokenBalances();
-  // const { usumBalances } = useUsumBalances();
+
   const { priceFeed } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
@@ -87,7 +85,6 @@ const Trade = () => {
     },
   } = useLiquiditiyPool();
   const { oracleVersions } = useOracleVersion();
-  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
 
   useEffect(() => {
     if (shortInput.direction === 'long') {
@@ -99,10 +96,12 @@ const Trade = () => {
   useMarketLocal();
 
   const { liquidity, positive, negative } = useChartData();
-
+  
+  
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
-      <LiquidityTooltip data={liquidity} />
+      
+      <LiquidityTooltip data={liquidity}  />
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
@@ -122,8 +121,8 @@ const Trade = () => {
           status={status}
           tokens={tokens}
           markets={markets}
-          selectedToken={selectedToken}
-          selectedMarket={selectedMarket}
+          selectedToken={currentSelectedToken}
+          selectedMarket={currentMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
           usumBalances={balances}
@@ -159,8 +158,8 @@ const Trade = () => {
             onShortStopLossChange={onShortStopLossChange}
             balances={balances}
             priceFeed={priceFeed}
-            token={selectedToken}
-            market={selectedMarket}
+            token={currentSelectedToken}
+            market={currentMarket}
             longTotalMaxLiquidity={longTotalMaxLiquidity}
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
@@ -187,7 +186,7 @@ const Trade = () => {
         </div>
       </section>
       <TradeBar
-        token={selectedToken}
+        token={currentSelectedToken}
         markets={markets}
         positions={positions}
         oracleVersions={oracleVersions}

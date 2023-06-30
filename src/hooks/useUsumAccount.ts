@@ -1,10 +1,8 @@
-import { Client, ChromaticAccount, TokenBalancesResult } from '@chromatic-protocol/sdk';
-import { ChromaticAccount__factory } from '@chromatic-protocol/sdk/contracts';
-import { BigNumber, ethers, utils } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
+import { fromPairs, isNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import { useAccount, useSigner } from 'wagmi';
-import { CHAIN } from '~/constants/contracts';
+import { useAccount } from 'wagmi';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -13,20 +11,17 @@ import {
   ACCOUNT_STATUS,
 } from '~/typings/account';
 import { AppError } from '~/typings/error';
-import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { fromPairs, isNil } from 'ramda';
 import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
-  // const { data: signer } = useSigner();
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-  const { tokens } = useSettlementToken();
+  const { tokens, currentSelectedToken } = useSettlementToken();
   const { client } = useChromaticClient();
-  const accountApi = useMemo(() => client?.account(), [client]);
+  // const accountApi = useMemo(() => client?.account(), [client]);
 
   const fetchKey = isValid(address) ? ['USUM_ACCOUNT', address] : undefined;
 
@@ -34,22 +29,32 @@ export const useUsumAccount = () => {
     data: accountAddress,
     error,
     isLoading,
-  } = useSWR(fetchKey, async ([_, address]) => {
-    if (isNil(accountApi)) return ethers.constants.AddressZero;
-    // const signer = new ethers.providers.Web3Provider(window.ethereum as any).getSigner(address);
-    const accountAddress = await accountApi.getAccount();
-    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
-      setStatus(ACCOUNT_NONE);
+  } = useSWR(
+    fetchKey,
+    async ([_, address]) => {
+      const accountApi = client?.account();
+      if (isNil(accountApi)) {
+        return;
+      }
+      const accountAddress = await accountApi.getAccount();
+      if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+        setStatus(ACCOUNT_NONE);
+      } else {
+        setStatus(ACCOUNT_COMPLETED);
+        return accountAddress;
+      }
+    },
+    {
+      keepPreviousData: false,
     }
-    setStatus(ACCOUNT_COMPLETED);
-    return accountAddress;
-  });
+  );
 
   const {
     data: balances,
     error: balanceError,
     mutate: fetchBalances,
   } = useSWR(['ChromaticAccBal', address], async () => {
+    const accountApi = client?.account();
     if (
       isNil(tokens) ||
       isNil(accountApi) ||
@@ -61,21 +66,6 @@ export const useUsumAccount = () => {
     const result = await accountApi.balances(tokens.map((token) => token.address));
     return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
   });
-  // const isValidAccount =
-  //   isValid(account) && isValid(account.address) && account.address !== ADDRESS_ZERO;
-
-  // useEffect(() => {
-  //   // if (isLoading) {
-  //   //   return;
-  //   // }
-  //   if (isValidAccount) {
-  //     logger.info('loading chromatic accounts');
-  //     setStatus(ACCOUNT_COMPLETED);
-  //     return;
-  //   } else {
-  //     setStatus(ACCOUNT_NONE);
-  //   }
-  // }, [isLoading, isValidAccount]);
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined;
@@ -96,12 +86,7 @@ export const useUsumAccount = () => {
   }
 
   const createAccount = async () => {
-    // if (isNil(signer)) {
-    //   return AppError.reject('no signers', 'createAccount');
-    // }
-    // if (isNil(router)) {
-    //   return AppError.reject('no routers', 'createAcccount');
-    // }
+    const accountApi = client?.account();
     if (isNil(accountApi)) {
       return AppError.reject('no accountApi', 'createAcccount');
     }
@@ -110,12 +95,7 @@ export const useUsumAccount = () => {
       logger.info('Creating accounts');
       setStatus(ACCOUNT_CREATING);
       await accountApi.createAccount();
-
-      // tx.wait().then(() => {
       setStatus(ACCOUNT_COMPLETING);
-      //   return undefined!;
-      // });
-      // return Promise.resolve();
     } catch (error) {
       setStatus(ACCOUNT_NONE);
       logger.error(error);
@@ -124,5 +104,30 @@ export const useUsumAccount = () => {
     }
   };
 
-  return { accountAddress, balances, status, createAccount, setStatus, fetchBalances };
+  const [totalBalance, totalAsset] = useMemo(() => {
+    if (!isValid(balances) || !isValid(currentSelectedToken)) {
+      return [BigNumber.from(0), BigNumber.from(0)];
+    }
+    const balance = balances[currentSelectedToken.address];
+    return [balance, balance];
+  }, [balances, currentSelectedToken]);
+
+  const totalMargin = useMemo(() => {
+    if (isValid(balances) && isValid(currentSelectedToken)) {
+      return balances[currentSelectedToken.address];
+    }
+    return BigNumber.from(0);
+  }, [balances, currentSelectedToken]);
+
+  return {
+    accountAddress,
+    balances,
+    status,
+    createAccount,
+    setStatus,
+    fetchBalances,
+    totalBalance,
+    totalAsset,
+    totalMargin,
+  };
 };

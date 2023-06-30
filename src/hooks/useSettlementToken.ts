@@ -40,18 +40,3 @@ export const useSettlementToken = () => {
   );
   return { tokens, currentSelectedToken, fetchTokens, onTokenSelect };
 };
-
-// export const useTokenSelect = () => {
-//   const dispatch = useAppDispatch();
-//   const { setState: setStoredToken } = useLocalStorage('usum:token');
-
-//   const onTokenSelect = useCallback(
-//     (token: Token) => {
-//       dispatch(tokenAction.onTokenSelect(token));
-//       setStoredToken(token.name);
-//     },
-//     [dispatch]
-//   );
-
-//   return onTokenSelect;
-// };

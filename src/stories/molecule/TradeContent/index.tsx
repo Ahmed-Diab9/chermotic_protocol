@@ -1,6 +1,6 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { BigNumber } from 'ethers';
-import { ChangeEvent, useState } from 'react';
+import { BigNumber, ethers } from 'ethers';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
@@ -11,12 +11,13 @@ import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 
-import { formatDecimals, withComma } from '~/utils/number';
+import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
 import { Liquidity } from '~/typings/chart';
+import { isNil } from 'ramda';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -68,60 +69,72 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   } = props;
 
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  const [executionPrice, setPrice] = useState('');
+  const executionPrice = useMemo(() => {
+    if (isNil(market)) {
+      return '-';
+    }
+    return withComma(formatDecimals(market.oracleValue.price, token?.decimals, 2));
+  }, [market, token]);
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
     string | undefined,
     string | undefined
   ]);
 
+  const lpVolume = useMemo(() => {
+    const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
+    const freeLiq =
+      formatDecimals(
+        totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+        (token?.decimals || 0) + 6,
+        8
+      ) || '0';
+    const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+    return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
+  }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
   // TODO
   // 청산가 계산이 올바른지 점검해야 합니다.
-  // const createLiquidation = useCallback(async () => {
-  //   if (!isValid(input) || !isValid(market) || !isValid(token)) {
-  //     return setPrices([undefined, undefined]);
-  //   }
-  //   const { quantity, takeProfit, stopLoss } = input;
-  //   const price = await market.oracleValue.price;
-  //   if (input.collateral === 0) {
-  //     return setPrices([
-  //       withComma(formatDecimals(price, token.decimals, 2)),
-  //       withComma(formatDecimals(price, token.decimals, 2)),
-  //     ]);
-  //   }
+  const createLiquidation = useCallback(async () => {
+    if (!isValid(input) || !isValid(market) || !isValid(token)) {
+      return setPrices([undefined, undefined]);
+    }
+    const { quantity, takeProfit, stopLoss } = input;
+    const price = await market.oracleValue.price;
+    if (input.collateral === 0) {
+      return setPrices([
+        withComma(formatDecimals(price, token.decimals, 2)),
+        withComma(formatDecimals(price, token.decimals, 2)),
+      ]);
+    }
 
-  //   // Quantity에 profit, loss 비율 적용
-  //   // Long일 때는 profit을 덧셈, Short일 대는 profit을 뺄셈
-  //   const addedProfit =
-  //     input.direction === "long"
-  //       ? quantity + quantity * (takeProfit / 100)
-  //       : quantity - quantity * (takeProfit / 100);
-  //   const addedLoss =
-  //     input.direction === "long"
-  //       ? quantity - quantity * (stopLoss / 100)
-  //       : quantity + quantity * (stopLoss / 100);
+    // Quantity에 profit, loss 비율 적용
+    // Long일 때는 profit을 덧셈, Short일 대는 profit을 뺄셈
+    const addedProfit =
+      input.direction === 'long'
+        ? quantity + quantity * (takeProfit / 100)
+        : quantity - quantity * (takeProfit / 100);
+    const addedLoss =
+      input.direction === 'long'
+        ? quantity - quantity * (stopLoss / 100)
+        : quantity + quantity * (stopLoss / 100);
 
-  //   // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
-  //   // 추가 소수점 5 적용
-  //   const decimals = 5;
-  //   const profitRate = Math.round(
-  //     (addedProfit / quantity) * numberBuffer(decimals)
-  //   );
-  //   const lossRate = Math.round(
-  //     (addedLoss / quantity) * numberBuffer(decimals)
-  //   );
+    // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
+    // 추가 소수점 5 적용
+    const decimals = 5;
+    const profitRate = Math.round((addedProfit / quantity) * numberBuffer(decimals));
+    const lossRate = Math.round((addedLoss / quantity) * numberBuffer(decimals));
 
-  //   // 현재 가격에 비율 곱하여 예상 청산가격을 계산
-  //   const takeProfitPrice = price.mul(profitRate);
-  //   const stopLossPrice = price.mul(lossRate);
+    // 현재 가격에 비율 곱하여 예상 청산가격을 계산
+    const takeProfitPrice = price.mul(profitRate);
+    const stopLossPrice = price.mul(lossRate);
 
-  //   setPrices([
-  //     withComma(formatDecimals(takeProfitPrice, token.decimals + decimals, 2)),
-  //     withComma(formatDecimals(stopLossPrice, token.decimals + decimals, 2)),
-  //   ]);
-  // }, [input, market, token]);
-  // useEffect(() => {
-  //   createLiquidation();
-  // }, [createLiquidation]);
+    setPrices([
+      withComma(formatDecimals(takeProfitPrice, token.decimals + decimals, 2)),
+      withComma(formatDecimals(stopLossPrice, token.decimals + decimals, 2)),
+    ]);
+  }, [input, market, token]);
+  useEffect(() => {
+    createLiquidation();
+  }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
@@ -134,8 +147,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <p className="text-black/30">
               {balances &&
                 token &&
-                balances[token.name] &&
-                withComma(formatDecimals(balances[token.name], token.decimals, 2))}{' '}
+                balances[token.address] &&
+                withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
               {token?.name}
             </p>
           </div>
@@ -286,16 +299,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token && (
-              <p>
-                {formatDecimals(
-                  totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
-                  token.decimals + 6,
-                  1
-                )}{' '}
-                M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
-              </p>
-            )}
+            {totalMaxLiquidity && totalUnusedLiquidity && token && <p>{lpVolume} M</p>}
           </div>
         </div>
         <article className="mt-5">

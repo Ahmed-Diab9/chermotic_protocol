@@ -50,8 +50,8 @@ const useChartData = () => {
           acc.liquidity.push({
             key,
             value: [
-              { label: 'available', amount: available },
               { label: 'utilized', amount: utilized },
+              { label: 'available', amount: available },
             ],
           });
           return acc;
