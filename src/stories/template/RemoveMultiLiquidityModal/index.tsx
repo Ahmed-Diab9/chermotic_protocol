@@ -81,7 +81,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     }, BigNumber.from(0));
     const totalRemovableLiquidity = selectedBins
       .map((bin) => {
-        console.log('RemovableRate', bin.removableRate);
         return bin.clbTokenBalance
           .mul(Math.round(bin.removableRate * 10 ** 10))
           .div(expandDecimals(10))
@@ -92,7 +91,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       totalLiquidity: totalLiquidityBalance,
       totalRemovableLiquidity,
       totalLiquidityValue,
-      avgRemovableRate: ethers.utils.formatUnits(totalRemovableLiquidity.div(balance), 8),
+      avgRemovableRate: formatDecimals(
+        totalRemovableLiquidity
+          .mul(expandDecimals(token?.decimals))
+          .mul(expandDecimals(2))
+          .div(balance),
+        token?.decimals,
+        2
+      ),
     };
   }, [type, selectedBins]);
 
