@@ -49,7 +49,11 @@ export const TradeBar = ({
   // const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
-  const oracleDecimals = 18;
+  /**
+   * FIXME
+   * Oracle Decimals을 확인해야 함
+   */
+  const oracleDecimals = 6;
   const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
     if (isNil(number)) return '-';
     return withComma(formatDecimals(number, decimals, 2));
@@ -78,7 +82,12 @@ export const TradeBar = ({
         takeProfit: qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber(),
         profitPriceTo: priceTo('profit'),
         lossPriceTo: priceTo('loss'),
-        pnl: printNumber(pnlPercentage, 2),
+
+        /**
+         * TODO
+         * 퍼센트 값이라 소수점 2를 더 적용해야 함
+         */
+        pnl: printNumber(pnlPercentage, 4),
         lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), token?.decimals || 0),
         profitPrice: printNumber(
           BigNumber.from(position.profitPrice || 0).abs(),
