@@ -57,7 +57,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     >
       {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center p-4 shadow-xl">
+      <div className="z-40 fixed inset-0 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -153,7 +153,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     {selectedBin &&
                       amount &&
                       formatDecimals(
-                        bigNumberify(amount).mul(selectedBin.clbTokenValue),
+                        bigNumberify(amount)
+                          .mul(Math.round(selectedBin.clbTokenValue * 10 ** 2))
+                          .div(10 ** 2),
                         0,
                         2
                       )}{' '}

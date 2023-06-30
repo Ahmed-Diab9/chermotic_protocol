@@ -20,7 +20,6 @@ import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
 import { useTokenBalances } from './useTokenBalance';
 
-
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId, decodeTokenId } = ChromaticUtils;
 
@@ -75,7 +74,6 @@ export const useLiquiditiyPools = () => {
     const promises = tokenAddresses.map(async (tokenAddress) => {
       const markets = await factory.getMarkets(tokenAddress);
       const promise = markets.map(async ({ address: marketAddress }) => {
-        
         const marketApi = client!.market();
         const lensApi = client!.lens();
 
@@ -125,7 +123,7 @@ export const useLiquiditiyPools = () => {
   if (error) {
     logger.error(error);
   }
-  
+
   return { liquidityPools, fetchLiquidityPools } as const;
 };
 
@@ -224,8 +222,9 @@ export const useLiquiditiyPool = () => {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
         const liquidityValue = clbTokenBalance
-          .mul(clbTokenValue)
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
+          .mul(Math.round(clbTokenValue * 10 ** 2))
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(2));
         const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
         return type === MULTI_ALL ? clbTokenBalance : removable;

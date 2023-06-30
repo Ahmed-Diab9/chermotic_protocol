@@ -24,7 +24,7 @@ export const useMarket = (_interval?: number) => {
     isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
       const markets = (await client?.marketFactory().getMarkets(tokenAddress)) || [];
-      return markets
+      return markets;
     }
   );
 
