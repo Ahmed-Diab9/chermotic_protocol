@@ -98,13 +98,10 @@ const Pool = () => {
     clbTokenBalance: multiClbTokenBalance,
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
-  // const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
   const { totalBalance, totalAsset, totalMargin } = useMargins();
-
   const { liquidity, clbTokenValue } = useChartData();
-  const { oracleVersions } = useOracleVersion();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -141,7 +138,6 @@ const Pool = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
-          oracleVersions={oracleVersions}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onBalanceAmountChange}
@@ -189,7 +185,6 @@ const Pool = () => {
               multiAmount={multiAmount}
               multiBalance={multiClbTokenBalance}
               onMultiAmountChange={onMultiAmountChange}
-              // ownedPool={ownedPool}
             />
             {/* bottom */}
             <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">

@@ -9,8 +9,6 @@ import { Market, Token } from '../../../typings/market';
 import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import './style.css';
-import { OracleVersion } from '~/typings/oracleVersion';
-import { isNil } from 'ramda';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -19,12 +17,6 @@ interface MarketSelectProps {
   selectedMarket?: Market;
   feeRate?: BigNumber;
   isGroupLegacy?: boolean;
-  oracleVersions?: Record<
-    string,
-    OracleVersion & {
-      decimals: number;
-    }
-  >;
   onTokenClick?: (token: Token) => void;
   onMarketClick?: (market: Market) => void;
 }

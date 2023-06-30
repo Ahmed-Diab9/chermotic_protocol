@@ -1,14 +1,10 @@
-import { Popover } from "@headlessui/react";
-import { Avatar } from "../../atom/Avatar";
-import { Button } from "../../atom/Button";
-import { TooltipGuide } from "~/stories/atom/TooltipGuide";
-import { Outlink } from "~/stories/atom/Outlink";
-import { OptionInput } from "../../atom/OptionInput";
-import { Loading } from "~/stories/atom/Loading";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { ChevronDoubleUpIcon } from "@heroicons/react/24/outline";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import "./style.css";
+import { Popover } from '@headlessui/react';
+import { ArrowTopRightOnSquareIcon, CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import { BigNumber } from 'ethers';
+import { isNotNil } from 'ramda';
+import { Loading } from '~/stories/atom/Loading';
+import { Outlink } from '~/stories/atom/Outlink';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -16,22 +12,19 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
   Account,
-} from "../../../typings/account";
-import { Token } from "../../../typings/market";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  withComma,
-} from "../../../utils/number";
-import { BigNumber } from "ethers";
-import { isValid } from "../../../utils/valid";
+} from '../../../typings/account';
+import { Token } from '../../../typings/market';
+import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { Avatar } from '../../atom/Avatar';
+import { Button } from '../../atom/Button';
+import { OptionInput } from '../../atom/OptionInput';
+import './style.css';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
   account?: Account;
   status?: ACCOUNT_STATUS;
-  token?: Token;
+  selectedToken?: Token;
   walletBalances?: Record<string, BigNumber>;
   usumBalances?: Record<string, BigNumber>;
   amount?: string;
@@ -48,7 +41,7 @@ interface AssetPopoverProps {
 export const AssetPopover = ({
   account,
   status,
-  token,
+  selectedToken,
   walletBalances,
   usumBalances,
   amount,
@@ -62,7 +55,7 @@ export const AssetPopover = ({
   onStatusUpdate,
   ...props
 }: AssetPopoverProps) => {
-  const isLoaded = isValid(account) && isValid(token);
+  const isLoaded = isNotNil(account) && isNotNil(selectedToken);
 
   return (
     <>
@@ -74,15 +67,14 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-2xl">
-                {totalBalance &&
-                  withComma(formatDecimals(totalBalance, token.decimals, 2))}
+                {totalBalance && withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
               </h2>
               <Popover.Group className="flex gap-3">
                 <AssetPanel
                   title="Deposit"
                   account={account}
                   status={status}
-                  token={token}
+                  token={selectedToken}
                   walletBalances={walletBalances}
                   usumBalances={usumBalances}
                   amount={amount}
@@ -97,7 +89,7 @@ export const AssetPopover = ({
                   title="Withdraw"
                   account={account}
                   status={status}
-                  token={token}
+                  token={selectedToken}
                   walletBalances={walletBalances}
                   usumBalances={usumBalances}
                   amount={amount}
@@ -159,9 +151,7 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${
-              open ? "border-black !text-black" : ""
-            }`}
+            className={`btn btn-default btn-sm ${open ? 'border-black !text-black' : ''}`}
           >
             {title}
           </Popover.Button>
@@ -171,10 +161,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
-                  <img
-                    src="/src/assets/images/i_create_account_xl.svg"
-                    alt="create account"
-                  />
+                  <img src="/src/assets/images/i_create_account_xl.svg" alt="create account" />
                   <p>
                     To make a deposit, you need to <br />
                     create account first
@@ -259,10 +246,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
-                  <img
-                    src="/src/assets/images/i_check_xl.svg"
-                    alt="creating account"
-                  />
+                  <img src="/src/assets/images/i_check_xl.svg" alt="creating account" />
                   <p>Account has been created</p>
                 </article>
                 <div className="py-8"></div>
@@ -294,9 +278,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
                 <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">
-                  <p className="flex-none pr-4 border-r text-black/30">
-                    My Account
-                  </p>
+                  <p className="flex-none pr-4 border-r text-black/30">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
                     {account?.usumAddress}
                   </div>
@@ -322,8 +304,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(availableMargin, token?.decimals, 2)}{" "}
-                        {token?.name}
+                        {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
                       </p>
                     </div>
                     <div>
@@ -335,8 +316,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(assetValue, token?.decimals, 2)}{" "}
-                        {token?.name}
+                        {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
                       </p>
                     </div>
                   </article>
@@ -346,7 +326,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       value={amount}
                       maxValue={
                         token &&
-                        (title === "Deposit"
+                        (title === 'Deposit'
                           ? walletBalances?.[token.name]
                               ?.div(expandDecimals(token.decimals))
                               .toString()
@@ -364,9 +344,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                     />
                     <div>
                       <p className="mb-1 text-xs text-black/30">
-                        To open a position in the Chromatic Protocol, you need
-                        to deposit the required amount of settlement assets into
-                        your account.
+                        To open a position in the Chromatic Protocol, you need to deposit the
+                        required amount of settlement assets into your account.
                       </p>
                       <Outlink outLink="#" />
                     </div>
@@ -379,7 +358,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                     css="active"
                     className="w-full"
                     onClick={() => {
-                      if (title === "Deposit") {
+                      if (title === 'Deposit') {
                         onDeposit && onDeposit();
                       } else {
                         onWithdraw && onWithdraw();
