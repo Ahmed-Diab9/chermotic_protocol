@@ -49,6 +49,9 @@ export const TradeBar = ({
   // const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
 
+  // const currentOracleVersion = useMemo(()=>{
+  //   oracleVersions[]
+  // })
   /**
    * FIXME
    * Oracle Decimals을 확인해야 함
@@ -75,21 +78,49 @@ export const TradeBar = ({
       const pnlPercentage = BigNumber.from(position.pnl)
         .mul(10 ** PNL_RATE_DECIMALS)
         .div(BigNumber.from(position.takerMargin));
+      const currentOracleVersion = oracleVersions?.[position.marketAddress];
+
+      if (
+        isNil(currentOracleVersion) ||
+        isNil(currentOracleVersion.version) ||
+        currentOracleVersion.version.lte(position.openVersion)
+      ) {
+        return {
+          qty: printNumber(qty.abs(), 4),
+          collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
+          stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
+          takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+          profitPriceTo: '-',
+          lossPriceTo: '-',
+          pnl: '-',
+          lossPrice: '-',
+          profitPrice: '-',
+          entryPrice: '-',
+          entryTime: '-',
+        };
+      }
+
       const props = {
         qty: printNumber(qty.abs(), 4),
         collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
-        stopLoss: takerMargin.div(qty.abs()).toNumber(),
-        takeProfit: qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber(),
-        profitPriceTo: priceTo('profit'),
-        lossPriceTo: priceTo('loss'),
-        pnl: printNumber(pnlPercentage, 2),
+        stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
+        takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+        profitPriceTo: `${priceTo('profit')}%`,
+        lossPriceTo: `${priceTo('loss')}%`,
+        pnl: `${printNumber(pnlPercentage, 2)}%`,
         lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
         profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
+        entryPrice: printNumber(position.openPrice || 0, oracleDecimals),
+        entryTime: new Intl.DateTimeFormat('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        }).format(new Date(position.openTimestamp.toNumber() * 1000)),
       };
 
       return props;
     });
-  }, [token]);
+  }, [token, oracleVersions]);
 
   const direction = useCallback((position: Position) => {
     return position.qty.gt(0) ? 'Long' : 'Short';
@@ -182,11 +213,11 @@ export const TradeBar = ({
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Price</p>$
-                                            {printNumber(position.openPrice || 0, oracleDecimals)}
+                                            {calculatedData(position).entryPrice}
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>
-                                            {createCurrentDate()}
+                                            {calculatedData(position).entryTime}
                                           </div>
                                         </div>
                                         <div className="flex items-center gap-1 ml-auto">
@@ -258,7 +289,7 @@ export const TradeBar = ({
                                             <TextRow
                                               label="Take Profit"
                                               labelClass="text-black/50"
-                                              value={`${calculatedData(position).takeProfit}%`}
+                                              value={`${calculatedData(position).takeProfit}`}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -273,7 +304,7 @@ export const TradeBar = ({
                                             <TextRow
                                               label="Stop Loss"
                                               labelClass="text-black/50"
-                                              value={`${calculatedData(position).stopLoss}%`}
+                                              value={`${calculatedData(position).stopLoss}`}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -288,7 +319,7 @@ export const TradeBar = ({
                                             <TextRow
                                               label="PnL"
                                               labelClass="text-black/50"
-                                              value={`${calculatedData(position).pnl}%`}
+                                              value={`${calculatedData(position).pnl}`}
                                             />
                                           </div>
                                         </div>
