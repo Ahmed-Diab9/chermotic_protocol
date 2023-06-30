@@ -30,6 +30,7 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { copyText } from '~/utils/clipboard';
+import { oracle } from '@chromatic-protocol/sdk/dist/cjs/gen/contracts';
 
 const Trade = () => {
   useConnectOnce();
@@ -96,12 +97,10 @@ const Trade = () => {
   useMarketLocal();
 
   const { liquidity, positive, negative } = useChartData();
-  
-  
+
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
-      
-      <LiquidityTooltip data={liquidity}  />
+      <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
