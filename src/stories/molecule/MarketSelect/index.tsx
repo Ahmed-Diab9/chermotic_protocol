@@ -31,7 +31,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const marketPrice = useMemo(
     () =>
       `$${withComma(
-        formatDecimals(selectedMarket?.oracleValue?.price || 0, selectedToken?.decimals, 2)
+        formatDecimals(selectedMarket?.oracleValue?.price || 0, 18, 2)
       )}`,
     [selectedMarket, selectedToken]
   );
@@ -129,7 +129,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
                 onClick={() => onMarketClick?.(market)}
               >
                 <Avatar label={market.description} fontSize="lg" gap="2" size="sm" />
-                <p>{'$' + formatDecimals(market.oracleValue.price, selectedToken?.decimals, 2)}</p>
+                <p>{'$' + formatDecimals(market.oracleValue.price, 18, 2)}</p>
               </button>
             ))}
           </article>

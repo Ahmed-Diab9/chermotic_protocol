@@ -154,16 +154,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
       );
       return sum;
     }, BigNumber.from(0)) ?? BigNumber.from(0);
-  const totalBalance = ownedPool?.bins.reduce((sum, current) => {
-    sum = sum.add(current.clbTokenBalance);
-    return sum;
-  }, BigNumber.from(0));
+  const avgRemovableBalanceDenominator =
+    ownedPool?.bins
+      .reduce((sum, current) => {
+        sum = sum.add(current.clbTokenBalance);
+        return sum;
+      }, BigNumber.from(0))
+      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS) || BigNumber.from(1);
   const averageRemovableRate = formatDecimals(
     totalRemovableLiquidity
       .mul(expandDecimals(token?.decimals))
       .mul(expandDecimals(2))
       .mul(10 ** CLB_TOKEN_VALUE_DECIMALS)
-      .div(totalBalance?.mul(10 ** CLB_TOKEN_VALUE_DECIMALS) ?? 1),
+      .div(avgRemovableBalanceDenominator.isZero() ? 1 : avgRemovableBalanceDenominator),
     token?.decimals,
     2
   );
