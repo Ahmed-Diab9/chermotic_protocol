@@ -269,27 +269,35 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
-      <section className="px-10 py-7">
-        <div className={`flex gap-3 ${direction === 'long' && 'justify-end'}`}>
-          <p className="text-black/30">LP Volume</p>
-          {totalMaxLiquidity && totalUnusedLiquidity && token && (
-            <p>
-              {formatDecimals(
-                totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
-                token.decimals + 6,
-                1
-              )}{' '}
-              M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
-            </p>
-          )}
+      <section className="px-10 mt-6 pb-7">
+        <div className="mx-[-40px] relative border-y">
+          {/* graph */}
+          <FillUpChart
+            positive={direction === 'long'}
+            height={140}
+            data={liquidityData}
+            selectedAmount={input?.quantity}
+          />
+
+          {/* LP volume */}
+          <div
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-white/60 ${
+              direction === 'long' ? 'items-end right-0' : 'items-start left-0'
+            }`}
+          >
+            <p className="text-black/30">LP Volume</p>
+            {totalMaxLiquidity && totalUnusedLiquidity && token && (
+              <p>
+                {formatDecimals(
+                  totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+                  token.decimals + 6,
+                  1
+                )}{' '}
+                M/{formatDecimals(totalMaxLiquidity, token.decimals + 6, 1)} M
+              </p>
+            )}
+          </div>
         </div>
-        {/* graph */}
-        <FillUpChart
-          positive={direction === 'long'}
-          height={300}
-          data={liquidityData}
-          selectedAmount={input?.quantity}
-        />
         <article className="mt-5">
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
             <div className="flex justify-between">
