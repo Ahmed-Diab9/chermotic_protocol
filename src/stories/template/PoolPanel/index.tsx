@@ -129,10 +129,44 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const [minRate, maxRate] = rates;
 
   logger.info('liquidity', liquidity);
-  const totalLiquidity = bigNumberify(1);
-  const totalFreeLiquidity = bigNumberify(1);
-  const totalLiquidityValue = bigNumberify(1);
-  const totalRemovableRate = BigNumber.from(0);
+  const totalLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.liquidity);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalFreeLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.freeLiquidity);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalLiquidityValue =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.binValue);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalRemovableLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(
+        current.clbTokenBalance
+          .mul(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(2))
+      );
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalBalance = ownedPool?.bins.reduce((sum, current) => {
+    sum = sum.add(current.clbTokenBalance);
+    return sum;
+  }, BigNumber.from(0));
+  const averageRemovableRate = formatDecimals(
+    totalRemovableLiquidity
+      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(2))
+      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS)
+      .div(totalBalance?.mul(10 ** CLB_TOKEN_VALUE_DECIMALS) ?? 1),
+    token?.decimals,
+    2
+  );
   const ownedLongLiquidityBins = useMemo(
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0) || [],
     [ownedPool]
@@ -388,7 +422,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {formatDecimals(totalLiquidity, token?.decimals, 2)} {token?.name}
+                      {formatDecimals(totalLiquidityValue, token?.decimals, 2)} {token?.name}
                     </p>
                   </div>
                   <div className="flex flex-col justify-between xl:text-right xl:flex-row">
@@ -402,7 +436,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <p className="">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
-                      {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
+                      {averageRemovableRate}
                       %)
                     </p>
                   </div>
