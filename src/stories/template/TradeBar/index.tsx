@@ -53,7 +53,7 @@ export const TradeBar = ({
    * FIXME
    * Oracle Decimals을 확인해야 함
    */
-  const oracleDecimals = 6;
+  const oracleDecimals = 18;
   const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
     if (isNil(number)) return '-';
     return withComma(formatDecimals(number, decimals, 2));
@@ -88,8 +88,8 @@ export const TradeBar = ({
          * 퍼센트 값이라 소수점 2를 더 적용해야 함
          */
         pnl: printNumber(pnlPercentage, 4),
-        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), 18),
-        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), 18),
+        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
+        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
       };
       logger.info('view prop', props);
       return props;
@@ -187,7 +187,7 @@ export const TradeBar = ({
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Price</p>$
-                                            {printNumber(position.openPrice || 0, token?.decimals)}
+                                            {printNumber(position.openPrice || 0, oracleDecimals)}
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>

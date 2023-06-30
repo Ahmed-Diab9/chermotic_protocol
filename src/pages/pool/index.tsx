@@ -32,6 +32,7 @@ import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { useMargins } from '~/hooks/useMargins';
+import useOracleVersion from '~/hooks/useOracleVersion';
 
 const Pool = () => {
   useConnectOnce();
@@ -103,6 +104,7 @@ const Pool = () => {
   const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   const { liquidity, clbTokenValue } = useChartData();
+  const { oracleVersions } = useOracleVersion();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -139,6 +141,7 @@ const Pool = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
+          oracleVersions={oracleVersions}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onBalanceAmountChange}

@@ -1,8 +1,9 @@
-import { MarketSelect } from "../../molecule/MarketSelect";
-import { AssetPopover } from "../../molecule/AssetPopover";
-import { Market, Token } from "~/typings/market";
-import { BigNumber } from "ethers";
-import { ACCOUNT_STATUS, Account } from "~/typings/account";
+import { MarketSelect } from '../../molecule/MarketSelect';
+import { AssetPopover } from '../../molecule/AssetPopover';
+import { Market, Token } from '~/typings/market';
+import { BigNumber } from 'ethers';
+import { ACCOUNT_STATUS, Account } from '~/typings/account';
+import { OracleVersion } from '~/typings/oracleVersion';
 
 interface MainBarProps {
   account?: Account;
@@ -18,6 +19,12 @@ interface MainBarProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  oracleVersions?: Record<
+    string,
+    OracleVersion & {
+      decimals: number;
+    }
+  >;
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -41,6 +48,7 @@ export const MainBar = ({
   totalBalance,
   availableMargin,
   assetValue,
+  oracleVersions,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -58,6 +66,7 @@ export const MainBar = ({
           selectedToken={selectedToken}
           selectedMarket={selectedMarket}
           feeRate={feeRate}
+          oracleVersions={oracleVersions}
           onTokenClick={onTokenSelect}
           onMarketClick={onMarketSelect}
         />

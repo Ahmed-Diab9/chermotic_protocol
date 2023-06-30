@@ -50,7 +50,7 @@ export const useMultiPoolRemoveInput = () => {
       return balance.add(clbTokenBalance);
     }, BigNumber.from(0));
   }, [bins]);
-  
+
   const amount =
     type === MULTI_ALL
       ? clbTokenBalance
