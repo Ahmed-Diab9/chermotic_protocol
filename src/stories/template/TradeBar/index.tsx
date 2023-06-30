@@ -82,16 +82,11 @@ export const TradeBar = ({
         takeProfit: qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber(),
         profitPriceTo: priceTo('profit'),
         lossPriceTo: priceTo('loss'),
-
-        /**
-         * TODO
-         * 퍼센트 값이라 소수점 2를 더 적용해야 함
-         */
-        pnl: printNumber(pnlPercentage, 4),
+        pnl: printNumber(pnlPercentage, 2),
         lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
         profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
       };
-      logger.info('view prop', props);
+
       return props;
     });
   }, [token]);
