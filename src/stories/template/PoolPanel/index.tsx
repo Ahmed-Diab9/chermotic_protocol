@@ -103,7 +103,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiType,
     multiAmount,
     multiBalance,
-    multiClbTokenValue,
     isLoading,
     onAmountChange,
     onAddLiquidity,
