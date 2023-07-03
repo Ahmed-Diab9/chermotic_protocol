@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import { useAccount, useConnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { CONNECTOR_STORAGE_KEY } from "../configs/account";
-import { errorLog } from "../utils/log";
-import useLocalStorage from "./useLocalStorage";
+import { useCallback, useEffect, useState } from 'react';
+import { useAccount, useConnect } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { CONNECTOR_STORAGE_KEY } from '../configs/account';
+import { CHAIN_ID } from '../constants';
+import { errorLog } from '../utils/log';
+import useLocalStorage from './useLocalStorage';
 
 const useConnectOnce = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -25,7 +26,7 @@ const useConnectOnce = () => {
     await connectAsync({
       connector: new InjectedConnector(),
       // FIXME
-      chainId: 31337,
+      chainId: CHAIN_ID,
     });
   }, [isLoaded, isConnected, connectors, connectorId, connectAsync]);
 
