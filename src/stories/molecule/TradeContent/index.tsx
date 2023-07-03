@@ -98,7 +98,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     if (!isValid(input) || !isValid(market) || !isValid(token)) {
       return setPrices([undefined, undefined]);
     }
-    const { quantity, takeProfit, stopLoss } = input;
+    const { quantity, leverage, takerMargin, makerMargin } = input;
     const price = await market.oracleValue.price;
     if (input.collateral === 0) {
       return setPrices([
@@ -107,30 +107,26 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       ]);
     }
 
-    // Quantity에 profit, loss 비율 적용
-    // Long일 때는 profit을 덧셈, Short일 대는 profit을 뺄셈
-    const addedProfit =
-      input.direction === 'long'
-        ? quantity + quantity * (takeProfit / 100)
-        : quantity - quantity * (takeProfit / 100);
-    const addedLoss =
-      input.direction === 'long'
-        ? quantity - quantity * (stopLoss / 100)
-        : quantity + quantity * (stopLoss / 100);
-
-    // Profit, Loss가 더해진 Quantity를 진입 시 Quantity로 나눗셈하여 비율 계산
-    // 추가 소수점 5 적용
-    const decimals = 5;
-    const profitRate = Math.round((addedProfit / quantity) * numberBuffer(decimals));
-    const lossRate = Math.round((addedLoss / quantity) * numberBuffer(decimals));
-
-    // 현재 가격에 비율 곱하여 예상 청산가격을 계산
-    const takeProfitPrice = price.mul(profitRate);
-    const stopLossPrice = price.mul(lossRate);
+    /**
+     * TODO
+     * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
+     */
+    const qty = BigNumber.from(Math.round(quantity * numberBuffer()))
+      .mul(Math.round(leverage * numberBuffer()))
+      .div(numberBuffer())
+      .div(numberBuffer());
+    const profitDelta = price
+      .mul(Math.round(makerMargin * numberBuffer()))
+      .div(qty)
+      .div(numberBuffer());
+    const lossDelta = price
+      .mul(Math.round(takerMargin * numberBuffer()))
+      .div(qty)
+      .div(numberBuffer());
 
     setPrices([
-      withComma(formatDecimals(takeProfitPrice, oracleDecimals + decimals, 2)),
-      withComma(formatDecimals(stopLossPrice, oracleDecimals + decimals, 2)),
+      withComma(formatDecimals(price.add(profitDelta), oracleDecimals, 2)),
+      withComma(formatDecimals(price.sub(lossDelta), oracleDecimals, 2)),
     ]);
   }, [input, market, token]);
   useEffect(() => {
