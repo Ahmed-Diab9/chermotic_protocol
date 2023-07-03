@@ -11,6 +11,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useLiquiditiyPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
+import { TradeEvent } from '~/typings/events';
 
 const logger = Logger('useTradeInput');
 const initialTradeInput = {
@@ -215,10 +216,7 @@ export const useTradeInput = () => {
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
     pool,
-    liquidity: {
-      longTotalUnusedLiquidity,
-      shortTotalUnusedLiquidity,
-    },
+    liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquiditiyPool();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
@@ -391,6 +389,8 @@ export const useTradeInput = () => {
     });
     await fetchPositions();
     await fetchBalances();
+
+    window.dispatchEvent(TradeEvent);
   };
 
   return {
