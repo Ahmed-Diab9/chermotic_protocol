@@ -1,5 +1,8 @@
 import { CHAIN } from '../constants/contracts';
-export const USDC = '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892';
+export const USDC =
+  CHAIN === 'arbitrum_one'
+    ? '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
+    : '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892';
 export const MILLION_UNITS = 6;
 export const PRICE_FEED: Record<string, string | undefined> =
   CHAIN === 'arbitrum_one'
