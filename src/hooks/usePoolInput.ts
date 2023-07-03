@@ -13,6 +13,7 @@ import { isNil } from 'ramda';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { useLiquiditiyPool } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
+import { PoolEvent } from '~/typings/events';
 
 const logger = Logger('usePoolInput');
 const usePoolInput = () => {
@@ -111,6 +112,7 @@ const usePoolInput = () => {
 
       await fetchReceipts();
       await fetchWalletBalances();
+      window.dispatchEvent(PoolEvent);
     } catch (error) {
       console.error(error);
     } finally {

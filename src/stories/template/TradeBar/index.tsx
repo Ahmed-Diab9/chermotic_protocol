@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../atom/Button';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Tag } from '~/stories/atom/Tag';
@@ -23,6 +23,7 @@ import { Position } from '../../../hooks/usePosition';
 import { isNil } from 'ramda';
 import memoizeOne from 'memoize-one';
 import { PNL_RATE_DECIMALS as PNL_RATE_DECIMALS } from '../../../configs/decimals';
+import { TRADE_EVENT } from '~/typings/events';
 
 interface TradeBarProps {
   token?: Token;
@@ -48,6 +49,7 @@ export const TradeBar = ({
 }: TradeBarProps) => {
   // const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
 
   // const currentOracleVersion = useMemo(()=>{
   //   oracleVersions[]
@@ -124,6 +126,21 @@ export const TradeBar = ({
 
   const direction = useCallback((position: Position) => {
     return position.qty.gt(0) ? 'Long' : 'Short';
+  }, []);
+
+  useEffect(() => {
+    function onTrade() {
+      console.log('on trade event');
+      if (isValid(openButtonRef.current)) {
+        openButtonRef.current.click();
+      } else {
+        console.log('ERROR CLICKING');
+      }
+    }
+    window.addEventListener(TRADE_EVENT, onTrade);
+    return () => {
+      window.removeEventListener(TRADE_EVENT, onTrade);
+    };
   }, []);
   return (
     <Popover className="fixed bottom-0 w-full TradeBar">
@@ -405,7 +422,10 @@ export const TradeBar = ({
             </>
           ) : (
             <>
-              <Popover.Button className="w-full px-[60px] py-5 bg-white border-t tabs tabs-line tabs-base tabs-left">
+              <Popover.Button
+                className="w-full px-[60px] py-5 bg-white border-t tabs tabs-line tabs-base tabs-left"
+                ref={openButtonRef}
+              >
                 <h4 className="min-w-[140px] text-black/30">Position</h4>
                 <Button
                   iconOnly={<ChevronDoubleUpIcon />}

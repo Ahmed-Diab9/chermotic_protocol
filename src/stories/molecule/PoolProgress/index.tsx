@@ -17,9 +17,10 @@ import { Market, Token } from '~/typings/market';
 import { isValid } from '~/utils/valid';
 import { usePrevious } from '~/hooks/usePrevious';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { formatDecimals } from '~/utils/number';
+import { POOL_EVENT } from '~/typings/events';
 
 interface PoolProgressProps {
   token?: Token;
@@ -37,6 +38,7 @@ export const PoolProgress = ({
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
   const previousReceipts = usePrevious(receipts, true);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -52,12 +54,25 @@ export const PoolProgress = ({
     });
     return { mintings, burnings };
   }, [receipts]);
+  useEffect(() => {
+    function onPool() {
+      if (isValid(openButtonRef.current)) {
+        openButtonRef.current.click();
+      } else {
+        console.error('ERROR in opening progresses');
+      }
+    }
+    window.addEventListener(POOL_EVENT, onPool);
+    return () => {
+      window.removeEventListener(POOL_EVENT, onPool);
+    };
+  }, []);
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="relative flex items-center py-5">
+            <Disclosure.Button className="relative flex items-center py-5" ref={openButtonRef}>
               <div className="ml-10 text-left">
                 <h4 className="flex font-bold">
                   IN PROGRESS
@@ -151,7 +166,7 @@ export const PoolProgress = ({
                             detail={
                               receipt.status === 'standby'
                                 ? 'Waiting for the next oracle round'
-                                : receipt.amount.toString()
+                                : formatDecimals(receipt.amount, token?.decimals, 2)
                             }
                             name={receipt.name}
                             progressPercent={0}
@@ -175,7 +190,7 @@ export const PoolProgress = ({
                             detail={
                               receipt.status === 'standby'
                                 ? 'Waiting for the next oracle round'
-                                : receipt.amount.toString()
+                                : formatDecimals(receipt.amount, token?.decimals, 2)
                             }
                             name={receipt.name}
                             progressPercent={0}
@@ -241,13 +256,24 @@ interface ProgressItemProps {
   detail?: string;
   token?: string;
   name: string;
+  image?: string;
   progressPercent?: number;
   action: LpReceipt['action'];
   onClick?: () => unknown;
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { title, status, detail, token = 'USDC', name, action, progressPercent, onClick } = props;
+  const {
+    title,
+    status,
+    detail,
+    token = 'USDC',
+    name,
+    image,
+    action,
+    progressPercent,
+    onClick,
+  } = props;
 
   const renderTitle = useMemo(() => {
     return action === 'add' ? 'minting' : action === 'remove' ? 'burning' : '';
@@ -317,7 +343,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             'opacity-30'
           }`}
         >
-          <Thumbnail className="rounded" />
+          <Thumbnail className="rounded" src={image} />
           <div>
             <Avatar label={token} size="xs" gap="1" />
             <p className="mt-1 text-left text-black/30">{name}</p>
