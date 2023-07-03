@@ -65,9 +65,6 @@ interface PoolPanelProps {
   multiAmount?: number;
   multiBalance?: BigNumber;
   multiClbTokenValue?: BigNumber;
-  multiLiquidityValue?: BigNumber;
-  multiFreeLiquidity?: BigNumber;
-  multiRemovableRate?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
   onRemoveLiquidityBatch?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 
@@ -106,10 +103,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiType,
     multiAmount,
     multiBalance,
-    multiClbTokenValue,
-    multiLiquidityValue,
-    multiFreeLiquidity,
-    multiRemovableRate,
     isLoading,
     onAmountChange,
     onAddLiquidity,
@@ -135,10 +128,47 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const [minRate, maxRate] = rates;
 
   logger.info('liquidity', liquidity);
-  const totalLiquidity = bigNumberify(1);
-  const totalFreeLiquidity = bigNumberify(1);
-  const totalLiquidityValue = bigNumberify(1);
-  const totalRemovableRate = BigNumber.from(0);
+  const totalLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.liquidity);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalFreeLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.freeLiquidity);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalLiquidityValue =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(current.binValue);
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const totalRemovableLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum = sum.add(
+        current.clbTokenBalance
+          .mul(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
+          .div(expandDecimals(2))
+      );
+      return sum;
+    }, BigNumber.from(0)) ?? BigNumber.from(0);
+  const avgRemovableBalanceDenominator =
+    ownedPool?.bins
+      .reduce((sum, current) => {
+        sum = sum.add(current.clbTokenBalance);
+        return sum;
+      }, BigNumber.from(0))
+      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS) || BigNumber.from(1);
+  const averageRemovableRate = formatDecimals(
+    totalRemovableLiquidity
+      .mul(expandDecimals(token?.decimals))
+      .mul(expandDecimals(2))
+      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS)
+      .div(avgRemovableBalanceDenominator.isZero() ? 1 : avgRemovableBalanceDenominator),
+    token?.decimals,
+    2
+  );
   const ownedLongLiquidityBins = useMemo(
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0) || [],
     [ownedPool]
@@ -158,10 +188,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
       dispatch(poolsAction.onBinsSelect(bin));
     }
   };
-
-  // useEffect(() => {
-  //   logger.info('Rates', rates);
-  // }, [rates]);
 
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
 
@@ -398,7 +424,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {formatDecimals(totalLiquidity, token?.decimals, 2)} {token?.name}
+                      {formatDecimals(totalLiquidityValue, token?.decimals, 2)} {token?.name}
                     </p>
                   </div>
                   <div className="flex flex-col justify-between xl:text-right xl:flex-row">
@@ -412,7 +438,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <p className="">
                       {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
-                      {formatDecimals(totalRemovableRate, PERCENT_DECIMALS, 2)}
+                      {averageRemovableRate}
                       %)
                     </p>
                   </div>
@@ -511,10 +537,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
             type={multiType}
             amount={multiAmount}
             balance={multiBalance}
-            clbTokenValue={multiClbTokenValue}
-            liquidityValue={multiLiquidityValue}
-            freeLiquidity={multiFreeLiquidity}
-            removableRate={multiRemovableRate}
             onAmountChange={onMultiAmountChange}
             onRemoveLiquidity={onRemoveLiquidityBatch}
           />,
@@ -582,13 +604,13 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{bin?.removableRate}%</p>
+            <p>{bin?.removableRate.toFixed(2)}%</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>{bin && bin.clbTokenValue}</p>
+            <p>{bin && bin.clbTokenValue.toFixed(2)}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
@@ -596,7 +618,7 @@ const BinItem = (props: BinItemProps) => {
               {bin &&
                 formatDecimals(
                   bin.clbTokenBalance
-                    .mul(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS)
+                    .mul(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))
                     .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
                   token?.decimals,
                   2

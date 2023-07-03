@@ -57,7 +57,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     >
       {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center p-4 shadow-xl">
+      <div className="z-40 fixed inset-0 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -92,14 +92,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </p>
                 {selectedBin && (
                   <p>
-                    {formatDecimals(
-                      selectedBin.clbTokenBalance
-                        .mul(selectedBin.binValue)
-                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
-                      token?.decimals,
-                      2
-                    )}{' '}
-                    {token?.name}
+                    {formatDecimals(selectedBin.binValue, token?.decimals, 2)} {token?.name}
                   </p>
                 )}
               </div>
@@ -143,13 +136,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const liquidityValue = selectedBin.clbTokenBalance
-                        .mul(selectedBin.binValue)
-                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
-                      const nextAmount = liquidityValue?.lt(selectedBin.freeLiquidity)
-                        ? liquidityValue
+                      const nextAmount = selectedBin.binValue.lt(selectedBin.freeLiquidity)
+                        ? selectedBin.binValue
                         : selectedBin.freeLiquidity;
-                      onAmountChange?.(nextAmount.div(selectedBin.binValue).toNumber());
+                      onAmountChange?.(nextAmount.div(expandDecimals(token?.decimals)).toNumber());
                     }}
                   />
                 </div>
@@ -163,8 +153,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     {selectedBin &&
                       amount &&
                       formatDecimals(
-                        bigNumberify(amount).mul(selectedBin.binValue),
-                        CLB_TOKEN_VALUE_DECIMALS,
+                        bigNumberify(amount)
+                          .mul(Math.round(selectedBin.clbTokenValue * 10 ** 2))
+                          .div(10 ** 2),
+                        0,
                         2
                       )}{' '}
                     {token?.name})

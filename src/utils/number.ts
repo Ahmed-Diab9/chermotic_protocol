@@ -3,6 +3,7 @@ import { formatUnits } from 'ethers/lib/utils';
 import { isValid } from './valid';
 import { Price, Token } from '../typings/market';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
+import { isNil } from 'ramda';
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -64,15 +65,15 @@ export const applyDecimals = (value: BigNumberish, decimals: number) => {
 
 export const trimDecimals = (value: BigNumber | number, decimals: number): BigNumber => {
   const multiplicand = bigNumberify(10).pow(decimals);
-  return bigNumberify(value ?? 0)
-    .div(multiplicand);
+  return bigNumberify(value ?? 0).div(multiplicand);
 };
 
 export const formatDecimals = (
-  value: BigNumberish,
+  value?: BigNumberish,
   tokenDecimals?: number,
   decimalLimit?: number
 ) => {
+  if (isNil(value)) return '0';
   const formatted = formatUnits(value, tokenDecimals);
   const [numeric, decimals] = formatted.split('.');
   const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';

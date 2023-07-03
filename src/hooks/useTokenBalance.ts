@@ -5,12 +5,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount, useSigner } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { Logger } from '~/utils/log';
-import { bigNumberify } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-import { useAppSelector } from '../store';
-import { usePosition } from './usePosition';
 const logger = Logger('useBalances');
 function filterResponse<T>(response: PromiseSettledResult<T>[]) {
   return response
@@ -67,31 +62,4 @@ export const useTokenBalances = () => {
     logger.error(error);
   }
   return { useTokenBalances, fetchTokenBalances } as const;
-};
-
-export const useUsumMargins = () => {
-  const { balances } = useUsumAccount();
-  const { positions = [] } = usePosition();
-  const token = useAppSelector((state) => state.token.selectedToken);
-
-  const [totalBalance, totalAsset] = useMemo(() => {
-    if (!isValid(balances) || !isValid(token)) {
-      return [bigNumberify(0), bigNumberify(0)];
-    }
-    const balance = balances[token.name];
-    return [balance, balance];
-  }, [balances, token, positions]);
-
-  const totalMargin = useMemo(() => {
-    if (isValid(balances) && isValid(token)) {
-      return balances[token.name];
-    }
-    return bigNumberify(0);
-  }, [balances, token]);
-
-  return {
-    totalBalance,
-    totalAsset,
-    totalMargin,
-  };
 };

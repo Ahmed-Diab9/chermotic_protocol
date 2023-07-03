@@ -1,6 +1,9 @@
-import { useEffect } from "react";
-import { Client } from "@chromatic-protocol/sdk";
-import { useAccount, useProvider, useSigner } from "wagmi";
+import { useEffect } from 'react';
+import { Client } from '@chromatic-protocol/sdk';
+import { useAccount, useProvider, useSigner } from 'wagmi';
+import { Logger } from '../utils/log';
+
+const logger = Logger('useChromaticClient');
 
 let client: Client | undefined;
 export function useChromaticClient() {
@@ -11,13 +14,16 @@ export function useChromaticClient() {
 
   useEffect(() => {
     if (!client) {
-      client = new Client("anvil", signer || provider);
+      client = new Client('anvil', signer || provider);
     }
   }, []);
 
   useEffect(() => {
     if (client) {
-      if (isConnected && signer) client.signer = signer;
+      if (isConnected && signer) {
+        logger.info('set signer', signer);
+        client.signer = signer;
+      }
       if (provider) client.provider = provider;
     }
   }, [signer, provider]);

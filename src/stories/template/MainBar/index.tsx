@@ -1,8 +1,8 @@
-import { MarketSelect } from "../../molecule/MarketSelect";
-import { AssetPopover } from "../../molecule/AssetPopover";
-import { Market, Token } from "~/typings/market";
-import { BigNumber } from "ethers";
-import { ACCOUNT_STATUS, Account } from "~/typings/account";
+import { BigNumber } from 'ethers';
+import { ACCOUNT_STATUS, Account } from '~/typings/account';
+import { Market, Token } from '~/typings/market';
+import { AssetPopover } from '../../molecule/AssetPopover';
+import { MarketSelect } from '../../molecule/MarketSelect';
 
 interface MainBarProps {
   account?: Account;
@@ -66,7 +66,7 @@ export const MainBar = ({
         <AssetPopover
           account={account}
           status={status}
-          token={selectedToken}
+          selectedToken={selectedToken}
           walletBalances={walletBalances}
           usumBalances={usumBalances}
           amount={amount}

@@ -3,6 +3,7 @@ import { ChartTooltip } from '~/stories/atom/ChartTooltip';
 import { withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Liquidity } from '~/typings/chart';
+import { BigNumberish } from 'ethers';
 
 export type LiquidityTooltipData = {
   available: number;

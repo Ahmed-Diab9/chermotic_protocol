@@ -24,7 +24,7 @@ export const useMarket = (_interval?: number) => {
     isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
       const markets = (await client?.marketFactory().getMarkets(tokenAddress)) || [];
-      return markets
+      return markets;
     }
   );
 
@@ -43,17 +43,3 @@ export const useMarket = (_interval?: number) => {
   return { markets, currentMarket, fetchMarkets, onMarketSelect } as const;
 };
 
-// export const useMarketSelect = () => {
-//   const dispatch = useAppDispatch();
-//   const { setState: setStoredMarket } = useLocalStorage('usum:market');
-
-//   const onMarketSelect = useCallback(
-//     (market: Market) => {
-//       dispatch(marketAction.onMarketSelect(market));
-//       setStoredMarket(market.description);
-//     },
-//     [dispatch]
-//   );
-
-//   return onMarketSelect;
-// };

@@ -3,7 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useUsumMargins, useTokenBalances } from '~/hooks/useBalances';
+import { useTokenBalances } from '~/hooks/useTokenBalance';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
@@ -31,6 +31,8 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { useMargins } from '~/hooks/useMargins';
+import useOracleVersion from '~/hooks/useOracleVersion';
 
 const Pool = () => {
   useConnectOnce();
@@ -94,15 +96,11 @@ const Pool = () => {
     type: multiType,
     amount: multiAmount,
     clbTokenBalance: multiClbTokenBalance,
-    liquidityValue: multiLiquidityValue,
-    removableLiquidity: multiFreeLiquidity,
-    removableRate: multiRemovableRate,
     onAmountChange: onMultiAmountChange,
   } = useMultiPoolRemoveInput();
-  const { totalBalance, totalAsset, totalMargin } = useUsumMargins();
   useTokenLocal();
   useMarketLocal();
-
+  const { totalBalance, totalAsset, totalMargin } = useMargins();
   const { liquidity, clbTokenValue } = useChartData();
 
   return (
@@ -186,11 +184,7 @@ const Pool = () => {
               multiType={multiType}
               multiAmount={multiAmount}
               multiBalance={multiClbTokenBalance}
-              multiLiquidityValue={multiLiquidityValue}
-              multiFreeLiquidity={multiFreeLiquidity}
-              multiRemovableRate={multiRemovableRate}
               onMultiAmountChange={onMultiAmountChange}
-              // ownedPool={ownedPool}
             />
             {/* bottom */}
             <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">

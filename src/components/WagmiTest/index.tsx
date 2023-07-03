@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useTokenBalances } from "~/hooks/useBalances";
+import { useTokenBalances } from "~/hooks/useTokenBalance";
 import { useUsumAccount } from "~/hooks/useUsumAccount";
 import { useAppSelector } from "~/store";
 
