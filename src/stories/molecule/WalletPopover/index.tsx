@@ -1,3 +1,5 @@
+import './style.css';
+import '../../atom/Tabs/style.css';
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { BigNumber } from 'ethers';
@@ -12,9 +14,10 @@ import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
-import '../../atom/Tabs/style.css';
 import { Thumbnail } from '../../atom/Thumbnail';
-import './style.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
   account?: Account;
@@ -23,6 +26,7 @@ interface WalletPopoverProps {
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
+  loading?: boolean;
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
@@ -38,6 +42,7 @@ export const WalletPopover = ({
   balances,
   priceFeed,
   pools,
+  loading,
   onConnect,
   onDisconnect,
   onCreateAccount,
@@ -128,30 +133,57 @@ export const WalletPopover = ({
                                   priceFeed &&
                                   tokens?.map((token) => (
                                     <div key={token.address} className="flex items-center">
-                                      <Avatar
-                                        label={token.name}
-                                        size="xs"
-                                        fontSize="base"
-                                        gap="1"
-                                      />
+                                      {loading && (
+                                        <div className="flex items-center gap-1">
+                                          <Skeleton
+                                            circle
+                                            containerClassName="avatar-skeleton w-4 text-lg"
+                                          />
+                                          <Skeleton width={40} containerClassName="leading-none" />
+                                        </div>
+                                      )}
+                                      <span className={loading ? 'hidden' : ''}>
+                                        <Avatar
+                                          label={token.name}
+                                          size="xs"
+                                          fontSize="base"
+                                          gap="1"
+                                        />
+                                      </span>
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
-                                          $
-                                          {withComma(
-                                            formatBalance(
-                                              balances[token.name],
-                                              token,
-                                              priceFeed[token.name]
-                                            )
+                                          {loading && (
+                                            <Skeleton
+                                              width={40}
+                                              containerClassName="leading-none"
+                                            />
                                           )}
+                                          <span className={loading ? 'hidden' : ''}>
+                                            $
+                                            {withComma(
+                                              formatBalance(
+                                                balances[token.name],
+                                                token,
+                                                priceFeed[token.name]
+                                              )
+                                            )}
+                                          </span>
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
-                                          {withComma(
-                                            balances[token.name]
-                                              .div(expandDecimals(token.decimals))
-                                              .toString()
-                                          )}{' '}
-                                          {token.name}
+                                          {loading && (
+                                            <Skeleton
+                                              width={40}
+                                              containerClassName="leading-none"
+                                            />
+                                          )}
+                                          <span className={loading ? 'hidden' : ''}>
+                                            {withComma(
+                                              balances[token.name]
+                                                .div(expandDecimals(token.decimals))
+                                                .toString()
+                                            )}{' '}
+                                            {token.name}
+                                          </span>
                                         </p>
                                       </div>
                                     </div>

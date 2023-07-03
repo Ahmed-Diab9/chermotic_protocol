@@ -16,3 +16,6 @@
 .avatar-xl {
   @apply w-20 h-20;
 }
+.avatar-skeleton {
+  @apply flex-none h-full leading-none;
+}
