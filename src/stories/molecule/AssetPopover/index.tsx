@@ -1,5 +1,10 @@
+import './style.css';
 import { Popover } from '@headlessui/react';
-import { ArrowTopRightOnSquareIcon, CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowTopRightOnSquareIcon,
+  CheckIcon,
+  ChevronDoubleUpIcon,
+} from '@heroicons/react/24/outline';
 import { BigNumber } from 'ethers';
 import { isNotNil } from 'ramda';
 import { Loading } from '~/stories/atom/Loading';
@@ -18,7 +23,8 @@ import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../.
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
-import './style.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -31,6 +37,7 @@ interface AssetPopoverProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  loading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -48,6 +55,7 @@ export const AssetPopover = ({
   totalBalance,
   availableMargin,
   assetValue,
+  loading,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -67,7 +75,11 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-2xl">
-                {totalBalance && withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                {loading && <Skeleton width={120} />}
+                <span className={loading ? 'hidden' : ''}>
+                  {totalBalance &&
+                    withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                </span>
               </h2>
               <Popover.Group className="flex gap-3">
                 <AssetPanel
@@ -84,6 +96,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
+                  loading={loading}
                 />
                 <AssetPanel
                   title="Withdraw"
@@ -99,6 +112,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
+                  loading={loading}
                 />
               </Popover.Group>
             </>
@@ -122,6 +136,7 @@ interface AssetPanelProps {
   amount?: string;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  loading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -140,6 +155,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     amount,
     availableMargin = bigNumberify(0),
     assetValue = bigNumberify(0),
+    loading,
     onAmountChange,
     onDeposit,
     onWithdraw,
@@ -304,7 +320,10 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                        {loading && <Skeleton width={80} />}
+                        <span className={loading ? 'hidden' : ''}>
+                          {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                        </span>
                       </p>
                     </div>
                     <div>
@@ -316,7 +335,10 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                        {loading && <Skeleton width={80} />}
+                        <span className={loading ? 'hidden' : ''}>
+                          {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                        </span>
                       </p>
                     </div>
                   </article>
