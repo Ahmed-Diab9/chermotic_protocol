@@ -30,7 +30,7 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { copyText } from '~/utils/clipboard';
-import { oracle } from '@chromatic-protocol/sdk/dist/cjs/gen/contracts';
+import { useMargins } from '~/hooks/useMargins';
 
 const Trade = () => {
   useConnectOnce();
@@ -41,9 +41,6 @@ const Trade = () => {
     createAccount: createUsumAccount,
     status,
     balances,
-    totalBalance,
-    totalAsset,
-    totalMargin,
   } = useUsumAccount();
   const { tokens, onTokenSelect, currentSelectedToken } = useSettlementToken();
   const { markets, onMarketSelect, currentMarket } = useMarket();
@@ -97,6 +94,7 @@ const Trade = () => {
   useMarketLocal();
 
   const { liquidity, positive, negative } = useChartData();
+  const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
