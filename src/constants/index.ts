@@ -1,0 +1,1 @@
+export { CHAIN, CHAIN_ID, DEPLOYED_ADDRESSES, DEPLOYED_CONTRACTS } from './contracts';
