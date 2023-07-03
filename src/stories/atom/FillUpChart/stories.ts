@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { FillUpChart } from ".";
+import { FillUpChart } from '.';
 
-import { RANGE_CONFIG } from "~/configs/chart";
+import { RANGE_CONFIG } from '~/configs/chart';
 
 const trackMap = RANGE_CONFIG.reduce((acc: any, { start, end, interval }) => {
   acc.push(start);
@@ -19,26 +19,26 @@ const barSample = trackMap.map((tick: number, idx: number) => {
   return {
     key: tick,
     value: [
-      { label: "utilized", amount: +(value * 100).toFixed(0) },
-      { label: "available", amount: +(value * 70).toFixed(0) },
+      { label: 'utilized', amount: +(value * 100).toFixed(0) },
+      { label: 'available', amount: +(value * 70).toFixed(0) },
     ],
   };
 });
 
 const meta = {
-  title: "Atom/FillUpChart",
+  title: 'Atom/FillUpChart',
   component: FillUpChart,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   args: {
     selectedAmount: 0,
     height: 300,
     data: barSample,
-    selectableLabel: "available",
+    selectableLabel: 'available',
   },
   argTypes: {
     negative: { control: { type: null } },
     positive: { control: { type: null } },
-    selectedAmount: { control: { type: "range", min: 0, max: 2170 } },
+    selectedAmount: { control: { type: 'range', min: 0, max: 2170 } },
   },
 } satisfies Meta<typeof FillUpChart>;
 
