@@ -269,8 +269,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
-      <section className="px-10 mt-6 pb-7">
-        <div className="mx-[-40px] relative border-y">
+      <section className="px-10 pb-7">
+        <div className="mx-[-40px] relative border-b">
           {/* graph */}
           <FillUpChart
             positive={direction === 'long'}
