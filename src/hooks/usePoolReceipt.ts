@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, BigNumberish } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -10,6 +10,7 @@ import { useAppSelector } from '../store';
 import { numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
+import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -22,6 +23,33 @@ export interface LpReceipt {
   name: string;
   action: LpReceiptAction;
 }
+
+const receiptDetail = (
+  action: 0 | 1 | number,
+  receiptOracleVersion: BigNumber,
+  currentOracleVersion: BigNumberish,
+  bin: ClaimableLiquidityResult
+) => {
+  switch (action) {
+    case 0:
+      if (receiptOracleVersion.lt(currentOracleVersion)) {
+        return 'completed';
+      } else {
+        return 'standby';
+      }
+    case 1:
+      if (receiptOracleVersion.gte(currentOracleVersion)) {
+        return 'standby';
+      }
+      if (bin.burningCLBTokenAmountRequested.eq(bin.burningCLBTokenAmount)) {
+        return 'completed';
+      } else {
+        return 'in progress';
+      }
+    default:
+      return 'standby';
+  }
+};
 
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
@@ -79,18 +107,7 @@ const usePoolReceipt = () => {
           tradingFeeRate,
         } = receipt;
         let status: LpReceipt['status'] = 'standby';
-        if (action === 0 && receiptOracleVersion.lt(currentOracleVersion)) {
-          status = 'completed';
-        } else if (action === 1) {
-          if (receiptOracleVersion.gte(currentOracleVersion)) {
-            status = 'in progress';
-          } else if (bin.burningCLBTokenAmountRequested.eq(bin.burningCLBTokenAmount))
-            status = 'completed';
-          else {
-            status = 'in progress';
-          }
-        }
-
+        status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, bin);
         return {
           id,
           action: action === 0 ? 'add' : 'remove',

@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { fromPairs, isNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -23,7 +23,9 @@ export const useUsumAccount = () => {
   const { client } = useChromaticClient();
   // const accountApi = useMemo(() => client?.account(), [client]);
 
-  const fetchKey = isValid(address) ? ['USUM_ACCOUNT', address] : undefined;
+  const signerKey = isValid(client?.signer) ? 'SIGNER' : undefined;
+  const fetchKey =
+    isValid(address) && isValid(signerKey) ? ['USUM_ACCOUNT', address, signerKey] : undefined;
 
   const {
     data: accountAddress,
@@ -36,12 +38,17 @@ export const useUsumAccount = () => {
       if (isNil(accountApi)) {
         return;
       }
-      const accountAddress = await accountApi.getAccount();
-      if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
-        setStatus(ACCOUNT_NONE);
-      } else {
-        setStatus(ACCOUNT_COMPLETED);
-        return accountAddress;
+      try {
+        const accountAddress = await accountApi.getAccount();
+        if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+          setStatus(ACCOUNT_NONE);
+        } else {
+          setStatus(ACCOUNT_COMPLETED);
+          return accountAddress;
+        }
+      } catch (error) {
+        logger.error(error);
+        return;
       }
     },
     {
@@ -53,7 +60,7 @@ export const useUsumAccount = () => {
     data: balances,
     error: balanceError,
     mutate: fetchBalances,
-  } = useSWR(['ChromaticAccBal', address], async () => {
+  } = useSWR(['ChromaticAccBal', address, signerKey], async () => {
     const accountApi = client?.account();
     if (
       isNil(tokens) ||

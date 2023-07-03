@@ -12,7 +12,8 @@ const logger = Logger('useTokenTransaction');
 const useTokenTransaction = () => {
   const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
-  const { accountAddress: chromaticAccountAddress } = useUsumAccount();
+  const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
+    useUsumAccount();
   const token = useAppSelector((state) => state.token.selectedToken);
   const { client } = useChromaticClient();
   const accountApi = useMemo(() => client?.account(), [client]);
@@ -38,7 +39,9 @@ const useTokenTransaction = () => {
       logger.info('invalid amount', expanded);
       return;
     }
-    tokenContract?.transfer(chromaticAccountAddress, expanded);
+    await tokenContract?.transfer(chromaticAccountAddress, expanded);
+
+    await fetchChromaticBalances();
   }, [amount, walletAddress, chromaticAccountAddress]);
 
   const onWithdraw = useCallback(async () => {
@@ -56,6 +59,7 @@ const useTokenTransaction = () => {
       return;
     }
     await accountApi?.contracts().account().withdraw(token.address, expanded);
+    await fetchChromaticBalances();
   }, [chromaticAccountAddress, token, amount]);
 
   const onAmountChange = useCallback((nextValue: string) => {
