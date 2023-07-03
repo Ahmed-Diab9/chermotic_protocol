@@ -595,7 +595,7 @@ const BinItem = (props: BinItemProps) => {
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
-          <Thumbnail src={undefined} size="lg" className="rounded" />
+          <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
