@@ -133,7 +133,7 @@ export const WalletPopover = ({
                                   priceFeed &&
                                   tokens?.map((token) => (
                                     <div key={token.address} className="flex items-center">
-                                      {loading && (
+                                      {loading ? (
                                         <div className="flex items-center gap-1">
                                           <Skeleton
                                             circle
@@ -141,49 +141,50 @@ export const WalletPopover = ({
                                           />
                                           <Skeleton width={40} containerClassName="leading-none" />
                                         </div>
-                                      )}
-                                      <span className={loading ? 'hidden' : ''}>
+                                      ) : (
                                         <Avatar
                                           label={token.name}
                                           size="xs"
                                           fontSize="base"
                                           gap="1"
                                         />
-                                      </span>
+                                      )}
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
-                                          {loading && (
+                                          {loading ? (
                                             <Skeleton
                                               width={40}
                                               containerClassName="leading-none"
                                             />
+                                          ) : (
+                                            <>
+                                              $
+                                              {withComma(
+                                                formatBalance(
+                                                  balances[token.name],
+                                                  token,
+                                                  priceFeed[token.name]
+                                                )
+                                              )}
+                                            </>
                                           )}
-                                          <span className={loading ? 'hidden' : ''}>
-                                            $
-                                            {withComma(
-                                              formatBalance(
-                                                balances[token.name],
-                                                token,
-                                                priceFeed[token.name]
-                                              )
-                                            )}
-                                          </span>
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
-                                          {loading && (
+                                          {loading ? (
                                             <Skeleton
                                               width={40}
                                               containerClassName="leading-none"
                                             />
+                                          ) : (
+                                            <>
+                                              {withComma(
+                                                balances[token.name]
+                                                  .div(expandDecimals(token.decimals))
+                                                  .toString()
+                                              )}{' '}
+                                              {token.name}
+                                            </>
                                           )}
-                                          <span className={loading ? 'hidden' : ''}>
-                                            {withComma(
-                                              balances[token.name]
-                                                .div(expandDecimals(token.decimals))
-                                                .toString()
-                                            )}{' '}
-                                            {token.name}
-                                          </span>
                                         </p>
                                       </div>
                                     </div>

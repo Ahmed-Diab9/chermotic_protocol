@@ -48,11 +48,14 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
         <div className="flex items-center gap-4 mr-10">
           <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
             <h4>
-              {loading && <Skeleton width={80} />}
-              <span className={loading ? 'hidden' : ''}>
-                {formatDecimals(feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0, 4, 4)}
-                %/h
-              </span>
+              {loading ? (
+                <Skeleton width={80} />
+              ) : (
+                <>
+                  {formatDecimals(feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0, 4, 4)}
+                  %/h
+                </>
+              )}
             </h4>
             <div className="flex">
               <p>Interest Rate</p>
@@ -63,10 +66,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               />
             </div>
           </div>
-          <h2 className="text-2xl">
-            {loading && <Skeleton width={80} />}
-            <span className={loading ? 'hidden' : ''}>{marketPrice}</span>
-          </h2>
+          <h2 className="text-2xl">{loading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
         </div>
       </div>
     </>

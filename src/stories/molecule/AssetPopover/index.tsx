@@ -75,11 +75,14 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-2xl">
-                {loading && <Skeleton width={120} />}
-                <span className={loading ? 'hidden' : ''}>
-                  {totalBalance &&
-                    withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
-                </span>
+                {loading ? (
+                  <Skeleton width={120} />
+                ) : (
+                  <>
+                    {totalBalance &&
+                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                  </>
+                )}
               </h2>
               <Popover.Group className="flex gap-3">
                 <AssetPanel
@@ -320,10 +323,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {loading && <Skeleton width={80} />}
-                        <span className={loading ? 'hidden' : ''}>
-                          {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
-                        </span>
+                        {loading ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                          </>
+                        )}
                       </p>
                     </div>
                     <div>
@@ -335,10 +341,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {loading && <Skeleton width={80} />}
-                        <span className={loading ? 'hidden' : ''}>
-                          {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
-                        </span>
+                        {loading ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                          </>
+                        )}
                       </p>
                     </div>
                   </article>
