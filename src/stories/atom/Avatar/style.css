@@ -11,10 +11,10 @@
   @apply w-8 h-8;
 }
 .avatar-lg {
-  @apply w-12 h-12;
+  @apply w-10 h-10;
 }
 .avatar-xl {
-  @apply w-20 h-20;
+  @apply w-12 h-12;
 }
 .avatar-skeleton {
   @apply flex-none h-full leading-none;

@@ -198,24 +198,57 @@ export const WalletPopover = ({
                                 {pools?.map((pool, poolIndex) => (
                                   <div
                                     key={`${pool.token}-${pool.market}`}
-                                    className="flex flex-col pb-3 border-b last:border-b-0"
+                                    className="flex gap-3 pb-3 border-b last:border-b-0"
                                   >
-                                    <div className="flex gap-2">
-                                      <p>{pool.token.name}</p>
-                                      <span className="px-1 text-grayL">|</span>
-                                      <p>{pool.market}</p>
-                                    </div>
-                                    <div className="flex mt-3">
-                                      <div className="mr-auto">
-                                        <p className="text-base font-medium text-black/30">
-                                          {formatDecimals(pool.liquidity, pool.token.decimals, 2)}{' '}
-                                          {pool.token.name}
-                                        </p>
-                                        <p className="mt-2 text-base text-black">
-                                          {pool.bins} Bins
-                                        </p>
+                                    {loading ? (
+                                      <Skeleton
+                                        circle
+                                        containerClassName="avatar-skeleton w-10 text-[40px]"
+                                      />
+                                    ) : (
+                                      <Avatar size="lg" src={undefined} />
+                                    )}
+                                    <div className="flex-1">
+                                      <div className="flex gap-2 leading-none">
+                                        {loading ? (
+                                          <Skeleton containerClassName="flex-1" width={120} />
+                                        ) : (
+                                          <>
+                                            <p>{pool.token.name}</p>
+                                            <span className="px-1 text-grayL">|</span>
+                                            <p>{pool.market}</p>
+                                          </>
+                                        )}
                                       </div>
-                                      <Thumbnail size="base" src={undefined} />
+                                      <div className="flex mt-3">
+                                        <div className="mr-auto">
+                                          <p className="text-base font-medium text-black/30">
+                                            {loading ? (
+                                              <>
+                                                <Skeleton containerClassName="flex-1" width={80} />
+                                              </>
+                                            ) : (
+                                              <>
+                                                {formatDecimals(
+                                                  pool.liquidity,
+                                                  pool.token.decimals,
+                                                  2
+                                                )}{' '}
+                                                {pool.token.name}
+                                              </>
+                                            )}
+                                          </p>
+                                          <p className="mt-2 text-base text-black">
+                                            {loading ? (
+                                              <>
+                                                <Skeleton containerClassName="flex-1" width={80} />
+                                              </>
+                                            ) : (
+                                              <>{pool.bins} Bins</>
+                                            )}
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
