@@ -15,6 +15,7 @@ import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
+import { PoolEvent } from '~/typings/events';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -118,6 +119,8 @@ export const useOwnedLiquidityPools = () => {
       });
       await fetchReceipts();
       await fetchWalletBalances();
+
+      window.dispatchEvent(PoolEvent);
     },
     [signer, address, currentMarket, routerApi]
   );
