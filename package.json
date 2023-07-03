@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:dev": "export VITE_TARGET_CHAIN=anvil; tsc && vite build",
+    "build:testnet": "export VITE_TARGET_CHAIN=arbitrum_goerli; tsc && vite build",
+    "build:mainnet": "export VITE_TARGET_CHAIN=arbitrum_one; tsc && vite build",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
