@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 
 // import Demo from "./pages/demo";
 import Pool from './pages/pool';
@@ -15,11 +15,7 @@ import WagmiTest from './components/WagmiTest';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <div>
-        <h1 className="text-3xl font-bold underline">MAIN</h1>
-      </div>
-    ),
+    element: <Navigate to={'/trade'} />,
   },
   {
     path: '/hello',
