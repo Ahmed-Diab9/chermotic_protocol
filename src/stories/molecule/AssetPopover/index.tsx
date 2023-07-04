@@ -1,10 +1,14 @@
-import { Popover } from '@headlessui/react';
-import { ArrowTopRightOnSquareIcon, CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { BigNumber } from 'ethers';
-import { isNotNil } from 'ramda';
-import { Loading } from '~/stories/atom/Loading';
-import { Outlink } from '~/stories/atom/Outlink';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { Popover } from '@headlessui/react'
+import {
+  ArrowTopRightOnSquareIcon,
+  CheckIcon,
+  ChevronDoubleUpIcon,
+} from '@heroicons/react/24/outline'
+import { BigNumber } from 'ethers'
+import { isNotNil } from 'ramda'
+import { Loading } from '~/stories/atom/Loading'
+import { Outlink } from '~/stories/atom/Outlink'
+import { TooltipGuide } from '~/stories/atom/TooltipGuide'
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -12,13 +16,17 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
   Account,
-} from '../../../typings/account';
-import { Token } from '../../../typings/market';
-import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number';
-import { Avatar } from '../../atom/Avatar';
-import { Button } from '../../atom/Button';
-import { OptionInput } from '../../atom/OptionInput';
-import './style.css';
+} from '../../../typings/account'
+import { Token } from '../../../typings/market'
+import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number'
+import { Avatar } from '../../atom/Avatar'
+import { Button } from '../../atom/Button'
+import { OptionInput } from '../../atom/OptionInput'
+import './style.css'
+
+import checkIcon from '/src/assets/images/i_check_xl.svg'
+import createAccountIcon from '/src/assets/images/i_create_account_xl.svg'
+import loadingIcon from '/src/assets/images/i_loading_xl.svg'
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -161,7 +169,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
-                  <img src="/src/assets/images/i_create_account_xl.svg" alt="create account" />
+                  <img src={createAccountIcon} alt="create account" />
                   <p>
                     To make a deposit, you need to <br />
                     create account first
@@ -202,11 +210,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
-                  <img
-                    src="/src/assets/images/i_loading_xl.svg"
-                    alt="creating account"
-                    className="animate-spin-slow"
-                  />
+                  <img src={loadingIcon} alt="creating account" className="animate-spin-slow" />
                   <p>
                     The account addtress is being generated <br /> on the chain
                   </p>
@@ -246,7 +250,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
-                  <img src="/src/assets/images/i_check_xl.svg" alt="creating account" />
+                  <img src={checkIcon} alt="creating account" />
                   <p>Account has been created</p>
                 </article>
                 <div className="py-8"></div>

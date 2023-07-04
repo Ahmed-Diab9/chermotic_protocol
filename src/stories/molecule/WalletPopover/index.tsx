@@ -15,6 +15,9 @@ import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
 import { Thumbnail } from '../../atom/Thumbnail';
 import './style.css';
+
+import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
   account?: Account;
@@ -55,7 +58,7 @@ export const WalletPopover = ({
             <Popover.Button className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]">
               <Avatar
                 label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
-                src="/src/assets/images/arbitrum.svg"
+                src={arbitrumIcon}
                 className="!w-[44px] !h-[44px]"
                 fontSize="sm"
                 fontWeight="normal"
@@ -77,7 +80,7 @@ export const WalletPopover = ({
                 <div className="relative flex flex-col h-full ">
                   {/* Network */}
                   <Avatar
-                    src="/src/assets/images/arbitrum.svg"
+                    src={arbitrumIcon}
                     label="Arbitrum Network"
                     size="lg"
                     fontSize="sm"
