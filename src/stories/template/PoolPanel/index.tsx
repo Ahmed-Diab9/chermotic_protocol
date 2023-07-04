@@ -245,13 +245,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {formatDecimals(
                             shortTotalMaxLiquidity.sub(shortTotalUnusedLiquidity),
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M /{' '}
                           {formatDecimals(
                             shortTotalMaxLiquidity,
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M
                         </p>
@@ -268,13 +268,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {formatDecimals(
                             longTotalUnusedLiquidity,
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M /{' '}
                           {formatDecimals(
                             longTotalMaxLiquidity.sub(longTotalUnusedLiquidity),
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M
                         </p>
