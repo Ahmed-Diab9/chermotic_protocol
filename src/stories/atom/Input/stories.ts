@@ -1,12 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Input } from '.';
 
-import { Input } from ".";
+import usdcIcon from '/src/assets/images/usdc.svg';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/Input",
+  title: 'Atom/Input',
   component: Input,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {},
 } satisfies Meta<typeof Input>;
 
@@ -15,13 +16,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: "Input",
+    label: 'Input',
   },
 };
 
 export const WithAssetImage: Story = {
   args: {
-    label: "Base Default OptionInput with Image",
-    assetSrc: "src/assets/images/usdc.svg",
+    label: 'Base Default OptionInput with Image',
+    assetSrc: usdcIcon,
   },
 };
