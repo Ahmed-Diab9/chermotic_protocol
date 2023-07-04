@@ -200,6 +200,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               onClick={() => {
                 if (isValid(selectedBin) && isValid(amount)) {
                   onRemoveLiquidity?.(selectedBin.baseFeeRate, amount);
+                  onAmountChange?.(0);
                 }
               }}
             />

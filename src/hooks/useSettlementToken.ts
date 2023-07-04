@@ -7,6 +7,7 @@ import { Token } from '~/typings/market';
 import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
+import { toast } from 'react-toastify';
 
 export const useSettlementToken = () => {
   const { address } = useAccount();
@@ -35,6 +36,7 @@ export const useSettlementToken = () => {
     (token: Token) => {
       dispatch(tokenAction.onTokenSelect(token));
       setStoredToken(token.name);
+      toast('Settlement token is now selected.');
     },
     [dispatch]
   );

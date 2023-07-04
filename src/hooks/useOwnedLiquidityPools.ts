@@ -16,6 +16,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { PoolEvent } from '~/typings/events';
+import { toast } from 'react-toastify';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -95,63 +96,81 @@ export const useOwnedLiquidityPools = () => {
     async (feeRate: number, amount: number) => {
       if (isNil(signer) || isNil(address)) {
         logger.info('no signer or address', signer, address);
-        return;
-      }
-      if (isNil(ownedPools)) {
-        logger.info('no pool');
+        toast('Connect your wallet.');
         return;
       }
       if (isNil(routerApi)) {
         logger.info('no clients');
+        toast('No clients error');
         return;
       }
       if (isNil(currentMarket)) {
         logger.info('no selected market');
+        toast('Markets are not selected.');
         return;
       }
+      console.log(amount);
 
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
-      await routerApi.removeLiquidity(currentMarket.address, {
-        feeRate,
-        receipient: address,
-        clbTokenAmount: expandedAmount,
-      });
-      await fetchReceipts();
-      await fetchWalletBalances();
+      try {
+        await routerApi.removeLiquidity(currentMarket.address, {
+          feeRate,
+          receipient: address,
+          clbTokenAmount: expandedAmount,
+        });
+        await fetchReceipts();
+        await fetchWalletBalances();
 
-      window.dispatchEvent(PoolEvent);
+        window.dispatchEvent(PoolEvent);
+        toast('The selected liquidity is removed.');
+      } catch (error) {
+        toast((error as any).reason);
+      }
     },
-    [signer, address, currentMarket, routerApi]
+    [signer, address, currentMarket, routerApi, token?.decimals]
   );
 
   const onRemoveLiquidityBatch = useCallback(
     async (bins: OwnedBin[], type: MULTI_TYPE) => {
-      if (isNil(signer) || isNil(address) || isNil(currentMarket)) {
+      if (isNil(signer) || isNil(address)) {
+        toast('Connect your wallet.');
+        return;
+      }
+      if (isNil(currentMarket)) {
+        toast('Markets are not selected.');
         return;
       }
       if (isNil(routerApi)) {
+        toast('Router Contract are not connected.');
         return;
       }
-      const amounts = bins.map((bin) => {
-        const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-        const liquidityValue = clbTokenBalance
-          .mul(clbTokenValue)
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
-        const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
+      try {
+        const amounts = bins.map((bin) => {
+          const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
+          const liquidityValue = clbTokenBalance
+            .mul(clbTokenValue)
+            .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
+          const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
-        return type === MULTI_ALL ? clbTokenBalance : removable;
-      });
-      await routerApi.removeLiquidities(
-        currentMarket.address,
-        bins.map((bin, binIndex) => ({
-          feeRate: bin.baseFeeRate,
-          clbTokenAmount: amounts[binIndex],
-          receipient: address,
-        }))
-      );
-      await fetchReceipts();
-      await fetchWalletBalances();
+          return type === MULTI_ALL ? clbTokenBalance : removable;
+        });
+        await routerApi.removeLiquidities(
+          currentMarket.address,
+          bins.map((bin, binIndex) => ({
+            feeRate: bin.baseFeeRate,
+            clbTokenAmount: amounts[binIndex],
+            receipient: address,
+          }))
+        );
+        await fetchReceipts();
+        await fetchWalletBalances();
+        window.dispatchEvent(PoolEvent);
+
+        toast('The selected liquidities are removed.');
+      } catch (error) {
+        toast((error as any).reason);
+      }
     },
     [signer, currentMarket, routerApi]
   );

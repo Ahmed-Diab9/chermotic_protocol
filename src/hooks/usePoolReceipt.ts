@@ -11,6 +11,7 @@ import { numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk';
+import { toast } from 'react-toastify';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -126,21 +127,30 @@ const usePoolReceipt = () => {
     async (receiptId: BigNumber, action?: LpReceipt['action']) => {
       if (!isValid(router)) {
         errorLog('no router contracts');
+        toast('No routers error');
         return AppError.reject('no router contracts', 'onPoolReceipt');
       }
       if (!isValid(market)) {
         errorLog('no selected markets');
+        toast('Market is not selected.');
         return AppError.reject('no selected markets', 'onPoolReceipt');
       }
-      if (action === 'add') {
-        await router.claimLiquidity(market.address, receiptId);
-      } else if (action === 'remove') {
-        await router.withdrawLiquidity(market.address, receiptId);
-      }
+      try {
+        if (action === 'add') {
+          await router.claimLiquidity(market.address, receiptId);
+        } else if (action === 'remove') {
+          await router.withdrawLiquidity(market.address, receiptId);
+        }
 
-      await fetchReceipts();
-      // await fetchLiquidityPools();
-      return Promise.resolve();
+        await fetchReceipts();
+        if (action === 'add') {
+          toast('Your clb tokens are claimed.');
+        } else {
+          toast('You removed the selected liquidity.');
+        }
+      } catch (error) {
+        toast((error as any).reason);
+      }
     },
     [router, market]
   );
@@ -148,14 +158,17 @@ const usePoolReceipt = () => {
   const onClaimCLBTokensBatch = useCallback(async () => {
     if (!isValid(market)) {
       errorLog('no selected markets');
+      toast('Market is not selected.');
       return AppError.reject('no selected markets', 'onPoolReceipt');
     }
     if (!isValid(receipts)) {
       errorLog('no receipts');
+      toast('There are no receipts.');
       return AppError.reject('no receipts', 'onPoolReceipt');
     }
     if (!isValid(router)) {
       errorLog('no router contracts');
+      toast('Create Chromatic account.');
       return AppError.reject('no router contracts', 'onPoolReceipt');
     }
     const addCompleted = receipts
@@ -166,6 +179,7 @@ const usePoolReceipt = () => {
       .map((receipt) => receipt.id);
     if (addCompleted.length <= 0 && removeCompleted.length <= 0) {
       errorLog('No receipts');
+      toast('There are no receipts.');
       AppError.reject('No completed receupts', 'onPoolReceipt');
       return;
     }
@@ -179,7 +193,10 @@ const usePoolReceipt = () => {
       response.filter(({ status }) => status === 'rejected').map(console.error);
       await fetchReceipts();
       // await fetchLiquidityPools();
-    } catch (error) {}
+      toast('All receipts are claimed.');
+    } catch (error) {
+      toast((error as any).reason);
+    }
   }, [market, receipts, router]);
 
   if (error) {

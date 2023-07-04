@@ -193,7 +193,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
   const settlementTokenBalance = useMemo(() => {
     if (balances && token && balances[token.name])
-      return withComma(formatDecimals(balances[token.name], token.decimals, 0));
+      return formatDecimals(balances[token.name], token.decimals, 0);
     return '-';
   }, [balances, token, balances?.[token?.name || 'default']]);
 
@@ -211,7 +211,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
                   <h4>Account Balance</h4>
-                  <p className="text-black/30">{`${settlementTokenBalance} ${token?.name}`}</p>
+                  <p className="text-black/30">{`${withComma(settlementTokenBalance)} ${
+                    token?.name
+                  }`}</p>
                 </div>
                 <OptionInput
                   value={amount}
@@ -243,13 +245,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {formatDecimals(
                             shortTotalMaxLiquidity.sub(shortTotalUnusedLiquidity),
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M /{' '}
                           {formatDecimals(
                             shortTotalMaxLiquidity,
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M
                         </p>
@@ -266,13 +268,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {formatDecimals(
                             longTotalUnusedLiquidity,
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M /{' '}
                           {formatDecimals(
                             longTotalMaxLiquidity.sub(longTotalUnusedLiquidity),
                             token.decimals + MILLION_UNITS,
-                            1
+                            4
                           )}
                           M
                         </p>
