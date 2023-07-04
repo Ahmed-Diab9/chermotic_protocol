@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { Logger, errorLog } from '~/utils/log';
@@ -6,7 +6,6 @@ import { isValid } from '~/utils/valid';
 
 import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk';
 import { isNil } from 'ramda';
-import { useProvider } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { createPositionsMock } from '~/mock/positions';
@@ -19,13 +18,13 @@ const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
   marketAddress: string;
-  lossPrice: BigNumberish;
-  profitPrice: BigNumberish;
+  lossPrice: BigNumber;
+  profitPrice: BigNumber;
   status: string;
-  toProfit: BigNumberish;
-  collateral: BigNumberish;
-  toLoss: BigNumberish;
-  pnl: BigNumberish;
+  toProfit: BigNumber;
+  collateral: BigNumber;
+  toLoss: BigNumber;
+  pnl: 0 | BigNumber;
 }
 export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
@@ -79,7 +78,7 @@ export const usePosition = () => {
         });
 
       logger.log('POSITIONS', positions);
-      return Promise.all(
+      const response = await Promise.allSettled(
         positions?.map(async (position) => {
           const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
             market.address,
@@ -109,6 +108,11 @@ export const usePosition = () => {
           } satisfies Position;
         })
       );
+      return response
+        .filter(
+          (element): element is PromiseFulfilledResult<Position> => element.status === 'fulfilled'
+        )
+        .map(({ value }) => value);
     });
     const positions = await filterIfFulfilled(positionsPromise);
     return positions.flat(1);
