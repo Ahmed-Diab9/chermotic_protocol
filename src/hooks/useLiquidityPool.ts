@@ -19,6 +19,8 @@ import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
 import { useTokenBalances } from './useTokenBalance';
+import { toast } from 'react-toastify';
+import { PoolEvent } from '~/typings/events';
 
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId, decodeTokenId } = ChromaticUtils;
@@ -185,60 +187,88 @@ export const useLiquiditiyPool = () => {
     async (feeRate: number, amount: number) => {
       if (!isValid(signer) || !isValid(address)) {
         logger.info('no signer or address', signer, address);
+        toast('Your wallet is not connected.');
         return;
       }
       if (!isValid(pool)) {
         logger.info('no pool');
+        toast('The liquidity pool is not selected.');
         return;
       }
       if (!isValid(routerApi)) {
         logger.info('no clients');
+        toast('Create Chromatic account.');
         return;
       }
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
-      await routerApi.removeLiquidity(pool.marketAddress, {
-        feeRate,
-        receipient: address,
-        clbTokenAmount: expandedAmount,
-      });
-      await fetchReceipts();
-      await fetchWalletBalances();
+      try {
+        await routerApi.removeLiquidity(pool.marketAddress, {
+          feeRate,
+          receipient: address,
+          clbTokenAmount: expandedAmount,
+        });
+        dispatch(poolsAction.onModalClose());
+
+        await fetchReceipts();
+        await fetchWalletBalances();
+        window.dispatchEvent(PoolEvent);
+
+        toast('The selected liquidity is removed.');
+      } catch (error) {
+        toast((error as any).reason);
+      }
     },
     [signer, address, pool, routerApi]
   );
 
   const onRemoveLiquidityBatch = useCallback(
     async (bins: OwnedBin[], type: MULTI_TYPE) => {
-      if (!isValid(signer) || !isValid(address) || !isValid(market)) {
+      if (!isValid(signer) || !isValid(address)) {
+        toast('Your wallet is not connected.');
+        return;
+      }
+      if (!isValid(market)) {
+        toast('Market is not selected.');
         return;
       }
       if (!isValid(pool)) {
+        toast('The liquidity pool is not selected.');
         return;
       }
       if (!isValid(routerApi)) {
+        toast('Create Chromatic client.');
         return;
       }
-      const amounts = bins.map((bin) => {
-        const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-        const liquidityValue = clbTokenBalance
-          .mul(Math.round(clbTokenValue * 10 ** 2))
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
-          .div(expandDecimals(2));
-        const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
+      try {
+        const amounts = bins.map((bin) => {
+          const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
+          const liquidityValue = clbTokenBalance
+            .mul(Math.round(clbTokenValue * 10 ** 2))
+            .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
+            .div(expandDecimals(2));
+          const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
 
-        return type === MULTI_ALL ? clbTokenBalance : removable;
-      });
-      await routerApi.removeLiquidities(
-        market.address,
-        bins.map((bin, binIndex) => ({
-          feeRate: bin.baseFeeRate,
-          clbTokenAmount: amounts[binIndex],
-          receipient: address,
-        }))
-      );
-      await fetchReceipts();
-      await fetchWalletBalances();
+          return type === MULTI_ALL ? clbTokenBalance : removable;
+        });
+        await routerApi.removeLiquidities(
+          market.address,
+          bins.map((bin, binIndex) => ({
+            feeRate: bin.baseFeeRate,
+            clbTokenAmount: amounts[binIndex],
+            receipient: address,
+          }))
+        );
+        dispatch(poolsAction.onModalClose());
+
+        await fetchReceipts();
+        await fetchWalletBalances();
+        window.dispatchEvent(PoolEvent);
+
+        toast('The selected liquidities are removed.');
+      } catch (error) {
+        toast((error as any).reason);
+      }
     },
     [signer, market, pool, routerApi]
   );

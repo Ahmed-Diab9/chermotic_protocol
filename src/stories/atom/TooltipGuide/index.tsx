@@ -1,17 +1,17 @@
-import { Tooltip } from "react-tooltip";
-import { Outlink } from "../Outlink";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
-import "./style.css";
+import { Tooltip } from 'react-tooltip';
+import { Outlink } from '../Outlink';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowUpRightIcon } from '@heroicons/react/24/outline';
+import './style.css';
 
 interface TooltipGuideProps {
   label?: string;
   tip?: string;
   outLink?: string;
   outLinkAbout?: string;
-  position?: "top" | "right" | "bottom" | "left";
-  size?: "sm" | "base" | "lg";
-  align?: "center" | "left" | "right";
+  position?: 'top' | 'right' | 'bottom' | 'left';
+  size?: 'sm' | 'base' | 'lg';
+  align?: 'center' | 'left' | 'right';
   className?: string;
   iconOnly?: boolean;
   tipOnly?: boolean;
@@ -24,9 +24,9 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     tip,
     outLink,
     outLinkAbout,
-    position = "top",
-    size = "base",
-    align = "left",
+    position = 'top',
+    size = 'base',
+    align = 'left',
     className,
     iconOnly,
     tipOnly,

@@ -134,9 +134,9 @@ export const PoolProgress = ({
                   {/* tab1 - all */}
                   <Tab.Panel className="flex flex-col gap-3 mb-5">
                     {isValid(market) &&
-                      (receipts || previousReceipts).map((receipt) => (
+                      (receipts || previousReceipts).map((receipt, index) => (
                         <ProgressItem
-                          key={'all' + receipt.id.toString()}
+                          key={`all-${receipt.id.toString()}-${index}`}
                           // title={receipt.title}
                           status={receipt.status}
                           detail={
@@ -158,9 +158,9 @@ export const PoolProgress = ({
                     {isValid(market) &&
                       (receipts || previousReceipts)
                         .filter((receipt) => receipt.action === 'add')
-                        .map((receipt) => (
+                        .map((receipt, index) => (
                           <ProgressItem
-                            key={'minting' + receipt.id.toString()}
+                            key={`minting-${receipt.id.toString()}-${index}`}
                             // title={receipt.title}
                             status={receipt.status}
                             detail={
@@ -182,9 +182,9 @@ export const PoolProgress = ({
                     {isValid(market) &&
                       (receipts || previousReceipts)
                         .filter((receipt) => receipt.action === 'remove')
-                        .map((receipt) => (
+                        .map((receipt, index) => (
                           <ProgressItem
-                            key={'burning' + receipt.id.toString()}
+                            key={`burning-${receipt.id.toString()}-${index}`}
                             // title={receipt.title}
                             status={receipt.status}
                             detail={

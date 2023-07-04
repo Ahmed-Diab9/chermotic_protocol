@@ -14,6 +14,7 @@ import { filterIfFulfilled } from '~/utils/array';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
+import { toast } from 'react-toastify';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
@@ -66,7 +67,7 @@ export const usePosition = () => {
       logger.error('No Settlemet tokens');
       return [];
     }
-    
+
     const positionsPromise = markets.map(async (market) => {
       const positionIds = await accountApi.getPositionIds(market.address);
 
@@ -153,6 +154,7 @@ export const usePosition = () => {
     );
     if (isNil(position)) {
       errorLog('no positions');
+      toast('Position is not selected.');
       return AppError.reject('no positions', 'onClosePosition');
     }
     try {
@@ -161,6 +163,7 @@ export const usePosition = () => {
       fetchPositions();
     } catch (error) {
       errorLog(error);
+      toast('Position was not deleted, Found error.');
 
       return AppError.reject(error, 'onClosePosition');
     }
@@ -176,10 +179,12 @@ export const usePosition = () => {
     );
     if (isNil(position)) {
       errorLog('no positions');
+      toast('Positions are not selected.');
       return AppError.reject('no positions', 'onClosePosition');
     }
     if (oracleVersions?.[marketAddress]?.version.lte(position.closeVersion)) {
       errorLog('the selected position is not closed');
+      toast('This position is not closed yet.');
 
       return AppError.reject('the selected position is not closed', 'onClaimPosition');
     }

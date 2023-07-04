@@ -12,6 +12,7 @@ import { useLiquiditiyPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 import { TradeEvent } from '~/typings/events';
+import { toast } from 'react-toastify';
 
 const logger = Logger('useTradeInput');
 const initialTradeInput = {
@@ -342,14 +343,17 @@ export const useTradeInput = () => {
   const onOpenPosition = async () => {
     if (!isValid(market)) {
       errorLog('no markets selected');
+      toast('No markets selected.');
       return;
     }
     if (!isValid(signer)) {
       errorLog('no signers');
+      toast('No signers. Create your account.');
       return;
     }
     if (!isValid(routerApi)) {
       errorLog('no routers');
+      toast('No routers.');
       return;
     }
 
@@ -378,19 +382,24 @@ export const useTradeInput = () => {
 
     // FIXME
     // Trading Fee
-    const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
+    try {
+      const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
 
-    await routerApi.openPosition(market.address, {
-      quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
-      leverage,
-      takerMargin,
-      makerMargin,
-      maxAllowableTradingFee,
-    });
-    await fetchPositions();
-    await fetchBalances();
+      await routerApi.openPosition(market.address, {
+        quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
+        leverage,
+        takerMargin,
+        makerMargin,
+        maxAllowableTradingFee,
+      });
+      await fetchPositions();
+      await fetchBalances();
 
-    window.dispatchEvent(TradeEvent);
+      window.dispatchEvent(TradeEvent);
+      toast('New position is opened.');
+    } catch (error) {
+      toast((error as any).reason);
+    }
   };
 
   return {

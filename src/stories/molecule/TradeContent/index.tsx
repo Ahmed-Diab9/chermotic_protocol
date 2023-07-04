@@ -338,8 +338,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
               </div>
               <p>
-                {formatDecimals(tradeFee ?? 0, 18, 2)} USDC /{' '}
-                {formatDecimals(tradeFeePercent ?? 0, 18, 3)}%
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
+                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
               </p>
             </div>
             <div className="flex justify-between">

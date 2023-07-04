@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 interface ToastProps {
-  message: string;
+  message?: string;
 }
 
 export const Toast = (props: ToastProps) => {
@@ -16,7 +16,7 @@ export const Toast = (props: ToastProps) => {
 
   return (
     <div>
-      <button onClick={displayMsg}>click</button>
+      {import.meta.env.DEV && <button onClick={displayMsg}>click</button>}
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -34,7 +34,7 @@ export const Toast = (props: ToastProps) => {
 };
 
 interface MsgProps {
-  message: string;
+  message?: string;
 }
 
 const Msg = (props: MsgProps) => {
