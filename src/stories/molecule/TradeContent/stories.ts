@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { TradeContent } from ".";
+import type { Meta, StoryObj } from '@storybook/react';
+import { TradeContent } from '.';
 
 const meta = {
-  title: "Molecule/TradeContent",
+  title: 'Molecule/TradeContent',
   component: TradeContent,
 } satisfies Meta<typeof TradeContent>;
 
@@ -11,6 +11,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    //
+    loading: false,
   },
 };
