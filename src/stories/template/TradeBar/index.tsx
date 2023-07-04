@@ -262,12 +262,10 @@ export const TradeBar = ({
                                               </>
                                             )}
                                             {loading ? (
-                                              <div className="flex items-center gap-1">
-                                                <Skeleton
-                                                  width={40}
-                                                  containerClassName="leading-none"
-                                                />
-                                              </div>
+                                              <Skeleton
+                                                width={40}
+                                                containerClassName="leading-none"
+                                              />
                                             ) : (
                                               <>
                                                 <Tag label={direction(position)} />
@@ -277,12 +275,10 @@ export const TradeBar = ({
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Price</p>
                                             {loading ? (
-                                              <div className="flex items-center gap-1">
-                                                <Skeleton
-                                                  width={60}
-                                                  containerClassName="leading-none"
-                                                />
-                                              </div>
+                                              <Skeleton
+                                                width={60}
+                                                containerClassName="leading-none"
+                                              />
                                             ) : (
                                               <>${calculatedData(position).entryPrice}</>
                                             )}
@@ -290,12 +286,10 @@ export const TradeBar = ({
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>
                                             {loading ? (
-                                              <div className="flex items-center gap-1">
-                                                <Skeleton
-                                                  width={60}
-                                                  containerClassName="leading-none"
-                                                />
-                                              </div>
+                                              <Skeleton
+                                                width={60}
+                                                containerClassName="leading-none"
+                                              />
                                             ) : (
                                               <>{calculatedData(position).entryTime}</>
                                             )}

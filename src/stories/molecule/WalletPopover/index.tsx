@@ -227,9 +227,7 @@ export const WalletPopover = ({
                                         <div className="mr-auto">
                                           <p className="text-base font-medium text-black/30">
                                             {loading ? (
-                                              <>
-                                                <Skeleton containerClassName="flex-1" width={80} />
-                                              </>
+                                              <Skeleton containerClassName="flex-1" width={80} />
                                             ) : (
                                               <>
                                                 {formatDecimals(
@@ -243,9 +241,7 @@ export const WalletPopover = ({
                                           </p>
                                           <p className="mt-2 text-base text-black">
                                             {loading ? (
-                                              <>
-                                                <Skeleton containerClassName="flex-1" width={80} />
-                                              </>
+                                              <Skeleton containerClassName="flex-1" width={80} />
                                             ) : (
                                               <>{pool.bins} Bins</>
                                             )}

@@ -354,9 +354,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           }`}
         >
           {loading ? (
-            <div className="flex items-center gap-1">
-              <Skeleton width={40} containerClassName="text-[40px] leading-none" />
-            </div>
+            <Skeleton width={40} containerClassName="text-[40px] leading-none" />
           ) : (
             <Thumbnail className="rounded" src={image} />
           )}

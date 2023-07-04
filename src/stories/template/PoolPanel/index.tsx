@@ -656,9 +656,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           {loading ? (
-            <div className="flex items-center gap-1">
-              <Skeleton width={60} containerClassName="text-[60px] leading-none" />
-            </div>
+            <Skeleton width={60} containerClassName="text-[60px] leading-none" />
           ) : (
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
           )}
@@ -668,9 +666,7 @@ const BinItem = (props: BinItemProps) => {
             <p className="text-black/30 w-[80px]">Quantity</p>
             <p>
               {loading ? (
-                <div className="flex items-center gap-1">
-                  <Skeleton width={60} />
-                </div>
+                <Skeleton width={60} />
               ) : (
                 <>{bin && formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}</>
               )}
@@ -678,29 +674,13 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>
-              {loading ? (
-                <div className="flex items-center gap-1">
-                  <Skeleton width={60} />
-                </div>
-              ) : (
-                <>{bin?.removableRate.toFixed(2)}%</>
-              )}
-            </p>
+            <p>{loading ? <Skeleton width={60} /> : <>{bin?.removableRate.toFixed(2)}%</>}</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>
-              {loading ? (
-                <div className="flex items-center gap-1">
-                  <Skeleton width={60} />
-                </div>
-              ) : (
-                <>{bin && bin.clbTokenValue.toFixed(2)}</>
-              )}
-            </p>
+            <p>{loading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}</p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
