@@ -1,12 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { OptionInput } from '.';
 
-import { OptionInput } from ".";
+import usdcIcon from '/src/assets/images/usdc.svg';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/OptionInput",
+  title: 'Atom/OptionInput',
   component: OptionInput,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {},
 } satisfies Meta<typeof OptionInput>;
 
@@ -15,13 +16,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: "Base Default OptionInput",
+    label: 'Base Default OptionInput',
   },
 };
 
 export const WithAssetImage: Story = {
   args: {
-    label: "Base Default OptionInput with Image",
-    assetSrc: "src/assets/images/usdc.svg",
+    label: 'Base Default OptionInput with Image',
+    assetSrc: usdcIcon,
   },
 };

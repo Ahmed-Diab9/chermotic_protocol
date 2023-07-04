@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { PoolPanel } from '.';
 import { BigNumber } from 'ethers';
 
+import { Default as RangeChartStories } from '~/stories/atom/RangeChart/stories';
+
 const meta = {
   title: 'Template/PoolPanel',
   component: PoolPanel,
@@ -57,5 +59,6 @@ export const Default: Story = {
     shortTotalMaxLiquidity: BigNumber.from(100),
     shortTotalUnusedLiquidity: BigNumber.from(100),
     selectedBins: [],
+    liquidity: RangeChartStories.args?.barData,
   },
 };

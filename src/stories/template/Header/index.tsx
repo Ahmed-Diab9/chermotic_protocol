@@ -1,13 +1,14 @@
-import { Avatar } from "../../atom/Avatar";
-import { Button } from "../../atom/Button";
-import LogoSimple from "~/assets/icons/LogoSimple";
-import { WalletPopover } from "../../molecule/WalletPopover";
-import { Market, Price, Token } from "~/typings/market";
-import { Account } from "~/typings/account";
-import { BigNumber } from "ethers";
-import { LiquidityPoolSummary } from "~/typings/pools";
-import { isValid } from "../../../utils/valid";
-import { Link, useLocation } from "react-router-dom";
+import { BigNumber } from 'ethers';
+import { Link, useLocation } from 'react-router-dom';
+import LogoSimple from '~/assets/icons/LogoSimple';
+import { Account } from '~/typings/account';
+import { Market, Price, Token } from '~/typings/market';
+import { LiquidityPoolSummary } from '~/typings/pools';
+import { isValid } from '../../../utils/valid';
+import { Avatar } from '../../atom/Avatar';
+import { WalletPopover } from '../../molecule/WalletPopover';
+
+import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 interface HeaderProps {
   account?: Account;
@@ -49,9 +50,7 @@ export const Header = (props: HeaderProps) => {
           <Link
             to="/trade"
             className={`border-b-2 leading-none pb-2 px-[2px] mt-2 ${
-              location.pathname === "/trade"
-                ? "border-black"
-                : "border-transparent"
+              location.pathname === '/trade' ? 'border-black' : 'border-transparent'
             }`}
           >
             Trade
@@ -59,9 +58,7 @@ export const Header = (props: HeaderProps) => {
           <Link
             to="/pool"
             className={`border-b-2 leading-none pb-2 px-[2px] mt-2 ${
-              location.pathname === "/pool"
-                ? "border-black"
-                : "border-transparent"
+              location.pathname === '/pool' ? 'border-black' : 'border-transparent'
             }`}
           >
             Pools
@@ -93,7 +90,7 @@ export const Header = (props: HeaderProps) => {
                 className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]"
               >
                 <Avatar
-                  src="/src/assets/images/arbitrum.svg"
+                  src={arbitrumIcon}
                   label="Connect"
                   className="!w-[44px] !h-[44px]"
                   fontSize="lg"

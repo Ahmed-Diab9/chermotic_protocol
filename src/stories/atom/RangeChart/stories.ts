@@ -25,7 +25,7 @@ const trackMap = RANGE_CONFIG.reduce((acc: any, { start, end, interval }) => {
 }, []);
 
 const barSample = trackMap.map((tick: number, idx: number) => {
-  const value = idx < 37 ? 2 - Math.log10(37 - idx) : 2 - Math.log10(idx - 36);
+  const value = idx < 36 ? 2 - Math.log10(36 - idx) : 2 - Math.log10(idx - 35);
 
   return {
     key: tick,
