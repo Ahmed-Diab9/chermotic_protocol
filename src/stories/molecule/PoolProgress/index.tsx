@@ -11,6 +11,9 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Guide } from '~/stories/atom/Guide';
 import { Disclosure } from '@headlessui/react';
 import '../../atom/Tabs/style.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import { BigNumber } from 'ethers';
 // import { LPReceipt } from "~/typings/receipt";
 import { Market, Token } from '~/typings/market';
@@ -26,6 +29,7 @@ interface PoolProgressProps {
   token?: Token;
   market?: Market;
   receipts?: LpReceipt[];
+  loading?: boolean;
   onReceiptClaim?: (id: BigNumber, action: LpReceiptAction) => unknown;
   onReceiptClaimBatch?: () => unknown;
 }
@@ -34,6 +38,7 @@ export const PoolProgress = ({
   token,
   market,
   receipts = [],
+  loading,
   onReceiptClaim,
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
@@ -150,6 +155,7 @@ export const PoolProgress = ({
                           onClick={() => {
                             onReceiptClaim?.(receipt.id, receipt.action);
                           }}
+                          loading={loading}
                         />
                       ))}
                   </Tab.Panel>
@@ -174,6 +180,7 @@ export const PoolProgress = ({
                             onClick={() => {
                               onReceiptClaim?.(receipt.id, receipt.action);
                             }}
+                            loading={loading}
                           />
                         ))}
                   </Tab.Panel>
@@ -198,6 +205,7 @@ export const PoolProgress = ({
                             onClick={() => {
                               onReceiptClaim?.(receipt.id, receipt.action);
                             }}
+                            loading={loading}
                           />
                         ))}
                   </Tab.Panel>
@@ -259,6 +267,7 @@ interface ProgressItemProps {
   image?: string;
   progressPercent?: number;
   action: LpReceipt['action'];
+  loading?: boolean;
   onClick?: () => unknown;
 }
 
@@ -272,6 +281,7 @@ const ProgressItem = (props: ProgressItemProps) => {
     image,
     action,
     progressPercent,
+    loading,
     onClick,
   } = props;
 
@@ -343,10 +353,25 @@ const ProgressItem = (props: ProgressItemProps) => {
             'opacity-30'
           }`}
         >
-          <Thumbnail className="rounded" src={image} />
+          {loading ? (
+            <div className="flex items-center gap-1">
+              <Skeleton width={40} containerClassName="text-[40px] leading-none" />
+            </div>
+          ) : (
+            <Thumbnail className="rounded" src={image} />
+          )}
           <div>
-            <Avatar label={token} size="xs" gap="1" />
-            <p className="mt-1 text-left text-black/30">{name}</p>
+            {loading ? (
+              <div className="flex items-center gap-1">
+                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton width={40} containerClassName="leading-none" />
+              </div>
+            ) : (
+              <Avatar label={token} size="xs" gap="1" />
+            )}
+            <p className="mt-1 text-left text-black/30">
+              {loading ? <Skeleton width={60} /> : <>{name}</>}
+            </p>
           </div>
         </div>
         {status === 'standby' ? (
