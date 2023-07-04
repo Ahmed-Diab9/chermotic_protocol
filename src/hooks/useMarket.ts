@@ -7,6 +7,7 @@ import { errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
+import { toast } from 'react-toastify';
 
 export const useMarket = (_interval?: number) => {
   const { client } = useChromaticClient();
@@ -36,10 +37,10 @@ export const useMarket = (_interval?: number) => {
     (market: Market) => {
       dispatch(marketAction.onMarketSelect(market));
       setStoredMarket(market.description);
+      toast('Market is now selected.');
     },
     [dispatch]
   );
 
   return { markets, currentMarket, fetchMarkets, onMarketSelect } as const;
 };
-
