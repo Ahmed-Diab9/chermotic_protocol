@@ -173,7 +173,7 @@ const usePoolReceipt = () => {
       const response = await Promise.allSettled([
         addCompleted.length > 0 ? router?.claimLiquidites(market.address, addCompleted) : undefined,
         removeCompleted.length > 0
-          ? router?.withdrawLiquidity(market.address, removeCompleted)
+          ? router?.withdrawLiquidities(market.address, removeCompleted)
           : undefined,
       ]);
       response.filter(({ status }) => status === 'rejected').map(console.error);

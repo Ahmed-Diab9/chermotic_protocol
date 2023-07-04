@@ -20,8 +20,13 @@ export function useChromaticClient() {
 
   useEffect(() => {
     if (client) {
-      const signerOrProvider = signer || provider;
-      client.setSignerOrProvider(signerOrProvider);
+      if (provider) {
+        client.setSignerOrProvider(provider);
+      }
+      if (isConnected && signer) {
+        logger.info('set signer', signer);
+        client.setSignerOrProvider(signer);
+      }
     }
   }, [signer, provider]);
 
