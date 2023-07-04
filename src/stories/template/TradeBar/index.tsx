@@ -11,6 +11,9 @@ import { Popover, Transition } from '@headlessui/react';
 import { Tab } from '@headlessui/react';
 import { Listbox } from '@headlessui/react';
 import '../../atom/Tabs/style.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import { CLOSED, CLOSING, OPENED, OPENING } from '~/typings/position';
 import { Market, Token } from '~/typings/market';
 import { usePrevious } from '~/hooks/usePrevious';
@@ -30,6 +33,7 @@ interface TradeBarProps {
   markets?: Market[];
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
+  loading?: boolean;
   onPositionClose?: (marketAddress: string, id: BigNumber) => unknown;
   onPositionClaim?: (marketAddress: string, id: BigNumber) => unknown;
 }
@@ -44,6 +48,7 @@ export const TradeBar = ({
   markets,
   positions,
   oracleVersions,
+  loading,
   onPositionClose,
   onPositionClaim,
 }: TradeBarProps) => {
@@ -207,34 +212,93 @@ export const TradeBar = ({
                                           }`}
                                         >
                                           <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
-                                            <Avatar
-                                              label={token?.name}
-                                              size="xs"
-                                              gap="1"
-                                              fontSize="base"
-                                              fontWeight="bold"
-                                            />
-                                            <Avatar
-                                              label={
-                                                markets?.find(
-                                                  (market) =>
-                                                    market.address === position.marketAddress
-                                                )?.description
-                                              }
-                                              size="xs"
-                                              gap="1"
-                                              fontSize="base"
-                                              fontWeight="bold"
-                                            />
-                                            <Tag label={direction(position)} />
+                                            {loading ? (
+                                              <div className="flex items-center gap-1">
+                                                <Skeleton
+                                                  circle
+                                                  containerClassName="avatar-skeleton w-4 text-lg"
+                                                />
+                                                <Skeleton
+                                                  width={40}
+                                                  containerClassName="leading-none"
+                                                />
+                                              </div>
+                                            ) : (
+                                              <>
+                                                <Avatar
+                                                  label={token?.name}
+                                                  size="xs"
+                                                  gap="1"
+                                                  fontSize="base"
+                                                  fontWeight="bold"
+                                                />
+                                              </>
+                                            )}
+                                            {loading ? (
+                                              <div className="flex items-center gap-1">
+                                                <Skeleton
+                                                  circle
+                                                  containerClassName="avatar-skeleton w-4 text-lg"
+                                                />
+                                                <Skeleton
+                                                  width={40}
+                                                  containerClassName="leading-none"
+                                                />
+                                              </div>
+                                            ) : (
+                                              <>
+                                                <Avatar
+                                                  label={
+                                                    markets?.find(
+                                                      (market) =>
+                                                        market.address === position.marketAddress
+                                                    )?.description
+                                                  }
+                                                  size="xs"
+                                                  gap="1"
+                                                  fontSize="base"
+                                                  fontWeight="bold"
+                                                />
+                                              </>
+                                            )}
+                                            {loading ? (
+                                              <div className="flex items-center gap-1">
+                                                <Skeleton
+                                                  width={40}
+                                                  containerClassName="leading-none"
+                                                />
+                                              </div>
+                                            ) : (
+                                              <>
+                                                <Tag label={direction(position)} />
+                                              </>
+                                            )}
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
-                                            <p className="text-black/50">Entry Price</p>$
-                                            {calculatedData(position).entryPrice}
+                                            <p className="text-black/50">Entry Price</p>
+                                            {loading ? (
+                                              <div className="flex items-center gap-1">
+                                                <Skeleton
+                                                  width={60}
+                                                  containerClassName="leading-none"
+                                                />
+                                              </div>
+                                            ) : (
+                                              <>${calculatedData(position).entryPrice}</>
+                                            )}
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>
-                                            {calculatedData(position).entryTime}
+                                            {loading ? (
+                                              <div className="flex items-center gap-1">
+                                                <Skeleton
+                                                  width={60}
+                                                  containerClassName="leading-none"
+                                                />
+                                              </div>
+                                            ) : (
+                                              <>{calculatedData(position).entryTime}</>
+                                            )}
                                           </div>
                                         </div>
                                         <div className="flex items-center gap-1 ml-auto">
@@ -295,11 +359,13 @@ export const TradeBar = ({
                                               label="Contract Qty"
                                               labelClass="text-black/50"
                                               value={calculatedData(position).qty}
+                                              loading={loading}
                                             />
                                             <TextRow
                                               label="Collateral"
                                               labelClass="text-black/50"
                                               value={calculatedData(position).collateral}
+                                              loading={loading}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
@@ -307,6 +373,7 @@ export const TradeBar = ({
                                               label="Take Profit"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).takeProfit}`}
+                                              loading={loading}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -315,6 +382,7 @@ export const TradeBar = ({
                                               subValueLeft={`(${
                                                 calculatedData(position).profitPriceTo
                                               })`}
+                                              loading={loading}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
@@ -322,6 +390,7 @@ export const TradeBar = ({
                                               label="Stop Loss"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).stopLoss}`}
+                                              loading={loading}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -330,6 +399,7 @@ export const TradeBar = ({
                                               subValueLeft={`(${
                                                 calculatedData(position).lossPriceTo
                                               })`}
+                                              loading={loading}
                                             />
                                           </div>
                                           <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
@@ -337,6 +407,7 @@ export const TradeBar = ({
                                               label="PnL"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).pnl}`}
+                                              loading={loading}
                                             />
                                           </div>
                                         </div>
