@@ -70,6 +70,7 @@ const useTokenTransaction = () => {
   }, [chromaticAccountAddress, token, amount]);
 
   const onAmountChange = useCallback((nextValue: string) => {
+    nextValue = nextValue.replace(/,/g, '');
     const parsed = Number(nextValue);
     if (isNaN(parsed)) {
       return;

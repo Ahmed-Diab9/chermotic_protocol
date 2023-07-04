@@ -165,8 +165,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     unit="CLB"
                     value={amount}
                     onChange={(event) => {
-                      const value = trimLeftZero(event.target.value);
-                      const parsed = Number(value);
+                      let value = event.target.value;
+                      value = value.replace(/,/g, '');
+                      const trimmed = trimLeftZero(value);
+                      const parsed = Number(trimmed);
                       if (isNaN(parsed)) {
                         return;
                       }
