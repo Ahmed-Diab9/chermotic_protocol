@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    loading: false,
     token: {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',

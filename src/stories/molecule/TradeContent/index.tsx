@@ -147,7 +147,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <h4>Account Balance</h4>
             <p className="text-black/30">
               {loading ? (
-                <Skeleton width={60} containerClassName="leading-none" />
+                <Skeleton width={40} containerClassName="leading-none" />
               ) : (
                 <>
                   {balances &&
