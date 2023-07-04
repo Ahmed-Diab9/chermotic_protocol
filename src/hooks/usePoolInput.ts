@@ -14,6 +14,7 @@ import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { useLiquiditiyPool } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { PoolEvent } from '~/typings/events';
+import { toast } from 'react-toastify';
 
 const logger = Logger('usePoolInput');
 const usePoolInput = () => {
@@ -74,22 +75,27 @@ const usePoolInput = () => {
     logger.info('add liq');
     if (!isValid(signer)) {
       errorLog('signer is invalid');
+      toast('No signers. Create your account.');
       return;
     }
     if (!isValid(token)) {
       errorLog('token is not selected');
+      toast('Settlement token is not selected.');
       return;
     }
     if (!isValid(market)) {
       errorLog('market is not selected');
+      toast('Market is not selected.');
       return;
     }
     if (!isValid(address)) {
       errorLog('wallet not connected');
+      toast('Wallet is not connected.');
       return;
     }
     if (!isValid(routerApi)) {
       errorLog('no router apis');
+      toast('No routers');
       return;
     }
     setIsLoading(true);
@@ -113,8 +119,9 @@ const usePoolInput = () => {
       await fetchReceipts();
       await fetchWalletBalances();
       window.dispatchEvent(PoolEvent);
+      toast('New liquidity is added. Claim your CLB.');
     } catch (error) {
-      console.error(error);
+      toast((error as any).reason);
     } finally {
       setIsLoading(false);
     }
