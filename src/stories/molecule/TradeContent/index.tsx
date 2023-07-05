@@ -289,7 +289,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
-      <section className="px-10 pb-7">
+      <section className="px-10">
         <div className="mx-[-40px] relative border-b">
           {/* graph */}
           <FillUpChart
@@ -310,7 +310,45 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
         <article className="mt-5">
-          <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
+          <div className="flex flex-col gap-[10px] border-gray">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Trade Fees</p>
+              </div>
+              <p>
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
+                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <p>Max Fee Allowance</p>
+                <TooltipGuide
+                  label="max-fee-allowance"
+                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
+              </div>
+              <div className="w-20">
+                <Input size="sm" unit="%" value={0.3} />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button
+              label={direction === 'long' ? 'Buy' : 'Sell'}
+              size="2xl"
+              className="w-full"
+              css="active"
+              onClick={() => {
+                onOpenPosition?.();
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray mt-8">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
@@ -342,45 +380,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 border-gray">
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Trade Fees</p>
-              </div>
-              <p>
-                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
-                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
-              </p>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <p>Max Fee Allowance</p>
-                <TooltipGuide
-                  label="max-fee-allowance"
-                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
-                  outLink="#"
-                  outLinkAbout="Next Oracle Round"
-                />
-              </div>
-              <div className="w-20">
-                <Input size="sm" unit="%" value={0.3} />
-              </div>
-            </div>
-          </div>
         </article>
       </section>
-      <div className="px-10">
-        <Button
-          label={direction === 'long' ? 'Buy' : 'Sell'}
-          size="2xl"
-          className="w-full"
-          css="active"
-          onClick={() => {
-            onOpenPosition?.();
-          }}
-        />
-        {/* <Button label="Buy" size="xl" className="w-full" /> */}
-      </div>
     </div>
   );
 };

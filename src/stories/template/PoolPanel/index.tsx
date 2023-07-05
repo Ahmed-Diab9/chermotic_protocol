@@ -339,7 +339,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 </article>
               </section>
               <article>
-                <div className="flex flex-col gap-2 mb-10 border-dotted mt-9">
+                <div className="mt-6">
+                  <Button
+                    label="Deposit"
+                    className="w-full"
+                    css="active"
+                    size="2xl"
+                    onClick={onAddLiquidity}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 border-t border-dashed border-gray mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
                     <p className="flex">
                       Number of Liquidity Bins
@@ -380,16 +390,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </div> */}
               </article>
-              <div className="mt-[34px]">
-                <Button
-                  label="Deposit"
-                  className="w-full"
-                  css="active"
-                  size="2xl"
-                  onClick={onAddLiquidity}
-                  disabled={isLoading}
-                />
-              </div>
             </Tab.Panel>
 
             {/* tab - remove */}
