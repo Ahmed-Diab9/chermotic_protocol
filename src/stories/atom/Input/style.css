@@ -2,7 +2,7 @@
   @apply max-w-full bg-white;
 }
 .input-sm {
-  @apply h-7 px-3 text-lg;
+  @apply h-[26px] px-3 text-lg;
 }
 .input-base {
   @apply h-9 px-3 text-xl;

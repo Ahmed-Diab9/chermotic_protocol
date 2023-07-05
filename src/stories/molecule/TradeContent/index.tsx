@@ -139,7 +139,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
-    <div className="TradeContent max-w-[580px]">
+    // todo: min/max width
+    <div className="TradeContent w-full w-[580px]">
       {/* Account Balance */}
       <article className="px-10 pb-5 border-b border-grayL">
         <div className="flex justify-between">
@@ -220,10 +221,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <LeverageOption value={input?.leverage} onClick={onLeverageChange} />
               )}
             </div>
-            <div className="w-2/5 max-w-[160px]">
+            <div className="">
               <Input
+                size="sm"
                 unit="x"
-                className="w-full"
+                className="w-[80px] ml-auto"
                 value={input?.leverage}
                 onChange={(event) => onInputChange?.('leverage', event)}
               />
@@ -237,11 +239,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
-              <div className="w-1/3 min-w-[80px]">
+              <div className="">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-full"
+                  className="w-[80px]"
                   value={input?.takeProfit}
                   onChange={(event) => {
                     onInputChange?.('takeProfit', event);
@@ -265,11 +267,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
               </div>
-              <div className="w-1/3 min-w-[80px]">
+              <div className="">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-full"
+                  className="w-[80px]"
                   value={input?.stopLoss}
                   onChange={(event) => {
                     onInputChange?.('stopLoss', event);
