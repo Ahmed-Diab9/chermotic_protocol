@@ -71,14 +71,14 @@ export const AssetPopover = ({
 
   return (
     <>
-      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[100px] bg-white shadow-lg">
+      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Asset balance" gap="2" />
         </div>
-        <div className="flex flex-col gap-2 mr-10 text-right">
+        <div className="flex flex-col gap-1 mr-10 text-right">
           {isLoaded ? (
             <>
-              <h2 className="text-2xl">
+              <h2 className="text-xl">
                 {isLoading ? (
                   <Skeleton width={120} />
                 ) : (
@@ -88,7 +88,7 @@ export const AssetPopover = ({
                   </>
                 )}
               </h2>
-              <Popover.Group className="flex gap-3">
+              <Popover.Group className="flex gap-2">
                 <AssetPanel
                   title="Deposit"
                   account={account}
@@ -268,16 +268,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   <img src={checkIcon} alt="creating account" />
                   <p>Account has been created</p>
                 </article>
-                <div className="py-8"></div>
                 <div className="text-center">
-                  <Button
-                    label="Create Account"
-                    iconRight={<CheckIcon />}
-                    size="xl"
-                    css="active"
-                    className="w-full"
-                    disabled={true}
-                  />
                   <Button
                     iconOnly={<ChevronDoubleUpIcon />}
                     size="sm"
@@ -373,12 +364,12 @@ const AssetPanel = (props: AssetPanelProps) => {
                         onAmountChange?.(value);
                       }}
                     />
-                    <div>
-                      <p className="mb-1 text-xs text-black/30">
+                    <div className="text-sm">
+                      <p className="mb-1 text-black/30">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.
+                        <Outlink outLink="#" className="ml-2" />
                       </p>
-                      <Outlink outLink="#" />
                     </div>
                   </article>
                 </section>

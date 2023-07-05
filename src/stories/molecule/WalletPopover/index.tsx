@@ -14,6 +14,7 @@ import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
+import { Link } from 'react-router-dom';
 import { Thumbnail } from '../../atom/Thumbnail';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -63,7 +64,7 @@ export const WalletPopover = ({
               <Avatar
                 label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
                 src={arbitrumIcon}
-                className="!w-[44px] !h-[44px]"
+                className="!w-[36px] !h-[36px]"
                 fontSize="sm"
                 fontWeight="normal"
                 gap="3"
@@ -199,57 +200,59 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {pools?.map((pool, poolIndex) => (
-                                  <div
-                                    key={`${pool.token}-${pool.market}`}
-                                    className="flex gap-3 pb-3 border-b last:border-b-0"
-                                  >
-                                    {isLoading ? (
-                                      <Skeleton
-                                        circle
-                                        containerClassName="avatar-skeleton w-10 text-[40px]"
-                                      />
-                                    ) : (
-                                      <Avatar size="lg" src={undefined} />
-                                    )}
-                                    <div className="flex-1">
-                                      <div className="flex gap-2 leading-none">
-                                        {isLoading ? (
-                                          <Skeleton containerClassName="flex-1" width={120} />
-                                        ) : (
-                                          <>
-                                            <p>{pool.token.name}</p>
-                                            <span className="px-1 text-grayL">|</span>
-                                            <p>{pool.market}</p>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div className="flex mt-3">
-                                        <div className="mr-auto">
-                                          <p className="text-base font-medium text-black/30">
-                                            {isLoading ? (
-                                              <Skeleton containerClassName="flex-1" width={80} />
-                                            ) : (
-                                              <>
-                                                {formatDecimals(
-                                                  pool.liquidity,
-                                                  pool.token.decimals,
-                                                  2
-                                                )}{' '}
-                                                {pool.token.name}
-                                              </>
-                                            )}
-                                          </p>
-                                          <p className="mt-2 text-base text-black">
-                                            {isLoading ? (
-                                              <Skeleton containerClassName="flex-1" width={80} />
-                                            ) : (
-                                              <>{pool.bins} Bins</>
-                                            )}
-                                          </p>
+                                  <Link to="#">
+                                    <div
+                                      key={`${pool.token}-${pool.market}`}
+                                      className="flex gap-3 pb-3 border-b last:border-b-0"
+                                    >
+                                      {isLoading ? (
+                                        <Skeleton
+                                          circle
+                                          containerClassName="avatar-skeleton w-10 text-[40px]"
+                                        />
+                                      ) : (
+                                        <Avatar size="lg" src={undefined} />
+                                      )}
+                                      <div className="flex-1">
+                                        <div className="flex gap-2 leading-none">
+                                          {isLoading ? (
+                                            <Skeleton containerClassName="flex-1" width={120} />
+                                          ) : (
+                                            <>
+                                              <p>{pool.token.name}</p>
+                                              <span className="px-1 text-grayL">|</span>
+                                              <p>{pool.market}</p>
+                                            </>
+                                          )}
+                                        </div>
+                                        <div className="flex mt-3">
+                                          <div className="mr-auto">
+                                            <p className="text-base font-medium text-black/30">
+                                              {isLoading ? (
+                                                <Skeleton containerClassName="flex-1" width={80} />
+                                              ) : (
+                                                <>
+                                                  {formatDecimals(
+                                                    pool.liquidity,
+                                                    pool.token.decimals,
+                                                    2
+                                                  )}{' '}
+                                                  {pool.token.name}
+                                                </>
+                                              )}
+                                            </p>
+                                            <p className="mt-2 text-base text-black">
+                                              {isLoading ? (
+                                                <Skeleton containerClassName="flex-1" width={80} />
+                                              ) : (
+                                                <>{pool.bins} Bins</>
+                                              )}
+                                            </p>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </Link>
                                 ))}
                               </div>
                             </article>

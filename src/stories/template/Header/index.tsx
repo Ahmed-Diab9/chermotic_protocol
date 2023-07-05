@@ -43,11 +43,12 @@ export const Header = (props: HeaderProps) => {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 Header">
-      <div className="h-[100px] bg-white border-b px-10 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-12 text-lg">
+    // <header className="sticky top-0 Header">
+    <header className="Header">
+      <div className="h-[70px]  px-10 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
-            <LogoSimple />
+            <LogoSimple className="h-9" />
           </Link>
           <Link
             to="/trade"
@@ -95,7 +96,7 @@ export const Header = (props: HeaderProps) => {
                 <Avatar
                   src={arbitrumIcon}
                   label="Connect"
-                  className="!w-[44px] !h-[44px]"
+                  className="!w-[36px] !h-[36px]"
                   fontSize="lg"
                   fontWeight="normal"
                   gap="5"

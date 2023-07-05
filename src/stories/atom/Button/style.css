@@ -33,7 +33,7 @@
   @apply bg-black text-white dark:text-black;
   @apply border border-black;
   &:disabled {
-    @apply text-black/30 bg-[#F9F9F9];
+    @apply text-black/30 bg-[#F9F9F9] border-[#F9F9F9];
   }
 }
 .btn-gray {
@@ -53,6 +53,7 @@
 }
 .btn-xs {
   @apply min-w-[20px];
+  font-size: 9px;
   height: 20px;
   padding: 0 8px;
   > div {
@@ -66,8 +67,9 @@
   }
 }
 .btn-sm {
-  @apply min-w-[28px];
-  height: 28px;
+  @apply min-w-[24px];
+  font-size: 11px;
+  height: 24px;
   padding: 0 12px;
   > div {
     gap: 4px;
@@ -76,14 +78,14 @@
     width: 12px;
   }
   &.btn-icon-only {
-    @apply min-h-[28px] p-[2px];
+    @apply min-h-[24px] p-[2px];
   }
 }
 .btn-base {
-  @apply min-w-[34px];
-  font-size: 13px;
-  height: 34px;
-  padding: 0 16px;
+  @apply min-w-[30px];
+  font-size: 12px;
+  height: 30px;
+  padding: 0 12px;
   > div {
     gap: 4px;
   }
@@ -91,17 +93,17 @@
     width: 16px;
   }
   &.btn-icon-only {
-    @apply min-h-[34px] p-1;
+    @apply min-h-[30px] p-1;
   }
   &.btn-circle {
     @apply p-2;
   }
 }
 .btn-lg {
-  @apply min-w-[40px];
-  font-size: 13px;
-  height: 40px;
-  padding: 0 20px;
+  @apply min-w-[36px];
+  font-size: 14px;
+  height: 36px;
+  padding: 0 16px;
   > div {
     gap: 8px;
   }
@@ -109,14 +111,14 @@
     width: 16px;
   }
   &.btn-icon-only {
-    @apply min-h-[40px] p-2;
+    @apply min-h-[36px] p-2;
   }
 }
 .btn-xl {
-  @apply min-w-[48px];
+  @apply min-w-[42px];
   font-size: 16px;
-  height: 48px;
-  padding: 0 8px;
+  height: 42px;
+  padding: 0 16px;
   > div {
     gap: 12px;
   }
@@ -124,14 +126,14 @@
     width: 20px;
   }
   &.btn-icon-only {
-    @apply min-h-[48px] p-2;
+    @apply min-h-[42px] p-2;
   }
 }
 .btn-2xl {
-  @apply min-w-[60px];
+  @apply min-w-[48px];
   font-size: 20px;
-  height: 60px;
-  padding: 0 8px;
+  height: 48px;
+  padding: 0 16px;
   > div {
     gap: 12px;
   }
@@ -139,6 +141,6 @@
     width: 24px;
   }
   &.btn-icon-only {
-    @apply min-h-[60px] p-2;
+    @apply min-h-[48px] p-2;
   }
 }
