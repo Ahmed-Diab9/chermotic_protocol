@@ -40,15 +40,16 @@ const Trade = () => {
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
+    isChromaticBalanceLoading,
     status,
     balances,
   } = useUsumAccount();
-  const { tokens, onTokenSelect, currentSelectedToken } = useSettlementToken();
-  const { markets, onMarketSelect, currentMarket } = useMarket();
-  const feeRate = useFeeRate();
-  const { useTokenBalances: walletBalances } = useTokenBalances();
+  const { tokens, onTokenSelect, currentSelectedToken, isTokenLoading } = useSettlementToken();
+  const { markets, onMarketSelect, currentMarket, isMarketLoading } = useMarket();
+  const { feeRate, isFeeRateLoading } = useFeeRate();
+  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
 
-  const { priceFeed } = usePriceFeed();
+  const { priceFeed, isFeedLoading } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
@@ -90,7 +91,7 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { positions, onClosePosition, onClaimPosition } = usePosition();
+  const { positions, isPositionsLoading, onClosePosition, onClaimPosition } = usePosition();
   useTokenLocal();
   useMarketLocal();
 
@@ -107,6 +108,7 @@ const Trade = () => {
         priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
+        isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
         onConnect={connectAsync}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
@@ -128,6 +130,8 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
+          isMarketLoading={isMarketLoading && isFeeRateLoading}
+          isAssetLoading={isTokenLoading && isTokenBalanceLoading && isFeedLoading}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}
@@ -188,6 +192,7 @@ const Trade = () => {
         markets={markets}
         positions={positions}
         oracleVersions={oracleVersions}
+        isLoading={isPositionsLoading}
         onPositionClose={onClosePosition}
         onPositionClaim={onClaimPosition}
       />
