@@ -40,7 +40,9 @@ export const useOwnedLiquidityPools = () => {
     mutate: fetchOwnedPools,
   } = useSWR(
     fetchKey,
-    async ([address, tokenAddress, ...marketAddresses]): Promise<Record<string, OwnedBin[]>> => {
+    async ([address, tokenAddress, ...marketAddresses]): Promise<
+      Record<string, OwnedBin[] | undefined>
+    > => {
       if (isNil(client)) {
         return {};
       }
@@ -81,7 +83,7 @@ export const useOwnedLiquidityPools = () => {
       const ownedPools = awaitedResponse.reduce((record, currentPool) => {
         record[currentPool.marketAddress] = currentPool.bins;
         return record;
-      }, {} as Record<string, OwnedBin[]>);
+      }, {} as Record<string, OwnedBin[] | undefined>);
       return ownedPools;
     }
   );
