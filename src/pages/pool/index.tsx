@@ -110,7 +110,7 @@ const Pool = () => {
   const { liquidity, clbTokenValue } = useChartData();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
       <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: chromaticAccountAddress }}
@@ -130,7 +130,7 @@ const Pool = () => {
         onUsumCopy={copyText}
         isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
       />
-      <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: chromaticAccountAddress }}
           status={status}
@@ -155,7 +155,7 @@ const Pool = () => {
           onConnect={connectAsync}
           onStatusUpdate={createUsumAccount}
         />
-        <div className="flex items-stretch gap-5">
+        <div className="flex items-stretch gap-3">
           <div className="flex-auto w-3/5 min-w-[620px]">
             <PoolPanel
               token={selectedToken}
@@ -208,7 +208,7 @@ const Pool = () => {
                   }}
                 />
               </div>
-              <div className="mt-3 mb-3 text-left text-black/30">
+              <div className="mt-3 mb-3 text-base text-left text-black/30">
                 When providing liquidity to the liquidity bins of the Chromatic protocol, providers
                 are rewarded by minting CLB tokens. CLB tokens follow the ERC-1155 standard and have
                 one token contract per market, with each bin having its own unique token ID.

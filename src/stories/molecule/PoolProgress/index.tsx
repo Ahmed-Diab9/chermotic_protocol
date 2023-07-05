@@ -126,7 +126,7 @@ export const PoolProgress = ({
                 </div>
                 <div className="mt-5">
                   <Guide
-                    title="Standby.."
+                    title="Next Oracle Round"
                     // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
                     paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
