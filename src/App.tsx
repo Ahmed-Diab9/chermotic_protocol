@@ -1,21 +1,27 @@
-import "~/App.css";
+import '~/App.css';
 
-import { RouterProvider } from "react-router-dom";
-import { Provider } from "react-redux";
-import { SWRConfig } from "swr";
+import { Provider } from 'react-redux';
+import { RouterProvider } from 'react-router-dom';
+import { SWRConfig } from 'swr';
 
-import { router } from "~/routes";
-import { store } from "~/store/index";
+import { router } from '~/routes';
+import { store } from '~/store/index';
 
-import { createClient, configureChains, WagmiConfig } from "wagmi";
-import { hardhat, arbitrum } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
-
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WagmiConfig, configureChains, createClient } from 'wagmi';
+import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { publicProvider } from 'wagmi/providers/public';
+import { CHAIN } from '~/constants';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
+const CHAINS_WAGMI = {
+  anvil: hardhat,
+  arbitrum_goerli: arbitrumGoerli,
+  arbitrum_one: arbitrum,
+};
+
 const { chains, provider, webSocketProvider } = configureChains(
-  [hardhat, arbitrum],
+  [CHAINS_WAGMI[CHAIN]],
   [publicProvider()]
 );
 
@@ -37,9 +43,11 @@ const client = createClient({
 
 function App() {
   return (
-    <SWRConfig value={{
-      keepPreviousData: true
-    }}>
+    <SWRConfig
+      value={{
+        keepPreviousData: true,
+      }}
+    >
       <Provider store={store}>
         <WagmiConfig client={client}>
           <div className="App">
