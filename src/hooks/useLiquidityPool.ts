@@ -300,7 +300,7 @@ export const useLiquidityPoolSummary = () => {
     const array = [] as LiquidityPoolSummary[];
     for (const market of markets ?? []) {
       const marketAddress = market.address;
-      const bins = pools[marketAddress];
+      const bins = pools[marketAddress] || [];
       logger.info('bins', bins);
       const { description: marketDescription } = market;
       let liquiditySum = bigNumberify(0);
