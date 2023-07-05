@@ -12,7 +12,7 @@
 }
 
 body {
-  @apply font-mono text-base;
+  @apply font-mono text-base tracking-tight;
   word-spacing: -0.1em;
 }
 
