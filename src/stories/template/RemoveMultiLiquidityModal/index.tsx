@@ -227,13 +227,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-md border-gray"
+                    className="flex-auto shadow-base border-gray"
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}
                   />
                   <Button
-                    className="flex-auto shadow-md border-gray"
+                    className="flex-auto shadow-base border-gray"
                     label="Removable"
                     size="sm"
                     onClick={() => {

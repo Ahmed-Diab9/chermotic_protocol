@@ -36,7 +36,8 @@ export const theme = {
       short: '#fb6115',
     },
     boxShadow: {
-      md: '4px 4px 20px rgba(121, 121, 121, 0.08)',
+      base: '4px 4px 20px rgba(121, 121, 121, 0.08)',
+      md: '4px 4px 20px 0px rgba(229, 229, 229, 0.16)',
       lg: '4px 4px 32px rgba(229, 229, 229, 0.18)',
       xl: '4px 4px 60px rgba(229, 229, 229, 0.16)',
     },
