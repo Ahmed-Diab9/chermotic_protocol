@@ -64,6 +64,7 @@ const usePoolInput = () => {
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
+    value = value.replace(/,/g, '');
     const parsed = Number(value);
     if (isNaN(parsed)) {
       return;

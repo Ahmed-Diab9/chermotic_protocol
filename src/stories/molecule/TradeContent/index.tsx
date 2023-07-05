@@ -353,7 +353,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
               <div className="w-20">
-                <Input size="sm" unit="%" />
+                <Input size="sm" unit="%" value={0.3} />
               </div>
             </div>
           </div>
@@ -406,7 +406,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLink="#"
             />
             <p>Contract Qty</p>
-            <p className="ml-2 text-black/30">{input?.quantity} USDC</p>
+            <p className="ml-2 text-black/30">{withComma(input?.quantity)} USDC</p>
           </div>
         </div>
       );

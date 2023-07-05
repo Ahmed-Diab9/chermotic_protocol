@@ -1,7 +1,9 @@
-import { ChangeEvent, useEffect, useRef } from "react";
-import { Avatar } from "../Avatar";
-import "./style.css";
-import { isValid } from "~/utils/valid";
+import { ChangeEvent, useEffect, useMemo, useRef } from 'react';
+import { Avatar } from '../Avatar';
+import './style.css';
+import { isValid } from '~/utils/valid';
+import { withComma } from '~/utils/number';
+import { useActiveElement } from '~/hooks/useActiveElement';
 
 interface InputProps {
   label?: string;
@@ -11,9 +13,9 @@ interface InputProps {
   unit?: string;
   type?: string;
   className?: string;
-  size?: "xs" | "sm" | "base" | "lg";
-  css?: "default" | "active";
-  align?: "center" | "left" | "right";
+  size?: 'xs' | 'sm' | 'base' | 'lg';
+  css?: 'default' | 'active';
+  align?: 'center' | 'left' | 'right';
   disabled?: boolean;
   onClick?: () => unknown;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
@@ -25,16 +27,20 @@ export const Input = (props: InputProps) => {
     placeholder,
     assetSrc,
     unit,
-    type = "number",
+    type = 'number',
     className,
-    size = "base",
-    css = "default",
-    align = "right",
+    size = 'base',
+    css = 'default',
+    align = 'right',
     value,
     onChange,
     onClickAway,
   } = props;
   const inputRef = useRef<HTMLInputElement>(null);
+  const activeElement = useActiveElement();
+  const isFocused = useMemo(() => {
+    return activeElement?.isEqualNode(inputRef.current) ?? false;
+  }, [activeElement]);
 
   useEffect(() => {
     if (!isValid(onClickAway)) {
@@ -49,23 +55,21 @@ export const Input = (props: InputProps) => {
         }
       }
     };
-    document.addEventListener("mousedown", handleClickAway);
+    document.addEventListener('mousedown', handleClickAway);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickAway);
+      document.removeEventListener('mousedown', handleClickAway);
     };
   }, [onClickAway, inputRef, value]);
 
   return (
-    <div
-      className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}
-    >
+    <div className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}>
       {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
       <input
         ref={inputRef}
-        type={type}
+        type="string"
         className={`text-${align}`}
-        value={typeof value === "number" ? value.toString() : value}
+        value={type === 'number' ? withComma(isFocused ? value : Number(value).toFixed(2)) : value}
         placeholder={placeholder}
         onChange={(event) => {
           event.preventDefault();

@@ -20,6 +20,7 @@ export const usePoolRemoveInput = () => {
 
   const onAmountChange = (nextAmount: number | string) => {
     if (typeof nextAmount === 'string') {
+      nextAmount = nextAmount.replace(/,/g, '');
       const parsed = Number(trimLeftZero(nextAmount));
       if (isNaN(parsed)) {
         return;
