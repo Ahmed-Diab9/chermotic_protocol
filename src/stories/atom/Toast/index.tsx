@@ -1,6 +1,6 @@
-import './style.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './style.css';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 interface ToastProps {
@@ -42,7 +42,7 @@ const Msg = (props: MsgProps) => {
 
   return (
     <div className="flex">
-      <InformationCircleIcon className="w-4 mr-2" />
+      <InformationCircleIcon className="w-4 mr-2 text-black/30" />
       {message}
     </div>
   );

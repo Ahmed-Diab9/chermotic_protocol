@@ -114,9 +114,9 @@ export const TradePanel = (props: TradePanelProps) => {
       {isWideView ? (
         <div className="relative min-w-[1120px]">
           <div className="flex">
-            <div className="px-0 pt-6 pb-10 border-r">
+            <div className="px-0 pt-2 pb-10 border-r">
               <div className="w-full mb-10">
-                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2 text-center">
+                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold py-2 text-center">
                   SHORT
                 </h2>
               </div>
@@ -140,9 +140,9 @@ export const TradePanel = (props: TradePanelProps) => {
                 onOpenPosition={onOpenShortPosition}
               />
             </div>
-            <div className="px-0 pt-6 pb-10">
+            <div className="px-0 pt-2 pb-10">
               <div className="w-full mb-10">
-                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold pb-2 text-center">
+                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold py-2 text-center">
                   LONG
                 </h2>
               </div>
@@ -193,7 +193,7 @@ export const TradePanel = (props: TradePanelProps) => {
       ) : (
         <div className="relative w-full tabs tabs-line tabs-lg">
           <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-            <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
+            <Tab.List className="flex w-full gap-10 px-10 pt-2 mx-auto">
               <Tab
                 value="short"
                 className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
@@ -205,7 +205,7 @@ export const TradePanel = (props: TradePanelProps) => {
               </Tab>
             </Tab.List>
             <Tab.Panels className="flex flex-col items-center w-full">
-              <Tab.Panel className="w-full px-0 py-10">
+              <Tab.Panel className="w-full px-0 pb-10 pt-7">
                 <TradeContent
                   direction="short"
                   balances={balances}
@@ -226,7 +226,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   onOpenPosition={onOpenShortPosition}
                 />
               </Tab.Panel>
-              <Tab.Panel className="w-full px-0 py-10">
+              <Tab.Panel className="w-full px-0 pb-10 pt-7">
                 <TradeContent
                   direction="long"
                   balances={balances}

@@ -139,9 +139,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
-    <div className="TradeContent">
+    // todo: min/max width
+    <div className="TradeContent w-full w-[580px]">
       {/* Account Balance */}
-      <article className="px-10 pb-8 border-b border-grayL">
+      <article className="px-10 pb-5 border-b border-grayL">
         <div className="flex justify-between">
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
@@ -220,28 +221,29 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <LeverageOption value={input?.leverage} onClick={onLeverageChange} />
               )}
             </div>
-            <div className="w-2/5 max-w-[160px]">
+            <div className="">
               <Input
+                size="sm"
                 unit="x"
-                className="w-full"
+                className="w-[80px] ml-auto"
                 value={input?.leverage}
                 onChange={(event) => onInputChange?.('leverage', event)}
               />
             </div>
           </div>
         </article>
-        <div className="flex gap-5 mt-10">
+        <div className="flex gap-5 mt-8">
           {/* TP */}
           <article className="flex-auto">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
-              <div className="w-1/3 min-w-[80px]">
+              <div className="">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-full"
+                  className="w-[80px]"
                   value={input?.takeProfit}
                   onChange={(event) => {
                     onInputChange?.('takeProfit', event);
@@ -265,11 +267,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
               </div>
-              <div className="w-1/3 min-w-[80px]">
+              <div className="">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-full"
+                  className="w-[80px]"
                   value={input?.stopLoss}
                   onChange={(event) => {
                     onInputChange?.('stopLoss', event);
@@ -289,7 +291,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
-      <section className="px-10 pb-7">
+      <section className="px-10">
         <div className="mx-[-40px] relative border-b">
           {/* graph */}
           <FillUpChart
@@ -310,7 +312,45 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
         <article className="mt-5">
-          <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-dashed border-gray">
+          <div className="flex flex-col gap-[10px] border-gray">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Trade Fees</p>
+              </div>
+              <p>
+                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
+                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <p>Max Fee Allowance</p>
+                <TooltipGuide
+                  label="max-fee-allowance"
+                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
+                  outLink="#"
+                  outLinkAbout="Next Oracle Round"
+                />
+              </div>
+              <div className="w-20">
+                <Input size="sm" unit="%" value={0.3} />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button
+              label={direction === 'long' ? 'Buy' : 'Sell'}
+              size="2xl"
+              className="w-full"
+              css="active"
+              onClick={() => {
+                onOpenPosition?.();
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray mt-8">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
@@ -342,45 +382,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 border-gray">
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Trade Fees</p>
-              </div>
-              <p>
-                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
-                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
-              </p>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                <p>Max Fee Allowance</p>
-                <TooltipGuide
-                  label="max-fee-allowance"
-                  tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
-                  outLink="#"
-                  outLinkAbout="Next Oracle Round"
-                />
-              </div>
-              <div className="w-20">
-                <Input size="sm" unit="%" value={0.3} />
-              </div>
-            </div>
-          </div>
         </article>
       </section>
-      <div className="px-10">
-        <Button
-          label={direction === 'long' ? 'Buy' : 'Sell'}
-          size="2xl"
-          className="w-full"
-          css="active"
-          onClick={() => {
-            onOpenPosition?.();
-          }}
-        />
-        {/* <Button label="Buy" size="xl" className="w-full" /> */}
-      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800&display=swap');
 @import-normalize;
 
 @tailwind base;
@@ -12,14 +12,13 @@
 }
 
 body {
-  @apply font-mono;
+  @apply font-mono text-base tracking-tight;
   word-spacing: -0.1em;
-  font-size: 13px;
 }
 
 h4 {
+  @apply text-lg;
   font-weight: 500;
-  font-size: 16px;
 }
 
 *:focus {
@@ -32,11 +31,11 @@ input {
 }
 
 /* hide input number inner buttons */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield; /* Firefox */
 }
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -52,8 +51,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .Header {
   @apply z-30;
 }
-.select ul[role="listbox"],
-.dropdown [role="menu"] {
+.select ul[role='listbox'],
+.dropdown [role='menu'] {
   @apply z-20;
 }
 .popover-panel {

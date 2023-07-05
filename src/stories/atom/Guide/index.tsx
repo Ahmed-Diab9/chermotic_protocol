@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Outlink } from "../Outlink";
-import { Button } from "~/stories/atom/Button";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { BellIcon } from "@heroicons/react/24/outline";
+import { useState } from 'react';
+import { Outlink } from '../Outlink';
+import { Button } from '~/stories/atom/Button';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { BellIcon } from '@heroicons/react/24/outline';
 
 interface GuideProps {
   title?: string;
@@ -34,13 +34,13 @@ export const Guide = (props: GuideProps) => {
       {guideVisible && (
         <div
           className={`relative px-5 text-left rounded-xl bg-gray/20 ${
-            flex ? "flex gap-4 py-2 !pr-12" : "py-4"
+            flex ? 'flex gap-4 py-2 !pr-12' : 'py-4'
           }`}
         >
           <div className="flex items-center gap-1">
             <BellIcon className="w-4" />
             {/* <InformationCircleIcon className="w-4" /> */}
-            <p>{title}</p>
+            <p className="whitespace-nowrap">{title}</p>
           </div>
           <p className="my-2 text-sm text-black/30">{paragraph}</p>
           {outLink && <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />}

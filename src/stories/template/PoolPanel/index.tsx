@@ -204,11 +204,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
-          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
+          <Tab.List className="w-full mx-auto pt-2 flex !justify-center">
             <Tab className="text-2xl">ADD</Tab>
             <Tab className="text-2xl">REMOVE</Tab>
           </Tab.List>
-          <Tab.Panels className="flex flex-col items-center w-full px-10 py-10">
+          <Tab.Panels className="flex flex-col items-center w-full px-10 pb-10 pt-7">
             {/* tab - add */}
             <Tab.Panel className="w-full">
               <article className="flex items-start justify-between mb-10">
@@ -235,14 +235,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <h4>Liquidity Pool Range</h4>
                     <Switch.Group>
                       <div className="toggle-wrapper">
-                        <Switch.Label className="">Bin Values</Switch.Label>
+                        <Switch.Label className="">CLB Values</Switch.Label>
                         <Switch onChange={setIsBinValueVisible} className="toggle toggle-xs" />
                       </div>
                     </Switch.Group>
                   </div>
                   <div className="flex justify-between mt-6">
                     <div className="text-left">
-                      <p className="mb-1 text-black/30">Short Counter LP</p>
+                      <p className="mb-1 text-black/30">Short LP</p>
                       {/**
                        * @TODO
                        * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
@@ -265,7 +265,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="mb-1 text-black/30">Long Counter LP</p>
+                      <p className="mb-1 text-black/30">Long LP</p>
                       {/**
                        * @TODO
                        * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
@@ -312,7 +312,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         onIncrement={onMinIncrease}
                       />
                     </div>
-                    <p>-</p>
+                    <p>~</p>
                     <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
                       <p>Max trade Fee</p>
                       <Counter
@@ -339,7 +339,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 </article>
               </section>
               <article>
-                <div className="flex flex-col gap-2 mb-10 border-dotted mt-9">
+                <div className="mt-6">
+                  <Button
+                    label="Deposit"
+                    className="w-full"
+                    css="active"
+                    size="2xl"
+                    onClick={onAddLiquidity}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 border-t border-dashed border-gray mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
                     <p className="flex">
                       Number of Liquidity Bins
@@ -380,16 +390,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </div> */}
               </article>
-              <div className="mt-[34px]">
-                <Button
-                  label="Deposit"
-                  className="w-full"
-                  css="active"
-                  size="2xl"
-                  onClick={onAddLiquidity}
-                  disabled={isLoading}
-                />
-              </div>
             </Tab.Panel>
 
             {/* tab - remove */}
@@ -491,8 +491,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <Tab.Group>
                   <div className="flex flex-wrap items-baseline">
                     <Tab.List className="pt-[36px] !justify-start !gap-10">
-                      <Tab>Long Counter LP</Tab>
-                      <Tab>Short Counter LP</Tab>
+                      <Tab>Long LP</Tab>
+                      <Tab>Short LP</Tab>
                     </Tab.List>
 
                     {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}

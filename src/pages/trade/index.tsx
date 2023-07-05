@@ -99,7 +99,7 @@ const Trade = () => {
   const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
       <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
@@ -115,7 +115,7 @@ const Trade = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount }}
           status={status}
@@ -172,7 +172,7 @@ const Trade = () => {
             onOpenShortPosition={onOpenShortPosition}
           />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
-            <div className="mb-12">
+            <div className="mb-12 text-base">
               <div className="my-6 text-center text-black/30">
                 The Trade Fee is calculated by summing up the different fees from the Liquidi- ty
                 Bins that accept the positions. The EST. Trade Fee is calculated based on the
