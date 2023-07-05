@@ -26,6 +26,7 @@ export const useTokenBalances = () => {
     data: useTokenBalances,
     error,
     mutate: fetchTokenBalances,
+    isLoading: isTokenBalanceLoading,
   } = useSWR(
     isNotNil(walletAddress)
       ? ['WALLET_BALANCES', signer, walletAddress, tokenAddresses]
@@ -61,5 +62,5 @@ export const useTokenBalances = () => {
   if (error) {
     logger.error(error);
   }
-  return { useTokenBalances, fetchTokenBalances } as const;
+  return { useTokenBalances, isTokenBalanceLoading, fetchTokenBalances } as const;
 };

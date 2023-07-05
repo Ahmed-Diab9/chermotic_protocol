@@ -21,6 +21,7 @@ export const useSettlementToken = () => {
     data: tokens,
     error,
     mutate: fetchTokens,
+    isLoading: isTokenLoading,
   } = useSWR(['SETTLEMENT_TOKENS', address], async () => {
     if (!marketFactoryApi) {
       return;
@@ -40,5 +41,5 @@ export const useSettlementToken = () => {
     },
     [dispatch]
   );
-  return { tokens, currentSelectedToken, fetchTokens, onTokenSelect };
+  return { tokens, currentSelectedToken, isTokenLoading, fetchTokens, onTokenSelect };
 };
