@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 export const LoggedIn: Story = {
   args: {
-    loading: false,
+    isLoading: false,
     status: 'COMPLETED',
     account: {
       usumAddress: '0x0000000000111111111122222222223333333333',

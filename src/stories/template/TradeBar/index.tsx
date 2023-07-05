@@ -33,7 +33,7 @@ interface TradeBarProps {
   markets?: Market[];
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
-  loading?: boolean;
+  isLoading?: boolean;
   onPositionClose?: (marketAddress: string, id: BigNumber) => unknown;
   onPositionClaim?: (marketAddress: string, id: BigNumber) => unknown;
 }
@@ -48,7 +48,7 @@ export const TradeBar = ({
   markets,
   positions,
   oracleVersions,
-  loading,
+  isLoading,
   onPositionClose,
   onPositionClaim,
 }: TradeBarProps) => {
@@ -212,7 +212,7 @@ export const TradeBar = ({
                                           }`}
                                         >
                                           <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
-                                            {loading ? (
+                                            {isLoading ? (
                                               <div className="flex items-center gap-1">
                                                 <Skeleton
                                                   circle
@@ -234,7 +234,7 @@ export const TradeBar = ({
                                                 />
                                               </>
                                             )}
-                                            {loading ? (
+                                            {isLoading ? (
                                               <div className="flex items-center gap-1">
                                                 <Skeleton
                                                   circle
@@ -261,7 +261,7 @@ export const TradeBar = ({
                                                 />
                                               </>
                                             )}
-                                            {loading ? (
+                                            {isLoading ? (
                                               <Skeleton
                                                 width={40}
                                                 containerClassName="leading-none"
@@ -274,7 +274,7 @@ export const TradeBar = ({
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Price</p>
-                                            {loading ? (
+                                            {isLoading ? (
                                               <Skeleton
                                                 width={60}
                                                 containerClassName="leading-none"
@@ -285,7 +285,7 @@ export const TradeBar = ({
                                           </div>
                                           <div className="flex items-center gap-8 pl-6 border-l">
                                             <p className="text-black/50">Entry Time</p>
-                                            {loading ? (
+                                            {isLoading ? (
                                               <Skeleton
                                                 width={60}
                                                 containerClassName="leading-none"
@@ -353,13 +353,13 @@ export const TradeBar = ({
                                               label="Contract Qty"
                                               labelClass="text-black/50"
                                               value={calculatedData(position).qty}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                             <TextRow
                                               label="Collateral"
                                               labelClass="text-black/50"
                                               value={calculatedData(position).collateral}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
@@ -367,7 +367,7 @@ export const TradeBar = ({
                                               label="Take Profit"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).takeProfit}`}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -376,7 +376,7 @@ export const TradeBar = ({
                                               subValueLeft={`(${
                                                 calculatedData(position).profitPriceTo
                                               })`}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                           </div>
                                           <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
@@ -384,7 +384,7 @@ export const TradeBar = ({
                                               label="Stop Loss"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).stopLoss}`}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                             <TextRow
                                               label="Liq. Price"
@@ -393,7 +393,7 @@ export const TradeBar = ({
                                               subValueLeft={`(${
                                                 calculatedData(position).lossPriceTo
                                               })`}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                           </div>
                                           <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
@@ -401,7 +401,7 @@ export const TradeBar = ({
                                               label="PnL"
                                               labelClass="text-black/50"
                                               value={`${calculatedData(position).pnl}`}
-                                              loading={loading}
+                                              isLoading={isLoading}
                                             />
                                           </div>
                                         </div>

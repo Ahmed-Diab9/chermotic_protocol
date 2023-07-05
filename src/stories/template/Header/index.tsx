@@ -17,6 +17,7 @@ interface HeaderProps {
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
+  isBalanceLoading?: boolean;
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
@@ -32,6 +33,7 @@ export const Header = (props: HeaderProps) => {
     balances,
     priceFeed,
     pools,
+    isBalanceLoading,
     onConnect,
     onDisconnect,
     onCreateAccount,
@@ -75,6 +77,7 @@ export const Header = (props: HeaderProps) => {
                 balances={balances}
                 priceFeed={priceFeed}
                 pools={pools}
+                isLoading={isBalanceLoading}
                 onConnect={onConnect}
                 onDisconnect={onDisconnect}
                 onCreateAccount={onCreateAccount}

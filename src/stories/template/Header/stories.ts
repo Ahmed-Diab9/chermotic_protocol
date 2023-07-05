@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Header } from ".";
-import { BigNumber } from "ethers";
-import { Market } from "~/typings/market";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Header } from '.';
+import { BigNumber } from 'ethers';
+import { Market } from '~/typings/market';
 
 const meta = {
-  title: "Template/Header",
+  title: 'Template/Header',
   component: Header,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
 } satisfies Meta<typeof Header>;
 
@@ -18,21 +18,22 @@ type Story = StoryObj<typeof meta>;
 
 export const LoggedIn: Story = {
   args: {
+    isBalanceLoading: false,
     account: {
-      walletAddress: "0x8888888888888888888888888888888888888888",
-      usumAddress: "0x8888888888888888888888888888888888888888",
+      walletAddress: '0x8888888888888888888888888888888888888888',
+      usumAddress: '0x8888888888888888888888888888888888888888',
     },
     tokens: [
       {
-        name: "USDC",
-        address: "0x8888888888888888888888888888888888888888",
+        name: 'USDC',
+        address: '0x8888888888888888888888888888888888888888',
         decimals: 6,
       },
     ],
     markets: [
       {
-        address: "0x8888888888888888888888888888888888888888",
-        description: "ETH/USD",
+        address: '0x8888888888888888888888888888888888888888',
+        description: 'ETH/USD',
         oracleValue: {
           price: BigNumber.from(10000),
           timestamp: BigNumber.from(1000000),
@@ -52,10 +53,10 @@ export const LoggedIn: Story = {
     pools: [
       {
         token: {
-          name: "USDC",
+          name: 'USDC',
           decimals: 6,
         },
-        market: "ETH/USD",
+        market: 'ETH/USD',
         liquidity: BigNumber.from(1000),
         bins: 10,
       },

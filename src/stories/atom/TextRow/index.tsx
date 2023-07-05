@@ -10,7 +10,7 @@ interface TextRowProps {
   labelClass?: string;
   align?: string;
   className?: string;
-  loading?: boolean;
+  isLoading?: boolean;
   onClick?: () => unknown;
 }
 
@@ -24,7 +24,7 @@ export const TextRow = (props: TextRowProps) => {
     labelClass,
     align = 'between',
     className,
-    loading,
+    isLoading,
   } = props;
 
   return (
@@ -33,7 +33,7 @@ export const TextRow = (props: TextRowProps) => {
       <div className="flex items-center gap-1">
         {subValueLeft && <p className="text-black/30">{subValueLeft}</p>}
 
-        {loading ? (
+        {isLoading ? (
           <div className="flex items-center gap-1">
             <Skeleton width={60} containerClassName="leading-none" />
           </div>

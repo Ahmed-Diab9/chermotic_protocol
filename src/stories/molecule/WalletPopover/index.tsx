@@ -28,7 +28,7 @@ interface WalletPopoverProps {
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
-  loading?: boolean;
+  isLoading?: boolean;
   onConnect?: () => unknown;
   onDisconnect?: () => unknown;
   onCreateAccount?: () => void;
@@ -44,7 +44,7 @@ export const WalletPopover = ({
   balances,
   priceFeed,
   pools,
-  loading,
+  isLoading,
   onConnect,
   onDisconnect,
   onCreateAccount,
@@ -135,7 +135,7 @@ export const WalletPopover = ({
                                   priceFeed &&
                                   tokens?.map((token) => (
                                     <div key={token.address} className="flex items-center">
-                                      {loading ? (
+                                      {isLoading ? (
                                         <div className="flex items-center gap-1">
                                           <Skeleton
                                             circle
@@ -153,7 +153,7 @@ export const WalletPopover = ({
                                       )}
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
-                                          {loading ? (
+                                          {isLoading ? (
                                             <Skeleton
                                               width={40}
                                               containerClassName="leading-none"
@@ -172,7 +172,7 @@ export const WalletPopover = ({
                                           )}
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
-                                          {loading ? (
+                                          {isLoading ? (
                                             <Skeleton
                                               width={40}
                                               containerClassName="leading-none"
@@ -203,7 +203,7 @@ export const WalletPopover = ({
                                     key={`${pool.token}-${pool.market}`}
                                     className="flex gap-3 pb-3 border-b last:border-b-0"
                                   >
-                                    {loading ? (
+                                    {isLoading ? (
                                       <Skeleton
                                         circle
                                         containerClassName="avatar-skeleton w-10 text-[40px]"
@@ -213,7 +213,7 @@ export const WalletPopover = ({
                                     )}
                                     <div className="flex-1">
                                       <div className="flex gap-2 leading-none">
-                                        {loading ? (
+                                        {isLoading ? (
                                           <Skeleton containerClassName="flex-1" width={120} />
                                         ) : (
                                           <>
@@ -226,7 +226,7 @@ export const WalletPopover = ({
                                       <div className="flex mt-3">
                                         <div className="mr-auto">
                                           <p className="text-base font-medium text-black/30">
-                                            {loading ? (
+                                            {isLoading ? (
                                               <Skeleton containerClassName="flex-1" width={80} />
                                             ) : (
                                               <>
@@ -240,7 +240,7 @@ export const WalletPopover = ({
                                             )}
                                           </p>
                                           <p className="mt-2 text-base text-black">
-                                            {loading ? (
+                                            {isLoading ? (
                                               <Skeleton containerClassName="flex-1" width={80} />
                                             ) : (
                                               <>{pool.bins} Bins</>

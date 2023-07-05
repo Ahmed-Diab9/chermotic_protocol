@@ -41,7 +41,7 @@ interface AssetPopoverProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
-  loading?: boolean;
+  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -59,7 +59,7 @@ export const AssetPopover = ({
   totalBalance,
   availableMargin,
   assetValue,
-  loading,
+  isLoading,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -79,7 +79,7 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-2xl">
-                {loading ? (
+                {isLoading ? (
                   <Skeleton width={120} />
                 ) : (
                   <>
@@ -103,7 +103,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
-                  loading={loading}
+                  isLoading={isLoading}
                 />
                 <AssetPanel
                   title="Withdraw"
@@ -119,7 +119,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
-                  loading={loading}
+                  isLoading={isLoading}
                 />
               </Popover.Group>
             </>
@@ -143,7 +143,7 @@ interface AssetPanelProps {
   amount?: string;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
-  loading?: boolean;
+  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -162,7 +162,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     amount,
     availableMargin = bigNumberify(0),
     assetValue = bigNumberify(0),
-    loading,
+    isLoading,
     onAmountChange,
     onDeposit,
     onWithdraw,
@@ -323,7 +323,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {loading ? (
+                        {isLoading ? (
                           <Skeleton width={80} />
                         ) : (
                           <>
@@ -341,7 +341,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {loading ? (
+                        {isLoading ? (
                           <Skeleton width={80} />
                         ) : (
                           <>

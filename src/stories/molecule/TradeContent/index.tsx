@@ -33,7 +33,7 @@ interface TradeContentProps {
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
   liquidityData?: Liquidity[];
-  loading?: boolean;
+  isLoading?: boolean;
   onInputChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: ChangeEvent<HTMLInputElement>
@@ -63,7 +63,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
-    loading,
+    isLoading,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -146,7 +146,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
             <p className="text-black/30">
-              {loading ? (
+              {isLoading ? (
                 <Skeleton width={40} containerClassName="leading-none" />
               ) : (
                 <>

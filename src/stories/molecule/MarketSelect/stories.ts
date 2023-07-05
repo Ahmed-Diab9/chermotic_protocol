@@ -50,7 +50,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    loading: true,
+    isLoading: true,
     tokens,
     markets: markets as Market[],
     selectedToken: tokens[0],

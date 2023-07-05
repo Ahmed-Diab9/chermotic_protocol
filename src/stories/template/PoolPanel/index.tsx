@@ -55,7 +55,6 @@ interface PoolPanelProps {
   selectedBins?: OwnedBin[];
   isModalOpen?: boolean;
   isLoading?: boolean;
-  loading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onAddLiquidity?: () => unknown;
 
@@ -108,7 +107,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiAmount,
     multiBalance,
     isLoading,
-    loading,
     onAmountChange,
     onAddLiquidity,
     onRemoveAmountChange,
@@ -217,7 +215,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <div className="flex items-center gap-2">
                   <h4>Account Balance</h4>
                   <p className="text-black/30">
-                    {loading ? (
+                    {isLoading ? (
                       <Skeleton width={40} containerClassName="leading-none" />
                     ) : (
                       <>{`${withComma(settlementTokenBalance)} ${token?.name}`}</>
@@ -408,7 +406,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </p>
 
-                    {loading ? (
+                    {isLoading ? (
                       <div className="flex items-center gap-1">
                         <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
                         <Skeleton width={40} containerClassName="leading-none" />
@@ -422,7 +420,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                      * @TODO
                      * 총 유동성 보여주는 로직
                      */}
-                    {loading ? (
+                    {isLoading ? (
                       <Skeleton width={100} containerClassName="leading-none" />
                     ) : (
                       <>
@@ -438,7 +436,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       LP Bins
                     </div>
                     <p className="">
-                      {loading ? (
+                      {isLoading ? (
                         <Skeleton width={100} containerClassName="leading-none" />
                       ) : (
                         <>{binLength.toFixed(2)} Bins</>
@@ -455,7 +453,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {loading ? (
+                      {isLoading ? (
                         <Skeleton width={100} containerClassName="leading-none" />
                       ) : (
                         <>
@@ -474,7 +472,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {loading ? (
+                      {isLoading ? (
                         <Skeleton width={100} containerClassName="leading-none" />
                       ) : (
                         <>
@@ -528,7 +526,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               bin={bin}
                               selectedBins={selectedBins}
                               onBinCheck={onBinCheck}
-                              loading={loading}
+                              isLoading={isLoading}
                             />
                           ))}
                         </div>
@@ -596,12 +594,12 @@ interface BinItemProps {
   market?: Market;
   bin?: OwnedBin;
   selectedBins?: OwnedBin[];
-  loading?: boolean;
+  isLoading?: boolean;
   onBinCheck?: (bin: OwnedBin) => unknown;
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, market, bin, selectedBins, loading, onBinCheck } = props;
+  const { index, token, market, bin, selectedBins, isLoading, onBinCheck } = props;
   const dispatch = useAppDispatch();
   const isChecked = useMemo(() => {
     const found = selectedBins?.find(
@@ -620,7 +618,7 @@ const BinItem = (props: BinItemProps) => {
           onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
         <div className="flex items-center gap-2">
-          {loading ? (
+          {isLoading ? (
             <div className="flex items-center gap-1">
               <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
               <Skeleton width={40} containerClassName="leading-none" />
@@ -631,7 +629,7 @@ const BinItem = (props: BinItemProps) => {
             </>
           )}
           <p className="font-semibold text-black/30">
-            {loading ? (
+            {isLoading ? (
               <Skeleton width={40} containerClassName="leading-none" />
             ) : (
               <>
@@ -655,7 +653,7 @@ const BinItem = (props: BinItemProps) => {
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
-          {loading ? (
+          {isLoading ? (
             <Skeleton width={60} containerClassName="text-[60px] leading-none" />
           ) : (
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
@@ -665,7 +663,7 @@ const BinItem = (props: BinItemProps) => {
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Quantity</p>
             <p>
-              {loading ? (
+              {isLoading ? (
                 <Skeleton width={60} />
               ) : (
                 <>{bin && formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}</>
@@ -674,18 +672,20 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{loading ? <Skeleton width={60} /> : <>{bin?.removableRate.toFixed(2)}%</>}</p>
+            <p>{isLoading ? <Skeleton width={60} /> : <>{bin?.removableRate.toFixed(2)}%</>}</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">Bin Value</p>
-            <p>{loading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}</p>
+            <p>
+              {isLoading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}
+            </p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {loading ? (
+              {isLoading ? (
                 <div className="flex items-center gap-1">
                   <Skeleton width={60} />
                 </div>
