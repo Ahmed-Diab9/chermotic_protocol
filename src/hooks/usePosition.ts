@@ -40,6 +40,7 @@ export const usePosition = () => {
     data: positions,
     error,
     mutate: fetchPositions,
+    isLoading: isPositionsLoading,
   } = useSWR(['POSITIONS', usumAccount, markets, JSON.stringify(oracleVersions)], async () => {
     if (isNil(markets)) {
       logger.error('NO MARKETS');
@@ -201,6 +202,7 @@ export const usePosition = () => {
   return {
     positions,
     closedPositions,
+    isPositionsLoading,
     fetchPositions,
     onClosePosition,
     onClaimPosition,

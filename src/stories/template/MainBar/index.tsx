@@ -18,6 +18,8 @@ interface MainBarProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  isMarketLoading?: boolean;
+  isAssetLoading?: boolean;
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -41,6 +43,8 @@ export const MainBar = ({
   totalBalance,
   availableMargin,
   assetValue,
+  isMarketLoading,
+  isAssetLoading,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -58,6 +62,7 @@ export const MainBar = ({
           selectedToken={selectedToken}
           selectedMarket={selectedMarket}
           feeRate={feeRate}
+          isLoading={isMarketLoading}
           onTokenClick={onTokenSelect}
           onMarketClick={onMarketSelect}
         />
@@ -73,6 +78,7 @@ export const MainBar = ({
           totalBalance={totalBalance}
           availableMargin={availableMargin}
           assetValue={assetValue}
+          isLoading={isAssetLoading}
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}

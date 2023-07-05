@@ -21,6 +21,7 @@ export const useMarket = (_interval?: number) => {
     data: markets,
     error,
     mutate: fetchMarkets,
+    isLoading: isMarketLoading,
   } = useSWR(
     isValid(selectedToken) ? ['MARKET', selectedToken.address] : undefined,
     async ([_, tokenAddress]) => {
@@ -42,5 +43,5 @@ export const useMarket = (_interval?: number) => {
     [dispatch]
   );
 
-  return { markets, currentMarket, fetchMarkets, onMarketSelect } as const;
+  return { markets, currentMarket, isMarketLoading, fetchMarkets, onMarketSelect } as const;
 };

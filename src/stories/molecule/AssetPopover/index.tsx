@@ -1,14 +1,15 @@
-import { Popover } from '@headlessui/react'
+import './style.css';
+import { Popover } from '@headlessui/react';
 import {
   ArrowTopRightOnSquareIcon,
   CheckIcon,
   ChevronDoubleUpIcon,
-} from '@heroicons/react/24/outline'
-import { BigNumber } from 'ethers'
-import { isNotNil } from 'ramda'
-import { Loading } from '~/stories/atom/Loading'
-import { Outlink } from '~/stories/atom/Outlink'
-import { TooltipGuide } from '~/stories/atom/TooltipGuide'
+} from '@heroicons/react/24/outline';
+import { BigNumber } from 'ethers';
+import { isNotNil } from 'ramda';
+import { Loading } from '~/stories/atom/Loading';
+import { Outlink } from '~/stories/atom/Outlink';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -16,17 +17,18 @@ import {
   ACCOUNT_NONE,
   ACCOUNT_STATUS,
   Account,
-} from '../../../typings/account'
-import { Token } from '../../../typings/market'
-import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number'
-import { Avatar } from '../../atom/Avatar'
-import { Button } from '../../atom/Button'
-import { OptionInput } from '../../atom/OptionInput'
-import './style.css'
+} from '../../../typings/account';
+import { Token } from '../../../typings/market';
+import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { Avatar } from '../../atom/Avatar';
+import { Button } from '../../atom/Button';
+import { OptionInput } from '../../atom/OptionInput';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
-import checkIcon from '/src/assets/images/i_check_xl.svg'
-import createAccountIcon from '/src/assets/images/i_create_account_xl.svg'
-import loadingIcon from '/src/assets/images/i_loading_xl.svg'
+import checkIcon from '/src/assets/images/i_check_xl.svg';
+import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
+import loadingIcon from '/src/assets/images/i_loading_xl.svg';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -39,6 +41,7 @@ interface AssetPopoverProps {
   totalBalance?: BigNumber;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -56,6 +59,7 @@ export const AssetPopover = ({
   totalBalance,
   availableMargin,
   assetValue,
+  isLoading,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -75,7 +79,14 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-2xl">
-                {totalBalance && withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                {isLoading ? (
+                  <Skeleton width={120} />
+                ) : (
+                  <>
+                    {totalBalance &&
+                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                  </>
+                )}
               </h2>
               <Popover.Group className="flex gap-3">
                 <AssetPanel
@@ -92,6 +103,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
+                  isLoading={isLoading}
                 />
                 <AssetPanel
                   title="Withdraw"
@@ -107,6 +119,7 @@ export const AssetPopover = ({
                   onDeposit={onDeposit}
                   onWithdraw={onWithdraw}
                   onStatusUpdate={onStatusUpdate}
+                  isLoading={isLoading}
                 />
               </Popover.Group>
             </>
@@ -130,6 +143,7 @@ interface AssetPanelProps {
   amount?: string;
   availableMargin?: BigNumber;
   assetValue?: BigNumber;
+  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -148,6 +162,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     amount,
     availableMargin = bigNumberify(0),
     assetValue = bigNumberify(0),
+    isLoading,
     onAmountChange,
     onDeposit,
     onWithdraw,
@@ -308,7 +323,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                        {isLoading ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                          </>
+                        )}
                       </p>
                     </div>
                     <div>
@@ -320,7 +341,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                        {isLoading ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                          </>
+                        )}
                       </p>
                     </div>
                   </article>

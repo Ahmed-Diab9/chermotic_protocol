@@ -74,6 +74,7 @@ const usePoolReceipt = () => {
     data: receipts,
     error,
     mutate: fetchReceipts,
+    isLoading: isReceiptsLoading,
   } = useSWR(['RECEIPT', address, marketAddress, currentOracleVersion], async () => {
     if (
       address === undefined ||
@@ -205,6 +206,7 @@ const usePoolReceipt = () => {
 
   return {
     receipts,
+    isReceiptsLoading,
     fetchReceipts,
     onClaimCLBTokens,
     onClaimCLBTokensBatch,

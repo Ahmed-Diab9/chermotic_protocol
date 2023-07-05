@@ -60,6 +60,7 @@ export const useUsumAccount = () => {
     data: balances,
     error: balanceError,
     mutate: fetchBalances,
+    isLoading: isChromaticBalanceLoading,
   } = useSWR(['ChromaticAccBal', address, signerKey], async () => {
     const accountApi = client?.account();
     if (
@@ -111,30 +112,13 @@ export const useUsumAccount = () => {
     }
   };
 
-  const [totalBalance, totalAsset] = useMemo(() => {
-    if (!isValid(balances) || !isValid(currentSelectedToken)) {
-      return [BigNumber.from(0), BigNumber.from(0)];
-    }
-    const balance = balances[currentSelectedToken.address];
-    return [balance, balance];
-  }, [balances, currentSelectedToken]);
-
-  const totalMargin = useMemo(() => {
-    if (isValid(balances) && isValid(currentSelectedToken)) {
-      return balances[currentSelectedToken.address];
-    }
-    return BigNumber.from(0);
-  }, [balances, currentSelectedToken]);
-
   return {
     accountAddress,
     balances,
     status,
+    isChromaticBalanceLoading,
     createAccount,
     setStatus,
     fetchBalances,
-    totalBalance,
-    totalAsset,
-    totalMargin,
   };
 };

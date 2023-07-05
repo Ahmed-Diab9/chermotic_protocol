@@ -10,6 +10,8 @@ import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -31,6 +33,7 @@ interface TradeContentProps {
   tradeFee?: BigNumber;
   tradeFeePercent?: BigNumber;
   liquidityData?: Liquidity[];
+  isLoading?: boolean;
   onInputChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: ChangeEvent<HTMLInputElement>
@@ -60,6 +63,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    isLoading,
     onInputChange,
     onMethodToggle,
     onLeverageChange,
@@ -142,11 +146,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
             <p className="text-black/30">
-              {balances &&
-                token &&
-                balances[token.address] &&
-                withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
-              {token?.name}
+              {isLoading ? (
+                <Skeleton width={40} containerClassName="leading-none" />
+              ) : (
+                <>
+                  {balances &&
+                    token &&
+                    balances[token.address] &&
+                    withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
+                  {token?.name}
+                </>
+              )}
             </p>
           </div>
         </div>

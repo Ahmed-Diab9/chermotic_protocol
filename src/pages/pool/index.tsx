@@ -43,13 +43,19 @@ const Pool = () => {
     createAccount: createUsumAccount,
     status,
     balances,
+    isChromaticBalanceLoading,
   } = useUsumAccount();
-  const { tokens, currentSelectedToken: selectedToken, onTokenSelect } = useSettlementToken();
-  const { markets, currentMarket: selectedMarket, onMarketSelect } = useMarket();
-  const feeRate = useFeeRate();
-  const { useTokenBalances: walletBalances } = useTokenBalances();
+  const {
+    tokens,
+    currentSelectedToken: selectedToken,
+    isTokenLoading,
+    onTokenSelect,
+  } = useSettlementToken();
+  const { markets, currentMarket: selectedMarket, isMarketLoading, onMarketSelect } = useMarket();
+  const { feeRate, isFeeRateLoading } = useFeeRate();
+  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
   // const { usumBalances } = useUsumBalances();
-  const { priceFeed } = usePriceFeed();
+  const { priceFeed, isFeedLoading } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
   const {
@@ -60,7 +66,7 @@ const Pool = () => {
   } = useTokenTransaction();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
-  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch } = usePoolReceipt();
+  const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch, isReceiptsLoading } = usePoolReceipt();
 
   const {
     pool,
@@ -122,6 +128,7 @@ const Pool = () => {
         onDisconnect={disconnectAsync}
         onWalletCopy={copyText}
         onUsumCopy={copyText}
+        isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
       />
       <section className="flex flex-col grow w-full max-w-[1400px] px-5 mx-auto mb-20">
         <MainBar
@@ -138,6 +145,8 @@ const Pool = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
+          isMarketLoading={isMarketLoading && isFeeRateLoading}
+          isAssetLoading={isTokenLoading && isTokenBalanceLoading && isFeedLoading}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onBalanceAmountChange}
@@ -217,6 +226,7 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               receipts={receipts}
+              isLoading={isReceiptsLoading}
               onReceiptClaim={onClaimCLBTokens}
               onReceiptClaimBatch={onClaimCLBTokensBatch}
             />
