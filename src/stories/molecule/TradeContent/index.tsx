@@ -139,9 +139,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
-    <div className="TradeContent">
+    <div className="TradeContent max-w-[580px]">
       {/* Account Balance */}
-      <article className="px-10 pb-8 border-b border-grayL">
+      <article className="px-10 pb-5 border-b border-grayL">
         <div className="flex justify-between">
           <div className="flex items-center gap-2">
             <h4>Account Balance</h4>
@@ -230,7 +230,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
           </div>
         </article>
-        <div className="flex gap-5 mt-10">
+        <div className="flex gap-5 mt-8">
           {/* TP */}
           <article className="flex-auto">
             <div className="flex justify-between">
