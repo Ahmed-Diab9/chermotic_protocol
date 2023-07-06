@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
-import { useLiquiditiyPool } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 
 import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
@@ -13,7 +13,7 @@ import { Logger } from '~/utils/log';
 const logger = Logger('useChartData');
 
 const useChartData = () => {
-  const { pool } = useLiquiditiyPool();
+  const { pool } = useLiquidityPool();
   logger.info('pool', pool);
   const fetchKey = useMemo(() => {
     if (!isNil(pool?.bins)) {
