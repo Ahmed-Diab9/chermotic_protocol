@@ -2,7 +2,7 @@
   @apply inline-block relative;
   button[aria-haspopup='listbox'] {
     @apply flex items-center text-left gap-2 justify-between px-3 py-2 mb-1;
-    @apply w-full;
+    @apply w-full h-9;
     @apply border border-gray rounded-lg;
     &::after {
       content: '';
@@ -15,11 +15,11 @@
   /* Select(listbox) panel */
   ul[role='listbox'] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
-    @apply p-2 bg-white border border-gray rounded-lg shadow-base;
+    @apply p-1 bg-white border border-gray rounded-lg shadow-base;
   }
   li[role='option'] {
-    @apply flex items-center px-2;
-    @apply rounded;
+    @apply flex items-center px-2 py-[6px] hover:bg-grayL;
+    @apply rounded-lg;
     @apply cursor-pointer;
     &[aria-selected='true'] {
       font-weight: bold;

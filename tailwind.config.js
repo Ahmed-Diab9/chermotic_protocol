@@ -25,6 +25,7 @@ export const theme = {
       current: 'currentColor',
       black: '#030303',
       gray: '#D4D4D4',
+      grayBG: '#FCFCFC',
       grayL: '#EEEEEE',
       grayD: '#4D4D4D',
 
