@@ -1,4 +1,4 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-ethers-v5';
 import { isNil } from 'ramda';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';

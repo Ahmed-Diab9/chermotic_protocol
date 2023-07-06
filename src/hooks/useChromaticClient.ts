@@ -1,4 +1,4 @@
-import { Client } from '@chromatic-protocol/sdk';
+import { Client } from '@chromatic-protocol/sdk-ethers-v5';
 import { useEffect } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import { CHAIN } from '../constants';
