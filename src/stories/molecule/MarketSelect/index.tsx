@@ -103,7 +103,14 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
           )}
         </div>
         <div>
-          <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" size="sm" />
+          {isLoading ? (
+            <div className="flex items-center gap-1">
+              <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
+              <Skeleton width={80} containerClassName="text-lg" />
+            </div>
+          ) : (
+            <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" size="sm" />
+          )}
         </div>
         <ChevronDownIcon
           className="w-5 h-5 transition duration-150 ease-in-out"
