@@ -115,7 +115,7 @@ const Trade = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] overflow-auto px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount }}
           status={status}
