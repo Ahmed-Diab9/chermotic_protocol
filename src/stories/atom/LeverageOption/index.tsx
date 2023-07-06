@@ -12,7 +12,7 @@ export const LeverageOption = (props: LeverageOptionProps) => {
   return (
     <div className="flex gap-1">
       <Button
-        className="w-12 shadow-md"
+        className="w-12 shadow-base"
         label="5x"
         size="sm"
         css={value === 5 ? 'active' : 'gray'}
@@ -21,35 +21,35 @@ export const LeverageOption = (props: LeverageOptionProps) => {
         }}
       />
       <Button
-        className="flex-auto shadow-base"
+        className="w-12 shadow-base"
         label="10x"
         size="sm"
         css={value === 10 ? 'active' : 'gray'}
         onClick={() => onClick?.(10)}
       />
       <Button
-        className="flex-auto shadow-base"
+        className="w-12 shadow-base"
         label="15x"
         size="sm"
         css={value === 15 ? 'active' : 'gray'}
         onClick={() => onClick?.(15)}
       />
       <Button
-        className="flex-auto shadow-base"
+        className="w-12 shadow-base"
         label="20x"
         size="sm"
         css={value === 20 ? 'active' : 'gray'}
         onClick={() => onClick?.(20)}
       />
       <Button
-        className="flex-auto shadow-base"
+        className="w-12 shadow-base"
         label="25x"
         size="sm"
         css={value === 25 ? 'active' : 'gray'}
         onClick={() => onClick?.(25)}
       />
       <Button
-        className="flex-auto shadow-base"
+        className="w-12 shadow-base"
         label="30x"
         size="sm"
         css={value === 30 ? 'active' : 'gray'}

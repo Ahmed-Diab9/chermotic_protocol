@@ -187,7 +187,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayL/20">
         {/* Leverage */}
         <article className="">
-          <div className="flex justify-between mb-6">
+          <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
               <p className="text-black/30">Up to 30x</p>
@@ -231,18 +231,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
           </div>
         </article>
-        <div className="flex gap-5 mt-8">
+        <div className="flex mt-8">
           {/* TP */}
-          <article className="flex-auto">
+          <article className="flex-auto pr-5 border-r">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
               </div>
-              <div className="">
+              <div className="w-20">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-20"
                   value={input?.takeProfit}
                   onChange={(event) => {
                     onInputChange?.('takeProfit', event);
@@ -250,7 +249,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            <div className="mt-8">
+            <div className="mt-6">
               {input && (
                 <Slider
                   value={input.takeProfit === 0 ? 1 : input.takeProfit}
@@ -261,16 +260,15 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </div>
           </article>
           {/* SL */}
-          <article className="flex-auto pl-5 border-l h-[90px]">
-            <div className="flex justify-between mb-6">
+          <article className="flex-auto h-20 pl-5">
+            <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
               </div>
-              <div className="">
+              <div className="w-20">
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-20"
                   value={input?.stopLoss}
                   onChange={(event) => {
                     onInputChange?.('stopLoss', event);
@@ -278,7 +276,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
             </div>
-            <div className="mt-8">
+            <div className="mt-6">
               {input && (
                 <Slider
                   value={input.stopLoss === 0 ? 1 : input.stopLoss}
