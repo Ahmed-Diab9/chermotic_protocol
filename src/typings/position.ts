@@ -1,4 +1,4 @@
-import { IOracleProvider } from '@chromatic-protocol/sdk/contracts';
+import { IOracleProvider } from '@chromatic-protocol/sdk-ethers-v5/contracts';
 import { BigNumber } from 'ethers';
 import {
   bigNumberify,

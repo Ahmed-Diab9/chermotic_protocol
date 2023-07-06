@@ -85,7 +85,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     string | undefined,
     string | undefined
   ]);
-  const { onOpenPosition } = useOpenPosition({ state: input });
+  const response = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
@@ -346,7 +346,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               className="w-full"
               css="active"
               onClick={() => {
-                onOpenPosition();
+                response.onOpenPosition();
               }}
             />
           </div>

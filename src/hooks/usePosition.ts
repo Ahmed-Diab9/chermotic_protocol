@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { Logger, errorLog } from '~/utils/log';
-import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk';
+import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-ethers-v5';
 import { isNil } from 'ramda';
 import { useMarket } from '~/hooks/useMarket';
 import { useUsumAccount } from '~/hooks/useUsumAccount';

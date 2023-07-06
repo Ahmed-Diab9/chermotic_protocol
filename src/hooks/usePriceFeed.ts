@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { ethers, BigNumber } from 'ethers';
 import { useAccount } from 'wagmi';
-import { AggregatorV3Interface__factory } from '@chromatic-protocol/sdk/contracts';
+import { AggregatorV3Interface__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
 import { Price } from '../typings/market';
 import { errorLog } from '../utils/log';
 import { isValid } from '../utils/valid';

@@ -10,7 +10,7 @@ import { useAppSelector } from '../store';
 import { numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
-import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk';
+import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-ethers-v5';
 import { toast } from 'react-toastify';
 
 export type LpReceiptAction = 'add' | 'remove';
