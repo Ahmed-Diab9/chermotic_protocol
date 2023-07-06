@@ -15,7 +15,7 @@ import { TradePanel } from '~/stories/template/TradePanel';
 import useChartData from '~/hooks/useChartData';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import useOracleVersion from '~/hooks/useOracleVersion';
@@ -61,7 +61,6 @@ const Trade = () => {
     onLeverageChange: onLongLeverageChange,
     onTakeProfitChange: onLongTakeProfitChange,
     onStopLossChange: onLongStopLossChange,
-    onOpenPosition: onOpenLongPosition,
   } = useTradeInput();
   const {
     state: shortInput,
@@ -73,7 +72,6 @@ const Trade = () => {
     onLeverageChange: onShortLeverageChange,
     onTakeProfitChange: onShortTakeProfitChange,
     onStopLossChange: onShortStopLossChange,
-    onOpenPosition: onOpenShortPosition,
   } = useTradeInput();
   const {
     liquidity: {
@@ -82,7 +80,7 @@ const Trade = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-  } = useLiquiditiyPool();
+  } = useLiquidityPool();
   const { oracleVersions } = useOracleVersion();
 
   useEffect(() => {
@@ -90,7 +88,7 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { positions, isPositionsLoading, onClosePosition, onClaimPosition } = usePosition();
+  const { positions, isPositionsLoading } = usePosition();
   useTokenLocal();
   useMarketLocal();
 
@@ -166,8 +164,6 @@ const Trade = () => {
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
             shortLiquidityData={negative}
             longLiquidityData={positive}
-            onOpenLongPosition={onOpenLongPosition}
-            onOpenShortPosition={onOpenShortPosition}
           />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12 text-base">
@@ -191,8 +187,6 @@ const Trade = () => {
         positions={positions}
         oracleVersions={oracleVersions}
         isLoading={isPositionsLoading}
-        onPositionClose={onClosePosition}
-        onPositionClaim={onClaimPosition}
       />
       <Toast />
     </div>

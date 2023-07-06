@@ -29,6 +29,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
+import { useEffect } from 'react';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -168,6 +169,10 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+
+  useEffect(() => {
+    console.log(status);
+  }, [status]);
 
   return (
     <Popover>

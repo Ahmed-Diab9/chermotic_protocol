@@ -162,13 +162,15 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               $
-                                              {withComma(
-                                                formatBalance(
-                                                  balances[token.name],
-                                                  token,
-                                                  priceFeed[token.name]
-                                                )
-                                              )}
+                                              {isValid(balances[token.name]) &&
+                                                isValid(priceFeed[token.name]) &&
+                                                `$${withComma(
+                                                  formatBalance(
+                                                    balances[token.name],
+                                                    token,
+                                                    priceFeed[token.name]
+                                                  )
+                                                )}`}
                                             </>
                                           )}
                                         </p>

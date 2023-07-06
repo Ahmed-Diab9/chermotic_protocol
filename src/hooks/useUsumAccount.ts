@@ -34,6 +34,9 @@ export const useUsumAccount = () => {
   } = useSWR(
     fetchKey,
     async ([_, address]) => {
+      if (!client || !client.signer) {
+        return;
+      }
       const accountApi = client?.account();
       if (isNil(accountApi)) {
         return;
@@ -41,9 +44,8 @@ export const useUsumAccount = () => {
       try {
         const accountAddress = await accountApi.getAccount();
         if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
-          setStatus(ACCOUNT_NONE);
+          return;
         } else {
-          setStatus(ACCOUNT_COMPLETED);
           return accountAddress;
         }
       } catch (error) {
@@ -88,6 +90,17 @@ export const useUsumAccount = () => {
       clearTimeout(timerId);
     };
   }, [status]);
+
+  useEffect(() => {
+    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+      setStatus(ACCOUNT_NONE);
+      return;
+    }
+    if (isValid(accountAddress) && accountAddress !== ethers.constants.AddressZero) {
+      setStatus(ACCOUNT_COMPLETED);
+      return;
+    }
+  }, [accountAddress]);
 
   if (error) {
     logger.error(error);

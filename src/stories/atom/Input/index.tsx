@@ -43,6 +43,10 @@ export const Input = (props: InputProps) => {
   }, [activeElement]);
 
   useEffect(() => {
+    console.log(value);
+  }, [value]);
+
+  useEffect(() => {
     if (!isValid(onClickAway)) {
       return;
     }

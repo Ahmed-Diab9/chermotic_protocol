@@ -1,34 +1,15 @@
 import { useMemo, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
-import { useAppSelector } from '../store';
-import { Logger, errorLog } from '../utils/log';
-import { bigNumberify, expandDecimals } from '../utils/number';
-import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useTokenBalance';
-import { useChromaticClient } from './useChromaticClient';
+import { Logger } from '../utils/log';
 // import { useBinsBySelectedMarket } from './useLiquidityPool';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 import { BigNumber } from 'ethers';
 import { isNil } from 'ramda';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
-import { useLiquiditiyPool } from './useLiquidityPool';
-import usePoolReceipt from './usePoolReceipt';
-import { PoolEvent } from '~/typings/events';
-import { toast } from 'react-toastify';
+import { useLiquidityPool } from './useLiquidityPool';
 
 const logger = Logger('usePoolInput');
 const usePoolInput = () => {
-  const { pool } = useLiquiditiyPool();
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const { client } = useChromaticClient();
-  const routerApi = client?.router();
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const { address } = useAccount();
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: signer } = useSigner();
-  const { fetchReceipts } = usePoolReceipt();
-  const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
-
+  const { pool } = useLiquidityPool();
   const {
     data: { values: binFeeRates },
     setData: onRangeChange,
@@ -72,71 +53,14 @@ const usePoolInput = () => {
     setAmount(value);
   };
 
-  const onAddLiquidity = async () => {
-    logger.info('add liq');
-    if (!isValid(signer)) {
-      errorLog('signer is invalid');
-      toast('No signers. Create your account.');
-      return;
-    }
-    if (!isValid(token)) {
-      errorLog('token is not selected');
-      toast('Settlement token is not selected.');
-      return;
-    }
-    if (!isValid(market)) {
-      errorLog('market is not selected');
-      toast('Market is not selected.');
-      return;
-    }
-    if (!isValid(address)) {
-      errorLog('wallet not connected');
-      toast('Wallet is not connected.');
-      return;
-    }
-    if (!isValid(routerApi)) {
-      errorLog('no router apis');
-      toast('No routers');
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const marketAddress = market?.address;
-      const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(token.decimals));
-      if (!isValid(expandedAmount)) {
-        errorLog('amount is invalid');
-        return;
-      }
-      const dividedAmount = expandedAmount.div(binFeeRates.length);
-
-      await routerApi.addLiquidities(
-        marketAddress,
-        binFeeRates.map((feeRate: any) => ({
-          feeRate: +(feeRate * 10 ** 2).toFixed(0),
-          amount: dividedAmount,
-        }))
-      );
-
-      await fetchReceipts();
-      await fetchWalletBalances();
-      window.dispatchEvent(PoolEvent);
-      toast('New liquidity is added. Claim your CLB.');
-    } catch (error) {
-      toast((error as any).reason);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return {
     amount,
     rates,
+    binFeeRates,
     binCount: binFeeRates.length,
     binAverage: clbTokenAverage,
-    isLoading,
     onAmountChange,
     onRangeChange,
-    onAddLiquidity,
     rangeChartRef,
     move: move(),
   };

@@ -8,7 +8,7 @@ import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
 import { useChromaticClient } from './useChromaticClient';
-import { useLiquiditiyPool } from './useLiquidityPool';
+import { useLiquidityPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 import { TradeEvent } from '~/typings/events';
@@ -218,7 +218,7 @@ export const useTradeInput = () => {
   const {
     pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
-  } = useLiquiditiyPool();
+  } = useLiquidityPool();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -340,68 +340,6 @@ export const useTradeInput = () => {
     });
   };
 
-  const onOpenPosition = async () => {
-    if (!isValid(market)) {
-      errorLog('no markets selected');
-      toast('No markets selected.');
-      return;
-    }
-    if (!isValid(signer)) {
-      errorLog('no signers');
-      toast('No signers. Create your account.');
-      return;
-    }
-    if (!isValid(routerApi)) {
-      errorLog('no routers');
-      toast('No routers.');
-      return;
-    }
-
-    const quantity = bigNumberify(state.quantity * numberBuffer())
-      .mul(expandDecimals(4)) // 10000
-      .div(numberBuffer());
-    const leverage = bigNumberify(state.leverage * numberBuffer())
-      .mul(expandDecimals(2)) // 100
-      .div(numberBuffer());
-    const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals)) // 10 ** 6
-      .div(numberBuffer());
-    const makerMargin = bigNumberify(Math.floor(state.makerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals)) // 10 ** 6
-      .div(numberBuffer());
-
-    if (state.direction === 'long' && longTotalUnusedLiquidity.lte(makerMargin)) {
-      errorLog('the long liquidity is too low');
-      return AppError.reject('the long liquidity is too low', 'onOpenPosition');
-    }
-    if (state.direction === 'short' && shortTotalUnusedLiquidity.lte(makerMargin)) {
-      logger.error('the short liquidity is too low');
-      logger.error(shortTotalUnusedLiquidity);
-      return AppError.reject('the short liquidity is too low', 'onOpenPosition');
-    }
-
-    // FIXME
-    // Trading Fee
-    try {
-      const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
-
-      await routerApi.openPosition(market.address, {
-        quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
-        leverage,
-        takerMargin,
-        makerMargin,
-        maxAllowableTradingFee,
-      });
-      await fetchPositions();
-      await fetchBalances();
-
-      window.dispatchEvent(TradeEvent);
-      toast('New position is opened.');
-    } catch (error) {
-      toast((error as any).reason);
-    }
-  };
-
   return {
     state,
     tradeFee,
@@ -412,6 +350,5 @@ export const useTradeInput = () => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
-    onOpenPosition,
   };
 };

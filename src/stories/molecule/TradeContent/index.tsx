@@ -22,6 +22,7 @@ import { Liquidity } from '~/typings/chart';
 import { isNil } from 'ramda';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
+import { useOpenPosition } from '~/hooks/useOpenPosition';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -44,7 +45,6 @@ interface TradeContentProps {
   onLeverageChange?: (nextLeverage: number) => unknown;
   onTakeProfitChange?: (nextRate: number) => unknown;
   onStopLossChange?: (nextRate: number) => unknown;
-  onOpenPosition?: () => unknown;
 }
 
 const methodMap: Record<string, string> = {
@@ -71,7 +71,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
-    onOpenPosition,
   } = props;
 
   const oracleDecimals = 18;
@@ -86,6 +85,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     string | undefined,
     string | undefined
   ]);
+  const { onOpenPosition } = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
@@ -346,7 +346,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               className="w-full"
               css="active"
               onClick={() => {
-                onOpenPosition?.();
+                onOpenPosition();
               }}
             />
           </div>

@@ -19,6 +19,7 @@ import { Bin, OwnedBin } from '~/typings/pools';
 import { Token } from '~/typings/market';
 import { isValid } from '~/utils/valid';
 import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -27,12 +28,10 @@ export interface RemoveLiquidityModalProps {
   maxAmount?: number;
   onAmountChange?: (nextAmount: number) => unknown;
   onMaxChange?: () => unknown;
-  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
-  const { selectedBin, token, amount, maxAmount, onAmountChange, onMaxChange, onRemoveLiquidity } =
-    props;
+  const { selectedBin, token, amount, maxAmount, onAmountChange, onMaxChange } = props;
   const dispatch = useAppDispatch();
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : bigNumberify(0);
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
@@ -46,6 +45,11 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
         .mul(Math.round(selectedBin.removableRate * percentage()))
         .div(expandDecimals(FEE_RATE_DECIMAL))
     : bigNumberify(0);
+
+  const { onRemoveLiquidity } = useRemoveLiquidity({
+    feeRate: selectedBin?.baseFeeRate,
+    amount,
+  });
 
   return (
     <Dialog
@@ -199,9 +203,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               size="xl"
               className="text-lg"
               css="active"
-              onClick={() => {
+              onClick={async () => {
                 if (isValid(selectedBin) && isValid(amount)) {
-                  onRemoveLiquidity?.(selectedBin.baseFeeRate, amount);
+                  onRemoveLiquidity();
                   onAmountChange?.(0);
                 }
               }}
