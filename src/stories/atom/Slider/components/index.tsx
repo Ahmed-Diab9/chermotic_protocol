@@ -4,7 +4,7 @@ import { GetHandleProps, GetRailProps, GetTrackProps, SliderItem } from 'react-c
 const railOuterStyle = {
   position: 'absolute',
   width: '100%',
-  height: 42,
+  height: 18,
   transform: 'translate(0%, -50%)',
   // borderRadius: 7,
   cursor: 'pointer',
@@ -13,9 +13,9 @@ const railOuterStyle = {
 // background line
 const railInnerStyle = {
   position: 'absolute' as React.CSSProperties['position'],
-  width: 'calc(100% + 20px)',
-  height: 20,
-  marginLeft: '-10px',
+  width: 'calc(100% + 18px)',
+  height: 18,
+  marginLeft: '-8px',
   transform: 'translate(0%, -50%)',
   backgroundColor: '#ffffff',
   border: '1px solid #d4d4d4',
@@ -70,9 +70,10 @@ export function Handle({
           left: `${percent}%`,
           position: 'absolute',
           transform: 'translate(-50%, -50%)',
+          marginLeft: 1,
           zIndex: 2,
-          width: percent === 0 ? 10 : 8,
-          height: percent === 0 ? 10 : 8,
+          width: percent === 0 ? 8 : 6,
+          height: percent === 0 ? 8 : 6,
           borderRadius: '50%',
           boxSizing: 'content-box',
           border: percent === 0 ? '1px solid #D4D4D4' : '2px solid black',
@@ -98,14 +99,14 @@ export function Track({ source, target, getTrackProps, disabled = false }: Track
         <div
           style={{
             position: 'absolute',
-            transform: 'translate(-8px, -50%)',
-            height: 12,
+            transform: 'translate(-6px, -50%)',
+            height: 10,
             zIndex: 1,
             backgroundColor: disabled ? '#999' : '#030303',
             borderRadius: '8px 0 0 8px',
             cursor: 'pointer',
-            left: `calc(${source.percent}% + 3px)`,
-            width: `calc(${target.percent - source.percent}% + 5px)`,
+            left: `calc(${source.percent}% + 2px)`,
+            width: `calc(${target.percent - source.percent}% + 4px)`,
             opacity: target.percent === 0 && 0,
           }}
           {...getTrackProps()}
@@ -138,7 +139,9 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
         }}
       />
       {/* Tick - number */}
-      <div
+      <button
+        // todo: 누르면 해당값이 들어가도록
+        // onClick={}
         style={{
           position: 'absolute',
           marginTop: 12,
@@ -150,7 +153,7 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
         }}
       >
         {format(tick.value)}
-      </div>
+      </button>
     </div>
   );
 }

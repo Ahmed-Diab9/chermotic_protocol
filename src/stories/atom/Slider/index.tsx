@@ -22,11 +22,9 @@ interface SliderProps {
 
 const sliderStyle: React.CSSProperties = {
   position: 'relative',
-  margin: '0',
-  width: '100%',
+  margin: '0 10px 0 8px',
+  width: 'calc(100%-18px)',
   zIndex: 0,
-  // margin: "0 10px",
-  // width: "calc(100% - 20px)",
 };
 
 export const Slider = ({

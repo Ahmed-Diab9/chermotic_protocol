@@ -235,7 +235,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
         <div className="flex mt-8">
           {/* TP */}
-          <article className="flex-auto pr-5 border-r">
+          <article className="flex-auto pr-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Take Profit</h4>
