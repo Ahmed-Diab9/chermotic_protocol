@@ -12,34 +12,31 @@ interface ChartTooltipProps extends PropsWithChildren {
 }
 
 export const ChartTooltip = (props: ChartTooltipProps) => {
-  const { anchor, className, offset = 12, render } = props;
+  const { anchor, className, offset = 5, render } = props;
 
-  const fixToBottom: Middleware = {
-    name: 'fixToBottom',
-    fn({ x, y, elements, platform }) {
-      if (!elements.reference) return { x, y };
-      const slot = platform.getOffsetParent?.(elements.reference);
-      const bottom = (slot?.getBoundingClientRect().bottom ?? 0) + window.scrollY;
-
+  const fixToTop: Middleware = {
+    name: 'fixToTop',
+    fn({ x, y, elements }) {
+      if (!elements.floating) return { x, y };
+      const height = elements.floating.getBoundingClientRect().height;
       return {
         x,
-        y: bottom + offset,
+        y: -height - offset,
       };
     },
   };
 
   return (
-    <div className="chart-tooltip">
+    <div className="chart-tooltip" style={{ position: 'absolute' }}>
       <Tooltip
-        middlewares={[shift(), fixToBottom]}
+        middlewares={[shift(), fixToTop]}
         anchorSelect={anchor}
         className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${
           className ? className : ''
         }`}
-        place="bottom"
+        place="top"
         render={render}
         positionStrategy="absolute"
-        // isOpen
       />
     </div>
   );

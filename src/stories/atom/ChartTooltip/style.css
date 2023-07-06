@@ -6,6 +6,6 @@
     @apply max-w-[420px];
   }
   .react-tooltip-arrow {
-    @apply border-t border-l border-black mt-[-.5px];
+    @apply border-b border-r border-black mb-[-.5px];
   }
 }

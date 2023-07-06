@@ -37,6 +37,7 @@ import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 
 const logger = Logger('PoolPanel');
 
@@ -290,8 +291,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </div>
                 </article>
                 <article>
-                  {/* chart with range */}
+                  <LiquidityTooltip id="pool" data={liquidity} />
                   <RangeChart
+                    id="pool"
                     barData={liquidity}
                     dotData={binValue}
                     rangeChartRef={rangeChartRef}
