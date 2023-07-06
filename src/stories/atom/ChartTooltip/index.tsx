@@ -37,7 +37,6 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
         place="top"
         render={render}
         positionStrategy="absolute"
-        isOpen
       />
     </div>
   );
