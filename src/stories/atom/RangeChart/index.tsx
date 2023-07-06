@@ -9,6 +9,7 @@ import './style.css';
 import { RANGE_CONFIG, RANGE_TICKS } from '~/configs/chart';
 
 interface RangeChartProps {
+  id?: string;
   barData?: BarData[];
   dotData?: DotData[];
   defaultValues?: [number, number];
@@ -20,6 +21,7 @@ interface RangeChartProps {
 }
 
 export function RangeChart({
+  id = undefined,
   barData = [],
   dotData = [],
   defaultValues = [-0.1, 0.1],
@@ -30,7 +32,7 @@ export function RangeChart({
   rangeChartRef,
 }: RangeChartProps) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
       <Chart
         ref={rangeChartRef}
         barData={barData}

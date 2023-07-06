@@ -18,7 +18,6 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { useAppSelector } from '~/store';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { PoolProgress } from '~/stories/molecule/PoolProgress';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
@@ -111,7 +110,6 @@ const Pool = () => {
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
-      <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: chromaticAccountAddress }}
         tokens={tokens}
