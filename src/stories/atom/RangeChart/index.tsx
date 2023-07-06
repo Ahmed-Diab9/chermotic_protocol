@@ -3,10 +3,10 @@ import {
   RangeChart as Chart,
   DotData,
   RangeChartData,
-} from "@chromatic-protocol/react-compound-charts";
-import "./style.css";
+} from '@chromatic-protocol/react-compound-charts';
+import './style.css';
 
-import { RANGE_CONFIG, RANGE_TICKS } from "~/configs/chart";
+import { RANGE_CONFIG, RANGE_TICKS } from '~/configs/chart';
 
 interface RangeChartProps {
   barData?: BarData[];
@@ -30,7 +30,7 @@ export function RangeChart({
   rangeChartRef,
 }: RangeChartProps) {
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Chart
         ref={rangeChartRef}
         barData={barData}
@@ -41,7 +41,7 @@ export function RangeChart({
         onChangeCallback={onChange}
         height={height}
         width={width}
-        isGridVisible={isDotVisible}
+        isGridVisible={true}
       />
     </div>
   );

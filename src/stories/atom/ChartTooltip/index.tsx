@@ -12,18 +12,19 @@ interface ChartTooltipProps extends PropsWithChildren {
 }
 
 export const ChartTooltip = (props: ChartTooltipProps) => {
-  const { anchor, className, offset = 12, render } = props;
+  const { anchor, className, offset = 5, render } = props;
 
   const fixToBottom: Middleware = {
     name: 'fixToBottom',
     fn({ x, y, elements, platform }) {
       if (!elements.reference) return { x, y };
       const slot = platform.getOffsetParent?.(elements.reference);
-      const bottom = (slot?.getBoundingClientRect().bottom ?? 0) + window.scrollY;
+      const top = (slot?.getBoundingClientRect().y ?? 0) + window.scrollY;
+      const height = elements.floating.getBoundingClientRect().height;
 
       return {
         x,
-        y: bottom + offset,
+        y: top - height - offset,
       };
     },
   };
@@ -36,10 +37,9 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
         className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${
           className ? className : ''
         }`}
-        place="bottom"
+        place="top"
         render={render}
         positionStrategy="absolute"
-        // isOpen
       />
     </div>
   );
