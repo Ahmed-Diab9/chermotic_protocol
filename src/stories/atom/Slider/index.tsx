@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Slider as CompoundSlider,
   Rail,
@@ -6,8 +6,8 @@ import {
   Tracks,
   Ticks,
   TicksProps,
-} from "react-compound-slider";
-import { SliderRail, Handle, Track, Tick } from "./components"; // example render components - source below
+} from 'react-compound-slider';
+import { SliderRail, Handle, Track, Tick } from './components'; // example render components - source below
 
 interface SliderProps {
   min?: number;
@@ -21,9 +21,10 @@ interface SliderProps {
 }
 
 const sliderStyle: React.CSSProperties = {
-  position: "relative",
-  margin: "0",
-  width: "100%",
+  position: 'relative',
+  margin: '0',
+  width: '100%',
+  zIndex: 0,
   // margin: "0 10px",
   // width: "calc(100% - 20px)",
 };
@@ -40,17 +41,16 @@ export const Slider = ({
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
-  const handleSetter =
-    (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
-      if (!setter) return;
-      if (values.length > 1) {
-        console.warn("[Range]: single value only");
-      }
-      setter(+values[0].toFixed(12));
-    };
+  const handleSetter = (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
+    if (!setter) return;
+    if (values.length > 1) {
+      console.warn('[Range]: single value only');
+    }
+    setter(+values[0].toFixed(12));
+  };
 
-  const ticksProps: Omit<TicksProps, "children"> =
-    typeof tick === "number"
+  const ticksProps: Omit<TicksProps, 'children'> =
+    typeof tick === 'number'
       ? {
           count: tick,
         }
@@ -70,9 +70,7 @@ export const Slider = ({
         values={value ? [+value.toFixed(12)] : []}
         disabled={readonly}
       >
-        <Rail>
-          {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
-        </Rail>
+        <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>
         <Handles>
           {({ handles, getHandleProps }) => (
             <div className="slider-handles">
@@ -94,12 +92,7 @@ export const Slider = ({
             <div className="slider-tracks">
               <div className="relative">
                 {tracks.map(({ id, source, target }) => (
-                  <Track
-                    key={id}
-                    source={source}
-                    target={target}
-                    getTrackProps={getTrackProps}
-                  />
+                  <Track key={id} source={source} target={target} getTrackProps={getTrackProps} />
                 ))}
               </div>
             </div>
