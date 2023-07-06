@@ -27,6 +27,8 @@ import { isNil } from 'ramda';
 import memoizeOne from 'memoize-one';
 import { PNL_RATE_DECIMALS as PNL_RATE_DECIMALS } from '../../../configs/decimals';
 import { TRADE_EVENT } from '~/typings/events';
+import { useClosePosition } from '~/hooks/useClosePosition';
+import { useClaimPosition } from '~/hooks/useClaimPosition';
 
 interface TradeBarProps {
   token?: Token;
@@ -34,8 +36,6 @@ interface TradeBarProps {
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
-  onPositionClose?: (marketAddress: string, id: BigNumber) => unknown;
-  onPositionClaim?: (marketAddress: string, id: BigNumber) => unknown;
 }
 
 const listitem = [
@@ -49,8 +49,6 @@ export const TradeBar = ({
   positions,
   oracleVersions,
   isLoading,
-  onPositionClose,
-  onPositionClaim,
 }: TradeBarProps) => {
   // const previousPositions = usePrevious(positions, true);
   const [selectedItem, setSelectedItem] = useState(listitem[0]);
@@ -59,79 +57,6 @@ export const TradeBar = ({
   // const currentOracleVersion = useMemo(()=>{
   //   oracleVersions[]
   // })
-  /**
-   * FIXME
-   * Oracle Decimals을 확인해야 함
-   */
-  const oracleDecimals = 18;
-  const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
-    if (isNil(number)) return '-';
-    return withComma(formatDecimals(number, decimals, 2));
-  }, []);
-
-  const calculatedData = useMemo(() => {
-    return memoizeOne((position: Position) => {
-      function priceTo(type: 'profit' | 'loss') {
-        const propName = type === 'profit' ? 'toProfit' : 'toLoss';
-        const value = printNumber(position[propName], oracleDecimals);
-        const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
-        if (higherCondition) {
-          return '+' + value + '% higher';
-        } else {
-          return value + '% lower';
-        }
-      }
-      const { takerMargin, qty, leverage, makerMargin } = position;
-      const pnlPercentage = BigNumber.from(position.pnl)
-        .mul(10 ** PNL_RATE_DECIMALS)
-        .div(BigNumber.from(position.takerMargin));
-      const currentOracleVersion = oracleVersions?.[position.marketAddress];
-
-      if (
-        isNil(currentOracleVersion) ||
-        isNil(currentOracleVersion.version) ||
-        currentOracleVersion.version.lte(position.openVersion)
-      ) {
-        return {
-          qty: printNumber(qty.abs(), 4),
-          collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
-          stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
-          takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
-          profitPriceTo: '-',
-          lossPriceTo: '-',
-          pnl: '-',
-          lossPrice: '-',
-          profitPrice: '-',
-          entryPrice: '-',
-          entryTime: '-',
-        };
-      }
-
-      const props = {
-        qty: printNumber(qty.abs(), 4),
-        collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
-        stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
-        takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
-        profitPriceTo: `${priceTo('profit')}%`,
-        lossPriceTo: `${priceTo('loss')}%`,
-        pnl: `${printNumber(pnlPercentage, 2)}%`,
-        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
-        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
-        entryPrice: printNumber(position.openPrice || 0, oracleDecimals),
-        entryTime: new Intl.DateTimeFormat('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        }).format(new Date(position.openTimestamp.toNumber() * 1000)),
-      };
-
-      return props;
-    });
-  }, [token, oracleVersions]);
-
-  const direction = useCallback((position: Position) => {
-    return position.qty.gt(0) ? 'Long' : 'Short';
-  }, []);
 
   useEffect(() => {
     function onTrade() {
@@ -204,247 +129,13 @@ export const TradeBar = ({
                               <div>
                                 {(positions ?? []).map((position) => {
                                   return (
-                                    <div key={position.id.toString()} className="border rounded-xl">
-                                      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
-                                        <div
-                                          className={`flex items-center gap-6 ${
-                                            position.status === OPENING ? 'opacity-30' : ''
-                                          }`}
-                                        >
-                                          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
-                                            {isLoading ? (
-                                              <div className="flex items-center gap-1">
-                                                <Skeleton
-                                                  circle
-                                                  containerClassName="avatar-skeleton w-4 text-lg"
-                                                />
-                                                <Skeleton
-                                                  width={40}
-                                                  containerClassName="leading-none"
-                                                />
-                                              </div>
-                                            ) : (
-                                              <>
-                                                <Avatar
-                                                  label={token?.name}
-                                                  size="xs"
-                                                  gap="1"
-                                                  fontSize="base"
-                                                  fontWeight="bold"
-                                                />
-                                              </>
-                                            )}
-                                            {isLoading ? (
-                                              <div className="flex items-center gap-1">
-                                                <Skeleton
-                                                  circle
-                                                  containerClassName="avatar-skeleton w-4 text-lg"
-                                                />
-                                                <Skeleton
-                                                  width={40}
-                                                  containerClassName="leading-none"
-                                                />
-                                              </div>
-                                            ) : (
-                                              <>
-                                                <Avatar
-                                                  label={
-                                                    markets?.find(
-                                                      (market) =>
-                                                        market.address === position.marketAddress
-                                                    )?.description
-                                                  }
-                                                  size="xs"
-                                                  gap="1"
-                                                  fontSize="base"
-                                                  fontWeight="bold"
-                                                />
-                                              </>
-                                            )}
-                                            {isLoading ? (
-                                              <Skeleton
-                                                width={40}
-                                                containerClassName="leading-none"
-                                              />
-                                            ) : (
-                                              <>
-                                                <Tag label={direction(position)} />
-                                              </>
-                                            )}
-                                          </div>
-                                          <div className="flex items-center gap-8 pl-6 border-l">
-                                            <p className="text-black/50">Entry Price</p>
-                                            {isLoading ? (
-                                              <Skeleton
-                                                width={60}
-                                                containerClassName="leading-none"
-                                              />
-                                            ) : (
-                                              <>${calculatedData(position).entryPrice}</>
-                                            )}
-                                          </div>
-                                          <div className="flex items-center gap-8 pl-6 border-l">
-                                            <p className="text-black/50">Entry Time</p>
-                                            {isLoading ? (
-                                              <Skeleton
-                                                width={60}
-                                                containerClassName="leading-none"
-                                              />
-                                            ) : (
-                                              <>{calculatedData(position).entryTime}</>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <div className="flex items-center gap-1 ml-auto">
-                                          {/* 상태에 따라 내용 변동 */}
-                                          {position.status === OPENING && (
-                                            <>
-                                              <Loading size="xs" />
-                                              <p className="flex text-black/30">
-                                                {/* Opening in progress */}
-                                                Waiting for the next oracle round
-                                                <TooltipGuide
-                                                  iconOnly
-                                                  label="opening-in-progress"
-                                                />
-                                              </p>
-                                            </>
-                                          )}
-                                          {position.status === OPENED && (
-                                            <>
-                                              <CheckIcon className="w-4" />
-                                              <p className="flex text-black/30">
-                                                Opening completed
-                                                <TooltipGuide iconOnly label="opening-completed" />
-                                              </p>
-                                            </>
-                                          )}
-                                          {position.status === CLOSING && (
-                                            <>
-                                              <Loading size="xs" />
-                                              <p className="flex text-black/30">
-                                                Closing in progress
-                                                <TooltipGuide
-                                                  iconOnly
-                                                  label="closing-in-progress"
-                                                />
-                                              </p>
-                                            </>
-                                          )}
-                                          {position.status === CLOSED && (
-                                            <>
-                                              <CheckIcon className="w-4" />
-                                              <p className="flex text-black/30">
-                                                Closing completed
-                                                <TooltipGuide iconOnly label="closing-completed" />
-                                              </p>
-                                            </>
-                                          )}
-                                        </div>
-                                      </div>
-                                      <div className="flex items-stretch justify-between gap-6 px-5 py-4">
-                                        <div
-                                          className={`flex items-stretch justify-between gap-6 ${
-                                            position.status === OPENING ? 'opacity-30' : ''
-                                          }`}
-                                        >
-                                          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
-                                            <TextRow
-                                              label="Contract Qty"
-                                              labelClass="text-black/50"
-                                              value={calculatedData(position).qty}
-                                              isLoading={isLoading}
-                                            />
-                                            <TextRow
-                                              label="Collateral"
-                                              labelClass="text-black/50"
-                                              value={calculatedData(position).collateral}
-                                              isLoading={isLoading}
-                                            />
-                                          </div>
-                                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="Take Profit"
-                                              labelClass="text-black/50"
-                                              value={`${calculatedData(position).takeProfit}`}
-                                              isLoading={isLoading}
-                                            />
-                                            <TextRow
-                                              label="Liq. Price"
-                                              labelClass="text-black/50"
-                                              value={calculatedData(position).profitPrice}
-                                              subValueLeft={`(${
-                                                calculatedData(position).profitPriceTo
-                                              })`}
-                                              isLoading={isLoading}
-                                            />
-                                          </div>
-                                          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="Stop Loss"
-                                              labelClass="text-black/50"
-                                              value={`${calculatedData(position).stopLoss}`}
-                                              isLoading={isLoading}
-                                            />
-                                            <TextRow
-                                              label="Liq. Price"
-                                              labelClass="text-black/50"
-                                              value={calculatedData(position).lossPrice}
-                                              subValueLeft={`(${
-                                                calculatedData(position).lossPriceTo
-                                              })`}
-                                              isLoading={isLoading}
-                                            />
-                                          </div>
-                                          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
-                                            <TextRow
-                                              label="PnL"
-                                              labelClass="text-black/50"
-                                              value={`${calculatedData(position).pnl}`}
-                                              isLoading={isLoading}
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
-                                          {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
-                                          {/* Close / Claim USDC */}
-                                          {(position.status === OPENED ||
-                                            position.status === OPENING) && (
-                                            <Button
-                                              label="Close"
-                                              size="sm"
-                                              onClick={() => {
-                                                onPositionClose?.(
-                                                  position.marketAddress,
-                                                  position.id
-                                                );
-                                              }}
-                                            />
-                                          )}
-                                          {position.status === CLOSED && (
-                                            <Button
-                                              label="Claim"
-                                              css="active"
-                                              size="sm"
-                                              onClick={() => {
-                                                onPositionClaim?.(
-                                                  position.marketAddress,
-                                                  position.id
-                                                );
-                                              }}
-                                            />
-                                          )}
-                                          {position.status === CLOSING && (
-                                            <Button
-                                              label="Claim"
-                                              size="sm"
-                                              disabled={true}
-                                              css="gray"
-                                            />
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
+                                    <PositionItem
+                                      position={position}
+                                      isLoading={isLoading}
+                                      token={token}
+                                      markets={markets}
+                                      oracleVersions={oracleVersions}
+                                    />
                                   );
                                 })}
                               </div>
@@ -502,5 +193,289 @@ export const TradeBar = ({
         </>
       )}
     </Popover>
+  );
+};
+
+interface Props {
+  position: Position;
+  isLoading?: boolean;
+  token?: Token;
+  markets?: Market[];
+  oracleVersions?: Record<string, OracleVersion>;
+}
+
+const PositionItem = function (props: Props) {
+  const { position, isLoading, token, markets, oracleVersions } = props;
+  /**
+   * FIXME
+   * Oracle Decimals을 확인해야 함
+   */
+  const oracleDecimals = 18;
+  const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
+    if (isNil(number)) return '-';
+    return withComma(formatDecimals(number, decimals, 2));
+  }, []);
+  const calculatedData = useMemo(() => {
+    return memoizeOne((position: Position) => {
+      function priceTo(type: 'profit' | 'loss') {
+        const propName = type === 'profit' ? 'toProfit' : 'toLoss';
+        const value = printNumber(position[propName], oracleDecimals);
+        const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
+        if (higherCondition) {
+          return '+' + value + '% higher';
+        } else {
+          return value + '% lower';
+        }
+      }
+      const { takerMargin, qty, leverage, makerMargin } = position;
+      const pnlPercentage = BigNumber.from(position.pnl)
+        .mul(10 ** PNL_RATE_DECIMALS)
+        .div(BigNumber.from(position.takerMargin));
+      const currentOracleVersion = oracleVersions?.[position.marketAddress];
+
+      if (
+        isNil(currentOracleVersion) ||
+        isNil(currentOracleVersion.version) ||
+        currentOracleVersion.version.lte(position.openVersion)
+      ) {
+        return {
+          qty: printNumber(qty.abs(), 4),
+          collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
+          stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
+          takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+          profitPriceTo: '-',
+          lossPriceTo: '-',
+          pnl: '-',
+          lossPrice: '-',
+          profitPrice: '-',
+          entryPrice: '-',
+          entryTime: '-',
+        };
+      }
+
+      const props = {
+        qty: printNumber(qty.abs(), 4),
+        collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
+        stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
+        takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+        profitPriceTo: `${priceTo('profit')}%`,
+        lossPriceTo: `${priceTo('loss')}%`,
+        pnl: `${printNumber(pnlPercentage, 2)}%`,
+        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
+        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
+        entryPrice: printNumber(position.openPrice || 0, oracleDecimals),
+        entryTime: new Intl.DateTimeFormat('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        }).format(new Date(position.openTimestamp.toNumber() * 1000)),
+      };
+
+      return props;
+    });
+  }, [token, oracleVersions]);
+
+  const direction = useCallback((position: Position) => {
+    return position.qty.gt(0) ? 'Long' : 'Short';
+  }, []);
+
+  const { onClosePosition } = useClosePosition({
+    positionId: position.id,
+    marketAddress: position.marketAddress,
+  });
+  const { onClaimPosition } = useClaimPosition({
+    positionId: position.id,
+    marketAddress: position.marketAddress,
+  });
+
+  return (
+    <div key={position.id.toString()} className="border rounded-xl">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
+        <div
+          className={`flex items-center gap-6 ${position.status === OPENING ? 'opacity-30' : ''}`}
+        >
+          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
+            {isLoading ? (
+              <div className="flex items-center gap-1">
+                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton width={40} containerClassName="leading-none" />
+              </div>
+            ) : (
+              <>
+                <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+              </>
+            )}
+            {isLoading ? (
+              <div className="flex items-center gap-1">
+                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton width={40} containerClassName="leading-none" />
+              </div>
+            ) : (
+              <>
+                <Avatar
+                  label={
+                    markets?.find((market) => market.address === position.marketAddress)
+                      ?.description
+                  }
+                  size="xs"
+                  gap="1"
+                  fontSize="base"
+                  fontWeight="bold"
+                />
+              </>
+            )}
+            {isLoading ? (
+              <Skeleton width={40} containerClassName="leading-none" />
+            ) : (
+              <>
+                <Tag label={direction(position)} />
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-8 pl-6 border-l">
+            <p className="text-black/50">Entry Price</p>
+            {isLoading ? (
+              <Skeleton width={60} containerClassName="leading-none" />
+            ) : (
+              <>${calculatedData(position).entryPrice}</>
+            )}
+          </div>
+          <div className="flex items-center gap-8 pl-6 border-l">
+            <p className="text-black/50">Entry Time</p>
+            {isLoading ? (
+              <Skeleton width={60} containerClassName="leading-none" />
+            ) : (
+              <>{calculatedData(position).entryTime}</>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-1 ml-auto">
+          {/* 상태에 따라 내용 변동 */}
+          {position.status === OPENING && (
+            <>
+              <Loading size="xs" />
+              <p className="flex text-black/30">
+                {/* Opening in progress */}
+                Waiting for the next oracle round
+                <TooltipGuide iconOnly label="opening-in-progress" />
+              </p>
+            </>
+          )}
+          {position.status === OPENED && (
+            <>
+              <CheckIcon className="w-4" />
+              <p className="flex text-black/30">
+                Opening completed
+                <TooltipGuide iconOnly label="opening-completed" />
+              </p>
+            </>
+          )}
+          {position.status === CLOSING && (
+            <>
+              <Loading size="xs" />
+              <p className="flex text-black/30">
+                Closing in progress
+                <TooltipGuide iconOnly label="closing-in-progress" />
+              </p>
+            </>
+          )}
+          {position.status === CLOSED && (
+            <>
+              <CheckIcon className="w-4" />
+              <p className="flex text-black/30">
+                Closing completed
+                <TooltipGuide iconOnly label="closing-completed" />
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex items-stretch justify-between gap-6 px-5 py-4">
+        <div
+          className={`flex items-stretch justify-between gap-6 ${
+            position.status === OPENING ? 'opacity-30' : ''
+          }`}
+        >
+          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
+            <TextRow
+              label="Contract Qty"
+              labelClass="text-black/50"
+              value={calculatedData(position).qty}
+              isLoading={isLoading}
+            />
+            <TextRow
+              label="Collateral"
+              labelClass="text-black/50"
+              value={calculatedData(position).collateral}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+            <TextRow
+              label="Take Profit"
+              labelClass="text-black/50"
+              value={`${calculatedData(position).takeProfit}`}
+              isLoading={isLoading}
+            />
+            <TextRow
+              label="Liq. Price"
+              labelClass="text-black/50"
+              value={calculatedData(position).profitPrice}
+              subValueLeft={`(${calculatedData(position).profitPriceTo})`}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+            <TextRow
+              label="Stop Loss"
+              labelClass="text-black/50"
+              value={`${calculatedData(position).stopLoss}`}
+              isLoading={isLoading}
+            />
+            <TextRow
+              label="Liq. Price"
+              labelClass="text-black/50"
+              value={calculatedData(position).lossPrice}
+              subValueLeft={`(${calculatedData(position).lossPriceTo})`}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
+            <TextRow
+              label="PnL"
+              labelClass="text-black/50"
+              value={`${calculatedData(position).pnl}`}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
+        <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
+          {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
+          {/* Close / Claim USDC */}
+          {(position.status === OPENED || position.status === OPENING) && (
+            <Button
+              label="Close"
+              size="sm"
+              onClick={() => {
+                onClosePosition();
+              }}
+            />
+          )}
+          {position.status === CLOSED && (
+            <Button
+              label="Claim"
+              css="active"
+              size="sm"
+              onClick={() => {
+                onClaimPosition();
+              }}
+            />
+          )}
+          {position.status === CLOSING && (
+            <Button label="Claim" size="sm" disabled={true} css="gray" />
+          )}
+        </div>
+      </div>
+    </div>
   );
 };

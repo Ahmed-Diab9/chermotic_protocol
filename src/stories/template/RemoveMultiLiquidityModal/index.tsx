@@ -21,6 +21,7 @@ import { Button } from '../../atom/Button';
 import '../Modal/style.css';
 import { useMemo } from 'react';
 import { Logger } from '~/utils/log';
+import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 
 const logger = Logger('RemoveMultiLiquidityModal');
 export interface RemoveMultiLiquidityModalProps {
@@ -33,7 +34,6 @@ export interface RemoveMultiLiquidityModalProps {
   // freeLiquidity?: BigNumber;
   // removableRate?: BigNumber;
   onAmountChange?: (type: MULTI_TYPE) => unknown;
-  onRemoveLiquidity?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 }
 
 export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps) => {
@@ -47,7 +47,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     // freeLiquidity = bigNumberify(0),
     // removableRate = bigNumberify(0),
     onAmountChange,
-    onRemoveLiquidity,
   } = props;
   const dispatch = useAppDispatch();
   const convertedAmount = useMemo(() => {
@@ -101,6 +100,10 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       ),
     };
   }, [type, selectedBins]);
+  const { onRemoveLiquidities } = useRemoveLiquidities({
+    bins: selectedBins,
+    type,
+  });
 
   console.log(amount);
 
@@ -288,7 +291,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
               className="text-lg"
               css="active"
               onClick={() => {
-                onRemoveLiquidity?.(selectedBins, type);
+                onRemoveLiquidities();
               }}
             />
           </div>

@@ -51,9 +51,6 @@ export interface TradePanelProps {
 
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
-
-  onOpenLongPosition?: () => unknown;
-  onOpenShortPosition?: () => unknown;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
@@ -84,8 +81,6 @@ export const TradePanel = (props: TradePanelProps) => {
     shortTotalUnusedLiquidity,
     longLiquidityData,
     shortLiquidityData,
-    onOpenLongPosition,
-    onOpenShortPosition,
   } = props;
 
   const [isWideView, setIsWideView] = useState(false);
@@ -137,7 +132,6 @@ export const TradePanel = (props: TradePanelProps) => {
                 onLeverageChange={onShortLeverageChange}
                 onTakeProfitChange={onShortTakeProfitChange}
                 onStopLossChange={onShortStopLossChange}
-                onOpenPosition={onOpenShortPosition}
               />
             </div>
             <div className="w-full px-0 pt-2 pb-10">
@@ -163,7 +157,6 @@ export const TradePanel = (props: TradePanelProps) => {
                 onLeverageChange={onLongLeverageChange}
                 onTakeProfitChange={onLongTakeProfitChange}
                 onStopLossChange={onLongStopLossChange}
-                onOpenPosition={onOpenLongPosition}
               />
             </div>
           </div>
@@ -227,7 +220,6 @@ export const TradePanel = (props: TradePanelProps) => {
                     onLeverageChange={onShortLeverageChange}
                     onTakeProfitChange={onShortTakeProfitChange}
                     onStopLossChange={onShortStopLossChange}
-                    onOpenPosition={onOpenShortPosition}
                   />
                 </Tab.Panel>
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
@@ -248,7 +240,6 @@ export const TradePanel = (props: TradePanelProps) => {
                     onLeverageChange={onLongLeverageChange}
                     onTakeProfitChange={onLongTakeProfitChange}
                     onStopLossChange={onLongStopLossChange}
-                    onOpenPosition={onOpenLongPosition}
                   />
                 </Tab.Panel>
               </Tab.Panels>

@@ -1,31 +1,25 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, useProvider, useSigner } from 'wagmi';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
+import { useAccount, useProvider } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
-import { Bin, LiquidityPool, LiquidityPoolSummary, OwnedBin } from '../typings/pools';
+import { Bin, LiquidityPool, LiquidityPoolSummary } from '../typings/pools';
 import { Logger } from '../utils/log';
-import { bigNumberify, expandDecimals } from '../utils/number';
+import { bigNumberify } from '../utils/number';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
-import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
-import { useTokenBalances } from './useTokenBalance';
-import { toast } from 'react-toastify';
-import { PoolEvent } from '~/typings/events';
 
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId, decodeTokenId } = ChromaticUtils;
 
-export const useLiquiditiyPools = () => {
+export const useLiquidityPools = () => {
   const { address: walletAddress } = useAccount();
   const provider = useProvider();
   const { client } = useChromaticClient();
@@ -129,18 +123,11 @@ export const useLiquiditiyPools = () => {
   return { liquidityPools, fetchLiquidityPools } as const;
 };
 
-export const useLiquiditiyPool = () => {
-  const { client } = useChromaticClient();
+export const useLiquidityPool = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const token = useAppSelector((state) => state.token.selectedToken);
-  const { liquidityPools: pools } = useLiquiditiyPools();
-  const { fetchReceipts } = usePoolReceipt();
-  const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
-  const { data: signer } = useSigner();
-  const { address } = useAccount();
+  const { liquidityPools: pools } = useLiquidityPools();
   const dispatch = useAppDispatch();
-
-  const routerApi = useMemo(() => client?.router(), [client]);
   const pool = useMemo(() => {
     if (!isValid(market) || !isValid(token) || !isValid(pools)) {
       return;
@@ -183,96 +170,6 @@ export const useLiquiditiyPool = () => {
     }
   }, [pool]);
 
-  const onRemoveLiquidity = useCallback(
-    async (feeRate: number, amount: number) => {
-      if (!isValid(signer) || !isValid(address)) {
-        logger.info('no signer or address', signer, address);
-        toast('Your wallet is not connected.');
-        return;
-      }
-      if (!isValid(pool)) {
-        logger.info('no pool');
-        toast('The liquidity pool is not selected.');
-        return;
-      }
-      if (!isValid(routerApi)) {
-        logger.info('no clients');
-        toast('Create Chromatic account.');
-        return;
-      }
-      const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
-
-      try {
-        await routerApi.removeLiquidity(pool.marketAddress, {
-          feeRate,
-          receipient: address,
-          clbTokenAmount: expandedAmount,
-        });
-        dispatch(poolsAction.onModalClose());
-
-        await fetchReceipts();
-        await fetchWalletBalances();
-        window.dispatchEvent(PoolEvent);
-
-        toast('The selected liquidity is removed.');
-      } catch (error) {
-        toast((error as any).reason);
-      }
-    },
-    [signer, address, pool, routerApi]
-  );
-
-  const onRemoveLiquidityBatch = useCallback(
-    async (bins: OwnedBin[], type: MULTI_TYPE) => {
-      if (!isValid(signer) || !isValid(address)) {
-        toast('Your wallet is not connected.');
-        return;
-      }
-      if (!isValid(market)) {
-        toast('Market is not selected.');
-        return;
-      }
-      if (!isValid(pool)) {
-        toast('The liquidity pool is not selected.');
-        return;
-      }
-      if (!isValid(routerApi)) {
-        toast('Create Chromatic client.');
-        return;
-      }
-      try {
-        const amounts = bins.map((bin) => {
-          const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-          const liquidityValue = clbTokenBalance
-            .mul(Math.round(clbTokenValue * 10 ** 2))
-            .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
-            .div(expandDecimals(2));
-          const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
-
-          return type === MULTI_ALL ? clbTokenBalance : removable;
-        });
-        await routerApi.removeLiquidities(
-          market.address,
-          bins.map((bin, binIndex) => ({
-            feeRate: bin.baseFeeRate,
-            clbTokenAmount: amounts[binIndex],
-            receipient: address,
-          }))
-        );
-        dispatch(poolsAction.onModalClose());
-
-        await fetchReceipts();
-        await fetchWalletBalances();
-        window.dispatchEvent(PoolEvent);
-
-        toast('The selected liquidities are removed.');
-      } catch (error) {
-        toast((error as any).reason);
-      }
-    },
-    [signer, market, pool, routerApi]
-  );
-
   return {
     pool,
     liquidity: {
@@ -281,8 +178,6 @@ export const useLiquiditiyPool = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-    onRemoveLiquidity,
-    onRemoveLiquidityBatch,
   };
 };
 

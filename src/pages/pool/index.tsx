@@ -4,7 +4,7 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquiditiyPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import usePoolInput from '~/hooks/usePoolInput';
@@ -75,9 +75,7 @@ const Pool = () => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
-    onRemoveLiquidity,
-    onRemoveLiquidityBatch,
-  } = useLiquiditiyPool();
+  } = useLiquidityPool();
   const { ownedPool } = useOwnedLiquidityPool();
   const {
     amount,
@@ -86,9 +84,8 @@ const Pool = () => {
     binAverage,
     onAmountChange,
     onRangeChange,
-    onAddLiquidity,
+    binFeeRates,
     move,
-    isLoading,
     rangeChartRef,
   } = usePoolInput();
   const {
@@ -172,10 +169,9 @@ const Pool = () => {
               shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
               selectedBins={selectedBins}
               isModalOpen={isRemoveModalOpen}
-              isLoading={isLoading}
+              binFeeRates={binFeeRates}
               onAmountChange={onAmountChange}
               onRangeChange={onRangeChange}
-              onAddLiquidity={onAddLiquidity}
               rangeChartRef={rangeChartRef}
               onMinIncrease={move.left.next}
               onMinDecrease={move.left.prev}
@@ -186,8 +182,6 @@ const Pool = () => {
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
               onRemoveMaxAmountChange={onRemoveMaxAmountChange}
-              onRemoveLiquidity={onRemoveLiquidity}
-              onRemoveLiquidityBatch={onRemoveLiquidityBatch}
               multiType={multiType}
               multiAmount={multiAmount}
               multiBalance={multiClbTokenBalance}
