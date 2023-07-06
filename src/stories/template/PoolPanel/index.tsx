@@ -38,6 +38,7 @@ import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 
 const logger = Logger('PoolPanel');
 
@@ -55,22 +56,18 @@ interface PoolPanelProps {
   shortTotalUnusedLiquidity?: BigNumber;
   selectedBins?: OwnedBin[];
   isModalOpen?: boolean;
-  isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onAddLiquidity?: () => unknown;
 
   removeAmount?: number;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: number) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
-  onRemoveLiquidity?: (feeRate: number, amount: number) => Promise<unknown>;
 
   multiType?: MULTI_TYPE;
   multiAmount?: number;
   multiBalance?: BigNumber;
   multiClbTokenValue?: BigNumber;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
-  onRemoveLiquidityBatch?: (bins: OwnedBin[], type: MULTI_TYPE) => Promise<unknown>;
 
   rangeChartRef?: any;
 
@@ -78,6 +75,7 @@ interface PoolPanelProps {
   liquidity?: any[];
 
   rates: [number, number];
+  binFeeRates: number[];
   onRangeChange: (data: RangeChartData) => unknown;
   onMinIncrease: () => void;
   onMinDecrease: () => void;
@@ -107,18 +105,15 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiType,
     multiAmount,
     multiBalance,
-    isLoading,
     onAmountChange,
-    onAddLiquidity,
     onRemoveAmountChange,
     onRemoveMaxAmountChange,
-    onRemoveLiquidity,
     onMultiAmountChange,
-    onRemoveLiquidityBatch,
 
     clbTokenValue: binValue,
     liquidity,
     onRangeChange,
+    binFeeRates,
     rangeChartRef,
     onMinIncrease,
     onMinDecrease,
@@ -128,6 +123,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   } = props;
 
   const dispatch = useAppDispatch();
+  const { onAddLiquidity, isLoading } = useAddLiquidity({ amount, binFeeRates });
 
   const [minRate, maxRate] = rates;
 
@@ -568,7 +564,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
             maxAmount={maxRemoveAmount}
             onAmountChange={onRemoveAmountChange}
             onMaxChange={onRemoveMaxAmountChange}
-            onRemoveLiquidity={onRemoveLiquidity}
           />,
           document.getElementById('modal')!
         )}
@@ -582,7 +577,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
             amount={multiAmount}
             balance={multiBalance}
             onAmountChange={onMultiAmountChange}
-            onRemoveLiquidity={onRemoveLiquidityBatch}
           />,
           document.getElementById('modal')!
         )}
