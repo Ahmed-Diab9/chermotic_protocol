@@ -139,30 +139,27 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
-    // todo: min/max width
-    <div className="TradeContent w-full w-[580px]">
+    <div className="px-10 w-full max-w-[680px]">
       {/* Account Balance */}
-      <article className="px-10 pb-5 border-b border-grayL">
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2">
-            <h4>Account Balance</h4>
-            <p className="text-black/30">
-              {isLoading ? (
-                <Skeleton width={40} containerClassName="leading-none" />
-              ) : (
-                <>
-                  {balances &&
-                    token &&
-                    balances[token.address] &&
-                    withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
-                  {token?.name}
-                </>
-              )}
-            </p>
-          </div>
+      <article className="pb-5 border-grayL">
+        <div className="flex items-center gap-2">
+          <h4>Account Balance</h4>
+          <p className="text-black/30">
+            {isLoading ? (
+              <Skeleton width={40} containerClassName="leading-none" />
+            ) : (
+              <>
+                {balances &&
+                  token &&
+                  balances[token.address] &&
+                  withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
+                {token?.name}
+              </>
+            )}
+          </p>
         </div>
-        <div className="flex justify-between mt-3">
-          <div className="select w-[160px]">
+        <div className="flex justify-between gap-5 mt-3">
+          <div className="select w-full max-w-[160px]">
             <Listbox
               value={input?.method}
               onChange={(value) => {
@@ -182,10 +179,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </Listbox.Options>
             </Listbox>
           </div>
-          <AmountSwitch input={input} onAmountChange={onInputChange} />
+          <div className="max-w-[220px]">
+            <AmountSwitch input={input} onAmountChange={onInputChange} />
+          </div>
         </div>
       </article>
-      <section className="px-10 pt-5 pb-5 border-b bg-grayL/20">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayL/20">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-6">
@@ -206,7 +205,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
             </Switch.Group>
           </div>
-          <div className="flex items-center justify-between gap-5">
+          <div className="flex items-center justify-between">
             <div className="w-3/5 min-w-[280px]">
               {/* default, slider off */}
               {isSliderOpen ? (
@@ -221,11 +220,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <LeverageOption value={input?.leverage} onClick={onLeverageChange} />
               )}
             </div>
-            <div className="">
+            <div>
               <Input
                 size="sm"
                 unit="x"
-                className="w-[80px] ml-auto"
+                className="w-20 ml-auto"
                 value={input?.leverage}
                 onChange={(event) => onInputChange?.('leverage', event)}
               />
@@ -243,7 +242,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-[80px]"
+                  className="w-20"
                   value={input?.takeProfit}
                   onChange={(event) => {
                     onInputChange?.('takeProfit', event);
@@ -271,7 +270,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
-                  className="w-[80px]"
+                  className="w-20"
                   value={input?.stopLoss}
                   onChange={(event) => {
                     onInputChange?.('stopLoss', event);
@@ -291,7 +290,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </article>
         </div>
       </section>
-      <section className="px-10">
+      <section className="">
         <div className="mx-[-40px] relative border-b">
           {/* graph */}
           <FillUpChart
@@ -404,7 +403,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
   switch (input?.method) {
     case 'collateral': {
       return (
-        <div>
+        <>
           <Input
             value={input.collateral.toString()}
             onChange={(event) => {
@@ -421,12 +420,12 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <p>Contract Qty</p>
             <p className="ml-2 text-black/30">{withComma(input?.quantity)} USDC</p>
           </div>
-        </div>
+        </>
       );
     }
     case 'quantity': {
       return (
-        <div>
+        <>
           <Input
             value={input?.quantity.toString()}
             onChange={(event) => {
@@ -443,7 +442,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <p>Collateral</p>
             <p className="ml-2 text-black/30">{input.collateral} USDC</p>
           </div>
-        </div>
+        </>
       );
     }
     default: {

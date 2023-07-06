@@ -110,11 +110,11 @@ export const TradePanel = (props: TradePanelProps) => {
   };
 
   return (
-    <div className="inline-flex flex-col mx-auto bg-white border shadow-lg rounded-2xl">
+    <div className="flex justify-center">
       {isWideView ? (
-        <div className="relative min-w-[1120px]">
+        <div className="relative w-full bg-white border shadow-lg rounded-2xl">
           <div className="flex">
-            <div className="px-0 pt-2 pb-10 border-r">
+            <div className="w-full px-0 pt-2 pb-10 border-r">
               <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold py-2 text-center">
                   SHORT
@@ -140,7 +140,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 onOpenPosition={onOpenShortPosition}
               />
             </div>
-            <div className="px-0 pt-2 pb-10">
+            <div className="w-full px-0 pt-2 pb-10">
               <div className="w-full mb-10">
                 <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-2xl font-extrabold py-2 text-center">
                   LONG
@@ -191,70 +191,75 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
         </div>
       ) : (
-        <div className="relative w-full tabs tabs-line tabs-lg">
-          <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-            <Tab.List className="flex w-full gap-10 px-10 pt-2 mx-auto">
-              <Tab
-                value="short"
-                className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
-              >
-                SHORT
-              </Tab>
-              <Tab value="long" className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black">
-                LONG
-              </Tab>
-            </Tab.List>
-            <Tab.Panels className="flex flex-col items-center w-full">
-              <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                <TradeContent
-                  direction="short"
-                  balances={balances}
-                  priceFeed={priceFeed}
-                  market={market}
-                  token={token}
-                  input={shortInput}
-                  liquidityData={shortLiquidityData}
-                  totalMaxLiquidity={shortTotalMaxLiquidity}
-                  totalUnusedLiquidity={shortTotalUnusedLiquidity}
-                  tradeFee={shortTradeFee}
-                  tradeFeePercent={shortTradeFeePercent}
-                  onMethodToggle={onShortMethodToggle}
-                  onInputChange={onShortChange}
-                  onLeverageChange={onShortLeverageChange}
-                  onTakeProfitChange={onShortTakeProfitChange}
-                  onStopLossChange={onShortStopLossChange}
-                  onOpenPosition={onOpenShortPosition}
-                />
-              </Tab.Panel>
-              <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                <TradeContent
-                  direction="long"
-                  balances={balances}
-                  priceFeed={priceFeed}
-                  market={market}
-                  token={token}
-                  input={longInput}
-                  liquidityData={longLiquidityData}
-                  totalMaxLiquidity={longTotalMaxLiquidity}
-                  totalUnusedLiquidity={longTotalUnusedLiquidity}
-                  tradeFee={longTradeFee}
-                  tradeFeePercent={longTradeFeePercent}
-                  onMethodToggle={onLongMethodToggle}
-                  onInputChange={onLongChange}
-                  onLeverageChange={onLongLeverageChange}
-                  onTakeProfitChange={onLongTakeProfitChange}
-                  onStopLossChange={onLongStopLossChange}
-                  onOpenPosition={onOpenLongPosition}
-                />
-              </Tab.Panel>
-            </Tab.Panels>
-          </Tab.Group>
-          <div>
-            <div className="absolute left-0 top-8">
-              <CurvedButton direction="left" position="left" onClick={onToggleView} />
-            </div>
-            <div className="absolute right-0 top-8">
-              <CurvedButton direction="right" position="right" onClick={onToggleView} />
+        <div className="relative w-full max-w-[680px] bg-white border shadow-lg rounded-2xl">
+          <div className="w-full tabs tabs-line tabs-lg">
+            <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
+              <Tab.List className="flex w-full gap-10 px-10 pt-2 mx-auto">
+                <Tab
+                  value="short"
+                  className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
+                >
+                  SHORT
+                </Tab>
+                <Tab
+                  value="long"
+                  className="pb-2 mx-auto text-2xl font-bold border-b-2 border-black"
+                >
+                  LONG
+                </Tab>
+              </Tab.List>
+              <Tab.Panels className="flex flex-col items-center w-full">
+                <Tab.Panel className="w-full px-0 pb-10 pt-7">
+                  <TradeContent
+                    direction="short"
+                    balances={balances}
+                    priceFeed={priceFeed}
+                    market={market}
+                    token={token}
+                    input={shortInput}
+                    liquidityData={shortLiquidityData}
+                    totalMaxLiquidity={shortTotalMaxLiquidity}
+                    totalUnusedLiquidity={shortTotalUnusedLiquidity}
+                    tradeFee={shortTradeFee}
+                    tradeFeePercent={shortTradeFeePercent}
+                    onMethodToggle={onShortMethodToggle}
+                    onInputChange={onShortChange}
+                    onLeverageChange={onShortLeverageChange}
+                    onTakeProfitChange={onShortTakeProfitChange}
+                    onStopLossChange={onShortStopLossChange}
+                    onOpenPosition={onOpenShortPosition}
+                  />
+                </Tab.Panel>
+                <Tab.Panel className="w-full px-0 pb-10 pt-7">
+                  <TradeContent
+                    direction="long"
+                    balances={balances}
+                    priceFeed={priceFeed}
+                    market={market}
+                    token={token}
+                    input={longInput}
+                    liquidityData={longLiquidityData}
+                    totalMaxLiquidity={longTotalMaxLiquidity}
+                    totalUnusedLiquidity={longTotalUnusedLiquidity}
+                    tradeFee={longTradeFee}
+                    tradeFeePercent={longTradeFeePercent}
+                    onMethodToggle={onLongMethodToggle}
+                    onInputChange={onLongChange}
+                    onLeverageChange={onLongLeverageChange}
+                    onTakeProfitChange={onLongTakeProfitChange}
+                    onStopLossChange={onLongStopLossChange}
+                    onOpenPosition={onOpenLongPosition}
+                  />
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
+            <div>
+              <div className="absolute left-0 top-8">
+                <CurvedButton direction="left" position="left" onClick={onToggleView} />
+              </div>
+              <div className="absolute right-0 top-8">
+                <CurvedButton direction="right" position="right" onClick={onToggleView} />
+              </div>
             </div>
           </div>
         </div>

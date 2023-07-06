@@ -12,7 +12,7 @@
 }
 
 body {
-  @apply font-mono text-base tracking-tight;
+  @apply font-mono text-base tracking-tight min-w-[1080px];
   word-spacing: -0.1em;
 }
 

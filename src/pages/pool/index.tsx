@@ -110,7 +110,7 @@ const Pool = () => {
   const { liquidity, clbTokenValue } = useChartData();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
       <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: chromaticAccountAddress }}
@@ -130,7 +130,7 @@ const Pool = () => {
         onUsumCopy={copyText}
         isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
       />
-      <section className="flex flex-col grow w-full max-w-[1200px] overflow-auto px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: chromaticAccountAddress }}
           status={status}
@@ -156,7 +156,7 @@ const Pool = () => {
           onStatusUpdate={createUsumAccount}
         />
         <div className="flex items-stretch gap-3">
-          <div className="flex-auto w-3/5 min-w-[620px]">
+          <div className="flex-auto w-3/5">
             <PoolPanel
               token={selectedToken}
               market={selectedMarket}
