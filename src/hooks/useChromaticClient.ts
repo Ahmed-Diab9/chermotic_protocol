@@ -19,7 +19,7 @@ export function useChromaticClient() {
 
   useEffect(() => {
     if (client) {
-      client.setSignerOrProvider(provider);
+      client.setSignerOrProvider(signer || provider);
     }
   }, [signer, provider]);
 
