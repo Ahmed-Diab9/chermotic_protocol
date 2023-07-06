@@ -2,19 +2,14 @@ import { BigNumber } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { Logger, errorLog } from '~/utils/log';
-import { isValid } from '~/utils/valid';
-
 import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk';
 import { isNil } from 'ramda';
 import { useMarket } from '~/hooks/useMarket';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
-import { createPositionsMock } from '~/mock/positions';
-import { AppError } from '~/typings/error';
 import { filterIfFulfilled } from '~/utils/array';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
-import { toast } from 'react-toastify';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
@@ -135,100 +130,13 @@ export const usePosition = () => {
     []
   );
 
-  const closedPositions = useMemo(() => {
-    if (isNil(positions) || !positions.length) {
-      return [];
-    }
-    const closed = positions.filter((position) => {
-      return !position.closeVersion.eq(0);
-    });
-    return closed;
-  }, [positions]);
-
-  const onClosePosition = async (marketAddress: string, positionId: BigNumber) => {
-    if (isNil(client?.router())) {
-      errorLog('no router contracts');
-      return AppError.reject('no router contracts', 'onClosePosition');
-    }
-    const position = positions?.find(
-      (position) => position.marketAddress === marketAddress && position.id === positionId
-    );
-    if (isNil(position)) {
-      errorLog('no positions');
-      toast('Position is not selected.');
-      return AppError.reject('no positions', 'onClosePosition');
-    }
-    try {
-      await client?.router()?.closePosition(position.marketAddress, position.id);
-
-      fetchPositions();
-    } catch (error) {
-      errorLog(error);
-      toast('Position was not deleted, Found error.');
-
-      return AppError.reject(error, 'onClosePosition');
-    }
-  };
-
-  const onClaimPosition = async (marketAddress: string, positionId: BigNumber) => {
-    const routerApi = client?.router();
-    if (isNil(routerApi)) {
-      return AppError.reject('no router contractsd', 'onClaimPosition');
-    }
-    const position = positions?.find(
-      (position) => position.marketAddress === marketAddress && position.id === positionId
-    );
-    if (isNil(position)) {
-      errorLog('no positions');
-      toast('Positions are not selected.');
-      return AppError.reject('no positions', 'onClosePosition');
-    }
-    if (oracleVersions?.[marketAddress]?.version.lte(position.closeVersion)) {
-      errorLog('the selected position is not closed');
-      toast('This position is not closed yet.');
-
-      return AppError.reject('the selected position is not closed', 'onClaimPosition');
-    }
-    await routerApi.claimPosition(marketAddress, positionId);
-
-    await fetchPositions();
-    await fetchBalances();
-  };
-
   if (error) {
     errorLog(error);
   }
 
   return {
     positions,
-    closedPositions,
     isPositionsLoading,
     fetchPositions,
-    onClosePosition,
-    onClaimPosition,
   };
-};
-
-export const usePositionsMock = () => {
-  const { accountAddress } = useUsumAccount();
-
-  const fetchKey = useMemo(() => {
-    if (isValid(accountAddress)) {
-      return [accountAddress] as const;
-    }
-  }, [accountAddress]);
-
-  const {
-    data: positions,
-    error,
-    mutate: fetchPositions,
-  } = useSWR(fetchKey, ([]) => {
-    return createPositionsMock();
-  });
-
-  if (error) {
-    errorLog(error);
-  }
-
-  return [positions, fetchPositions] as const;
 };
