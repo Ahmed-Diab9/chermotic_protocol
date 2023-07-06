@@ -20,6 +20,8 @@ import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
 import { Liquidity } from '~/typings/chart';
 import { isNil } from 'ramda';
+import { LiquidityTooltip } from '../LiquidityTooltip';
+import { SelectedTooltip } from '../SelectedTooltip';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -293,8 +295,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       </section>
       <section className="px-10">
         <div className="mx-[-40px] relative border-b">
-          {/* graph */}
+          <SelectedTooltip id={`trade-${direction}`} data={input?.makerMargin} />
+          <LiquidityTooltip id={`trade-${direction}`} data={liquidityData} />
           <FillUpChart
+            id={`trade-${direction}`}
             positive={direction === 'long'}
             height={140}
             data={liquidityData}

@@ -28,7 +28,6 @@ import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { copyText } from '~/utils/clipboard';
 import { useMargins } from '~/hooks/useMargins';
 import { Toast } from '~/stories/atom/Toast';
@@ -95,12 +94,11 @@ const Trade = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { liquidity, positive, negative } = useChartData();
+  const { positive, negative } = useChartData();
   const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
-      <LiquidityTooltip data={liquidity} />
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
