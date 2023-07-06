@@ -1,4 +1,4 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
+import { IERC20__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
 import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';

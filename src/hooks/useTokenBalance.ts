@@ -1,4 +1,4 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk/contracts';
+import { IERC20__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
 import { BigNumber } from 'ethers';
 import { fromPairs, isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';

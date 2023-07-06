@@ -1,4 +1,7 @@
-import { deployedAddress, getAllDeployedContracts } from '@chromatic-protocol/sdk/contracts';
+import {
+  deployedAddress,
+  getAllDeployedContracts,
+} from '@chromatic-protocol/sdk-ethers-v5/contracts';
 
 export const CHAIN = import.meta.env.VITE_TARGET_CHAIN ?? 'anvil';
 const CHAIN_IDS = {

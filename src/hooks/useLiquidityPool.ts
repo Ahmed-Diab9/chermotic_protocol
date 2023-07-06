@@ -1,4 +1,4 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk';
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-ethers-v5';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount, useProvider } from 'wagmi';

@@ -1,5 +1,5 @@
-import { IOracleProvider } from "@chromatic-protocol/sdk/contracts";
-import { BigNumber } from "ethers";
+import { IOracleProvider } from '@chromatic-protocol/sdk-ethers-v5/contracts';
+import { BigNumber } from 'ethers';
 
 export interface Token {
   name: string;
@@ -15,8 +15,5 @@ export interface Price {
 export interface Market {
   address: string;
   description: string;
-  oracleValue: Pick<
-    IOracleProvider.OracleVersionStructOutput,
-    "timestamp" | "version" | "price"
-  >;
+  oracleValue: Pick<IOracleProvider.OracleVersionStructOutput, 'timestamp' | 'version' | 'price'>;
 }
