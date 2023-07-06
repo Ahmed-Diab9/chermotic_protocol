@@ -22,7 +22,7 @@ interface RangeChartProps {
 export function RangeChart({
   barData = [],
   dotData = [],
-  defaultValues = [-0.09, 0.09],
+  defaultValues = [-0.1, 0.1],
   onChange = () => {},
   height,
   width,
