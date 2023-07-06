@@ -16,7 +16,6 @@ import { RangeChart } from '~/stories/atom/RangeChart';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
@@ -213,7 +212,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <h4>Account Balance</h4>
                   <p className="text-black/30">
                     {isLoading ? (
-                      <Skeleton width={40} containerClassName="leading-none" />
+                      <Skeleton width={40} />
                     ) : (
                       <>{`${withComma(settlementTokenBalance)} ${token?.name}`}</>
                     )}
@@ -407,7 +406,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     {isLoading ? (
                       <div className="flex items-center gap-1">
                         <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
-                        <Skeleton width={40} containerClassName="leading-none" />
+                        <Skeleton width={40} />
                       </div>
                     ) : (
                       <Avatar label="USDC" size="xs" gap="1" />
@@ -419,7 +418,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                      * 총 유동성 보여주는 로직
                      */}
                     {isLoading ? (
-                      <Skeleton width={100} containerClassName="leading-none" />
+                      <Skeleton width={100} />
                     ) : (
                       <>
                         {formatDecimals(totalLiquidity, token?.decimals, 2)} {/* {token?.name} */}
@@ -434,11 +433,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       LP Bins
                     </div>
                     <p className="">
-                      {isLoading ? (
-                        <Skeleton width={100} containerClassName="leading-none" />
-                      ) : (
-                        <>{binLength.toFixed(2)} Bins</>
-                      )}
+                      {isLoading ? <Skeleton width={100} /> : <>{binLength.toFixed(2)} Bins</>}
                     </p>
                   </div>
                   <div className="flex flex-col justify-between xl:text-right xl:flex-row">
@@ -452,7 +447,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <p className="">
                       {isLoading ? (
-                        <Skeleton width={100} containerClassName="leading-none" />
+                        <Skeleton width={100} />
                       ) : (
                         <>
                           {formatDecimals(totalLiquidityValue, token?.decimals, 2)} {token?.name}
@@ -471,7 +466,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </div>
                     <p className="">
                       {isLoading ? (
-                        <Skeleton width={100} containerClassName="leading-none" />
+                        <Skeleton width={100} />
                       ) : (
                         <>
                           {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
@@ -617,7 +612,7 @@ const BinItem = (props: BinItemProps) => {
           {isLoading ? (
             <div className="flex items-center gap-1">
               <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
-              <Skeleton width={40} containerClassName="leading-none" />
+              <Skeleton width={40} />
             </div>
           ) : (
             <>
@@ -626,7 +621,7 @@ const BinItem = (props: BinItemProps) => {
           )}
           <p className="font-semibold text-black/30">
             {isLoading ? (
-              <Skeleton width={40} containerClassName="leading-none" />
+              <Skeleton width={40} />
             ) : (
               <>
                 {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
@@ -650,7 +645,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           {isLoading ? (
-            <Skeleton width={60} containerClassName="text-[60px] leading-none" />
+            <Skeleton width={60} containerClassName="text-[60px]" />
           ) : (
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
           )}

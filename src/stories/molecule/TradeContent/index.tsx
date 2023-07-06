@@ -11,7 +11,6 @@ import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -148,7 +147,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <h4>Account Balance</h4>
           <p className="text-black/30">
             {isLoading ? (
-              <Skeleton width={40} containerClassName="leading-none" />
+              <Skeleton width={40} />
             ) : (
               <>
                 {balances &&
