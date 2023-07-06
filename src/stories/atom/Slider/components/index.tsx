@@ -4,7 +4,7 @@ import { GetHandleProps, GetRailProps, GetTrackProps, SliderItem } from 'react-c
 const railOuterStyle = {
   position: 'absolute',
   width: '100%',
-  height: 42,
+  height: 18,
   transform: 'translate(0%, -50%)',
   // borderRadius: 7,
   cursor: 'pointer',
@@ -139,7 +139,9 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
         }}
       />
       {/* Tick - number */}
-      <div
+      <button
+        // todo: 누르면 해당값이 들어가도록
+        // onClick={}
         style={{
           position: 'absolute',
           marginTop: 12,
@@ -151,7 +153,7 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
         }}
       >
         {format(tick.value)}
-      </div>
+      </button>
     </div>
   );
 }
