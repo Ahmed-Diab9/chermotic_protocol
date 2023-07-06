@@ -298,7 +298,7 @@ const PositionItem = function (props: Props) {
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
-                <Skeleton width={40} containerClassName="leading-none" />
+                <Skeleton width={40} />
               </div>
             ) : (
               <>
@@ -308,7 +308,7 @@ const PositionItem = function (props: Props) {
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
-                <Skeleton width={40} containerClassName="leading-none" />
+                <Skeleton width={40} />
               </div>
             ) : (
               <>
@@ -325,7 +325,7 @@ const PositionItem = function (props: Props) {
               </>
             )}
             {isLoading ? (
-              <Skeleton width={40} containerClassName="leading-none" />
+              <Skeleton width={40} />
             ) : (
               <>
                 <Tag label={direction(position)} />
@@ -334,19 +334,11 @@ const PositionItem = function (props: Props) {
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Price</p>
-            {isLoading ? (
-              <Skeleton width={60} containerClassName="leading-none" />
-            ) : (
-              <>${calculatedData(position).entryPrice}</>
-            )}
+            {isLoading ? <Skeleton width={60} /> : <>${calculatedData(position).entryPrice}</>}
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Time</p>
-            {isLoading ? (
-              <Skeleton width={60} containerClassName="leading-none" />
-            ) : (
-              <>{calculatedData(position).entryTime}</>
-            )}
+            {isLoading ? <Skeleton width={60} /> : <>{calculatedData(position).entryTime}</>}
           </div>
         </div>
         <div className="flex items-center gap-1 ml-auto">

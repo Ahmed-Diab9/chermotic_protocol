@@ -34,7 +34,7 @@ export const TextRow = (props: TextRowProps) => {
 
         {isLoading ? (
           <div className="flex items-center gap-1">
-            <Skeleton width={60} containerClassName="leading-none" />
+            <Skeleton width={60} />
           </div>
         ) : (
           <> {value}</>

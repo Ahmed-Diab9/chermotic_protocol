@@ -141,7 +141,7 @@ export const WalletPopover = ({
                                             circle
                                             containerClassName="avatar-skeleton w-4 text-lg"
                                           />
-                                          <Skeleton width={40} containerClassName="leading-none" />
+                                          <Skeleton width={40} />
                                         </div>
                                       ) : (
                                         <Avatar
@@ -154,10 +154,7 @@ export const WalletPopover = ({
                                       <div className="ml-auto text-right">
                                         <p className="text-sm text-black/30">
                                           {isLoading ? (
-                                            <Skeleton
-                                              width={40}
-                                              containerClassName="leading-none"
-                                            />
+                                            <Skeleton width={40} />
                                           ) : (
                                             <>
                                               $
@@ -175,10 +172,7 @@ export const WalletPopover = ({
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
                                           {isLoading ? (
-                                            <Skeleton
-                                              width={40}
-                                              containerClassName="leading-none"
-                                            />
+                                            <Skeleton width={40} />
                                           ) : (
                                             <>
                                               {withComma(

@@ -353,7 +353,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           }`}
         >
           {isLoading ? (
-            <Skeleton width={40} containerClassName="text-[40px] leading-none" />
+            <Skeleton width={40} containerClassName="text-[40px]" />
           ) : (
             <Thumbnail className="rounded" src={image} />
           )}
@@ -361,7 +361,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
-                <Skeleton width={40} containerClassName="leading-none" />
+                <Skeleton width={40} />
               </div>
             ) : (
               <Avatar label={token} size="xs" gap="1" />
