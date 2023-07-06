@@ -12,7 +12,7 @@
 }
 
 body {
-  @apply font-mono text-base tracking-tight;
+  @apply font-mono text-base tracking-tight min-w-[1080px];
   word-spacing: -0.1em;
 }
 
@@ -44,12 +44,8 @@ input[type='number']::-webkit-outer-spin-button {
 .tooltip .tooltip-tip {
   @apply z-50;
 }
-.TradeBar,
 .modal {
   @apply z-40;
-}
-.Header {
-  @apply z-30;
 }
 .select ul[role='listbox'],
 .dropdown [role='menu'] {

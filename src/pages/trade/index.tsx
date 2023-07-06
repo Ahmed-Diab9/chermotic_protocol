@@ -98,7 +98,7 @@ const Trade = () => {
   const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
       <Header
         account={{ walletAddress, usumAddress: usumAccount }}
         tokens={tokens}
@@ -113,7 +113,7 @@ const Trade = () => {
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
-      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
         <MainBar
           account={{ walletAddress, usumAddress: usumAccount }}
           status={status}
@@ -138,7 +138,7 @@ const Trade = () => {
           onConnect={connectAsync}
           onStatusUpdate={createUsumAccount}
         />
-        <div className="w-full min-w-[620px]">
+        <div className="w-full">
           <TradePanel
             longInput={longInput}
             longTradeFee={longTradeFee}

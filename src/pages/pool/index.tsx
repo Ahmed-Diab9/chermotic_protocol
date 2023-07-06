@@ -109,7 +109,7 @@ const Pool = () => {
   const { liquidity, clbTokenValue } = useChartData();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayL/20">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
       <Header
         account={{ walletAddress, usumAddress: chromaticAccountAddress }}
         tokens={tokens}
@@ -154,7 +154,7 @@ const Pool = () => {
           onStatusUpdate={createUsumAccount}
         />
         <div className="flex items-stretch gap-3">
-          <div className="flex-auto w-3/5 min-w-[620px]">
+          <div className="flex-auto w-3/5">
             <PoolPanel
               token={selectedToken}
               market={selectedMarket}
