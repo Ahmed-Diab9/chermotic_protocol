@@ -10,7 +10,6 @@ import { Market, Token } from '../../../typings/market';
 import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -74,7 +73,8 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
 };
 
 export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => {
-  const { tokens, selectedToken, markets, selectedMarket, onTokenClick, onMarketClick } = props;
+  const { tokens, selectedToken, markets, selectedMarket, isLoading, onTokenClick, onMarketClick } =
+    props;
   const [marketPrices, setMarketPrices] = useState<string[]>([]);
   const fetchPrices = useCallback(async () => {
     if (!isValid(markets)) {
@@ -93,7 +93,14 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
         <div className="pr-3 border-r">
-          <Avatar label={selectedToken?.name} fontSize="lg" gap="1" size="sm" />
+          {isLoading ? (
+            <div className="flex items-center gap-1">
+              <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
+              <Skeleton width={60} containerClassName="text-lg" />
+            </div>
+          ) : (
+            <Avatar label={selectedToken?.name} fontSize="lg" gap="1" size="sm" />
+          )}
         </div>
         <div>
           <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" size="sm" />

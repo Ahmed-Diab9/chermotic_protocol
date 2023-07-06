@@ -24,7 +24,6 @@ import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';

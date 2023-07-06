@@ -17,7 +17,6 @@ import { Button } from '../../atom/Button';
 import { Link } from 'react-router-dom';
 import { Thumbnail } from '../../atom/Thumbnail';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 

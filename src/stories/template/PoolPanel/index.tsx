@@ -16,7 +16,6 @@ import { RangeChart } from '~/stories/atom/RangeChart';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';

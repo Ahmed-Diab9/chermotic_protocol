@@ -12,7 +12,6 @@ import { Guide } from '~/stories/atom/Guide';
 import { Disclosure } from '@headlessui/react';
 import '../../atom/Tabs/style.css';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import { BigNumber } from 'ethers';
 // import { LPReceipt } from "~/typings/receipt";

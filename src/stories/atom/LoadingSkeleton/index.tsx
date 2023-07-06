@@ -1,7 +1,5 @@
 import './style.css';
-
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 interface LoadingSkeletonProps {
   loading: boolean;

@@ -11,7 +11,6 @@ import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
