@@ -18,13 +18,13 @@ const logger = Logger('useTradeInput');
 const initialTradeInput = {
   direction: 'long',
   method: 'collateral',
-  quantity: 0,
-  collateral: 0,
-  takeProfit: 10,
-  stopLoss: 100,
+  quantity: '',
+  collateral: '',
+  takeProfit: '10',
+  stopLoss: '100',
   takerMargin: 0,
   makerMargin: 0,
-  leverage: 1,
+  leverage: '1',
 } satisfies TradeInput;
 
 const trimDecimals = (num: number, decimals: number) => {
@@ -38,29 +38,29 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       case 'collateral': {
         const { direction, collateral, leverage, takeProfit } = state;
         const defaultLeverage = 2;
-        if (leverage === 0) {
+        if (Number(leverage) === 0) {
           state = {
             direction,
             method: nextMethod,
             collateral,
-            quantity: collateral * defaultLeverage,
-            leverage: defaultLeverage,
+            quantity: String(Number(collateral) * defaultLeverage),
+            leverage: String(defaultLeverage),
             takeProfit,
-            stopLoss: 100 / defaultLeverage,
-            takerMargin: collateral,
-            makerMargin: collateral * (takeProfit / 100) * defaultLeverage,
+            stopLoss: String(100 / defaultLeverage),
+            takerMargin: Number(collateral),
+            makerMargin: Number(collateral) * (Number(takeProfit) / 100) * defaultLeverage,
           };
         } else {
           state = {
             direction,
             method: nextMethod,
             collateral,
-            quantity: collateral * leverage,
+            quantity: String(Number(collateral) * Number(leverage)),
             leverage,
             takeProfit,
-            stopLoss: 100 / leverage,
-            takerMargin: collateral,
-            makerMargin: collateral * (takeProfit / 100) * leverage,
+            stopLoss: String(100 / Number(leverage)),
+            takerMargin: Number(collateral),
+            makerMargin: Number(collateral) * (Number(takeProfit) / 100) * Number(leverage),
           };
         }
         break;
@@ -71,12 +71,12 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           direction,
           method: nextMethod,
           quantity,
-          collateral: quantity * (stopLoss / 100),
+          collateral: String(Number(quantity) * (Number(stopLoss) / 100)),
           takeProfit,
           stopLoss,
           leverage,
-          takerMargin: quantity * (stopLoss / 100),
-          makerMargin: quantity * (takeProfit / 100),
+          takerMargin: Number(quantity) * (Number(stopLoss) / 100),
+          makerMargin: Number(quantity) * (Number(takeProfit) / 100),
         };
         break;
       }
@@ -93,9 +93,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       state = {
         ...state,
         collateral,
-        quantity: collateral * state.leverage,
-        takerMargin: collateral,
-        makerMargin: collateral * state.leverage * (state.takeProfit / 100),
+        quantity: String(Number(collateral) * Number(state.leverage)),
+        takerMargin: Number(collateral),
+        makerMargin: Number(collateral) * Number(state.leverage) * (Number(state.takeProfit) / 100),
       };
       break;
     }
@@ -104,9 +104,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       state = {
         ...state,
         quantity,
-        collateral: quantity * (state.stopLoss / 100),
-        takerMargin: quantity * (state.stopLoss / 100),
-        makerMargin: quantity * (state.takeProfit / 100),
+        collateral: String(Number(quantity) * (Number(state.stopLoss) / 100)),
+        takerMargin: Number(quantity) * (Number(state.stopLoss) / 100),
+        makerMargin: Number(quantity) * (Number(state.takeProfit) / 100),
       };
       break;
     }
@@ -116,13 +116,14 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
         state = {
           ...state,
           takeProfit,
-          makerMargin: state.collateral * state.leverage * (takeProfit / 100),
+          makerMargin:
+            Number(state.collateral) * Number(state.leverage) * (Number(takeProfit) / 100),
         };
       } else {
         state = {
           ...state,
           takeProfit,
-          makerMargin: Number(state.quantity) * (takeProfit / 100),
+          makerMargin: Number(state.quantity) * (Number(takeProfit) / 100),
         };
       }
       break;
@@ -130,29 +131,34 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case 'stopLoss': {
       const { stopLoss } = payload;
       if (method === 'collateral') {
-        if (stopLoss === 0) {
+        if (Number(stopLoss) === 0) {
           state = {
             ...state,
-            stopLoss: 0,
-            leverage: 0,
-            quantity: 0,
+            stopLoss: '0',
+            leverage: '0',
+            quantity: '0',
             makerMargin: 0,
           };
         } else {
+          const [integer, decimals = ''] = String(100 / Number(stopLoss)).split('.');
+          const leverage = integer + '.' + decimals.slice(0, 2);
           state = {
             ...state,
             stopLoss: stopLoss,
-            leverage: 100 / stopLoss,
-            quantity: state.collateral * (100 / stopLoss),
-            makerMargin: state.collateral * (100 / stopLoss) * (state.takeProfit / 100),
+            leverage,
+            quantity: String(Number(state.collateral) * (100 / Number(stopLoss))),
+            makerMargin:
+              Number(state.collateral) *
+              (100 / Number(stopLoss)) *
+              (Number(state.takeProfit) / 100),
           };
         }
       } else {
         state = {
           ...state,
           stopLoss,
-          collateral: Number(state.quantity) * (stopLoss / 100),
-          takerMargin: Number(state.quantity) * (stopLoss / 100),
+          collateral: String(Number(state.quantity) * (Number(stopLoss) / 100)),
+          takerMargin: Number(state.quantity) * (Number(stopLoss) / 100),
         };
       }
       break;
@@ -160,21 +166,26 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case 'leverage': {
       const { leverage } = payload;
       if (method === 'collateral') {
-        if (leverage === 0) {
+        if (Number(leverage) === 0) {
           state = {
             ...state,
-            leverage: 0,
-            quantity: state.collateral * 0,
-            stopLoss: 0,
+            leverage: '0',
+            quantity: '0',
+            stopLoss: '0',
             makerMargin: 0,
           };
         } else {
+          const [integer, decimals = ''] = String(
+            Math.round((100 * numberBuffer()) / Number(leverage)) / numberBuffer()
+          ).split('.');
+          const stopLoss = integer + '.' + decimals.slice(0, 2);
           state = {
             ...state,
-            leverage: leverage,
-            quantity: state.collateral * leverage,
-            stopLoss: Math.round((100 * numberBuffer()) / leverage) / numberBuffer(),
-            makerMargin: state.collateral * leverage * (state.takeProfit / 100),
+            leverage,
+            quantity: String(Number(state.collateral) * Number(leverage)),
+            stopLoss,
+            makerMargin:
+              Number(state.collateral) * Number(leverage) * (Number(state.takeProfit) / 100),
           };
         }
       } else {
@@ -195,13 +206,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   }
   state = {
     ...state,
-    quantity: trimDecimals(state.quantity, 0),
-    collateral: trimDecimals(state.collateral, 2),
-    takeProfit: trimDecimals(state.takeProfit, 2),
-    stopLoss: trimDecimals(state.stopLoss, 2),
+    quantity: state.quantity,
+    collateral: state.collateral,
+    takeProfit: state.takeProfit,
+    stopLoss: state.stopLoss,
     takerMargin: trimDecimals(state.takerMargin, 2),
     makerMargin: trimDecimals(state.makerMargin, 2),
-    leverage: trimDecimals(state.leverage, 2),
+    leverage: state.leverage,
   };
   return state;
 };
@@ -284,13 +295,13 @@ export const useTradeInput = () => {
       dispatch({
         type: key,
         payload: {
-          [key]: 0,
-        } as Record<typeof key, number>,
+          [key]: '',
+        } as Record<typeof key, string>,
       });
       return;
     }
-    const parsed = Number(trimLeftZero(value));
-    if (isNaN(parsed) || parsed === state[key]) {
+    const parsed = trimLeftZero(value);
+    if (isNaN(Number(parsed)) || parsed === state[key]) {
       return;
     }
 
@@ -298,12 +309,12 @@ export const useTradeInput = () => {
       type: key,
       payload: {
         [key]: parsed,
-      } as Record<typeof key, number>,
+      } as Record<typeof key, string>,
     });
   };
 
   // TODO: handler function for using leverage slider
-  const onLeverageChange = (value: number) => {
+  const onLeverageChange = (value: string) => {
     dispatch({
       type: 'leverage',
       payload: {
@@ -312,7 +323,7 @@ export const useTradeInput = () => {
     });
   };
 
-  const onTakeProfitChange = (value: number) => {
+  const onTakeProfitChange = (value: string) => {
     dispatch({
       type: 'takeProfit',
       payload: {
@@ -321,7 +332,7 @@ export const useTradeInput = () => {
     });
   };
 
-  const onStopLossChange = (value: number) => {
+  const onStopLossChange = (value: string) => {
     dispatch({
       type: 'stopLoss',
       payload: {
