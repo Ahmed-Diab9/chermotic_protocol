@@ -273,3 +273,9 @@ export class Position {
     return isClosed && this.closeVersion.lt(oracleVersions[this.marketAddress].version);
   }
 }
+
+export type PositionOption = {
+  id: 'all' | string;
+  title: string;
+  marketAddress?: string;
+};
