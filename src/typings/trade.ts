@@ -1,17 +1,17 @@
 export interface TradeInput {
-  direction: "long" | "short";
-  method: "collateral" | "quantity";
-  quantity: number;
-  collateral: number;
-  takeProfit: number;
-  stopLoss: number;
+  direction: 'long' | 'short';
+  method: 'collateral' | 'quantity';
+  quantity: string;
+  collateral: string;
+  takeProfit: string;
+  stopLoss: string;
   takerMargin: number;
   makerMargin: number;
-  leverage: number;
+  leverage: string;
 }
 
 export type TradeInputAction<T = keyof TradeInput> = T extends keyof TradeInput
-  ? T extends "method"
+  ? T extends 'method'
     ? {
         type: T;
       }
