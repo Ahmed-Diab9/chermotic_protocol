@@ -37,7 +37,8 @@ const useTokenTransaction = () => {
       toast('Settlement token is not selected.');
       return;
     }
-    const expanded = BigNumber.from(amount).mul(expandDecimals(token.decimals));
+    const trimmedAmount = Math.floor(Number(amount) * 100);
+    const expanded = BigNumber.from(trimmedAmount).mul(expandDecimals(token.decimals - 2));
     if (!isValid(expanded)) {
       logger.info('invalid amount', expanded);
       toast('Amount is not valid.');
@@ -59,7 +60,8 @@ const useTokenTransaction = () => {
       toast('Settlement token are not selected.');
       return;
     }
-    const expanded = BigNumber.from(amount).mul(expandDecimals(token.decimals));
+    const trimmedAmount = Math.floor(Number(amount) * 100);
+    const expanded = BigNumber.from(trimmedAmount).mul(expandDecimals(token.decimals - 2));
     if (!isValid(expanded)) {
       logger.info('invalid amount', expanded);
       toast('Amount is not valid.');
