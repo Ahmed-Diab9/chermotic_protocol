@@ -169,10 +169,6 @@ const AssetPanel = (props: AssetPanelProps) => {
     onStatusUpdate,
   } = props;
 
-  useEffect(() => {
-    console.log(status);
-  }, [status]);
-
   return (
     <Popover>
       {({ open, close }) => (
@@ -353,12 +349,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                       maxValue={
                         token &&
                         (title === 'Deposit'
-                          ? walletBalances?.[token.name]
-                              ?.div(expandDecimals(token.decimals))
-                              .toString()
-                          : usumBalances?.[token.name]
-                              ?.div(expandDecimals(token.decimals))
-                              .toString())
+                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 2)
+                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 2))
                       }
                       onChange={(event) => {
                         event.preventDefault();
