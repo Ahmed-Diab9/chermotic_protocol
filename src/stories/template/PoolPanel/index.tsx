@@ -377,7 +377,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         tip="This is the average token value of the target Bins I am about to provide liquidity for."
                       />
                     </p>
-                    <p>{formatDecimals(binAverage ?? 0, token?.decimals, 2)} USDC</p>
+                    {isValid(token) && (
+                      <p>
+                        {formatDecimals(binAverage ?? 0, token.decimals, 2)} {token.name}
+                      </p>
+                    )}
                   </div>
                 </div>
                 {/* <div className="flex items-center justify-between">
@@ -409,7 +413,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Skeleton width={40} />
                       </div>
                     ) : (
-                      <Avatar label="USDC" size="xs" gap="1" />
+                      isValid(token) && <Avatar label={token?.name} size="xs" gap="1" />
                     )}
                   </div>
                   <h4 className="text-xl text-left xl:text-right">

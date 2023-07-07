@@ -66,7 +66,6 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    console.log(amount);
     const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
     try {

@@ -105,8 +105,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     type,
   });
 
-  console.log(amount);
-
   return (
     <Dialog
       className=""

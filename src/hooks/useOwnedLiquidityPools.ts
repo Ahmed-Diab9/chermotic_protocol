@@ -111,7 +111,6 @@ export const useOwnedLiquidityPools = () => {
         toast('Markets are not selected.');
         return;
       }
-      console.log(amount);
 
       const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
