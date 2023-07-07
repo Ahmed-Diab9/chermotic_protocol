@@ -57,9 +57,9 @@ interface PoolPanelProps {
   isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
 
-  removeAmount?: number;
+  removeAmount?: string;
   maxRemoveAmount?: number;
-  onRemoveAmountChange?: (nextAmount: number) => unknown;
+  onRemoveAmountChange?: (nextAmount: string) => unknown;
   onRemoveMaxAmountChange?: () => unknown;
 
   multiType?: MULTI_TYPE;

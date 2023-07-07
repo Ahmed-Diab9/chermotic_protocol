@@ -7,7 +7,7 @@ import { expandDecimals, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 export const usePoolRemoveInput = () => {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('');
   const bins = useAppSelector((state) => state.pools.selectedBins);
   const maxAmount = useMemo(() => {
     if (bins.length <= 0) {
@@ -25,9 +25,9 @@ export const usePoolRemoveInput = () => {
       if (isNaN(parsed)) {
         return;
       }
-      setAmount(parsed);
-    } else {
       setAmount(nextAmount);
+    } else {
+      setAmount(String(nextAmount));
     }
   };
 

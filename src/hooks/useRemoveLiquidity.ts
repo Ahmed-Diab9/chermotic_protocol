@@ -14,7 +14,7 @@ import { PoolEvent } from '~/typings/events';
 
 interface Props {
   feeRate?: number;
-  amount?: number;
+  amount?: string;
 }
 
 const logger = Logger('useRemoveLiquidity');

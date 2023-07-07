@@ -24,9 +24,9 @@ import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
   token?: Token;
-  amount?: number;
+  amount?: string;
   maxAmount?: number;
-  onAmountChange?: (nextAmount: number) => unknown;
+  onAmountChange?: (nextAmount: string) => unknown;
   onMaxChange?: () => unknown;
 }
 
@@ -143,7 +143,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       const nextAmount = selectedBin.binValue.lt(selectedBin.freeLiquidity)
                         ? selectedBin.binValue
                         : selectedBin.freeLiquidity;
-                      onAmountChange?.(nextAmount.div(expandDecimals(token?.decimals)).toNumber());
+                      onAmountChange?.(formatDecimals(nextAmount, token?.decimals, 4) ?? '');
                     }}
                   />
                 </div>
@@ -155,12 +155,11 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      */}
                     (
                     {selectedBin &&
-                      amount &&
                       formatDecimals(
-                        bigNumberify(amount)
-                          .mul(Math.round(selectedBin.clbTokenValue * 10 ** 2))
-                          .div(10 ** 2),
-                        0,
+                        bigNumberify(Math.floor(Number(amount) * 10 ** 4)).mul(
+                          Math.round(selectedBin.clbTokenValue * 10 ** 2)
+                        ),
+                        2 + 4,
                         2
                       )}{' '}
                     {token?.name})
@@ -176,13 +175,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (isNaN(parsed)) {
                         return;
                       }
-                      onAmountChange?.(parsed);
+                      onAmountChange?.(trimmed);
                     }}
                     onClickAway={() => {
                       if (!isValid(amount) || !isValid(maxAmount)) {
                         return;
                       }
-                      if (amount > maxAmount) {
+                      if (Number(amount) > maxAmount) {
                         onMaxChange?.();
                       }
                     }}
@@ -206,7 +205,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               onClick={async () => {
                 if (isValid(selectedBin) && isValid(amount)) {
                   onRemoveLiquidity();
-                  onAmountChange?.(0);
+                  onAmountChange?.('0');
                 }
               }}
             />
