@@ -52,10 +52,10 @@ function useOpenPosition(props: Props) {
       return;
     }
 
-    const quantity = bigNumberify(state.quantity * numberBuffer())
+    const quantity = bigNumberify(Math.floor(Number(state.quantity) * numberBuffer()))
       .mul(expandDecimals(4)) // 10000
       .div(numberBuffer());
-    const leverage = bigNumberify(state.leverage * numberBuffer())
+    const leverage = bigNumberify(Math.floor(Number(state.leverage) * numberBuffer()))
       .mul(expandDecimals(2)) // 100
       .div(numberBuffer());
     const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
