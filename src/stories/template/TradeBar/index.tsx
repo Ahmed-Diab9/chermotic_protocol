@@ -14,7 +14,7 @@ import '../../atom/Tabs/style.css';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import { CLOSED, CLOSING, OPENED, OPENING } from '~/typings/position';
+import { CLOSED, CLOSING, OPENED, OPENING, PositionOption } from '~/typings/position';
 import { Market, Token } from '~/typings/market';
 import { usePrevious } from '~/hooks/usePrevious';
 import { BigNumber, BigNumberish, ethers, logger } from 'ethers';
@@ -38,11 +38,6 @@ interface TradeBarProps {
   isLoading?: boolean;
 }
 
-const listitem = [
-  { id: 1, title: 'Positions in all USDC Markets' },
-  { id: 2, title: 'Positions only in ETH/USD market' },
-];
-
 export const TradeBar = ({
   token,
   markets,
@@ -51,8 +46,42 @@ export const TradeBar = ({
   isLoading,
 }: TradeBarProps) => {
   // const previousPositions = usePrevious(positions, true);
-  const [selectedItem, setSelectedItem] = useState(listitem[0]);
   const openButtonRef = useRef<HTMLButtonElement>(null);
+  const filterOptions = useMemo<PositionOption[]>(() => {
+    if (isNil(token) || isNil(markets)) {
+      /**
+       * FIXME
+       * Option when token or markets are undefined
+       */
+      return [
+        {
+          id: 'all',
+          title: 'All positions',
+        },
+      ];
+    }
+    return [
+      { id: 'all', title: `Positions in all ${token.name} markets` },
+      ...markets.map((market) => ({
+        id: market.description,
+        address: market.address,
+        title: `Positions only in ${market.description} market`,
+      })),
+    ];
+  }, [token, markets]);
+  const [selectedOption, setSelectedOption] = useState<PositionOption>(filterOptions[0]);
+  useEffect(() => {
+    setSelectedOption(filterOptions[0]);
+  }, [filterOptions]);
+  const filteredPositions = useMemo(() => {
+    if (isNil(positions)) {
+      return [];
+    }
+    if (selectedOption.id === 'all') {
+      return positions;
+    }
+    return positions?.filter((position) => position.marketAddress === selectedOption.marketAddress);
+  }, [positions, selectedOption]);
 
   // const currentOracleVersion = useMemo(()=>{
   //   oracleVersions[]
@@ -72,6 +101,7 @@ export const TradeBar = ({
       window.removeEventListener(TRADE_EVENT, onTrade);
     };
   }, []);
+
   return (
     <Popover className="fixed bottom-0 w-full TradeBar">
       {({ open }) => (
@@ -96,12 +126,12 @@ export const TradeBar = ({
                             Last oracle update: 00h 00m 00s ago
                           </p>
                           <div className="select min-w-[298px]">
-                            <Listbox value={selectedItem} onChange={setSelectedItem}>
-                              <Listbox.Button>{selectedItem.title}</Listbox.Button>
+                            <Listbox value={selectedOption} onChange={setSelectedOption}>
+                              <Listbox.Button>{selectedOption.title}</Listbox.Button>
                               <Listbox.Options>
-                                {listitem.map((item) => (
-                                  <Listbox.Option key={item.id} value={item}>
-                                    {item.title}
+                                {filterOptions.map((option) => (
+                                  <Listbox.Option key={option.id} value={option}>
+                                    {option.title}
                                   </Listbox.Option>
                                 ))}
                               </Listbox.Options>
@@ -127,7 +157,7 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               <div>
-                                {(positions ?? []).map((position) => {
+                                {filteredPositions.map((position) => {
                                   return (
                                     <PositionItem
                                       position={position}
