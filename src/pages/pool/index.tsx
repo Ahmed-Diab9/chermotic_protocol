@@ -32,6 +32,7 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
+import { isValid } from '~/utils/valid';
 
 const Pool = () => {
   useConnectOnce();
@@ -209,7 +210,14 @@ const Pool = () => {
             </article>
             <div className="mt-10">
               <Link to={'/trade'}>
-                <Button label="Trade on ETH/USDC Pool" iconRight={<ChevronRightIcon />} />
+                <Button
+                  label={
+                    isValid(selectedMarket)
+                      ? `Trade on ${selectedMarket.description} Pool`
+                      : 'Market loading'
+                  }
+                  iconRight={<ChevronRightIcon />}
+                />
               </Link>
             </div>
           </div>

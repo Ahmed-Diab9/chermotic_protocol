@@ -32,24 +32,15 @@ export const withComma = (value?: number | string | BigNumber, replace?: string)
   }
   if (typeof value === 'number') {
     const [integer, decimals] = String(value).split('.') as [string, string | undefined];
-    return (
-      String(integer).replace(seperator, ',') +
-      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : '')
-    );
+    return String(integer).replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
   }
   if (typeof value === 'string') {
     const [integer, decimals] = value.split('.');
-    return (
-      integer.replace(seperator, ',') +
-      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : '')
-    );
+    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
   }
   if (value instanceof BigNumber) {
     const [integer, decimals] = value.toString().split('.');
-    return (
-      integer.replace(seperator, ',') +
-      (isValid(decimals) && decimals.length > 0 ? `.${decimals}` : '')
-    );
+    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
   }
 };
 

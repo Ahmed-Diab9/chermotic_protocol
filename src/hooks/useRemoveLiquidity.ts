@@ -14,7 +14,7 @@ import { PoolEvent } from '~/typings/events';
 
 interface Props {
   feeRate?: number;
-  amount?: number;
+  amount?: string;
 }
 
 const logger = Logger('useRemoveLiquidity');
@@ -66,7 +66,6 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    console.log(amount);
     const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
 
     try {

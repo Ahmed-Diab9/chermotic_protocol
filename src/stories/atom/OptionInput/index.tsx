@@ -41,7 +41,7 @@ export const OptionInput = (props: OptionInputProps) => {
   } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
-    const nextValue = bigNumberify(maxValue)?.mul(ratio).div(100).toString();
+    const nextValue = (Number(maxValue) * (ratio / 100)).toString();
     setRatio(ratio);
     onButtonClick?.(nextValue ?? '');
   };

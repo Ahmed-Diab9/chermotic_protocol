@@ -195,11 +195,8 @@ export const WalletPopover = ({
                             <article>
                               <div className="flex flex-col gap-3">
                                 {pools?.map((pool, poolIndex) => (
-                                  <Link to="#">
-                                    <div
-                                      key={`${pool.token}-${pool.market}`}
-                                      className="flex gap-3 pb-3 border-b last:border-b-0"
-                                    >
+                                  <Link to="#" key={`${pool.token}-${pool.market}`}>
+                                    <div className="flex gap-3 pb-3 border-b last:border-b-0">
                                       {isLoading ? (
                                         <Skeleton
                                           circle

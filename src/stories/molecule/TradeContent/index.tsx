@@ -41,9 +41,9 @@ interface TradeContentProps {
     event: ChangeEvent<HTMLInputElement>
   ) => unknown;
   onMethodToggle?: () => unknown;
-  onLeverageChange?: (nextLeverage: number) => unknown;
-  onTakeProfitChange?: (nextRate: number) => unknown;
-  onStopLossChange?: (nextRate: number) => unknown;
+  onLeverageChange?: (nextLeverage: string) => unknown;
+  onTakeProfitChange?: (nextRate: string) => unknown;
+  onStopLossChange?: (nextRate: string) => unknown;
 }
 
 const methodMap: Record<string, string> = {
@@ -105,7 +105,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     }
     const { quantity, leverage, takerMargin, makerMargin } = input;
     const price = await market.oracleValue.price;
-    if (input.collateral === 0) {
+    if (Number(input.collateral) === 0) {
       return setPrices([
         withComma(formatDecimals(price, oracleDecimals, 2)),
         withComma(formatDecimals(price, oracleDecimals, 2)),
@@ -116,17 +116,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
      * TODO
      * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
      */
-    const qty = BigNumber.from(Math.round(quantity * numberBuffer()))
-      .mul(Math.round(leverage * numberBuffer()))
+    const qty = BigNumber.from(Math.round(Number(quantity) * numberBuffer()))
+      .mul(Math.round(Number(leverage) * numberBuffer()))
       .div(numberBuffer())
       .div(numberBuffer());
     const profitDelta = price
       .mul(Math.round(makerMargin * numberBuffer()))
-      .div(qty)
+      .div(qty.eq(0) ? 1 : qty)
       .div(numberBuffer());
     const lossDelta = price
       .mul(Math.round(takerMargin * numberBuffer()))
-      .div(qty)
+      .div(qty.eq(0) ? 1 : qty)
       .div(numberBuffer());
 
     setPrices([
@@ -164,7 +164,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <Listbox
               value={input?.method}
               onChange={(value) => {
-                console.log('changed', value, input?.method);
                 if (input?.method !== value) {
                   onMethodToggle?.();
                 }
@@ -181,7 +180,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </Listbox>
           </div>
           <div className="max-w-[220px]">
-            <AmountSwitch input={input} onAmountChange={onInputChange} />
+            <AmountSwitch input={input} token={token} onAmountChange={onInputChange} />
           </div>
         </div>
       </article>
@@ -212,13 +211,20 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {isSliderOpen ? (
                 <div className="mt-[-8px]">
                   <Slider
-                    value={input?.leverage === 0 ? 1 : input?.leverage}
-                    onUpdate={onLeverageChange}
+                    value={Number(input?.leverage) === 0 ? 1 : Number(input?.leverage)}
+                    onUpdate={(newValue) => {
+                      onLeverageChange?.(String(newValue));
+                    }}
                     tick={SLIDER_TICK}
                   />
                 </div>
               ) : (
-                <LeverageOption value={input?.leverage} onClick={onLeverageChange} />
+                <LeverageOption
+                  value={Number(input?.leverage)}
+                  onClick={(nextValue) => {
+                    onLeverageChange?.(String(nextValue));
+                  }}
+                />
               )}
             </div>
             <div>
@@ -253,8 +259,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  value={input.takeProfit === 0 ? 1 : input.takeProfit}
-                  onUpdate={onTakeProfitChange}
+                  value={Number(input.takeProfit) === 0 ? 1 : Number(input.takeProfit)}
+                  onUpdate={(newValue) => {
+                    onTakeProfitChange?.(String(newValue));
+                  }}
                   tick={SLIDER_TICK}
                 />
               )}
@@ -280,8 +288,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  value={input.stopLoss === 0 ? 1 : input.stopLoss}
-                  onUpdate={onStopLossChange}
+                  value={Number(input.stopLoss) === 0 ? 1 : Number(input.stopLoss)}
+                  onUpdate={(newValue) => {
+                    onStopLossChange?.(String(newValue));
+                  }}
                   tick={SLIDER_TICK}
                 />
               )}
@@ -298,7 +308,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             positive={direction === 'long'}
             height={140}
             data={liquidityData}
-            selectedAmount={input?.quantity}
+            selectedAmount={Number(input?.quantity)}
           />
 
           {/* LP volume */}
@@ -317,10 +327,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
               </div>
-              <p>
-                {formatDecimals(tradeFee ?? 0, token?.decimals, 2)} USDC /{' '}
-                {formatDecimals(tradeFeePercent ?? 0, token?.decimals, 3)}%
-              </p>
+              {isValid(token) && (
+                <p>
+                  {formatDecimals(tradeFee ?? 0, token.decimals, 2)} {token.name} /{' '}
+                  {formatDecimals(tradeFeePercent ?? 0, token.decimals, 3)}%
+                </p>
+              )}
             </div>
             <div className="flex justify-between">
               <div className="flex items-center">
@@ -369,7 +381,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black/30">(+{input?.takeProfit.toFixed(2)}%)</span>
+                <span className="ml-2 text-black/30">(+{input?.takeProfit}%)</span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -378,7 +390,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black/30">(-{input?.stopLoss.toFixed(2)}%)</span>
+                <span className="ml-2 text-black/30">(-{input?.stopLoss}%)</span>
               </p>
             </div>
           </div>
@@ -390,6 +402,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 
 interface AmountSwitchProps {
   input?: TradeInput;
+  token?: Token;
   onAmountChange?: (
     key: 'collateral' | 'quantity',
     event: ChangeEvent<HTMLInputElement>
@@ -397,7 +410,7 @@ interface AmountSwitchProps {
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
-  const { input, onAmountChange } = props;
+  const { input, onAmountChange, token } = props;
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
@@ -419,7 +432,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLink="#"
             />
             <p>Contract Qty</p>
-            <p className="ml-2 text-black/30">{withComma(input?.quantity)} USDC</p>
+            <p className="ml-2 text-black/30">{withComma(input?.quantity)} CLB</p>
           </div>
         </>
       );
@@ -441,7 +454,11 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLink="#"
             />
             <p>Collateral</p>
-            <p className="ml-2 text-black/30">{input.collateral} USDC</p>
+            {isValid(token) && (
+              <p className="ml-2 text-black/30">
+                {input.collateral} {token.name}
+              </p>
+            )}
           </div>
         </>
       );

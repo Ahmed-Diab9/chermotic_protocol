@@ -23,9 +23,9 @@ export interface TradePanelProps {
     event: React.ChangeEvent<HTMLInputElement>
   ) => unknown;
   onLongMethodToggle?: () => unknown;
-  onLongLeverageChange?: (value: number) => unknown;
-  onLongTakeProfitChange?: (value: number) => unknown;
-  onLongStopLossChange?: (value: number) => unknown;
+  onLongLeverageChange?: (value: string) => unknown;
+  onLongTakeProfitChange?: (value: string) => unknown;
+  onLongStopLossChange?: (value: string) => unknown;
 
   shortInput?: TradeInput;
   shortTradeFee?: BigNumber;
@@ -35,9 +35,9 @@ export interface TradePanelProps {
     event: React.ChangeEvent<HTMLInputElement>
   ) => unknown;
   onShortMethodToggle?: () => unknown;
-  onShortLeverageChange?: (value: number) => unknown;
-  onShortTakeProfitChange?: (value: number) => unknown;
-  onShortStopLossChange?: (value: number) => unknown;
+  onShortLeverageChange?: (value: string) => unknown;
+  onShortTakeProfitChange?: (value: string) => unknown;
+  onShortStopLossChange?: (value: string) => unknown;
 
   balances?: Record<string, BigNumber>;
   priceFeed?: Record<string, Price>;

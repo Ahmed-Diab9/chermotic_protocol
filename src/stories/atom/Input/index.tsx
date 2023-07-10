@@ -43,10 +43,6 @@ export const Input = (props: InputProps) => {
   }, [activeElement]);
 
   useEffect(() => {
-    console.log(value);
-  }, [value]);
-
-  useEffect(() => {
     if (!isValid(onClickAway)) {
       return;
     }
@@ -73,7 +69,7 @@ export const Input = (props: InputProps) => {
         ref={inputRef}
         type="string"
         className={`text-${align}`}
-        value={type === 'number' ? withComma(isFocused ? value : Number(value).toFixed(2)) : value}
+        value={type === 'number' ? withComma(value) : value}
         placeholder={placeholder}
         onChange={(event) => {
           event.preventDefault();
