@@ -143,16 +143,18 @@ export const TradeBar = ({
                         <Tab.Panel>
                           <article>
                             {/* guide next round */}
-                            <Guide
-                              title="Next Oracle Round"
-                              // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
-                              paragraph="Waiting for the next oracle round. The next oracle round is updated
+                            <div className="mb-3">
+                              <Guide
+                                title="Next Oracle Round"
+                                // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                                paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
         0.00% or more, and it is updated at least once a day."
-                              outLink="/pool"
-                              outLinkAbout="Next Oracle Round"
-                              flex
-                            />
+                                outLink="/pool"
+                                outLinkAbout="Next Oracle Round"
+                                flex
+                              />
+                            </div>
                             {/* position list */}
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
@@ -319,12 +321,14 @@ const PositionItem = function (props: Props) {
   });
 
   return (
-    <div key={position.id.toString()} className="border rounded-xl">
+    <div key={position.id.toString()} className="mb-3 border rounded-xl">
       <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
         <div
-          className={`flex items-center gap-6 ${position.status === OPENING ? 'opacity-30' : ''}`}
+          className={`flex flex-auto items-center gap-6 ${
+            position.status === OPENING ? 'opacity-30' : ''
+          }`}
         >
-          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
+          <div className="flex grow items-center gap-6 w-[20%] max-w-[280px]">
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
@@ -414,11 +418,11 @@ const PositionItem = function (props: Props) {
       </div>
       <div className="flex items-stretch justify-between gap-6 px-5 py-4">
         <div
-          className={`flex items-stretch justify-between gap-6 ${
+          className={`flex flex-auto items-stretch justify-between gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
           }`}
         >
-          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
+          <div className="grow w-[20%] max-w-[280px] flex flex-col gap-2">
             <TextRow
               label="Contract Qty"
               labelClass="text-black/50"
@@ -432,7 +436,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
           </div>
-          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Take Profit"
               labelClass="text-black/50"
@@ -440,14 +444,14 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             <TextRow
-              label="Liq. Price"
+              label="TP Price"
               labelClass="text-black/50"
               value={calculatedData(position).profitPrice}
               subValueLeft={`(${calculatedData(position).profitPriceTo})`}
               isLoading={isLoading}
             />
           </div>
-          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Stop Loss"
               labelClass="text-black/50"
@@ -455,14 +459,14 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             <TextRow
-              label="Liq. Price"
+              label="SL Price"
               labelClass="text-black/50"
               value={calculatedData(position).lossPrice}
               subValueLeft={`(${calculatedData(position).lossPriceTo})`}
               isLoading={isLoading}
             />
           </div>
-          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[16%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="PnL"
               labelClass="text-black/50"
@@ -471,7 +475,7 @@ const PositionItem = function (props: Props) {
             />
           </div>
         </div>
-        <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
+        <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
           {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
           {/* Close / Claim USDC */}
           {(position.status === OPENED || position.status === OPENING) && (
