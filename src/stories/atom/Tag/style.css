@@ -2,12 +2,14 @@
   @apply inline-flex items-center uppercase text-[12px] px-[6px] h-5 leading-none rounded;
   @apply tracking-tight;
 }
-.tag-long {
+.tag-long,
+.tag-Long {
   @apply text-white bg-grayD;
   /* color: #a6d85b;
   background: rgba(166, 216, 91, 0.3); */
 }
-.tag-short {
+.tag-short,
+.tag-Short {
   @apply text-grayD bg-gray/20;
   /* color: #ff3232;
   background: rgba(255, 50, 50, 0.1); */

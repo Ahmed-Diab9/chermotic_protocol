@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../atom/Button';
+import { PopoverButton } from '~/stories/atom/PopoverButton';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { Loading } from '~/stories/atom/Loading';
 import { Guide } from '~/stories/atom/Guide';
-import { CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import CheckIcon from '~/assets/icons/CheckIcon';
+import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { Popover, Transition } from '@headlessui/react';
 import { Tab } from '@headlessui/react';
 import { Listbox } from '@headlessui/react';
@@ -111,8 +113,11 @@ export const TradeBar = ({
               {/* backdrop */}
               <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
               <div className="relative popover-panel">
-                <Popover.Button className="absolute right-10 top-[-20px]">
-                  <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" />
+                <Popover.Button className="absolute right-10 top-[-16px]">
+                  {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
+                  <div className="absolute right-0 top-[-16px]">
+                    <PopoverButton direction="bottom" position="top" />
+                  </div>
                 </Popover.Button>
                 <Popover.Panel>
                   <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
@@ -139,20 +144,22 @@ export const TradeBar = ({
                           </div>
                         </div>
                       </div>
-                      <Tab.Panels className="pb-20 overflow-auto mt-7 max-h-[50vh]">
-                        <Tab.Panel>
+                      <Tab.Panels className="pb-16 overflow-auto mx-[-20px] mt-7 max-h-[50vh]">
+                        <Tab.Panel className="px-5">
                           <article>
                             {/* guide next round */}
-                            <Guide
-                              title="Next Oracle Round"
-                              // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
-                              paragraph="Waiting for the next oracle round. The next oracle round is updated
+                            <div className="mb-3">
+                              <Guide
+                                title="Next Oracle Round"
+                                // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                                paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
         0.00% or more, and it is updated at least once a day."
-                              outLink="/pool"
-                              outLinkAbout="Next Oracle Round"
-                              flex
-                            />
+                                outLink="/pool"
+                                outLinkAbout="Next Oracle Round"
+                                flex
+                              />
+                            </div>
                             {/* position list */}
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
@@ -213,10 +220,13 @@ export const TradeBar = ({
                 ref={openButtonRef}
               >
                 <h4 className="min-w-[140px] text-black/30">Position</h4>
-                <Button
+                {/* <Button
                   iconOnly={<ChevronDoubleUpIcon />}
-                  className="absolute right-10 top-[-20px]"
-                />
+                  className="absolute right-10 top-[-16px]"
+                /> */}
+                <div className="absolute right-10 top-[-32px]">
+                  <PopoverButton direction="top" position="top" />
+                </div>
               </Popover.Button>
             </>
           )}
@@ -319,12 +329,14 @@ const PositionItem = function (props: Props) {
   });
 
   return (
-    <div key={position.id.toString()} className="border rounded-xl">
+    <div key={position.id.toString()} className="mb-3 border rounded-xl">
       <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
         <div
-          className={`flex items-center gap-6 ${position.status === OPENING ? 'opacity-30' : ''}`}
+          className={`flex flex-auto items-center gap-6 ${
+            position.status === OPENING ? 'opacity-30' : ''
+          }`}
         >
-          <div className="flex items-center gap-6 w-[20%] min-w-[260px]">
+          <div className="flex items-center gap-6">
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
@@ -375,7 +387,7 @@ const PositionItem = function (props: Props) {
           {/* 상태에 따라 내용 변동 */}
           {position.status === OPENING && (
             <>
-              <Loading size="xs" />
+              <Loading size="sm" />
               <p className="flex text-black/30">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
@@ -394,7 +406,7 @@ const PositionItem = function (props: Props) {
           )}
           {position.status === CLOSING && (
             <>
-              <Loading size="xs" />
+              <Loading size="sm" />
               <p className="flex text-black/30">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
@@ -414,11 +426,11 @@ const PositionItem = function (props: Props) {
       </div>
       <div className="flex items-stretch justify-between gap-6 px-5 py-4">
         <div
-          className={`flex items-stretch justify-between gap-6 ${
+          className={`flex flex-auto items-stretch justify-between gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
           }`}
         >
-          <div className="w-[20%] min-w-[260px] flex flex-col gap-2">
+          <div className="grow w-[20%] max-w-[280px] flex flex-col gap-2">
             <TextRow
               label="Contract Qty"
               labelClass="text-black/50"
@@ -432,7 +444,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
           </div>
-          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Take Profit"
               labelClass="text-black/50"
@@ -440,14 +452,14 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             <TextRow
-              label="Liq. Price"
+              label="TP Price"
               labelClass="text-black/50"
               value={calculatedData(position).profitPrice}
               subValueLeft={`(${calculatedData(position).profitPriceTo})`}
               isLoading={isLoading}
             />
           </div>
-          <div className="w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Stop Loss"
               labelClass="text-black/50"
@@ -455,14 +467,14 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             <TextRow
-              label="Liq. Price"
+              label="SL Price"
               labelClass="text-black/50"
               value={calculatedData(position).lossPrice}
               subValueLeft={`(${calculatedData(position).lossPriceTo})`}
               isLoading={isLoading}
             />
           </div>
-          <div className="min-w-[10%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow w-[16%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="PnL"
               labelClass="text-black/50"
@@ -471,7 +483,7 @@ const PositionItem = function (props: Props) {
             />
           </div>
         </div>
-        <div className="min-w-[10%] flex flex-col items-center justify-center gap-2 pl-6 border-l">
+        <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
           {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
           {/* Close / Claim USDC */}
           {(position.status === OPENED || position.status === OPENING) && (
