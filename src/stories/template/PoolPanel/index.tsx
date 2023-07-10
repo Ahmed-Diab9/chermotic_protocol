@@ -397,9 +397,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row xl:items-center xl:justify-between justify-around flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <article className="flex flex-col xl:flex-row items-center xl:justify-between justify-around flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
-                    <p className="flex mb-2 font-semibold text-left text-black/30">
+                    <p className="flex font-semibold text-left text-black/30">
                       Total Liquidity Value
                       <TooltipGuide
                         label="total-liquidity-value"
@@ -408,12 +408,16 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
 
                     {isLoading ? (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 mt-2">
                         <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
                         <Skeleton width={40} />
                       </div>
                     ) : (
-                      isValid(token) && <Avatar label={token?.name} size="xs" gap="1" />
+                      isValid(token) && (
+                        <div className="mt-2">
+                          <Avatar label={token?.name} size="xs" gap="1" />
+                        </div>
+                      )
                     )}
                   </div>
                   <h4 className="text-xl text-left xl:text-right">
@@ -431,8 +435,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-2 px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl text-left">
-                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-grayL/20 rounded-xl text-left">
+                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-black/30">
                       LP Bins
                     </div>
@@ -440,7 +444,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       {isLoading ? <Skeleton width={100} /> : <>{binLength.toFixed(2)} Bins</>}
                     </p>
                   </div>
-                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-black/30">
                       My Liquidity Value
                       <TooltipGuide
@@ -459,7 +463,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       )}
                     </p>
                   </div>
-                  <div className="flex flex-col justify-between xl:text-right xl:flex-row">
+                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex font-medium text-left text-black/30">
                       Removable Liquidity
                       <TooltipGuide
