@@ -18,8 +18,8 @@ export interface OwnedBin extends Bin {
 }
 
 export interface LiquidityPool<T = Bin> {
-  tokenAddress: string;
-  marketAddress: string;
+  tokenAddress: `0x${string}`;
+  marketAddress: `0x${string}`;
   bins: Array<T>;
 }
 

@@ -11,6 +11,10 @@ export interface Price {
   decimals: number;
 }
 
+/**
+ * FIXME
+ * Struct output type needed.
+ */
 export interface Market {
   address: Address;
   description: string;
