@@ -38,6 +38,9 @@
 }
 .btn-gray {
   @apply border border-gray bg-white;
+  &:disabled {
+    @apply border-gray/40 text-gray;
+  }
 }
 .btn-default {
   @apply border text-black/50 bg-white;

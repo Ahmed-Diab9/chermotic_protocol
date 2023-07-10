@@ -219,7 +219,11 @@ export const TradeBar = ({
                 className="w-full px-[60px] py-5 bg-white border-t tabs tabs-line tabs-base tabs-left"
                 ref={openButtonRef}
               >
-                <h4 className="min-w-[140px] text-black/30">Position</h4>
+                <h4 className="min-w-[140px] text-black">
+                  Position
+                  {/* TODO: position 갯수 보여주기 (갯수 세는 기준은 확인중) */}
+                  {/* (2) */}
+                </h4>
                 {/* <Button
                   iconOnly={<ChevronDoubleUpIcon />}
                   className="absolute right-10 top-[-16px]"
@@ -262,9 +266,9 @@ const PositionItem = function (props: Props) {
         const value = printNumber(position[propName], oracleDecimals);
         const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
         if (higherCondition) {
-          return '+' + value + '% higher';
+          return '+' + value + '%';
         } else {
-          return value + '% lower';
+          return value + '%';
         }
       }
       const { takerMargin, qty, leverage, makerMargin } = position;
@@ -388,7 +392,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENING && (
             <>
               <Loading size="sm" />
-              <p className="flex text-black/30">
+              <p className="flex text-black">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
                 <TooltipGuide iconOnly label="opening-in-progress" />
@@ -398,7 +402,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENED && (
             <>
               <CheckIcon className="w-4" />
-              <p className="flex text-black/30">
+              <p className="flex text-black">
                 Opening completed
                 <TooltipGuide iconOnly label="opening-completed" />
               </p>
@@ -407,7 +411,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSING && (
             <>
               <Loading size="sm" />
-              <p className="flex text-black/30">
+              <p className="flex text-black">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
               </p>
@@ -416,7 +420,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSED && (
             <>
               <CheckIcon className="w-4" />
-              <p className="flex text-black/30">
+              <p className="flex text-black">
                 Closing completed
                 <TooltipGuide iconOnly label="closing-completed" />
               </p>

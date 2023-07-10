@@ -91,16 +91,10 @@ export const Header = (props: HeaderProps) => {
               <button
                 onClick={onConnect}
                 title="connect"
-                className="p-[2px] pr-5 border rounded-full bg-black border-grayL text-white min-w-[175px]"
+                className="p-[2px] flex items-center border rounded-full bg-black border-grayL text-white min-w-[148px]"
               >
-                <Avatar
-                  src={arbitrumIcon}
-                  label="Connect"
-                  className="!w-[36px] !h-[36px]"
-                  fontSize="lg"
-                  fontWeight="normal"
-                  gap="5"
-                />
+                <Avatar src={arbitrumIcon} className="!w-[36px] !h-[36px]" />
+                <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
               </button>
             </>
           )}

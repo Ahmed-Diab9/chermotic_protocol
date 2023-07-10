@@ -248,17 +248,17 @@ export class Position {
   renderToProfit(oracleDecimals: number) {
     const toProfit = withComma(formatDecimals(this.toProfitPrice, oracleDecimals, 2));
     if (this.direction === 'long') {
-      return '+' + toProfit + '% higher';
+      return '+' + toProfit + '%';
     } else {
-      return toProfit + '% lower';
+      return toProfit + '%';
     }
   }
   renderToLoss(oracleDecimals: number) {
     const toLoss = withComma(formatDecimals(this.toLossPrice, oracleDecimals, 2));
     if (this.direction === 'long') {
-      return toLoss + '% lower';
+      return toLoss + '%';
     } else {
-      return '+' + toLoss + '% higher';
+      return '+' + toLoss + '%';
     }
   }
   renderPNL(oracleDecimals: number) {
