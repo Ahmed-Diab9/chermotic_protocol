@@ -266,9 +266,9 @@ const PositionItem = function (props: Props) {
         const value = printNumber(position[propName], oracleDecimals);
         const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
         if (higherCondition) {
-          return '+' + value + '% higher';
+          return '+' + value + '%';
         } else {
-          return value + '% lower';
+          return value + '%';
         }
       }
       const { takerMargin, qty, leverage, makerMargin } = position;
