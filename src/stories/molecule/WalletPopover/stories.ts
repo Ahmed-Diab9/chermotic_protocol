@@ -30,18 +30,18 @@ export const Default: Story = {
         address: '0x8888888888888888888888888888888888888888',
         description: 'ETH/USD',
         oracleValue: {
-          price: BigNumber.from(10000),
-          timestamp: BigNumber.from(1000000),
-          version: BigNumber.from(10),
+          price: 10000n,
+          timestamp: 1000000n,
+          version: 10n,
         },
       } as Market,
     ],
     balances: {
-      USDC: BigNumber.from(100),
+      USDC: 100n,
     },
     priceFeed: {
       USDC: {
-        value: BigNumber.from(1500),
+        value: 1500n,
         decimals: 8,
       },
     },
@@ -52,7 +52,7 @@ export const Default: Story = {
           decimals: 6,
         },
         market: 'ETH/USD',
-        liquidity: BigNumber.from(1000),
+        liquidity: 1000n,
         bins: 10,
       },
     ],

@@ -23,9 +23,9 @@ export const Default: Story = {
       address: '0x8888888888888888888888888888888888888888',
       description: 'ETH/USD',
       oracleValue: {
-        price: BigNumber.from(10000),
-        timestamp: BigNumber.from(1000000),
-        version: BigNumber.from(10),
+        price: 10000n,
+        timestamp: 1000000n,
+        version: 10n,
       },
     } as Market,
     receipts: [

@@ -18,7 +18,7 @@ export const useFeeRate = () => {
   } = useSWR(['FEE_RATE', selectedToken?.address], async () => {
     if (selectedToken?.address)
       return await marketFactoryApi?.currentInterestRate(selectedToken?.address);
-    return BigNumber.from(0);
+    return 0n;
   });
 
   if (error) {

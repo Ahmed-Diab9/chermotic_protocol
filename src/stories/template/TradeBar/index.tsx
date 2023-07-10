@@ -1,36 +1,31 @@
+import { Listbox, Popover, Tab } from '@headlessui/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from '../../atom/Button';
-import { PopoverButton } from '~/stories/atom/PopoverButton';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import CheckIcon from '~/assets/icons/CheckIcon';
 import { Avatar } from '~/stories/atom/Avatar';
+import { Guide } from '~/stories/atom/Guide';
+import { Loading } from '~/stories/atom/Loading';
+import { PopoverButton } from '~/stories/atom/PopoverButton';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { Loading } from '~/stories/atom/Loading';
-import { Guide } from '~/stories/atom/Guide';
-import CheckIcon from '~/assets/icons/CheckIcon';
-import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { Popover, Transition } from '@headlessui/react';
-import { Tab } from '@headlessui/react';
-import { Listbox } from '@headlessui/react';
+import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
-import { CLOSED, CLOSING, OPENED, OPENING, PositionOption } from '~/typings/position';
-import { Market, Token } from '~/typings/market';
-import { usePrevious } from '~/hooks/usePrevious';
-import { BigNumber, BigNumberish, ethers, logger } from 'ethers';
-import { createCurrentDate } from '~/utils/date';
-import { OracleVersion } from '~/typings/oracleVersion';
-import { isValid } from '~/utils/valid';
-import { formatDecimals, withComma } from '../../../utils/number';
-import { Position } from '../../../hooks/usePosition';
-import { isNil } from 'ramda';
+import { BigNumber, BigNumberish } from 'ethers';
 import memoizeOne from 'memoize-one';
-import { PNL_RATE_DECIMALS as PNL_RATE_DECIMALS } from '../../../configs/decimals';
-import { TRADE_EVENT } from '~/typings/events';
-import { useClosePosition } from '~/hooks/useClosePosition';
+import { isNil } from 'ramda';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
+import { useClosePosition } from '~/hooks/useClosePosition';
+import { TRADE_EVENT } from '~/typings/events';
+import { Market, Token } from '~/typings/market';
+import { OracleVersion } from '~/typings/oracleVersion';
+import { CLOSED, CLOSING, OPENED, OPENING, PositionOption } from '~/typings/position';
+import { isValid } from '~/utils/valid';
+import { PNL_RATE_DECIMALS } from '../../../configs/decimals';
+import { Position } from '../../../hooks/usePosition';
+import { abs, formatDecimals, withComma } from '../../../utils/number';
 
 interface TradeBarProps {
   token?: Token;
@@ -264,7 +259,7 @@ const PositionItem = function (props: Props) {
       function priceTo(type: 'profit' | 'loss') {
         const propName = type === 'profit' ? 'toProfit' : 'toLoss';
         const value = printNumber(position[propName], oracleDecimals);
-        const higherCondition = type === 'profit' ? position.qty.gt(0) : position.qty.lt(0);
+        const higherCondition = type === 'profit' ? position.qty > 0 : position.qty < 0;
         if (higherCondition) {
           return '+' + value + '%';
         } else {
@@ -276,17 +271,17 @@ const PositionItem = function (props: Props) {
         .mul(10 ** PNL_RATE_DECIMALS)
         .div(BigNumber.from(position.takerMargin));
       const currentOracleVersion = oracleVersions?.[position.marketAddress];
-
+      const absQty = abs(qty);
       if (
         isNil(currentOracleVersion) ||
         isNil(currentOracleVersion.version) ||
-        currentOracleVersion.version.lte(position.openVersion)
+        currentOracleVersion.version <= position.openVersion
       ) {
         return {
-          qty: printNumber(qty.abs(), 4),
-          collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
-          stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
-          takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+          qty: printNumber(absQty, 4),
+          collateral: printNumber((absQty * (takerMargin / absQty)) / 100n, 4),
+          stopLoss: `${takerMargin / absQty}%`,
+          takeProfit: `${absQty === 0n ? 0n : makerMargin / absQty}%`,
           profitPriceTo: '-',
           lossPriceTo: '-',
           pnl: '-',
@@ -298,10 +293,10 @@ const PositionItem = function (props: Props) {
       }
 
       const props = {
-        qty: printNumber(qty.abs(), 4),
-        collateral: printNumber(qty.abs().mul(takerMargin.div(qty.abs())).div(100).toString(), 4),
-        stopLoss: `${takerMargin.div(qty.abs()).toNumber()}%`,
-        takeProfit: `${qty.abs().eq(0) ? 0 : makerMargin.div(qty.abs()).toNumber()}%`,
+        qty: printNumber(absQty, 4),
+        collateral: printNumber((absQty * takerMargin) / absQty / 100n, 4),
+        stopLoss: `${takerMargin / absQty}%`,
+        takeProfit: `${absQty === 0n ? 0 : makerMargin / absQty}%`,
         profitPriceTo: `${priceTo('profit')}%`,
         lossPriceTo: `${priceTo('loss')}%`,
         pnl: `${printNumber(pnlPercentage, 2)}%`,
@@ -312,7 +307,7 @@ const PositionItem = function (props: Props) {
           month: 'long',
           day: 'numeric',
           year: 'numeric',
-        }).format(new Date(position.openTimestamp.toNumber() * 1000)),
+        }).format(new Date(Number(position.openTimestamp) * 1000)),
       };
 
       return props;
@@ -320,7 +315,7 @@ const PositionItem = function (props: Props) {
   }, [token, oracleVersions]);
 
   const direction = useCallback((position: Position) => {
-    return position.qty.gt(0) ? 'Long' : 'Short';
+    return position.qty > 0 ? 'Long' : 'Short';
   }, []);
 
   const { onClosePosition } = useClosePosition({

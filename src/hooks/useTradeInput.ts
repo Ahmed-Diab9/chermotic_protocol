@@ -1,9 +1,9 @@
 import { ChangeEvent, useMemo, useReducer } from 'react';
-import { useSigner } from 'wagmi';
+
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
-import { bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
+import { abs, bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
@@ -219,12 +219,9 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
 
 export const useTradeInput = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const { fetchPositions } = usePosition();
-  const { data: signer } = useSigner();
-  const { fetchBalances } = useUsumAccount();
+
   const { client } = useChromaticClient();
-  const routerApi = useMemo(() => client?.router(), [client]);
+
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
     pool,
@@ -234,16 +231,15 @@ export const useTradeInput = () => {
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
   const [tradeFee, feePercent] = useMemo(() => {
-    let makerMargin = bigNumberify(Math.round(state.makerMargin)).mul(
-      expandDecimals(token?.decimals)
-    );
-    if (state.direction === 'long' && makerMargin.gt(longTotalUnusedLiquidity)) {
+    let makerMargin = BigInt(Math.round(state.makerMargin)) * expandDecimals(token?.decimals);
+
+    if (state.direction === 'long' && makerMargin > longTotalUnusedLiquidity) {
       return [];
     }
-    if (state.direction === 'short' && makerMargin.gt(shortTotalUnusedLiquidity)) {
+    if (state.direction === 'short' && makerMargin > shortTotalUnusedLiquidity) {
       return [];
     }
-    let tradeFee = bigNumberify(0);
+    let tradeFee = 0n;
     const bins =
       pool?.bins.filter((bin) => {
         if (state.direction === 'long') {
@@ -256,22 +252,21 @@ export const useTradeInput = () => {
       bins.reverse();
     }
     for (const token of bins) {
-      if (makerMargin.lte(0)) {
+      if (makerMargin <= 0n) {
         break;
       }
       const { baseFeeRate, freeLiquidity } = token;
-      const feeRate = Math.abs(baseFeeRate);
-      if (makerMargin.gte(freeLiquidity)) {
-        tradeFee = tradeFee.add(freeLiquidity.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL)));
-        makerMargin = makerMargin.sub(freeLiquidity);
+      const feeRate = abs(baseFeeRate);
+      if (makerMargin >= freeLiquidity) {
+        tradeFee = tradeFee + (freeLiquidity * feeRate) / expandDecimals(FEE_RATE_DECIMAL);
+        makerMargin = makerMargin - freeLiquidity;
       } else {
-        tradeFee = tradeFee.add(makerMargin.mul(feeRate).div(expandDecimals(FEE_RATE_DECIMAL)));
-        makerMargin = bigNumberify(0);
+        tradeFee = tradeFee + (makerMargin * feeRate) / expandDecimals(FEE_RATE_DECIMAL);
+        makerMargin = 0n;
       }
     }
-    const feePercent = tradeFee
-      .mul(expandDecimals(PERCENT_DECIMALS))
-      .div(Math.round(state.makerMargin) || 1);
+    const feePercent =
+      (tradeFee * expandDecimals(PERCENT_DECIMALS)) / BigInt(Math.round(state.makerMargin) || 1);
     return [tradeFee, feePercent] as const;
   }, [
     state.makerMargin,

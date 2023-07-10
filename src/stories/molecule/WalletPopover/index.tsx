@@ -1,9 +1,8 @@
-import './style.css';
-import '../../atom/Tabs/style.css';
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { BigNumber } from 'ethers';
 import { Fragment } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import { Link } from 'react-router-dom';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
@@ -14,9 +13,8 @@ import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
-import { Link } from 'react-router-dom';
-import { Thumbnail } from '../../atom/Thumbnail';
-import Skeleton from 'react-loading-skeleton';
+import '../../atom/Tabs/style.css';
+import './style.css';
 
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
@@ -25,7 +23,7 @@ interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
   markets?: Market[];
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
   isLoading?: boolean;
@@ -176,9 +174,8 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               {withComma(
-                                                balances[token.name]
-                                                  .div(expandDecimals(token.decimals))
-                                                  .toString()
+                                                balances[token.name] /
+                                                  expandDecimals(token.decimals)
                                               )}{' '}
                                               {token.name}
                                             </>

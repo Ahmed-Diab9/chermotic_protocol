@@ -1,17 +1,16 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
-import { BigNumber } from 'ethers';
+import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
+import { isNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { toast } from 'react-toastify';
+import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
 import { useAppSelector } from '../store';
 import { Logger } from '../utils/log';
 import { expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useUsumAccount } from './useUsumAccount';
 import { useChromaticClient } from './useChromaticClient';
-import { toast } from 'react-toastify';
+import { useUsumAccount } from './useUsumAccount';
 const logger = Logger('useTokenTransaction');
 const useTokenTransaction = () => {
-  const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
   const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
     useUsumAccount();
@@ -19,11 +18,12 @@ const useTokenTransaction = () => {
   const { client } = useChromaticClient();
   const accountApi = useMemo(() => client?.account(), [client]);
   const [amount, setAmount] = useState('');
-  const tokenContract = useMemo(() => {
-    if (isValid(token) && isValid(signer)) {
-      return IERC20__factory.connect(token.address, signer);
-    }
-  }, [token, signer]);
+  const { data: walletClient } = useWalletClient();
+  const { data: tokenContractData, write: transferToken } = useContractWrite({
+    abi: ierc20ABI,
+    address: token?.address,
+    functionName: 'transfer',
+  });
 
   const onDeposit = useCallback(async () => {
     logger.info('onDeposit called');
@@ -37,14 +37,14 @@ const useTokenTransaction = () => {
       toast('Settlement token is not selected.');
       return;
     }
-    const trimmedAmount = Math.floor(Number(amount) * 100);
-    const expanded = BigNumber.from(trimmedAmount).mul(expandDecimals(token.decimals - 2));
+    const trimmedAmount = BigInt(Math.floor(Number(amount) * 100));
+    const expanded = trimmedAmount * expandDecimals(token.decimals - 2);
     if (!isValid(expanded)) {
       logger.info('invalid amount', expanded);
       toast('Amount is not valid.');
       return;
     }
-    await tokenContract?.transfer(chromaticAccountAddress, expanded);
+    await transferToken({ args: [chromaticAccountAddress, expanded] });
 
     await fetchChromaticBalances();
   }, [amount, walletAddress, chromaticAccountAddress]);
@@ -60,14 +60,21 @@ const useTokenTransaction = () => {
       toast('Settlement token are not selected.');
       return;
     }
+    if (isNil(walletAddress)) return;
     const trimmedAmount = Math.floor(Number(amount) * 100);
-    const expanded = BigNumber.from(trimmedAmount).mul(expandDecimals(token.decimals - 2));
+    const expanded = BigInt(trimmedAmount) * expandDecimals(token.decimals - 2);
     if (!isValid(expanded)) {
       logger.info('invalid amount', expanded);
       toast('Amount is not valid.');
       return;
     }
-    await accountApi?.contracts().account().withdraw(token.address, expanded);
+    const result = await accountApi
+      ?.contracts()
+      .account(chromaticAccountAddress)
+      .simulate.withdraw([token.address, expanded], { account: walletClient?.account });
+    if (!result) return;
+    const hash = await walletClient?.writeContract(result.request);
+
     await fetchChromaticBalances();
   }, [chromaticAccountAddress, token, amount]);
 

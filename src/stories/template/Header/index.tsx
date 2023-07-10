@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { Link, useLocation } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
 import { Account } from '~/typings/account';
@@ -14,7 +13,7 @@ interface HeaderProps {
   account?: Account;
   tokens?: Token[];
   markets?: Market[];
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
   isBalanceLoading?: boolean;

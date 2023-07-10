@@ -36,14 +36,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : bigNumberify(0);
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
   const utilized = isValid(selectedBin)
-    ? selectedBin.clbTokenBalance
-        .mul(Math.round(utilizedRate * percentage()))
-        .div(expandDecimals(FEE_RATE_DECIMAL))
+    ? (selectedBin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
+      expandDecimals(FEE_RATE_DECIMAL)
     : bigNumberify(0);
   const removable = isValid(selectedBin)
-    ? selectedBin?.clbTokenBalance
-        .mul(Math.round(selectedBin.removableRate * percentage()))
-        .div(expandDecimals(FEE_RATE_DECIMAL))
+    ? (selectedBin?.clbTokenBalance *
+        BigInt(Math.round(selectedBin.removableRate * percentage()))) /
+      expandDecimals(FEE_RATE_DECIMAL)
     : bigNumberify(0);
 
   const { onRemoveLiquidity } = useRemoveLiquidity({
@@ -140,9 +139,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const nextAmount = selectedBin.binValue.lt(selectedBin.freeLiquidity)
-                        ? selectedBin.binValue
-                        : selectedBin.freeLiquidity;
+                      const nextAmount =
+                        selectedBin.binValue < selectedBin.freeLiquidity
+                          ? selectedBin.binValue
+                          : selectedBin.freeLiquidity;
                       onAmountChange?.(formatDecimals(nextAmount, token?.decimals, 4) ?? '');
                     }}
                   />

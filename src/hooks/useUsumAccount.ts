@@ -1,8 +1,8 @@
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { fromPairs, isNil } from 'ramda';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount } from 'wagmi';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -23,7 +23,7 @@ export const useUsumAccount = () => {
   const { client } = useChromaticClient();
   // const accountApi = useMemo(() => client?.account(), [client]);
 
-  const signerKey = isValid(client?.signer) ? 'SIGNER' : undefined;
+  const signerKey = isValid(client?.walletClient) ? 'WALLET_CLIENT' : undefined;
   const fetchKey =
     isValid(address) && isValid(signerKey) ? ['USUM_ACCOUNT', address, signerKey] : undefined;
 
@@ -34,7 +34,7 @@ export const useUsumAccount = () => {
   } = useSWR(
     fetchKey,
     async ([_, address]) => {
-      if (!client || !client.signer) {
+      if (!client || !client.walletClient) {
         return;
       }
       const accountApi = client?.account();

@@ -25,15 +25,15 @@ import { useOpenPosition } from '~/hooks/useOpenPosition';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   token?: Token;
   market?: Market;
   input?: TradeInput;
-  totalMaxLiquidity?: BigNumber;
-  totalUnusedLiquidity?: BigNumber;
-  tradeFee?: BigNumber;
-  tradeFeePercent?: BigNumber;
+  totalMaxLiquidity?: bigint;
+  totalUnusedLiquidity?: bigint;
+  tradeFee?: bigint;
+  tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
   isLoading?: boolean;
   onInputChange?: (
@@ -90,53 +90,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
     const freeLiq =
       formatDecimals(
-        totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+        (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
         (token?.decimals || 0) + 6,
         8
       ) || '0';
     const formatter = Intl.NumberFormat('en', { notation: 'compact' });
     return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
-  // TODO
-  // 청산가 계산이 올바른지 점검해야 합니다.
-  const createLiquidation = useCallback(async () => {
-    if (!isValid(input) || !isValid(market) || !isValid(token)) {
-      return setPrices([undefined, undefined]);
-    }
-    const { quantity, leverage, takerMargin, makerMargin } = input;
-    const price = await market.oracleValue.price;
-    if (Number(input.collateral) === 0) {
-      return setPrices([
-        withComma(formatDecimals(price, oracleDecimals, 2)),
-        withComma(formatDecimals(price, oracleDecimals, 2)),
-      ]);
-    }
 
-    /**
-     * TODO
-     * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
-     */
-    const qty = BigNumber.from(Math.round(Number(quantity) * numberBuffer()))
-      .mul(Math.round(Number(leverage) * numberBuffer()))
-      .div(numberBuffer())
-      .div(numberBuffer());
-    const profitDelta = price
-      .mul(Math.round(makerMargin * numberBuffer()))
-      .div(qty.eq(0) ? 1 : qty)
-      .div(numberBuffer());
-    const lossDelta = price
-      .mul(Math.round(takerMargin * numberBuffer()))
-      .div(qty.eq(0) ? 1 : qty)
-      .div(numberBuffer());
-
-    setPrices([
-      withComma(formatDecimals(price.add(profitDelta), oracleDecimals, 2)),
-      withComma(formatDecimals(price.sub(lossDelta), oracleDecimals, 2)),
-    ]);
-  }, [input, market, token]);
-  useEffect(() => {
-    createLiquidation();
-  }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   return (
@@ -318,7 +279,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token && <p>{lpVolume} M</p>}
+            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume} M</p> : <p></p>}
           </div>
         </div>
         <article className="mt-5">

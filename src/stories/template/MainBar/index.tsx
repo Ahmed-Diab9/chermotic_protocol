@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { ACCOUNT_STATUS, Account } from '~/typings/account';
 import { Market, Token } from '~/typings/market';
 import { AssetPopover } from '../../molecule/AssetPopover';
@@ -11,13 +10,13 @@ interface MainBarProps {
   markets?: Market[];
   selectedToken?: Token;
   selectedMarket?: Market;
-  walletBalances?: Record<string, BigNumber>;
-  usumBalances?: Record<string, BigNumber>;
-  feeRate?: BigNumber;
+  walletBalances?: Record<string, bigint>;
+  usumBalances?: Record<string, bigint>;
+  feeRate?: bigint;
   amount?: string;
-  totalBalance?: BigNumber;
-  availableMargin?: BigNumber;
-  assetValue?: BigNumber;
+  totalBalance?: bigint;
+  availableMargin?: bigint;
+  assetValue?: bigint;
   isMarketLoading?: boolean;
   isAssetLoading?: boolean;
   showAssetPopover?: boolean;

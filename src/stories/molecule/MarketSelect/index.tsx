@@ -1,22 +1,22 @@
-import './style.css';
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { BigNumber } from 'ethers';
+import './style.css';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
-import Skeleton from 'react-loading-skeleton';
 
 interface MarketSelectProps {
   tokens?: Token[];
   markets?: Market[];
   selectedToken?: Token;
   selectedMarket?: Market;
-  feeRate?: BigNumber;
+  feeRate?: bigint;
   isGroupLegacy?: boolean;
   isLoading?: boolean;
   onTokenClick?: (token: Token) => void;
@@ -51,7 +51,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
                 <Skeleton width={80} />
               ) : (
                 <>
-                  {formatDecimals(feeRate?.mul(expandDecimals(2)).div(365 * 24) ?? 0, 4, 4)}
+                  {formatDecimals((((feeRate ?? 0n) * expandDecimals(2)) / 365n) * 24n ?? 0, 4, 4)}
                   %/h
                 </>
               )}

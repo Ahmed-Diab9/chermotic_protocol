@@ -13,7 +13,6 @@ import { Disclosure } from '@headlessui/react';
 import '../../atom/Tabs/style.css';
 import Skeleton from 'react-loading-skeleton';
 
-import { BigNumber } from 'ethers';
 // import { LPReceipt } from "~/typings/receipt";
 import { Market, Token } from '~/typings/market';
 import { isValid } from '~/utils/valid';
@@ -29,7 +28,7 @@ interface PoolProgressProps {
   market?: Market;
   receipts?: LpReceipt[];
   isLoading?: boolean;
-  onReceiptClaim?: (id: BigNumber, action: LpReceiptAction) => unknown;
+  onReceiptClaim?: (id: bigint, action: LpReceiptAction) => unknown;
   onReceiptClaimBatch?: () => unknown;
 }
 

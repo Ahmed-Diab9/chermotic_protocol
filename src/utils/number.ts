@@ -3,7 +3,7 @@ import { formatUnits } from 'ethers/lib/utils';
 import { isValid } from './valid';
 import { Price, Token } from '../typings/market';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
-import { isNil } from 'ramda';
+import { dec, isNil } from 'ramda';
 
 interface BigNumberify {
   (value: number): BigNumber;
@@ -25,8 +25,13 @@ export const bigNumberify: BigNumberify = (value) => {
   }
 };
 
-export const withComma = (value?: number | string | BigNumber, replace?: string) => {
+export const abs = (value: bigint | number): bigint => {
+  if (typeof value === 'number') value = BigInt(value);
+  return value < 0 ? value * -1n : value;
+};
+export const withComma = (value?: bigint | number | string | BigNumber, replace?: string) => {
   const seperator = /\B(?=(\d{3})+(?!\d))/g;
+  if (typeof value === 'bigint') value = value.toString();
   if (value === undefined) {
     return replace;
   }
@@ -81,14 +86,11 @@ export const formatDecimals = (
 };
 
 export const expandDecimals = (decimals?: number) => {
-  return BigNumber.from(10).pow(decimals ?? 0);
+  return 10n ** BigInt(decimals || 0n);
 };
 
-export const formatBalance = (balance: BigNumber, token: Token, price: Price) => {
-  return balance
-    .mul(price.value)
-    .div(expandDecimals(token.decimals))
-    .div(expandDecimals(price.decimals));
+export const formatBalance = (balance: bigint, token: Token, price: Price) => {
+  return (balance * price.value) / expandDecimals(token.decimals) / expandDecimals(price.decimals);
 };
 
 export const formatFeeRate = (feeRate: number) => {

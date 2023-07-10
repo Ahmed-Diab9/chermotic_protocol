@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumberish } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -10,14 +10,14 @@ import { useAppSelector } from '../store';
 import { numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
-import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-ethers-v5';
+import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
 import { toast } from 'react-toastify';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
-  id: BigNumber;
-  version: BigNumber;
-  amount: BigNumber;
+  id: bigint;
+  version: bigint;
+  amount: bigint;
   recipient: string;
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
@@ -27,22 +27,22 @@ export interface LpReceipt {
 
 const receiptDetail = (
   action: 0 | 1 | number,
-  receiptOracleVersion: BigNumber,
-  currentOracleVersion: BigNumberish,
+  receiptOracleVersion: bigint,
+  currentOracleVersion: bigint,
   bin: ClaimableLiquidityResult
 ) => {
   switch (action) {
     case 0:
-      if (receiptOracleVersion.lt(currentOracleVersion)) {
+      if (receiptOracleVersion < currentOracleVersion) {
         return 'completed';
       } else {
         return 'standby';
       }
     case 1:
-      if (receiptOracleVersion.gte(currentOracleVersion)) {
+      if (receiptOracleVersion >= currentOracleVersion) {
         return 'standby';
       }
-      if (bin.burningCLBTokenAmountRequested.eq(bin.burningCLBTokenAmount)) {
+      if (bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount) {
         return 'completed';
       } else {
         return 'in progress';
@@ -59,7 +59,7 @@ const usePoolReceipt = () => {
   const router = useMemo(() => client?.router(), [client]);
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
-  const currentOracleVersion = market && oracleVersions?.[market.address]?.version.toNumber();
+  const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
   const marketAddress = market?.address;
 
   const binName = useCallback((feeRate: number, description?: string) => {
@@ -85,7 +85,7 @@ const usePoolReceipt = () => {
       return [];
     }
 
-    const receipts = await lensApi.contracts().lens.lpReceipts(marketAddress, address);
+    const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
     if (!receipts) {
       return [];
     }
@@ -125,7 +125,7 @@ const usePoolReceipt = () => {
   });
 
   const onClaimCLBTokens = useCallback(
-    async (receiptId: BigNumber, action?: LpReceipt['action']) => {
+    async (receiptId: bigint, action?: LpReceipt['action']) => {
       if (!isValid(router)) {
         errorLog('no router contracts');
         toast('No routers error');

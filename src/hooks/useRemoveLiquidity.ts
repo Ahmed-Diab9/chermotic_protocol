@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useChromaticClient } from './useChromaticClient';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useLiquidityPools } from './useLiquidityPool';
 import { isValid } from '~/utils/valid';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -26,7 +26,7 @@ function useRemoveLiquidity(props: Props) {
   const token = useAppSelector((state) => state.token.selectedToken);
   const { liquidityPools: pools } = useLiquidityPools();
   const routerApi = useMemo(() => client?.router(), [client]);
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
   const { fetchReceipts } = usePoolReceipt();
@@ -51,8 +51,8 @@ function useRemoveLiquidity(props: Props) {
       toast('Select fee rate to remove pool first.');
       return;
     }
-    if (!isValid(signer) || !isValid(address)) {
-      logger.info('no signer or address', signer, address);
+    if (!isValid(walletClient) || !isValid(address)) {
+      logger.info('no signer or address', walletClient, address);
       toast('Your wallet is not connected.');
       return;
     }
@@ -66,7 +66,7 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
+    const expandedAmount = BigInt(amount) * expandDecimals(token?.decimals ?? 1);
 
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {
@@ -84,7 +84,7 @@ function useRemoveLiquidity(props: Props) {
     } catch (error) {
       toast((error as any).reason);
     }
-  }, [signer, address, pool, routerApi, amount]);
+  }, [walletClient, address, pool, routerApi, amount]);
 
   return { onRemoveLiquidity };
 }

@@ -1,4 +1,4 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-ethers-v5';
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -11,10 +11,9 @@ import { Logger } from '../utils/log';
 import { useSettlementToken } from './useSettlementToken';
 import { numberBuffer } from '~/utils/number';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-
+const { encodeTokenId } = ChromaticUtils;
 const logger = Logger('useOwneLiquidityPoolByMarket');
 export const useOwnedLiquidityPool = () => {
-  const { encodeTokenId } = ChromaticUtils;
   const { address } = useAccount();
   const marketAddress = useAppSelector((state) => state.market.selectedMarket)?.address;
   const { currentSelectedToken } = useSettlementToken();

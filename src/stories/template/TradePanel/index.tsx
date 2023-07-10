@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BigNumber, logger } from 'ethers';
+import { logger } from 'ethers';
 
 import { Tab } from '@headlessui/react';
 import '~/stories/atom/Tabs/style.css';
@@ -16,8 +16,8 @@ import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 
 export interface TradePanelProps {
   longInput?: TradeInput;
-  longTradeFee?: BigNumber;
-  longTradeFeePercent?: BigNumber;
+  longTradeFee?: bigint;
+  longTradeFeePercent?: bigint;
   onLongChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
@@ -28,8 +28,8 @@ export interface TradePanelProps {
   onLongStopLossChange?: (value: string) => unknown;
 
   shortInput?: TradeInput;
-  shortTradeFee?: BigNumber;
-  shortTradeFeePercent?: BigNumber;
+  shortTradeFee?: bigint;
+  shortTradeFeePercent?: bigint;
   onShortChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
@@ -39,15 +39,15 @@ export interface TradePanelProps {
   onShortTakeProfitChange?: (value: string) => unknown;
   onShortStopLossChange?: (value: string) => unknown;
 
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   token?: Token;
   market?: Market;
 
-  longTotalMaxLiquidity?: BigNumber;
-  longTotalUnusedLiquidity?: BigNumber;
-  shortTotalMaxLiquidity?: BigNumber;
-  shortTotalUnusedLiquidity?: BigNumber;
+  longTotalMaxLiquidity?: bigint;
+  longTotalUnusedLiquidity?: bigint;
+  shortTotalMaxLiquidity?: bigint;
+  shortTotalUnusedLiquidity?: bigint;
 
   longLiquidityData?: any[];
   shortLiquidityData?: any[];

@@ -30,7 +30,7 @@ const usePoolInput = () => {
     }
     logger.info('binFeeRates', binFeeRates);
     const totalCLBTokenValue = binFeeRates.reduce((acc, bin) => {
-      const clbTokenValue = BigNumber.from(
+      const clbTokenValue = BigInt(
         Math.floor(
           (pool.bins.find(({ baseFeeRate }) => {
             return baseFeeRate / 100 === bin;
@@ -38,10 +38,10 @@ const usePoolInput = () => {
             10 ** CLB_TOKEN_VALUE_DECIMALS
         )
       );
-      return acc.add(clbTokenValue);
-    }, BigNumber.from(0));
+      return acc + clbTokenValue;
+    }, 0n);
 
-    return binFeeRates.length ? totalCLBTokenValue.div(binFeeRates.length) : 0;
+    return binFeeRates.length ? totalCLBTokenValue / BigInt(binFeeRates.length) : 0n;
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {

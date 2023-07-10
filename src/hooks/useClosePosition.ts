@@ -8,7 +8,7 @@ import { usePosition } from './usePosition';
 
 interface Props {
   marketAddress: string;
-  positionId: BigNumber;
+  positionId: bigint;
 }
 
 function useClosePosition(props: Props) {

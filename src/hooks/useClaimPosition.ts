@@ -7,10 +7,11 @@ import { errorLog } from '~/utils/log';
 import { toast } from 'react-toastify';
 import useOracleVersion from './useOracleVersion';
 import { useUsumAccount } from './useUsumAccount';
+import { Address } from 'wagmi';
 
 interface Props {
-  marketAddress: string;
-  positionId: BigNumber;
+  marketAddress: Address;
+  positionId: bigint;
 }
 
 function useClaimPosition(props: Props) {
@@ -32,7 +33,7 @@ function useClaimPosition(props: Props) {
       toast('Positions are not selected.');
       return AppError.reject('no positions', 'onClosePosition');
     }
-    if (oracleVersions?.[marketAddress]?.version.lte(position.closeVersion)) {
+    if ((oracleVersions?.[marketAddress]?.version || 0n) <= position.closeVersion) {
       errorLog('the selected position is not closed');
       toast('This position is not closed yet.');
 
