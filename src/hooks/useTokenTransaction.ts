@@ -10,6 +10,7 @@ import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useUsumAccount } from './useUsumAccount';
 const logger = Logger('useTokenTransaction');
+
 const useTokenTransaction = () => {
   const { address: walletAddress } = useAccount();
   const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
@@ -55,6 +56,10 @@ const useTokenTransaction = () => {
       toast('Create your account.');
       return;
     }
+    if (!isValid(client)) {
+      toast('Connect your wallet first.');
+      return;
+    }
     if (!isValid(token)) {
       logger.info('token are not selected');
       toast('Settlement token are not selected.');
@@ -76,7 +81,7 @@ const useTokenTransaction = () => {
     const hash = await walletClient?.writeContract(result.request);
 
     await fetchChromaticBalances();
-  }, [chromaticAccountAddress, token, amount]);
+  }, [chromaticAccountAddress, token, amount, client]);
 
   const onAmountChange = useCallback((nextValue: string) => {
     nextValue = nextValue.replace(/,/g, '');

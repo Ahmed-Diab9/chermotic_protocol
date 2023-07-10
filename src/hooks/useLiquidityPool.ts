@@ -8,7 +8,6 @@ import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool, LiquidityPoolSummary } from '../typings/pools';
 import { Logger } from '../utils/log';
-import { bigNumberify } from '../utils/number';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
@@ -23,7 +22,6 @@ const { encodeTokenId, decodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
   const { address: walletAddress } = useAccount();
-
   const { client } = useChromaticClient();
 
   const { tokens, currentSelectedToken } = useSettlementToken();

@@ -1,11 +1,11 @@
 import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
-import { BigNumber } from 'ethers';
 import { fromPairs, isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, useContractWrite, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
+import { isValid } from '~/utils/valid';
 const logger = Logger('useBalances');
 function filterResponse<T>(response: PromiseSettledResult<T>[]) {
   return response
@@ -29,7 +29,13 @@ export const useTokenBalances = () => {
     isLoading: isTokenBalanceLoading,
   } = useSWR(
     isNotNil(walletAddress)
-      ? ['WALLET_BALANCES', walletClient, walletAddress, tokenAddresses]
+      ? [
+          'WALLET_BALANCES',
+          walletAddress,
+          tokenAddresses,
+          isValid(publicClient) && 'PUBLIC_CLiENT',
+          isValid(walletClient) && 'WALLET_CLIENT',
+        ]
       : undefined,
     async () => {
       if (isNil(walletClient) || isNil(walletAddress) || isNil(tokens)) {

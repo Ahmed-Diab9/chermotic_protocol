@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { fromPairs, isNil } from 'ramda';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -15,6 +14,7 @@ import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useSettlementToken } from './useSettlementToken';
+import { ADDRESS_ZERO } from '~/utils/address';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
@@ -43,7 +43,7 @@ export const useUsumAccount = () => {
       }
       try {
         const accountAddress = await accountApi.getAccount();
-        if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+        if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
           return;
         } else {
           return accountAddress;
@@ -65,12 +65,7 @@ export const useUsumAccount = () => {
     isLoading: isChromaticBalanceLoading,
   } = useSWR(['ChromaticAccBal', address, signerKey], async () => {
     const accountApi = client?.account();
-    if (
-      isNil(tokens) ||
-      isNil(accountApi) ||
-      isNil(address) ||
-      address === ethers.constants.AddressZero
-    ) {
+    if (isNil(tokens) || isNil(accountApi) || isNil(address) || address === ADDRESS_ZERO) {
       return {};
     }
     const result = await accountApi.balances(tokens.map((token) => token.address));
@@ -92,11 +87,11 @@ export const useUsumAccount = () => {
   }, [status]);
 
   useEffect(() => {
-    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+    if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
       setStatus(ACCOUNT_NONE);
       return;
     }
-    if (isValid(accountAddress) && accountAddress !== ethers.constants.AddressZero) {
+    if (isValid(accountAddress) && accountAddress !== ADDRESS_ZERO) {
       setStatus(ACCOUNT_COMPLETED);
       return;
     }

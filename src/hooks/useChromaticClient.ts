@@ -2,6 +2,8 @@ import { Client } from '@chromatic-protocol/sdk-viem';
 import { useEffect } from 'react';
 import { WalletClient, usePublicClient, useWalletClient } from 'wagmi';
 import { Logger } from '../utils/log';
+import { usePublicClient, useWalletClient } from 'wagmi';
+import { isValid } from '~/utils/valid';
 
 const logger = Logger('useChromaticClient');
 
