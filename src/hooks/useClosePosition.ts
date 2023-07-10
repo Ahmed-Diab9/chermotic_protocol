@@ -1,13 +1,13 @@
-import { BigNumber } from 'ethers';
 import { useChromaticClient } from './useChromaticClient';
 import { errorLog } from '~/utils/log';
 import { AppError } from '~/typings/error';
 import { isNil } from 'ramda';
 import { toast } from 'react-toastify';
 import { usePosition } from './usePosition';
+import { Address } from 'wagmi';
 
 interface Props {
-  marketAddress: string;
+  marketAddress: Address;
   positionId: bigint;
 }
 

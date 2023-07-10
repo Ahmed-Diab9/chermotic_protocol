@@ -1,18 +1,12 @@
-import { useState } from 'react';
-import { logger } from 'ethers';
-
 import { Tab } from '@headlessui/react';
-import '~/stories/atom/Tabs/style.css';
-
-import { TradeContent } from '~/stories/molecule/TradeContent';
-import { CurvedButton } from '~/stories/atom/CurvedButton';
-
-import { TradeInput } from '~/typings/trade';
-import { Market, Price, Token } from '~/typings/market';
-
-import { errorLog } from '~/utils/log';
-
+import { useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
+import { CurvedButton } from '~/stories/atom/CurvedButton';
+import '~/stories/atom/Tabs/style.css';
+import { TradeContent } from '~/stories/molecule/TradeContent';
+import { Market, Price, Token } from '~/typings/market';
+import { TradeInput } from '~/typings/trade';
+import { errorLog } from '~/utils/log';
 
 export interface TradePanelProps {
   longInput?: TradeInput;

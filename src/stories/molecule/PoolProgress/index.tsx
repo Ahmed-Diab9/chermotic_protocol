@@ -12,7 +12,6 @@ import { Guide } from '~/stories/atom/Guide';
 import { Disclosure } from '@headlessui/react';
 import '../../atom/Tabs/style.css';
 import Skeleton from 'react-loading-skeleton';
-
 // import { LPReceipt } from "~/typings/receipt";
 import { Market, Token } from '~/typings/market';
 import { isValid } from '~/utils/valid';

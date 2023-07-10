@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Logger } from '../utils/log';
-// import { useBinsBySelectedMarket } from './useLiquidityPool';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
-import { BigNumber } from 'ethers';
 import { isNil } from 'ramda';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { useLiquidityPool } from './useLiquidityPool';

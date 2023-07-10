@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PoolPanel } from '.';
-import { BigNumber } from 'ethers';
 
 import { Default as RangeChartStories } from '~/stories/atom/RangeChart/stories';
 

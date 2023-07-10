@@ -1,20 +1,10 @@
 import { ChangeEvent, useMemo, useReducer } from 'react';
-
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
-import { AppError } from '~/typings/error';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
-import { abs, bigNumberify, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
-import { isValid } from '~/utils/valid';
+import { abs, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
 import { useAppSelector } from '../store';
-import { Logger, errorLog } from '../utils/log';
-import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
-import { usePosition } from './usePosition';
-import { useUsumAccount } from './useUsumAccount';
-import { TradeEvent } from '~/typings/events';
-import { toast } from 'react-toastify';
 
-const logger = Logger('useTradeInput');
 const initialTradeInput = {
   direction: 'long',
   method: 'collateral',
@@ -219,9 +209,6 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
 
 export const useTradeInput = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
-
-  const { client } = useChromaticClient();
-
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
     pool,
@@ -232,7 +219,6 @@ export const useTradeInput = () => {
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
   const [tradeFee, feePercent] = useMemo(() => {
     let makerMargin = BigInt(Math.round(state.makerMargin)) * expandDecimals(token?.decimals);
-
     if (state.direction === 'long' && makerMargin > longTotalUnusedLiquidity) {
       return [];
     }

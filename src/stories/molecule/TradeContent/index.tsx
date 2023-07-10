@@ -1,5 +1,4 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { BigNumber, ethers } from 'ethers';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
@@ -59,8 +58,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     market,
     token,
     input,
-    totalMaxLiquidity,
-    totalUnusedLiquidity,
+    totalMaxLiquidity = BigInt(0),
+    totalUnusedLiquidity = BigInt(0),
     tradeFee,
     tradeFeePercent,
     liquidityData,
@@ -97,9 +96,49 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const formatter = Intl.NumberFormat('en', { notation: 'compact' });
     return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
+  // TODO
+  // 청산가 계산이 올바른지 점검해야 합니다.
+  const createLiquidation = useCallback(async () => {
+    if (!isValid(input) || !isValid(market) || !isValid(token)) {
+      return setPrices([undefined, undefined]);
+    }
+    const { quantity, leverage, takerMargin, makerMargin } = input;
+    const price = await market.oracleValue.price;
+    if (Number(input.collateral) === 0) {
+      return setPrices([
+        withComma(formatDecimals(price, oracleDecimals, 2)),
+        withComma(formatDecimals(price, oracleDecimals, 2)),
+      ]);
+    }
 
+    /**
+     * TODO
+     * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
+     */
+    const qty =
+      (BigInt(Math.round(Number(quantity) * numberBuffer())) *
+        BigInt(Math.round(Number(leverage) * numberBuffer()))) /
+      BigInt(numberBuffer()) /
+      BigInt(numberBuffer());
+    const profitDelta =
+      (price * BigInt(Math.round(makerMargin * numberBuffer()))) /
+      (qty === BigInt(0) ? BigInt(1) : qty) /
+      BigInt(numberBuffer());
+    const lossDelta =
+      (price * BigInt(Math.round(takerMargin * numberBuffer()))) /
+      (qty === BigInt(0) ? BigInt(1) : qty) /
+      BigInt(numberBuffer());
+
+    setPrices([
+      withComma(formatDecimals(price + profitDelta, oracleDecimals, 2)),
+      withComma(formatDecimals(price - lossDelta, oracleDecimals, 2)),
+    ]);
+  }, [input, token]);
+
+  useEffect(() => {
+    createLiquidation();
+  }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
-
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
@@ -279,7 +318,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume} M</p> : <p></p>}
+            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume} M</p> : null}
           </div>
         </div>
         <article className="mt-5">

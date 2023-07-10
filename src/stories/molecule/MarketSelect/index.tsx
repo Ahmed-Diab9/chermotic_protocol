@@ -28,7 +28,7 @@ interface MarketSelectProps {
  * should remove the component `Legacy`.
  */
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
-  const { isGroupLegacy, selectedMarket, feeRate, selectedToken, isLoading } = props;
+  const { isGroupLegacy, selectedMarket, feeRate = BigInt(0), selectedToken, isLoading } = props;
   const oracleDecimals = 18;
 
   const marketPrice = useMemo(
@@ -51,7 +51,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
                 <Skeleton width={80} />
               ) : (
                 <>
-                  {formatDecimals((((feeRate ?? 0n) * expandDecimals(2)) / 365n) * 24n ?? 0, 4, 4)}
+                  {formatDecimals(((feeRate ?? 0n) * expandDecimals(2)) / (365n * 24n) ?? 0, 4, 4)}
                   %/h
                 </>
               )}

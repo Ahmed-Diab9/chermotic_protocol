@@ -1,24 +1,24 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
+import { isNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool, LiquidityPoolSummary } from '../typings/pools';
 import { Logger } from '../utils/log';
+import { PromiseOnlySuccess } from '../utils/promise';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
-import { PromiseOnlySuccess } from '../utils/promise';
-import { isNil } from 'ramda';
 
 const logger = Logger('useLiquidityPool.ts');
-const { encodeTokenId, decodeTokenId } = ChromaticUtils;
+const { encodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
   const { address: walletAddress } = useAccount();

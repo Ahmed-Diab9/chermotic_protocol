@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PoolProgress } from '.';
-import { BigNumber } from 'ethers';
 import { Market } from '~/typings/market';
 
 const meta = {

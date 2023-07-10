@@ -3,7 +3,7 @@ import { isNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
-import { useAccount, useSigner, useWalletClient } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
@@ -50,7 +50,7 @@ export const useOwnedLiquidityPools = () => {
         const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
         logger.info('sdk response bins', bins);
         const binsResponse = bins.map(async (bin) => {
-          const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
+          const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
           logger.info('token id ', tokenId);
           const { name, decimals, description, image } = await client
             .market()

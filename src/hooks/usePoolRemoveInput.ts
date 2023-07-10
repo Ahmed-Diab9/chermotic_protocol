@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
@@ -14,7 +13,7 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return record + bin.clbTokenBalance.div(expandDecimals(bin.clbTokenDecimals)).toNumber();
+      return record + Number(bin.clbTokenBalance / expandDecimals(bin.clbTokenDecimals));
     }, 0);
   }, [bins]);
 

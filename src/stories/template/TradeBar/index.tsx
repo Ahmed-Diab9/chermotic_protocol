@@ -250,7 +250,7 @@ const PositionItem = function (props: Props) {
    * Oracle Decimals을 확인해야 함
    */
   const oracleDecimals = 18;
-  const printNumber = useCallback((number: BigNumberish | null, decimals: number = 18) => {
+  const printNumber = useCallback((number: bigint | null, decimals: number = 18) => {
     if (isNil(number)) return '-';
     return withComma(formatDecimals(number, decimals, 2));
   }, []);
@@ -259,7 +259,7 @@ const PositionItem = function (props: Props) {
       function priceTo(type: 'profit' | 'loss') {
         const propName = type === 'profit' ? 'toProfit' : 'toLoss';
         const value = printNumber(position[propName], oracleDecimals);
-        const higherCondition = type === 'profit' ? position.qty > 0 : position.qty < 0;
+        const higherCondition = type === 'profit' ? position.qty > 0n : position.qty < 0n;
         if (higherCondition) {
           return '+' + value + '%';
         } else {
@@ -267,9 +267,8 @@ const PositionItem = function (props: Props) {
         }
       }
       const { takerMargin, qty, leverage, makerMargin } = position;
-      const pnlPercentage = BigNumber.from(position.pnl)
-        .mul(10 ** PNL_RATE_DECIMALS)
-        .div(BigNumber.from(position.takerMargin));
+      const pnlPercentage =
+        (BigInt(position.pnl) * BigInt(10 ** PNL_RATE_DECIMALS)) / BigInt(position.takerMargin);
       const currentOracleVersion = oracleVersions?.[position.marketAddress];
       const absQty = abs(qty);
       if (
@@ -300,9 +299,9 @@ const PositionItem = function (props: Props) {
         profitPriceTo: `${priceTo('profit')}%`,
         lossPriceTo: `${priceTo('loss')}%`,
         pnl: `${printNumber(pnlPercentage, 2)}%`,
-        lossPrice: printNumber(BigNumber.from(position.lossPrice || 0).abs(), oracleDecimals),
-        profitPrice: printNumber(BigNumber.from(position.profitPrice || 0).abs(), oracleDecimals),
-        entryPrice: printNumber(position.openPrice || 0, oracleDecimals),
+        lossPrice: printNumber(abs(BigInt(position.lossPrice || 0)), oracleDecimals),
+        profitPrice: printNumber(abs(BigInt(position.profitPrice || 0)), oracleDecimals),
+        entryPrice: printNumber(position.openPrice || BigInt(0), oracleDecimals),
         entryTime: new Intl.DateTimeFormat('en-US', {
           month: 'long',
           day: 'numeric',
@@ -315,7 +314,7 @@ const PositionItem = function (props: Props) {
   }, [token, oracleVersions]);
 
   const direction = useCallback((position: Position) => {
-    return position.qty > 0 ? 'Long' : 'Short';
+    return position.qty > 0n ? 'Long' : 'Short';
   }, []);
 
   const { onClosePosition } = useClosePosition({

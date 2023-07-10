@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { WalletPopover } from '.';
-import { BigNumber } from 'ethers';
 import { Market } from '~/typings/market';
 
 const meta = {

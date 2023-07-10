@@ -7,13 +7,6 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 const logger = Logger('useBalances');
-function filterResponse<T>(response: PromiseSettledResult<T>[]) {
-  return response
-    .filter((result): result is PromiseFulfilledResult<T> => {
-      return result.status === 'fulfilled';
-    })
-    .map((r) => r.value);
-}
 
 export const useTokenBalances = () => {
   const { tokens } = useSettlementToken();

@@ -1,4 +1,3 @@
-import { BigNumberish } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -55,10 +54,10 @@ const receiptDetail = (
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
-  const lensApi = useMemo(() => client?.lens(), [client]);
   const router = useMemo(() => client?.router(), [client]);
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
+  const lensApi = useMemo(()=>client?.lens(), [client]);
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
   const marketAddress = market?.address;
 
@@ -75,15 +74,23 @@ const usePoolReceipt = () => {
     error,
     mutate: fetchReceipts,
     isLoading: isReceiptsLoading,
-  } = useSWR(['RECEIPT', address, marketAddress, currentOracleVersion], async () => {
-    if (
-      address === undefined ||
-      marketAddress === undefined ||
-      currentOracleVersion === undefined ||
-      lensApi === undefined
-    ) {
-      return [];
-    }
+  } = useSWR(
+    [
+      'RECEIPT',
+      address,
+      marketAddress,
+      currentOracleVersion,
+      isValid(client) ? 'CLIENT' : undefined,
+    ],
+    async () => {
+      if (
+        address === undefined ||
+        marketAddress === undefined ||
+        currentOracleVersion === undefined ||
+        client === undefined || lensApi === undefined
+      ) {
+        return [];
+      }
 
     const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
     if (!receipts) {
@@ -95,34 +102,35 @@ const usePoolReceipt = () => {
     }));
     const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
 
-    return ownedBins
-      .map((bin) => {
-        const receipt = receipts.find((receipt) => bin.tradingFeeRate === receipt.tradingFeeRate);
-        if (!receipt) return null;
+      return ownedBins
+        .map((bin) => {
+          const receipt = receipts.find((receipt) => bin.tradingFeeRate === receipt.tradingFeeRate);
+          if (!receipt) return null;
 
-        const {
-          id,
-          oracleVersion: receiptOracleVersion,
-          action,
-          amount,
-          recipient,
-          tradingFeeRate,
-        } = receipt;
-        let status: LpReceipt['status'] = 'standby';
-        status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, bin);
-        return {
-          id,
-          action: action === 0 ? 'add' : 'remove',
-          amount,
-          feeRate: tradingFeeRate,
-          status,
-          version: receiptOracleVersion,
-          recipient,
-          name: binName(tradingFeeRate, market?.description),
-        } satisfies LpReceipt;
-      })
-      .filter((bin): bin is NonNullable<typeof bin> => !!bin);
-  });
+          const {
+            id,
+            oracleVersion: receiptOracleVersion,
+            action,
+            amount,
+            recipient,
+            tradingFeeRate,
+          } = receipt;
+          let status: LpReceipt['status'] = 'standby';
+          status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, bin);
+          return {
+            id,
+            action: action === 0 ? 'add' : 'remove',
+            amount,
+            feeRate: tradingFeeRate,
+            status,
+            version: receiptOracleVersion,
+            recipient,
+            name: binName(tradingFeeRate, market?.description),
+          } satisfies LpReceipt;
+        })
+        .filter((bin): bin is NonNullable<typeof bin> => !!bin);
+    }
+  );
 
   const onClaimCLBTokens = useCallback(
     async (receiptId: bigint, action?: LpReceipt['action']) => {

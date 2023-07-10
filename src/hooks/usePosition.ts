@@ -78,12 +78,13 @@ export const usePosition = () => {
       logger.log('POSITIONS', positions);
       return await PromiseOnlySuccess(
         positions?.map(async (position) => {
-          const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
-            market.address,
-            position.openPrice,
-            position,
-            currentSelectedToken.decimals
-          );
+          const { profitStopPrice = BigInt(0), lossCutPrice = BigInt(0) } =
+            await positionApi?.getLiquidationPrice(
+              market.address,
+              position.openPrice,
+              position,
+              currentSelectedToken.decimals
+            );
           const currentPrice = oracleVersions[market.address].price;
           const currentVersion = oracleVersions[market.address].version;
           const targetPrice =

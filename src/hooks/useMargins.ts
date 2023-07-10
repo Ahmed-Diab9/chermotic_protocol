@@ -2,7 +2,6 @@ import { useAppSelector } from '~/store';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 import { isNil } from 'ramda';
-import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { expandDecimals } from '~/utils/number';
 import { PERCENT_DECIMALS } from '~/configs/decimals';

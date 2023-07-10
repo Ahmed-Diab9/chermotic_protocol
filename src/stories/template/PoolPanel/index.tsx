@@ -252,9 +252,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           )}
                           M
                         </p>
-                      ) : (
-                        <p></p>
-                      )}
+                      ) : null}
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-black/30">Long LP</p>
@@ -277,9 +275,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           )}
                           M
                         </p>
-                      ) : (
-                        <p></p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </article>

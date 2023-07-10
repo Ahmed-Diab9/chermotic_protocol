@@ -9,7 +9,7 @@ const meta = {
 
 const tokens: Token[] = [
   {
-    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892',
+    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892' as `0x${string}`,
     name: 'USDC',
     decimals: 6,
   },

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { RemoveLiquidityModal } from '.';
-import { BigNumber } from 'ethers';
 
 const meta = {
   title: 'Template/Modal/RemoveLiquidityModal',

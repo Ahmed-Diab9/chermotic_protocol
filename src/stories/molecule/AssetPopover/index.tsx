@@ -17,7 +17,7 @@ import {
   Account,
 } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { bigNumberify, formatDecimals, withComma } from '../../../utils/number';
+import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
@@ -157,8 +157,8 @@ const AssetPanel = (props: AssetPanelProps) => {
     walletBalances,
     usumBalances,
     amount,
-    availableMargin = bigNumberify(0),
-    assetValue = bigNumberify(0),
+    availableMargin = BigInt(0),
+    assetValue = BigInt(0),
     isLoading,
     onAmountChange,
     onDeposit,

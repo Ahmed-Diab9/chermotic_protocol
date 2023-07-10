@@ -55,9 +55,7 @@ function useOpenPosition(props: Props) {
     const quantity =
       (BigInt(Math.floor(Number(state.quantity) * numberBuffer())) * expandDecimals(4)) / // 10000
       BigInt(numberBuffer());
-    const leverage =
-      (BigInt(Math.floor(Number(state.leverage) * numberBuffer())) * expandDecimals(2)) / // 100
-      BigInt(numberBuffer());
+    const leverage = Math.floor(Number(state.leverage)) * 100; // 100
     const takerMargin =
       (BigInt(Math.floor(state.takerMargin * numberBuffer())) * expandDecimals(token?.decimals)) / // 10 ** 6
       BigInt(numberBuffer());
@@ -82,7 +80,7 @@ function useOpenPosition(props: Props) {
 
       await routerApi.openPosition(market.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        leverage: Number(leverage),
+        leverage,
         takerMargin,
         makerMargin,
         maxAllowableTradingFee,

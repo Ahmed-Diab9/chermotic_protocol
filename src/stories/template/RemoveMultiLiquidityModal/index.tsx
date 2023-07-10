@@ -11,14 +11,8 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { Logger } from '~/utils/log';
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  numberBuffer,
-  percentage,
-} from '~/utils/number';
+import { expandDecimals, formatDecimals, numberBuffer, percentage } from '~/utils/number';
+import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
 

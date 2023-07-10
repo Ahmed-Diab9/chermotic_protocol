@@ -1,10 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { RemoveMultiLiquidityModal } from ".";
-import { BigNumber } from "ethers";
+import { RemoveMultiLiquidityModal } from '.';
 
 const meta = {
-  title: "Template/Modal/RemoveMultiLiquidityModal",
+  title: 'Template/Modal/RemoveMultiLiquidityModal',
   component: RemoveMultiLiquidityModal,
   // argTypes: {
   // },

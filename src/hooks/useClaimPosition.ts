@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useChromaticClient } from './useChromaticClient';
 import { AppError } from '~/typings/error';
 import { isNil } from 'ramda';
@@ -36,11 +35,7 @@ function useClaimPosition(props: Props) {
     if ((oracleVersions?.[marketAddress]?.version || 0n) <= position.closeVersion) {
       errorLog('the selected position is not closed');
       toast('This position is not closed yet.');
-
       return AppError.reject('the selected position is not closed', 'onClaimPosition');
-    }
-    await routerApi.claimPosition(marketAddress, positionId);
-
     await fetchPositions();
     await fetchBalances();
   };

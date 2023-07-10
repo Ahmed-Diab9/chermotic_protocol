@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
 import { useAppSelector } from '../store';
 import { errorLog } from '~/utils/log';
-import { BigNumber } from 'ethers';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
