@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../atom/Button';
+import { PopoverButton } from '~/stories/atom/PopoverButton';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { Loading } from '~/stories/atom/Loading';
 import { Guide } from '~/stories/atom/Guide';
-import { CheckIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import CheckIcon from '~/assets/icons/CheckIcon';
+import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { Popover, Transition } from '@headlessui/react';
 import { Tab } from '@headlessui/react';
 import { Listbox } from '@headlessui/react';
@@ -111,8 +113,11 @@ export const TradeBar = ({
               {/* backdrop */}
               <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
               <div className="relative popover-panel">
-                <Popover.Button className="absolute right-10 top-[-20px]">
-                  <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" />
+                <Popover.Button className="absolute right-10 top-[-16px]">
+                  {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
+                  <div className="absolute right-0 top-[-16px]">
+                    <PopoverButton direction="bottom" position="top" />
+                  </div>
                 </Popover.Button>
                 <Popover.Panel>
                   <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
@@ -139,8 +144,8 @@ export const TradeBar = ({
                           </div>
                         </div>
                       </div>
-                      <Tab.Panels className="pb-20 overflow-auto mt-7 max-h-[50vh]">
-                        <Tab.Panel>
+                      <Tab.Panels className="pb-16 overflow-auto mx-[-20px] mt-7 max-h-[50vh]">
+                        <Tab.Panel className="px-5">
                           <article>
                             {/* guide next round */}
                             <div className="mb-3">
@@ -215,10 +220,13 @@ export const TradeBar = ({
                 ref={openButtonRef}
               >
                 <h4 className="min-w-[140px] text-black/30">Position</h4>
-                <Button
+                {/* <Button
                   iconOnly={<ChevronDoubleUpIcon />}
-                  className="absolute right-10 top-[-20px]"
-                />
+                  className="absolute right-10 top-[-16px]"
+                /> */}
+                <div className="absolute right-10 top-[-32px]">
+                  <PopoverButton direction="top" position="top" />
+                </div>
               </Popover.Button>
             </>
           )}
@@ -328,7 +336,7 @@ const PositionItem = function (props: Props) {
             position.status === OPENING ? 'opacity-30' : ''
           }`}
         >
-          <div className="flex grow items-center gap-6 w-[20%] max-w-[280px]">
+          <div className="flex items-center gap-6">
             {isLoading ? (
               <div className="flex items-center gap-1">
                 <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
@@ -379,7 +387,7 @@ const PositionItem = function (props: Props) {
           {/* 상태에 따라 내용 변동 */}
           {position.status === OPENING && (
             <>
-              <Loading size="xs" />
+              <Loading size="sm" />
               <p className="flex text-black/30">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
@@ -398,7 +406,7 @@ const PositionItem = function (props: Props) {
           )}
           {position.status === CLOSING && (
             <>
-              <Loading size="xs" />
+              <Loading size="sm" />
               <p className="flex text-black/30">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
