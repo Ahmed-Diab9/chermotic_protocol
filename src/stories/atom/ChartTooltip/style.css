@@ -5,6 +5,9 @@
   .tooltip-base {
     @apply max-w-[420px];
   }
+  .react-tooltip {
+    @apply opacity-100;
+  }
   .react-tooltip-arrow {
     @apply border-b border-r border-black mb-[-.5px];
   }
