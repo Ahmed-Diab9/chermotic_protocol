@@ -209,7 +209,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
-                  <h4>Account Balance</h4>
+                  <h4>Wallet Balance</h4>
                   <p className="text-black/30">
                     {isLoading ? (
                       <Skeleton width={40} />

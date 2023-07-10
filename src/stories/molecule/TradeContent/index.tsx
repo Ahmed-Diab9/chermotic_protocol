@@ -141,10 +141,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 
   return (
     <div className="px-10 w-full max-w-[680px]">
-      {/* Account Balance */}
+      {/* Available Account Balance */}
       <article className="pb-5 border-grayL">
         <div className="flex items-center gap-2">
-          <h4>Account Balance</h4>
+          <h4>Available Balance</h4>
           <p className="text-black/30">
             {isLoading ? (
               <Skeleton width={40} />
