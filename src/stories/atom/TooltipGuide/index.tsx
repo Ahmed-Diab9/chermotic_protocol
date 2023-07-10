@@ -36,7 +36,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     <div className="flex items-center self-center tooltip">
       {tipOnly || (
         <span className={`mx-1 tooltip-${label} tooltip-icon ${className}`}>
-          <InformationCircleIcon className="w-4" />
+          <InformationCircleIcon className="w-4 text-black/30" />
         </span>
       )}
       {iconOnly || (
