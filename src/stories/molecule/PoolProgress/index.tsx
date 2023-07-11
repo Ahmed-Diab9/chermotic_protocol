@@ -351,21 +351,22 @@ const ProgressItem = (props: ProgressItemProps) => {
       )}
       <div className="flex items-end gap-3 mt-1">
         <div
-          className={`flex items-end gap-3 ${
-            ((action === 'add' && status === 'standby') ||
-              (action === 'remove' && status === 'completed')) &&
-            'opacity-30'
+          className={`flex items-center gap-3 ${
+            (action === 'add' && status === 'standby') ||
+            (action === 'remove' && status === 'completed')
+              ? 'opacity-30'
+              : ''
           }`}
         >
           {isLoading ? (
-            <Skeleton width={40} containerClassName="text-[40px]" />
+            <Skeleton width={40} containerClassName="text-[40px] leading-none" />
           ) : (
             <Thumbnail className="rounded" src={image} />
           )}
           <div>
             {isLoading ? (
               <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
                 <Skeleton width={40} />
               </div>
             ) : (
