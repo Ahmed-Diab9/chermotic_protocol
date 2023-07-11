@@ -55,7 +55,7 @@ export const formatDecimals = (
   const [numeric, decimals] = formatted.split('.');
   const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';
   if (!isValid(decimals)) {
-    return numeric;
+    return numeric + '.00';
   }
   if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
     return numeric + point + decimals.slice(0, decimalLimit);
