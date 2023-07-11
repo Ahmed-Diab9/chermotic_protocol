@@ -30,7 +30,14 @@ const CHAINS_WAGMI = {
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [CHAINS_WAGMI[CHAIN]],
-  [publicProvider()]
+  [publicProvider()],
+  {
+    batch: {
+      multicall: {
+        wait: 100,
+      },
+    },
+  }
 );
 
 const config = createConfig({
