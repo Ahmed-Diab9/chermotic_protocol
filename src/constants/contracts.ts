@@ -1,7 +1,7 @@
-import {
-  deployedAddress,
-  getAllDeployedContracts,
-} from '@chromatic-protocol/sdk-viem/contracts';
+// import {
+//   deployedAddress,
+//   getAllDeployedContracts,
+// } from '@chromatic-protocol/sdk-viem/contracts';
 
 export const CHAIN = import.meta.env.VITE_TARGET_CHAIN ?? 'anvil';
 const CHAIN_IDS = {
@@ -10,6 +10,6 @@ const CHAIN_IDS = {
   arbitrum_one: 42161,
 };
 export const CHAIN_ID: number = CHAIN_IDS[CHAIN] ?? CHAIN_IDS['anvil'];
-export const DEPLOYED_CONTRACTS = getAllDeployedContracts(CHAIN);
+// export const DEPLOYED_CONTRACTS = getAllDeployedContracts(CHAIN);
 
-export const DEPLOYED_ADDRESSES = deployedAddress[CHAIN];
+// export const DEPLOYED_ADDRESSES = deployedAddress[CHAIN];

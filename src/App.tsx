@@ -7,7 +7,7 @@ import { SWRConfig } from 'swr';
 import { router } from '~/routes';
 import { store } from '~/store/index';
 
-import { WagmiConfig, configureChains, createClient } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
@@ -20,12 +20,12 @@ const CHAINS_WAGMI = {
   arbitrum_one: arbitrum,
 };
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [CHAINS_WAGMI[CHAIN]],
   [publicProvider()]
 );
 
-const client = createClient({
+const client = createConfig({
   autoConnect: false,
   connectors: [
     new MetaMaskConnector({ chains }),
@@ -37,8 +37,8 @@ const client = createClient({
     MetaMaskConnector
     // CoinbaseWalletConnector
   ],
-  provider: provider,
-  webSocketProvider: webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 function App() {
@@ -49,7 +49,7 @@ function App() {
       }}
     >
       <Provider store={store}>
-        <WagmiConfig client={client}>
+        <WagmiConfig config={client}>
           <div className="App">
             <RouterProvider router={router} />
           </div>

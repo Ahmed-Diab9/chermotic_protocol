@@ -13,7 +13,7 @@ interface Props {
   positionId: bigint;
 }
 
-function useClaimPosition(props: Props) {
+export function useClaimPosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
   const { fetchBalances } = useUsumAccount();
@@ -36,6 +36,7 @@ function useClaimPosition(props: Props) {
       errorLog('the selected position is not closed');
       toast('This position is not closed yet.');
       return AppError.reject('the selected position is not closed', 'onClaimPosition');
+    }
     await fetchPositions();
     await fetchBalances();
   };
@@ -44,5 +45,3 @@ function useClaimPosition(props: Props) {
     onClaimPosition,
   };
 }
-
-export { useClaimPosition };

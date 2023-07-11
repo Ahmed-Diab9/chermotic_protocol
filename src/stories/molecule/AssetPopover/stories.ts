@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AssetPopover } from '.';
+import { Token } from '../../../typings/market';
 
 const meta = {
   title: 'Molecule/AssetPopover',

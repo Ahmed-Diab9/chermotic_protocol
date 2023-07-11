@@ -1,14 +1,14 @@
+import { isNil } from 'ramda';
 import { formatUnits } from 'viem';
-import { isValid } from './valid';
-import { Price, Token } from '../typings/market';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
-import { dec, isNil } from 'ramda';
+import { Price, Token } from '../typings/market';
+import { isValid } from './valid';
 
 export const abs = (value: bigint | number): bigint => {
   if (typeof value === 'number') value = BigInt(value);
   return value < 0 ? value * -1n : value;
 };
-export const withComma = (value?: bigint | number | string | BigNumber, replace?: string) => {
+export const withComma = (value?: bigint | number | string , replace?: string) => {
   const seperator = /\B(?=(\d{3})+(?!\d))/g;
   if (typeof value === 'bigint') value = value.toString();
   if (value === undefined) {
