@@ -1,10 +1,6 @@
 import './style.css';
 import { Popover } from '@headlessui/react';
-import {
-  ArrowTopRightOnSquareIcon,
-  CheckIcon,
-  ChevronDoubleUpIcon,
-} from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { BigNumber } from 'ethers';
 import { isNotNil } from 'ramda';
 import { Loading } from '~/stories/atom/Loading';

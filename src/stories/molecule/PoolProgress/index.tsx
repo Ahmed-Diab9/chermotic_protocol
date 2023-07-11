@@ -6,7 +6,7 @@ import { Button } from '~/stories/atom/Button';
 import { Progress } from '~/stories/atom/Progress';
 import { Loading } from '~/stories/atom/Loading';
 import { Tab } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/24/outline';
+import CheckIcon from '~/assets/icons/CheckIcon';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Guide } from '~/stories/atom/Guide';
 import { Disclosure } from '@headlessui/react';
@@ -337,7 +337,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </h4>
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
           <span className="">
-            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="xs" />}
+            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
           <p className="">
             {detail} {token}
@@ -370,7 +370,7 @@ const ProgressItem = (props: ProgressItemProps) => {
                 <Skeleton width={40} />
               </div>
             ) : (
-              <Avatar label={token} size="xs" gap="1" />
+              <Avatar label={token} size="sm" gap="1" />
             )}
             <p className="mt-1 text-left text-black/30">
               {isLoading ? <Skeleton width={60} /> : <>{name}</>}
