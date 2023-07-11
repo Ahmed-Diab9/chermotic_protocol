@@ -156,11 +156,11 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               $
-                                              {isValid(balances[token.name]) &&
-                                                isValid(priceFeed[token.name]) &&
+                                              {isValid(balances[token.address]) &&
+                                                isValid(priceFeed[token.address]) &&
                                                 `$${withComma(
                                                   formatBalance(
-                                                    balances[token.name],
+                                                    balances[token.address],
                                                     token,
                                                     priceFeed[token.address]
                                                   )
@@ -174,7 +174,7 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               {withComma(
-                                                balances[token.name] /
+                                                balances[token.address] /
                                                   expandDecimals(token.decimals)
                                               )}{' '}
                                               {token.name}

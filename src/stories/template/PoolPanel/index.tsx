@@ -185,10 +185,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
 
   const settlementTokenBalance = useMemo(() => {
-    if (balances && token && balances[token.name])
-      return formatDecimals(balances[token.name], token.decimals, 0);
+    if (balances && token && balances[token.address])
+      return formatDecimals(balances[token.address], token.decimals, 0);
     return '-';
-  }, [balances, token, balances?.[token?.name || 'default']]);
+  }, [balances, token, balances?.[token?.address || 'default']]);
 
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">

@@ -31,7 +31,7 @@ export interface CLBTokenMetadata {
 }
 
 export interface LiquidityPoolSummary {
-  token: { name: string; decimals: number };
+  token: { address?: string; name: string; decimals: number };
   market: string;
   liquidity: bigint;
   bins: number;
