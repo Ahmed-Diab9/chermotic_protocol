@@ -20,6 +20,7 @@ interface MainBarProps {
   assetValue?: BigNumber;
   isMarketLoading?: boolean;
   isAssetLoading?: boolean;
+  showAssetPopover?: boolean;
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -45,6 +46,7 @@ export const MainBar = ({
   assetValue,
   isMarketLoading,
   isAssetLoading,
+  showAssetPopover,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -67,25 +69,27 @@ export const MainBar = ({
           onMarketClick={onMarketSelect}
         />
       </div>
-      <div className="w-2/5 max-w-[500px] min-w-[480px]">
-        <AssetPopover
-          account={account}
-          status={status}
-          selectedToken={selectedToken}
-          walletBalances={walletBalances}
-          usumBalances={usumBalances}
-          amount={amount}
-          totalBalance={totalBalance}
-          availableMargin={availableMargin}
-          assetValue={assetValue}
-          isLoading={isAssetLoading}
-          onAmountChange={onAmountChange}
-          onDeposit={onDeposit}
-          onWithdraw={onWithdraw}
-          onConnect={onConnect}
-          onStatusUpdate={onStatusUpdate}
-        />
-      </div>
+      {showAssetPopover && (
+        <div className="w-2/5 max-w-[500px] min-w-[480px]">
+          <AssetPopover
+            account={account}
+            status={status}
+            selectedToken={selectedToken}
+            walletBalances={walletBalances}
+            usumBalances={usumBalances}
+            amount={amount}
+            totalBalance={totalBalance}
+            availableMargin={availableMargin}
+            assetValue={assetValue}
+            isLoading={isAssetLoading}
+            onAmountChange={onAmountChange}
+            onDeposit={onDeposit}
+            onWithdraw={onWithdraw}
+            onConnect={onConnect}
+            onStatusUpdate={onStatusUpdate}
+          />
+        </div>
+      )}
     </div>
   </div>
 );
