@@ -1,16 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { Market, Token } from '~/typings/market';
 import { MarketSelect } from '.';
-import { BigNumber } from 'ethers';
-import { Market } from '~/typings/market';
 
 const meta = {
   title: 'Molecule/MarketSelect',
   component: MarketSelect,
 } satisfies Meta<typeof MarketSelect>;
 
-const tokens = [
+const tokens: Token[] = [
   {
-    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892',
+    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892' as `0x${string}`,
     name: 'USDC',
     decimals: 6,
   },
@@ -20,27 +19,27 @@ const markets = [
     address: '0x0000000000000000000',
     description: 'ETH/USD',
     oracleValue: {
-      price: BigNumber.from(1500),
-      version: BigNumber.from(10),
-      timestamp: BigNumber.from(100000),
+      price: 1500n,
+      version: 10n,
+      timestamp: 100000n,
     },
   },
   {
     address: '0x4445556667778889999',
     description: 'AAVE/USD',
     oracleValue: {
-      price: BigNumber.from(1500),
-      version: BigNumber.from(10),
-      timestamp: BigNumber.from(100000),
+      price: 1500n,
+      version: 10n,
+      timestamp: 100000n,
     },
   },
   {
     address: '0x1111111111111111111',
     description: 'GALA/USD',
     oracleValue: {
-      price: BigNumber.from(1500),
-      version: BigNumber.from(10),
-      timestamp: BigNumber.from(100000),
+      price: 1500n,
+      version: 10n,
+      timestamp: 100000n,
     },
   },
 ];

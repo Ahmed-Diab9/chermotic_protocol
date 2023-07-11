@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PoolProgress } from '.';
-import { BigNumber } from 'ethers';
 import { Market } from '~/typings/market';
 
 const meta = {
@@ -23,16 +22,16 @@ export const Default: Story = {
       address: '0x8888888888888888888888888888888888888888',
       description: 'ETH/USD',
       oracleValue: {
-        price: BigNumber.from(10000),
-        timestamp: BigNumber.from(1000000),
-        version: BigNumber.from(10),
+        price: 10000n,
+        timestamp: 1000000n,
+        version: 10n,
       },
     } as Market,
     receipts: [
       {
-        id: BigNumber.from(10000),
-        version: BigNumber.from(10000),
-        amount: BigNumber.from(10000),
+        id: 10000n,
+        version: 10000n,
+        amount: 10000n,
         recipient: '',
         feeRate: 5,
         status: 'standby',
@@ -40,9 +39,9 @@ export const Default: Story = {
         action: 'add',
       },
       {
-        id: BigNumber.from(10000),
-        version: BigNumber.from(10000),
-        amount: BigNumber.from(10000),
+        id: 10000n,
+        version: 10000n,
+        amount: 10000n,
         recipient: '',
         feeRate: 5,
         status: 'completed',
@@ -50,9 +49,9 @@ export const Default: Story = {
         action: 'add',
       },
       {
-        id: BigNumber.from(10000),
-        version: BigNumber.from(10000),
-        amount: BigNumber.from(10000),
+        id: 10000n,
+        version: 10000n,
+        amount: 10000n,
         recipient: '',
         feeRate: 5,
         status: 'standby',
@@ -60,9 +59,9 @@ export const Default: Story = {
         action: 'remove',
       },
       {
-        id: BigNumber.from(10000),
-        version: BigNumber.from(10000),
-        amount: BigNumber.from(10000),
+        id: 10000n,
+        version: 10000n,
+        amount: 10000n,
         recipient: '',
         feeRate: 5,
         status: 'in progress',
@@ -70,9 +69,9 @@ export const Default: Story = {
         action: 'remove',
       },
       {
-        id: BigNumber.from(10000),
-        version: BigNumber.from(10000),
-        amount: BigNumber.from(10000),
+        id: 10000n,
+        version: 10000n,
+        amount: 10000n,
         recipient: '',
         feeRate: 5,
         status: 'completed',

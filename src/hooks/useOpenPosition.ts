@@ -1,17 +1,17 @@
+import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useAppSelector } from '~/store';
-import { Logger, errorLog } from '~/utils/log';
-import { isValid } from '~/utils/valid';
-import { usePosition } from './usePosition';
-import { useSigner } from 'wagmi';
-import { useUsumAccount } from './useUsumAccount';
-import { useChromaticClient } from './useChromaticClient';
-import { useMemo } from 'react';
-import { useLiquidityPool } from './useLiquidityPool';
-import { bigNumberify, expandDecimals, numberBuffer } from '~/utils/number';
-import { TradeInput } from '~/typings/trade';
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
+import { TradeInput } from '~/typings/trade';
+import { Logger, errorLog } from '~/utils/log';
+import { expandDecimals, numberBuffer } from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { useChromaticClient } from './useChromaticClient';
+import { useLiquidityPool } from './useLiquidityPool';
+import { usePosition } from './usePosition';
+import { useUsumAccount } from './useUsumAccount';
+import { useWalletClient } from 'wagmi';
 
 interface Props {
   state?: TradeInput;
@@ -23,7 +23,7 @@ function useOpenPosition(props: Props) {
   const token = useAppSelector((state) => state.token.selectedToken);
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { fetchBalances } = useUsumAccount();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
@@ -41,7 +41,7 @@ function useOpenPosition(props: Props) {
       toast('No markets selected.');
       return;
     }
-    if (!isValid(signer)) {
+    if (!isValid(walletClient)) {
       errorLog('no signers');
       toast('No signers. Create your account.');
       return;
@@ -52,24 +52,22 @@ function useOpenPosition(props: Props) {
       return;
     }
 
-    const quantity = bigNumberify(Math.floor(Number(state.quantity) * numberBuffer()))
-      .mul(expandDecimals(4)) // 10000
-      .div(numberBuffer());
-    const leverage = bigNumberify(Math.floor(Number(state.leverage) * numberBuffer()))
-      .mul(expandDecimals(2)) // 100
-      .div(numberBuffer());
-    const takerMargin = bigNumberify(Math.floor(state.takerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals)) // 10 ** 6
-      .div(numberBuffer());
-    const makerMargin = bigNumberify(Math.floor(state.makerMargin * numberBuffer()))
-      .mul(expandDecimals(token?.decimals)) // 10 ** 6
-      .div(numberBuffer());
+    const quantity =
+      (BigInt(Math.floor(Number(state.quantity) * numberBuffer())) * expandDecimals(4)) / // 10000
+      BigInt(numberBuffer());
+    const leverage = Math.floor(Number(state.leverage)) * 100; // 100
+    const takerMargin =
+      (BigInt(Math.floor(state.takerMargin * numberBuffer())) * expandDecimals(token?.decimals)) / // 10 ** 6
+      BigInt(numberBuffer());
+    const makerMargin =
+      (BigInt(Math.floor(state.makerMargin * numberBuffer())) * expandDecimals(token?.decimals)) / // 10 ** 6
+      BigInt(numberBuffer());
 
-    if (state.direction === 'long' && longTotalUnusedLiquidity.lte(makerMargin)) {
+    if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
       errorLog('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
-    if (state.direction === 'short' && shortTotalUnusedLiquidity.lte(makerMargin)) {
+    if (state.direction === 'short' && shortTotalUnusedLiquidity <= makerMargin) {
       logger.error('the short liquidity is too low');
       logger.error(shortTotalUnusedLiquidity);
       return AppError.reject('the short liquidity is too low', 'onOpenPosition');
@@ -78,10 +76,10 @@ function useOpenPosition(props: Props) {
     // FIXME
     // Trading Fee
     try {
-      const maxAllowableTradingFee = makerMargin.add(expandDecimals(token?.decimals));
+      const maxAllowableTradingFee = makerMargin + expandDecimals(token?.decimals);
 
       await routerApi.openPosition(market.address, {
-        quantity: quantity.mul(state.direction === 'long' ? 1 : -1),
+        quantity: quantity * (state.direction === 'long' ? 1n : -1n),
         leverage,
         takerMargin,
         makerMargin,

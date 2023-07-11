@@ -1,23 +1,17 @@
-import { useState } from 'react';
-import { BigNumber, logger } from 'ethers';
-
 import { Tab } from '@headlessui/react';
-import '~/stories/atom/Tabs/style.css';
-
-import { TradeContent } from '~/stories/molecule/TradeContent';
-import { CurvedButton } from '~/stories/atom/CurvedButton';
-
-import { TradeInput } from '~/typings/trade';
-import { Market, Price, Token } from '~/typings/market';
-
-import { errorLog } from '~/utils/log';
-
+import { useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
+import { CurvedButton } from '~/stories/atom/CurvedButton';
+import '~/stories/atom/Tabs/style.css';
+import { TradeContent } from '~/stories/molecule/TradeContent';
+import { Market, Price, Token } from '~/typings/market';
+import { TradeInput } from '~/typings/trade';
+import { errorLog } from '~/utils/log';
 
 export interface TradePanelProps {
   longInput?: TradeInput;
-  longTradeFee?: BigNumber;
-  longTradeFeePercent?: BigNumber;
+  longTradeFee?: bigint;
+  longTradeFeePercent?: bigint;
   onLongChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
@@ -28,8 +22,8 @@ export interface TradePanelProps {
   onLongStopLossChange?: (value: string) => unknown;
 
   shortInput?: TradeInput;
-  shortTradeFee?: BigNumber;
-  shortTradeFeePercent?: BigNumber;
+  shortTradeFee?: bigint;
+  shortTradeFeePercent?: bigint;
   onShortChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
     event: React.ChangeEvent<HTMLInputElement>
@@ -39,15 +33,15 @@ export interface TradePanelProps {
   onShortTakeProfitChange?: (value: string) => unknown;
   onShortStopLossChange?: (value: string) => unknown;
 
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   token?: Token;
   market?: Market;
 
-  longTotalMaxLiquidity?: BigNumber;
-  longTotalUnusedLiquidity?: BigNumber;
-  shortTotalMaxLiquidity?: BigNumber;
-  shortTotalUnusedLiquidity?: BigNumber;
+  longTotalMaxLiquidity?: bigint;
+  longTotalUnusedLiquidity?: bigint;
+  shortTotalMaxLiquidity?: bigint;
+  shortTotalUnusedLiquidity?: bigint;
 
   longLiquidityData?: any[];
   shortLiquidityData?: any[];

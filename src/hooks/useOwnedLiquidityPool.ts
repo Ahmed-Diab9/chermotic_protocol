@@ -1,4 +1,4 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-ethers-v5';
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -11,10 +11,9 @@ import { Logger } from '../utils/log';
 import { useSettlementToken } from './useSettlementToken';
 import { numberBuffer } from '~/utils/number';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-
+const { encodeTokenId } = ChromaticUtils;
 const logger = Logger('useOwneLiquidityPoolByMarket');
 export const useOwnedLiquidityPool = () => {
-  const { encodeTokenId } = ChromaticUtils;
   const { address } = useAccount();
   const marketAddress = useAppSelector((state) => state.market.selectedMarket)?.address;
   const { currentSelectedToken } = useSettlementToken();
@@ -29,12 +28,16 @@ export const useOwnedLiquidityPool = () => {
     mutate: fetchOwnedPool,
   } = useSWR(fetchKey, async ([address, marketAddress]) => {
     if (isNil(client) || isNil(currentSelectedToken)) {
-      return { bins: [], marketAddress: '0x', tokenAddress: '0x' };
+      return {
+        bins: [],
+        marketAddress: '0x' as `0x${string}`,
+        tokenAddress: '0x' as `0x${string}`,
+      };
     }
 
     const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
     const binsResponse = bins.map(async (bin) => {
-      const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
+      const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
       const { name, decimals, description, image } = await client
         .market()
         .clbTokenMeta(marketAddress, tokenId);
@@ -49,10 +52,11 @@ export const useOwnedLiquidityPool = () => {
         clbTokenBalance: bin.clbBalance,
         clbTokenValue: bin.clbValue,
         clbTotalSupply: bin.clbTotalSupply,
-        binValue: bin.clbBalance
-          .mul(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
-          .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
-        baseFeeRate: bin.tradingFeeRate,
+        binValue:
+          (bin.clbBalance *
+            BigInt(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))) /
+          BigInt(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
+        baseFeeRate: Number(bin.tradingFeeRate),
         tokenId: tokenId,
       } satisfies OwnedBin;
     });

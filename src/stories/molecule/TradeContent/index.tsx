@@ -1,5 +1,4 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { BigNumber, ethers } from 'ethers';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
@@ -25,15 +24,15 @@ import { useOpenPosition } from '~/hooks/useOpenPosition';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   token?: Token;
   market?: Market;
   input?: TradeInput;
-  totalMaxLiquidity?: BigNumber;
-  totalUnusedLiquidity?: BigNumber;
-  tradeFee?: BigNumber;
-  tradeFeePercent?: BigNumber;
+  totalMaxLiquidity?: bigint;
+  totalUnusedLiquidity?: bigint;
+  tradeFee?: bigint;
+  tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
   isLoading?: boolean;
   onInputChange?: (
@@ -59,8 +58,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     market,
     token,
     input,
-    totalMaxLiquidity,
-    totalUnusedLiquidity,
+    totalMaxLiquidity = BigInt(0),
+    totalUnusedLiquidity = BigInt(0),
     tradeFee,
     tradeFeePercent,
     liquidityData,
@@ -90,7 +89,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
     const freeLiq =
       formatDecimals(
-        totalMaxLiquidity?.sub(totalUnusedLiquidity ?? 0),
+        (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
         (token?.decimals || 0) + 6,
         8
       ) || '0';
@@ -116,29 +115,30 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
      * TODO
      * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
      */
-    const qty = BigNumber.from(Math.round(Number(quantity) * numberBuffer()))
-      .mul(Math.round(Number(leverage) * numberBuffer()))
-      .div(numberBuffer())
-      .div(numberBuffer());
-    const profitDelta = price
-      .mul(Math.round(makerMargin * numberBuffer()))
-      .div(qty.eq(0) ? 1 : qty)
-      .div(numberBuffer());
-    const lossDelta = price
-      .mul(Math.round(takerMargin * numberBuffer()))
-      .div(qty.eq(0) ? 1 : qty)
-      .div(numberBuffer());
+    const qty =
+      (BigInt(Math.round(Number(quantity) * numberBuffer())) *
+        BigInt(Math.round(Number(leverage) * numberBuffer()))) /
+      BigInt(numberBuffer()) /
+      BigInt(numberBuffer());
+    const profitDelta =
+      (price * BigInt(Math.round(makerMargin * numberBuffer()))) /
+      (qty === BigInt(0) ? BigInt(1) : qty) /
+      BigInt(numberBuffer());
+    const lossDelta =
+      (price * BigInt(Math.round(takerMargin * numberBuffer()))) /
+      (qty === BigInt(0) ? BigInt(1) : qty) /
+      BigInt(numberBuffer());
 
     setPrices([
-      withComma(formatDecimals(price.add(profitDelta), oracleDecimals, 2)),
-      withComma(formatDecimals(price.sub(lossDelta), oracleDecimals, 2)),
+      withComma(formatDecimals(price + profitDelta, oracleDecimals, 2)),
+      withComma(formatDecimals(price - lossDelta, oracleDecimals, 2)),
     ]);
-  }, [input, market, token]);
+  }, [input, token]);
+
   useEffect(() => {
     createLiquidation();
   }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
-
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
@@ -318,7 +318,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token && <p>{lpVolume} M</p>}
+            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume} M</p> : null}
           </div>
         </div>
         <article className="mt-5">
@@ -434,7 +434,9 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLink="#"
             />
             <p>Contract Qty</p>
-            <p className="ml-2 text-black/30">{withComma(input?.quantity)} CLB</p>
+            <p className="ml-2 text-black/30">
+              {withComma(input?.quantity)} {token?.name}
+            </p>
           </div>
         </>
       );

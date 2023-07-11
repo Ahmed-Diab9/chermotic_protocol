@@ -1,19 +1,26 @@
-import { IOracleProvider } from '@chromatic-protocol/sdk-ethers-v5/contracts';
-import { BigNumber } from 'ethers';
+import { Address } from 'wagmi';
 
 export interface Token {
   name: string;
-  address: string;
+  address: Address;
   decimals: number;
 }
 
 export interface Price {
-  value: BigNumber;
+  value: bigint;
   decimals: number;
 }
 
+/**
+ * FIXME
+ * Struct output type needed.
+ */
 export interface Market {
-  address: string;
+  address: Address;
   description: string;
-  oracleValue: Pick<IOracleProvider.OracleVersionStructOutput, 'timestamp' | 'version' | 'price'>;
+  oracleValue: {
+    timestamp: bigint;
+    version: bigint;
+    price: bigint;
+  };
 }

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PoolPanel } from '.';
-import { BigNumber } from 'ethers';
 
 import { Default as RangeChartStories } from '~/stories/atom/RangeChart/stories';
 
@@ -26,7 +25,7 @@ export const Default: Story = {
       decimals: 6,
     },
     balances: {
-      USDC: BigNumber.from(100),
+      USDC: 100n,
     },
     ownedPool: {
       // address: '0x8888888888888888888888888888888888888888',
@@ -39,15 +38,15 @@ export const Default: Story = {
           clbTokenImage: '',
           clbTokenDecimals: 18,
           baseFeeRate: 100,
-          // feeRate: BigNumber.from(100 * 100000000000),
-          clbTokenBalance: BigNumber.from(50000000000),
-          binValue: BigNumber.from(10000000000),
+          // feeRate:100 * 100000000000n,
+          clbTokenBalance: 50000000000n,
+          binValue: 10000000000n,
           clbTokenValue: 1000,
           removableRate: 87.54,
-          clbTotalSupply: BigNumber.from(1000),
-          liquidity: BigNumber.from(3000000000),
-          freeLiquidity: BigNumber.from(2000000000),
-          tokenId: BigNumber.from(100),
+          clbTotalSupply: 1000n,
+          liquidity: 3000000000n,
+          freeLiquidity: 2000000000n,
+          tokenId: 100n,
         },
       ],
     },
@@ -55,10 +54,10 @@ export const Default: Story = {
     // indexes: [35, 36],
     rates: [-0.01, 0.01],
     // bins: 2,
-    longTotalMaxLiquidity: BigNumber.from(100),
-    longTotalUnusedLiquidity: BigNumber.from(100),
-    shortTotalMaxLiquidity: BigNumber.from(100),
-    shortTotalUnusedLiquidity: BigNumber.from(100),
+    longTotalMaxLiquidity: 100n,
+    longTotalUnusedLiquidity: 100n,
+    shortTotalMaxLiquidity: 100n,
+    shortTotalUnusedLiquidity: 100n,
     selectedBins: [],
     liquidity: RangeChartStories.args?.barData,
   },

@@ -4,10 +4,11 @@ import { useAccount } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { Token } from '~/typings/market';
-import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
 import { toast } from 'react-toastify';
+import { isValid } from '~/utils/valid';
+import { useError } from './useError';
 
 export const useSettlementToken = () => {
   const { address } = useAccount();
@@ -17,12 +18,18 @@ export const useSettlementToken = () => {
 
   const dispatch = useAppDispatch();
   const { setState: setStoredToken } = useLocalStorage('usum:token');
+  const fetchKey = useMemo(() => {
+    if (isValid(address) && isValid(marketFactoryApi)) {
+      return ['SETTLEMENT_TOKENS', address, 'MARKET_FACTORY'] as const;
+    }
+    return;
+  }, [address, marketFactoryApi]);
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
     isLoading: isTokenLoading,
-  } = useSWR(['SETTLEMENT_TOKENS', address], async () => {
+  } = useSWR(fetchKey, async () => {
     if (!marketFactoryApi) {
       return;
     }
@@ -30,9 +37,8 @@ export const useSettlementToken = () => {
     return tokens;
   });
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
+
   const onTokenSelect = useCallback(
     (token: Token) => {
       dispatch(tokenAction.onTokenSelect(token));

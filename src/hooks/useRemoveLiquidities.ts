@@ -9,7 +9,7 @@ import { OwnedBin } from '~/typings/pools';
 import { expandDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useLiquidityPools } from './useLiquidityPool';
 import { useTokenBalances } from './useTokenBalance';
 import usePoolReceipt from './usePoolReceipt';
@@ -26,7 +26,7 @@ function useRemoveLiquidities(props: Props) {
   const { liquidityPools: pools } = useLiquidityPools();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
   const { fetchReceipts } = usePoolReceipt();
@@ -42,7 +42,7 @@ function useRemoveLiquidities(props: Props) {
     );
   }, [market, token, pools]);
   const onRemoveLiquidities = useCallback(async () => {
-    if (!isValid(signer) || !isValid(address)) {
+    if (!isValid(walletClient) || !isValid(address)) {
       toast('Your wallet is not connected.');
       return;
     }
@@ -69,11 +69,11 @@ function useRemoveLiquidities(props: Props) {
     try {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-        const liquidityValue = clbTokenBalance
-          .mul(Math.round(clbTokenValue * 10 ** 2))
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
-          .div(expandDecimals(2));
-        const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
+        const liquidityValue =
+          (clbTokenBalance * BigInt(Math.round(clbTokenValue * 10 ** 2))) /
+          expandDecimals(CLB_TOKEN_VALUE_DECIMALS) /
+          expandDecimals(2);
+        const removable = liquidityValue < freeLiquidity ? liquidityValue : freeLiquidity;
 
         return type === MULTI_ALL ? clbTokenBalance : removable;
       });
@@ -95,7 +95,7 @@ function useRemoveLiquidities(props: Props) {
     } catch (error) {
       toast((error as any).reason);
     }
-  }, [signer, market, pool, routerApi]);
+  }, [walletClient, market, pool, routerApi]);
 
   return {
     onRemoveLiquidities,

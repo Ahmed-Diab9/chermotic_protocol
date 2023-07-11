@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
-import { bigNumberify, expandDecimals } from '../utils/number';
+import { expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
 import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
@@ -26,7 +26,7 @@ function useAddLiquidity(props: Props) {
   const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
@@ -40,7 +40,7 @@ function useAddLiquidity(props: Props) {
       toast('Select fee rates.');
       return;
     }
-    if (!isValid(signer)) {
+    if (!isValid(walletClient)) {
       errorLog('signer is invalid');
       toast('No signers. Create your account.');
       return;
@@ -68,12 +68,13 @@ function useAddLiquidity(props: Props) {
     setIsLoading(true);
     try {
       const marketAddress = market?.address;
-      const expandedAmount = bigNumberify(amount)?.mul(expandDecimals(token.decimals));
+      // FIXME
+      const expandedAmount = BigInt(Number(amount) * 100000) * expandDecimals(token.decimals - 5);
       if (!isValid(expandedAmount)) {
         errorLog('amount is invalid');
         return;
       }
-      const dividedAmount = expandedAmount.div(binFeeRates.length);
+      const dividedAmount = expandedAmount / BigInt(binFeeRates.length);
 
       await routerApi.addLiquidities(
         marketAddress,

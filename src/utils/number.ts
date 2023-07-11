@@ -1,31 +1,14 @@
-import { BigNumber, BigNumberish } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
-import { isValid } from './valid';
-import { Price, Token } from '../typings/market';
-import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
 import { isNil } from 'ramda';
+import { formatUnits } from 'viem';
+import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
+import { Price, Token } from '../typings/market';
+import { isValid } from './valid';
 
-interface BigNumberify {
-  (value: number): BigNumber;
-  (value: BigNumber): BigNumber;
-  (value: unknown): BigNumber;
-}
-export const bigNumberify: BigNumberify = (value) => {
-  if (typeof value === 'number') {
-    return BigNumber.from(value);
-  }
-  if (value instanceof BigNumber) {
-    return value;
-  }
-  try {
-    return BigNumber.from(value);
-  } catch (error) {
-    Error.captureStackTrace(error as Object);
-    throw error;
-  }
+export const abs = (value: bigint | number): bigint => {
+  if (typeof value === 'number') value = BigInt(value);
+  return value < 0 ? value * -1n : value;
 };
-
-export const withComma = (value?: number | string | BigNumber, replace?: string) => {
+export const withComma = (value?: bigint | number | string, replace?: string) => {
   const seperator = /\B(?=(\d{3})+(?!\d))/g;
   if (value === undefined) {
     return replace;
@@ -38,38 +21,41 @@ export const withComma = (value?: number | string | BigNumber, replace?: string)
     const [integer, decimals] = value.split('.');
     return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
   }
-  if (value instanceof BigNumber) {
+  if (typeof value === 'bigint') {
     const [integer, decimals] = value.toString().split('.');
     return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
   }
 };
 
-export const applyDecimals = (value: BigNumberish, decimals: number) => {
-  const multiplicand = bigNumberify(10).pow(decimals);
+export const applyDecimals = (value: bigint | number | string | boolean, decimals: number) => {
+  const multiplicand = BigInt(10) ** BigInt(decimals);
   if (typeof value === 'number') {
-    return bigNumberify(value).mul(multiplicand);
+    return BigInt(value) * multiplicand;
   }
 
-  const multiplier = bigNumberify(value);
-  return multiplier?.mul(multiplicand);
+  const multiplier = BigInt(value);
+  return multiplier ** multiplicand;
 };
 
-export const trimDecimals = (value: BigNumber | number, decimals: number): BigNumber => {
-  const multiplicand = bigNumberify(10).pow(decimals);
-  return bigNumberify(value ?? 0).div(multiplicand);
+export const trimDecimals = (
+  value: bigint | number | string | boolean,
+  decimals: number
+): bigint => {
+  const multiplicand = BigInt(10) ** BigInt(decimals);
+  return BigInt(value ?? 0) / multiplicand;
 };
 
 export const formatDecimals = (
-  value?: BigNumberish,
+  value?: bigint | number | string | boolean,
   tokenDecimals?: number,
   decimalLimit?: number
 ) => {
   if (isNil(value)) return '0';
-  const formatted = formatUnits(value, tokenDecimals);
+  const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
   const [numeric, decimals] = formatted.split('.');
   const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';
   if (!isValid(decimals)) {
-    return numeric;
+    return numeric + '.00';
   }
   if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
     return numeric + point + decimals.slice(0, decimalLimit);
@@ -81,14 +67,11 @@ export const formatDecimals = (
 };
 
 export const expandDecimals = (decimals?: number) => {
-  return BigNumber.from(10).pow(decimals ?? 0);
+  return 10n ** BigInt(decimals || 0n);
 };
 
-export const formatBalance = (balance: BigNumber, token: Token, price: Price) => {
-  return balance
-    .mul(price.value)
-    .div(expandDecimals(token.decimals))
-    .div(expandDecimals(price.decimals));
+export const formatBalance = (balance: bigint, token: Token, price: Price) => {
+  return (balance * price.value || 0n) / expandDecimals(token.decimals) / expandDecimals(price.decimals);
 };
 
 export const formatFeeRate = (feeRate: number) => {

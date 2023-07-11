@@ -2,7 +2,6 @@ import { useAppSelector } from '~/store';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 import { isNil } from 'ramda';
-import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { expandDecimals } from '~/utils/number';
 import { PERCENT_DECIMALS } from '~/configs/decimals';
@@ -15,26 +14,26 @@ export function useMargins() {
 
   const [totalBalance, totalAsset] = useMemo(() => {
     if (isNil(balances) || isNil(token) || Object.keys(balances).length <= 0) {
-      return [BigNumber.from(0), BigNumber.from(0)];
+      return [0n, 0n];
     }
     const balance = balances[token.address];
     const [totalCollateral, totalCollateralAdded] = positions.reduce(
       (record, position) => {
-        const added = BigNumber.from(position.collateral)
-          .mul(position.pnl)
-          .div(expandDecimals(token.decimals))
-          .div(expandDecimals(PERCENT_DECIMALS));
+        const added =
+          (position.collateral * position.pnl) /
+          expandDecimals(token.decimals) /
+          expandDecimals(PERCENT_DECIMALS);
 
-        return [record[0].add(position.collateral), record[1].add(added)];
+        return [record[0] + position.collateral, record[1] + added];
       },
-      [BigNumber.from(0), BigNumber.from(0)]
+      [0n, 0n]
     );
-    return [balance.add(totalCollateral), balance.add(totalCollateralAdded)];
+    return [balance + totalCollateral, balance + totalCollateralAdded];
   }, [balances, token, positions]);
 
   const totalMargin = useMemo(() => {
     if (isNil(balances) || isNil(token)) {
-      return BigNumber.from(0);
+      return 0n;
     }
     return balances[token.address];
   }, [balances, token]);

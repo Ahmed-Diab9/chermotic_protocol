@@ -1,10 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { RemoveMultiLiquidityModal } from ".";
-import { BigNumber } from "ethers";
+import { RemoveMultiLiquidityModal } from '.';
 
 const meta = {
-  title: "Template/Modal/RemoveMultiLiquidityModal",
+  title: 'Template/Modal/RemoveMultiLiquidityModal',
   component: RemoveMultiLiquidityModal,
   // argTypes: {
   // },
@@ -18,17 +17,17 @@ export const Default: Story = {
     selectedBins: [
       {
         baseFeeRate: 10,
-        clbTokenBalance: BigNumber.from(50000000000),
-        binValue: BigNumber.from(10000000000),
+        clbTokenBalance: 50000000000n,
+        binValue: 10000000000n,
         removableRate: 87.5,
-        liquidity: BigNumber.from(3000000000),
-        freeLiquidity: BigNumber.from(2000000000),
+        liquidity: 3000000000n,
+        freeLiquidity: 2000000000n,
         clbTokenName: "LP BIN NAME",
         clbTokenDescription: "LP BIN DESCRIPTION",
         clbTokenImage: "",
         clbTokenDecimals: 18,
-        tokenId: BigNumber.from(10),
-        clbTotalSupply: BigNumber.from(10000000),
+        tokenId: 10n,
+        clbTotalSupply: 10000000n,
         clbTokenValue: 1015,
       },
     ],

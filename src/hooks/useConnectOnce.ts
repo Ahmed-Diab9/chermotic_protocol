@@ -3,8 +3,8 @@ import { useAccount, useConnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { CONNECTOR_STORAGE_KEY } from '../configs/account';
 import { CHAIN_ID } from '../constants';
-import { errorLog } from '../utils/log';
 import useLocalStorage from './useLocalStorage';
+import { useError } from './useError';
 
 const useConnectOnce = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -34,9 +34,7 @@ const useConnectOnce = () => {
     onConnectOnce();
   }, [onConnectOnce]);
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   return;
 };

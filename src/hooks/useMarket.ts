@@ -3,11 +3,11 @@ import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { Market } from '~/typings/market';
-import { errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
 import { toast } from 'react-toastify';
+import { useError } from './useError';
 
 export const useMarket = (_interval?: number) => {
   const { client } = useChromaticClient();
@@ -30,9 +30,7 @@ export const useMarket = (_interval?: number) => {
     }
   );
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   const onMarketSelect = useCallback(
     (market: Market) => {

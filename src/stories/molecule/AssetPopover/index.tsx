@@ -1,8 +1,10 @@
-import './style.css';
 import { Popover } from '@headlessui/react';
-import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { BigNumber } from 'ethers';
+import {
+  ArrowTopRightOnSquareIcon,
+  ChevronDoubleUpIcon
+} from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
+import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -15,28 +17,27 @@ import {
   Account,
 } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { bigNumberify, expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
-import Skeleton from 'react-loading-skeleton';
+import './style.css';
 
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
-import { useEffect } from 'react';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
   account?: Account;
   status?: ACCOUNT_STATUS;
   selectedToken?: Token;
-  walletBalances?: Record<string, BigNumber>;
-  usumBalances?: Record<string, BigNumber>;
+  walletBalances?: Record<string, bigint>;
+  usumBalances?: Record<string, bigint>;
   amount?: string;
-  totalBalance?: BigNumber;
-  availableMargin?: BigNumber;
-  assetValue?: BigNumber;
+  totalBalance?: bigint;
+  availableMargin?: bigint;
+  assetValue?: bigint;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
@@ -134,11 +135,11 @@ interface AssetPanelProps {
   account?: Account;
   status?: ACCOUNT_STATUS;
   token?: Token;
-  walletBalances?: Record<string, BigNumber>;
-  usumBalances?: Record<string, BigNumber>;
+  walletBalances?: Record<string, bigint>;
+  usumBalances?: Record<string, bigint>;
   amount?: string;
-  availableMargin?: BigNumber;
-  assetValue?: BigNumber;
+  availableMargin?: bigint;
+  assetValue?: bigint;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
@@ -156,8 +157,8 @@ const AssetPanel = (props: AssetPanelProps) => {
     walletBalances,
     usumBalances,
     amount,
-    availableMargin = bigNumberify(0),
-    assetValue = bigNumberify(0),
+    availableMargin = BigInt(0),
+    assetValue = BigInt(0),
     isLoading,
     onAmountChange,
     onDeposit,

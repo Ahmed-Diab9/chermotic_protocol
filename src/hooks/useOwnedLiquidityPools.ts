@@ -1,22 +1,23 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-ethers-v5';
+import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useAppSelector } from '~/store';
+import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '../configs/pool';
 import { Logger } from '../utils/log';
-import { bigNumberify, expandDecimals, numberBuffer } from '../utils/number';
-import { useTokenBalances } from './useTokenBalance';
+import { expandDecimals, numberBuffer } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
-import { PoolEvent } from '~/typings/events';
-import { toast } from 'react-toastify';
+import { useTokenBalances } from './useTokenBalance';
+import { useError } from './useError';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -24,7 +25,7 @@ export const useOwnedLiquidityPools = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
 
   const { markets, currentMarket } = useMarket();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
   const logger = Logger(useOwnedLiquidityPools);
@@ -50,7 +51,7 @@ export const useOwnedLiquidityPools = () => {
         const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
         logger.info('sdk response bins', bins);
         const binsResponse = bins.map(async (bin) => {
-          const tokenId = encodeTokenId(bin.tradingFeeRate, bin.tradingFeeRate > 0);
+          const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
           logger.info('token id ', tokenId);
           const { name, decimals, description, image } = await client
             .market()
@@ -67,9 +68,10 @@ export const useOwnedLiquidityPools = () => {
             clbTokenBalance: bin.clbBalance,
             clbTokenValue: bin.clbValue,
             clbTotalSupply: bin.clbTotalSupply,
-            binValue: bin.clbBalance
-              .mul(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
-              .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
+            binValue:
+              (bin.clbBalance *
+                BigInt(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))) /
+              BigInt(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
             baseFeeRate: bin.tradingFeeRate,
             tokenId: tokenId,
           } satisfies OwnedBin;
@@ -88,16 +90,14 @@ export const useOwnedLiquidityPools = () => {
     }
   );
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
   const onRemoveLiquidity = useCallback(
     async (feeRate: number, amount: number) => {
-      if (isNil(signer) || isNil(address)) {
-        logger.info('no signer or address', signer, address);
+      if (isNil(walletClient) || isNil(address)) {
+        logger.info('no signer or address', walletClient, address);
         toast('Connect your wallet.');
         return;
       }
@@ -112,7 +112,7 @@ export const useOwnedLiquidityPools = () => {
         return;
       }
 
-      const expandedAmount = bigNumberify(amount).mul(expandDecimals(token?.decimals ?? 1));
+      const expandedAmount = BigInt(amount) * expandDecimals(token?.decimals ?? 1);
 
       try {
         await routerApi.removeLiquidity(currentMarket.address, {
@@ -129,12 +129,12 @@ export const useOwnedLiquidityPools = () => {
         toast((error as any).reason);
       }
     },
-    [signer, address, currentMarket, routerApi, token?.decimals]
+    [walletClient, address, currentMarket, routerApi, token?.decimals]
   );
 
   const onRemoveLiquidityBatch = useCallback(
     async (bins: OwnedBin[], type: MULTI_TYPE) => {
-      if (isNil(signer) || isNil(address)) {
+      if (isNil(walletClient) || isNil(address)) {
         toast('Connect your wallet.');
         return;
       }
@@ -149,10 +149,9 @@ export const useOwnedLiquidityPools = () => {
       try {
         const amounts = bins.map((bin) => {
           const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-          const liquidityValue = clbTokenBalance
-            .mul(clbTokenValue)
-            .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
-          const removable = liquidityValue.lt(freeLiquidity) ? liquidityValue : freeLiquidity;
+          const liquidityValue =
+            (clbTokenBalance * BigInt(clbTokenValue)) / expandDecimals(CLB_TOKEN_VALUE_DECIMALS);
+          const removable = liquidityValue < freeLiquidity ? liquidityValue : freeLiquidity;
 
           return type === MULTI_ALL ? clbTokenBalance : removable;
         });
@@ -173,7 +172,7 @@ export const useOwnedLiquidityPools = () => {
         toast((error as any).reason);
       }
     },
-    [signer, currentMarket, routerApi]
+    [walletClient, currentMarket, routerApi]
   );
 
   return {

@@ -7,38 +7,46 @@ import { SWRConfig } from 'swr';
 import { router } from '~/routes';
 import { store } from '~/store/index';
 
-import { WagmiConfig, configureChains, createClient } from 'wagmi';
+import { Address, WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 import { CHAIN } from '~/constants';
+import './typings/bigint';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
 const CHAINS_WAGMI = {
-  anvil: hardhat,
+  anvil: {
+    ...hardhat,
+    contracts: {
+      multicall3: {
+        address: '0x63ecE4C05B8fB272D16844E96702Ea2f26370982' as Address,
+      },
+    },
+  },
   arbitrum_goerli: arbitrumGoerli,
   arbitrum_one: arbitrum,
 };
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [CHAINS_WAGMI[CHAIN]],
   [publicProvider()]
 );
 
-const client = createClient({
-  autoConnect: false,
+const config = createConfig({
+  autoConnect: true,
   connectors: [
-    new MetaMaskConnector({ chains }),
+    new InjectedConnector({ chains }),
     // new CoinbaseWalletConnector({
     //   chains,
     //   options: { appName: "usum", reloadOnDisconnect: false },
     // }),
   ] as [
-    MetaMaskConnector
+    InjectedConnector
     // CoinbaseWalletConnector
   ],
-  provider: provider,
-  webSocketProvider: webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 function App() {
@@ -49,7 +57,7 @@ function App() {
       }}
     >
       <Provider store={store}>
-        <WagmiConfig client={client}>
+        <WagmiConfig config={config}>
           <div className="App">
             <RouterProvider router={router} />
           </div>

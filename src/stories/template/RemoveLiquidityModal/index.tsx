@@ -1,25 +1,18 @@
-import React from 'react';
 import { Dialog } from '@headlessui/react';
-import { Button } from '../../atom/Button';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
-import { Input } from '~/stories/atom/Input';
-import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
-import '../Modal/style.css';
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  percentage,
-  trimLeftZero,
-} from '~/utils/number';
+import { FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-import { Bin, OwnedBin } from '~/typings/pools';
+import { Input } from '~/stories/atom/Input';
+import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
+import { OwnedBin } from '~/typings/pools';
+import { expandDecimals, formatDecimals, percentage, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
-import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
-import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
+import { Button } from '../../atom/Button';
+import '../Modal/style.css';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -33,18 +26,17 @@ export interface RemoveLiquidityModalProps {
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const { selectedBin, token, amount, maxAmount, onAmountChange, onMaxChange } = props;
   const dispatch = useAppDispatch();
-  const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : bigNumberify(0);
+  const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
   const utilized = isValid(selectedBin)
-    ? selectedBin.clbTokenBalance
-        .mul(Math.round(utilizedRate * percentage()))
-        .div(expandDecimals(FEE_RATE_DECIMAL))
-    : bigNumberify(0);
+    ? (selectedBin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
+      expandDecimals(FEE_RATE_DECIMAL)
+    : 0n;
   const removable = isValid(selectedBin)
-    ? selectedBin?.clbTokenBalance
-        .mul(Math.round(selectedBin.removableRate * percentage()))
-        .div(expandDecimals(FEE_RATE_DECIMAL))
-    : bigNumberify(0);
+    ? (selectedBin?.clbTokenBalance *
+        BigInt(Math.round(selectedBin.removableRate * percentage()))) /
+      expandDecimals(FEE_RATE_DECIMAL)
+    : 0n;
 
   const { onRemoveLiquidity } = useRemoveLiquidity({
     feeRate: selectedBin?.baseFeeRate,
@@ -140,9 +132,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const nextAmount = selectedBin.binValue.lt(selectedBin.freeLiquidity)
-                        ? selectedBin.binValue
-                        : selectedBin.freeLiquidity;
+                      const nextAmount =
+                        selectedBin.binValue < selectedBin.freeLiquidity
+                          ? selectedBin.binValue
+                          : selectedBin.freeLiquidity;
                       onAmountChange?.(formatDecimals(nextAmount, token?.decimals, 4) ?? '');
                     }}
                   />
@@ -156,9 +149,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     (
                     {selectedBin &&
                       formatDecimals(
-                        bigNumberify(Math.floor(Number(amount) * 10 ** 4)).mul(
-                          Math.round(selectedBin.clbTokenValue * 10 ** 2)
-                        ),
+                        BigInt(Math.floor(Number(amount) * 10 ** 4)) *
+                          BigInt(Math.round(selectedBin.clbTokenValue * 10 ** 2)),
                         2 + 4,
                         2
                       )}{' '}

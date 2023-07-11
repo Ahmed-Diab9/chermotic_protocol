@@ -1,35 +1,30 @@
-import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { Avatar } from '~/stories/atom/Avatar';
-import { Tag } from '~/stories/atom/Tag';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { Button } from '~/stories/atom/Button';
-import { Progress } from '~/stories/atom/Progress';
-import { Loading } from '~/stories/atom/Loading';
-import { Tab } from '@headlessui/react';
-import CheckIcon from '~/assets/icons/CheckIcon';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { Guide } from '~/stories/atom/Guide';
-import { Disclosure } from '@headlessui/react';
-import '../../atom/Tabs/style.css';
+import { Disclosure, Tab } from '@headlessui/react';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import Skeleton from 'react-loading-skeleton';
-
-import { BigNumber } from 'ethers';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Button } from '~/stories/atom/Button';
+import { Guide } from '~/stories/atom/Guide';
+import { Loading } from '~/stories/atom/Loading';
+import { Progress } from '~/stories/atom/Progress';
+import { Tag } from '~/stories/atom/Tag';
+import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import '../../atom/Tabs/style.css';
 // import { LPReceipt } from "~/typings/receipt";
-import { Market, Token } from '~/typings/market';
-import { isValid } from '~/utils/valid';
-import { usePrevious } from '~/hooks/usePrevious';
-import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Tooltip } from 'react-tooltip';
-import { formatDecimals } from '~/utils/number';
+import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
+import { Market, Token } from '~/typings/market';
+import { formatDecimals } from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 
 interface PoolProgressProps {
   token?: Token;
   market?: Market;
   receipts?: LpReceipt[];
   isLoading?: boolean;
-  onReceiptClaim?: (id: BigNumber, action: LpReceiptAction) => unknown;
+  onReceiptClaim?: (id: bigint, action: LpReceiptAction) => unknown;
   onReceiptClaimBatch?: () => unknown;
 }
 

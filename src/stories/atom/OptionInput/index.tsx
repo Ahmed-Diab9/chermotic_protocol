@@ -3,7 +3,6 @@ import { Input } from '../Input';
 import { Button } from '../Button';
 import '../../atom/Input/style.css';
 import { ChangeEvent, useState } from 'react';
-import { bigNumberify } from '../../../utils/number';
 
 interface OptionInputProps {
   label?: string;

@@ -1,8 +1,7 @@
-import { BigNumber, ethers } from 'ethers';
 import { fromPairs, isNil } from 'ramda';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount } from 'wagmi';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -15,6 +14,8 @@ import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useSettlementToken } from './useSettlementToken';
+import { ADDRESS_ZERO } from '~/utils/address';
+import { useError } from './useError';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
@@ -23,7 +24,7 @@ export const useUsumAccount = () => {
   const { client } = useChromaticClient();
   // const accountApi = useMemo(() => client?.account(), [client]);
 
-  const signerKey = isValid(client?.signer) ? 'SIGNER' : undefined;
+  const signerKey = isValid(client?.walletClient) ? 'WALLET_CLIENT' : undefined;
   const fetchKey =
     isValid(address) && isValid(signerKey) ? ['USUM_ACCOUNT', address, signerKey] : undefined;
 
@@ -34,7 +35,7 @@ export const useUsumAccount = () => {
   } = useSWR(
     fetchKey,
     async ([_, address]) => {
-      if (!client || !client.signer) {
+      if (!client || !client.walletClient) {
         return;
       }
       const accountApi = client?.account();
@@ -43,7 +44,7 @@ export const useUsumAccount = () => {
       }
       try {
         const accountAddress = await accountApi.getAccount();
-        if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+        if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
           return;
         } else {
           return accountAddress;
@@ -65,12 +66,7 @@ export const useUsumAccount = () => {
     isLoading: isChromaticBalanceLoading,
   } = useSWR(['ChromaticAccBal', address, signerKey], async () => {
     const accountApi = client?.account();
-    if (
-      isNil(tokens) ||
-      isNil(accountApi) ||
-      isNil(address) ||
-      address === ethers.constants.AddressZero
-    ) {
+    if (isNil(tokens) || isNil(accountApi) || isNil(address) || address === ADDRESS_ZERO) {
       return {};
     }
     const result = await accountApi.balances(tokens.map((token) => token.address));
@@ -92,19 +88,17 @@ export const useUsumAccount = () => {
   }, [status]);
 
   useEffect(() => {
-    if (isNil(accountAddress) || accountAddress === ethers.constants.AddressZero) {
+    if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
       setStatus(ACCOUNT_NONE);
       return;
     }
-    if (isValid(accountAddress) && accountAddress !== ethers.constants.AddressZero) {
+    if (isValid(accountAddress) && accountAddress !== ADDRESS_ZERO) {
       setStatus(ACCOUNT_COMPLETED);
       return;
     }
   }, [accountAddress]);
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const createAccount = async () => {
     const accountApi = client?.account();

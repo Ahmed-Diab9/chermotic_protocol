@@ -1,27 +1,27 @@
-import { Client } from '@chromatic-protocol/sdk-ethers-v5';
+import { Client } from '@chromatic-protocol/sdk-viem';
 import { useEffect } from 'react';
-import { useProvider, useSigner } from 'wagmi';
-import { CHAIN } from '../constants';
+import { WalletClient, usePublicClient, useWalletClient } from 'wagmi';
 import { Logger } from '../utils/log';
 
 const logger = Logger('useChromaticClient');
 
 let client: Client | undefined;
 export function useChromaticClient() {
-  const provider = useProvider();
-  const { data: signer } = useSigner();
+  const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
 
   useEffect(() => {
     if (!client) {
-      client = new Client(CHAIN, signer || provider);
+      client = new Client({ publicClient, walletClient });
     }
   }, []);
 
   useEffect(() => {
     if (client) {
-      client.setSignerOrProvider(signer || provider);
+      client.publicClient = publicClient;
+      client.walletClient = walletClient as WalletClient | undefined;
     }
-  }, [signer, provider]);
+  }, [publicClient, walletClient]);
 
   return {
     client,

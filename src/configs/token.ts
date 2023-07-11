@@ -1,10 +1,11 @@
+import { Address } from 'wagmi';
 import { CHAIN } from '../constants/contracts';
 export const USDC =
   CHAIN === 'arbitrum_one'
     ? '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
     : '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892';
 export const MILLION_UNITS = 6;
-export const PRICE_FEED: Record<string, string | undefined> =
+export const PRICE_FEED: Record<string, Address | undefined> =
   CHAIN === 'arbitrum_one'
     ? {
         ETH: '0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612',

@@ -1,27 +1,25 @@
-import { BigNumber } from 'ethers';
-
 export interface Bin {
-  liquidity: BigNumber;
-  freeLiquidity: BigNumber;
+  liquidity: bigint;
+  freeLiquidity: bigint;
   clbTokenName: string;
   clbTokenImage: string;
   clbTokenDescription: string;
   clbTokenDecimals: number;
   clbTokenValue: number;
   baseFeeRate: number;
-  tokenId: BigNumber;
+  tokenId: bigint;
 }
 
 export interface OwnedBin extends Bin {
-  clbTokenBalance: BigNumber;
-  clbTotalSupply: BigNumber;
-  binValue: BigNumber;
+  clbTokenBalance: bigint;
+  clbTotalSupply: bigint;
+  binValue: bigint;
   removableRate: number;
 }
 
 export interface LiquidityPool<T = Bin> {
-  tokenAddress: string;
-  marketAddress: string;
+  tokenAddress: `0x${string}`;
+  marketAddress: `0x${string}`;
   bins: Array<T>;
 }
 
@@ -33,9 +31,9 @@ export interface CLBTokenMetadata {
 }
 
 export interface LiquidityPoolSummary {
-  token: { name: string; decimals: number };
+  token: { address?: string; name: string; decimals: number };
   market: string;
-  liquidity: BigNumber;
+  liquidity: bigint;
   bins: number;
   thumbnail?: string;
 }

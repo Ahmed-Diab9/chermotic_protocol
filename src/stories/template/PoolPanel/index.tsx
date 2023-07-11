@@ -1,9 +1,9 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
-import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CLB_TOKEN_VALUE_DECIMALS, PERCENT_DECIMALS } from '~/configs/decimals';
+import Skeleton from 'react-loading-skeleton';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
@@ -15,7 +15,6 @@ import { OptionInput } from '~/stories/atom/OptionInput';
 import { RangeChart } from '~/stories/atom/RangeChart';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import Skeleton from 'react-loading-skeleton';
 
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
@@ -23,36 +22,30 @@ import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  formatFeeRate,
-  withComma,
-} from '../../../utils/number';
+import { expandDecimals, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
-import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 
 const logger = Logger('PoolPanel');
 
 interface PoolPanelProps {
   token?: Token;
   market?: Market;
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
-  binAverage?: number | BigNumber;
-  longTotalMaxLiquidity?: BigNumber;
-  longTotalUnusedLiquidity?: BigNumber;
-  shortTotalMaxLiquidity?: BigNumber;
-  shortTotalUnusedLiquidity?: BigNumber;
+  binAverage?: number | bigint;
+  longTotalMaxLiquidity?: bigint;
+  longTotalUnusedLiquidity?: bigint;
+  shortTotalMaxLiquidity?: bigint;
+  shortTotalUnusedLiquidity?: bigint;
   selectedBins?: OwnedBin[];
   isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
@@ -64,8 +57,8 @@ interface PoolPanelProps {
 
   multiType?: MULTI_TYPE;
   multiAmount?: number;
-  multiBalance?: BigNumber;
-  multiClbTokenValue?: BigNumber;
+  multiBalance?: bigint;
+  multiClbTokenValue?: bigint;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
 
   rangeChartRef?: any;
@@ -132,51 +125,49 @@ export const PoolPanel = (props: PoolPanelProps) => {
   logger.info('liquidity', liquidity);
   const totalLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum.add(current.liquidity);
+      sum = sum + current.liquidity;
       return sum;
-    }, BigNumber.from(0)) ?? BigNumber.from(0);
+    }, 0n) ?? 0n;
   const totalFreeLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum.add(current.freeLiquidity);
+      sum = sum + current.freeLiquidity;
       return sum;
-    }, BigNumber.from(0)) ?? BigNumber.from(0);
+    }, 0n) ?? 0n;
   const totalLiquidityValue =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum.add(current.binValue);
+      sum = sum + current.binValue;
       return sum;
-    }, BigNumber.from(0)) ?? BigNumber.from(0);
+    }, 0n) ?? 0n;
   const totalRemovableLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum.add(
-        current.clbTokenBalance
-          .mul(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))
-          .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS))
-          .div(expandDecimals(2))
-      );
+      sum =
+        sum +
+        (current.clbTokenBalance *
+          BigInt(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
+          expandDecimals(CLB_TOKEN_VALUE_DECIMALS) /
+          expandDecimals(2);
       return sum;
-    }, BigNumber.from(0)) ?? BigNumber.from(0);
+    }, 0n) ?? 0n;
   const avgRemovableBalanceDenominator =
-    ownedPool?.bins
-      .reduce((sum, current) => {
-        sum = sum.add(current.clbTokenBalance);
-        return sum;
-      }, BigNumber.from(0))
-      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS) || BigNumber.from(1);
+    (ownedPool?.bins.reduce((sum, current) => {
+      sum = sum + current.clbTokenBalance;
+      return sum;
+    }, 0n) || 0n) * expandDecimals(CLB_TOKEN_VALUE_DECIMALS) || 1n;
   const averageRemovableRate = formatDecimals(
-    totalRemovableLiquidity
-      .mul(expandDecimals(token?.decimals))
-      .mul(expandDecimals(2))
-      .mul(10 ** CLB_TOKEN_VALUE_DECIMALS)
-      .div(avgRemovableBalanceDenominator.isZero() ? 1 : avgRemovableBalanceDenominator),
+    (totalRemovableLiquidity *
+      expandDecimals(token?.decimals) *
+      expandDecimals(2) *
+      expandDecimals(CLB_TOKEN_VALUE_DECIMALS)) /
+      (avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator),
     token?.decimals,
     2
   );
   const ownedLongLiquidityBins = useMemo(
-    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate > 0) || [],
+    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate > 0n) || [],
     [ownedPool]
   );
   const ownedShortLiquidityBins = useMemo(
-    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance.gt(0) && bin.baseFeeRate < 0) || [],
+    () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate < 0n) || [],
     [ownedPool]
   );
   const binLength = ownedPool?.bins.length || 0;
@@ -194,10 +185,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const [isBinValueVisible, setIsBinValueVisible] = useState(false);
 
   const settlementTokenBalance = useMemo(() => {
-    if (balances && token && balances[token.name])
-      return formatDecimals(balances[token.name], token.decimals, 0);
+    if (balances && token && balances[token.address])
+      return formatDecimals(balances[token.address], token.decimals, 0);
     return '-';
-  }, [balances, token, balances?.[token?.name || 'default']]);
+  }, [balances, token, balances?.[token?.address || 'default']]);
 
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
@@ -246,10 +237,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        * @TODO
                        * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
                        */}
-                      {shortTotalMaxLiquidity && shortTotalUnusedLiquidity && token && (
+                      {shortTotalMaxLiquidity && shortTotalUnusedLiquidity && token ? (
                         <p>
                           {formatDecimals(
-                            shortTotalMaxLiquidity.sub(shortTotalUnusedLiquidity),
+                            shortTotalMaxLiquidity - shortTotalUnusedLiquidity,
                             token.decimals + MILLION_UNITS,
                             4
                           )}
@@ -261,7 +252,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           )}
                           M
                         </p>
-                      )}
+                      ) : null}
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-black/30">Long LP</p>
@@ -269,7 +260,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        * @TODO
                        * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
                        */}
-                      {longTotalMaxLiquidity && longTotalUnusedLiquidity && token && (
+                      {longTotalMaxLiquidity && longTotalUnusedLiquidity && token ? (
                         <p>
                           {formatDecimals(
                             longTotalUnusedLiquidity,
@@ -278,13 +269,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           )}
                           M /{' '}
                           {formatDecimals(
-                            longTotalMaxLiquidity.sub(longTotalUnusedLiquidity),
+                            longTotalMaxLiquidity - longTotalUnusedLiquidity,
                             token.decimals + MILLION_UNITS,
                             4
                           )}
                           M
                         </p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -648,7 +639,7 @@ const BinItem = (props: BinItemProps) => {
             label="Remove"
             onClick={(event) => {
               event.stopPropagation();
-              if (bin?.clbTokenBalance.gt(0)) {
+              if (bin && (bin.clbTokenBalance || 0n) > 0n) {
                 dispatch(poolsAction.onBinSelect(bin));
               }
             }}
@@ -698,9 +689,9 @@ const BinItem = (props: BinItemProps) => {
                 <>
                   {bin &&
                     formatDecimals(
-                      bin.clbTokenBalance
-                        .mul(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))
-                        .div(expandDecimals(CLB_TOKEN_VALUE_DECIMALS)),
+                      (bin.clbTokenBalance *
+                        BigInt(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
+                        expandDecimals(CLB_TOKEN_VALUE_DECIMALS),
                       token?.decimals,
                       2
                     )}

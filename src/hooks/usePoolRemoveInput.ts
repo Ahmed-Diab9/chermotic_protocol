@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
@@ -14,7 +13,7 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return record + bin.clbTokenBalance.div(expandDecimals(bin.clbTokenDecimals)).toNumber();
+      return record + Number(bin.clbTokenBalance / expandDecimals(bin.clbTokenDecimals));
     }, 0);
   }, [bins]);
 
@@ -48,20 +47,21 @@ export const useMultiPoolRemoveInput = () => {
   const clbTokenBalance = useMemo(() => {
     return bins.reduce((balance, bin) => {
       const { clbTokenBalance } = bin;
-      return balance.add(clbTokenBalance);
-    }, BigNumber.from(0));
+      return balance + clbTokenBalance;
+    }, 0n);
   }, [bins]);
 
   const amount =
     type === MULTI_ALL
       ? clbTokenBalance
       : bins
-          .map((bin) =>
-            bin.clbTotalSupply
-              .mul(bin.freeLiquidity.mul(10 ** CLB_TOKEN_VALUE_DECIMALS).div(bin.liquidity))
-              .div(10 ** CLB_TOKEN_VALUE_DECIMALS)
+          .map(
+            (bin) =>
+              (bin.clbTotalSupply *
+                ((bin.freeLiquidity * expandDecimals(CLB_TOKEN_VALUE_DECIMALS)) / bin.liquidity)) /
+              expandDecimals(CLB_TOKEN_VALUE_DECIMALS)
           )
-          .reduce((balance, removable) => balance.add(removable), BigNumber.from(0));
+          .reduce((balance, removable) => balance + removable, 0n);
 
   const onAmountChange = (type: MULTI_TYPE) => {
     setType(type);
@@ -69,7 +69,7 @@ export const useMultiPoolRemoveInput = () => {
 
   return {
     type,
-    amount: amount.div(expandDecimals(token?.decimals)).toNumber(),
+    amount: Number(amount / expandDecimals(token?.decimals)),
     clbTokenBalance,
     onAmountChange,
   };

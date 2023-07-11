@@ -9,6 +9,7 @@ import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 
 import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
+import { useError } from './useError';
 
 const logger = Logger('useChartData');
 
@@ -33,20 +34,21 @@ const useChartData = () => {
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
           const key = baseFeeRate / 100;
-          const binValue = trimDecimals(
-            Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
-            CLB_TOKEN_VALUE_DECIMALS
-          ).toNumber();
+          const binValue = Number(
+            trimDecimals(
+              Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
+              CLB_TOKEN_VALUE_DECIMALS
+            )
+          );
           acc.clbTokenValue.push({
             key,
             value: binValue,
           });
 
-          const available = trimDecimals(freeLiquidity, CLB_TOKEN_VALUE_DECIMALS).toNumber();
-          const utilized = trimDecimals(
-            liquidity.sub(freeLiquidity),
-            CLB_TOKEN_VALUE_DECIMALS
-          ).toNumber();
+          const available = Number(trimDecimals(freeLiquidity, CLB_TOKEN_VALUE_DECIMALS));
+          const utilized = Number(
+            trimDecimals(liquidity - freeLiquidity, CLB_TOKEN_VALUE_DECIMALS)
+          );
           acc.liquidity.push({
             key,
             value: [
@@ -69,9 +71,7 @@ const useChartData = () => {
     }
   );
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const { negative, positive } = useMemo(() => {
     if (!data?.liquidity) return {};

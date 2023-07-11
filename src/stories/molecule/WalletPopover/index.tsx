@@ -1,9 +1,8 @@
-import './style.css';
-import '../../atom/Tabs/style.css';
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { BigNumber } from 'ethers';
-import { Fragment } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import { Link } from 'react-router-dom';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
@@ -14,18 +13,18 @@ import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
-import { Link } from 'react-router-dom';
-import { Thumbnail } from '../../atom/Thumbnail';
-import Skeleton from 'react-loading-skeleton';
+import '../../atom/Tabs/style.css';
+import './style.css';
 
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+import { PRICE_FEED } from '../../../configs/token';
 
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
   account?: Account;
   tokens?: Token[];
   markets?: Market[];
-  balances?: Record<string, BigNumber>;
+  balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
   pools?: LiquidityPoolSummary[];
   isLoading?: boolean;
@@ -54,6 +53,20 @@ export const WalletPopover = ({
 }: WalletPopoverProps) => {
   // logger.info('[WalletPopover]', tokens, priceFeed, balances);
   // logger.info(`[${WalletPopover.name}]`, pools);
+  const usdcPrice = useCallback(
+    (token: Token) => {
+      if (!balances || !priceFeed) return '';
+      const priceFeedAddress = PRICE_FEED[token.name] || '0x';
+      if (isValid(balances[token.address]) && isValid(priceFeed[priceFeedAddress])) {
+        return `${withComma(
+          formatBalance(balances[token.address], token, priceFeed[priceFeedAddress])
+        )}`;
+      }
+      return '';
+    },
+    [balances, tokens, priceFeed]
+  );
+
   return (
     <div className={`WalletPopover popover text-right`}>
       <Popover>
@@ -156,18 +169,7 @@ export const WalletPopover = ({
                                           {isLoading ? (
                                             <Skeleton width={40} />
                                           ) : (
-                                            <>
-                                              $
-                                              {isValid(balances[token.name]) &&
-                                                isValid(priceFeed[token.name]) &&
-                                                `$${withComma(
-                                                  formatBalance(
-                                                    balances[token.name],
-                                                    token,
-                                                    priceFeed[token.name]
-                                                  )
-                                                )}`}
-                                            </>
+                                            <>${usdcPrice(token)}</>
                                           )}
                                         </p>
                                         <p className="mt-1 text-base font-medium text-gray-900">
@@ -176,9 +178,8 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               {withComma(
-                                                balances[token.name]
-                                                  .div(expandDecimals(token.decimals))
-                                                  .toString()
+                                                balances[token.address] /
+                                                  expandDecimals(token.decimals)
                                               )}{' '}
                                               {token.name}
                                             </>

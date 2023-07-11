@@ -1,7 +1,8 @@
 import { Dialog } from '@headlessui/react';
-import { BigNumber, ethers } from 'ethers';
+import { useMemo } from 'react';
 import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from '~/configs/pool';
+import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
@@ -9,19 +10,11 @@ import { ScrollAni } from '~/stories/atom/ScrollAni';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
-import { Bin, OwnedBin } from '~/typings/pools';
-import {
-  bigNumberify,
-  expandDecimals,
-  formatDecimals,
-  numberBuffer,
-  percentage,
-} from '~/utils/number';
+import { OwnedBin } from '~/typings/pools';
+import { expandDecimals, formatDecimals, numberBuffer, percentage } from '~/utils/number';
+import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
-import { useMemo } from 'react';
-import { Logger } from '~/utils/log';
-import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 
 const logger = Logger('RemoveMultiLiquidityModal');
 export interface RemoveMultiLiquidityModalProps {
@@ -29,10 +22,10 @@ export interface RemoveMultiLiquidityModalProps {
   amount?: number;
   token?: Token;
   type?: MULTI_TYPE;
-  balance?: BigNumber;
-  // liquidityValue?: BigNumber;
-  // freeLiquidity?: BigNumber;
-  // removableRate?: BigNumber;
+  balance?: bigint;
+  // liquidityValue?: bigint;
+  // freeLiquidity?: bigint;
+  // removableRate?: bigint;
   onAmountChange?: (type: MULTI_TYPE) => unknown;
 }
 
@@ -42,7 +35,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     type = MULTI_ALL,
     token,
     amount = 0,
-    balance = bigNumberify(0),
+    balance = 0n,
     // liquidityValue = bigNumberify(0),
     // freeLiquidity = bigNumberify(0),
     // removableRate = bigNumberify(0),
@@ -52,20 +45,20 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
   const convertedAmount = useMemo(() => {
     if (type === MULTI_ALL) {
       return selectedBins.reduce((sum, current) => {
-        sum = sum.add(
-          current.clbTokenBalance
-            .mul(Math.round(current.clbTokenValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))
-            .div(numberBuffer(CLB_TOKEN_VALUE_DECIMALS))
-        );
+        sum =
+          sum +
+          current.clbTokenBalance *
+            (BigInt(Math.round(current.clbTokenValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS))) /
+              expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
         return sum;
-      }, BigNumber.from(0));
+      }, 0n);
     } else {
       return selectedBins.reduce((sum, current) => {
-        sum = sum.add(
-          current.freeLiquidity.gt(current.binValue) ? current.binValue : current.freeLiquidity
-        );
+        sum =
+          sum +
+          (current.freeLiquidity > current.binValue ? current.binValue : current.freeLiquidity);
         return sum;
-      }, BigNumber.from(0));
+      }, 0n);
     }
   }, [type, selectedBins]);
 
@@ -74,27 +67,26 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
 
     const totalLiquidityBalance = selectedBins
       .map((bin) => bin.liquidity)
-      .reduce((b, curr) => b.add(curr), BigNumber.from(0));
+      .reduce((b, curr) => b + curr, 0n);
     const totalLiquidityValue = selectedBins.reduce((sum, current) => {
-      return sum.add(current.binValue);
-    }, BigNumber.from(0));
+      return sum + current.binValue;
+    }, 0n);
     const totalRemovableLiquidity = selectedBins
       .map((bin) => {
-        return bin.clbTokenBalance
-          .mul(Math.round(bin.removableRate * 10 ** 10))
-          .div(expandDecimals(10))
-          .div(expandDecimals(2));
+        return (
+          (bin.clbTokenBalance * BigInt(Math.round(bin.removableRate * 10 ** 10))) /
+          expandDecimals(10) /
+          expandDecimals(2)
+        );
       })
-      .reduce((removableBalance, curr) => removableBalance.add(curr), BigNumber.from(0));
+      .reduce((removableBalance, curr) => removableBalance + curr, 0n);
     return {
       totalLiquidity: totalLiquidityBalance,
       totalRemovableLiquidity,
       totalLiquidityValue,
       avgRemovableRate: formatDecimals(
-        totalRemovableLiquidity
-          .mul(expandDecimals(token?.decimals))
-          .mul(expandDecimals(2))
-          .div(balance.isZero() ? 1 : balance),
+        (totalRemovableLiquidity * expandDecimals(token?.decimals) * expandDecimals(2)) /
+          (balance === 0n ? 1n : balance),
         token?.decimals,
         2
       ),
@@ -138,12 +130,12 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                    * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
                    */
                   const utilizedRate = 100 - bin.removableRate;
-                  const utilized = bin.clbTokenBalance
-                    .mul(Math.round(utilizedRate * percentage()))
-                    .div(expandDecimals(FEE_RATE_DECIMAL));
-                  const removable = bin.clbTokenBalance
-                    .mul(Math.round(bin.removableRate * percentage()))
-                    .div(expandDecimals(FEE_RATE_DECIMAL));
+                  const utilized =
+                    (bin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
+                    expandDecimals(FEE_RATE_DECIMAL);
+                  const removable =
+                    (bin.clbTokenBalance * BigInt(Math.round(bin.removableRate * percentage()))) /
+                    expandDecimals(FEE_RATE_DECIMAL);
 
                   return (
                     <LiquidityItem

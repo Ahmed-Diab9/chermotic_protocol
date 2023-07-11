@@ -1,8 +1,7 @@
-import { BigNumber } from 'ethers';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
-import { Logger, errorLog } from '~/utils/log';
-import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-ethers-v5';
+import { Logger } from '~/utils/log';
+import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import { useMarket } from '~/hooks/useMarket';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
@@ -10,17 +9,20 @@ import { filterIfFulfilled } from '~/utils/array';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
+import { PromiseOnlySuccess } from '../utils/promise';
+import { Address } from 'wagmi';
+import { useError } from './useError';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
-  marketAddress: string;
-  lossPrice: BigNumber;
-  profitPrice: BigNumber;
+  marketAddress: Address;
+  lossPrice: bigint;
+  profitPrice: bigint;
   status: string;
-  toProfit: BigNumber;
-  collateral: BigNumber;
-  toLoss: BigNumber;
-  pnl: 0 | BigNumber;
+  toProfit: bigint;
+  collateral: bigint;
+  toLoss: bigint;
+  pnl: 0 | bigint;
 }
 export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
@@ -39,9 +41,6 @@ export const usePosition = () => {
   } = useSWR(['POSITIONS', usumAccount, markets, JSON.stringify(oracleVersions)], async () => {
     if (isNil(markets)) {
       logger.error('NO MARKETS');
-      return [];
-    }
-    if (isNil(client?.signer)) {
       return [];
     }
     if (isNil(usumAccount)) {
@@ -63,66 +62,63 @@ export const usePosition = () => {
       logger.error('No Settlemet tokens');
       return [];
     }
+    if (isNil(client?.walletClient)) {
+      return [];
+    }
 
     const positionsPromise = markets.map(async (market) => {
       const positionIds = await accountApi.getPositionIds(market.address);
 
       const positions = await positionApi
-        ?.getPositions(market.address, positionIds)
+        ?.getPositions(market.address, [...positionIds])
         .catch((err) => {
           logger.error(err);
           return [];
         });
 
       logger.log('POSITIONS', positions);
-      const response = await Promise.allSettled(
+      return await PromiseOnlySuccess(
         positions?.map(async (position) => {
-          const { profitStopPrice, lossCutPrice } = await positionApi?.getLiquidationPrice(
-            market.address,
-            position.openPrice,
-            position,
-            currentSelectedToken.decimals
-          );
+          const { profitStopPrice = BigInt(0), lossCutPrice = BigInt(0) } =
+            await positionApi?.getLiquidationPrice(
+              market.address,
+              position.openPrice,
+              position,
+              currentSelectedToken.decimals
+            );
           const currentPrice = oracleVersions[market.address].price;
           const currentVersion = oracleVersions[market.address].version;
           const targetPrice =
-            position.closePrice && !position.closePrice.isZero()
-              ? position.closePrice
-              : currentPrice;
+            position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
           const pnl = position.openPrice
             ? await positionApi.getPnl(market.address, position.openPrice, targetPrice, position)
-            : 0;
+            : 0n;
           return {
             ...position,
             marketAddress: market.address,
-            lossPrice: lossCutPrice,
-            profitPrice: profitStopPrice,
+            lossPrice: lossCutPrice ?? 0n,
+            profitPrice: profitStopPrice || 0n,
             pnl,
             collateral: position.takerMargin, //TODO ,
             status: determinePositionStatus(position, currentVersion),
-            toLoss: lossCutPrice.sub(currentPrice),
-            toProfit: profitStopPrice.sub(currentPrice),
+            toLoss: lossCutPrice ? lossCutPrice - currentPrice : 0n,
+            toProfit: profitStopPrice ? profitStopPrice - currentPrice : 0n,
           } satisfies Position;
         })
       );
-      return response
-        .filter(
-          (element): element is PromiseFulfilledResult<Position> => element.status === 'fulfilled'
-        )
-        .map(({ value }) => value);
     });
     const positions = await filterIfFulfilled(positionsPromise);
     return positions.flat(1);
   });
   const determinePositionStatus = useCallback(
-    (position: IChromaticPosition, currentOracleVersion: BigNumber) => {
-      if (currentOracleVersion.eq(position.openVersion)) {
+    (position: IChromaticPosition, currentOracleVersion: bigint) => {
+      if (currentOracleVersion === position.openVersion) {
         return 'opening';
       }
-      if (!position.closeVersion.eq(0) && currentOracleVersion.eq(position.closeVersion)) {
+      if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
         return 'closing';
       }
-      if (!position.closeVersion.eq(0) && currentOracleVersion.gt(position.closeVersion)) {
+      if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
         return 'closed';
       }
       return 'opened';
@@ -130,9 +126,7 @@ export const usePosition = () => {
     []
   );
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error, logger });
 
   return {
     positions,

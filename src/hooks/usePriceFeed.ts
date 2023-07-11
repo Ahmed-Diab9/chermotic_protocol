@@ -1,47 +1,67 @@
 import useSWR from 'swr';
-import { ethers, BigNumber } from 'ethers';
-import { useAccount } from 'wagmi';
-import { AggregatorV3Interface__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
-import { Price } from '../typings/market';
-import { errorLog } from '../utils/log';
-import { isValid } from '../utils/valid';
+import { Address, useAccount, usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
+import { isValid } from '../utils/valid';
+import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
+import { useError } from './useError';
 
 const usePriceFeed = () => {
   const { address } = useAccount();
   const fetchKey = isValid(address) ? ['PRICE_FEED', address] : undefined;
+  const publicClient = usePublicClient();
   const {
     data: priceFeed,
     error,
     mutate: fetchPriceFeed,
     isLoading: isFeedLoading,
   } = useSWR(fetchKey, async ([_, walletAddress]) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-    const signer = provider.getSigner(walletAddress);
     const tokens = Object.keys(PRICE_FEED);
-    const promise = tokens.map(async (token) => {
-      const priceFeed = AggregatorV3Interface__factory.connect(PRICE_FEED[token] as string, signer);
-      const { answer } = await priceFeed.latestRoundData();
-      const decimals = await priceFeed.decimals();
-      return [token, answer, decimals] as const;
-    });
-    const response = await Promise.allSettled(promise);
-    return response
-      .filter(
-        (result): result is PromiseFulfilledResult<[string, BigNumber, number]> =>
-          result.status === 'fulfilled'
-      )
-      .map(({ value }) => value)
-      .reduce((acc, currentValue) => {
-        const [token, value, decimals] = currentValue;
-        acc[token] = { value, decimals };
-        return acc;
-      }, {} as Record<string, Price>);
+    const availableToken = tokens
+      .filter((token) => PRICE_FEED[token])
+      .map((token) => {
+        return {
+          name: token,
+          address: PRICE_FEED[token],
+        };
+      });
+    const contractsParam = availableToken
+      .map((token) => {
+        return [
+          {
+            abi: aggregatorV3InterfaceABI,
+            address: token.address!,
+            functionName: 'latestRoundData',
+          },
+          {
+            abi: aggregatorV3InterfaceABI,
+            address: token.address!,
+            functionName: 'decimals',
+          },
+        ] as const;
+      })
+      .flat();
+    const multiCallResult = await publicClient.multicall({ contracts: contractsParam });
+    const tokenMap: Record<Address, { name: string; value: bigint; decimals: number }> = {};
+    let tokenIndex = 0;
+    while (multiCallResult.length > 0) {
+      const latestRoundData = multiCallResult.shift();
+      const decimals = multiCallResult.shift();
+      const token = availableToken[tokenIndex];
+      if (!token || !token.address) {
+        tokenIndex++;
+        continue;
+      }
+      tokenMap[token.address!] = {
+        name: token.name,
+        value: (latestRoundData?.result as unknown as bigint[])[1],
+        decimals: decimals?.result as number,
+      };
+      tokenIndex++;
+    }
+    return tokenMap;
   });
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   return { priceFeed, isFeedLoading, fetchPriceFeed } as const;
 };

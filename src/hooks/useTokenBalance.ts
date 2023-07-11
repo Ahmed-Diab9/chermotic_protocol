@@ -1,25 +1,19 @@
-import { IERC20__factory } from '@chromatic-protocol/sdk-ethers-v5/contracts';
-import { BigNumber } from 'ethers';
+import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { fromPairs, isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
+import { isValid } from '~/utils/valid';
+import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
 const logger = Logger('useBalances');
-function filterResponse<T>(response: PromiseSettledResult<T>[]) {
-  return response
-    .filter((result): result is PromiseFulfilledResult<T> => {
-      return result.status === 'fulfilled';
-    })
-    .map((r) => r.value);
-}
 
 export const useTokenBalances = () => {
   const { tokens } = useSettlementToken();
-  const { data: signer } = useSigner();
   const { address: walletAddress } = useAccount();
-
+  const { client } = useChromaticClient();
   const tokenAddresses = useMemo(() => tokens?.map((t) => t.address) || [], [tokens]);
 
   const {
@@ -29,38 +23,45 @@ export const useTokenBalances = () => {
     isLoading: isTokenBalanceLoading,
   } = useSWR(
     isNotNil(walletAddress)
-      ? ['WALLET_BALANCES', signer, walletAddress, tokenAddresses]
+      ? [
+          'WALLET_BALANCES',
+          walletAddress,
+          tokenAddresses,
+          isValid(client?.publicClient) && 'PUBLIC_CLIENT',
+          isValid(client?.walletClient) && 'WALLET_CLIENT',
+        ]
       : undefined,
     async () => {
-      if (isNil(signer) || isNil(walletAddress) || isNil(tokens)) {
+      if (
+        isNil(client?.walletClient) ||
+        isNil(client?.publicClient) ||
+        isNil(walletAddress) ||
+        isNil(tokens)
+      ) {
         logger.info('No signers', 'Wallet Balances');
         return;
       }
       logger.info('tokens', tokens);
-      const promise = (tokens || []).map(async (token) => {
-        const contract = IERC20__factory.connect(token.address, signer);
-        logger.info('signer', signer);
-        logger.info('wallet address', walletAddress);
-        try {
-          const balance = await contract.balanceOf(walletAddress);
-          logger.info('balance', balance);
-          return [token.name, balance] as const;
-        } catch (e: unknown) {
-          Error.captureStackTrace(e as object);
-          logger.error(e);
-          return [token.name, BigNumber.from(0)] as const;
-        }
+      const contractCallParams = (tokens || []).map((token) => {
+        return {
+          abi: ierc20ABI,
+          address: token.address,
+          functionName: 'balanceOf',
+          args: [walletAddress],
+        } as const;
+      });
+      const results =
+        (await client?.publicClient.multicall({ contracts: contractCallParams })) ?? [];
+      const result = results.map((data, index) => {
+        const balance = data.result;
+        return [tokens[index].name, balance || 0n] as const;
       });
 
-      const response = await Promise.allSettled(promise);
-
-      const result = filterResponse(response);
       return fromPairs(result);
     }
   );
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
+
   return { useTokenBalances, isTokenBalanceLoading, fetchTokenBalances } as const;
 };

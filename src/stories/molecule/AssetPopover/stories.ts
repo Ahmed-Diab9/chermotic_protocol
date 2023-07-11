@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AssetPopover } from '.';
-import { BigNumber } from 'ethers';
+import { Token } from '../../../typings/market';
 
 const meta = {
   title: 'Molecule/AssetPopover',
   component: AssetPopover,
 } satisfies Meta<typeof AssetPopover>;
 
-const tokens = [
+const tokens: Token[] = [
   {
-    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892',
+    address: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892' as `0x${string}`,
     name: 'USDC',
     decimals: 6,
   },
@@ -27,9 +27,9 @@ export const LoggedIn: Story = {
       walletAddress: '0x1111111111222222222233333333334444444444',
     },
     selectedToken: tokens[0],
-    availableMargin: BigNumber.from(1500000000),
-    assetValue: BigNumber.from(2500000000),
-    totalBalance: BigNumber.from(2000000000),
+    availableMargin: 1500000000n,
+    assetValue: 2500000000n,
+    totalBalance: 2000000000n,
   },
 };
 

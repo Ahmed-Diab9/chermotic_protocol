@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
 import { useAppSelector } from '../store';
-import { errorLog } from '~/utils/log';
-import { BigNumber } from 'ethers';
+import { useError } from './useError';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
@@ -18,12 +17,10 @@ export const useFeeRate = () => {
   } = useSWR(['FEE_RATE', selectedToken?.address], async () => {
     if (selectedToken?.address)
       return await marketFactoryApi?.currentInterestRate(selectedToken?.address);
-    return BigNumber.from(0);
+    return 0n;
   });
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   return { feeRate, isFeeRateLoading };
 };

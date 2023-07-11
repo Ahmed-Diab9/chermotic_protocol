@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TradePanel } from '.';
-import { BigNumber } from 'ethers';
 
 import FillUpChartMeta from '~/stories/atom/FillUpChart/stories';
 
@@ -43,16 +42,16 @@ export const Default: Story = {
       leverage: '1',
     },
     balances: {
-      USDC: BigNumber.from(1000),
+      USDC: 1000n,
     },
     token: {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',
       decimals: 6,
     },
-    longTotalMaxLiquidity: BigNumber.from(10000),
-    longTotalUnusedLiquidity: BigNumber.from(10000),
-    shortTotalMaxLiquidity: BigNumber.from(10000),
-    shortTotalUnusedLiquidity: BigNumber.from(10000),
+    longTotalMaxLiquidity: 10000n,
+    longTotalUnusedLiquidity: 10000n,
+    shortTotalMaxLiquidity: 10000n,
+    shortTotalUnusedLiquidity: 10000n,
   },
 };
