@@ -12,8 +12,6 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
-
-import { BigNumber, BigNumberish } from 'ethers';
 import memoizeOne from 'memoize-one';
 import { isNil } from 'ramda';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
