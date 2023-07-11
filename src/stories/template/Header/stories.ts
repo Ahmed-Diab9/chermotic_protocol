@@ -44,7 +44,7 @@ export const LoggedIn: Story = {
       USDC: 100n,
     },
     priceFeed: {
-      USDC: {
+      '0x8888888888888888888888888888888888888888': {
         value: 1500n,
         decimals: 8,
       },

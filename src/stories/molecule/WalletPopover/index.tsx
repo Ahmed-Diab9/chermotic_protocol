@@ -162,7 +162,7 @@ export const WalletPopover = ({
                                                   formatBalance(
                                                     balances[token.name],
                                                     token,
-                                                    priceFeed[token.name]
+                                                    priceFeed[token.address]
                                                   )
                                                 )}`}
                                             </>

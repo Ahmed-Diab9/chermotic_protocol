@@ -8,13 +8,14 @@ import { Avatar } from '../../atom/Avatar';
 import { WalletPopover } from '../../molecule/WalletPopover';
 
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+import { Address } from 'wagmi';
 
 interface HeaderProps {
   account?: Account;
   tokens?: Token[];
   markets?: Market[];
   balances?: Record<string, bigint>;
-  priceFeed?: Record<string, Price>;
+  priceFeed?: Record<Address, Price>;
   pools?: LiquidityPoolSummary[];
   isBalanceLoading?: boolean;
   onConnect?: () => unknown;
