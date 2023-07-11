@@ -68,7 +68,8 @@ function useAddLiquidity(props: Props) {
     setIsLoading(true);
     try {
       const marketAddress = market?.address;
-      const expandedAmount = BigInt(amount) * expandDecimals(token.decimals);
+      // FIXME
+      const expandedAmount = BigInt(Number(amount) * 100000) * expandDecimals(token.decimals - 5);
       if (!isValid(expandedAmount)) {
         errorLog('amount is invalid');
         return;
