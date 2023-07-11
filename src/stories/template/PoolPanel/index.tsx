@@ -75,6 +75,8 @@ interface PoolPanelProps {
 
   rates: [number, number];
   binFeeRates: number[];
+  isLoading?: boolean;
+
   onRangeChange: (data: RangeChartData) => unknown;
   onMinIncrease: () => void;
   onMinDecrease: () => void;
@@ -119,6 +121,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMaxIncrease,
     onMaxDecrease,
     onFullRange,
+    // isLoading,
   } = props;
 
   const dispatch = useAppDispatch();
@@ -630,7 +633,7 @@ const BinItem = (props: BinItemProps) => {
               <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
             </>
           )}
-          <p className="font-semibold text-black/30">
+          <p className="font-semibold text-black">
             {isLoading ? (
               <Skeleton width={40} />
             ) : (
@@ -656,7 +659,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           {isLoading ? (
-            <Skeleton width={60} containerClassName="text-[60px]" />
+            <Skeleton width={60} containerClassName="text-[60px] leading-none" />
           ) : (
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
           )}

@@ -18,6 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    isLoading: false,
     binFeeRates: [0.01, 0.02],
     token: {
       name: 'USDC',
