@@ -11,6 +11,7 @@ import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
 import { toast } from 'react-toastify';
+import { useError } from './useError';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -57,7 +58,7 @@ const usePoolReceipt = () => {
   const router = useMemo(() => client?.router(), [client]);
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
-  const lensApi = useMemo(()=>client?.lens(), [client]);
+  const lensApi = useMemo(() => client?.lens(), [client]);
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
   const marketAddress = market?.address;
 
@@ -87,20 +88,21 @@ const usePoolReceipt = () => {
         address === undefined ||
         marketAddress === undefined ||
         currentOracleVersion === undefined ||
-        client === undefined || lensApi === undefined
+        client === undefined ||
+        lensApi === undefined
       ) {
         return [];
       }
 
-    const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
-    if (!receipts) {
-      return [];
-    }
-    const ownedBinsParam = receipts.map((receipt) => ({
-      tradingFeeRate: receipt.tradingFeeRate,
-      oracleVersion: receipt.oracleVersion,
-    }));
-    const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
+      const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
+      if (!receipts) {
+        return [];
+      }
+      const ownedBinsParam = receipts.map((receipt) => ({
+        tradingFeeRate: receipt.tradingFeeRate,
+        oracleVersion: receipt.oracleVersion,
+      }));
+      const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
 
       return ownedBins
         .map((bin) => {
@@ -208,9 +210,7 @@ const usePoolReceipt = () => {
     }
   }, [market, receipts, router]);
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   return {
     receipts,

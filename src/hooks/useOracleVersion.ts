@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { Logger, errorLog } from '~/utils/log';
+import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
+import { useError } from './useError';
+
 const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
   const { markets } = useMarket();
@@ -43,9 +45,7 @@ const useOracleVersion = () => {
     }
   );
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error, logger });
 
   return { oracleVersions, fetchOracleVersions };
 };

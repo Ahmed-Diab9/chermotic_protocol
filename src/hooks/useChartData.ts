@@ -9,6 +9,7 @@ import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 
 import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
+import { useError } from './useError';
 
 const logger = Logger('useChartData');
 
@@ -70,9 +71,7 @@ const useChartData = () => {
     }
   );
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const { negative, positive } = useMemo(() => {
     if (!data?.liquidity) return {};

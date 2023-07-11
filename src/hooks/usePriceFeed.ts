@@ -1,9 +1,9 @@
 import useSWR from 'swr';
 import { Address, useAccount, usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
-import { errorLog } from '../utils/log';
 import { isValid } from '../utils/valid';
 import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
+import { useError } from './useError';
 
 const usePriceFeed = () => {
   const { address } = useAccount();
@@ -61,9 +61,7 @@ const usePriceFeed = () => {
     return tokenMap;
   });
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
 
   return { priceFeed, isFeedLoading, fetchPriceFeed } as const;
 };

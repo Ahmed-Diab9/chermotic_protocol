@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
-import { Logger, errorLog } from '~/utils/log';
+import { Logger } from '~/utils/log';
 import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import { useMarket } from '~/hooks/useMarket';
@@ -11,6 +11,7 @@ import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { Address } from 'wagmi';
+import { useError } from './useError';
 const logger = Logger('usePosition');
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
@@ -125,9 +126,7 @@ export const usePosition = () => {
     []
   );
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error, logger });
 
   return {
     positions,

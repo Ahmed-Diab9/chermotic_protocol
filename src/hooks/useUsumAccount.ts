@@ -15,6 +15,7 @@ import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useSettlementToken } from './useSettlementToken';
 import { ADDRESS_ZERO } from '~/utils/address';
+import { useError } from './useError';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
@@ -97,9 +98,7 @@ export const useUsumAccount = () => {
     }
   }, [accountAddress]);
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const createAccount = async () => {
     const accountApi = client?.account();

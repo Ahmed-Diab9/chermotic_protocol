@@ -1,5 +1,4 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
-import { isNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
@@ -13,9 +12,9 @@ import { PromiseOnlySuccess } from '../utils/promise';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
-import useOracleVersion from './useOracleVersion';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
+import { useError } from './useError';
 
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId } = ChromaticUtils;
@@ -105,9 +104,7 @@ export const useLiquidityPools = () => {
     return response.flat();
   });
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error });
 
   return { liquidityPools, fetchLiquidityPools } as const;
 };

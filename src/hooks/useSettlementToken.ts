@@ -4,11 +4,11 @@ import { useAccount } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { Token } from '~/typings/market';
-import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
 import { toast } from 'react-toastify';
 import { isValid } from '~/utils/valid';
+import { useError } from './useError';
 
 export const useSettlementToken = () => {
   const { address } = useAccount();
@@ -37,9 +37,8 @@ export const useSettlementToken = () => {
     return tokens;
   });
 
-  if (error) {
-    errorLog(error);
-  }
+  useError({ error });
+
   const onTokenSelect = useCallback(
     (token: Token) => {
       dispatch(tokenAction.onTokenSelect(token));

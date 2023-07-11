@@ -17,6 +17,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
+import { useError } from './useError';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -89,9 +90,7 @@ export const useOwnedLiquidityPools = () => {
     }
   );
 
-  if (error) {
-    logger.error(error);
-  }
+  useError({ error, logger });
 
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
