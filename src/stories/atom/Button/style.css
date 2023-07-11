@@ -66,7 +66,7 @@
     width: 12px;
   }
   &.btn-icon-only {
-    @apply min-h-[20px] p-[1px];
+    @apply min-h-[20px] p-0 items-center justify-center;
   }
 }
 .btn-sm {
@@ -81,7 +81,7 @@
     width: 12px;
   }
   &.btn-icon-only {
-    @apply min-h-[24px] p-[2px];
+    @apply min-h-[24px] p-0 items-center justify-center;
   }
 }
 .btn-base {
@@ -96,7 +96,7 @@
     width: 16px;
   }
   &.btn-icon-only {
-    @apply min-h-[30px] p-1;
+    @apply min-h-[30px] p-0 items-center justify-center;
   }
   &.btn-circle {
     @apply p-2;
@@ -111,10 +111,10 @@
     gap: 8px;
   }
   svg {
-    width: 16px;
+    width: 20px;
   }
   &.btn-icon-only {
-    @apply min-h-[36px] p-2;
+    @apply min-h-[36px] p-0 items-center justify-center;
   }
 }
 .btn-xl {
@@ -126,24 +126,24 @@
     gap: 12px;
   }
   svg {
-    width: 20px;
+    width: 24px;
   }
   &.btn-icon-only {
-    @apply min-h-[42px] p-2;
+    @apply min-h-[42px] p-0 items-center justify-center;
   }
 }
 .btn-2xl {
   @apply min-w-[48px];
-  font-size: 20px;
+  font-size: 18px;
   height: 48px;
   padding: 0 16px;
   > div {
     gap: 12px;
   }
   svg {
-    width: 24px;
+    width: 28px;
   }
   &.btn-icon-only {
-    @apply min-h-[48px] p-2;
+    @apply min-h-[48px] p-0 items-center justify-center;
   }
 }

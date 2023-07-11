@@ -75,6 +75,8 @@ interface PoolPanelProps {
 
   rates: [number, number];
   binFeeRates: number[];
+  isLoading?: boolean;
+
   onRangeChange: (data: RangeChartData) => unknown;
   onMinIncrease: () => void;
   onMinDecrease: () => void;
@@ -119,6 +121,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onMaxIncrease,
     onMaxDecrease,
     onFullRange,
+    // isLoading,
   } = props;
 
   const dispatch = useAppDispatch();
@@ -236,7 +239,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       </div>
                     </Switch.Group>
                   </div>
-                  <div className="flex justify-between mt-6">
+                  <div className="flex justify-between mt-6 mb-5">
                     <div className="text-left">
                       <p className="mb-1 text-black/30">Short LP</p>
                       {/**
@@ -409,7 +412,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
                     {isLoading ? (
                       <div className="flex items-center gap-1 mt-2">
-                        <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                        <Skeleton
+                          circle
+                          containerClassName="avatar-skeleton w-[16px] text-[16px]"
+                        />
                         <Skeleton width={40} />
                       </div>
                     ) : (
@@ -619,7 +625,7 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex items-center gap-2">
           {isLoading ? (
             <div className="flex items-center gap-1">
-              <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+              <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
               <Skeleton width={40} />
             </div>
           ) : (
@@ -627,7 +633,7 @@ const BinItem = (props: BinItemProps) => {
               <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
             </>
           )}
-          <p className="font-semibold text-black/30">
+          <p className="font-semibold text-black">
             {isLoading ? (
               <Skeleton width={40} />
             ) : (
@@ -653,7 +659,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           {isLoading ? (
-            <Skeleton width={60} containerClassName="text-[60px]" />
+            <Skeleton width={60} containerClassName="text-[60px] leading-none" />
           ) : (
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
           )}

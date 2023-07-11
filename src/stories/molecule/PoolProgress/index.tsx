@@ -6,7 +6,7 @@ import { Button } from '~/stories/atom/Button';
 import { Progress } from '~/stories/atom/Progress';
 import { Loading } from '~/stories/atom/Loading';
 import { Tab } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/24/outline';
+import CheckIcon from '~/assets/icons/CheckIcon';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Guide } from '~/stories/atom/Guide';
 import { Disclosure } from '@headlessui/react';
@@ -301,7 +301,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/40 bg-gray/20" />
+              <Tag label="standby" className="text-black/30 bg-gray/20" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
@@ -337,7 +337,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </h4>
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
           <span className="">
-            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="xs" />}
+            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
           <p className="">
             {detail} {token}
@@ -351,25 +351,26 @@ const ProgressItem = (props: ProgressItemProps) => {
       )}
       <div className="flex items-end gap-3 mt-1">
         <div
-          className={`flex items-end gap-3 ${
-            ((action === 'add' && status === 'standby') ||
-              (action === 'remove' && status === 'completed')) &&
-            'opacity-30'
+          className={`flex items-center gap-3 ${
+            (action === 'add' && status === 'standby') ||
+            (action === 'remove' && status === 'completed')
+              ? 'opacity-30'
+              : ''
           }`}
         >
           {isLoading ? (
-            <Skeleton width={40} containerClassName="text-[40px]" />
+            <Skeleton width={40} containerClassName="text-[40px] leading-none" />
           ) : (
             <Thumbnail className="rounded" src={image} />
           )}
           <div>
             {isLoading ? (
               <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
                 <Skeleton width={40} />
               </div>
             ) : (
-              <Avatar label={token} size="xs" gap="1" />
+              <Avatar label={token} size="sm" gap="1" />
             )}
             <p className="mt-1 text-left text-black/30">
               {isLoading ? <Skeleton width={60} /> : <>{name}</>}

@@ -5,4 +5,21 @@
   .react_range__track {
     @apply box-content;
   }
+  .react_range__label {
+    @apply text-xs text-black/30;
+  }
+  .react_range__handle_value {
+    /* @apply -translate-y-[2px]; */
+    @apply top-[-48px] -translate-y-[100%];
+    @apply inline-block rounded-3xl border py-1 px-2 min-w-[40px] text-center leading-none text-xs;
+    backdrop-filter: blur(2px);
+    &.left {
+      /* @apply right-0 translate-x-[50%]; */
+      @apply right-2;
+    }
+    &.right {
+      /* @apply left-0 translate-x-[-50%]; */
+      @apply left-2;
+    }
+  }
 }

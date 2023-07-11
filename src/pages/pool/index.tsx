@@ -150,6 +150,7 @@ const Pool = () => {
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
           onStatusUpdate={createUsumAccount}
+          showAssetPopover={false}
         />
         <div className="flex items-stretch gap-3">
           <div className="flex-auto w-3/5">

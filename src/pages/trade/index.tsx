@@ -135,6 +135,7 @@ const Trade = () => {
           onWithdraw={onWithdraw}
           onConnect={connectAsync}
           onStatusUpdate={createUsumAccount}
+          showAssetPopover={true}
         />
         <div className="w-full">
           <TradePanel

@@ -1,9 +1,9 @@
 import Logo from '~/assets/icons/Logo';
 import { Button } from '../../atom/Button';
 
-import gitbookIcon from '/src/assets/images/gitbook.svg';
-import telegramIcon from '/src/assets/images/telegram.svg';
-import twitterIcon from '/src/assets/images/twitter.svg';
+import GitbookIcon from '~/assets/icons/GitbookIcon';
+import TelegramIcon from '~/assets/icons/TelegramIcon';
+import TwitterIcon from '~/assets/icons/TwitterIcon';
 
 // interface FooterProps {
 //   user?: User;
@@ -18,25 +18,28 @@ export const Footer = () => (
       <a href="/home" title="Chromatic">
         <Logo className="text-white" />
       </a>
-      <p className="text-white/30">Redesigning Future of Derivative Markets</p>
-      <div className="flex items-center gap-2">
+      <p className="text-white/30">A New Era in Decentralized Perpetual Futures</p>
+      <div className="flex items-center gap-2 text-white">
         <Button
+          href="https://twitter.com/chromatic_perp"
           css="circle"
           size="lg"
           className="!bg-transparent !border-white/30"
-          iconOnly={<img src={twitterIcon} alt="twitter" />}
+          iconOnly={<TwitterIcon />}
         />
         <Button
+          href=""
           css="circle"
           size="lg"
           className="!bg-transparent !border-white/30"
-          iconOnly={<img src={telegramIcon} alt="telegram" />}
+          iconOnly={<TelegramIcon />}
         />
         <Button
+          href=""
           css="circle"
           size="lg"
           className="!bg-transparent !border-white/30"
-          iconOnly={<img src={gitbookIcon} alt="gitbook" />}
+          iconOnly={<GitbookIcon />}
         />
       </div>
     </div>
