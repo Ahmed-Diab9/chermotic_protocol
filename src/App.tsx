@@ -11,6 +11,7 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { CHAIN } from '~/constants';
+import './typings/bigint';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
