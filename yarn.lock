@@ -1441,6 +1441,13 @@
   resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-ethers-v5/-/sdk-ethers-v5-0.1.0-rc.73.tgz#d8f4f671fc11b36e093f8d856d31a23ec8cea88c"
   integrity sha512-xOrWGCD/blCecQZ1HStMHmiSrEVR+UekZmMxeprAJSDk8hL9jm1kJtl4r3Sa/yKlilg8Bvrhfvq+UIZq5X15vw==
 
+"@chromatic-protocol/sdk-viem@0.1.0-rc.75":
+  version "0.1.0-rc.75"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.75.tgz#41e78ed56bd056fb52205fe97c83d07ee2718f26"
+  integrity sha512-sMqPIUZ49Z9RDftjYFJKikOPbhOof3uSamk7dQt9B8vmczTDeipuMlnlzBHCF/LbnKy4tn6PA/fk2V8HyX540Q==
+  dependencies:
+    viem "1.2.12"
+
 "@coinbase/wallet-sdk@^3.6.6":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.7.1.tgz#44b3b7a925ff5cc974e4cbf7a44199ffdcf03541"
@@ -9544,7 +9551,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-viem@^1.0.0:
+viem@1.2.12, viem@^1.0.0:
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.2.12.tgz#0342f52d05968bd1c2af5db0b9bc569926ae9151"
   integrity sha512-TMhvqT2VaCaJyBfuNDyL1h8xPFyPDHeX6Qab66TjWscnNcTwkW0gojO4Uh+A4RuPzFxIlWSW+b5SjS8SJHlHpg==
@@ -9748,11 +9755,6 @@ write-file-atomic@^4.0.2:
   dependencies:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
-
-ws@8.12.0:
-  version "8.12.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.12.0.tgz#485074cc392689da78e1828a9ff23585e06cddd8"
-  integrity sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==
 
 ws@8.12.0:
   version "8.12.0"
