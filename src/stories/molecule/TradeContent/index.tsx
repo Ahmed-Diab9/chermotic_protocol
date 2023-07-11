@@ -434,7 +434,9 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLink="#"
             />
             <p>Contract Qty</p>
-            <p className="ml-2 text-black/30">{withComma(input?.quantity)} CLB</p>
+            <p className="ml-2 text-black/30">
+              {withComma(input?.quantity)} {token?.name}
+            </p>
           </div>
         </>
       );
