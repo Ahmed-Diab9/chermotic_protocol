@@ -343,7 +343,7 @@ const PositionItem = function (props: Props) {
           <div className="flex items-center gap-6">
             {isLoading ? (
               <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
                 <Skeleton width={40} />
               </div>
             ) : (
@@ -353,7 +353,7 @@ const PositionItem = function (props: Props) {
             )}
             {isLoading ? (
               <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
                 <Skeleton width={40} />
               </div>
             ) : (

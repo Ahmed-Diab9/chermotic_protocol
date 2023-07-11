@@ -236,7 +236,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       </div>
                     </Switch.Group>
                   </div>
-                  <div className="flex justify-between mt-6">
+                  <div className="flex justify-between mt-6 mb-5">
                     <div className="text-left">
                       <p className="mb-1 text-black/30">Short LP</p>
                       {/**
@@ -409,7 +409,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
                     {isLoading ? (
                       <div className="flex items-center gap-1 mt-2">
-                        <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+                        <Skeleton
+                          circle
+                          containerClassName="avatar-skeleton w-[16px] text-[16px]"
+                        />
                         <Skeleton width={40} />
                       </div>
                     ) : (
@@ -619,7 +622,7 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex items-center gap-2">
           {isLoading ? (
             <div className="flex items-center gap-1">
-              <Skeleton circle containerClassName="avatar-skeleton w-4 text-lg" />
+              <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
               <Skeleton width={40} />
             </div>
           ) : (
