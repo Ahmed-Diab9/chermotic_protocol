@@ -177,10 +177,11 @@ export const WalletPopover = ({
                                             <Skeleton width={40} />
                                           ) : (
                                             <>
-                                              {withComma(
-                                                balances[token.address] /
-                                                  expandDecimals(token.decimals)
-                                              )}{' '}
+                                              {isValid(balances[token.address]) &&
+                                                withComma(
+                                                  balances[token.address] /
+                                                    expandDecimals(token.decimals)
+                                                )}{' '}
                                               {token.name}
                                             </>
                                           )}
