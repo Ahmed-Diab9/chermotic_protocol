@@ -8,6 +8,7 @@ import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useLocalStorage from './useLocalStorage';
 import { toast } from 'react-toastify';
+import { isValid } from '~/utils/valid';
 
 export const useSettlementToken = () => {
   const { address } = useAccount();
@@ -17,12 +18,18 @@ export const useSettlementToken = () => {
 
   const dispatch = useAppDispatch();
   const { setState: setStoredToken } = useLocalStorage('usum:token');
+  const fetchKey = useMemo(() => {
+    if (isValid(address) && isValid(marketFactoryApi)) {
+      return ['SETTLEMENT_TOKENS', address, 'MARKET_FACTORY'] as const;
+    }
+    return;
+  }, [address, marketFactoryApi]);
   const {
     data: tokens,
     error,
     mutate: fetchTokens,
     isLoading: isTokenLoading,
-  } = useSWR(['SETTLEMENT_TOKENS', address], async () => {
+  } = useSWR(fetchKey, async () => {
     if (!marketFactoryApi) {
       return;
     }
