@@ -301,7 +301,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/40 bg-gray/20" />
+              <Tag label="standby" className="text-black/30 bg-gray/20" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
