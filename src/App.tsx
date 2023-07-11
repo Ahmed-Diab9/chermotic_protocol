@@ -9,9 +9,9 @@ import { store } from '~/store/index';
 
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 import { CHAIN } from '~/constants';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
 const CHAINS_WAGMI = {
@@ -25,16 +25,16 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [publicProvider()]
 );
 
-const client = createConfig({
-  autoConnect: false,
+const config = createConfig({
+  autoConnect: true,
   connectors: [
-    new MetaMaskConnector({ chains }),
+    new InjectedConnector({ chains }),
     // new CoinbaseWalletConnector({
     //   chains,
     //   options: { appName: "usum", reloadOnDisconnect: false },
     // }),
   ] as [
-    MetaMaskConnector
+    InjectedConnector
     // CoinbaseWalletConnector
   ],
   publicClient,
@@ -49,7 +49,7 @@ function App() {
       }}
     >
       <Provider store={store}>
-        <WagmiConfig config={client}>
+        <WagmiConfig config={config}>
           <div className="App">
             <RouterProvider router={router} />
           </div>
