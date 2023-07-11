@@ -1,10 +1,10 @@
-import { Button } from "../Button";
-import { MinusIcon } from "@heroicons/react/24/outline";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Button } from '../Button';
+import MinusIcon from '~/assets/icons/MinusIcon';
+import PlusIcon from '~/assets/icons/PlusIcon';
 
 interface CounterProps {
   label?: string;
-  size?: "sm" | "base" | "lg";
+  size?: 'sm' | 'base' | 'lg';
   disabled?: boolean;
   value?: number | string;
   symbol?: string;
@@ -18,14 +18,19 @@ export const Counter = (props: CounterProps) => {
 
   return (
     <div className="flex items-stretch justify-center w-full gap-0">
-      <Button onClick={onDecrement} label="minus" iconOnly={<MinusIcon />} />
+      <Button
+        onClick={onDecrement}
+        label="minus"
+        iconOnly={<MinusIcon />}
+        className="!text-black"
+      />
       <div className="flex items-center justify-center w-1/2">
         <h4 className="font-bold text-center">
-          {typeof value === "number" ? value?.toFixed(2) : value}
+          {typeof value === 'number' ? value?.toFixed(2) : value}
           {symbol}
         </h4>
       </div>
-      <Button onClick={onIncrement} label="plus" iconOnly={<PlusIcon />} />
+      <Button onClick={onIncrement} label="plus" iconOnly={<PlusIcon />} className="!text-black" />
     </div>
   );
 };
