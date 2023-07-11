@@ -182,7 +182,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
                   <img src={createAccountIcon} alt="create account" />
                   <p>
-                    To make a deposit, you need to <br />
+                    {title === 'Deposit' ? 'To make a deposit' : 'To withdraw an asset'}
+                    , you need to <br />
                     create account first
                   </p>
                 </article>
