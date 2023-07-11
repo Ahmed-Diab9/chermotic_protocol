@@ -179,7 +179,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </Listbox.Options>
             </Listbox>
           </div>
-          <div className="max-w-[220px]">
+          <div className="flex flex-col items-end">
             <AmountSwitch input={input} token={token} onAmountChange={onInputChange} />
           </div>
         </div>
@@ -418,13 +418,15 @@ const AmountSwitch = (props: AmountSwitchProps) => {
     case 'collateral': {
       return (
         <>
-          <Input
-            value={input.collateral.toString()}
-            onChange={(event) => {
-              event.preventDefault();
-              onAmountChange?.('collateral', event);
-            }}
-          />
+          <div className="max-w-[220px]">
+            <Input
+              value={input.collateral.toString()}
+              onChange={(event) => {
+                event.preventDefault();
+                onAmountChange?.('collateral', event);
+              }}
+            />
+          </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide
               label="contract-qty"
@@ -440,13 +442,15 @@ const AmountSwitch = (props: AmountSwitchProps) => {
     case 'quantity': {
       return (
         <>
-          <Input
-            value={input?.quantity.toString()}
-            onChange={(event) => {
-              event.preventDefault();
-              onAmountChange('quantity', event);
-            }}
-          />
+          <div className="max-w-[220px]">
+            <Input
+              value={input?.quantity.toString()}
+              onChange={(event) => {
+                event.preventDefault();
+                onAmountChange('quantity', event);
+              }}
+            />
+          </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide
               label="collateral"
