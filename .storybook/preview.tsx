@@ -4,18 +4,18 @@ import { MemoryRouter } from 'react-router-dom';
 import '../src/index.css';
 import { Provider } from 'react-redux';
 import { store } from '../src/store';
-import { WagmiConfig, configureChains, createClient } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { hardhat } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
 // import "../src/theme";
 
-const { provider, webSocketProvider } = configureChains([hardhat], [publicProvider()]);
+const { publicClient, webSocketPublicClient } = configureChains([hardhat], [publicProvider()]);
 
-const client = createClient({
+const config = createConfig({
   autoConnect: false,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 const preview: Preview = {
@@ -41,7 +41,7 @@ const preview: Preview = {
     (story) => {
       return (
         <Provider store={store}>
-          <WagmiConfig client={client}>
+          <WagmiConfig config={config}>
             <MemoryRouter>{story()}</MemoryRouter>
           </WagmiConfig>
         </Provider>
