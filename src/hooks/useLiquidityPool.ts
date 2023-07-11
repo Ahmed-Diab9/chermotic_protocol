@@ -23,34 +23,23 @@ export const useLiquidityPools = () => {
   const { address: walletAddress } = useAccount();
   const { client } = useChromaticClient();
 
-  const { tokens, currentSelectedToken } = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const marketApi = useMemo(() => client?.market(), [client]);
   const lensApi = useMemo(() => client?.lens(), [client]);
   const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
   // const selectedMarket = useAppSelector((state) => state.market.selectedMarket);
   const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
-  const { oracleVersions } = useOracleVersion();
   const fetchKey = useMemo(
     () =>
-      isValid(walletAddress) && isValid(tokenAddresses)
+      isValid(walletAddress) &&
+      isValid(tokenAddresses) &&
+      isValid(marketFactoryApi) &&
+      isValid(lensApi) &&
+      isValid(marketApi)
         ? (['LIQUIDITY_POOL', walletAddress, tokenAddresses] as const)
         : undefined,
-    [walletAddress, tokenAddresses]
+    [walletAddress, tokenAddresses, marketApi, marketFactoryApi, lensApi]
   );
-
-  function validatePrecondition() {
-    if (!isValid(oracleVersions)) {
-      logger.info('OracleVersions');
-      return false;
-    }
-    if (!isValid(client)) {
-      logger.info('Client');
-      return false;
-    }
-    if (isNil(lensApi) || isNil(marketApi) || isNil(marketFactoryApi)) {
-      return false;
-    }
-  }
 
   const {
     data: liquidityPools,
@@ -58,9 +47,6 @@ export const useLiquidityPools = () => {
     mutate: fetchLiquidityPools,
   } = useSWR(fetchKey, async ([_, walletAddress, tokenAddresses]) => {
     logger.log('FETCH POOLS');
-    if (!validatePrecondition()) {
-      return [];
-    }
 
     const baseFeeRates = [...FEE_RATES, ...FEE_RATES.map((rate) => rate * -1)];
     const tokenIds = [
