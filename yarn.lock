@@ -1436,11 +1436,6 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk-ethers-v5@^0.1.0-rc.73":
-  version "0.1.0-rc.73"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-ethers-v5/-/sdk-ethers-v5-0.1.0-rc.73.tgz#d8f4f671fc11b36e093f8d856d31a23ec8cea88c"
-  integrity sha512-xOrWGCD/blCecQZ1HStMHmiSrEVR+UekZmMxeprAJSDk8hL9jm1kJtl4r3Sa/yKlilg8Bvrhfvq+UIZq5X15vw==
-
 "@chromatic-protocol/sdk-viem@0.1.0-rc.75":
   version "0.1.0-rc.75"
   resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.75.tgz#41e78ed56bd056fb52205fe97c83d07ee2718f26"
