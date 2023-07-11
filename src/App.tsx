@@ -7,7 +7,7 @@ import { SWRConfig } from 'swr';
 import { router } from '~/routes';
 import { store } from '~/store/index';
 
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
+import { Address, WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { CHAIN } from '~/constants';
@@ -16,7 +16,14 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
 const CHAINS_WAGMI = {
-  anvil: hardhat,
+  anvil: {
+    ...hardhat,
+    contracts: {
+      multicall3: {
+        address: '0x63ecE4C05B8fB272D16844E96702Ea2f26370982' as Address,
+      },
+    },
+  },
   arbitrum_goerli: arbitrumGoerli,
   arbitrum_one: arbitrum,
 };

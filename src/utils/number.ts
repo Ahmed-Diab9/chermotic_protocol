@@ -71,7 +71,7 @@ export const expandDecimals = (decimals?: number) => {
 };
 
 export const formatBalance = (balance: bigint, token: Token, price: Price) => {
-  return (balance * price.value) / expandDecimals(token.decimals) / expandDecimals(price.decimals);
+  return (balance * price.value || 0n) / expandDecimals(token.decimals) / expandDecimals(price.decimals);
 };
 
 export const formatFeeRate = (feeRate: number) => {
