@@ -358,11 +358,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                     <div className="text-sm">
                       <p className="mb-1 text-black/30">
                         To open a position in the Chromatic Protocol, you need to deposit the
-                        required amount of settlement assets into your account.
-                        <Outlink
-                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement"
-                          className="ml-2"
-                        />
+                        required amount of settlement assets into your account.{' '}
+                        <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement" />
                       </p>
                     </div>
                   </article>
