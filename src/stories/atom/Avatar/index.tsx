@@ -5,7 +5,7 @@ interface AvatarProps {
   active?: boolean;
   backgroundColor?: string;
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
-  fontSize?: string;
+  fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   fontWeight?: 'lighter' | 'normal' | 'medium' | 'semibold' | 'bold';
   gap?: string;
   className?: string;

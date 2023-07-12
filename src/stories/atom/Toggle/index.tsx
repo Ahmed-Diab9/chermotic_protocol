@@ -1,10 +1,10 @@
-import "./style.css";
-import { Switch } from "@headlessui/react";
+import './style.css';
+import { Switch } from '@headlessui/react';
 
 interface ToggleProps {
   label?: string;
-  size?: "xs" | "sm" | "base" | "lg";
-  fontSize?: string;
+  size?: 'xs' | 'sm' | 'base' | 'lg';
+  fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   disabled?: boolean;
   checked?: boolean;
   defaultChecked?: boolean;
@@ -14,8 +14,8 @@ interface ToggleProps {
 export const Toggle = (props: ToggleProps) => {
   const {
     label,
-    size = "base",
-    fontSize = "base",
+    size = 'base',
+    fontSize = 'base',
     disabled = false,
     checked,
     defaultChecked = false,
@@ -25,9 +25,7 @@ export const Toggle = (props: ToggleProps) => {
   return (
     <Switch.Group>
       <div className="flex items-center gap-[6px]">
-        {label && (
-          <Switch.Label className={`text-${fontSize}`}>{label}</Switch.Label>
-        )}
+        {label && <Switch.Label className={`text-${fontSize}`}>{label}</Switch.Label>}
         <Switch
           checked={checked}
           defaultChecked={defaultChecked}
