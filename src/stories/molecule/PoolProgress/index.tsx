@@ -113,12 +113,14 @@ export const PoolProgress = ({
                       <Tab>Minting ({mintings})</Tab>
                       <Tab>Burning ({burnings})</Tab>
                     </Tab.List>
+                    {/* todo: when list is empty, button disabled */}
                     <Button
                       label="Claim All"
                       className="ml-auto"
                       size="base"
-                      css="gray"
+                      css="active"
                       onClick={() => onReceiptClaimBatch?.()}
+                      // disabled
                     />
                   </div>
 
