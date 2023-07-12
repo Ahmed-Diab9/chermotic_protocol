@@ -2,7 +2,7 @@ import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { fromPairs, isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
@@ -34,17 +34,16 @@ export const useTokenBalances = () => {
       : undefined,
     async () => {
       if (
+        isNil(client) ||
         isNil(client?.walletClient) ||
         isNil(client?.publicClient) ||
         isNil(walletAddress) ||
         isNil(tokens)
       ) {
         logger.info('No signers', 'Wallet Balances');
-        return;
+        return {};
       }
       logger.info('tokens', tokens);
-
-      if (!client?.publicClient) return [];
 
       const results = await Promise.all(
         (tokens || []).map(async (token) => {
@@ -61,7 +60,7 @@ export const useTokenBalances = () => {
         return [tokens[index].address, balance || 0n] as const;
       });
 
-      return fromPairs(result);
+      return fromPairs(result) as Record<Address, bigint>;
     }
   );
 

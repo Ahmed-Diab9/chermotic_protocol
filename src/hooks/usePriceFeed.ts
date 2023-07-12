@@ -44,7 +44,7 @@ const usePriceFeed = () => {
         })
     );
 
-    result.reduce((map, row) => {
+    return result.reduce((map, row) => {
       map[row.address] = {
         name: row.name,
         value: row.latestRoundData[1],

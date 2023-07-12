@@ -41,7 +41,7 @@ export const LoggedIn: Story = {
       } as Market,
     ],
     balances: {
-      USDC: 100n,
+      '0xusdc': 100n,
     },
     priceFeed: {
       '0x8888888888888888888888888888888888888888': {
