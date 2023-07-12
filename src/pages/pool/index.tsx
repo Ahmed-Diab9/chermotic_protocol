@@ -33,6 +33,8 @@ import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
 import { isValid } from '~/utils/valid';
+import { CHAIN_ID } from '~/constants';
+import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 
 const Pool = () => {
   useConnectOnce();
@@ -117,7 +119,10 @@ const Pool = () => {
         pools={pools}
         onConnect={() => {
           connectAsync({
-            connector: new InjectedConnector(),
+            connector: new InjectedConnector({
+              chains: [CHAINS_WAGMI[CHAIN]],
+            }),
+            chainId: CHAIN_ID,
           });
         }}
         onCreateAccount={createUsumAccount}
