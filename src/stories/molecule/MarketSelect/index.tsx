@@ -65,7 +65,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               />
             </div>
           </div>
-          <h2 className="text-2xl">{isLoading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
+          <h2 className="text-3xl">{isLoading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
         </div>
       </div>
     </>
@@ -99,7 +99,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <Skeleton width={60} containerClassName="text-lg" />
             </div>
           ) : (
-            <Avatar label={selectedToken?.name} fontSize="lg" gap="1" size="sm" />
+            <Avatar label={selectedToken?.name} fontSize="xl" gap="1" size="sm" />
           )}
         </div>
         <div>
@@ -109,7 +109,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <Skeleton width={80} containerClassName="text-lg" />
             </div>
           ) : (
-            <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" size="sm" />
+            <Avatar label={selectedMarket?.description} fontSize="xl" gap="1" size="sm" />
           )}
         </div>
         <ChevronDownIcon
