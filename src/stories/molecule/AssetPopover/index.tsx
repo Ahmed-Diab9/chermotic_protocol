@@ -1,8 +1,5 @@
 import { Popover } from '@headlessui/react';
-import {
-  ArrowTopRightOnSquareIcon,
-  ChevronDoubleUpIcon
-} from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
 import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
@@ -185,12 +182,12 @@ const AssetPanel = (props: AssetPanelProps) => {
                   <p>
                     {title === 'Deposit' ? 'To make a deposit' : 'To withdraw an asset'}
                     , you need to <br />
-                    create account first
+                    create account first.
                   </p>
                 </article>
                 <div className="my-7">
                   <p className="text-black/50">
-                    This process may take approximately 10 seconds or more.
+                    This process may take approximately 10 seconds or so.
                   </p>
                 </div>
                 <div className="text-center">
@@ -225,12 +222,12 @@ const AssetPanel = (props: AssetPanelProps) => {
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
                   <img src={loadingIcon} alt="creating account" className="animate-spin-slow" />
                   <p>
-                    The account addtress is being generated <br /> on the chain
+                    The account address is being generated <br /> on the chain.
                   </p>
                 </article>
                 <div className="my-7">
                   <p className="text-black/50">
-                    This process may take approximately 10 seconds or more.
+                    This process may take approximately 10 seconds or so. Please wait a moment.
                   </p>
                 </div>
                 <div className="text-center">
@@ -362,7 +359,10 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <p className="mb-1 text-black/30">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.
-                        <Outlink outLink="#" className="ml-2" />
+                        <Outlink
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement"
+                          className="ml-2"
+                        />
                       </p>
                     </div>
                   </article>
