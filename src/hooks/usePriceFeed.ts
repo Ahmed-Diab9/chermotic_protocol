@@ -1,7 +1,7 @@
 import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { getContract } from '@wagmi/core';
 import useSWR from 'swr';
-import { Address, useAccount, usePublicClient } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
 import { isValid } from '../utils/valid';
 import { useError } from './useError';
@@ -9,7 +9,6 @@ import { useError } from './useError';
 const usePriceFeed = () => {
   const { address } = useAccount();
   const fetchKey = isValid(address) ? ['PRICE_FEED', address] : undefined;
-  const publicClient = usePublicClient();
   const {
     data: priceFeed,
     error,
@@ -33,7 +32,6 @@ const usePriceFeed = () => {
           const contract = getContract({
             address: token.address!,
             abi: aggregatorV3InterfaceABI,
-            walletClient: publicClient,
           });
           return {
             address: token.address!,
