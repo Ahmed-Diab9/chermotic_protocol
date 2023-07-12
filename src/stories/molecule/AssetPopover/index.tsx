@@ -14,7 +14,7 @@ import {
   Account,
 } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
@@ -78,7 +78,9 @@ export const AssetPopover = ({
                 ) : (
                   <>
                     {totalBalance &&
-                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                      `${withComma(formatDecimals(totalBalance, selectedToken.decimals, 5))}  ${
+                        selectedToken.name
+                      }`}
                   </>
                 )}
               </h2>
@@ -313,7 +315,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           <Skeleton width={80} />
                         ) : (
                           <>
-                            {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                            {formatDecimals(availableMargin, token?.decimals, 5)} {token?.name}
                           </>
                         )}
                       </p>
@@ -331,7 +333,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           <Skeleton width={80} />
                         ) : (
                           <>
-                            {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                            {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
                           </>
                         )}
                       </p>
@@ -344,8 +346,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                       maxValue={
                         token &&
                         (title === 'Deposit'
-                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 2)
-                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 2))
+                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 5)
+                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 5))
                       }
                       onChange={(event) => {
                         event.preventDefault();
