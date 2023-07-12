@@ -376,7 +376,7 @@ const ProgressItem = (props: ProgressItemProps) => {
                 <Skeleton width={40} />
               </div>
             ) : (
-              <Avatar label={token} size="sm" gap="1" />
+              <Avatar label={token} size="xs" gap="1" />
             )}
             <p className="mt-1 text-left text-black/30">
               {isLoading ? <Skeleton width={60} /> : <>{name}</>}
