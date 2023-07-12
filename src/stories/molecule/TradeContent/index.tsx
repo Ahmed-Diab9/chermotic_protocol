@@ -340,7 +340,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <TooltipGuide
                   label="max-fee-allowance"
                   tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
-                  outLink="#"
+                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement"
                   outLinkAbout="Next Oracle Round"
                 />
               </div>
@@ -369,7 +369,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <TooltipGuide
                   label="execution-price"
                   tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
-                  outLink="#"
+                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                   outLinkAbout="Next Oracle Round"
                 />
               </div>
@@ -431,7 +431,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <TooltipGuide
               label="contract-qty"
               tip="Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss."
-              outLink="#"
+              outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
+              outLinkAbout="Payoff"
             />
             <p>Contract Qty</p>
             <p className="ml-2 text-black/30">
@@ -457,7 +458,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <TooltipGuide
               label="collateral"
               tip="Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position."
-              outLink="#"
+              outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
+              outLinkAbout="Payoff"
             />
             <p>Collateral</p>
             {isValid(token) && (

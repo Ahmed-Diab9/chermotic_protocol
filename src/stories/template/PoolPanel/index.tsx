@@ -466,7 +466,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <TooltipGuide
                         label="removable-liquidity"
                         tip="The amount of liquidity that is currently removable due to not being utilized."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                       />
                     </div>
                     <p className="">

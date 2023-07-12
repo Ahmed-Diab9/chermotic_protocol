@@ -89,6 +89,8 @@ export const PoolProgress = ({
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
+                      outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                      outLinkAbout="Next Oracle Round"
                     />
                   </h4>
                   {open && (
@@ -129,13 +131,14 @@ export const PoolProgress = ({
                   /> */}
                   </div>
                   <div className="mt-5">
+                    {/* TODO: check */}
                     <Guide
                       title="Next Oracle Round"
                       // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
                       paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
-        0.00% or more, and it is updated at least once a day."
-                      outLink="/pool"
+        0.05% or more, and it is updated at least once a day."
+                      outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                       outLinkAbout="Next Oracle Round"
                     />
                   </div>
@@ -219,14 +222,14 @@ export const PoolProgress = ({
                         label="minting-standby"
                         // todo: 퍼센트값 불러오기
                         tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                       />
                       <TooltipGuide
                         tipOnly
                         label="minting-completed"
                         tip="The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                       />
                       <TooltipGuide
@@ -234,21 +237,21 @@ export const PoolProgress = ({
                         label="burning-standby"
                         // todo: 퍼센트값 불러오기
                         tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                       />
                       <TooltipGuide
                         tipOnly
                         label="buring-in-progress"
                         tip="The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                       />
                       <TooltipGuide
                         tipOnly
                         label="buring-completed"
                         tip="The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
-                        outLink="#"
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                       />
                     </div>
@@ -317,7 +320,7 @@ const ProgressItem = (props: ProgressItemProps) => {
               <Tag label="in progress" className="text-grayD bg-gray/20" />
             )}
             <TooltipGuide
-              outLink="#"
+              outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
               outLinkAbout="Next Oracle Round"
               tip={
                 // todo: 퍼센트값 불러오기 (백틱 표시)

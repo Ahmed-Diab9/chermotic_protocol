@@ -12,6 +12,7 @@ import { OwnedBin } from '~/typings/pools';
 import { expandDecimals, formatDecimals, percentage, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
 
 export interface RemoveLiquidityModalProps {
@@ -53,7 +54,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     >
       {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
-      <div className="z-40 fixed inset-0 flex items-center justify-center p-4 shadow-xl">
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
           <Dialog.Title className="modal-title">
             Remove Liquidity
@@ -99,7 +100,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <TooltipGuide
                     label="removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
-                    outLink="#"
+                    outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
                 </p>
                 {selectedBin && token && (
@@ -184,7 +185,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the
-                utilization status of the liquidity bins in the next oracle round.
+                utilization status of the liquidity bins in the next oracle round.{' '}
+                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity" />
               </p>
             </article>
           </Dialog.Description>

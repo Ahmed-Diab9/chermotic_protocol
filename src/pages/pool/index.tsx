@@ -205,8 +205,8 @@ const Pool = () => {
               <div className="mt-3 mb-3 text-base text-left text-black/30">
                 When providing liquidity to the liquidity bins of the Chromatic protocol, providers
                 are rewarded by minting CLB tokens. CLB tokens follow the ERC-1155 standard and have
-                one token contract per market, with each bin having its own unique token ID.
-                <Outlink outLink="#" className="ml-2" />
+                one token contract per market, with each bin having its own unique token ID.{' '}
+                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" />
               </div>
             </article>
             <div className="mt-10">
