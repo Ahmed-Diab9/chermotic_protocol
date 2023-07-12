@@ -14,7 +14,7 @@ interface HeaderProps {
   account?: Account;
   tokens?: Token[];
   markets?: Market[];
-  balances?: Record<string, bigint>;
+  balances?: Record<Address, bigint>;
   priceFeed?: Record<Address, Price>;
   pools?: LiquidityPoolSummary[];
   isBalanceLoading?: boolean;

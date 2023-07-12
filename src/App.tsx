@@ -19,6 +19,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     batch: {
       multicall: {
         wait: 100,
+        batchSize: 2048,
       },
     },
   }

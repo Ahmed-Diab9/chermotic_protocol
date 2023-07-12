@@ -1,7 +1,7 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { FEE_RATES } from '../configs/feeRate';
@@ -11,10 +11,10 @@ import { Logger } from '../utils/log';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
-import { useError } from './useError';
 
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId } = ChromaticUtils;
@@ -53,41 +53,78 @@ export const useLiquidityPools = () => {
       ...FEE_RATES.map((rate) => encodeTokenId(rate)), // LONG COUNTER
       ...FEE_RATES.map((rate) => encodeTokenId(rate, false)), // SHORT COUNTER
     ];
-    const promises = tokenAddresses.map(async (tokenAddress) => {
-      const markets = await marketFactoryApi!.getMarkets(tokenAddress);
-      const promise = markets.map(async ({ address: marketAddress }) => {
-        const results = await lensApi!.liquidityBins(marketAddress);
-        const binsResponse = results.map(async (result, index) => {
-          const { name, description, decimals, image } = await marketApi!.clbTokenMeta(
-            marketAddress,
-            tokenIds[index]
-          );
+
+    const marketAddresses = (
+      await PromiseOnlySuccess(
+        tokenAddresses.map(async (tokenAddress) => ({
+          tokenAddress,
+          marketAddresses: await marketFactoryApi!
+            .contracts()
+            .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
+        }))
+      )
+    ).reduce((map, row) => {
+      row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
+      return map;
+    }, {} as Record<Address, Address>);
+
+    const promise = Object.keys(marketAddresses).map(async (ma) => {
+      const marketAddress = ma as Address;
+      const tokenAddress = marketAddresses[marketAddress as Address];
+
+      const liquidityBinsPromise = lensApi!.liquidityBins(marketAddress).then((bins) =>
+        bins.reduce(
+          (map, bin) => {
+            map[bin.tradingFeeRate] = bin;
+            return map;
+          },
+          {} as Record<
+            number,
+            {
+              tradingFeeRate: number;
+              clbValue: number;
+              liquidity: bigint;
+              clbTokenTotalSupply: bigint;
+              freeLiquidity: bigint;
+            }
+          >
+        )
+      );
+
+      const clbTokenMetas = await filterIfFulfilled(
+        tokenIds.map(async (tokenId, index) => ({
+          tokenId,
+          baseFeeRate: baseFeeRates[index],
+          ...(await marketApi!.clbTokenMeta(marketAddress, tokenId)),
+        }))
+      );
+
+      const liquidityBins = await liquidityBinsPromise;
+      const bins = clbTokenMetas.map(
+        ({ tokenId, baseFeeRate, name, description, decimals, image }) => {
+          const bin = liquidityBins[baseFeeRate];
           return {
-            liquidity: result.liquidity,
-            clbTokenValue: result.clbValue,
-            freeLiquidity: result.freeLiquidity,
+            liquidity: bin.liquidity,
+            clbTokenValue: bin.clbValue,
+            freeLiquidity: bin.freeLiquidity,
             clbTokenName: name,
             clbTokenImage: image,
             clbTokenDescription: description,
             clbTokenDecimals: decimals,
-            baseFeeRate: baseFeeRates[index],
-            tokenId: tokenIds[index],
+            baseFeeRate,
+            tokenId,
           } satisfies Bin;
-        });
-        const bins = await filterIfFulfilled(binsResponse);
+        }
+      );
 
-        return {
-          tokenAddress,
-          marketAddress,
-          bins,
-        } satisfies LiquidityPool;
-      });
-      const response = await PromiseOnlySuccess(promise);
-      return response;
+      return {
+        tokenAddress,
+        marketAddress,
+        bins,
+      } satisfies LiquidityPool;
     });
 
-    const response = await PromiseOnlySuccess(promises);
-    return response.flat();
+    return PromiseOnlySuccess(promise);
   });
 
   useError({ error });
