@@ -40,26 +40,26 @@ export const usePosition = () => {
     isLoading: isPositionsLoading,
   } = useSWR(['POSITIONS', usumAccount, markets, JSON.stringify(oracleVersions)], async () => {
     if (isNil(markets)) {
-      logger.error('NO MARKETS');
+      logger.log('NO MARKETS');
       return [];
     }
     if (isNil(usumAccount)) {
-      logger.error('NO USUMACCOUNT');
+      logger.log('NO USUMACCOUNT');
       return [];
     }
     if (isNil(oracleVersions) || Object.keys(oracleVersions).length <= 0) {
-      logger.error('NO ORACLE VERSIONS');
+      logger.log('NO ORACLE VERSIONS');
       return [];
     }
     if (isNil(positionApi)) {
-      logger.error('NO POSITION APIS');
+      logger.log('NO POSITION APIS');
       return [];
     }
     if (isNil(accountApi)) {
       return [];
     }
     if (isNil(currentSelectedToken)) {
-      logger.error('No Settlemet tokens');
+      logger.log('No Settlemet tokens');
       return [];
     }
     if (isNil(client?.walletClient)) {

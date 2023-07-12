@@ -160,7 +160,7 @@ const usePoolReceipt = () => {
           toast('You removed the selected liquidity.');
         }
       } catch (error) {
-        toast((error as any).reason);
+        toast((error as any).message);
       }
     },
     [router, market]
@@ -206,7 +206,7 @@ const usePoolReceipt = () => {
       // await fetchLiquidityPools();
       toast('All receipts are claimed.');
     } catch (error) {
-      toast((error as any).reason);
+      toast((error as any).message);
     }
   }, [market, receipts, router]);
 

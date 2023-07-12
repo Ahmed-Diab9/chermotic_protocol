@@ -178,8 +178,11 @@ export const WalletPopover = ({
                                           ) : (
                                             <>
                                               {withComma(
-                                                (balances[token.address] || 0n) /
-                                                  expandDecimals(token.decimals)
+                                                formatDecimals(
+                                                  balances[token.address],
+                                                  token.decimals,
+                                                  5
+                                                )
                                               )}{' '}
                                               {token.name}
                                             </>

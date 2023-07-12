@@ -153,7 +153,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 {balances &&
                   token &&
                   balances[token.address] &&
-                  withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
+                  withComma(formatDecimals(balances[token.address], token.decimals, 5))}{' '}
                 {token?.name}
               </>
             )}
@@ -308,7 +308,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             positive={direction === 'long'}
             height={140}
             data={liquidityData}
-            selectedAmount={Number(input?.quantity)}
+            selectedAmount={Number(input?.makerMargin)}
           />
 
           {/* LP volume */}

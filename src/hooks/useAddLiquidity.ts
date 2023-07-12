@@ -89,7 +89,7 @@ function useAddLiquidity(props: Props) {
       window.dispatchEvent(PoolEvent);
       toast('New liquidity is added. Claim your CLB.');
     } catch (error) {
-      toast((error as any).reason);
+      toast((error as any).message);
     } finally {
       setIsLoading(false);
     }

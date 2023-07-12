@@ -126,7 +126,7 @@ export const useOwnedLiquidityPools = () => {
         window.dispatchEvent(PoolEvent);
         toast('The selected liquidity is removed.');
       } catch (error) {
-        toast((error as any).reason);
+        toast((error as any).message);
       }
     },
     [walletClient, address, currentMarket, routerApi, token?.decimals]
@@ -169,7 +169,7 @@ export const useOwnedLiquidityPools = () => {
 
         toast('The selected liquidities are removed.');
       } catch (error) {
-        toast((error as any).reason);
+        toast((error as any).message);
       }
     },
     [walletClient, currentMarket, routerApi]

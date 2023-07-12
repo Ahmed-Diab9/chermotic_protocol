@@ -14,7 +14,7 @@ import {
   Account,
 } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
@@ -23,6 +23,7 @@ import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
+import { isValid } from '~/utils/valid';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -77,8 +78,9 @@ export const AssetPopover = ({
                   <Skeleton width={120} />
                 ) : (
                   <>
-                    {totalBalance &&
-                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2))}
+                    {isValid(totalBalance) &&
+                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
+                        ` ${selectedToken.name}`}
                   </>
                 )}
               </h2>
@@ -313,7 +315,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           <Skeleton width={80} />
                         ) : (
                           <>
-                            {formatDecimals(availableMargin, token?.decimals, 2)} {token?.name}
+                            {formatDecimals(availableMargin, token?.decimals, 5)} {token?.name}
                           </>
                         )}
                       </p>
@@ -331,7 +333,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           <Skeleton width={80} />
                         ) : (
                           <>
-                            {formatDecimals(assetValue, token?.decimals, 2)} {token?.name}
+                            {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
                           </>
                         )}
                       </p>
@@ -344,8 +346,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                       maxValue={
                         token &&
                         (title === 'Deposit'
-                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 2)
-                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 2))
+                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 5)
+                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 5))
                       }
                       onChange={(event) => {
                         event.preventDefault();

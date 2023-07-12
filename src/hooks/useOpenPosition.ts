@@ -24,7 +24,7 @@ function useOpenPosition(props: Props) {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { fetchPositions } = usePosition();
   const { data: walletClient } = useWalletClient();
-  const { fetchBalances } = useUsumAccount();
+  const { fetchBalances, balances } = useUsumAccount();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
   const {
@@ -51,6 +51,14 @@ function useOpenPosition(props: Props) {
       toast('No routers.');
       return;
     }
+    if (
+      isValid(balances) &&
+      isValid(token) &&
+      balances[token?.address] < BigInt(state.collateral) * expandDecimals(token.decimals)
+    ) {
+      toast('Not enough collateral.');
+      return;
+    }
 
     const quantity =
       (BigInt(Math.floor(Number(state.quantity) * numberBuffer())) * expandDecimals(4)) / // 10000
@@ -64,12 +72,11 @@ function useOpenPosition(props: Props) {
       BigInt(numberBuffer());
 
     if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
-      errorLog('the long liquidity is too low');
+      toast('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
     if (state.direction === 'short' && shortTotalUnusedLiquidity <= makerMargin) {
-      logger.error('the short liquidity is too low');
-      logger.error(shortTotalUnusedLiquidity);
+      toast('the short liquidity is too low');
       return AppError.reject('the short liquidity is too low', 'onOpenPosition');
     }
 
@@ -91,7 +98,7 @@ function useOpenPosition(props: Props) {
       window.dispatchEvent(TradeEvent);
       toast('New position is opened.');
     } catch (error) {
-      toast((error as any).reason);
+      toast((error as any).message);
     } finally {
       return;
     }
