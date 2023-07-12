@@ -31,6 +31,9 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { copyText } from '~/utils/clipboard';
 import { useMargins } from '~/hooks/useMargins';
 import { Toast } from '~/stories/atom/Toast';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { CHAIN_ID } from '~/constants';
+import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 
 const Trade = () => {
   useConnectOnce();
@@ -105,7 +108,14 @@ const Trade = () => {
         balances={walletBalances}
         pools={pools}
         isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
-        onConnect={connectAsync}
+        onConnect={() => {
+          connectAsync({
+            connector: new InjectedConnector({
+              chains: [CHAINS_WAGMI[CHAIN]],
+            }),
+            chainId: CHAIN_ID,
+          });
+        }}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
         onWalletCopy={copyText}

@@ -5,6 +5,7 @@ import { CONNECTOR_STORAGE_KEY } from '../configs/account';
 import { CHAIN_ID } from '../constants';
 import useLocalStorage from './useLocalStorage';
 import { useError } from './useError';
+import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 
 const useConnectOnce = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -24,8 +25,9 @@ const useConnectOnce = () => {
       return;
     }
     await connectAsync({
-      connector: new InjectedConnector(),
-      // FIXME
+      connector: new InjectedConnector({
+        chains: [CHAINS_WAGMI[CHAIN]],
+      }),
       chainId: CHAIN_ID,
     });
   }, [isLoaded, isConnected, connectors, connectorId, connectAsync]);
