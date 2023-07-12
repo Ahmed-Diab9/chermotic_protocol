@@ -62,10 +62,11 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
                 label="interest-rate"
                 tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."
                 outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
+                className="mr-0"
               />
             </div>
           </div>
-          <h2 className="text-2xl">{isLoading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
+          <h2 className="text-3xl">{isLoading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
         </div>
       </div>
     </>
@@ -96,20 +97,20 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
           {isLoading ? (
             <div className="flex items-center gap-1">
               <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
-              <Skeleton width={60} containerClassName="text-lg" />
+              <Skeleton width={60} containerClassName="text-2xl" />
             </div>
           ) : (
-            <Avatar label={selectedToken?.name} fontSize="lg" gap="1" size="sm" />
+            <Avatar label={selectedToken?.name} fontSize="2xl" gap="1" size="sm" />
           )}
         </div>
         <div>
           {isLoading ? (
             <div className="flex items-center gap-1">
               <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
-              <Skeleton width={80} containerClassName="text-lg" />
+              <Skeleton width={80} containerClassName="text-2xl" />
             </div>
           ) : (
-            <Avatar label={selectedMarket?.description} fontSize="lg" gap="1" size="sm" />
+            <Avatar label={selectedMarket?.description} fontSize="2xl" gap="1" size="sm" />
           )}
         </div>
         <ChevronDownIcon

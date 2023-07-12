@@ -159,9 +159,9 @@ export const WalletPopover = ({
                                       ) : (
                                         <Avatar
                                           label={token.name}
-                                          size="xs"
+                                          size="sm"
                                           fontSize="base"
-                                          gap="1"
+                                          gap="2"
                                         />
                                       )}
                                       <div className="ml-auto text-right">

@@ -48,9 +48,9 @@ export const theme = {
       base: ['12px', 'normal'],
       lg: ['14px', 'normal'],
       xl: ['16px', 'normal'],
-      '2xl': ['20px', 'normal'],
-      '3xl': ['24px', 'normal'],
-      '4xl': ['32px', 'normal'],
+      '2xl': ['18px', 'normal'],
+      '3xl': ['20px', 'normal'],
+      '4xl': ['24px', 'normal'],
     },
     fontWeight: {
       light: 200,

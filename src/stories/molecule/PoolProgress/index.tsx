@@ -115,12 +115,14 @@ export const PoolProgress = ({
                       <Tab>Minting ({mintings})</Tab>
                       <Tab>Burning ({burnings})</Tab>
                     </Tab.List>
+                    {/* todo: when list is empty, button disabled */}
                     <Button
                       label="Claim All"
                       className="ml-auto"
                       size="base"
-                      css="gray"
+                      css="active"
                       onClick={() => onReceiptClaimBatch?.()}
+                      // disabled
                     />
                   </div>
 
@@ -377,7 +379,7 @@ const ProgressItem = (props: ProgressItemProps) => {
                 <Skeleton width={40} />
               </div>
             ) : (
-              <Avatar label={token} size="sm" gap="1" />
+              <Avatar label={token} size="xs" gap="1" />
             )}
             <p className="mt-1 text-left text-black/30">
               {isLoading ? <Skeleton width={60} /> : <>{name}</>}

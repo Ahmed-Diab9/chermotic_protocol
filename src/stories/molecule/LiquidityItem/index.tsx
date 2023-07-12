@@ -1,7 +1,7 @@
-import { Thumbnail } from "~/stories/atom/Thumbnail";
-import { Avatar } from "~/stories/atom/Avatar";
-import { Progress } from "~/stories/atom/Progress";
-import { percentage } from "~/utils/number";
+import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Progress } from '~/stories/atom/Progress';
+import { percentage } from '~/utils/number';
 
 interface LiquidityItemProps {
   token?: string;
@@ -12,7 +12,7 @@ interface LiquidityItemProps {
 }
 
 export const LiquidityItem = (props: LiquidityItemProps) => {
-  const { token = "USDC", name, qty, utilizedValue, removableValue } = props;
+  const { token = 'USDC', name, qty, utilizedValue, removableValue } = props;
   const utilizedPercent = (utilizedValue / (qty ?? 1)) * percentage();
   const remoablePercent = (removableValue / (qty ?? 1)) * percentage();
 
@@ -34,18 +34,18 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
       </div>
       <div className="text-sm">
         <div className="flex justify-between mb-2">
-          <p className="font-semibold">Utilized</p>
           <p className="font-semibold">Removable</p>
+          <p className="font-semibold">Utilized</p>
         </div>
-        <Progress css="sm" value={utilizedValue} max={qty} />
+        <Progress css="sm" value={removableValue} max={qty} />
         <div className="flex justify-between mt-1">
-          <p className="">
-            {utilizedValue} CLB
-            <span className="text-black/30 ml-[2px]">({utilizedPercent}%)</span>
-          </p>
           <p className="">
             {removableValue} CLB
             <span className="text-black/30 ml-[2px]">({remoablePercent}%)</span>
+          </p>
+          <p className="">
+            {utilizedValue} CLB
+            <span className="text-black/30 ml-[2px]">({utilizedPercent}%)</span>
           </p>
         </div>
       </div>
