@@ -56,7 +56,7 @@ interface PoolPanelProps {
   onRemoveMaxAmountChange?: () => unknown;
 
   multiType?: MULTI_TYPE;
-  multiAmount?: number;
+  multiAmount?: string;
   multiBalance?: bigint;
   multiClbTokenValue?: bigint;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
