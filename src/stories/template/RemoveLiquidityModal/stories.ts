@@ -15,20 +15,26 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     selectedBin: {
-      clbTotalSupply:10000000n,
-      tokenId:100n,
+      clbTotalSupply: 10000000n,
+      tokenId: 100n,
       baseFeeRate: 10,
-      clbTokenBalance:50000000000n,
-      binValue:10000000000n,
+      clbTokenBalance: 50000000000n,
+      binValue: 10000000000n,
       removableRate: 87.5,
-      liquidity:3000000000n,
-      freeLiquidity:2000000000n,
+      liquidity: 3000000000n,
+      freeLiquidity: 2000000000n,
       clbTokenName: 'LP BIN NAME',
       clbTokenDescription: 'LP BIN DESCRIPTION',
       clbTokenImage: '',
       clbTokenDecimals: 18,
-      // feeRate:10 * 10000000000n,
       clbTokenValue: 1005,
     },
+    token: {
+      name: 'USDC',
+      address: '0x',
+      decimals: 6,
+    },
+    amount: '1000',
+    maxAmount: 20000,
   },
 };

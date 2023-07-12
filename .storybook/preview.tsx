@@ -50,4 +50,14 @@ const preview: Preview = {
   ],
 };
 
+declare global {
+  export interface BigInt {
+    toJSON(): string;
+  }
+}
+
+BigInt.prototype.toJSON = function () {
+  return this.toString() + 'n';
+};
+
 export default preview;
