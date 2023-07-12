@@ -308,7 +308,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             positive={direction === 'long'}
             height={140}
             data={liquidityData}
-            selectedAmount={Number(input?.quantity)}
+            selectedAmount={Number(input?.makerMargin)}
           />
 
           {/* LP volume */}
