@@ -18,6 +18,7 @@ import { Market, Token } from '~/typings/market';
 import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
+import { toast } from 'react-toastify';
 
 interface PoolProgressProps {
   token?: Token;
@@ -59,7 +60,7 @@ export const PoolProgress = ({
       if (isValid(openButtonRef.current) && !isOpen) {
         openButtonRef.current.click();
       } else {
-        console.error('ERROR in opening progresses');
+        toast.error('Check receipts manually please.');
       }
     }
     window.addEventListener(POOL_EVENT, onPool);
@@ -72,10 +73,15 @@ export const PoolProgress = ({
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
       <Disclosure>
         {({ open }) => {
-          setIsOpen(open);
           return (
             <>
-              <Disclosure.Button className="relative flex items-center py-5" ref={openButtonRef}>
+              <Disclosure.Button
+                className="relative flex items-center py-5"
+                ref={openButtonRef}
+                onClick={() => {
+                  setIsOpen(!open);
+                }}
+              >
                 <div className="ml-10 text-left">
                   <h4 className="flex font-bold">
                     IN PROGRESS
