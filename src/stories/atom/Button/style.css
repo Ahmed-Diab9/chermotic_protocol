@@ -111,7 +111,7 @@
     gap: 8px;
   }
   svg {
-    width: 20px;
+    width: 18px;
   }
   &.btn-icon-only {
     @apply min-h-[36px] p-0 items-center justify-center;
@@ -126,7 +126,7 @@
     gap: 12px;
   }
   svg {
-    width: 24px;
+    width: 20px;
   }
   &.btn-icon-only {
     @apply min-h-[42px] p-0 items-center justify-center;
@@ -141,7 +141,7 @@
     gap: 12px;
   }
   svg {
-    width: 28px;
+    width: 24px;
   }
   &.btn-icon-only {
     @apply min-h-[48px] p-0 items-center justify-center;
