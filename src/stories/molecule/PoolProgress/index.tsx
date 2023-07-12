@@ -40,6 +40,7 @@ export const PoolProgress = ({
   const previousReceipts = usePrevious(receipts, true);
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasGuide, setHasGuide] = useState(false);
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -58,6 +59,7 @@ export const PoolProgress = ({
   useEffect(() => {
     function onPool() {
       if (isValid(openButtonRef.current) && !isOpen) {
+        setHasGuide(true);
         openButtonRef.current.click();
       } else {
         toast.error('Check receipts manually please.');
@@ -131,16 +133,17 @@ export const PoolProgress = ({
                   /> */}
                   </div>
                   <div className="mt-5">
-                    {/* TODO: check */}
-                    <Guide
-                      title="Next Oracle Round"
-                      // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
-                      paragraph="Waiting for the next oracle round. The next oracle round is updated
+                    {hasGuide && (
+                      <Guide
+                        title="Next Oracle Round"
+                        // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                        paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
         0.05% or more, and it is updated at least once a day."
-                      outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                      outLinkAbout="Next Oracle Round"
-                    />
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                        outLinkAbout="Next Oracle Round"
+                      />
+                    )}
                   </div>
                   <Tab.Panels className="flex-auto mt-3">
                     {/* tab1 - all */}

@@ -42,6 +42,7 @@ export const TradeBar = ({
 }: TradeBarProps) => {
   // const previousPositions = usePrevious(positions, true);
   const openButtonRef = useRef<HTMLButtonElement>(null);
+  const [hasGuide, setHasGuide] = useState(false);
   const filterOptions = useMemo<PositionOption[]>(() => {
     if (isNil(token) || isNil(markets)) {
       /**
@@ -86,6 +87,7 @@ export const TradeBar = ({
     function onTrade() {
       console.log('on trade event');
       if (isValid(openButtonRef.current)) {
+        setHasGuide(true);
         openButtonRef.current.click();
       } else {
         console.log('ERROR CLICKING');
@@ -141,18 +143,20 @@ export const TradeBar = ({
                         <Tab.Panel className="px-5">
                           <article>
                             {/* guide next round */}
-                            <div className="mb-3">
-                              <Guide
-                                title="Next Oracle Round"
-                                // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
-                                paragraph="Waiting for the next oracle round. The next oracle round is updated
+                            {hasGuide && (
+                              <div className="mb-3">
+                                <Guide
+                                  title="Next Oracle Round"
+                                  // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                                  paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
         0.00% or more, and it is updated at least once a day."
-                                outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                                outLinkAbout="Next Oracle Round"
-                                flex
-                              />
-                            </div>
+                                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                                  outLinkAbout="Next Oracle Round"
+                                  flex
+                                />
+                              </div>
+                            )}
                             {/* position list */}
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
