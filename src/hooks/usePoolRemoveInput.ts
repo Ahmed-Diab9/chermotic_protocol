@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { expandDecimals, trimLeftZero } from '~/utils/number';
+import { expandDecimals, formatDecimals, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 export const usePoolRemoveInput = () => {
@@ -69,7 +69,7 @@ export const useMultiPoolRemoveInput = () => {
 
   return {
     type,
-    amount: Number(amount / expandDecimals(token?.decimals)),
+    amount: formatDecimals(amount, token?.decimals, 2),
     clbTokenBalance,
     onAmountChange,
   };

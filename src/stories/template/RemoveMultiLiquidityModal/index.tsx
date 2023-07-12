@@ -19,7 +19,7 @@ import '../Modal/style.css';
 const logger = Logger('RemoveMultiLiquidityModal');
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: OwnedBin[];
-  amount?: number;
+  amount?: string;
   token?: Token;
   type?: MULTI_TYPE;
   balance?: bigint;
