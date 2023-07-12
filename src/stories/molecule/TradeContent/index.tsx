@@ -153,7 +153,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 {balances &&
                   token &&
                   balances[token.address] &&
-                  withComma(formatDecimals(balances[token.address], token.decimals, 2))}{' '}
+                  withComma(formatDecimals(balances[token.address], token.decimals, 5))}{' '}
                 {token?.name}
               </>
             )}
