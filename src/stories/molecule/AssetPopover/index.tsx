@@ -23,6 +23,7 @@ import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
+import { isValid } from '~/utils/valid';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -77,7 +78,7 @@ export const AssetPopover = ({
                   <Skeleton width={120} />
                 ) : (
                   <>
-                    {totalBalance &&
+                    {isValid(totalBalance) &&
                       `${withComma(formatDecimals(totalBalance, selectedToken.decimals, 5))}  ${
                         selectedToken.name
                       }`}

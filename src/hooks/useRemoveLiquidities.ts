@@ -93,7 +93,7 @@ function useRemoveLiquidities(props: Props) {
 
       toast('The selected liquidities are removed.');
     } catch (error) {
-      toast((error as any).reason);
+      toast((error as any).message);
     }
   }, [walletClient, market, pool, routerApi]);
 
