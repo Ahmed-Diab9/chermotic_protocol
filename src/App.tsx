@@ -19,9 +19,7 @@ const CHAINS_WAGMI = {
   anvil: {
     ...hardhat,
     contracts: {
-      multicall3: {
-        address: '0x63ecE4C05B8fB272D16844E96702Ea2f26370982' as Address,
-      },
+      multicall3: arbitrumGoerli.contracts.multicall3,
     },
   },
   arbitrum_goerli: arbitrumGoerli,
