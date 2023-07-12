@@ -54,7 +54,7 @@ export const useTokenBalances = () => {
         (await client?.publicClient.multicall({ contracts: contractCallParams })) ?? [];
       const result = results.map((data, index) => {
         const balance = data.result;
-        return [tokens[index].name, balance || 0n] as const;
+        return [tokens[index].address, balance || 0n] as const;
       });
 
       return fromPairs(result);
