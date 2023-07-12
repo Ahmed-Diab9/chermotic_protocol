@@ -78,7 +78,7 @@ const useTokenTransaction = () => {
       .account(chromaticAccountAddress)
       .simulate.withdraw([token.address, expanded], { account: walletClient?.account });
     if (!result) return;
-    const hash = await walletClient?.writeContract(result.request);
+  const hash = await walletClient?.writeContract(result.request);
 
     await fetchChromaticBalances();
   }, [chromaticAccountAddress, token, amount, client]);
