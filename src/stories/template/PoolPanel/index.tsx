@@ -194,9 +194,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
-          <Tab.List className="w-full mx-auto pt-2 flex !justify-center">
-            <Tab className="text-2xl">ADD</Tab>
-            <Tab className="text-2xl">REMOVE</Tab>
+          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
+            <Tab className="text-3xl">ADD</Tab>
+            <Tab className="text-3xl">REMOVE</Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full px-10 pb-10 pt-7">
             {/* tab - add */}
