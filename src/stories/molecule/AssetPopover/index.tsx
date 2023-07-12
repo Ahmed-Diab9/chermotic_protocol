@@ -79,9 +79,8 @@ export const AssetPopover = ({
                 ) : (
                   <>
                     {isValid(totalBalance) &&
-                      `${withComma(formatDecimals(totalBalance, selectedToken.decimals, 5))}  ${
-                        selectedToken.name
-                      }`}
+                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
+                        ` ${selectedToken.name}`}
                   </>
                 )}
               </h2>
