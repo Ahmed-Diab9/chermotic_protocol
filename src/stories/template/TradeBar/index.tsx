@@ -175,26 +175,30 @@ export const TradeBar = ({
                                   label="opening-in-progress"
                                   // todo: tip 내 퍼센트값 불러오기
                                   tip="Waiting for the next oracle round to open the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                                  outLink="#"
+                                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                                  outLinkAbout="Next Oracle Round"
                                 />
                                 <TooltipGuide
                                   tipOnly
                                   label="opening-completed"
                                   tip="The opening process has been completed. Now the position is in live status."
-                                  outLink="#"
+                                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                                  outLinkAbout="Next Oracle Round"
                                 />
                                 <TooltipGuide
                                   tipOnly
                                   label="closing-in-progress"
                                   // todo: tip 내 퍼센트값 불러오기
                                   tip="Waiting for the next oracle round to close the position. The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                                  outLink="#"
+                                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                                  outLinkAbout="Next Oracle Round"
                                 />
                                 <TooltipGuide
                                   tipOnly
                                   label="closing-completed"
                                   tip="The closing process has been completed. You can claim the assets and transfer them to your account."
-                                  outLink="#"
+                                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                                  outLinkAbout="Next Oracle Round"
                                 />
                               </div>
                             </div>
