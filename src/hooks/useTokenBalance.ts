@@ -8,6 +8,7 @@ import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
+import { getContract } from '@wagmi/core';
 const logger = Logger('useBalances');
 
 export const useTokenBalances = () => {
@@ -42,18 +43,21 @@ export const useTokenBalances = () => {
         return;
       }
       logger.info('tokens', tokens);
-      const contractCallParams = (tokens || []).map((token) => {
-        return {
-          abi: ierc20ABI,
-          address: token.address,
-          functionName: 'balanceOf',
-          args: [walletAddress],
-        } as const;
-      });
-      const results =
-        (await client?.publicClient.multicall({ contracts: contractCallParams })) ?? [];
-      const result = results.map((data, index) => {
-        const balance = data.result;
+
+      if (!client?.publicClient) return [];
+
+      const results = await Promise.all(
+        (tokens || []).map(async (token) => {
+          const contract = getContract({
+            address: token.address,
+            abi: ierc20ABI,
+            walletClient: client.publicClient,
+          });
+          return await contract.read.balanceOf([walletAddress]);
+        })
+      );
+
+      const result = results.map((balance, index) => {
         return [tokens[index].address, balance || 0n] as const;
       });
 

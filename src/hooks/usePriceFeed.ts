@@ -1,8 +1,9 @@
+import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
+import { getContract } from '@wagmi/core';
 import useSWR from 'swr';
 import { Address, useAccount, usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
 import { isValid } from '../utils/valid';
-import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { useError } from './useError';
 
 const usePriceFeed = () => {
@@ -24,41 +25,33 @@ const usePriceFeed = () => {
           address: PRICE_FEED[token],
         };
       });
-    const contractsParam = availableToken
-      .map((token) => {
-        return [
-          {
-            abi: aggregatorV3InterfaceABI,
+
+    const result = await Promise.all(
+      availableToken
+        .filter((token) => token.address)
+        .map(async (token) => {
+          const contract = getContract({
             address: token.address!,
-            functionName: 'latestRoundData',
-          },
-          {
             abi: aggregatorV3InterfaceABI,
+            walletClient: publicClient,
+          });
+          return {
             address: token.address!,
-            functionName: 'decimals',
-          },
-        ] as const;
-      })
-      .flat();
-    const multiCallResult = await publicClient.multicall({ contracts: contractsParam });
-    const tokenMap: Record<Address, { name: string; value: bigint; decimals: number }> = {};
-    let tokenIndex = 0;
-    while (multiCallResult.length > 0) {
-      const latestRoundData = multiCallResult.shift();
-      const decimals = multiCallResult.shift();
-      const token = availableToken[tokenIndex];
-      if (!token || !token.address) {
-        tokenIndex++;
-        continue;
-      }
-      tokenMap[token.address!] = {
-        name: token.name,
-        value: (latestRoundData?.result as unknown as bigint[])[1],
-        decimals: decimals?.result as number,
+            name: token.name,
+            latestRoundData: await contract.read.latestRoundData(),
+            decimals: await contract.read.decimals(),
+          };
+        })
+    );
+
+    result.reduce((map, row) => {
+      map[row.address] = {
+        name: row.name,
+        value: row.latestRoundData[1],
+        decimals: row.decimals,
       };
-      tokenIndex++;
-    }
-    return tokenMap;
+      return map;
+    }, {} as Record<Address, { name: string; value: bigint; decimals: number }>);
   });
 
   useError({ error });
