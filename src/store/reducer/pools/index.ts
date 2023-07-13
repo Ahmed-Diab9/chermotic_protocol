@@ -5,12 +5,14 @@ import { Bin, LiquidityPool, OwnedBin } from '../../../typings/pools';
 interface PoolState {
   selectedPool?: LiquidityPool;
   selectedBins: OwnedBin[];
+  selectedDirection: 'long' | 'short';
   isModalOpen: boolean;
 }
 
 const initialState: PoolState = {
   selectedPool: undefined,
   selectedBins: [],
+  selectedDirection: 'long',
   isModalOpen: false,
 };
 
@@ -18,6 +20,9 @@ const poolsSlice = createSlice({
   name: 'pools',
   initialState,
   reducers: {
+    onDirectionToggle: (state, action: PayloadAction<'long' | 'short'>) => {
+      state.selectedDirection = action.payload;
+    },
     onPoolSelect: (state, action: PayloadAction<LiquidityPool>) => {
       state.selectedPool = action.payload;
     },
@@ -27,6 +32,9 @@ const poolsSlice = createSlice({
     },
     onBinsSelect: (state, action: PayloadAction<OwnedBin>) => {
       state.selectedBins = state.selectedBins.concat(action.payload);
+    },
+    onAllBinsSelect: (state, action: PayloadAction<OwnedBin[]>) => {
+      state.selectedBins = action.payload;
     },
     onBinsUnselect: (state, action: PayloadAction<OwnedBin>) => {
       const filtered = state.selectedBins.filter(

@@ -1,11 +1,11 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
+
 import { MULTI_TYPE } from '~/configs/pool';
-import { useAppDispatch } from '~/store';
+import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -31,6 +31,8 @@ import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
+import { toast } from 'react-toastify';
+import { isNil } from 'ramda';
 
 const logger = Logger('PoolPanel');
 
@@ -117,10 +119,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
     // isLoading,
   } = props;
 
+  const direction = useAppSelector((state) => state.pools.selectedDirection);
   const dispatch = useAppDispatch();
   const { onAddLiquidity, isLoading } = useAddLiquidity({ amount, binFeeRates });
 
   const [minRate, maxRate] = rates;
+  const binDecimals =
+    isValid(ownedPool) && ownedPool.bins.length > 0 ? ownedPool.bins[0].clbTokenDecimals : 1;
 
   logger.info('liquidity', liquidity);
   const totalLiquidity =
@@ -143,8 +148,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
       sum =
         sum +
         (current.clbTokenBalance *
-          BigInt(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
-          expandDecimals(CLB_TOKEN_VALUE_DECIMALS) /
+          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
+          expandDecimals(current.clbTokenDecimals) /
           expandDecimals(2);
       return sum;
     }, 0n) ?? 0n;
@@ -152,12 +157,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
     (ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbTokenBalance;
       return sum;
-    }, 0n) || 0n) * expandDecimals(CLB_TOKEN_VALUE_DECIMALS) || 1n;
+    }, 0n) || 0n) * expandDecimals(binDecimals) || 1n;
   const averageRemovableRate = formatDecimals(
     (totalRemovableLiquidity *
       expandDecimals(token?.decimals) *
       expandDecimals(2) *
-      expandDecimals(CLB_TOKEN_VALUE_DECIMALS)) /
+      expandDecimals(binDecimals)) /
       (avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator),
     token?.decimals,
     2
@@ -170,6 +175,50 @@ export const PoolPanel = (props: PoolPanelProps) => {
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate < 0n) || [],
     [ownedPool]
   );
+
+  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
+
+  const settlementTokenBalance = useMemo(() => {
+    if (balances && token && balances[token.address])
+      return formatDecimals(balances[token.address], token.decimals, 0);
+    return '-';
+  }, [balances, token, balances?.[token?.address || 'default']]);
+
+  const onSelectAllClick = useCallback(
+    (selectedIndex: number) => {
+      switch (selectedIndex) {
+        case 0: {
+          if (
+            direction === 'long' &&
+            selectedBins.filter((bin) => bin.baseFeeRate > 0).length ===
+              ownedLongLiquidityBins.length
+          ) {
+            dispatch(poolsAction.onBinsReset());
+          } else {
+            dispatch(poolsAction.onAllBinsSelect(ownedLongLiquidityBins));
+          }
+          break;
+        }
+        case 1: {
+          if (
+            direction === 'short' &&
+            selectedBins.filter((bin) => bin.baseFeeRate < 0).length ===
+              ownedShortLiquidityBins.length
+          ) {
+            dispatch(poolsAction.onBinsReset());
+          } else {
+            dispatch(poolsAction.onAllBinsSelect(ownedShortLiquidityBins));
+          }
+          break;
+        }
+        default: {
+          toast('Invalid access');
+        }
+      }
+    },
+    [ownedLongLiquidityBins, ownedShortLiquidityBins, selectedBins, direction]
+  );
+
   const binLength = ownedPool?.bins.length || 0;
 
   const onBinCheck = (bin: OwnedBin) => {
@@ -181,14 +230,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
       dispatch(poolsAction.onBinsSelect(bin));
     }
   };
-
-  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
-
-  const settlementTokenBalance = useMemo(() => {
-    if (balances && token && balances[token.address])
-      return formatDecimals(balances[token.address], token.decimals, 0);
-    return '-';
-  }, [balances, token, balances?.[token?.address || 'default']]);
 
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
@@ -486,77 +527,96 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
               {/* inner tab */}
               <section className="tabs-line tabs-base">
-                <Tab.Group>
-                  <div className="flex flex-wrap items-baseline">
-                    <Tab.List className="pt-[36px] !justify-start !gap-10">
-                      <Tab>Long LP</Tab>
-                      <Tab>Short LP</Tab>
-                    </Tab.List>
+                <Tab.Group
+                  onChange={(index) => {
+                    dispatch(poolsAction.onDirectionToggle(index === 0 ? 'long' : 'short'));
+                  }}
+                >
+                  {({ selectedIndex }) => (
+                    <>
+                      <div className="flex flex-wrap items-baseline">
+                        <Tab.List className="pt-[36px] !justify-start !gap-10">
+                          <Tab>Long LP</Tab>
+                          <Tab>Short LP</Tab>
+                        </Tab.List>
 
-                    {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
-                    <div className="ml-auto">
-                      {/* 전체 선택 */}
-                      {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
-                      <Button label="Select All" css="unstyled" className="text-black/50" />
+                        {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
+                        <div className="ml-auto">
+                          {/* 전체 선택 */}
+                          {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
+                          <Button
+                            label="Select All"
+                            css="unstyled"
+                            className="text-black/50"
+                            onClick={() => {
+                              onSelectAllClick(selectedIndex);
+                            }}
+                          />
 
-                      {/* 선택된 유동성 일괄 제거 */}
-                      {/* 선택된 항목이 없을 땐, disabled 상태 */}
-                      <Button
-                        label="Remove Selected"
-                        className="ml-2"
-                        onClick={() => {
-                          dispatch(poolsAction.onModalOpen());
-                        }}
-                        // disabled
-                      />
-                    </div>
-                  </div>
-                  <Tab.Panels className="mt-12">
-                    <Tab.Panel>
-                      <article>
-                        {ownedLongLiquidityBins?.length === 0 ? (
-                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
-                        ) : (
-                          <div className="flex flex-col gap-3">
-                            {ownedLongLiquidityBins.map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                                isLoading={isLoading}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    </Tab.Panel>
-                    <Tab.Panel>
-                      <article>
-                        {ownedShortLiquidityBins.length === 0 ? (
-                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
-                        ) : (
-                          <div className="flex flex-col gap-3">
-                            {ownedShortLiquidityBins.map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                                isLoading={isLoading}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    </Tab.Panel>
-                  </Tab.Panels>
+                          {/* 선택된 유동성 일괄 제거 */}
+                          {/* 선택된 항목이 없을 땐, disabled 상태 */}
+                          <Button
+                            label="Remove Selected"
+                            className="ml-2"
+                            onClick={() => {
+                              dispatch(poolsAction.onModalOpen());
+                            }}
+                            // disabled
+                          />
+                        </div>
+                      </div>
+                      <Tab.Panels className="mt-12">
+                        <Tab.Panel>
+                          <article>
+                            {ownedLongLiquidityBins?.length === 0 ? (
+                              <p className="my-10 text-center text-gray">
+                                You have no liquidity yet.
+                              </p>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                {ownedLongLiquidityBins.map((bin, binIndex) => (
+                                  <BinItem
+                                    key={bin.baseFeeRate}
+                                    index={binIndex}
+                                    token={token}
+                                    market={market}
+                                    bin={bin}
+                                    selectedBins={selectedBins}
+                                    onBinCheck={onBinCheck}
+                                    isLoading={isLoading}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </article>
+                        </Tab.Panel>
+                        <Tab.Panel>
+                          <article>
+                            {ownedShortLiquidityBins.length === 0 ? (
+                              <p className="my-10 text-center text-gray">
+                                You have no liquidity yet.
+                              </p>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                {ownedShortLiquidityBins.map((bin, binIndex) => (
+                                  <BinItem
+                                    key={bin.baseFeeRate}
+                                    index={binIndex}
+                                    token={token}
+                                    market={market}
+                                    bin={bin}
+                                    selectedBins={selectedBins}
+                                    onBinCheck={onBinCheck}
+                                    isLoading={isLoading}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </article>
+                        </Tab.Panel>
+                      </Tab.Panels>
+                    </>
+                  )}
                 </Tab.Group>
               </section>
             </Tab.Panel>
@@ -699,8 +759,8 @@ const BinItem = (props: BinItemProps) => {
                   {bin &&
                     formatDecimals(
                       (bin.clbTokenBalance *
-                        BigInt(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
-                        expandDecimals(CLB_TOKEN_VALUE_DECIMALS),
+                        BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals))) /
+                        expandDecimals(bin.clbTokenDecimals),
                       token?.decimals,
                       2
                     )}
