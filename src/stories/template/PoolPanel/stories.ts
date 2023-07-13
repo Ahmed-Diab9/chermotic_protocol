@@ -62,3 +62,33 @@ export const Default: Story = {
     liquidity: RangeChartStories.args?.barData,
   },
 };
+export const Empty: Story = {
+  args: {
+    isLoading: false,
+    binFeeRates: [0.01, 0.02],
+    token: {
+      name: 'USDC',
+      address: '0x8888888888888888888888888888888888888888',
+      decimals: 6,
+    },
+    balances: {
+      USDC: 100n,
+    },
+    ownedPool: {
+      // address: '0x8888888888888888888888888888888888888888',
+      tokenAddress: '0x8888888888888888888888888888888888888888',
+      marketAddress: '0x8888888888888888888888888888888888888888',
+      bins: [],
+    },
+    amount: '1000',
+    // indexes: [35, 36],
+    rates: [-0.01, 0.01],
+    // bins: 2,
+    longTotalMaxLiquidity: 100n,
+    longTotalUnusedLiquidity: 100n,
+    shortTotalMaxLiquidity: 100n,
+    shortTotalUnusedLiquidity: 100n,
+    selectedBins: [],
+    liquidity: RangeChartStories.args?.barData,
+  },
+};

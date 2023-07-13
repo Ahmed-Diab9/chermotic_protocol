@@ -514,37 +514,46 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <Tab.Panels className="mt-12">
                     <Tab.Panel>
                       <article>
-                        <div className="flex flex-col gap-3">
-                          {ownedLongLiquidityBins.map((bin, binIndex) => (
-                            <BinItem
-                              key={bin.baseFeeRate}
-                              index={binIndex}
-                              token={token}
-                              market={market}
-                              bin={bin}
-                              selectedBins={selectedBins}
-                              onBinCheck={onBinCheck}
-                              isLoading={isLoading}
-                            />
-                          ))}
-                        </div>
+                        {ownedLongLiquidityBins?.length === 0 ? (
+                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
+                        ) : (
+                          <div className="flex flex-col gap-3">
+                            {ownedLongLiquidityBins.map((bin, binIndex) => (
+                              <BinItem
+                                key={bin.baseFeeRate}
+                                index={binIndex}
+                                token={token}
+                                market={market}
+                                bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
+                                isLoading={isLoading}
+                              />
+                            ))}
+                          </div>
+                        )}
                       </article>
                     </Tab.Panel>
                     <Tab.Panel>
                       <article>
-                        <div className="flex flex-col gap-3">
-                          {ownedShortLiquidityBins.map((bin, binIndex) => (
-                            <BinItem
-                              key={bin.baseFeeRate}
-                              index={binIndex}
-                              token={token}
-                              market={market}
-                              bin={bin}
-                              selectedBins={selectedBins}
-                              onBinCheck={onBinCheck}
-                            />
-                          ))}
-                        </div>
+                        {ownedShortLiquidityBins.length === 0 ? (
+                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
+                        ) : (
+                          <div className="flex flex-col gap-3">
+                            {ownedShortLiquidityBins.map((bin, binIndex) => (
+                              <BinItem
+                                key={bin.baseFeeRate}
+                                index={binIndex}
+                                token={token}
+                                market={market}
+                                bin={bin}
+                                selectedBins={selectedBins}
+                                onBinCheck={onBinCheck}
+                                isLoading={isLoading}
+                              />
+                            ))}
+                          </div>
+                        )}
                       </article>
                     </Tab.Panel>
                   </Tab.Panels>
