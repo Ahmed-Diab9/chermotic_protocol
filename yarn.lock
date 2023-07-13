@@ -1428,10 +1428,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromatic-protocol/react-compound-charts@^1.0.0-rc.8":
-  version "1.0.0-rc.8"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/react-compound-charts/-/react-compound-charts-1.0.0-rc.8.tgz#8fdcbcc67513ef1f143f1022e31d74774ca08699"
-  integrity sha512-WB27otxb420erhaMvI/LTNbbeQjtyd7oqpnEM3lm4eF9/9vU+SR43kyEQRWeR4RWPmc6yDO1z/bBR3dSQHKahw==
+"@chromatic-protocol/react-compound-charts@^1.0.0-rc.9":
+  version "1.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/react-compound-charts/-/react-compound-charts-1.0.0-rc.9.tgz#ee825e1a3ea0779cd9e0d8646558697e48645dba"
+  integrity sha512-fNep8UpPpI3K8I60uvYboeP4AI9SLGbwY01CsWTnw66AdpyIIX9j8sNzfd82LAz7QwzUfcvzRrjXtNJHA30/aA==
   dependencies:
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
