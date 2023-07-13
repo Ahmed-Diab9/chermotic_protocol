@@ -1,11 +1,11 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
+
 import { MULTI_TYPE } from '~/configs/pool';
-import { useAppDispatch } from '~/store';
+import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -31,6 +31,8 @@ import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
+import { toast } from 'react-toastify';
+import { isNil } from 'ramda';
 
 const logger = Logger('PoolPanel');
 
@@ -117,10 +119,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
     // isLoading,
   } = props;
 
+  const direction = useAppSelector((state) => state.pools.selectedDirection);
   const dispatch = useAppDispatch();
   const { onAddLiquidity, isLoading } = useAddLiquidity({ amount, binFeeRates });
 
   const [minRate, maxRate] = rates;
+  const binDecimals =
+    isValid(ownedPool) && ownedPool.bins.length > 0 ? ownedPool.bins[0].clbTokenDecimals : 1;
 
   logger.info('liquidity', liquidity);
   const totalLiquidity =
@@ -143,8 +148,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
       sum =
         sum +
         (current.clbTokenBalance *
-          BigInt(Math.round(current.removableRate * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
-          expandDecimals(CLB_TOKEN_VALUE_DECIMALS) /
+          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
+          expandDecimals(current.clbTokenDecimals) /
           expandDecimals(2);
       return sum;
     }, 0n) ?? 0n;
@@ -152,12 +157,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
     (ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbTokenBalance;
       return sum;
-    }, 0n) || 0n) * expandDecimals(CLB_TOKEN_VALUE_DECIMALS) || 1n;
+    }, 0n) || 0n) * expandDecimals(binDecimals) || 1n;
   const averageRemovableRate = formatDecimals(
     (totalRemovableLiquidity *
       expandDecimals(token?.decimals) *
       expandDecimals(2) *
-      expandDecimals(CLB_TOKEN_VALUE_DECIMALS)) /
+      expandDecimals(binDecimals)) /
       (avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator),
     token?.decimals,
     2
@@ -486,7 +491,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
               {/* inner tab */}
               <section className="tabs-line tabs-base">
-                <Tab.Group>
+                <Tab.Group
+                  onChange={(index) => {
+                    dispatch(poolsAction.onDirectionToggle(index === 0 ? 'long' : 'short'));
+                  }}
+                >
+                  {({ selectedIndex }) => (
+                    <>
                   <div className="flex flex-wrap items-baseline">
                     <Tab.List className="pt-[36px] !justify-start !gap-10">
                       <Tab>Long LP</Tab>
@@ -557,6 +568,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       </article>
                     </Tab.Panel>
                   </Tab.Panels>
+                    </>
+                  )}
                 </Tab.Group>
               </section>
             </Tab.Panel>
@@ -699,8 +712,8 @@ const BinItem = (props: BinItemProps) => {
                   {bin &&
                     formatDecimals(
                       (bin.clbTokenBalance *
-                        BigInt(Math.round(bin.clbTokenValue * 10 ** CLB_TOKEN_VALUE_DECIMALS))) /
-                        expandDecimals(CLB_TOKEN_VALUE_DECIMALS),
+                        BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals))) /
+                        expandDecimals(bin.clbTokenDecimals),
                       token?.decimals,
                       2
                     )}
