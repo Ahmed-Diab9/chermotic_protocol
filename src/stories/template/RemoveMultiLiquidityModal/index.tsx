@@ -14,6 +14,7 @@ import { OwnedBin } from '~/typings/pools';
 import { expandDecimals, formatDecimals, numberBuffer, percentage } from '~/utils/number';
 import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
 
 const logger = Logger('RemoveMultiLiquidityModal');
@@ -123,7 +124,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="relative flex flex-col border border-gray rounded-xl">
-              <div className="max-h-[calc(100vh-600px)] overflow-auto">
+              <div className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto">
                 {selectedBins.map((bin) => {
                   /**
                    * @TODO
@@ -164,8 +165,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Total CLB
                   <TooltipGuide
-                    label="total-clb"
-                    tip="The sum of the quantity of the above liquidity tokens (CLB)."
+                    label="RemoveMultiLiquidityModal-total-clb"
+                    tip="The sum of the quantity of the above liquidity tokens(CLB)."
                   />
                 </p>
                 <p>{formatDecimals(balance, token?.decimals, 2)} CLB</p>
@@ -178,8 +179,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Total Liquidity Value
                   <TooltipGuide
-                    label="total-liquidity-value"
-                    tip="The total value of the above liquidity tokens, converted into the current value."
+                    label="RemoveMultiLiquidityModal-total-liquidity-value"
+                    tip="The total value of the above liquidity tokens(CLB), converted into the current value."
                   />
                 </p>
                 <p>
@@ -195,9 +196,9 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
-                    label="removable-liquidity"
+                    label="RemoveMultiLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
-                    outLink="#"
+                    outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
                 </p>
                 <p>
@@ -270,7 +271,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the
-                utilization status of the liquidity bins in the next oracle round.
+                utilization status of the liquidity bins in the next oracle round.{' '}
+                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity" />
               </p>
             </article>
           </Dialog.Description>
