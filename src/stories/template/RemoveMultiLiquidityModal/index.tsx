@@ -124,7 +124,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="relative flex flex-col border border-gray rounded-xl">
-              <div className="max-h-[calc(100vh-600px)] overflow-auto">
+              <div className="max-h-[calc(100vh-600px)] min-h-[160px] overflow-auto">
                 {selectedBins.map((bin) => {
                   /**
                    * @TODO
