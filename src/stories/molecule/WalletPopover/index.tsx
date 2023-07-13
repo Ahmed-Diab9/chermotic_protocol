@@ -143,114 +143,130 @@ export const WalletPopover = ({
                           <Tab.Panel>
                             {/* Assets */}
                             <article>
-                              <div className="flex flex-col gap-3">
-                                {balances &&
-                                  priceFeed &&
-                                  tokens?.map((token) => (
-                                    <div key={token.address} className="flex items-center">
-                                      {isLoading ? (
-                                        <div className="flex items-center gap-1">
-                                          <Skeleton
-                                            circle
-                                            containerClassName="avatar-skeleton w-[16px] text-[16px]"
+                              {tokens?.length === 0 ? (
+                                <p className="text-center text-gray">You have no asset.</p>
+                              ) : (
+                                <div className="flex flex-col gap-3">
+                                  {balances &&
+                                    priceFeed &&
+                                    tokens?.map((token) => (
+                                      <div key={token.address} className="flex items-center">
+                                        {isLoading ? (
+                                          <div className="flex items-center gap-1">
+                                            <Skeleton
+                                              circle
+                                              containerClassName="avatar-skeleton w-[16px] text-[16px]"
+                                            />
+                                            <Skeleton width={40} />
+                                          </div>
+                                        ) : (
+                                          <Avatar
+                                            label={token.name}
+                                            size="sm"
+                                            fontSize="base"
+                                            gap="2"
                                           />
-                                          <Skeleton width={40} />
+                                        )}
+                                        <div className="ml-auto text-right">
+                                          <p className="text-sm text-black/30">
+                                            {isLoading ? (
+                                              <Skeleton width={40} />
+                                            ) : (
+                                              <>${usdcPrice(token)}</>
+                                            )}
+                                          </p>
+                                          <p className="mt-1 text-base font-medium text-gray-900">
+                                            {isLoading ? (
+                                              <Skeleton width={40} />
+                                            ) : (
+                                              <>
+                                                {withComma(
+                                                  formatDecimals(
+                                                    balances[token.address],
+                                                    token.decimals,
+                                                    5
+                                                  )
+                                                )}{' '}
+                                                {token.name}
+                                              </>
+                                            )}
+                                          </p>
                                         </div>
-                                      ) : (
-                                        <Avatar
-                                          label={token.name}
-                                          size="sm"
-                                          fontSize="base"
-                                          gap="2"
-                                        />
-                                      )}
-                                      <div className="ml-auto text-right">
-                                        <p className="text-sm text-black/30">
-                                          {isLoading ? (
-                                            <Skeleton width={40} />
-                                          ) : (
-                                            <>${usdcPrice(token)}</>
-                                          )}
-                                        </p>
-                                        <p className="mt-1 text-base font-medium text-gray-900">
-                                          {isLoading ? (
-                                            <Skeleton width={40} />
-                                          ) : (
-                                            <>
-                                              {withComma(
-                                                formatDecimals(
-                                                  balances[token.address],
-                                                  token.decimals,
-                                                  5
-                                                )
-                                              )}{' '}
-                                              {token.name}
-                                            </>
-                                          )}
-                                        </p>
                                       </div>
-                                    </div>
-                                  ))}
-                              </div>
+                                    ))}
+                                </div>
+                              )}
                             </article>
                           </Tab.Panel>
                           <Tab.Panel>
                             {/* Liquidity NFT */}
                             <article>
-                              <div className="flex flex-col gap-3">
-                                {pools?.map((pool, poolIndex) => (
-                                  <Link to="#" key={`${pool.token}-${pool.market}`}>
-                                    <div className="flex gap-3 pb-3 border-b last:border-b-0">
-                                      {isLoading ? (
-                                        <Skeleton
-                                          circle
-                                          containerClassName="avatar-skeleton w-10 text-[40px]"
-                                        />
-                                      ) : (
-                                        <Avatar size="lg" src={undefined} />
-                                      )}
-                                      <div className="flex-1">
-                                        <div className="flex gap-2 leading-none">
-                                          {isLoading ? (
-                                            <Skeleton containerClassName="flex-1" width={120} />
-                                          ) : (
-                                            <>
-                                              <p>{pool.token.name}</p>
-                                              <span className="px-1 text-grayL">|</span>
-                                              <p>{pool.market}</p>
-                                            </>
-                                          )}
-                                        </div>
-                                        <div className="flex mt-3">
-                                          <div className="mr-auto">
-                                            <p className="text-base font-medium text-black/30">
-                                              {isLoading ? (
-                                                <Skeleton containerClassName="flex-1" width={80} />
-                                              ) : (
-                                                <>
-                                                  {formatDecimals(
-                                                    pool.liquidity,
-                                                    pool.token.decimals,
-                                                    2
-                                                  )}{' '}
-                                                  {pool.token.name}
-                                                </>
-                                              )}
-                                            </p>
-                                            <p className="mt-2 text-base text-black">
-                                              {isLoading ? (
-                                                <Skeleton containerClassName="flex-1" width={80} />
-                                              ) : (
-                                                <>{pool.bins} Bins</>
-                                              )}
-                                            </p>
+                              {tokens?.length === 0 ? (
+                                <p className="text-center text-gray">
+                                  You have no liquidity token.
+                                </p>
+                              ) : (
+                                <div className="flex flex-col gap-3">
+                                  {pools?.map((pool, poolIndex) => (
+                                    <Link to="#" key={`${pool.token}-${pool.market}`}>
+                                      <div className="flex gap-3 pb-3 border-b last:border-b-0">
+                                        {isLoading ? (
+                                          <Skeleton
+                                            circle
+                                            containerClassName="avatar-skeleton w-10 text-[40px]"
+                                          />
+                                        ) : (
+                                          <Avatar size="lg" src={undefined} />
+                                        )}
+                                        <div className="flex-1">
+                                          <div className="flex gap-2 leading-none">
+                                            {isLoading ? (
+                                              <Skeleton containerClassName="flex-1" width={120} />
+                                            ) : (
+                                              <>
+                                                <p>{pool.token.name}</p>
+                                                <span className="px-1 text-grayL">|</span>
+                                                <p>{pool.market}</p>
+                                              </>
+                                            )}
+                                          </div>
+                                          <div className="flex mt-3">
+                                            <div className="mr-auto">
+                                              <p className="text-base font-medium text-black/30">
+                                                {isLoading ? (
+                                                  <Skeleton
+                                                    containerClassName="flex-1"
+                                                    width={80}
+                                                  />
+                                                ) : (
+                                                  <>
+                                                    {formatDecimals(
+                                                      pool.liquidity,
+                                                      pool.token.decimals,
+                                                      2
+                                                    )}{' '}
+                                                    {pool.token.name}
+                                                  </>
+                                                )}
+                                              </p>
+                                              <p className="mt-2 text-base text-black">
+                                                {isLoading ? (
+                                                  <Skeleton
+                                                    containerClassName="flex-1"
+                                                    width={80}
+                                                  />
+                                                ) : (
+                                                  <>{pool.bins} Bins</>
+                                                )}
+                                              </p>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </Link>
-                                ))}
-                              </div>
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
                             </article>
                           </Tab.Panel>
                         </Tab.Panels>
@@ -260,28 +276,39 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL/20">
-                    <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
-                    <div className="flex items-center justify-between gap-2">
-                      <AddressCopyButton
-                        address={
-                          account?.usumAddress
-                            ? trimAddress(account?.usumAddress, 7, 5)
-                            : 'Create Account'
-                        }
-                        onClick={() => {
-                          const address = account?.usumAddress;
-                          if (isValid(address)) {
-                            onUsumCopy?.(address);
-                          }
-                        }}
-                      />
-                      <Button
-                        label="view transition"
-                        css="circle"
-                        size="lg"
-                        iconOnly={<ArrowTopRightOnSquareIcon />}
-                      />
-                    </div>
+                    {account?.usumAddress ? (
+                      <>
+                        <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
+                        <div className="flex items-center justify-between gap-2">
+                          <AddressCopyButton
+                            address={
+                              account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
+                            }
+                            onClick={() => {
+                              const address = account?.usumAddress;
+                              if (isValid(address)) {
+                                onUsumCopy?.(address);
+                              }
+                            }}
+                          />
+                          <Button
+                            label="view transition"
+                            css="circle"
+                            size="lg"
+                            iconOnly={<ArrowTopRightOnSquareIcon />}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="mb-3 text-base text-center text-black/30">
+                          You need to create account first.
+                        </h4>
+                        <div className="text-center">
+                          <Button label="Create Account" size="base" css="gray" />
+                        </div>
+                      </>
+                    )}
                   </article>
                   <Button
                     label="Disconnect"
