@@ -10,7 +10,7 @@ import { expandDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useAccount, useWalletClient } from 'wagmi';
-import { useLiquidityPools } from './useLiquidityPool';
+import { useLiquidityPool, useLiquidityPools } from './useLiquidityPool';
 import { useTokenBalances } from './useTokenBalance';
 import usePoolReceipt from './usePoolReceipt';
 
@@ -23,7 +23,7 @@ function useRemoveLiquidities(props: Props) {
   const { bins, type } = props;
   const token = useAppSelector((state) => state.token.selectedToken);
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { liquidityPools: pools } = useLiquidityPools();
+  const { liquidityPool: pool } = useLiquidityPool();
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
   const { data: walletClient } = useWalletClient();
@@ -32,15 +32,15 @@ function useRemoveLiquidities(props: Props) {
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
-  const pool = useMemo(() => {
-    if (!isValid(market) || !isValid(token) || !isValid(pools)) {
-      return;
-    }
+  // const pool = useMemo(() => {
+  //   if (!isValid(market) || !isValid(token) || !isValid(pools)) {
+  //     return;
+  //   }
 
-    return pools.find(
-      (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
-    );
-  }, [market, token, pools]);
+  //   return pools.find(
+  //     (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
+  //   );
+  // }, [market, token, pools]);
   const onRemoveLiquidities = useCallback(async () => {
     if (!isValid(walletClient) || !isValid(address)) {
       toast('Your wallet is not connected.');
