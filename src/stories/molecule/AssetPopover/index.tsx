@@ -320,7 +320,11 @@ const AssetPanel = (props: AssetPanelProps) => {
                         )}
                       </p>
                     </div>
-                    <div>
+                    {/* 
+                      Temporary commented out 
+                      https://github.com/chromatic-protocol/frontend/issues/290
+                    */}
+                    {/* <div>
                       <p className="flex mb-1 text-black/30">
                         Asset Value
                         <TooltipGuide
@@ -337,7 +341,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           </>
                         )}
                       </p>
-                    </div>
+                    </div> */}
                   </article>
                   <article className="flex flex-col w-3/5 gap-3 border-l ml-7 pl-7">
                     <h4 className="text-lg font-semibold">Amount</h4>
