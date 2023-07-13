@@ -14,7 +14,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Empty: Story = {
+export const Default: Story = {
   args: {
     isLoading: false,
     token: {
@@ -131,6 +131,29 @@ export const Empty: Story = {
         openPrice: BigInt(888),
       },
     ],
+    // oracleVersions?: Record<string, OracleVersion>;
+  },
+};
+export const Empty: Story = {
+  args: {
+    isLoading: false,
+    token: {
+      name: 'USDC',
+      address: '0x8888888888888888888888888888888888888888',
+      decimals: 6,
+    },
+    markets: [
+      {
+        address: '0x8888888888888888888888888888888888888888',
+        description: 'ETH/USD',
+        oracleValue: {
+          price: BigInt(10000),
+          timestamp: BigInt(1000000),
+          version: BigInt(10),
+        },
+      } as Market,
+    ],
+    positions: [],
     // oracleVersions?: Record<string, OracleVersion>;
   },
 };

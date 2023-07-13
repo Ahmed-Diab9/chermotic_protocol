@@ -160,19 +160,25 @@ export const TradeBar = ({
                             {/* position list */}
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
-                              <div>
-                                {filteredPositions.map((position) => {
-                                  return (
-                                    <PositionItem
-                                      position={position}
-                                      isLoading={isLoading}
-                                      token={token}
-                                      markets={markets}
-                                      oracleVersions={oracleVersions}
-                                    />
-                                  );
-                                })}
-                              </div>
+                              {positions?.length === 0 ? (
+                                <p className="mt-10 text-center text-gray">
+                                  You have no position yet.
+                                </p>
+                              ) : (
+                                <div>
+                                  {filteredPositions.map((position) => {
+                                    return (
+                                      <PositionItem
+                                        position={position}
+                                        isLoading={isLoading}
+                                        token={token}
+                                        markets={markets}
+                                        oracleVersions={oracleVersions}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              )}
                               <div>
                                 <TooltipGuide
                                   tipOnly
