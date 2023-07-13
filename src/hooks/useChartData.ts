@@ -2,7 +2,6 @@ import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
@@ -10,23 +9,26 @@ import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
 import { useError } from './useError';
+import { useSettlementToken } from './useSettlementToken';
 
 const logger = Logger('useChartData');
 
 const useChartData = () => {
-  const { liquidityPool: pool } = useLiquidityPool();
-  logger.info('pool', pool);
+  const { liquidityPool } = useLiquidityPool();
+  const { currentSelectedToken } = useSettlementToken();
+
   const fetchKey = useMemo(() => {
-    if (!isNil(pool?.bins)) {
-      return pool?.bins;
+    if (!isNil(liquidityPool?.bins) && !isNil(currentSelectedToken?.decimals)) {
+      return { bins: liquidityPool!.bins, decimals: currentSelectedToken!.decimals };
     }
-  }, [pool, pool?.bins]);
-  // logger.info('fetchKey', fetchKey);
+  }, [liquidityPool?.bins, currentSelectedToken?.decimals]);
 
   const { data, error } = useSWR(
     fetchKey,
-    (bins) => {
+    ({ bins, decimals }) => {
       // logger.info('bins', bins);
+      const BIN_DECIMALS = 6;
+
       const chartData = bins.reduce<{
         clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
@@ -35,20 +37,15 @@ const useChartData = () => {
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
           const key = baseFeeRate / 100;
           const binValue = Number(
-            trimDecimals(
-              Math.floor((clbTokenValue || 0) * 10 ** CLB_TOKEN_VALUE_DECIMALS),
-              CLB_TOKEN_VALUE_DECIMALS
-            )
+            trimDecimals(Math.floor((clbTokenValue || 0) * 10 ** BIN_DECIMALS), BIN_DECIMALS)
           );
           acc.clbTokenValue.push({
             key,
             value: binValue,
           });
 
-          const available = Number(trimDecimals(freeLiquidity, CLB_TOKEN_VALUE_DECIMALS));
-          const utilized = Number(
-            trimDecimals(liquidity - freeLiquidity, CLB_TOKEN_VALUE_DECIMALS)
-          );
+          const available = Number(trimDecimals(freeLiquidity, decimals));
+          const utilized = Number(trimDecimals(liquidity - freeLiquidity, decimals));
           acc.liquidity.push({
             key,
             value: [
