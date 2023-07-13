@@ -14,6 +14,7 @@ import { OwnedBin } from '~/typings/pools';
 import { expandDecimals, formatDecimals, numberBuffer, percentage } from '~/utils/number';
 import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
 
 const logger = Logger('RemoveMultiLiquidityModal');
@@ -270,7 +271,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the
-                utilization status of the liquidity bins in the next oracle round.
+                utilization status of the liquidity bins in the next oracle round.{' '}
+                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity" />
               </p>
             </article>
           </Dialog.Description>
