@@ -164,8 +164,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Total CLB
                   <TooltipGuide
-                    label="total-clb"
-                    tip="The sum of the quantity of the above liquidity tokens (CLB)."
+                    label="RemoveMultiLiquidityModal-total-clb"
+                    tip="The sum of the quantity of the above liquidity tokens(CLB)."
                   />
                 </p>
                 <p>{formatDecimals(balance, token?.decimals, 2)} CLB</p>
@@ -178,8 +178,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Total Liquidity Value
                   <TooltipGuide
-                    label="total-liquidity-value"
-                    tip="The total value of the above liquidity tokens, converted into the current value."
+                    label="RemoveMultiLiquidityModal-total-liquidity-value"
+                    tip="The total value of the above liquidity tokens(CLB), converted into the current value."
                   />
                 </p>
                 <p>
@@ -195,9 +195,9 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
-                    label="removable-liquidity"
+                    label="RemoveMultiLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
-                    outLink="#"
+                    outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
                 </p>
                 <p>

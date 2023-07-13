@@ -83,7 +83,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 <p className="flex text-black/30">
                   My Liquidity Value
                   <TooltipGuide
-                    label="my-liquidity-value"
+                    label="RemoveLiquidityModal-my-liquidity-value"
                     tip="The value of my CLB tokens converted into the current token value."
                   />
                 </p>
@@ -98,7 +98,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 <p className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
-                    label="removable-liquidity"
+                    label="RemoveLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
