@@ -71,7 +71,7 @@ const Pool = () => {
   const { receipts, onClaimCLBTokens, onClaimCLBTokensBatch, isReceiptsLoading } = usePoolReceipt();
 
   const {
-    pool,
+    liquidityPool: pool,
     liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,

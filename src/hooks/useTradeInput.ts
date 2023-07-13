@@ -211,7 +211,7 @@ export const useTradeInput = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
-    pool,
+    liquidityPool: pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
   // TODO

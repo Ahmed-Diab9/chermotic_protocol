@@ -7,7 +7,7 @@ import { useLiquidityPool } from './useLiquidityPool';
 
 const logger = Logger('usePoolInput');
 const usePoolInput = () => {
-  const { pool } = useLiquidityPool();
+  const { liquidityPool: pool } = useLiquidityPool();
   const {
     data: { values: binFeeRates },
     setData: onRangeChange,
