@@ -244,7 +244,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                      */}
                     {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name}
                   </p>
-                  <p className="text-lg text-black/30">{amount} CLB</p>
+                  <p className="text-lg font-semibold text-black">{amount} CLB</p>
                   {/* <Input
                     unit="CLB"
                     value={input?.amount}
