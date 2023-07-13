@@ -13,7 +13,7 @@ export const CHAIN_ID: number = CHAIN_IDS[CHAIN] ?? CHAIN_IDS['anvil'];
 export const CHAINS_WAGMI = {
   anvil: {
     ...hardhat,
-    ...arbitrumGoerli.contracts,
+    contracts: arbitrumGoerli.contracts,
   },
   arbitrum_goerli: arbitrumGoerli,
   arbitrum_one: arbitrum,

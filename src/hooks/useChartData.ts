@@ -14,7 +14,7 @@ import { useError } from './useError';
 const logger = Logger('useChartData');
 
 const useChartData = () => {
-  const { pool } = useLiquidityPool();
+  const { liquidityPool: pool } = useLiquidityPool();
   logger.info('pool', pool);
   const fetchKey = useMemo(() => {
     if (!isNil(pool?.bins)) {

@@ -3,7 +3,6 @@ import { Avatar } from '../Avatar';
 import './style.css';
 import { isValid } from '~/utils/valid';
 import { withComma } from '~/utils/number';
-import { useActiveElement } from '~/hooks/useActiveElement';
 
 interface InputProps {
   label?: string;
@@ -37,10 +36,6 @@ export const Input = (props: InputProps) => {
     onClickAway,
   } = props;
   const inputRef = useRef<HTMLInputElement>(null);
-  const activeElement = useActiveElement();
-  const isFocused = useMemo(() => {
-    return activeElement?.isEqualNode(inputRef.current) ?? false;
-  }, [activeElement]);
 
   useEffect(() => {
     if (!isValid(onClickAway)) {
