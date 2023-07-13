@@ -350,8 +350,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                       maxValue={
                         token &&
                         (title === 'Deposit'
-                          ? formatDecimals(walletBalances?.[token.name], token?.decimals, 5)
-                          : formatDecimals(usumBalances?.[token.name], token?.decimals, 5))
+                          ? formatDecimals(walletBalances?.[token.address], token?.decimals, 5)
+                          : formatDecimals(usumBalances?.[token.address], token?.decimals, 5))
                       }
                       onChange={(event) => {
                         event.preventDefault();
