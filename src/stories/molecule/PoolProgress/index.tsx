@@ -29,6 +29,10 @@ interface PoolProgressProps {
   onReceiptClaimBatch?: () => unknown;
 }
 
+{
+  /* FIXME: needs refactor: Too many inline condition */
+}
+
 export const PoolProgress = ({
   token,
   market,
@@ -349,7 +353,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
           <p className="">
-            {detail} {token}
+            {detail} {status === 'completed' && token}
           </p>
         </div>
       </div>
@@ -386,28 +390,20 @@ const ProgressItem = (props: ProgressItemProps) => {
             </p>
           </div>
         </div>
-        {status === 'standby' ? (
-          <Button
-            label={action === 'add' ? `Claim ${token}` : 'Claim Tokens'}
-            size="sm"
-            className="ml-auto !text-gray"
-            disabled
-          />
-        ) : (
-          <Button
-            label={
-              action === 'remove'
-                ? status === 'in progress'
-                  ? `Stop Process & Claim ${token}`
-                  : `Claim ${token}`
-                : 'Claim Tokens'
-            }
-            css="active"
-            size="sm"
-            className="ml-auto"
-            onClick={onClick}
-          />
-        )}
+        <Button
+          label={
+            action === 'remove'
+              ? status === 'in progress'
+                ? `Stop Process & Claim ${token}`
+                : `Claim ${token}`
+              : 'Claim CLB'
+          }
+          css="active"
+          size="sm"
+          className={`ml-auto${status === 'standby' ? ' !text-gray' : ''}`}
+          onClick={status !== 'standby' ? onClick : () => {}}
+          disabled={status === 'standby'}
+        />
       </div>
     </div>
   );
