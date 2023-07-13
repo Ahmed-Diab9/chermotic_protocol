@@ -36,7 +36,7 @@ export function RangeChart({
       <Chart
         ref={rangeChartRef}
         barData={barData}
-        dotData={isDotVisible ? dotData ?? [] : []}
+        dotData={isDotVisible ? dotData : []}
         trackConfig={RANGE_CONFIG}
         labels={RANGE_TICKS}
         defaultValues={defaultValues}
