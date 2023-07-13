@@ -29,6 +29,10 @@ interface PoolProgressProps {
   onReceiptClaimBatch?: () => unknown;
 }
 
+{
+  /* FIXME: needs refactor: Too many inline condition */
+}
+
 export const PoolProgress = ({
   token,
   market,
@@ -349,7 +353,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
           <p className="">
-            {detail} {token}
+            {detail} {status === 'completed' && token}
           </p>
         </div>
       </div>
