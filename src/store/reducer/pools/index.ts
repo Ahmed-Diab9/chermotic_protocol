@@ -33,6 +33,9 @@ const poolsSlice = createSlice({
     onBinsSelect: (state, action: PayloadAction<OwnedBin>) => {
       state.selectedBins = state.selectedBins.concat(action.payload);
     },
+    onAllBinsSelect: (state, action: PayloadAction<OwnedBin[]>) => {
+      state.selectedBins = action.payload;
+    },
     onBinsUnselect: (state, action: PayloadAction<OwnedBin>) => {
       const filtered = state.selectedBins.filter(
         (bin) => bin.baseFeeRate !== action.payload.baseFeeRate
