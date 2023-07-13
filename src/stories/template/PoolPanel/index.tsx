@@ -175,6 +175,50 @@ export const PoolPanel = (props: PoolPanelProps) => {
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate < 0n) || [],
     [ownedPool]
   );
+
+  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
+
+  const settlementTokenBalance = useMemo(() => {
+    if (balances && token && balances[token.address])
+      return formatDecimals(balances[token.address], token.decimals, 0);
+    return '-';
+  }, [balances, token, balances?.[token?.address || 'default']]);
+
+  const onSelectAllClick = useCallback(
+    (selectedIndex: number) => {
+      switch (selectedIndex) {
+        case 0: {
+          if (
+            direction === 'long' &&
+            selectedBins.filter((bin) => bin.baseFeeRate > 0).length ===
+              ownedLongLiquidityBins.length
+          ) {
+            dispatch(poolsAction.onBinsReset());
+          } else {
+            dispatch(poolsAction.onAllBinsSelect(ownedLongLiquidityBins));
+          }
+          break;
+        }
+        case 1: {
+          if (
+            direction === 'short' &&
+            selectedBins.filter((bin) => bin.baseFeeRate < 0).length ===
+              ownedShortLiquidityBins.length
+          ) {
+            dispatch(poolsAction.onBinsReset());
+          } else {
+            dispatch(poolsAction.onAllBinsSelect(ownedShortLiquidityBins));
+          }
+          break;
+        }
+        default: {
+          toast('Invalid access');
+        }
+      }
+    },
+    [ownedLongLiquidityBins, ownedShortLiquidityBins, selectedBins, direction]
+  );
+
   const binLength = ownedPool?.bins.length || 0;
 
   const onBinCheck = (bin: OwnedBin) => {
@@ -186,14 +230,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
       dispatch(poolsAction.onBinsSelect(bin));
     }
   };
-
-  const [isBinValueVisible, setIsBinValueVisible] = useState(false);
-
-  const settlementTokenBalance = useMemo(() => {
-    if (balances && token && balances[token.address])
-      return formatDecimals(balances[token.address], token.decimals, 0);
-    return '-';
-  }, [balances, token, balances?.[token?.address || 'default']]);
 
   return (
     <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
@@ -498,76 +534,87 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 >
                   {({ selectedIndex }) => (
                     <>
-                  <div className="flex flex-wrap items-baseline">
-                    <Tab.List className="pt-[36px] !justify-start !gap-10">
-                      <Tab>Long LP</Tab>
-                      <Tab>Short LP</Tab>
-                    </Tab.List>
+                      <div className="flex flex-wrap items-baseline">
+                        <Tab.List className="pt-[36px] !justify-start !gap-10">
+                          <Tab>Long LP</Tab>
+                          <Tab>Short LP</Tab>
+                        </Tab.List>
 
-                    {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
-                    <div className="ml-auto">
-                      {/* 전체 선택 */}
-                      {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
-                      <Button label="Select All" css="unstyled" className="text-black/50" />
+                        {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
+                        <div className="ml-auto">
+                          {/* 전체 선택 */}
+                          {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
+                          <Button
+                            label="Select All"
+                            css="unstyled"
+                            className="text-black/50"
+                            onClick={() => {
+                              onSelectAllClick(selectedIndex);
+                            }}
+                          />
 
-                      {/* 선택된 유동성 일괄 제거 */}
-                      {/* 선택된 항목이 없을 땐, disabled 상태 */}
-                      <Button
-                        label="Remove Selected"
-                        className="ml-2"
-                        onClick={() => {
-                          dispatch(poolsAction.onModalOpen());
-                        }}
-                        // disabled
-                      />
-                    </div>
-                  </div>
-                  <Tab.Panels className="mt-12">
-                    <Tab.Panel>
-                      <article>
-                        {ownedLongLiquidityBins?.length === 0 ? (
-                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
-                        ) : (
-                          <div className="flex flex-col gap-3">
-                            {ownedLongLiquidityBins.map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                                isLoading={isLoading}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    </Tab.Panel>
-                    <Tab.Panel>
-                      <article>
-                        {ownedShortLiquidityBins.length === 0 ? (
-                          <p className="my-10 text-center text-gray">You have no liquidity yet.</p>
-                        ) : (
-                          <div className="flex flex-col gap-3">
-                            {ownedShortLiquidityBins.map((bin, binIndex) => (
-                              <BinItem
-                                key={bin.baseFeeRate}
-                                index={binIndex}
-                                token={token}
-                                market={market}
-                                bin={bin}
-                                selectedBins={selectedBins}
-                                onBinCheck={onBinCheck}
-                                isLoading={isLoading}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    </Tab.Panel>
-                  </Tab.Panels>
+                          {/* 선택된 유동성 일괄 제거 */}
+                          {/* 선택된 항목이 없을 땐, disabled 상태 */}
+                          <Button
+                            label="Remove Selected"
+                            className="ml-2"
+                            onClick={() => {
+                              dispatch(poolsAction.onModalOpen());
+                            }}
+                            // disabled
+                          />
+                        </div>
+                      </div>
+                      <Tab.Panels className="mt-12">
+                        <Tab.Panel>
+                          <article>
+                            {ownedLongLiquidityBins?.length === 0 ? (
+                              <p className="my-10 text-center text-gray">
+                                You have no liquidity yet.
+                              </p>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                {ownedLongLiquidityBins.map((bin, binIndex) => (
+                                  <BinItem
+                                    key={bin.baseFeeRate}
+                                    index={binIndex}
+                                    token={token}
+                                    market={market}
+                                    bin={bin}
+                                    selectedBins={selectedBins}
+                                    onBinCheck={onBinCheck}
+                                    isLoading={isLoading}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </article>
+                        </Tab.Panel>
+                        <Tab.Panel>
+                          <article>
+                            {ownedShortLiquidityBins.length === 0 ? (
+                              <p className="my-10 text-center text-gray">
+                                You have no liquidity yet.
+                              </p>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                {ownedShortLiquidityBins.map((bin, binIndex) => (
+                                  <BinItem
+                                    key={bin.baseFeeRate}
+                                    index={binIndex}
+                                    token={token}
+                                    market={market}
+                                    bin={bin}
+                                    selectedBins={selectedBins}
+                                    onBinCheck={onBinCheck}
+                                    isLoading={isLoading}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </article>
+                        </Tab.Panel>
+                      </Tab.Panels>
                     </>
                   )}
                 </Tab.Group>
