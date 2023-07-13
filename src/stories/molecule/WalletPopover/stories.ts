@@ -57,3 +57,33 @@ export const Default: Story = {
     ],
   },
 };
+export const Empty: Story = {
+  args: {
+    isLoading: false,
+    account: {
+      walletAddress: '0x1111111111111111111111111111111111111111',
+    },
+    tokens: [],
+    markets: [
+      {
+        address: '0x8888888888888888888888888888888888888888',
+        description: 'ETH/USD',
+        oracleValue: {
+          price: 10000n,
+          timestamp: 1000000n,
+          version: 10n,
+        },
+      } as Market,
+    ],
+    balances: {
+      USDC: 100n,
+    },
+    priceFeed: {
+      USDC: {
+        value: 1500n,
+        decimals: 8,
+      },
+    },
+    pools: [],
+  },
+};
