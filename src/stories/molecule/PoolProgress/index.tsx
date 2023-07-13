@@ -150,76 +150,94 @@ export const PoolProgress = ({
                   <Tab.Panels className="flex-auto mt-3">
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isValid(market) &&
-                        (receipts || previousReceipts).map((receipt, index) => (
-                          <ProgressItem
-                            key={`all-${receipt.id.toString()}-${index}`}
-                            // title={receipt.title}
-                            status={receipt.status}
-                            detail={
-                              receipt.status === 'standby'
-                                ? 'Waiting for the next oracle round'
-                                : formatDecimals(receipt.amount, token?.decimals, 2)
-                            }
-                            name={receipt.name}
-                            progressPercent={0}
-                            action={receipt.action}
-                            onClick={() => {
-                              onReceiptClaim?.(receipt.id, receipt.action);
-                            }}
-                            isLoading={isLoading}
-                          />
-                        ))}
+                      {receipts.length === 0 ? (
+                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                      ) : (
+                        <>
+                          {isValid(market) &&
+                            (receipts || previousReceipts).map((receipt, index) => (
+                              <ProgressItem
+                                key={`all-${receipt.id.toString()}-${index}`}
+                                // title={receipt.title}
+                                status={receipt.status}
+                                detail={
+                                  receipt.status === 'standby'
+                                    ? 'Waiting for the next oracle round'
+                                    : formatDecimals(receipt.amount, token?.decimals, 2)
+                                }
+                                name={receipt.name}
+                                progressPercent={0}
+                                action={receipt.action}
+                                onClick={() => {
+                                  onReceiptClaim?.(receipt.id, receipt.action);
+                                }}
+                                isLoading={isLoading}
+                              />
+                            ))}
+                        </>
+                      )}
                     </Tab.Panel>
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isValid(market) &&
-                        (receipts || previousReceipts)
-                          .filter((receipt) => receipt.action === 'add')
-                          .map((receipt, index) => (
-                            <ProgressItem
-                              key={`minting-${receipt.id.toString()}-${index}`}
-                              // title={receipt.title}
-                              status={receipt.status}
-                              detail={
-                                receipt.status === 'standby'
-                                  ? 'Waiting for the next oracle round'
-                                  : formatDecimals(receipt.amount, token?.decimals, 2)
-                              }
-                              name={receipt.name}
-                              progressPercent={0}
-                              action={receipt.action}
-                              onClick={() => {
-                                onReceiptClaim?.(receipt.id, receipt.action);
-                              }}
-                              isLoading={isLoading}
-                            />
-                          ))}
+                      {receipts.filter((receipt) => receipt.action === 'add').length === 0 ? (
+                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                      ) : (
+                        <>
+                          {isValid(market) &&
+                            (receipts || previousReceipts)
+                              .filter((receipt) => receipt.action === 'add')
+                              .map((receipt, index) => (
+                                <ProgressItem
+                                  key={`minting-${receipt.id.toString()}-${index}`}
+                                  // title={receipt.title}
+                                  status={receipt.status}
+                                  detail={
+                                    receipt.status === 'standby'
+                                      ? 'Waiting for the next oracle round'
+                                      : formatDecimals(receipt.amount, token?.decimals, 2)
+                                  }
+                                  name={receipt.name}
+                                  progressPercent={0}
+                                  action={receipt.action}
+                                  onClick={() => {
+                                    onReceiptClaim?.(receipt.id, receipt.action);
+                                  }}
+                                  isLoading={isLoading}
+                                />
+                              ))}
+                        </>
+                      )}
                     </Tab.Panel>
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isValid(market) &&
-                        (receipts || previousReceipts)
-                          .filter((receipt) => receipt.action === 'remove')
-                          .map((receipt, index) => (
-                            <ProgressItem
-                              key={`burning-${receipt.id.toString()}-${index}`}
-                              // title={receipt.title}
-                              status={receipt.status}
-                              detail={
-                                receipt.status === 'standby'
-                                  ? 'Waiting for the next oracle round'
-                                  : formatDecimals(receipt.amount, token?.decimals, 2)
-                              }
-                              name={receipt.name}
-                              progressPercent={0}
-                              action={receipt.action}
-                              onClick={() => {
-                                onReceiptClaim?.(receipt.id, receipt.action);
-                              }}
-                              isLoading={isLoading}
-                            />
-                          ))}
+                      {receipts.filter((receipt) => receipt.action === 'remove').length === 0 ? (
+                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                      ) : (
+                        <>
+                          {isValid(market) &&
+                            (receipts || previousReceipts)
+                              .filter((receipt) => receipt.action === 'remove')
+                              .map((receipt, index) => (
+                                <ProgressItem
+                                  key={`burning-${receipt.id.toString()}-${index}`}
+                                  // title={receipt.title}
+                                  status={receipt.status}
+                                  detail={
+                                    receipt.status === 'standby'
+                                      ? 'Waiting for the next oracle round'
+                                      : formatDecimals(receipt.amount, token?.decimals, 2)
+                                  }
+                                  name={receipt.name}
+                                  progressPercent={0}
+                                  action={receipt.action}
+                                  onClick={() => {
+                                    onReceiptClaim?.(receipt.id, receipt.action);
+                                  }}
+                                  isLoading={isLoading}
+                                />
+                              ))}
+                        </>
+                      )}
                     </Tab.Panel>
                     <div>
                       <TooltipGuide
