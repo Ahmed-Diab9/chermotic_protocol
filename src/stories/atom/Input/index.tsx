@@ -17,7 +17,7 @@ interface InputProps {
   align?: 'center' | 'left' | 'right';
   disabled?: boolean;
   onClick?: () => unknown;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
+  onChange?: (value: string) => unknown;
   onClickAway?: () => unknown;
 }
 
@@ -70,9 +70,6 @@ export const Input = (props: InputProps) => {
         onChange={(event) => {
           event.preventDefault();
           onChange && onChange(event);
-        }}
-        onClick={() => {
-          onClick?.();
         }}
       />
       {unit ? <span className="text-black/30">{unit}</span> : null}

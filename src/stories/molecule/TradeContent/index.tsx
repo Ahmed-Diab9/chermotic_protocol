@@ -416,10 +416,6 @@ interface AmountSwitchProps {
 
 const AmountSwitch = (props: AmountSwitchProps) => {
   const { input, onAmountChange, token } = props;
-  const [isClicked, setIsClicked] = useState(false);
-  const defaultValue = useMemo(() => {
-    return isClicked ? '' : '0';
-  }, [isClicked]);
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
@@ -434,12 +430,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
                 event.preventDefault();
                 onAmountChange?.('collateral', event);
               }}
-              onClick={() => {
-                setIsClicked(true);
-              }}
-              onClickAway={() => {
-                setIsClicked(false);
-              }}
+              placeholder="0"
             />
           </div>
           <div className="flex items-center justify-end mt-2">
@@ -462,16 +453,10 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input?.quantity.toString() || defaultValue}
+              value={input?.quantity.toString()}
               onChange={(event) => {
                 event.preventDefault();
                 onAmountChange('quantity', event);
-              }}
-              onClick={() => {
-                setIsClicked(true);
-              }}
-              onClickAway={() => {
-                setIsClicked(false);
               }}
             />
           </div>
