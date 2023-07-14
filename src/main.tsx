@@ -7,7 +7,7 @@ import * as Sentry from "@sentry/react";
 import App from './App';
 
 Sentry.init({
-  dsn: "https://c6771fd0a57d40da96c846470db59c6e@o4505526071721984.ingest.sentry.io/4505526075129856",
+  dsn: "https://1ba67d712ee3486f9ac2517ee444e7af@o4505526071721984.ingest.sentry.io/4505526103572480",
 });
 
 createRoot(document.getElementById('root')!).render(<App />);
