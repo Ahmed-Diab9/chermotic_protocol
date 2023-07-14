@@ -1,3 +1,6 @@
+import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
+import { Address } from 'wagmi';
+
 export const OPENING = 'opening';
 export const OPENED = 'opened';
 export const CLOSING = 'closing';
@@ -26,3 +29,14 @@ export type PositionOption = {
   title: string;
   marketAddress?: string;
 };
+export type PositionStatus = 'opened' | 'closed' | ' closing';
+export interface Position extends IChromaticPosition {
+  marketAddress: Address;
+  lossPrice: bigint;
+  profitPrice: bigint;
+  status: string;
+  toProfit: bigint;
+  collateral: bigint;
+  toLoss: bigint;
+  pnl: 0 | bigint;
+}
