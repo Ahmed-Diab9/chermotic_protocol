@@ -33,6 +33,7 @@ export const Input = (props: InputProps) => {
     align = 'right',
     value,
     onChange,
+    onClick,
     onClickAway,
   } = props;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -69,6 +70,9 @@ export const Input = (props: InputProps) => {
         onChange={(event) => {
           event.preventDefault();
           onChange && onChange(event);
+        }}
+        onClick={() => {
+          onClick?.();
         }}
       />
       {unit ? <span className="text-black/30">{unit}</span> : null}
