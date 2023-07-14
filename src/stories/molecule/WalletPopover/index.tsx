@@ -1,6 +1,6 @@
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { Fragment, useCallback, useMemo } from 'react';
+import { Fragment, useCallback } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
@@ -9,15 +9,16 @@ import { Market, Price, Token } from '../../../typings/market';
 import { LiquidityPoolSummary } from '../../../typings/pools';
 import { trimAddress } from '../../../utils/address';
 import { Logger } from '../../../utils/log';
-import { expandDecimals, formatBalance, formatDecimals, withComma } from '../../../utils/number';
+import { formatBalance, formatDecimals, withComma } from '../../../utils/number';
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
 import './style.css';
 
-import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+import { usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../../../configs/token';
+import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
@@ -51,8 +52,7 @@ export const WalletPopover = ({
   onUsumCopy,
   ...props
 }: WalletPopoverProps) => {
-  // logger.info('[WalletPopover]', tokens, priceFeed, balances);
-  // logger.info(`[${WalletPopover.name}]`, pools);
+  const publicClient = usePublicClient();
   const usdcPrice = useCallback(
     (token: Token) => {
       if (!balances || !priceFeed) return '';
@@ -98,7 +98,7 @@ export const WalletPopover = ({
                   {/* Network */}
                   <Avatar
                     src={arbitrumIcon}
-                    label="Arbitrum Network"
+                    label={publicClient.chain.name || 'Unknown'}
                     size="lg"
                     fontSize="sm"
                     gap="3"
