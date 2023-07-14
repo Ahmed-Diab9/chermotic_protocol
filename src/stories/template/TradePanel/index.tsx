@@ -43,6 +43,7 @@ export interface TradePanelProps {
   shortTotalMaxLiquidity?: bigint;
   shortTotalUnusedLiquidity?: bigint;
 
+  liquidityData?: any[];
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
 }
@@ -73,6 +74,7 @@ export const TradePanel = (props: TradePanelProps) => {
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
+    liquidityData,
     longLiquidityData,
     shortLiquidityData,
   } = props;
@@ -120,7 +122,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
-                liquidityData={shortLiquidityData}
+                liquidityData={liquidityData}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -145,7 +147,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
-                liquidityData={longLiquidityData}
+                liquidityData={liquidityData}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
