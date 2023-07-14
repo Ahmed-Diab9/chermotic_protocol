@@ -37,7 +37,7 @@ interface TradeContentProps {
   isLoading?: boolean;
   onInputChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onMethodToggle?: () => unknown;
   onLeverageChange?: (nextLeverage: string) => unknown;
@@ -232,7 +232,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 unit="x"
                 className="w-20 ml-auto"
                 value={input?.leverage}
-                onChange={(event) => onInputChange?.('leverage', event)}
+                onChange={(value) => onInputChange?.('leverage', value)}
+                autoCorrect
               />
             </div>
           </div>
@@ -249,8 +250,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.takeProfit}
-                  onChange={(event) => {
-                    onInputChange?.('takeProfit', event);
+                  onChange={(value) => {
+                    onInputChange?.('takeProfit', value);
                   }}
                 />
               </div>
@@ -278,8 +279,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.stopLoss}
-                  onChange={(event) => {
-                    onInputChange?.('stopLoss', event);
+                  onChange={(value) => {
+                    onInputChange?.('stopLoss', value);
                   }}
                 />
               </div>
@@ -408,10 +409,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 interface AmountSwitchProps {
   input?: TradeInput;
   token?: Token;
-  onAmountChange?: (
-    key: 'collateral' | 'quantity',
-    event: ChangeEvent<HTMLInputElement>
-  ) => unknown;
+  onAmountChange?: (key: 'collateral' | 'quantity', value: string) => unknown;
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
@@ -425,10 +423,9 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input.collateral.toString() || defaultValue}
-              onChange={(event) => {
-                event.preventDefault();
-                onAmountChange?.('collateral', event);
+              value={input.collateral.toString()}
+              onChange={(value) => {
+                onAmountChange?.('collateral', value);
               }}
               placeholder="0"
             />
@@ -454,9 +451,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
           <div className="max-w-[220px]">
             <Input
               value={input?.quantity.toString()}
-              onChange={(event) => {
-                event.preventDefault();
-                onAmountChange('quantity', event);
+              onChange={(value) => {
+                onAmountChange('quantity', value);
               }}
             />
           </div>

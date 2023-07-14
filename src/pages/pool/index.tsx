@@ -103,7 +103,6 @@ const Pool = () => {
     amount: removeAmount,
     maxAmount: maxRemoveAmount,
     onAmountChange: onRemoveAmountChange,
-    onMaxChange: onRemoveMaxAmountChange,
   } = usePoolRemoveInput();
   const {
     type: multiType,
@@ -202,7 +201,6 @@ const Pool = () => {
               removeAmount={removeAmount}
               maxRemoveAmount={maxRemoveAmount}
               onRemoveAmountChange={onRemoveAmountChange}
-              onRemoveMaxAmountChange={onRemoveMaxAmountChange}
               multiType={multiType}
               multiAmount={multiAmount}
               multiBalance={multiClbTokenBalance}

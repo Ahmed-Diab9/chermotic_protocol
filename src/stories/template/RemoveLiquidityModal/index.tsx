@@ -28,11 +28,10 @@ export interface RemoveLiquidityModalProps {
   amount?: string;
   maxAmount?: number;
   onAmountChange?: (nextAmount: string) => unknown;
-  onMaxChange?: () => unknown;
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
-  const { selectedBin, token, amount, maxAmount, onAmountChange, onMaxChange } = props;
+  const { selectedBin, token, amount, maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
@@ -131,7 +130,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     label="All"
                     size="sm"
                     onClick={() => {
-                      onMaxChange?.();
+                      onAmountChange?.((maxAmount ?? 0).toString());
                     }}
                   />
                   <Button
@@ -174,8 +173,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <Input
                     unit="CLB"
                     value={amount}
-                    onChange={(event) => {
-                      let value = event.target.value;
+                    onChange={(value) => {
                       value = value.replace(/,/g, '');
                       const trimmed = trimLeftZero(value);
                       const parsed = Number(trimmed);
@@ -184,14 +182,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       }
                       onAmountChange?.(trimmed);
                     }}
-                    onClickAway={() => {
-                      if (!isValid(amount) || !isValid(maxAmount)) {
-                        return;
-                      }
-                      if (Number(amount) > maxAmount) {
-                        onMaxChange?.();
-                      }
-                    }}
+                    autoCorrect
+                    max={maxAmount}
                   />
                 </div>
               </div>

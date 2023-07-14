@@ -17,7 +17,7 @@ interface OptionInputProps {
   className?: string;
   disabled?: boolean;
   onClick?: () => unknown;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
+  onChange?: (value: string) => unknown;
   onButtonClick?: (value: string) => unknown;
   onClickAway?: () => unknown;
 }

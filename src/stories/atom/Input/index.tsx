@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useMemo, useRef } from 'react';
-import { Avatar } from '../Avatar';
 import './style.css';
+
+import { Avatar } from '../Avatar';
 import { isValid } from '~/utils/valid';
 import { withComma } from '~/utils/number';
 
@@ -16,7 +16,9 @@ interface InputProps {
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
   disabled?: boolean;
-  onClick?: () => unknown;
+  autoCorrect?: boolean;
+  min?: number;
+  max?: number;
   onChange?: (value: string) => unknown;
   onClickAway?: () => unknown;
 }
@@ -32,45 +34,37 @@ export const Input = (props: InputProps) => {
     css = 'default',
     align = 'right',
     value,
+    min,
+    max,
+    autoCorrect = false,
     onChange,
-    onClick,
     onClickAway,
   } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!isValid(onClickAway)) {
-      return;
-    }
-    const handleClickAway = (event: MouseEvent) => {
-      const element = event.target;
-      if (element instanceof Node) {
-        const isContained = inputRef.current?.contains(element);
-        if (!isContained) {
-          onClickAway?.();
-        }
-      }
-    };
-    document.addEventListener('mousedown', handleClickAway);
+  function handleAutoCorrect() {
+    if (!isValid(value)) return;
+    else if (isValid(max) && +value > max) onChange?.(withComma(max) ?? '0');
+    else if (isValid(min) && +value < min) onChange?.(withComma(min) ?? '0');
+  }
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickAway);
-    };
-  }, [onClickAway, inputRef, value]);
+  function handleBlur() {
+    if (onClickAway) onClickAway();
+    if (autoCorrect) handleAutoCorrect();
+  }
 
   return (
     <div className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}>
       {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
       <input
-        ref={inputRef}
         type="string"
         className={`text-${align}`}
         value={type === 'number' ? withComma(value) : value}
         placeholder={placeholder}
         onChange={(event) => {
           event.preventDefault();
-          onChange && onChange(event);
+          onChange && onChange(event.target.value);
         }}
+        onBlur={handleBlur}
       />
       {unit ? <span className="text-black/30">{unit}</span> : null}
     </div>

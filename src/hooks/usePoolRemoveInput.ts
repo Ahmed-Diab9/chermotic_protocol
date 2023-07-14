@@ -32,14 +32,7 @@ export const usePoolRemoveInput = () => {
     }
   };
 
-  const onMaxChange = () => {
-    if (isValid(maxAmount)) {
-      onAmountChange(maxAmount);
-    }
-    return;
-  };
-
-  return { amount, maxAmount, onAmountChange, onMaxChange };
+  return { amount, maxAmount, onAmountChange };
 };
 
 export const useMultiPoolRemoveInput = () => {

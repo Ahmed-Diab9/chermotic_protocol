@@ -267,9 +267,9 @@ export const useTradeInput = () => {
 
   const onChange = (
     key: keyof Omit<TradeInput, 'direction' | 'method' | 'takerMargin' | 'makerMargin'>,
-    event: ChangeEvent<HTMLInputElement>
+    newValue: string
   ) => {
-    const value = event.target.value.replace(/,/g, '');
+    const value = newValue.replace(/,/g, '');
     if (value.length === 0) {
       dispatch({
         type: key,

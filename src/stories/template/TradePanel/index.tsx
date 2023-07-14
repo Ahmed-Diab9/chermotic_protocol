@@ -14,7 +14,7 @@ export interface TradePanelProps {
   longTradeFeePercent?: bigint;
   onLongChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: React.ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onLongMethodToggle?: () => unknown;
   onLongLeverageChange?: (value: string) => unknown;
@@ -26,7 +26,7 @@ export interface TradePanelProps {
   shortTradeFeePercent?: bigint;
   onShortChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: React.ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onShortMethodToggle?: () => unknown;
   onShortLeverageChange?: (value: string) => unknown;
