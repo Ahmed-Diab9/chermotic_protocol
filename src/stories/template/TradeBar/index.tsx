@@ -21,7 +21,13 @@ import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position, PositionOption } from '~/typings/position';
 import { isValid } from '~/utils/valid';
 import { abs, expandDecimals, formatDecimals, withComma } from '~/utils/number';
-import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
+import {
+  LEVERAGE_DECIMALS,
+  ORACLE_PROVIDER_DECIMALS,
+  PERCENT_DECIMALS,
+  PNL_RATE_DECIMALS,
+  QTY_DECIMALS,
+} from '~/configs/decimals';
 
 interface TradeBarProps {
   token?: Token;
@@ -286,7 +292,7 @@ const PositionItem = function (props: Props) {
         entryTime: '-',
       };
     }
-    const { collateral, qty, leverage, makerMargin } = position;
+    const { collateral, qty, leverage, makerMargin, takerMargin } = position;
     const stopLoss = (10000 / leverage).toFixed(2) + '%';
     const takeProfitRaw =
       abs(qty) === 0n
@@ -314,8 +320,8 @@ const PositionItem = function (props: Props) {
         entryTime: '-',
       };
     }
-    const pnl =
-      (BigInt(position.pnl) * expandDecimals(token.decimals) * expandDecimals(2)) / collateral;
+    const pnlPercentage =
+      (BigInt(position.pnl) * expandDecimals(PNL_RATE_DECIMALS + PERCENT_DECIMALS)) / takerMargin;
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
       collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
@@ -323,7 +329,9 @@ const PositionItem = function (props: Props) {
       stopLoss: withComma(stopLoss),
       profitPriceTo: priceTo(position, 'toProfit'),
       lossPriceTo: priceTo(position, 'toLoss'),
-      pnl: `${pnl > 0n ? '+' : ''}${withComma(formatDecimals(pnl, 4 + 2, 4))}%`,
+      pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
+        formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
+      )}%`,
       profitPrice: withComma(
         formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
       ),
@@ -500,7 +508,7 @@ const PositionItem = function (props: Props) {
             <TextRow
               label="PnL"
               labelClass="text-black/50"
-              value={calculated.pnl}
+              value={calculated.pnlPercentage}
               isLoading={isLoading}
             />
           </div>
