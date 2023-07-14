@@ -19,7 +19,6 @@ interface OptionInputProps {
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
   onButtonClick?: (value: string) => unknown;
-  onClickAway?: () => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -36,7 +35,6 @@ export const OptionInput = (props: OptionInputProps) => {
     className,
     onChange,
     onButtonClick,
-    onClickAway,
   } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
@@ -94,7 +92,7 @@ export const OptionInput = (props: OptionInputProps) => {
           onChange?.(event);
         }}
         className="relative border-gray"
-        onClickAway={onClickAway}
+        // onBlur={onBlur}
       />
     </div>
   );

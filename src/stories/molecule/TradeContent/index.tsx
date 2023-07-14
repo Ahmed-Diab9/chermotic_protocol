@@ -139,6 +139,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     createLiquidation();
   }, [createLiquidation]);
   const SLIDER_TICK = [0, 25, 50, 75, 100];
+
+  const TIER: number = 1;
+
+  // const LEVERAGE_TICK = useMemo(() => (TIER === 0 ? [1, 2.5, 5, 7.5, 10] : [1, 5, 10, 15, 20]), [TIER]);
+  const LEVERAGE_MAX = useMemo(() => (TIER === 0 ? 10 : 20), [TIER]);
+
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
@@ -210,16 +216,19 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {isSliderOpen ? (
                 <div className="mt-[-8px]">
                   <Slider
+                    min={1}
+                    max={LEVERAGE_MAX}
                     value={Number(input?.leverage) === 0 ? 1 : Number(input?.leverage)}
                     onUpdate={(newValue) => {
                       onLeverageChange?.(String(newValue));
                     }}
-                    tick={SLIDER_TICK}
+                    tick={5}
                   />
                 </div>
               ) : (
                 <LeverageOption
                   value={Number(input?.leverage)}
+                  max={LEVERAGE_MAX}
                   onClick={(nextValue) => {
                     onLeverageChange?.(String(nextValue));
                   }}
@@ -234,6 +243,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 value={input?.leverage}
                 onChange={(value) => onInputChange?.('leverage', value)}
                 autoCorrect
+                min={1}
+                max={LEVERAGE_MAX}
               />
             </div>
           </div>

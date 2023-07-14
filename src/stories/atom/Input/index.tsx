@@ -3,6 +3,7 @@ import './style.css';
 import { Avatar } from '../Avatar';
 import { isValid } from '~/utils/valid';
 import { withComma } from '~/utils/number';
+import { ChangeEvent, FocusEventHandler } from 'react';
 
 interface InputProps {
   label?: string;
@@ -20,7 +21,7 @@ interface InputProps {
   min?: number;
   max?: number;
   onChange?: (value: string) => unknown;
-  onClickAway?: () => unknown;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
 }
 
 export const Input = (props: InputProps) => {
@@ -38,18 +39,34 @@ export const Input = (props: InputProps) => {
     max,
     autoCorrect = false,
     onChange,
-    onClickAway,
+    onBlur,
   } = props;
 
-  function handleAutoCorrect() {
-    if (!isValid(value)) return;
-    else if (isValid(max) && +value > max) onChange?.(withComma(max) ?? '0');
-    else if (isValid(min) && +value < min) onChange?.(withComma(min) ?? '0');
+  function handleAutoCorrect(newValue?: string | number) {
+    if (!isValid(newValue)) {
+      return;
+    } else if (isValid(min) && +newValue < min) {
+      onChange!(min.toString());
+    } else if (newValue === '') {
+      onChange!('');
+    } else if (isValid(max) && +newValue > max) {
+      onChange!(max.toString());
+    } else {
+      onChange!(newValue.toString());
+    }
   }
 
-  function handleBlur() {
-    if (onClickAway) onClickAway();
-    if (autoCorrect) handleAutoCorrect();
+  function trimLeadingZero(str: string) {
+    return str.replace(/^0+(?!\.|$)/, '');
+  }
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const newValue = trimLeadingZero(event.target.value);
+    if (isValid(onChange)) {
+      if (autoCorrect) handleAutoCorrect(newValue);
+      else onChange(newValue);
+    }
   }
 
   return (
@@ -60,11 +77,8 @@ export const Input = (props: InputProps) => {
         className={`text-${align}`}
         value={type === 'number' ? withComma(value) : value}
         placeholder={placeholder}
-        onChange={(event) => {
-          event.preventDefault();
-          onChange && onChange(event.target.value);
-        }}
-        onBlur={handleBlur}
+        onChange={handleChange}
+        onBlur={onBlur}
       />
       {unit ? <span className="text-black/30">{unit}</span> : null}
     </div>

@@ -279,15 +279,14 @@ export const useTradeInput = () => {
       });
       return;
     }
-    const parsed = trimLeftZero(value);
-    if (isNaN(Number(parsed)) || parsed === state[key]) {
+    if (isNaN(Number(value)) || value === state[key]) {
       return;
     }
 
     dispatch({
       type: key,
       payload: {
-        [key]: parsed,
+        [key]: value,
       } as Record<typeof key, string>,
     });
   };
