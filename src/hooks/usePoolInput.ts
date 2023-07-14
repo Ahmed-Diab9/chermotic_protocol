@@ -28,18 +28,13 @@ const usePoolInput = () => {
     }
     logger.info('binFeeRates', binFeeRates);
     const totalCLBTokenValue = binFeeRates.reduce((acc, bin) => {
-      const clbTokenValue = BigInt(
-        Math.floor(
-          (pool.bins.find(({ baseFeeRate }) => {
-            return baseFeeRate / 100 === bin;
-          })?.clbTokenValue || 0) *
-            10 ** CLB_TOKEN_VALUE_DECIMALS
-        )
-      );
+      const clbTokenValue =
+        (pool.bins.find(({ baseFeeRate }) => {
+          return baseFeeRate / 100 === bin;
+        })?.clbTokenValue || 0) * 1; // 10 ** CLB_TOKEN_VALUE_DECIMALS
       return acc + clbTokenValue;
-    }, 0n);
-
-    return binFeeRates.length ? totalCLBTokenValue / BigInt(binFeeRates.length) : 0n;
+    }, 0);
+    return binFeeRates.length ? totalCLBTokenValue / binFeeRates.length : 0;
   }, [pool, binFeeRates]);
 
   const onAmountChange = (value: string) => {
