@@ -69,6 +69,11 @@ export const Input = (props: InputProps) => {
     }
   }
 
+  /* TODO: 입력값과 필터 값 분리
+   * 단, 필터 값은 바로 립력이 되야하고
+   * 입력값은 blur시에 onChange로 변경되야함 
+   */
+
   return (
     <div className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}>
       {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
