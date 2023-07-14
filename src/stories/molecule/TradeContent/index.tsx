@@ -150,10 +150,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <Skeleton width={40} />
             ) : (
               <>
-                {balances &&
-                  token &&
-                  balances[token.address] &&
-                  withComma(formatDecimals(balances[token.address], token.decimals, 5))}{' '}
+                {balances && token && balances[token.address]
+                  ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
+                  : 0}{' '}
                 {token?.name}
               </>
             )}
@@ -411,6 +410,10 @@ interface AmountSwitchProps {
 
 const AmountSwitch = (props: AmountSwitchProps) => {
   const { input, onAmountChange, token } = props;
+  const [isClicked, setIsClicked] = useState(false);
+  const defaultValue = useMemo(() => {
+    return isClicked ? '' : '0';
+  }, [isClicked]);
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
@@ -420,10 +423,16 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input.collateral.toString()}
+              value={input.collateral.toString() || defaultValue}
               onChange={(event) => {
                 event.preventDefault();
                 onAmountChange?.('collateral', event);
+              }}
+              onClick={() => {
+                setIsClicked(true);
+              }}
+              onClickAway={() => {
+                setIsClicked(false);
               }}
             />
           </div>
@@ -436,7 +445,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             />
             <p>Contract Qty</p>
             <p className="ml-2 text-black/30">
-              {withComma(input?.quantity)} {token?.name}
+              {withComma(Number(input?.quantity))} {token?.name}
             </p>
           </div>
         </>
@@ -447,10 +456,16 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input?.quantity.toString()}
+              value={input?.quantity.toString() || defaultValue}
               onChange={(event) => {
                 event.preventDefault();
                 onAmountChange('quantity', event);
+              }}
+              onClick={() => {
+                setIsClicked(true);
+              }}
+              onClickAway={() => {
+                setIsClicked(false);
               }}
             />
           </div>
@@ -464,7 +479,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <p>Collateral</p>
             {isValid(token) && (
               <p className="ml-2 text-black/30">
-                {input.collateral} {token.name}
+                {withComma(Number(input.collateral))} {token.name}
               </p>
             )}
           </div>

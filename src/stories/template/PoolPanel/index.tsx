@@ -33,6 +33,7 @@ import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 import { toast } from 'react-toastify';
 import { isNil } from 'ramda';
+import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 
 const logger = Logger('PoolPanel');
 
@@ -43,7 +44,7 @@ interface PoolPanelProps {
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
-  binAverage?: number | bigint;
+  binAverage?: number;
   longTotalMaxLiquidity?: bigint;
   longTotalUnusedLiquidity?: bigint;
   shortTotalMaxLiquidity?: bigint;
@@ -414,7 +415,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                     {isValid(token) && (
                       <p>
-                        {formatDecimals(binAverage ?? 0, token.decimals, 2)} {token.name}
+                        {binAverage.toFixed(2)} {token.name}
                       </p>
                     )}
                   </div>

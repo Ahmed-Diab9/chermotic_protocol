@@ -12,18 +12,16 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
-import memoizeOne from 'memoize-one';
 import { isNil } from 'ramda';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
 import { useClosePosition } from '~/hooks/useClosePosition';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { CLOSED, CLOSING, OPENED, OPENING, PositionOption } from '~/typings/position';
+import { CLOSED, CLOSING, OPENED, OPENING, Position, PositionOption } from '~/typings/position';
 import { isValid } from '~/utils/valid';
-import { PNL_RATE_DECIMALS } from '../../../configs/decimals';
-import { Position } from '../../../hooks/usePosition';
-import { abs, formatDecimals, withComma } from '../../../utils/number';
+import { abs, expandDecimals, formatDecimals, withComma } from '~/utils/number';
+import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
 interface TradeBarProps {
   token?: Token;
@@ -31,6 +29,16 @@ interface TradeBarProps {
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
+}
+
+function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
+  const value = formatDecimals(position[type], ORACLE_PROVIDER_DECIMALS - 2, 2);
+  const hasProfit = type === 'toProfit' ? position.qty > 0n : position.qty <= 0n;
+  if (hasProfit) {
+    return `+${withComma(value)}%`;
+  } else {
+    return `${withComma(value)}%`;
+  }
 }
 
 export const TradeBar = ({
@@ -261,69 +269,72 @@ const PositionItem = function (props: Props) {
    * FIXME
    * Oracle Decimals을 확인해야 함
    */
-  const oracleDecimals = 18;
-  const printNumber = useCallback((number: bigint | null, decimals: number = 18) => {
-    if (isNil(number)) return '-';
-    return withComma(formatDecimals(number, decimals, 2));
-  }, []);
-  const calculatedData = useMemo(() => {
-    return memoizeOne((position: Position) => {
-      function priceTo(type: 'profit' | 'loss') {
-        const propName = type === 'profit' ? 'toProfit' : 'toLoss';
-        const value = printNumber(position[propName], oracleDecimals);
-        const higherCondition = type === 'profit' ? position.qty > 0n : position.qty < 0n;
-        if (higherCondition) {
-          return '+' + value + '%';
-        } else {
-          return value + '%';
-        }
-      }
-      const { takerMargin, qty, leverage, makerMargin } = position;
-      const pnlPercentage =
-        (BigInt(position.pnl) * BigInt(10 ** PNL_RATE_DECIMALS)) / BigInt(position.takerMargin);
-      const currentOracleVersion = oracleVersions?.[position.marketAddress];
-      const absQty = abs(qty);
-      if (
-        isNil(currentOracleVersion) ||
-        isNil(currentOracleVersion.version) ||
-        currentOracleVersion.version <= position.openVersion
-      ) {
-        return {
-          qty: printNumber(absQty, 4),
-          collateral: printNumber((absQty * (takerMargin / absQty)) / 100n, 4),
-          stopLoss: `${takerMargin / absQty}%`,
-          takeProfit: `${absQty === 0n ? 0n : makerMargin / absQty}%`,
-          profitPriceTo: '-',
-          lossPriceTo: '-',
-          pnl: '-',
-          lossPrice: '-',
-          profitPrice: '-',
-          entryPrice: '-',
-          entryTime: '-',
-        };
-      }
-
-      const props = {
-        qty: printNumber(absQty, 4),
-        collateral: printNumber((absQty * takerMargin) / absQty / 100n, 4),
-        stopLoss: `${takerMargin / absQty}%`,
-        takeProfit: `${absQty === 0n ? 0 : makerMargin / absQty}%`,
-        profitPriceTo: `${priceTo('profit')}%`,
-        lossPriceTo: `${priceTo('loss')}%`,
-        pnl: `${printNumber(pnlPercentage, 2)}%`,
-        lossPrice: printNumber(abs(BigInt(position.lossPrice || 0)), oracleDecimals),
-        profitPrice: printNumber(abs(BigInt(position.profitPrice || 0)), oracleDecimals),
-        entryPrice: printNumber(position.openPrice || BigInt(0), oracleDecimals),
-        entryTime: new Intl.DateTimeFormat('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        }).format(new Date(Number(position.openTimestamp) * 1000)),
+  const calculated = useMemo(() => {
+    if (isNil(position) || isNil(token) || isNil(oracleVersions)) {
+      return {
+        qty: '-',
+        collateral: '-',
+        stopLoss: '-',
+        takeProfit: '-',
+        profitPriceTo: '-',
+        lossPriceTo: '-',
+        pnl: '-',
+        lossPrice: '-',
+        profitPrice: '-',
+        entryPrice: '-',
+        entryTime: '-',
       };
-
-      return props;
-    });
-  }, [token, oracleVersions]);
+    }
+    const { collateral, qty, leverage, makerMargin } = position;
+    const stopLoss = (10000 / leverage).toFixed(2) + '%';
+    const takeProfitRaw =
+      abs(qty) === 0n
+        ? 0n
+        : (makerMargin * expandDecimals(4) * 100n * 10000n) /
+          (abs(qty) * expandDecimals(token.decimals));
+    const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
+    const currentOracleVersion = oracleVersions[position.marketAddress];
+    if (
+      isNil(currentOracleVersion) ||
+      isNil(currentOracleVersion.version) ||
+      currentOracleVersion.version <= position.openVersion
+    ) {
+      return {
+        qty: withComma(formatDecimals(abs(qty), 4, 2)),
+        collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
+        stopLoss,
+        takeProfit,
+        profitPriceTo: '-',
+        lossPriceTo: '-',
+        pnl: '-',
+        lossPrice: '-',
+        profitPrice: '-',
+        entryPrice: '-',
+        entryTime: '-',
+      };
+    }
+    const pnl =
+      (BigInt(position.pnl) * expandDecimals(token.decimals) * expandDecimals(2)) / collateral;
+    return {
+      qty: withComma(formatDecimals(abs(qty), 4, 2)),
+      collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
+      takeProfit: withComma(takeProfit),
+      stopLoss: withComma(stopLoss),
+      profitPriceTo: priceTo(position, 'toProfit'),
+      lossPriceTo: priceTo(position, 'toLoss'),
+      pnl: `${pnl > 0n ? '+' : ''}${withComma(formatDecimals(pnl, 4 + 2, 4))}%`,
+      profitPrice: withComma(
+        formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
+      ),
+      lossPrice: withComma(formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2)),
+      entryPrice: withComma(formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2)),
+      entryTime: new Intl.DateTimeFormat('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }).format(new Date(Number(position.openTimestamp) * 1000)),
+    };
+  }, [position, token, oracleVersions]);
 
   const direction = useCallback((position: Position) => {
     return position.qty > 0n ? 'Long' : 'Short';
@@ -386,11 +397,11 @@ const PositionItem = function (props: Props) {
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Price</p>
-            {isLoading ? <Skeleton width={60} /> : <>${calculatedData(position).entryPrice}</>}
+            {isLoading ? <Skeleton width={60} /> : <>${calculated.entryPrice}</>}
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Time</p>
-            {isLoading ? <Skeleton width={60} /> : <>{calculatedData(position).entryTime}</>}
+            {isLoading ? <Skeleton width={60} /> : <>{calculated.entryTime}</>}
           </div>
         </div>
         <div className="flex items-center gap-1 ml-auto">
@@ -444,13 +455,13 @@ const PositionItem = function (props: Props) {
             <TextRow
               label="Contract Qty"
               labelClass="text-black/50"
-              value={calculatedData(position).qty}
+              value={calculated.qty}
               isLoading={isLoading}
             />
             <TextRow
               label="Collateral"
               labelClass="text-black/50"
-              value={calculatedData(position).collateral}
+              value={calculated.collateral}
               isLoading={isLoading}
             />
           </div>
@@ -458,14 +469,14 @@ const PositionItem = function (props: Props) {
             <TextRow
               label="Take Profit"
               labelClass="text-black/50"
-              value={`${calculatedData(position).takeProfit}`}
+              value={calculated.takeProfit}
               isLoading={isLoading}
             />
             <TextRow
               label="TP Price"
               labelClass="text-black/50"
-              value={calculatedData(position).profitPrice}
-              subValueLeft={`(${calculatedData(position).profitPriceTo})`}
+              value={calculated.profitPrice}
+              subValueLeft={calculated.profitPriceTo}
               isLoading={isLoading}
             />
           </div>
@@ -473,14 +484,14 @@ const PositionItem = function (props: Props) {
             <TextRow
               label="Stop Loss"
               labelClass="text-black/50"
-              value={`${calculatedData(position).stopLoss}`}
+              value={calculated.stopLoss}
               isLoading={isLoading}
             />
             <TextRow
               label="SL Price"
               labelClass="text-black/50"
-              value={calculatedData(position).lossPrice}
-              subValueLeft={`(${calculatedData(position).lossPriceTo})`}
+              value={calculated.lossPrice}
+              subValueLeft={calculated.lossPriceTo}
               isLoading={isLoading}
             />
           </div>
@@ -488,7 +499,7 @@ const PositionItem = function (props: Props) {
             <TextRow
               label="PnL"
               labelClass="text-black/50"
-              value={`${calculatedData(position).pnl}`}
+              value={calculated.pnl}
               isLoading={isLoading}
             />
           </div>
