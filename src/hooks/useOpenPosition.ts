@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
+import { parseUnits } from 'viem';
+import { useWalletClient } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
@@ -11,7 +13,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
-import { useWalletClient } from 'wagmi';
 
 interface Props {
   state?: TradeInput;
@@ -52,9 +53,9 @@ function useOpenPosition(props: Props) {
       return;
     }
     if (
-      isValid(balances) &&
       isValid(token) &&
-      balances[token?.address] < BigInt(state.collateral) * expandDecimals(token.decimals)
+      isValid(balances?.[token!.address]) &&
+      balances![token!.address] < parseUnits(state.collateral, token.decimals)
     ) {
       toast('Not enough collateral.');
       return;
