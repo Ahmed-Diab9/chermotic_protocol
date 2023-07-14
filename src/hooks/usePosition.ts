@@ -114,7 +114,7 @@ export const usePosition = () => {
       if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
         return 'closing';
       }
-      if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
+      if (position.closeVersion !== 0n && currentOracleVersion > position.closeVersion) {
         return 'closed';
       }
       return 'opened';
