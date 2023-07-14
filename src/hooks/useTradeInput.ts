@@ -4,6 +4,7 @@ import { TradeInput, TradeInputAction } from '~/typings/trade';
 import { abs, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
+import { isValid } from '~/utils/valid';
 
 const initialTradeInput = {
   direction: 'long',
@@ -130,8 +131,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             makerMargin: 0,
           };
         } else {
-          const [integer, decimals = ''] = String(100 / Number(stopLoss)).split('.');
-          const leverage = integer + '.' + decimals.slice(0, 2);
+          const [integer, decimals = undefined] = String(100 / Number(stopLoss)).split('.');
+          const leverage = integer + '.' + (isValid(decimals) ? decimals.slice(0, 2) : '0');
           state = {
             ...state,
             stopLoss: stopLoss,
@@ -165,10 +166,10 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             makerMargin: 0,
           };
         } else {
-          const [integer, decimals = ''] = String(
+          const [integer, decimals = undefined] = String(
             Math.round((100 * numberBuffer()) / Number(leverage)) / numberBuffer()
           ).split('.');
-          const stopLoss = integer + '.' + decimals.slice(0, 2);
+          const stopLoss = integer + '.' + (isValid(decimals) ? decimals.slice(0, 2) : '0');
           state = {
             ...state,
             leverage,
@@ -226,7 +227,7 @@ export const useTradeInput = () => {
       return [];
     }
     let tradeFee = 0n;
-    const bins =
+    let bins =
       pool?.bins.filter((bin) => {
         if (state.direction === 'long') {
           return bin.baseFeeRate > 0;
@@ -234,9 +235,6 @@ export const useTradeInput = () => {
           return bin.baseFeeRate < 0;
         }
       }) ?? [];
-    if (state.direction === 'short') {
-      bins.reverse();
-    }
     for (const token of bins) {
       if (makerMargin <= 0n) {
         break;
