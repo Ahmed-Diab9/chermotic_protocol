@@ -177,6 +177,7 @@ export const TradeBar = ({
                                   {filteredPositions.map((position) => {
                                     return (
                                       <PositionItem
+                                        key={position.id.toString()}
                                         position={position}
                                         isLoading={isLoading}
                                         token={token}
