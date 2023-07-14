@@ -12,18 +12,16 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
-import memoizeOne from 'memoize-one';
 import { isNil } from 'ramda';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
 import { useClosePosition } from '~/hooks/useClosePosition';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { CLOSED, CLOSING, OPENED, OPENING, PositionOption } from '~/typings/position';
+import { CLOSED, CLOSING, OPENED, OPENING, Position, PositionOption } from '~/typings/position';
 import { isValid } from '~/utils/valid';
-import { PNL_RATE_DECIMALS } from '../../../configs/decimals';
-import { Position } from '../../../hooks/usePosition';
-import { abs, formatDecimals, withComma } from '../../../utils/number';
+import { abs, expandDecimals, formatDecimals, withComma } from '~/utils/number';
+import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
 interface TradeBarProps {
   token?: Token;
@@ -31,6 +29,16 @@ interface TradeBarProps {
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
+}
+
+function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
+  const value = formatDecimals(position[type], ORACLE_PROVIDER_DECIMALS - 2, 2);
+  const hasProfit = type === 'toProfit' ? position.qty > 0n : position.qty <= 0n;
+  if (hasProfit) {
+    return `+${withComma(value)}%`;
+  } else {
+    return `${withComma(value)}%`;
+  }
 }
 
 export const TradeBar = ({
