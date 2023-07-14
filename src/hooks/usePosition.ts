@@ -83,7 +83,13 @@ export const usePosition = () => {
           const targetPrice =
             position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
           const pnl = position.openPrice
-            ? await positionApi.getPnl(market.address, position.openPrice, targetPrice, position)
+            ? await positionApi.getPnl(
+                market.address,
+                position.openPrice,
+                targetPrice,
+                position,
+                currentSelectedToken.decimals
+              )
             : 0n;
           return {
             ...position,
