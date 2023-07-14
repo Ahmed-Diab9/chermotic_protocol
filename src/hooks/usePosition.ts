@@ -10,20 +10,12 @@ import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
 import { PromiseOnlySuccess } from '../utils/promise';
-import { Address } from 'wagmi';
 import { useError } from './useError';
+import { expandDecimals } from '~/utils/number';
+import { Position } from '~/typings/position';
+import { isValid } from '~/utils/valid';
 const logger = Logger('usePosition');
-export type PositionStatus = 'opened' | 'closed' | ' closing';
-export interface Position extends IChromaticPosition {
-  marketAddress: Address;
-  lossPrice: bigint;
-  profitPrice: bigint;
-  status: string;
-  toProfit: bigint;
-  collateral: bigint;
-  toLoss: bigint;
-  pnl: 0 | bigint;
-}
+
 export const usePosition = () => {
   const { accountAddress: usumAccount, fetchBalances } = useUsumAccount();
   const { currentSelectedToken } = useSettlementToken();
@@ -97,12 +89,16 @@ export const usePosition = () => {
             ...position,
             marketAddress: market.address,
             lossPrice: lossCutPrice ?? 0n,
-            profitPrice: profitStopPrice || 0n,
+            profitPrice: profitStopPrice ?? 0n,
             pnl,
             collateral: position.takerMargin, //TODO ,
             status: determinePositionStatus(position, currentVersion),
-            toLoss: lossCutPrice ? lossCutPrice - currentPrice : 0n,
-            toProfit: profitStopPrice ? profitStopPrice - currentPrice : 0n,
+            toLoss: isValid(lossCutPrice)
+              ? ((lossCutPrice - currentPrice) * expandDecimals(18)) / currentPrice
+              : 0n,
+            toProfit: isValid(profitStopPrice)
+              ? ((profitStopPrice - currentPrice) * expandDecimals(18)) / currentPrice
+              : 0n,
           } satisfies Position;
         })
       );
