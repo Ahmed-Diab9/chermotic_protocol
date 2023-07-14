@@ -53,7 +53,13 @@ const Pool = () => {
     isTokenLoading,
     onTokenSelect,
   } = useSettlementToken();
-  const { markets, currentMarket: selectedMarket, isMarketLoading, onMarketSelect } = useMarket();
+  const {
+    markets,
+    currentMarket: selectedMarket,
+    clbTokenAddress,
+    isMarketLoading,
+    onMarketSelect,
+  } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
   const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
   // const { usumBalances } = useUsumBalances();
@@ -199,10 +205,10 @@ const Pool = () => {
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <AddressCopyButton
-                  address={selectedToken && trimAddress(selectedToken.address, 6, 6)}
+                  address={clbTokenAddress && trimAddress(clbTokenAddress, 6, 6)}
                   onClick={() => {
-                    if (selectedToken) {
-                      copyText(selectedToken.address);
+                    if (clbTokenAddress) {
+                      copyText(clbTokenAddress);
                     }
                   }}
                 />
