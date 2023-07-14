@@ -95,7 +95,7 @@ const Trade = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const { positive, negative } = useChartData();
+  const { liquidity, positive, negative } = useChartData();
   const { totalBalance, totalAsset, totalMargin } = useMargins();
 
   return (
@@ -173,6 +173,7 @@ const Trade = () => {
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
             shortTotalMaxLiquidity={shortTotalMaxLiquidity}
             shortTotalUnusedLiquidity={shortTotalUnusedLiquidity}
+            liquidityData={liquidity}
             shortLiquidityData={negative}
             longLiquidityData={positive}
           />
