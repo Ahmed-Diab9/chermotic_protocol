@@ -305,7 +305,12 @@ export const WalletPopover = ({
                           You need to create account first.
                         </h4>
                         <div className="text-center">
-                          <Button label="Create Account" size="base" css="gray" />
+                          <Button
+                            label="Create Account"
+                            size="base"
+                            css="gray"
+                            onClick={onCreateAccount}
+                          />
                         </div>
                       </>
                     )}
