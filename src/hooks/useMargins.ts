@@ -14,7 +14,7 @@ export function useMargins() {
 
   const [totalBalance, totalAsset] = useMemo(() => {
     if (isNil(balances) || isNil(token) || Object.keys(balances).length <= 0) {
-      return [0n, 0n];
+      return [undefined, undefined];
     }
     const balance = balances[token.address];
     const [totalCollateral, totalCollateralAdded] = positions.reduce(
