@@ -3,7 +3,7 @@ import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { ChevronDoubleLeftIcon } from '@heroicons/react/24/outline';
 
-interface PopoverButtonProps {
+interface PopoverArrowProps {
   direction: 'top' | 'bottom' | 'left' | 'right';
   position: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
@@ -11,7 +11,7 @@ interface PopoverButtonProps {
   onClick?: () => unknown;
 }
 
-export const PopoverButton = (props: PopoverButtonProps) => {
+export const PopoverArrow = (props: PopoverArrowProps) => {
   const { onClick, direction = 'top', position = 'top', className } = props;
 
   return (

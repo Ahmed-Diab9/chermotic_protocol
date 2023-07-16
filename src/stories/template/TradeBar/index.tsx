@@ -6,7 +6,7 @@ import CheckIcon from '~/assets/icons/CheckIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
-import { PopoverButton } from '~/stories/atom/PopoverButton';
+import { PopoverArrow } from '~/stories/atom/PopoverArrow';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -125,7 +125,7 @@ export const TradeBar = ({
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
                   <div className="absolute right-0 top-[-16px]">
-                    <PopoverButton direction="bottom" position="top" />
+                    <PopoverArrow direction="bottom" position="top" />
                   </div>
                 </Popover.Button>
                 <Popover.Panel>
@@ -251,7 +251,7 @@ export const TradeBar = ({
                   className="absolute right-10 top-[-16px]"
                 /> */}
                 <div className="absolute right-10 top-[-32px]">
-                  <PopoverButton direction="top" position="top" />
+                  <PopoverArrow direction="top" position="top" />
                 </div>
               </Popover.Button>
             </>
