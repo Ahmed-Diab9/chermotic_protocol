@@ -15,8 +15,8 @@ export const PopoverArrow = (props: PopoverArrowProps) => {
   const { onClick, direction = 'top', position = 'top', className } = props;
 
   return (
-    <button
-      className={`relative border-none w-[53px] h-[53px] rounded-full text-black/30 hover:text-black/50 overflow-hidden ${className}`}
+    <span
+      className={`inline-block relative border-none w-[53px] h-[53px] rounded-full text-black/30 hover:text-black/50 overflow-hidden ${className}`}
       onClick={onClick}
     >
       <div className="inline-flex items-center justify-center w-full h-full">
@@ -31,7 +31,7 @@ export const PopoverArrow = (props: PopoverArrowProps) => {
           <ChevronDoubleRightIcon className={`w-4 relative `} />
         ) : null}
       </div>
-    </button>
+    </span>
   );
 };
 
