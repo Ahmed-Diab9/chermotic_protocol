@@ -69,10 +69,10 @@ export const Input = (props: InputProps) => {
     if (!isValid(onChange)) return setTempValue(newValue);
     if (!autoCorrect) return onChange(newValue);
 
-    if (isOverMax(newValue)) {
+    if (isValid(max) && isOverMax(newValue)) {
       onChange(max!.toString());
       setTempValue(max!.toString());
-    } else if (isUnderMin(newValue)) {
+    } else if (isValid(min) && isUnderMin(newValue)) {
       onChange(min!.toString());
       setTempValue(newValue);
     } else {
@@ -82,7 +82,7 @@ export const Input = (props: InputProps) => {
   }
 
   function handleBlur() {
-    if (autoCorrect && isUnderMin(tempValue)) {
+    if (autoCorrect && isValid(min) && isUnderMin(tempValue)) {
       setTempValue(value);
     }
     if (isValid(onBlur)) {
