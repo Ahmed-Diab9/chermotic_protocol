@@ -207,7 +207,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                     token?.decimals,
                     2
                   )}{' '}
-                  CLB
+                  {token?.name}
                   <span className="ml-1 text-black/30">
                     {`${calculatedLiquidities.avgRemovableRate}%`}
                   </span>
