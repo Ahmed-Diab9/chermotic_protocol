@@ -29,7 +29,7 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         </div>
         <div className="ml-auto text-right">
           <p className="text-black/30">Qty</p>
-          <p className="mt-2 text-lg">{qty}</p>
+          <p className="mt-2 text-lg">{qty?.toFixed(2)}</p>
         </div>
       </div>
       <div className="text-sm">
