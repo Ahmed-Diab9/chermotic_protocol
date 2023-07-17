@@ -359,6 +359,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 response.onOpenPosition();
               }}
             />
+            {/* todo: wallet connected, no account */}
+            {/* onClick: create account */}
+            {/* <Button label="Create Account" size="2xl" className="w-full" css="gray" /> */}
+            {/* todo: wallet disconnected */}
+            {/* onClick: connect wallet */}
+            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
           </div>
 
           <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray mt-8">
