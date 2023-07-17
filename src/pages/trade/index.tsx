@@ -28,20 +28,23 @@ import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 
-import { copyText } from '~/utils/clipboard';
-import { useMargins } from '~/hooks/useMargins';
-import { Toast } from '~/stories/atom/Toast';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { CHAIN_ID } from '~/constants';
 import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
+import { useMargins } from '~/hooks/useMargins';
+import { Toast } from '~/stories/atom/Toast';
+import { copyText } from '~/utils/clipboard';
 
 const Trade = () => {
   useConnectOnce();
+  
   const { connectAsync } = useConnect();
+
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
+    isAccountAddressLoading,
     isChromaticBalanceLoading,
     status,
     balances,
@@ -107,7 +110,7 @@ const Trade = () => {
         priceFeed={priceFeed}
         balances={walletBalances}
         pools={pools}
-        isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
+        isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
         onConnect={() => {
           connectAsync({
             connector: new InjectedConnector({
@@ -138,7 +141,7 @@ const Trade = () => {
           assetValue={totalAsset}
           isMarketLoading={isMarketLoading || isFeeRateLoading}
           isAssetLoading={isTokenLoading || isTokenBalanceLoading || isFeedLoading}
-          isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
+          isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}

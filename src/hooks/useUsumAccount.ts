@@ -21,39 +21,41 @@ const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-  const { tokens, currentSelectedToken } = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
-  const accountApi = useMemo(() => client?.account(), [client]);
+  const accountApi = useMemo(() => {
+    logger.info('client account', client?.walletClient?.account?.address);
+    return client?.account();
+  }, [client?.walletClient?.account?.address]);
+
   const fetchKey = {
     name: 'getChromaticAccount',
     address: address,
     accountApi: accountApi,
   };
-  // isValid(address) && isValid(signerKey) ? ['USUM_ACCOUNT', address, signerKey] : undefined;
 
   const {
     data: accountAddress,
     error,
-    isLoading,
-  } = useSWR(
-    checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ accountApi }) => {
-      try {
-        const accountAddress = await accountApi.getAccount();
-        if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
-          return;
-        } else {
-          return accountAddress;
-        }
-      } catch (error) {
-        logger.error(error);
+    isLoading: isAccountAddressLoading,
+  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ accountApi }) => {
+    logger.info('account address fetch key ', fetchKey, client?.walletClient?.account?.address);
+    try {
+      const accountAddress = await accountApi.getAccount();
+      if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
+        setStatus(ACCOUNT_NONE);
         return;
+      } else {
+        setStatus(ACCOUNT_COMPLETED);
+        return accountAddress;
       }
-    },
-    {
-      keepPreviousData: false,
+    } catch (error) {
+      setStatus(ACCOUNT_NONE);
+      logger.error(error);
+      return;
     }
-  );
+  });
+
   const fetchKeyForChromaticAccBal = {
     name: 'getChromaticAccountBalance',
     address: address,
@@ -89,10 +91,12 @@ export const useUsumAccount = () => {
 
   useEffect(() => {
     if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
+      console.log('set none', accountAddress);
       setStatus(ACCOUNT_NONE);
       return;
     }
     if (isValid(accountAddress) && accountAddress !== ADDRESS_ZERO) {
+      console.log('set completed', accountAddress);
       setStatus(ACCOUNT_COMPLETED);
       return;
     }
@@ -123,6 +127,7 @@ export const useUsumAccount = () => {
     accountAddress,
     balances,
     status,
+    isAccountAddressLoading,
     isChromaticBalanceLoading,
     createAccount,
     setStatus,
