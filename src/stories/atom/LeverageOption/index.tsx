@@ -19,6 +19,7 @@ export const LeverageOption = ({ value, max, onClick }: LeverageOptionProps) => 
       {filteredLeverage.map((leverage) => {
         return (
           <Button
+            key={`${leverage}`}
             className="w-12 shadow-base"
             label={`${leverage}x`}
             size="sm"
