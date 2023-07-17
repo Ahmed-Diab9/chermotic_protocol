@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -204,14 +204,23 @@ const Pool = () => {
             <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
-                <AddressCopyButton
-                  address={clbTokenAddress && trimAddress(clbTokenAddress, 6, 6)}
-                  onClick={() => {
-                    if (clbTokenAddress) {
-                      copyText(clbTokenAddress);
-                    }
-                  }}
-                />
+                <div className="flex gap-2">
+                  <AddressCopyButton
+                    address={clbTokenAddress && trimAddress(clbTokenAddress, 6, 6)}
+                    onClick={() => {
+                      if (clbTokenAddress) {
+                        copyText(clbTokenAddress);
+                      }
+                    }}
+                  />
+                  {/* todo : outlink button link */}
+                  <Button
+                    label="view scanner"
+                    css="circle"
+                    size="lg"
+                    iconOnly={<ArrowTopRightOnSquareIcon />}
+                  />
+                </div>
               </div>
               <div className="mt-3 mb-3 text-base text-left text-black/30">
                 When providing liquidity to the liquidity bins of the Chromatic protocol, providers
