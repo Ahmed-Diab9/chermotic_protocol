@@ -140,13 +140,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   useEffect(() => {
     createLiquidation();
   }, [createLiquidation]);
-  const SLIDER_TICK = [0, 25, 50, 75, 100];
 
   const TIER: number = 0;
 
-  // const LEVERAGE_TICK = useMemo(() => (TIER === 0 ? [1, 2.5, 5, 7.5, 10] : [1, 5, 10, 15, 20]), [TIER]);
   const LEVERAGE_MAX = useMemo(() => (TIER === 0 ? 10 : 20), [TIER]);
   const STOPLOSS_MIN = useMemo(() => 100 / LEVERAGE_MAX, [LEVERAGE_MAX]);
+  const TAKEPROFIT_MAX = useMemo(() => 1000, []);
 
   return (
     <div className="px-10 w-full max-w-[680px]">
@@ -221,7 +220,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   <Slider
                     min={1}
                     max={LEVERAGE_MAX}
-                    value={Number(input?.leverage) === 0 ? 1 : Number(input?.leverage)}
+                    value={Number(input?.leverage)}
                     onUpdate={(newValue) => {
                       onLeverageChange?.(String(newValue));
                     }}
@@ -268,7 +267,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   placeholder="10"
                   autoCorrect
                   min={10}
-                  max={1000}
+                  max={TAKEPROFIT_MAX}
                   onChange={(value) => {
                     onInputChange?.('takeProfit', value);
                   }}
@@ -279,8 +278,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   min={10}
-                  max={1000}
-                  value={Number(input.takeProfit) === 0 ? 1 : Number(input.takeProfit)}
+                  max={TAKEPROFIT_MAX}
+                  value={Number(input.takeProfit)}
                   onUpdate={(newValue) => {
                     onTakeProfitChange?.(String(newValue));
                   }}
@@ -313,7 +312,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  value={Number(input.stopLoss) === 0 ? 1 : Number(input.stopLoss)}
+                  value={Number(input.stopLoss)}
                   min={STOPLOSS_MIN}
                   max={100}
                   onUpdate={(newValue) => {
