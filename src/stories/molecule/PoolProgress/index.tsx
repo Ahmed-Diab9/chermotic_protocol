@@ -45,6 +45,7 @@ export const PoolProgress = ({
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hasGuide, setHasGuide] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('all');
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -111,32 +112,23 @@ export const PoolProgress = ({
                   } w-6 text-black/30 absolute right-6`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="px-5 text-gray-500 border-t">
+              <Disclosure.Panel className="relative px-5 text-gray-500 border-t">
                 <Tab.Group>
                   <div className="flex mt-5">
                     <Tab.List className="!justify-start !gap-7 px-5">
-                      <Tab>All</Tab>
-                      <Tab>Minting ({mintings})</Tab>
-                      <Tab>Burning ({burnings})</Tab>
+                      <Tab id="all">All</Tab>
+                      <Tab id="minting">Minting ({mintings})</Tab>
+                      <Tab id="burning">Burning ({burnings})</Tab>
                     </Tab.List>
                     {/* todo: when list is empty, button disabled */}
-                    <Button
+                    {/* <Button
                       label="Claim All"
                       className="ml-auto"
                       size="base"
                       css="active"
                       onClick={() => onReceiptClaimBatch?.()}
-                      // disabled
-                    />
-                  </div>
-
-                  <div className="mt-4">
-                    {/* <Button
-                    label="Claim All"
-                    className="w-full border-gray"
-                    size="xl"
-                    onClick={() => onReceiptClaimBatch?.()}
-                  /> */}
+                      disabled={  receipts.length === 0 ? true : false}
+                    /> */}
                   </div>
                   <div className="mt-5">
                     {hasGuide && (
@@ -158,6 +150,19 @@ export const PoolProgress = ({
                         <p className="my-6 text-center text-gray">You have no order in progress.</p>
                       ) : (
                         <>
+                          <div className="absolute top-5 right-5">
+                            {/* 1. when list is empty: button invisible (done) */}
+                            {/* 2. when list cannot be claimed: button disabled */}
+                            {/* todo: button disabled when there is nothing to claim in list */}
+                            <Button
+                              label="Claim All"
+                              className="ml-auto"
+                              size="base"
+                              css="active"
+                              onClick={() => onReceiptClaimBatch?.()}
+                              // disabled={receipts.length === 0 ? true : false}
+                            />
+                          </div>
                           {isValid(market) &&
                             (receipts || previousReceipts).map((receipt, index) => (
                               <ProgressItem
@@ -187,6 +192,18 @@ export const PoolProgress = ({
                         <p className="my-6 text-center text-gray">You have no order in progress.</p>
                       ) : (
                         <>
+                          <div className="absolute top-5 right-5">
+                            {/* 1. when list is empty: button invisible (done) */}
+                            {/* 2. when list cannot be claimed: button disabled */}
+                            {/* todo: button disabled when there is nothing to claim in list */}
+                            <Button
+                              label="Claim All"
+                              className="ml-auto"
+                              size="base"
+                              css="active"
+                              onClick={() => onReceiptClaimBatch?.()}
+                            />
+                          </div>
                           {isValid(market) &&
                             (receipts || previousReceipts)
                               .filter((receipt) => receipt.action === 'add')
@@ -218,6 +235,18 @@ export const PoolProgress = ({
                         <p className="my-6 text-center text-gray">You have no order in progress.</p>
                       ) : (
                         <>
+                          <div className="absolute top-5 right-5">
+                            {/* 1. when list is empty: button invisible (done) */}
+                            {/* 2. when list cannot be claimed: button disabled */}
+                            {/* todo: button disabled when there is nothing to claim in list */}
+                            <Button
+                              label="Claim All"
+                              className="ml-auto"
+                              size="base"
+                              css="active"
+                              onClick={() => onReceiptClaimBatch?.()}
+                            />
+                          </div>
                           {isValid(market) &&
                             (receipts || previousReceipts)
                               .filter((receipt) => receipt.action === 'remove')
