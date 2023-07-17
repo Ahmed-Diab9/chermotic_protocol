@@ -6,23 +6,25 @@ import { useMarket } from './useMarket';
 import { marketAction } from '~/store/reducer/market';
 
 export const useMarketLocal = () => {
-  const { markets } = useMarket();
+  const { markets, isMarketLoading } = useMarket();
   const dispatch = useAppDispatch();
   const { state: storedMarket, deleteState: deleteMarket } = useLocalStorage('usum:market');
 
   const onMount = useCallback(() => {
+    if (isMarketLoading) {
+      return;
+    }
     let market = markets?.find((market) => market.description === storedMarket);
     if (isValid(market)) {
       dispatch(marketAction.onMarketSelect(market));
       return;
     }
-    deleteMarket();
     market = markets?.[0];
     if (isValid(market)) {
       dispatch(marketAction.onMarketSelect(market));
       return;
     }
-  }, [markets, dispatch]);
+  }, [markets, isMarketLoading, storedMarket, dispatch]);
 
   useEffect(() => {
     onMount();
