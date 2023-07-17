@@ -22,6 +22,8 @@ import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { toast } from 'react-toastify';
+import { parseUnits } from 'viem';
 import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
@@ -31,10 +33,6 @@ import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
-import { toast } from 'react-toastify';
-import { isNil } from 'ramda';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
-
 const logger = Logger('PoolPanel');
 
 interface PoolPanelProps {
@@ -148,10 +146,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
     ownedPool?.bins.reduce((sum, current) => {
       sum =
         sum +
-        (current.clbTokenBalance *
-          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
-          expandDecimals(current.clbTokenDecimals) /
-          expandDecimals(2);
+        (parseUnits(
+          (current.removableRate * current.clbTokenValue).toString(),
+          current.clbTokenDecimals
+        ) *
+          current.clbTokenBalance) /
+          expandDecimals(current.clbTokenDecimals + 2);
       return sum;
     }, 0n) ?? 0n;
   const avgRemovableBalanceDenominator =
@@ -468,7 +468,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Skeleton width={100} />
                     ) : (
                       <>
-                        {formatDecimals(totalLiquidity, token?.decimals, 2)} {/* {token?.name} */}
+                        {formatDecimals(totalLiquidityValue, token?.decimals, 2)}{' '}
+                        {/* {token?.name} */}
                       </>
                     )}
                   </h4>
@@ -480,7 +481,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       LP Bins
                     </div>
                     <p className="">
-                      {isLoading ? <Skeleton width={100} /> : <>{binLength.toFixed(2)} Bins</>}
+                      {isLoading ? <Skeleton width={100} /> : <>{binLength} Bins</>}
                     </p>
                   </div>
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
@@ -516,8 +517,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Skeleton width={100} />
                       ) : (
                         <>
-                          {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
-                          {averageRemovableRate}
+                          {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{' '}
+                          {token?.name} ({averageRemovableRate}
                           %)
                         </>
                       )}
@@ -671,7 +672,6 @@ const BinItem = (props: BinItemProps) => {
     const found = selectedBins?.find(
       (selectedBins) => selectedBins.baseFeeRate === bin?.baseFeeRate
     );
-
     return isValid(found);
   }, [selectedBins, bin]);
 
