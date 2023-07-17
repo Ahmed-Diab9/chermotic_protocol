@@ -1,26 +1,22 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { LeverageOption } from ".";
+import { LeverageOption } from '.';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/LeverageOption",
+  title: 'Atom/LeverageOption',
   component: LeverageOption,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {},
+  args: {
+    value: 5,
+    max: 10,
+  },
 } satisfies Meta<typeof LeverageOption>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    value: 5,
-  },
-};
+export const Default: Story = {};
 
-export const WithAssetImage: Story = {
-  args: {
-    value: 5,
-  },
-};
+export const WithAssetImage: Story = {};
