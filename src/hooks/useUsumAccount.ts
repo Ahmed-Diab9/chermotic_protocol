@@ -19,7 +19,7 @@ import { useSettlementToken } from './useSettlementToken';
 import { checkAllProps } from '../utils';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
   const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
@@ -79,7 +79,9 @@ export const useUsumAccount = () => {
     let timerId: NodeJS.Timeout | undefined;
     if (status === ACCOUNT_COMPLETING) {
       logger.info('account is now created');
-      timerId = setTimeout(() => {
+      timerId = setTimeout(async () => {
+        await fetchBalances();
+
         setStatus(ACCOUNT_COMPLETED);
       }, 3000);
     }
