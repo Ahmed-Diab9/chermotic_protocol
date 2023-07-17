@@ -381,6 +381,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     onClick={onAddLiquidity}
                     disabled={isLoading}
                   />
+                  {/* todo: wallet disconnected */}
+                  {/* onClick: connect wallet */}
+                  {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
                 </div>
                 <div className="flex flex-col gap-2 border-t border-dashed border-gray mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
