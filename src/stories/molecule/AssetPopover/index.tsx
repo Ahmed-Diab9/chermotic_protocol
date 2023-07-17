@@ -37,6 +37,7 @@ interface AssetPopoverProps {
   availableMargin?: bigint;
   assetValue?: bigint;
   isLoading?: boolean;
+  isBalanceLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: () => unknown;
   onWithdraw?: () => unknown;
@@ -55,6 +56,7 @@ export const AssetPopover = ({
   availableMargin,
   assetValue,
   isLoading,
+  isBalanceLoading,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -74,7 +76,7 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-xl">
-                {isLoading ? (
+                {isBalanceLoading ? (
                   <Skeleton width={120} />
                 ) : (
                   <>

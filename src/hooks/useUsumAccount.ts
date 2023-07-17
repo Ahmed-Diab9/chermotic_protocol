@@ -10,12 +10,12 @@ import {
   ACCOUNT_STATUS,
 } from '~/typings/account';
 import { AppError } from '~/typings/error';
+import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useSettlementToken } from './useSettlementToken';
-import { ADDRESS_ZERO } from '~/utils/address';
 import { useError } from './useError';
+import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
@@ -64,14 +64,20 @@ export const useUsumAccount = () => {
     error: balanceError,
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
-  } = useSWR(['ChromaticAccBal', address, signerKey], async () => {
-    const accountApi = client?.account();
-    if (isNil(tokens) || isNil(accountApi) || isNil(address) || address === ADDRESS_ZERO) {
-      return {};
+  } = useSWR(
+    ['ChromaticAccBal', address, accountAddress, signerKey, tokens],
+    async () => {
+      const accountApi = client?.account();
+      if (isNil(tokens) || isNil(accountApi) || isNil(address) || address === ADDRESS_ZERO) {
+        return {};
+      }
+      const result = await accountApi.balances(tokens.map((token) => token.address));
+      return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
     }
-    const result = await accountApi.balances(tokens.map((token) => token.address));
-    return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
-  });
+    // {
+    //   keepPreviousData: false,
+    // }
+  );
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined;

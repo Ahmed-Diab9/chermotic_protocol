@@ -138,6 +138,7 @@ const Trade = () => {
           assetValue={totalAsset}
           isMarketLoading={isMarketLoading || isFeeRateLoading}
           isAssetLoading={isTokenLoading || isTokenBalanceLoading || isFeedLoading}
+          isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
           onTokenSelect={onTokenSelect}
           onMarketSelect={onMarketSelect}
           onAmountChange={onAmountChange}
