@@ -11,7 +11,7 @@ import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import Skeleton from 'react-loading-skeleton';
 
-import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
+import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 import { Market, Price, Token } from '~/typings/market';
@@ -242,10 +242,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 unit="x"
                 className="w-20 ml-auto"
                 value={input?.leverage}
-                onChange={(value) => onInputChange?.('leverage', value)}
+                placeholder="1"
                 autoCorrect
                 min={1}
                 max={LEVERAGE_MAX}
+                onChange={(value) => onInputChange?.('leverage', value)}
               />
             </div>
           </div>
@@ -262,6 +263,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.takeProfit}
+                  placeholder="10"
+                  autoCorrect
                   min={10}
                   max={1000}
                   onChange={(value) => {
@@ -295,6 +298,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.stopLoss}
+                  placeholder={STOPLOSS_MIN.toString()}
+                  autoCorrect
                   min={STOPLOSS_MIN}
                   max={100}
                   onChange={(value) => {
@@ -459,7 +464,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             />
             <p>Contract Qty</p>
             <p className="ml-2 text-black/30">
-              {withComma(Number(input?.quantity))} {token?.name}
+              {withComma(Number(decimalLength(input?.quantity, 5)))} {token?.name}
             </p>
           </div>
         </>
