@@ -19,12 +19,14 @@ import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import { toast } from 'react-toastify';
+import { OracleVersion } from '~/typings/oracleVersion';
 
 interface PoolProgressProps {
   token?: Token;
   market?: Market;
   receipts?: LpReceipt[];
   isLoading?: boolean;
+  oracleVersion?: OracleVersion;
   onReceiptClaim?: (id: bigint, action: LpReceiptAction) => unknown;
   onReceiptClaimBatch?: () => unknown;
 }
@@ -38,6 +40,7 @@ export const PoolProgress = ({
   market,
   receipts = [],
   isLoading,
+  oracleVersion,
   onReceiptClaim,
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
@@ -71,10 +74,25 @@ export const PoolProgress = ({
       }
     }
     window.addEventListener(POOL_EVENT, onPool);
+    const timer = setInterval(() => {
+      setNow(nowSecond());
+    }, 1000);
     return () => {
       window.removeEventListener(POOL_EVENT, onPool);
+      clearInterval(timer);
     };
   }, [isOpen]);
+
+  const nowSecond = () => Math.floor(Date.now() / 1000);
+  
+  const [now, setNow] = useState(nowSecond());
+
+  let times = ['00', '00', '00']; // hh mm ss
+  if (oracleVersion) {
+    const timeDiff = now - Number(oracleVersion!.timestamp);
+    const hhmmss = new Date(timeDiff * 1000).toISOString().slice(11, 19);
+    times = hhmmss.split(':')!;
+  }
 
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
@@ -102,7 +120,7 @@ export const PoolProgress = ({
                   </h4>
                   {open && (
                     <p className="mt-1 ml-auto text-sm text-black/30">
-                      Last oracle update: 00h 00m 00s ago
+                      Last oracle update: {times[0]}h {times[1]}m {times[2]}s ago
                     </p>
                   )}
                 </div>
