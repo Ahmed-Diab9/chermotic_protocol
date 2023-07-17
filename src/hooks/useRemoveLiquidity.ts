@@ -1,17 +1,16 @@
 import { useCallback, useMemo } from 'react';
-import { useChromaticClient } from './useChromaticClient';
-import { useAccount } from 'wagmi';
-import { useLiquidityPools } from './useLiquidityPool';
-import { isValid } from '~/utils/valid';
-import { useAppDispatch, useAppSelector } from '~/store';
-import { Logger } from '~/utils/log';
 import { toast } from 'react-toastify';
-import { expandDecimals } from '~/utils/number';
+import { parseUnits } from 'viem';
+import { useAccount } from 'wagmi';
+import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
+import { PoolEvent } from '~/typings/events';
+import { Logger } from '~/utils/log';
+import { isValid } from '~/utils/valid';
+import { useChromaticClient } from './useChromaticClient';
+import { useLiquidityPools } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
-import { PoolEvent } from '~/typings/events';
-
 interface Props {
   feeRate?: number;
   amount?: string;
@@ -65,7 +64,7 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    const expandedAmount = BigInt(Number(amount)) * expandDecimals(token?.decimals ?? 1);
+    const expandedAmount = parseUnits(amount.toString(), token!.decimals);
 
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {
