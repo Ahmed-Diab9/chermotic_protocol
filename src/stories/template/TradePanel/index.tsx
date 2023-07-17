@@ -46,6 +46,9 @@ export interface TradePanelProps {
   liquidityData?: any[];
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
+
+  isShortDisabled: boolean;
+  isLongDisabled: boolean;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
@@ -77,6 +80,8 @@ export const TradePanel = (props: TradePanelProps) => {
     liquidityData,
     longLiquidityData,
     shortLiquidityData,
+    isLongDisabled,
+    isShortDisabled,
   } = props;
 
   const [isWideView, setIsWideView] = useState(false);
@@ -123,6 +128,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={liquidityData}
+                disabled={isShortDisabled}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -148,6 +154,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
                 liquidityData={liquidityData}
+                disabled={isLongDisabled}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -211,6 +218,7 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={shortTotalUnusedLiquidity}
                     tradeFee={shortTradeFee}
                     tradeFeePercent={shortTradeFeePercent}
+                    disabled={isShortDisabled}
                     onMethodToggle={onShortMethodToggle}
                     onInputChange={onShortChange}
                     onLeverageChange={onShortLeverageChange}
@@ -231,6 +239,7 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={longTotalUnusedLiquidity}
                     tradeFee={longTradeFee}
                     tradeFeePercent={longTradeFeePercent}
+                    disabled={isLongDisabled}
                     onMethodToggle={onLongMethodToggle}
                     onInputChange={onLongChange}
                     onLeverageChange={onLongLeverageChange}

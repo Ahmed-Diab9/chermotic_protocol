@@ -34,6 +34,7 @@ interface TradeContentProps {
   tradeFee?: bigint;
   tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
+  disabled: boolean;
   isLoading?: boolean;
   onInputChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
@@ -63,6 +64,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    disabled,
     isLoading,
     onInputChange,
     onMethodToggle,
@@ -381,8 +383,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               size="2xl"
               className="w-full"
               css="active"
+              disabled={disabled}
               onClick={() => {
-                response.onOpenPosition();
+                !disabled && response.onOpenPosition();
               }}
             />
             {/* todo: wallet connected, no account */}
@@ -491,7 +494,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <p>Collateral</p>
             {isValid(token) && (
               <p className="ml-2 text-black/30">
-                {withComma(Number(input.collateral))} {token.name}
+                {withComma(Number(decimalLength(input.collateral, 5)))} {token.name}
               </p>
             )}
           </div>

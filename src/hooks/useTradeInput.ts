@@ -1,10 +1,17 @@
 import { useMemo, useReducer } from 'react';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
-import { abs, decimalLength, expandDecimals, numberBuffer } from '~/utils/number';
+import {
+  abs,
+  decimalLength,
+  expandDecimals,
+  formatDecimals,
+  numberBuffer,
+  trimDecimals,
+} from '~/utils/number';
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
-import { isValid } from '~/utils/valid';
+import { useMargins } from './useMargins';
 
 const initialTradeInput = {
   direction: 'long',
@@ -185,6 +192,8 @@ export const useTradeInput = () => {
     liquidityPool: pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
+
+  const { totalMargin } = useMargins();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -299,8 +308,42 @@ export const useTradeInput = () => {
     });
   };
 
+  const disabled = useMemo(() => {
+    if (!token) return { status: true };
+
+    const MINIMUM_VALUE = 10;
+    if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
+
+    const totalLiquidity =
+      state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
+    const parsedTotalLiquidity = +trimDecimals(totalLiquidity, token.decimals).toString();
+
+    if (isNaN(parsedTotalLiquidity)) return { status: true };
+
+    const maxAmount =
+      state.method === 'collateral'
+        ? Math.round(parsedTotalLiquidity) /
+          Number(state.leverage) /
+          (Number(state.takeProfit) / 100)
+        : Math.round(parsedTotalLiquidity) / (Number(state.takeProfit) / 100);
+
+    const amount =
+      state.method === 'collateral' ? Number(state.collateral) : Number(state.quantity);
+
+    const balance = +(formatDecimals(totalMargin, token.decimals, 5) ?? '0');
+
+    if (maxAmount < balance && maxAmount < amount) {
+      return { status: true, detail: 'liquidity' };
+    } else if (maxAmount > balance && balance < amount) {
+      return { status: true, detail: 'balance' };
+    } else {
+      return { status: false };
+    }
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]);
+
   return {
     state,
+    disabled,
     tradeFee,
     feePercent,
     onChange,

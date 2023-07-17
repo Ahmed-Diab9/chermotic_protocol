@@ -62,6 +62,7 @@ const Trade = () => {
     state: longInput,
     tradeFee: longTradeFee,
     feePercent: longFeePercent,
+    disabled: isLongDisabled,
     onChange: onLongChange,
     onMethodToggle: onLongMethodToggle,
     onLeverageChange: onLongLeverageChange,
@@ -72,6 +73,7 @@ const Trade = () => {
     state: shortInput,
     tradeFee: shortTradeFee,
     feePercent: shortFeePercent,
+    disabled: isShortDisabled,
     onChange: onShortChange,
     onMethodToggle: onShortMethodToggle,
     onDirectionToggle: onShortDirectionToggle,
@@ -180,6 +182,8 @@ const Trade = () => {
             liquidityData={liquidity}
             shortLiquidityData={negative}
             longLiquidityData={positive}
+            isLongDisabled={isLongDisabled.status}
+            isShortDisabled={isShortDisabled.status}
           />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12 text-base">
