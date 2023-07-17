@@ -339,7 +339,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <TooltipGuide
                   label="max-fee-allowance"
                   tip="The actual transaction fee is determined based on the utilization status of the Liquidity Bins in the next oracle round, and you can set the limit for them."
-                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement"
+                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                   outLinkAbout="Next Oracle Round"
                 />
               </div>
