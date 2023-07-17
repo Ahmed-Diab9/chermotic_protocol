@@ -35,6 +35,8 @@ import './style.css';
 import { isValid } from '~/utils/valid';
 import { CHAIN_ID } from '~/constants';
 import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
+import useOracleVersion from '~/hooks/useOracleVersion';
+import { useMemo } from 'react';
 
 const Pool = () => {
   useConnectOnce();
@@ -113,6 +115,12 @@ const Pool = () => {
   useMarketLocal();
   const { totalBalance, totalAsset, totalMargin } = useMargins();
   const { liquidity, clbTokenValue } = useChartData();
+  const { oracleVersions } = useOracleVersion();
+
+  const oracleVersion = useMemo(
+    () => (oracleVersions && selectedMarket ? oracleVersions![selectedMarket!.address] : undefined),
+    [oracleVersions, selectedMarket]
+  );
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
@@ -241,6 +249,7 @@ const Pool = () => {
               isLoading={isReceiptsLoading}
               onReceiptClaim={onClaimCLBTokens}
               onReceiptClaimBatch={onClaimCLBTokensBatch}
+              oracleVersion={oracleVersion}
             />
           </div>
         </div>
