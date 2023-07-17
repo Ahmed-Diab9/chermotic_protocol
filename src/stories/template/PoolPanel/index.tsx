@@ -134,7 +134,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }, 0n) ?? 0n;
   const totalFreeLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.freeLiquidity;
+      sum = sum + current.freeLiquidity ;
       return sum;
     }, 0n) ?? 0n;
   const totalLiquidityValue =

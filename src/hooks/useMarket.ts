@@ -18,6 +18,7 @@ export const useMarket = (_interval?: number) => {
   const dispatch = useAppDispatch();
   const { setState: setStoredMarket } = useLocalStorage('usum:market');
   const marketsRequired = {
+    name: 'getMarkets',
     marketFactoryApi: marketFactoryApi,
     selectedTokenAddress: selectedToken?.address,
   };
@@ -35,6 +36,7 @@ export const useMarket = (_interval?: number) => {
   );
 
   const getClbTokenAddressRequired = {
+    name: 'getClbToken',
     currentMarket: currentMarket,
     marketApi: marketApi,
   };

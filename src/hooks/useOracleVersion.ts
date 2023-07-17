@@ -6,6 +6,7 @@ import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import { useError } from './useError';
+import { checkAllProps } from '../utils';
 
 const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
@@ -13,18 +14,23 @@ const useOracleVersion = () => {
   const { address } = useAccount();
   const { client } = useChromaticClient();
 
-  const marketApi = useMemo(() => {
-    return client?.market();
-  }, [client]);
-  const marketAddresses = (markets ?? []).map((market) => market.address);
-
+  // const marketApi = useMemo(() => {
+  //   return client?.market();
+  // }, [client]);
+  // const marketAddresses = (markets ?? []).map((market) => market.address);
+  const fetchKeyData = {
+    name: 'getOracleVersion',
+    marketApi: useMemo(() => client?.market(), [client]),
+    marketAddresses: useMemo(() => (markets ?? []).map((market) => market.address), [markets]),
+    address: address,
+  };
   const {
     data: oracleVersions,
     error,
     mutate: fetchOracleVersions,
   } = useSWR(
-    ['ORACLE_VERSION', address, ...marketAddresses],
-    async () => {
+    checkAllProps(fetchKeyData) ? fetchKeyData : null,
+    async ({ marketApi, marketAddresses }) => {
       logger.log('Market', markets, ...marketAddresses);
       if (!marketApi) return {};
 

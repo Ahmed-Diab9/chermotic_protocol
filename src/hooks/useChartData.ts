@@ -10,6 +10,7 @@ import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
+import { checkAllProps } from '../utils';
 
 const logger = Logger('useChartData');
 
@@ -17,16 +18,18 @@ const useChartData = () => {
   const { liquidityPool } = useLiquidityPool();
   const { currentSelectedToken } = useSettlementToken();
 
-  const fetchKey = useMemo(() => {
-    if (!isNil(liquidityPool?.bins) && !isNil(currentSelectedToken?.decimals)) {
-      return { bins: liquidityPool!.bins, decimals: currentSelectedToken!.decimals };
-    }
-  }, [liquidityPool?.bins, currentSelectedToken?.decimals]);
+  const fetchKeyData = useMemo(
+    () => ({
+      name: 'useChartData',
+      bins: liquidityPool?.bins,
+      decimals: currentSelectedToken?.decimals,
+    }),
+    [liquidityPool?.bins, currentSelectedToken?.decimals]
+  );
 
   const { data, error } = useSWR(
-    fetchKey,
+    checkAllProps(fetchKeyData) ? fetchKeyData : null,
     ({ bins, decimals }) => {
-      // logger.info('bins', bins);
       const BIN_DECIMALS = 6;
 
       const chartData = bins.reduce<{
