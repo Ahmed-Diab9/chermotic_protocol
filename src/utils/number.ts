@@ -133,3 +133,15 @@ export const percentage = () => {
 export const numberBuffer = (decimals: number = BUFFER_DECIMALS) => {
   return 10 ** decimals;
 };
+
+export const decimalLength = (num: number | string, length: number, fix: boolean = false) => {
+  if (isNaN(+num)) return num.toString();
+  const [integer, decimals = ''] = String(+num).split('.');
+  const result =
+    decimals.length > 0
+      ? `${integer}.${decimals.slice(0, length)}`
+      : fix
+      ? `${integer}.${'0'.repeat(length)}`
+      : `${integer}`;
+  return result;
+};
