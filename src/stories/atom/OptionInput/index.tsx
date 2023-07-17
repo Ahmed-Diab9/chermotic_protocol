@@ -2,7 +2,7 @@ import { Input } from '../Input';
 // import { Avatar } from "../Avatar";
 import { Button } from '../Button';
 import '../../atom/Input/style.css';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 
 interface OptionInputProps {
   label?: string;

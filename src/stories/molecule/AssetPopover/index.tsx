@@ -355,9 +355,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                           ? formatDecimals(walletBalances?.[token.address], token?.decimals, 5)
                           : formatDecimals(usumBalances?.[token.address], token?.decimals, 5))
                       }
-                      onChange={(event) => {
-                        event.preventDefault();
-                        onAmountChange?.(event.target.value);
+                      onChange={(value) => {
+                        onAmountChange?.(value);
                       }}
                       onButtonClick={(value) => {
                         onAmountChange?.(value);
