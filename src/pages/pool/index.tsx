@@ -143,7 +143,7 @@ const Pool = () => {
         onDisconnect={disconnectAsync}
         onWalletCopy={copyText}
         onUsumCopy={copyText}
-        isBalanceLoading={isTokenBalanceLoading && isChromaticBalanceLoading}
+        isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
       />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar
