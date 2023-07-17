@@ -1436,10 +1436,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk-viem@^0.1.0-rc.98":
-  version "0.1.0-rc.98"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.98.tgz#2a09e41ae6a827c1a8f544b13ab3542ca4089b17"
-  integrity sha512-PYdCxamkaWuqhtYQt+HlJJ+Obvysp4fvGmOXcf4x8UHTmhl7RzIow+wViIMlAOU597AR5vQMXbcy0//HDYoM1Q==
+"@chromatic-protocol/sdk-viem@^0.1.0-rc.101":
+  version "0.1.0-rc.101"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.101.tgz#5f1f971b4efb25e2f0d9e3657824b4f051018d5b"
+  integrity sha512-0Rd88wbeWdDHGZaWQB4YZFquNENr3pn5Zgr/ouuH2xqD0D3wac0iNHp51E+VGlcYpyCNyYzvsHF5nPOxE+0lFA==
   dependencies:
     viem "1.2.12"
 
