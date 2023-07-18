@@ -57,7 +57,7 @@ interface PoolPanelProps {
   onRemoveMaxAmountChange?: () => unknown;
 
   multiType?: MULTI_TYPE;
-  multiAmount?: string;
+  multiAmount?: number;
   multiBalance?: bigint;
   multiClbTokenValue?: bigint;
   onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
@@ -127,30 +127,17 @@ export const PoolPanel = (props: PoolPanelProps) => {
     isValid(ownedPool) && ownedPool.bins.length > 0 ? ownedPool.bins[0].clbTokenDecimals : 1;
 
   logger.info('liquidity', liquidity);
-  const totalLiquidity =
-    ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.liquidity;
-      return sum;
-    }, 0n) ?? 0n;
-  const totalFreeLiquidity =
-    ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.freeLiquidity ;
-      return sum;
-    }, 0n) ?? 0n;
   const totalLiquidityValue =
     ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.binValue;
       return sum;
     }, 0n) ?? 0n;
-  const totalRemovableLiquidity =
+  const totalRemovableBalance =
     ownedPool?.bins.reduce((sum, current) => {
       sum =
         sum +
-        (parseUnits(
-          (current.removableRate * current.clbTokenValue).toString(),
-          current.clbTokenDecimals
-        ) *
-          current.clbTokenBalance) /
+        (current.binValue *
+          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
           expandDecimals(current.clbTokenDecimals + 2);
       return sum;
     }, 0n) ?? 0n;
@@ -160,7 +147,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
       return sum;
     }, 0n) || 0n) * expandDecimals(binDecimals) || 1n;
   const averageRemovableRate = formatDecimals(
-    (totalRemovableLiquidity *
+    (totalRemovableBalance *
       expandDecimals(token?.decimals) *
       expandDecimals(2) *
       expandDecimals(binDecimals)) /
@@ -520,8 +507,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Skeleton width={100} />
                       ) : (
                         <>
-                          {formatDecimals(totalRemovableLiquidity, token?.decimals, 2)}{' '}
-                          {token?.name} ({averageRemovableRate}
+                          {formatDecimals(totalRemovableBalance, token?.decimals, 2)} {token?.name}{' '}
+                          ({averageRemovableRate}
                           %)
                         </>
                       )}
