@@ -32,7 +32,7 @@ export const useOracleProperties = () => {
       const oracleProvider = await marketApi.oracleProvider(currentMarket!.address);
       const properties = await marketFactoryApi.getOracleProviderProperties(oracleProvider);
 
-      const tier = format(properties.leverageLevel);
+      const tier = properties.leverageLevel;
       const minTakeProfit = format(properties.minTakeProfitBPS);
       const maxTakeProfit = format(properties.maxTakeProfitBPS);
       // TODO: move into components

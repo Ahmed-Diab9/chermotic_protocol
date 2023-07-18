@@ -202,7 +202,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <p className="text-black/30">Up to 30x</p>
+              <p className="text-black/30">Up to {maxLeverage}x</p>
             </div>
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
