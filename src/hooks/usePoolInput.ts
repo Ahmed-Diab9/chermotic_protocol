@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Logger } from '../utils/log';
 import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 import { isNil } from 'ramda';
-import { CLB_TOKEN_VALUE_DECIMALS } from '../configs/decimals';
+
 import { useLiquidityPool } from './useLiquidityPool';
 
 const logger = Logger('usePoolInput');
@@ -31,7 +31,7 @@ const usePoolInput = () => {
       const clbTokenValue =
         (pool.bins.find(({ baseFeeRate }) => {
           return baseFeeRate / 100 === bin;
-        })?.clbTokenValue || 0) * 1; // 10 ** CLB_TOKEN_VALUE_DECIMALS
+        })?.clbTokenValue || 0) * 1;
       return acc + clbTokenValue;
     }, 0);
     return binFeeRates.length ? totalCLBTokenValue / binFeeRates.length : 0;
