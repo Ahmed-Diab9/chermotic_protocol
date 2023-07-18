@@ -18,6 +18,8 @@ import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
 import { useError } from './useError';
+import { checkAllProps } from '../utils';
+import { PromiseOnlySuccess } from '../utils/promise';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -29,10 +31,14 @@ export const useOwnedLiquidityPools = () => {
   const { client } = useChromaticClient();
   const routerApi = useMemo(() => client?.router(), [client]);
   const logger = Logger(useOwnedLiquidityPools);
-  const fetchKey =
-    isValid(address) && isValid(token) && isValid(markets)
-      ? [address, token.address, ...markets.map((market) => market.address)]
-      : undefined;
+
+  const fetchKey = {
+    name: 'getOwnedPools',
+    address: address,
+    tokenAddress: token?.address,
+    marketAddresses: useMemo(() => markets?.map((market) => market.address), [markets]),
+    lensApi: useMemo(() => client?.lens(), [client]),
+  };
 
   const {
     data: ownedPools,
@@ -40,49 +46,53 @@ export const useOwnedLiquidityPools = () => {
     isLoading,
     mutate: fetchOwnedPools,
   } = useSWR(
-    fetchKey,
-    async ([address, tokenAddress, ...marketAddresses]): Promise<
-      Record<string, OwnedBin[] | undefined>
-    > => {
+    checkAllProps(fetchKey) ? fetchKey : null,
+    async ({
+      address,
+      tokenAddress,
+      marketAddresses,
+      lensApi,
+    }): Promise<Record<string, OwnedBin[] | undefined>> => {
       if (isNil(client)) {
         return {};
       }
-      const poolsResponse = marketAddresses.map(async (marketAddress) => {
-        const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
-        logger.info('sdk response bins', bins);
-        const binsResponse = bins.map(async (bin) => {
-          const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
-          logger.info('token id ', tokenId);
-          const { name, decimals, description, image } = await client
-            .market()
-            .clbTokenMeta(marketAddress, tokenId);
-          logger.info('NAME', name);
-          return {
-            liquidity: bin.liquidity,
-            freeLiquidity: bin.freeLiquidity,
-            removableRate: bin.removableRate * 100,
-            clbTokenName: name,
-            clbTokenImage: image,
-            clbTokenDescription: description,
-            clbTokenDecimals: decimals,
-            clbTokenBalance: bin.clbBalance,
-            clbTokenValue: bin.clbValue,
-            clbTotalSupply: bin.clbTotalSupply,
-            binValue:
-              (bin.clbBalance *
-                BigInt(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))) /
-              BigInt(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
-            baseFeeRate: bin.tradingFeeRate,
-            tokenId: tokenId,
-          } satisfies OwnedBin;
-        });
-        const filteredBins = await filterIfFulfilled(binsResponse);
-        return { marketAddress, bins: filteredBins };
-      });
+      const poolsResponse = await PromiseOnlySuccess(
+        marketAddresses.map(async (marketAddress) => {
+          const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
+          logger.info('sdk response bins', bins);
+          const filteredBins = await PromiseOnlySuccess(
+            bins.map(async (bin) => {
+              const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
+              logger.info('token id ', tokenId);
+              const { name, decimals, description, image } = await client
+                .market()
+                .clbTokenMeta(marketAddress, tokenId);
+              logger.info('NAME', name);
+              return {
+                liquidity: bin.liquidity,
+                freeLiquidity: bin.freeLiquidity,
+                removableRate: bin.removableRate * 100,
+                clbTokenName: name,
+                clbTokenImage: image,
+                clbTokenDescription: description,
+                clbTokenDecimals: decimals,
+                clbTokenBalance: bin.clbBalance,
+                clbTokenValue: bin.clbValue,
+                clbTotalSupply: bin.clbTotalSupply,
+                binValue:
+                  (bin.clbBalance *
+                    BigInt(Math.round(bin.clbValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS)))) /
+                  BigInt(numberBuffer(CLB_TOKEN_VALUE_DECIMALS)),
+                baseFeeRate: bin.tradingFeeRate,
+                tokenId: tokenId,
+              } satisfies OwnedBin;
+            })
+          );
+          return { marketAddress, bins: filteredBins };
+        })
+      );
 
-      const awaitedResponse = await filterIfFulfilled(poolsResponse);
-
-      const ownedPools = awaitedResponse.reduce((record, currentPool) => {
+      const ownedPools = poolsResponse.reduce((record, currentPool) => {
         record[currentPool.marketAddress] = currentPool.bins;
         return record;
       }, {} as Record<string, OwnedBin[] | undefined>);

@@ -12,6 +12,7 @@ import useOracleVersion from './useOracleVersion';
 import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
 import { toast } from 'react-toastify';
 import { useError } from './useError';
+import { checkAllProps } from '../utils';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -58,7 +59,6 @@ const usePoolReceipt = () => {
   const router = useMemo(() => client?.router(), [client]);
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
-  const lensApi = useMemo(() => client?.lens(), [client]);
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
   const marketAddress = market?.address;
 
@@ -70,30 +70,21 @@ const usePoolReceipt = () => {
     ).toFixed(2)}%`;
   }, []);
 
+  const fetchKey = {
+    name: 'getPoolReceipt',
+    lensApi: useMemo(() => client?.lens(), [client]),
+    address: address,
+    currentOracleVersion: currentOracleVersion,
+    marketAddress: marketAddress,
+  };
   const {
     data: receipts,
     error,
     mutate: fetchReceipts,
     isLoading: isReceiptsLoading,
   } = useSWR(
-    [
-      'RECEIPT',
-      address,
-      marketAddress,
-      currentOracleVersion,
-      isValid(client) ? 'CLIENT' : undefined,
-    ],
-    async () => {
-      if (
-        address === undefined ||
-        marketAddress === undefined ||
-        currentOracleVersion === undefined ||
-        client === undefined ||
-        lensApi === undefined
-      ) {
-        return [];
-      }
-
+    checkAllProps(fetchKey) ? fetchKey : null,
+    async ({ lensApi, marketAddress, address, currentOracleVersion }) => {
       const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
       if (!receipts) {
         return [];

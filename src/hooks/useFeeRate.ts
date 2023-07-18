@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
 import { useAppSelector } from '../store';
 import { useError } from './useError';
+import { checkAllProps } from '../utils';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
@@ -10,14 +11,16 @@ export const useFeeRate = () => {
   const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
 
+  const fetchKeyData = {
+    name: 'useFeeRate',
+    tokenAddress: selectedToken?.address,
+  };
   const {
     data: feeRate,
     error,
     isLoading: isFeeRateLoading,
-  } = useSWR(['FEE_RATE', selectedToken?.address], async () => {
-    if (selectedToken?.address)
-      return await marketFactoryApi?.currentInterestRate(selectedToken?.address);
-    return 0n;
+  } = useSWR(checkAllProps(fetchKeyData) ? fetchKeyData : null, async ({ tokenAddress }) => {
+    return (await marketFactoryApi?.currentInterestRate(tokenAddress)) || 0n;
   });
 
   useError({ error });

@@ -1,5 +1,5 @@
 import { fromPairs, isNil } from 'ramda';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import {
@@ -16,67 +16,63 @@ import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
+import { checkAllProps } from '../utils';
 const logger = Logger('useUsumAccount');
 export const useUsumAccount = () => {
   const { address } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);
-  const { tokens, currentSelectedToken } = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const { client } = useChromaticClient();
-  // const accountApi = useMemo(() => client?.account(), [client]);
+  const accountApi = useMemo(() => {
+    logger.info('client account', client?.walletClient?.account?.address);
+    return client?.account();
+  }, [client?.walletClient?.account?.address]);
 
-  const signerKey = isValid(client?.walletClient) ? 'WALLET_CLIENT' : undefined;
-  const fetchKey =
-    isValid(address) && isValid(signerKey) ? ['USUM_ACCOUNT', address, signerKey] : undefined;
+  const fetchKey = {
+    name: 'getChromaticAccount',
+    address: address,
+    accountApi: accountApi,
+  };
 
   const {
     data: accountAddress,
     error,
-    isLoading,
-  } = useSWR(
-    fetchKey,
-    async ([_, address]) => {
-      if (!client || !client.walletClient) {
+    isLoading: isAccountAddressLoading,
+  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ accountApi }) => {
+    logger.info('account address fetch key ', fetchKey, client?.walletClient?.account?.address);
+    try {
+      const accountAddress = await accountApi.getAccount();
+      if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
+        setStatus(ACCOUNT_NONE);
         return;
+      } else {
+        setStatus(ACCOUNT_COMPLETED);
+        return accountAddress;
       }
-      const accountApi = client?.account();
-      if (isNil(accountApi)) {
-        return;
-      }
-      try {
-        const accountAddress = await accountApi.getAccount();
-        if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
-          return;
-        } else {
-          return accountAddress;
-        }
-      } catch (error) {
-        logger.error(error);
-        return;
-      }
-    },
-    {
-      keepPreviousData: false,
+    } catch (error) {
+      setStatus(ACCOUNT_NONE);
+      logger.error(error);
+      return;
     }
-  );
+  });
 
+  const fetchKeyForChromaticAccBal = {
+    name: 'getChromaticAccountBalance',
+    address: address,
+    accountApi: accountApi,
+    tokens: tokens,
+  };
   const {
     data: balances,
     error: balanceError,
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
-    ['ChromaticAccBal', address, accountAddress, signerKey, tokens],
-    async () => {
-      const accountApi = client?.account();
-      if (isNil(tokens) || isNil(accountApi) || isNil(address) || address === ADDRESS_ZERO) {
-        return {};
-      }
+    checkAllProps(fetchKeyForChromaticAccBal) ? fetchKeyForChromaticAccBal : null,
+    async ({ accountApi, tokens }) => {
       const result = await accountApi.balances(tokens.map((token) => token.address));
       return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
     }
-    // {
-    //   keepPreviousData: false,
-    // }
   );
 
   useEffect(() => {
@@ -129,6 +125,7 @@ export const useUsumAccount = () => {
     accountAddress,
     balances,
     status,
+    isAccountAddressLoading,
     isChromaticBalanceLoading,
     createAccount,
     setStatus,

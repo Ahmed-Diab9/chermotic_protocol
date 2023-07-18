@@ -10,20 +10,21 @@ import { CHAIN } from '~/constants';
 import './typings/bigint';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { CHAINS_WAGMI } from './constants/contracts';
+import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [CHAINS_WAGMI[CHAIN]],
-  [publicProvider()],
-  {
-    batch: {
-      multicall: {
-        wait: 100,
-        batchSize: 2048,
-      },
-    },
-  }
-);
+// const { chains, publicClient, webSocketPublicClient } = configureChains(
+//   [CHAINS_WAGMI[CHAIN]],
+//   [publicProvider()],
+//   {
+//     batch: {
+//       multicall: {
+//         wait: 100,
+//         batchSize: 2048,
+//       },
+//     },
+//   }
+// );
 
 const config = createConfig({
   autoConnect: false,

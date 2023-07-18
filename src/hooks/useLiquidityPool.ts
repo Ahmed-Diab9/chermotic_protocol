@@ -1,7 +1,7 @@
 import type { ChromaticLens, ChromaticMarket } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import memoizeOne from 'memoize-one';
-import { isNotNil } from 'ramda';
+import { isNotNil, lens } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -17,6 +17,7 @@ import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
+import { checkAllProps } from '../utils';
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId } = ChromaticUtils;
 
@@ -24,48 +25,48 @@ export const useLiquidityPools = () => {
   const { client } = useChromaticClient();
 
   const { tokens } = useSettlementToken();
-  const marketApi = useMemo(() => client?.market(), [client]);
-  const lensApi = useMemo(() => client?.lens(), [client]);
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
+  // const marketApi = useMemo(() => client?.market(), [client]);
+  // const lensApi = useMemo(() => client?.lens(), [client]);
+  // const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
+  // const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
 
-  const fetchKey = useMemo(
-    () =>
-      isNotNil(tokenAddresses) &&
-      isNotNil(marketFactoryApi) &&
-      isNotNil(lensApi) &&
-      isNotNil(marketApi)
-        ? ([tokenAddresses, marketFactoryApi, lensApi, marketApi] as const)
-        : null,
-    [tokenAddresses, marketFactoryApi, lensApi, marketApi]
-  );
+  const fetchKeyData = {
+    name: 'liquidityPools',
+    tokenAddresses: useMemo(() => tokens?.map((token) => token.address), [tokens]),
+    lensApi: useMemo(() => client?.lens(), [client]),
+    marketFactoryApi: useMemo(() => client?.marketFactory(), [client]),
+    marketApi: useMemo(() => client?.market(), [client]),
+  };
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(fetchKey, async ([tokenAddresses, marketFactoryApi, lensApi, marketApi]) => {
-    logger.log('FETCH POOLS');
+  } = useSWR(
+    checkAllProps(fetchKeyData) ? fetchKeyData : null,
+    async ({ tokenAddresses, marketFactoryApi, lensApi, marketApi }) => {
+      logger.log('FETCH POOLS');
 
-    const marketAddresses = (
-      await PromiseOnlySuccess(
-        tokenAddresses.map(async (tokenAddress) => ({
-          tokenAddress,
-          marketAddresses: await marketFactoryApi!
-            .contracts()
-            .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
-        }))
-      )
-    ).reduce((map, row) => {
-      row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
-      return map;
-    }, {} as Record<Address, Address>);
+      const marketAddresses = (
+        await PromiseOnlySuccess(
+          tokenAddresses.map(async (tokenAddress) => ({
+            tokenAddress,
+            marketAddresses: await marketFactoryApi!
+              .contracts()
+              .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
+          }))
+        )
+      ).reduce((map, row) => {
+        row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
+        return map;
+      }, {} as Record<Address, Address>);
 
-    const promise = Object.keys(marketAddresses).map(async (ma) => {
-      return getLiquidityPool(marketApi, lensApi, ma as Address);
-    });
+      const promise = Object.keys(marketAddresses).map(async (ma) => {
+        return getLiquidityPool(marketApi, lensApi, ma as Address);
+      });
 
-    return PromiseOnlySuccess(promise);
-  });
+      return PromiseOnlySuccess(promise);
+    }
+  );
 
   useError({ error });
 
@@ -78,13 +79,17 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const dispatch = useAppDispatch();
 
   const { client } = useChromaticClient();
-  const lensApi = useMemo(() => client?.lens(), [client]);
-  const marketApi = useMemo(() => client?.market(), [client]);
+
+  const fetchKeyData = {
+    name: 'useLiquidityPool',
+    lensApi: useMemo(() => client?.lens(), [client]),
+    marketApi: useMemo(() => client?.market(), [client]),
+    marketAddress: currentMarketAddress,
+  };
+
   const { data: liquidityPool } = useSWR(
-    isNotNil(marketApi) && isNotNil(lensApi) && isNotNil(currentMarketAddress)
-      ? [lensApi, marketApi, currentMarketAddress]
-      : null,
-    async ([lensApi, marketApi, marketAddress]) => {
+    checkAllProps(fetchKeyData) ? fetchKeyData : null,
+    async ({ lensApi, marketApi, marketAddress }) => {
       return getLiquidityPool(marketApi, lensApi, marketAddress);
     }
   );

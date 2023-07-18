@@ -50,6 +50,10 @@ export const formatDecimals = (
   tokenDecimals?: number,
   decimalLimit?: number
 ) => {
+
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: decimalLimit,
+  })
   if (isNil(value)) return '0';
   const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
   const [numeric, decimals] = formatted.split('.');
