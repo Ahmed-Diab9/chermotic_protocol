@@ -33,7 +33,7 @@ export const usePosition = () => {
     positionApi: useMemo(() => client?.position(), [client]),
     accountApi: useMemo(() => client?.account(), [client]),
     currentSelectedToken: currentSelectedToken,
-    oracleVersions: isNilOrEmpty(oracleVersions) ? oracleVersions : null,
+    oracleVersions: !isNilOrEmpty(oracleVersions) ? oracleVersions : null,
   };
   const {
     data: positions,
