@@ -9,11 +9,18 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { expandDecimals, formatDecimals, percentage, trimLeftZero } from '~/utils/number';
+import {
+  expandDecimals,
+  formatDecimals,
+  numberBuffer,
+  percentage,
+  trimLeftZero,
+} from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
+import { isNil } from 'ramda';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -106,7 +113,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 {selectedBin && token && (
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
-                    <span className="ml-1 text-black/30">({selectedBin.removableRate}%)</span>
+                    <span className="ml-1 text-black/30">
+                      ({selectedBin.removableRate.toFixed(2)}%)
+                    </span>
                   </p>
                 )}
               </div>
@@ -134,10 +143,22 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                         return;
                       }
                       const nextAmount =
-                        selectedBin.binValue < selectedBin.freeLiquidity
-                          ? selectedBin.binValue
-                          : selectedBin.freeLiquidity;
-                      onAmountChange?.(formatDecimals(nextAmount, token?.decimals, 4) ?? '');
+                        (selectedBin.clbTokenBalance *
+                          BigInt(
+                            Math.round(
+                              selectedBin.removableRate * 10 ** selectedBin.clbTokenDecimals
+                            )
+                          )) /
+                        expandDecimals(selectedBin.clbTokenDecimals + 2);
+                      const nextAmoundFormatted = formatDecimals(
+                        nextAmount,
+                        token?.decimals,
+                        token?.decimals
+                      );
+                      if (isNil(nextAmoundFormatted)) {
+                        return;
+                      }
+                      onAmountChange?.(nextAmoundFormatted);
                     }}
                   />
                 </div>
@@ -147,14 +168,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    (
-                    {selectedBin &&
-                      formatDecimals(
-                        BigInt(Math.floor(Number(amount) * 10 ** 4)) *
-                          BigInt(Math.round(selectedBin.clbTokenValue * 10 ** 2)),
-                        2 + 4,
-                        2
-                      )}{' '}
+                    ({selectedBin && (Number(amount) * selectedBin?.clbTokenValue).toFixed(2)}{' '}
                     {token?.name})
                   </p>
                   <Input

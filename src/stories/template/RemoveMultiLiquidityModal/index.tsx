@@ -20,7 +20,7 @@ import '../Modal/style.css';
 const logger = Logger('RemoveMultiLiquidityModal');
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: OwnedBin[];
-  amount?: string;
+  amount?: number;
   token?: Token;
   type?: MULTI_TYPE;
   balance?: bigint;
@@ -48,49 +48,50 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       return selectedBins.reduce((sum, current) => {
         sum =
           sum +
-          current.clbTokenBalance *
-            (BigInt(Math.round(current.clbTokenValue * numberBuffer(CLB_TOKEN_VALUE_DECIMALS))) /
-              expandDecimals(CLB_TOKEN_VALUE_DECIMALS));
+          Number(
+            formatDecimals(current.binValue, current.clbTokenDecimals, current.clbTokenDecimals)
+          );
         return sum;
-      }, 0n);
+      }, 0);
     } else {
       return selectedBins.reduce((sum, current) => {
         sum =
           sum +
-          (current.freeLiquidity > current.binValue ? current.binValue : current.freeLiquidity);
+          (Number(
+            formatDecimals(current.binValue, current.clbTokenDecimals, current.clbTokenDecimals)
+          ) *
+            current.removableRate) /
+            100;
         return sum;
-      }, 0n);
+      }, 0);
     }
   }, [type, selectedBins]);
 
   const calculatedLiquidities = useMemo(() => {
     logger.info('selected bin length', selectedBins.length);
 
-    const totalLiquidityBalance = selectedBins
-      .map((bin) => bin.liquidity)
+    const totalBalance = selectedBins
+      .map((bin) => bin.clbTokenBalance)
       .reduce((b, curr) => b + curr, 0n);
     const totalLiquidityValue = selectedBins.reduce((sum, current) => {
       return sum + current.binValue;
     }, 0n);
     const totalRemovableLiquidity = selectedBins
       .map((bin) => {
+        console.log(bin.removableRate, bin.clbTokenBalance);
         return (
-          (bin.clbTokenBalance * BigInt(Math.round(bin.removableRate * 10 ** 10))) /
-          expandDecimals(10) /
-          expandDecimals(2)
+          (bin.clbTokenBalance *
+            BigInt(Math.round(bin.removableRate * 10 ** bin.clbTokenDecimals))) /
+          expandDecimals(bin.clbTokenDecimals + 2)
         );
       })
       .reduce((removableBalance, curr) => removableBalance + curr, 0n);
+    console.log(totalRemovableLiquidity, totalBalance);
     return {
-      totalLiquidity: totalLiquidityBalance,
+      totalBalance,
       totalRemovableLiquidity,
       totalLiquidityValue,
-      avgRemovableRate: formatDecimals(
-        (totalRemovableLiquidity * expandDecimals(token?.decimals) * expandDecimals(2)) /
-          (balance === 0n ? 1n : balance),
-        token?.decimals,
-        2
-      ),
+      avgRemovableRate: (totalRemovableLiquidity * 100n) / totalLiquidityValue,
     };
   }, [type, selectedBins]);
   const { onRemoveLiquidities } = useRemoveLiquidities({
@@ -207,7 +208,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                     token?.decimals,
                     2
                   )}{' '}
-                  CLB
+                  {token?.name}
                   <span className="ml-1 text-black/30">
                     {`${calculatedLiquidities.avgRemovableRate}%`}
                   </span>
@@ -242,7 +243,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name}
+                    {/* {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name} */}
+                    {convertedAmount} {token?.name}
                   </p>
                   <p className="text-lg font-semibold text-black">{amount} CLB</p>
                   {/* <Input

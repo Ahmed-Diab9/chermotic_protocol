@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
-import { expandDecimals } from '~/utils/number';
+import { expandDecimals, numberBuffer } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useAccount, useWalletClient } from 'wagmi';
@@ -68,12 +68,10 @@ function useRemoveLiquidities(props: Props) {
     }
     try {
       const amounts = bins.map((bin) => {
-        const { clbTokenBalance, clbTokenValue, freeLiquidity } = bin;
-        const liquidityValue =
-          (clbTokenBalance * BigInt(Math.round(clbTokenValue * 10 ** 2))) /
-          expandDecimals(CLB_TOKEN_VALUE_DECIMALS) /
-          expandDecimals(2);
-        const removable = liquidityValue < freeLiquidity ? liquidityValue : freeLiquidity;
+        const { clbTokenBalance, clbTokenDecimals, removableRate } = bin;
+        const removable =
+          (clbTokenBalance * BigInt(Math.round(removableRate * numberBuffer(clbTokenDecimals)))) /
+          expandDecimals(clbTokenDecimals + 2);
 
         return type === MULTI_ALL ? clbTokenBalance : removable;
       });
@@ -95,7 +93,7 @@ function useRemoveLiquidities(props: Props) {
     } catch (error) {
       toast((error as any).message);
     }
-  }, [walletClient, market, pool, routerApi]);
+  }, [walletClient, market, pool, routerApi, bins, type]);
 
   return {
     onRemoveLiquidities,
