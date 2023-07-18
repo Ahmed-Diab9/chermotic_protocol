@@ -19,6 +19,7 @@ interface InputProps {
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
   disabled?: boolean;
+  error?: boolean;
   autoCorrect?: boolean;
   min?: number;
   max?: number;
@@ -39,6 +40,8 @@ export const Input = (props: InputProps) => {
     value,
     min,
     max,
+    disabled = false,
+    error = false,
     autoCorrect = false,
     onChange,
     onBlur,
@@ -91,17 +94,24 @@ export const Input = (props: InputProps) => {
   }
 
   return (
-    <div className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}>
-      {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
-      <input
-        type="string"
-        className={`text-${align}`}
-        value={type === 'number' ? withComma(tempValue) : tempValue}
-        placeholder={placeholder}
-        onChange={handleChange}
-        onBlur={handleBlur}
-      />
-      {unit ? <span className="text-black/30">{unit}</span> : null}
-    </div>
+    <>
+      <div
+        className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className} ${
+          error ? 'error' : ''
+        } ${disabled ? 'disabled' : ''}`}
+      >
+        {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
+        <input
+          type="string"
+          className={`text-${align}`}
+          value={type === 'number' ? withComma(tempValue) : tempValue}
+          placeholder={placeholder}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={disabled}
+        />
+        {unit ? <span className="text-black/30">{unit}</span> : null}
+      </div>
+    </>
   );
 };
