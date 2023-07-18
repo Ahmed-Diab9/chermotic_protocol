@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { expandDecimals, formatDecimals, trimLeftZero } from '~/utils/number';
-import { isValid } from '~/utils/valid';
+import { expandDecimals, formatDecimals } from '~/utils/number';
 
 export const usePoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
@@ -22,14 +21,15 @@ export const usePoolRemoveInput = () => {
   const onAmountChange = (nextAmount: number | string) => {
     if (typeof nextAmount === 'string') {
       nextAmount = nextAmount.replace(/,/g, '');
-      const parsed = Number(trimLeftZero(nextAmount));
-      if (isNaN(parsed)) {
+
+      if (isNaN(Number(nextAmount))) {
         return;
       }
       setAmount(nextAmount);
     } else {
       setAmount(String(nextAmount));
     }
+    setAmount(String(nextAmount));
   };
 
   return { amount, maxAmount, onAmountChange };

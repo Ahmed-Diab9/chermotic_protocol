@@ -172,18 +172,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   </p>
                   <Input
                     unit="CLB"
-                    value={amount}
-                    onChange={(value) => {
-                      value = value.replace(/,/g, '');
-                      const trimmed = trimLeftZero(value);
-                      const parsed = Number(trimmed);
-                      if (isNaN(parsed)) {
-                        return;
-                      }
-                      onAmountChange?.(trimmed);
-                    }}
+                    placeholder="0"
                     autoCorrect
                     max={maxAmount}
+                    value={amount}
+                    onChange={(value) => {
+                      onAmountChange?.(value);
+                    }}
                   />
                 </div>
               </div>
