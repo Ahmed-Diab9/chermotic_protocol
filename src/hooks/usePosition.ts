@@ -1,20 +1,20 @@
+import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
-import { Logger } from '~/utils/log';
-import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
-import { isNil, isNotNil } from 'ramda';
+import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useMarket } from '~/hooks/useMarket';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
-import { filterIfFulfilled } from '~/utils/array';
-import { useChromaticClient } from './useChromaticClient';
-import useOracleVersion from './useOracleVersion';
-import { useSettlementToken } from './useSettlementToken';
-import { PromiseOnlySuccess } from '../utils/promise';
-import { useError } from './useError';
-import { expandDecimals } from '~/utils/number';
 import { Position } from '~/typings/position';
+import { filterIfFulfilled } from '~/utils/array';
+import { Logger } from '~/utils/log';
+import { divPreserved } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { checkAllProps, isNilOrEmpty } from '../utils';
+import { PromiseOnlySuccess } from '../utils/promise';
+import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
+import useOracleVersion from './useOracleVersion';
+import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('usePosition');
 
 export const usePosition = () => {
@@ -94,10 +94,14 @@ export const usePosition = () => {
               collateral: position.takerMargin, //TODO ,
               status: determinePositionStatus(position, currentVersion),
               toLoss: isValid(lossCutPrice)
-                ? ((lossCutPrice - currentPrice) * expandDecimals(18)) / currentPrice
+                ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
                 : 0n,
               toProfit: isValid(profitStopPrice)
-                ? ((profitStopPrice - currentPrice) * expandDecimals(18)) / currentPrice
+                ? divPreserved(
+                    profitStopPrice - currentPrice,
+                    currentPrice,
+                    ORACLE_PROVIDER_DECIMALS
+                  )
                 : 0n,
             } satisfies Position;
           })

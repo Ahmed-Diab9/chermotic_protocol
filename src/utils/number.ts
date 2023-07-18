@@ -126,3 +126,13 @@ export const decimalLength = (num: number | string, length: number, fix: boolean
       : `${integer}`;
   return result;
 };
+
+export const divPreserved = (valueA: bigint, valueB: bigint, preserved_decmials: number) => {
+  return (valueA * parseUnits('1', preserved_decmials)) / valueB;
+};
+
+export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {
+  const formatter = Intl.NumberFormat('en', { maximumFractionDigits: decimals });
+  console.log(formatter.format(Number(value)), parseFloat(formatter.format(Number(value))));
+  return parseUnits(parseFloat(formatter.format(Number(value))).toString(), decimals);
+};

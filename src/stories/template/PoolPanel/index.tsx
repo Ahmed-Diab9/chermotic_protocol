@@ -3,6 +3,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
+import { formatUnits, parseUnits } from 'viem';
 
 import { MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -22,13 +23,19 @@ import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { isNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { parseUnits } from 'viem';
 import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
-import { expandDecimals, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  formatFeeRate,
+  toBigintWithDecimals,
+  withComma,
+} from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
@@ -135,25 +142,31 @@ export const PoolPanel = (props: PoolPanelProps) => {
     ownedPool?.bins.reduce((sum, current) => {
       sum =
         sum +
-        (current.binValue *
-          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
-          expandDecimals(current.clbTokenDecimals + 2);
+        BigInt(
+          formatUnits(
+            current.binValue * parseUnits(String(current.removableRate), current.clbTokenDecimals),
+            current.clbTokenDecimals + 2
+          )
+        );
       return sum;
     }, 0n) ?? 0n;
   const avgRemovableBalanceDenominator =
     (ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbTokenBalance;
       return sum;
-    }, 0n) || 0n) * expandDecimals(binDecimals) || 1n;
-  const averageRemovableRate = formatDecimals(
-    (totalRemovableBalance *
-      expandDecimals(token?.decimals) *
-      expandDecimals(2) *
-      expandDecimals(binDecimals)) /
-      (avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator),
-    token?.decimals,
-    2
-  );
+    }, 0n) || 0n) * parseUnits('1', binDecimals) || 1n;
+  const averageRemovableRate = token
+    ? Number(
+        formatUnits(
+          divPreserved(
+            totalRemovableBalance,
+            avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator,
+            token.decimals + 2 + binDecimals
+          ),
+          token.decimals
+        )
+      ).toFixed(2)
+    : '-';
   const ownedLongLiquidityBins = useMemo(
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate > 0n) || [],
     [ownedPool]
@@ -670,6 +683,24 @@ const BinItem = (props: BinItemProps) => {
     return isValid(found);
   }, [selectedBins, bin]);
 
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: 2,
+    //@ts-ignore experimental api
+    roundingMode: 'trunc',
+  });
+  const myLiqValue = useMemo(() => {
+    if (isNil(token) || isNil(bin)) return 0;
+    return BigInt(
+      formatUnits(
+        toBigintWithDecimals(
+          bin.clbTokenBalance * BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals)),
+          bin.clbTokenDecimals
+        ),
+        token.decimals
+      )
+    );
+  }, [bin, token]);
+
   return (
     <div className="overflow-hidden border rounded-xl">
       <div className="flex items-center justify-between gap-10 px-5 py-3 border-b bg-grayL/20">
@@ -727,7 +758,12 @@ const BinItem = (props: BinItemProps) => {
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
-                <>{bin && formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}</>
+                <>
+                  {bin &&
+                    formatter.format(
+                      BigInt(formatUnits(bin.clbTokenBalance, Number(bin.clbTokenDecimals)))
+                    )}
+                </>
               )}
             </p>
           </div>
@@ -751,16 +787,7 @@ const BinItem = (props: BinItemProps) => {
                   <Skeleton width={60} />
                 </div>
               ) : (
-                <>
-                  {bin &&
-                    formatDecimals(
-                      (bin.clbTokenBalance *
-                        BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals))) /
-                        expandDecimals(bin.clbTokenDecimals),
-                      token?.decimals,
-                      2
-                    )}
-                </>
+                <>{formatter.format(myLiqValue)}</>
               )}
             </p>
           </div>

@@ -1,13 +1,15 @@
+import { isNil } from 'ramda';
 import { useMemo, useReducer } from 'react';
+import { formatUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
   abs,
   decimalLength,
-  expandDecimals,
+  divPreserved,
   formatDecimals,
   numberBuffer,
-  trimDecimals,
+  toBigintWithDecimals,
 } from '~/utils/number';
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -24,6 +26,10 @@ const initialTradeInput = {
   makerMargin: 0,
   leverage: '10',
 } satisfies TradeInput;
+
+// const trimDecimals = (num: number, decimals: number) => {
+//   return Math.round(num * 10 ** decimals) / 10 ** decimals;
+// };
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === 'method') {
@@ -178,8 +184,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     collateral: state.collateral,
     takeProfit: state.takeProfit,
     stopLoss: state.stopLoss,
-    takerMargin: +decimalLength(state.takerMargin, 2),
-    makerMargin: +decimalLength(state.makerMargin, 2),
+    takerMargin: Number(state.takerMargin.toFixed(2)),
+    makerMargin: Number(state.makerMargin.toFixed(2)),
     leverage: state.leverage,
   };
   return state;
@@ -198,7 +204,8 @@ export const useTradeInput = () => {
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
   const [tradeFee, feePercent] = useMemo(() => {
-    let makerMargin = BigInt(Math.round(state.makerMargin)) * expandDecimals(token?.decimals);
+    if (isNil(token)) return [];
+    let makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
     if (state.direction === 'long' && makerMargin > longTotalUnusedLiquidity) {
       return [];
     }
@@ -221,15 +228,22 @@ export const useTradeInput = () => {
       const { baseFeeRate, freeLiquidity } = token;
       const feeRate = abs(baseFeeRate);
       if (makerMargin >= freeLiquidity) {
-        tradeFee = tradeFee + (freeLiquidity * feeRate) / expandDecimals(FEE_RATE_DECIMAL);
+        tradeFee = BigInt(
+          formatDecimals(tradeFee + freeLiquidity * feeRate, FEE_RATE_DECIMAL, 0) ?? '0'
+        );
         makerMargin = makerMargin - freeLiquidity;
       } else {
-        tradeFee = tradeFee + (makerMargin * feeRate) / expandDecimals(FEE_RATE_DECIMAL);
+        tradeFee = BigInt(
+          formatDecimals(makerMargin + freeLiquidity * feeRate, FEE_RATE_DECIMAL, 0) ?? '0'
+        );
         makerMargin = 0n;
       }
     }
-    const feePercent =
-      (tradeFee * expandDecimals(PERCENT_DECIMALS)) / BigInt(Math.round(state.makerMargin) || 1);
+    const feePercent = divPreserved(
+      tradeFee,
+      Math.round(state.makerMargin) !== 0 ? BigInt(Math.round(state.makerMargin)) : 1n,
+      PERCENT_DECIMALS
+    );
     return [tradeFee, feePercent] as const;
   }, [
     state.makerMargin,
@@ -316,7 +330,7 @@ export const useTradeInput = () => {
 
     const totalLiquidity =
       state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
-    const parsedTotalLiquidity = +trimDecimals(totalLiquidity, token.decimals).toString();
+    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, token.decimals));
 
     if (isNaN(parsedTotalLiquidity)) return { status: true };
 

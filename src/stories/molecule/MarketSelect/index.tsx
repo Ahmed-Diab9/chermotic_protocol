@@ -8,7 +8,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
-import { expandDecimals, formatDecimals, withComma } from '../../../utils/number';
+import { formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 
 interface MarketSelectProps {
@@ -51,7 +51,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
                 <Skeleton width={80} />
               ) : (
                 <>
-                  {formatDecimals(((feeRate ?? 0n) * expandDecimals(2)) / (365n * 24n) ?? 0, 4, 4)}
+                  {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
                   %/h
                 </>
               )}

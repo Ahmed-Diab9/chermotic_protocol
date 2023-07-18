@@ -1,27 +1,21 @@
 import { Dialog } from '@headlessui/react';
-import { FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { isNil } from 'ramda';
+import { formatUnits, parseUnits } from 'viem';
 import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import {
-  expandDecimals,
-  formatDecimals,
-  numberBuffer,
-  percentage,
-  trimLeftZero,
-} from '~/utils/number';
+import { formatDecimals, trimLeftZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
-import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
-import { isNil } from 'ramda';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -37,13 +31,18 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
   const utilized = isValid(selectedBin)
-    ? (selectedBin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
-      expandDecimals(FEE_RATE_DECIMAL)
+    ? formatUnits(
+        selectedBin.clbTokenBalance *
+          parseUnits(String(utilizedRate), selectedBin.clbTokenDecimals),
+        selectedBin.clbTokenDecimals + 2
+      )
     : 0n;
   const removable = isValid(selectedBin)
-    ? (selectedBin?.clbTokenBalance *
-        BigInt(Math.round(selectedBin.removableRate * percentage()))) /
-      expandDecimals(FEE_RATE_DECIMAL)
+    ? formatUnits(
+        selectedBin.clbTokenBalance *
+          parseUnits(String(selectedBin.removableRate), selectedBin.clbTokenDecimals),
+        selectedBin.clbTokenDecimals + 2
+      )
     : 0n;
 
   const { onRemoveLiquidity } = useRemoveLiquidity({
@@ -142,16 +141,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const nextAmount =
-                        (selectedBin.clbTokenBalance *
-                          BigInt(
-                            Math.round(
-                              selectedBin.removableRate * 10 ** selectedBin.clbTokenDecimals
-                            )
-                          )) /
-                        expandDecimals(selectedBin.clbTokenDecimals + 2);
                       const nextAmoundFormatted = formatDecimals(
-                        nextAmount,
+                        removable,
                         token?.decimals,
                         token?.decimals
                       );

@@ -1,15 +1,15 @@
+import { isNil } from 'ramda';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { parseUnits } from 'viem';
 import { useAccount, useWalletClient } from 'wagmi';
+import { PoolEvent } from '~/typings/events';
 import { useAppSelector } from '../store';
 import { Logger, errorLog } from '../utils/log';
-import { expandDecimals } from '../utils/number';
 import { isValid } from '../utils/valid';
-import { useTokenBalances } from './useTokenBalance';
 import { useChromaticClient } from './useChromaticClient';
 import usePoolReceipt from './usePoolReceipt';
-import { PoolEvent } from '~/typings/events';
-import { toast } from 'react-toastify';
-import { isNil } from 'ramda';
+import { useTokenBalances } from './useTokenBalance';
 
 const logger = Logger('useAddLiquidity');
 
@@ -69,7 +69,7 @@ function useAddLiquidity(props: Props) {
     try {
       const marketAddress = market?.address;
       // FIXME
-      const expandedAmount = BigInt(Number(amount) * 100000) * expandDecimals(token.decimals - 5);
+      const expandedAmount = BigInt(Number(amount) * 100000) * parseUnits('1', token.decimals - 5);
       if (!isValid(expandedAmount)) {
         errorLog('amount is invalid');
         return;

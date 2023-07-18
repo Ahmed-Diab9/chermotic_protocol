@@ -1,20 +1,20 @@
 import { Dialog } from '@headlessui/react';
 import { useMemo } from 'react';
-import { CLB_TOKEN_VALUE_DECIMALS, FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { formatUnits, parseUnits } from 'viem';
 import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from '~/configs/pool';
 import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { Outlink } from '~/stories/atom/Outlink';
 import { ScrollAni } from '~/stories/atom/ScrollAni';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { expandDecimals, formatDecimals, numberBuffer, percentage } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
-import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
 
 const logger = Logger('RemoveMultiLiquidityModal');
@@ -79,10 +79,11 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     const totalRemovableLiquidity = selectedBins
       .map((bin) => {
         console.log(bin.removableRate, bin.clbTokenBalance);
-        return (
-          (bin.clbTokenBalance *
-            BigInt(Math.round(bin.removableRate * 10 ** bin.clbTokenDecimals))) /
-          expandDecimals(bin.clbTokenDecimals + 2)
+        return BigInt(
+          formatUnits(
+            parseUnits(String(bin.removableRate), bin.clbTokenDecimals),
+            bin.clbTokenDecimals + 2
+          )
         );
       })
       .reduce((removableBalance, curr) => removableBalance + curr, 0n);
@@ -132,12 +133,15 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                    * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
                    */
                   const utilizedRate = 100 - bin.removableRate;
-                  const utilized =
-                    (bin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
-                    expandDecimals(FEE_RATE_DECIMAL);
-                  const removable =
-                    (bin.clbTokenBalance * BigInt(Math.round(bin.removableRate * percentage()))) /
-                    expandDecimals(FEE_RATE_DECIMAL);
+                  const utilized = formatUnits(
+                    bin.clbTokenBalance * parseUnits(String(utilizedRate), bin.clbTokenDecimals),
+                    bin.clbTokenDecimals + 2
+                  );
+                  const removable = formatUnits(
+                    bin.clbTokenBalance *
+                      parseUnits(String(bin.removableRate), bin.clbTokenDecimals),
+                    bin.clbTokenDecimals + 2
+                  );
 
                   return (
                     <LiquidityItem
