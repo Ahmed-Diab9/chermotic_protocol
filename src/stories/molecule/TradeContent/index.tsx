@@ -9,6 +9,7 @@ import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
+import { TooltipError } from '~/stories/atom/TooltipError';
 import Skeleton from 'react-loading-skeleton';
 
 import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
@@ -153,40 +154,42 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
       <article className="pb-5 border-grayL">
-        <div className="flex items-center gap-2">
-          <h4>Available Balance</h4>
-          <p className="text-black/30">
-            {isLoading ? (
-              <Skeleton width={40} />
-            ) : (
-              <>
-                {balances && token && balances[token.address]
-                  ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
-                  : 0}{' '}
-                {token?.name}
-              </>
-            )}
-          </p>
-        </div>
-        <div className="flex justify-between gap-5 mt-3">
-          <div className="select w-full max-w-[160px]">
-            <Listbox
-              value={input?.method}
-              onChange={(value) => {
-                if (input?.method !== value) {
-                  onMethodToggle?.();
-                }
-              }}
-            >
-              <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
-              <Listbox.Options>
-                {['collateral', 'quantity'].map((method) => (
-                  <Listbox.Option key={method} value={method}>
-                    {methodMap[method]}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Listbox>
+        <div className="flex justify-between gap-5">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <h4>Available Balance</h4>
+              <p className="text-black/30">
+                {isLoading ? (
+                  <Skeleton width={40} />
+                ) : (
+                  <>
+                    {balances && token && balances[token.address]
+                      ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
+                      : 0}{' '}
+                    {token?.name}
+                  </>
+                )}
+              </p>
+            </div>
+            <div className="select w-full max-w-[160px]">
+              <Listbox
+                value={input?.method}
+                onChange={(value) => {
+                  if (input?.method !== value) {
+                    onMethodToggle?.();
+                  }
+                }}
+              >
+                <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
+                <Listbox.Options>
+                  {['collateral', 'quantity'].map((method) => (
+                    <Listbox.Option key={method} value={method}>
+                      {methodMap[method]}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Listbox>
+            </div>
           </div>
           <div className="flex flex-col items-end">
             <AmountSwitch input={input} token={token} onAmountChange={onInputChange} />
@@ -451,13 +454,20 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       return (
         <>
           <div className="max-w-[220px]">
-            <Input
-              value={input.collateral.toString()}
-              onChange={(value) => {
-                onAmountChange?.('collateral', value);
-              }}
-              placeholder="0"
-            />
+            {/* todo: input error */}
+            {/* - Input error prop is true when has error */}
+            {/* - TooltipError is shown when has error */}
+            <div className="tooltip-input-balance">
+              <Input
+                value={input.collateral.toString()}
+                onChange={(value) => {
+                  onAmountChange?.('collateral', value);
+                }}
+                placeholder="0"
+                error
+              />
+            </div>
+            <TooltipError label="input-balance" tip="Error Message" />
           </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide

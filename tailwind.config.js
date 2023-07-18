@@ -28,7 +28,7 @@ export const theme = {
       grayBG: '#FCFCFC',
       grayL: '#EEEEEE',
       grayD: '#4D4D4D',
-      error: '#fb1115',
+      error: '#030303',
 
       standby: '#FF8A00',
       completed: '#00E23F',
