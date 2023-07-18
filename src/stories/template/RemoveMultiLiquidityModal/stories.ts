@@ -46,6 +46,6 @@ export const Default: Story = {
         clbTokenValue: 1015,
       },
     ],
-    amount: '100.23',
+    amount: 100.23,
   },
 };
