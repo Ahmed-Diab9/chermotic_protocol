@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
 import { expandDecimals, formatDecimals, trimLeftZero } from '~/utils/number';
@@ -13,7 +12,10 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return record + Number(bin.clbTokenBalance / expandDecimals(bin.clbTokenDecimals));
+      return (
+        record +
+        Number(formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, bin.clbTokenDecimals))
+      );
     }, 0);
   }, [bins]);
 
@@ -32,7 +34,7 @@ export const usePoolRemoveInput = () => {
 
   const onMaxChange = () => {
     if (isValid(maxAmount)) {
-      onAmountChange(Math.floor(maxAmount));
+      onAmountChange(maxAmount);
     }
     return;
   };
@@ -51,17 +53,20 @@ export const useMultiPoolRemoveInput = () => {
     }, 0n);
   }, [bins]);
 
-  const amount =
-    type === MULTI_ALL
-      ? clbTokenBalance
-      : bins
-          .map(
-            (bin) =>
-              (bin.clbTotalSupply *
-                ((bin.freeLiquidity * expandDecimals(CLB_TOKEN_VALUE_DECIMALS)) / bin.liquidity)) /
-              expandDecimals(CLB_TOKEN_VALUE_DECIMALS)
-          )
-          .reduce((balance, removable) => balance + removable, 0n);
+  const amount = useMemo(() => {
+    if (type === MULTI_ALL) {
+      return Number(formatDecimals(clbTokenBalance, token?.decimals, token?.decimals));
+    }
+    const removableBalance = bins
+      .map(
+        (bin) =>
+          (bin.clbTokenBalance *
+            BigInt(Math.round(bin.removableRate * 10 ** bin.clbTokenDecimals))) /
+          expandDecimals(bin.clbTokenDecimals + 2)
+      )
+      .reduce((balance, removable) => balance + removable, 0n);
+    return Number(formatDecimals(removableBalance, token?.decimals, token?.decimals));
+  }, [type, token, clbTokenBalance, bins]);
 
   const onAmountChange = (type: MULTI_TYPE) => {
     setType(type);
@@ -69,7 +74,7 @@ export const useMultiPoolRemoveInput = () => {
 
   return {
     type,
-    amount: formatDecimals(amount, token?.decimals, 2),
+    amount,
     clbTokenBalance,
     onAmountChange,
   };
