@@ -163,7 +163,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 position="left"
                 onClick={() => {
                   onToggleView();
-                  onSelectTab(SHORT_TAB);
+                  onSelectTab(LONG_TAB);
                 }}
               />
             </div>
@@ -173,7 +173,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 position="right"
                 onClick={() => {
                   onToggleView();
-                  onSelectTab(LONG_TAB);
+                  onSelectTab(SHORT_TAB);
                 }}
               />
             </div>

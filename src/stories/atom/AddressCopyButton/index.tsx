@@ -1,6 +1,6 @@
-import { MouseEventHandler } from "react";
-import { Button } from "../Button";
-import { Square2StackIcon } from "@heroicons/react/24/outline";
+import { MouseEventHandler } from 'react';
+import { Button } from '../Button';
+import { Square2StackIcon } from '@heroicons/react/24/outline';
 
 interface AddressCopyButtonProps {
   address?: string;
@@ -9,13 +9,11 @@ interface AddressCopyButtonProps {
 }
 
 export const AddressCopyButton = (props: AddressCopyButtonProps) => {
-  const { address = "Create Account", onClick } = props;
+  const { address = 'Create Account', onClick } = props;
 
   return (
     <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full max-w-[220px]">
-      <p className="w-[calc(100%-40px)] px-4 text-ellipsis overflow-hidden">
-        {address}
-      </p>
+      <p className="w-[calc(100%-40px)] px-4 overflow-hidden">{address}</p>
       <Button
         label="Copy Address"
         css="circle"

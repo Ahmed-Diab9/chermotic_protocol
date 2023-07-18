@@ -730,7 +730,7 @@ const BinItem = (props: BinItemProps) => {
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
-            <p className="text-black/30 w-[80px]">Quantity</p>
+            <p className="text-black/30 w-[80px]">CLB Qty</p>
             <p>
               {isLoading ? (
                 <Skeleton width={60} />
@@ -746,7 +746,7 @@ const BinItem = (props: BinItemProps) => {
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
-            <p className="text-black/30 w-[100px]">Bin Value</p>
+            <p className="text-black/30 w-[100px]">CLB Value</p>
             <p>
               {isLoading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}
             </p>
