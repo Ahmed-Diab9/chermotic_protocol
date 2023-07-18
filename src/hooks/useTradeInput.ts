@@ -18,11 +18,11 @@ const initialTradeInput = {
   method: 'collateral',
   quantity: '',
   collateral: '',
-  takeProfit: '10',
-  stopLoss: '100',
+  takeProfit: '100',
+  stopLoss: '10',
   takerMargin: 0,
   makerMargin: 0,
-  leverage: '1',
+  leverage: '10',
 } satisfies TradeInput;
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {

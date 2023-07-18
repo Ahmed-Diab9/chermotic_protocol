@@ -68,10 +68,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
-    maxLeverage,
-    minStopLoss,
-    minTakeProfit,
-    maxTakeProfit,
+    maxLeverage = 10,
+    minStopLoss = 1,
+    minTakeProfit = 1,
+    maxTakeProfit = 1000,
     disabled,
     isLoading,
     onInputChange,
@@ -268,7 +268,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   value={input?.takeProfit}
                   placeholder="10"
                   autoCorrect
-                  min={10}
+                  min={minTakeProfit}
                   max={maxTakeProfit}
                   onChange={(value) => {
                     onInputChange?.('takeProfit', value);
@@ -279,7 +279,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  min={10}
+                  min={minTakeProfit}
                   max={maxTakeProfit}
                   value={Number(input.takeProfit)}
                   onUpdate={(newValue) => {
