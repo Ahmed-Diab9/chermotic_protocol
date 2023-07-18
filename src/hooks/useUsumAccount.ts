@@ -91,12 +91,10 @@ export const useUsumAccount = () => {
 
   useEffect(() => {
     if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
-      console.log('set none', accountAddress);
       setStatus(ACCOUNT_NONE);
       return;
     }
     if (isValid(accountAddress) && accountAddress !== ADDRESS_ZERO) {
-      console.log('set completed', accountAddress);
       setStatus(ACCOUNT_COMPLETED);
       return;
     }
