@@ -84,7 +84,7 @@ export const PoolProgress = ({
   }, [isOpen]);
 
   const nowSecond = () => Math.floor(Date.now() / 1000);
-  
+
   const [now, setNow] = useState(nowSecond());
 
   let times = ['00', '00', '00']; // hh mm ss
@@ -193,6 +193,7 @@ export const PoolProgress = ({
                                     : formatDecimals(receipt.amount, token?.decimals, 2)
                                 }
                                 name={receipt.name}
+                                token={token?.name}
                                 progressPercent={0}
                                 action={receipt.action}
                                 onClick={() => {
@@ -236,6 +237,7 @@ export const PoolProgress = ({
                                       : formatDecimals(receipt.amount, token?.decimals, 2)
                                   }
                                   name={receipt.name}
+                                  token={token?.name}
                                   progressPercent={0}
                                   action={receipt.action}
                                   onClick={() => {
@@ -279,6 +281,7 @@ export const PoolProgress = ({
                                       : formatDecimals(receipt.amount, token?.decimals, 2)
                                   }
                                   name={receipt.name}
+                                  token={token?.name}
                                   progressPercent={0}
                                   action={receipt.action}
                                   onClick={() => {
@@ -358,7 +361,7 @@ const ProgressItem = (props: ProgressItemProps) => {
     title,
     status,
     detail,
-    token = 'USDC',
+    token,
     name,
     image,
     action,
