@@ -11,7 +11,7 @@ import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import Skeleton from 'react-loading-skeleton';
 
-import { formatDecimals, numberBuffer, withComma } from '~/utils/number';
+import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 import { Market, Price, Token } from '~/typings/market';
@@ -34,10 +34,15 @@ interface TradeContentProps {
   tradeFee?: bigint;
   tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
+  maxLeverage?: number;
+  minStopLoss?: number;
+  minTakeProfit?: number;
+  maxTakeProfit?: number;
+  disabled: boolean;
   isLoading?: boolean;
   onInputChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onMethodToggle?: () => unknown;
   onLeverageChange?: (nextLeverage: string) => unknown;
@@ -63,6 +68,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    maxLeverage = 10,
+    minStopLoss = 1,
+    minTakeProfit = 1,
+    maxTakeProfit = 1000,
+    disabled,
     isLoading,
     onInputChange,
     onMethodToggle,
@@ -138,7 +148,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   useEffect(() => {
     createLiquidation();
   }, [createLiquidation]);
-  const SLIDER_TICK = [0, 25, 50, 75, 100];
+
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
@@ -210,16 +220,19 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {isSliderOpen ? (
                 <div className="mt-[-8px]">
                   <Slider
-                    value={Number(input?.leverage) === 0 ? 1 : Number(input?.leverage)}
+                    min={1}
+                    max={maxLeverage}
+                    value={Number(input?.leverage)}
                     onUpdate={(newValue) => {
                       onLeverageChange?.(String(newValue));
                     }}
-                    tick={SLIDER_TICK}
+                    tick={5}
                   />
                 </div>
               ) : (
                 <LeverageOption
                   value={Number(input?.leverage)}
+                  max={maxLeverage}
                   onClick={(nextValue) => {
                     onLeverageChange?.(String(nextValue));
                   }}
@@ -232,7 +245,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 unit="x"
                 className="w-20 ml-auto"
                 value={input?.leverage}
-                onChange={(event) => onInputChange?.('leverage', event)}
+                placeholder="1"
+                autoCorrect
+                min={1}
+                max={maxLeverage}
+                onChange={(value) => onInputChange?.('leverage', value)}
               />
             </div>
           </div>
@@ -249,8 +266,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.takeProfit}
-                  onChange={(event) => {
-                    onInputChange?.('takeProfit', event);
+                  placeholder="10"
+                  autoCorrect
+                  min={minTakeProfit}
+                  max={maxTakeProfit}
+                  onChange={(value) => {
+                    onInputChange?.('takeProfit', value);
                   }}
                 />
               </div>
@@ -258,11 +279,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  value={Number(input.takeProfit) === 0 ? 1 : Number(input.takeProfit)}
+                  min={minTakeProfit}
+                  max={maxTakeProfit}
+                  value={Number(input.takeProfit)}
                   onUpdate={(newValue) => {
                     onTakeProfitChange?.(String(newValue));
                   }}
-                  tick={SLIDER_TICK}
+                  tick={5}
                 />
               )}
             </div>
@@ -278,8 +301,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.stopLoss}
-                  onChange={(event) => {
-                    onInputChange?.('stopLoss', event);
+                  placeholder={minStopLoss?.toString()}
+                  autoCorrect
+                  min={minStopLoss}
+                  max={100}
+                  onChange={(value) => {
+                    onInputChange?.('stopLoss', value);
                   }}
                 />
               </div>
@@ -287,11 +314,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             <div className="mt-6">
               {input && (
                 <Slider
-                  value={Number(input.stopLoss) === 0 ? 1 : Number(input.stopLoss)}
+                  value={Number(input.stopLoss)}
+                  min={minStopLoss}
+                  max={100}
                   onUpdate={(newValue) => {
                     onStopLossChange?.(String(newValue));
                   }}
-                  tick={SLIDER_TICK}
+                  tick={5}
                 />
               )}
             </div>
@@ -355,8 +384,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               size="2xl"
               className="w-full"
               css="active"
+              disabled={disabled}
               onClick={() => {
-                response.onOpenPosition();
+                !disabled && response.onOpenPosition();
               }}
             />
             {/* todo: wallet connected, no account */}
@@ -408,18 +438,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 interface AmountSwitchProps {
   input?: TradeInput;
   token?: Token;
-  onAmountChange?: (
-    key: 'collateral' | 'quantity',
-    event: ChangeEvent<HTMLInputElement>
-  ) => unknown;
+  onAmountChange?: (key: 'collateral' | 'quantity', value: string) => unknown;
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
   const { input, onAmountChange, token } = props;
-  const [isClicked, setIsClicked] = useState(false);
-  const defaultValue = useMemo(() => {
-    return isClicked ? '' : '0';
-  }, [isClicked]);
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
@@ -429,17 +452,11 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input.collateral.toString() || defaultValue}
-              onChange={(event) => {
-                event.preventDefault();
-                onAmountChange?.('collateral', event);
+              value={input.collateral.toString()}
+              onChange={(value) => {
+                onAmountChange?.('collateral', value);
               }}
-              onClick={() => {
-                setIsClicked(true);
-              }}
-              onClickAway={() => {
-                setIsClicked(false);
-              }}
+              placeholder="0"
             />
           </div>
           <div className="flex items-center justify-end mt-2">
@@ -451,7 +468,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             />
             <p>Contract Qty</p>
             <p className="ml-2 text-black/30">
-              {withComma(Number(input?.quantity))} {token?.name}
+              {withComma(Number(decimalLength(input?.quantity, 5)))} {token?.name}
             </p>
           </div>
         </>
@@ -462,16 +479,9 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             <Input
-              value={input?.quantity.toString() || defaultValue}
-              onChange={(event) => {
-                event.preventDefault();
-                onAmountChange('quantity', event);
-              }}
-              onClick={() => {
-                setIsClicked(true);
-              }}
-              onClickAway={() => {
-                setIsClicked(false);
+              value={input?.quantity.toString()}
+              onChange={(value) => {
+                onAmountChange('quantity', value);
               }}
             />
           </div>
@@ -485,7 +495,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <p>Collateral</p>
             {isValid(token) && (
               <p className="ml-2 text-black/30">
-                {withComma(Number(input.collateral))} {token.name}
+                {withComma(Number(decimalLength(input.collateral, 5)))} {token.name}
               </p>
             )}
           </div>

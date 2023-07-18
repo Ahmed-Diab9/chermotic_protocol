@@ -53,5 +53,7 @@ export const Default: Story = {
     longTotalUnusedLiquidity: 10000n,
     shortTotalMaxLiquidity: 10000n,
     shortTotalUnusedLiquidity: 10000n,
+    isLongDisabled: false,
+    isShortDisabled: false
   },
 };

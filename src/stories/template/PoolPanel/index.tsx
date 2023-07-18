@@ -54,7 +54,6 @@ interface PoolPanelProps {
   removeAmount?: string;
   maxRemoveAmount?: number;
   onRemoveAmountChange?: (nextAmount: string) => unknown;
-  onRemoveMaxAmountChange?: () => unknown;
 
   multiType?: MULTI_TYPE;
   multiAmount?: number;
@@ -102,7 +101,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
     multiBalance,
     onAmountChange,
     onRemoveAmountChange,
-    onRemoveMaxAmountChange,
     onMultiAmountChange,
 
     clbTokenValue: binValue,
@@ -244,7 +242,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <OptionInput
                   value={amount}
                   maxValue={settlementTokenBalance}
-                  onChange={(event) => onAmountChange?.(event.target.value)}
+                  onChange={(value) => onAmountChange?.(value)}
                   onButtonClick={(value) => onAmountChange?.(value)}
                 />
               </article>
@@ -624,7 +622,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
             amount={removeAmount}
             maxAmount={maxRemoveAmount}
             onAmountChange={onRemoveAmountChange}
-            onMaxChange={onRemoveMaxAmountChange}
           />,
           document.getElementById('modal')!
         )}

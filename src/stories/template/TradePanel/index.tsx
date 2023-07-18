@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
@@ -14,7 +14,7 @@ export interface TradePanelProps {
   longTradeFeePercent?: bigint;
   onLongChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: React.ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onLongMethodToggle?: () => unknown;
   onLongLeverageChange?: (value: string) => unknown;
@@ -26,7 +26,7 @@ export interface TradePanelProps {
   shortTradeFeePercent?: bigint;
   onShortChange?: (
     key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    event: React.ChangeEvent<HTMLInputElement>
+    value: string
   ) => unknown;
   onShortMethodToggle?: () => unknown;
   onShortLeverageChange?: (value: string) => unknown;
@@ -46,6 +46,14 @@ export interface TradePanelProps {
   liquidityData?: any[];
   longLiquidityData?: any[];
   shortLiquidityData?: any[];
+
+  isShortDisabled: boolean;
+  isLongDisabled: boolean;
+
+  minTakeProfit?: number;
+  maxTakeProfit?: number;
+  maxLeverage?: number;
+  minStopLoss?: number;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
@@ -77,6 +85,13 @@ export const TradePanel = (props: TradePanelProps) => {
     liquidityData,
     longLiquidityData,
     shortLiquidityData,
+    isLongDisabled,
+    isShortDisabled,
+
+    minTakeProfit,
+    maxTakeProfit,
+    maxLeverage,
+    minStopLoss,
   } = props;
 
   const [isWideView, setIsWideView] = useState(false);
@@ -123,6 +138,11 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={liquidityData}
+                maxLeverage={maxLeverage}
+                minStopLoss={minStopLoss}
+                minTakeProfit={minTakeProfit}
+                maxTakeProfit={maxTakeProfit}
+                disabled={isShortDisabled}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
                 onLeverageChange={onShortLeverageChange}
@@ -148,6 +168,11 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
                 liquidityData={liquidityData}
+                maxLeverage={maxLeverage}
+                minStopLoss={minStopLoss}
+                minTakeProfit={minTakeProfit}
+                maxTakeProfit={maxTakeProfit}
+                disabled={isLongDisabled}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
                 onLeverageChange={onLongLeverageChange}
@@ -211,6 +236,11 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={shortTotalUnusedLiquidity}
                     tradeFee={shortTradeFee}
                     tradeFeePercent={shortTradeFeePercent}
+                    maxLeverage={maxLeverage}
+                    minStopLoss={minStopLoss}
+                    minTakeProfit={minTakeProfit}
+                    maxTakeProfit={maxTakeProfit}
+                    disabled={isShortDisabled}
                     onMethodToggle={onShortMethodToggle}
                     onInputChange={onShortChange}
                     onLeverageChange={onShortLeverageChange}
@@ -231,6 +261,11 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={longTotalUnusedLiquidity}
                     tradeFee={longTradeFee}
                     tradeFeePercent={longTradeFeePercent}
+                    maxLeverage={maxLeverage}
+                    minStopLoss={minStopLoss}
+                    minTakeProfit={minTakeProfit}
+                    maxTakeProfit={maxTakeProfit}
+                    disabled={isLongDisabled}
                     onMethodToggle={onLongMethodToggle}
                     onInputChange={onLongChange}
                     onLeverageChange={onLongLeverageChange}

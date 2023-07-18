@@ -34,10 +34,11 @@ import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useMargins } from '~/hooks/useMargins';
 import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
 
 const Trade = () => {
   useConnectOnce();
-  
+
   const { connectAsync } = useConnect();
 
   const { address: walletAddress } = useAccount();
@@ -62,6 +63,7 @@ const Trade = () => {
     state: longInput,
     tradeFee: longTradeFee,
     feePercent: longFeePercent,
+    disabled: isLongDisabled,
     onChange: onLongChange,
     onMethodToggle: onLongMethodToggle,
     onLeverageChange: onLongLeverageChange,
@@ -72,6 +74,7 @@ const Trade = () => {
     state: shortInput,
     tradeFee: shortTradeFee,
     feePercent: shortFeePercent,
+    disabled: isShortDisabled,
     onChange: onShortChange,
     onMethodToggle: onShortMethodToggle,
     onDirectionToggle: onShortDirectionToggle,
@@ -88,6 +91,7 @@ const Trade = () => {
     },
   } = useLiquidityPool();
   const { oracleVersions } = useOracleVersion();
+  const { oracleProperties } = useOracleProperties();
 
   useEffect(() => {
     if (shortInput.direction === 'long') {
@@ -180,6 +184,12 @@ const Trade = () => {
             liquidityData={liquidity}
             shortLiquidityData={negative}
             longLiquidityData={positive}
+            isLongDisabled={isLongDisabled.status}
+            isShortDisabled={isShortDisabled.status}
+            minTakeProfit={oracleProperties?.minTakeProfit}
+            maxTakeProfit={oracleProperties?.maxTakeProfit}
+            maxLeverage={oracleProperties?.maxLeverage}
+            minStopLoss={oracleProperties?.minStopLoss}
           />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12 text-base">

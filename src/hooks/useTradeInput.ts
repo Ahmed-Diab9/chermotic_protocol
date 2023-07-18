@@ -1,26 +1,29 @@
-import { ChangeEvent, useMemo, useReducer } from 'react';
+import { useMemo, useReducer } from 'react';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
-import { abs, expandDecimals, numberBuffer, trimLeftZero } from '~/utils/number';
+import {
+  abs,
+  decimalLength,
+  expandDecimals,
+  formatDecimals,
+  numberBuffer,
+  trimDecimals,
+} from '~/utils/number';
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
-import { isValid } from '~/utils/valid';
+import { useMargins } from './useMargins';
 
 const initialTradeInput = {
   direction: 'long',
   method: 'collateral',
   quantity: '',
   collateral: '',
-  takeProfit: '10',
-  stopLoss: '100',
+  takeProfit: '100',
+  stopLoss: '10',
   takerMargin: 0,
   makerMargin: 0,
-  leverage: '1',
+  leverage: '10',
 } satisfies TradeInput;
-
-const trimDecimals = (num: number, decimals: number) => {
-  return Math.round(num * 10 ** decimals) / 10 ** decimals;
-};
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === 'method') {
@@ -122,28 +125,15 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case 'stopLoss': {
       const { stopLoss } = payload;
       if (method === 'collateral') {
-        if (Number(stopLoss) === 0) {
-          state = {
-            ...state,
-            stopLoss: '0',
-            leverage: '0',
-            quantity: '0',
-            makerMargin: 0,
-          };
-        } else {
-          const [integer, decimals = undefined] = String(100 / Number(stopLoss)).split('.');
-          const leverage = integer + '.' + (isValid(decimals) ? decimals.slice(0, 2) : '0');
-          state = {
-            ...state,
-            stopLoss: stopLoss,
-            leverage,
-            quantity: String(Number(state.collateral) * (100 / Number(stopLoss))),
-            makerMargin:
-              Number(state.collateral) *
-              (100 / Number(stopLoss)) *
-              (Number(state.takeProfit) / 100),
-          };
-        }
+        const leverage = 100 / Number(stopLoss);
+        state = {
+          ...state,
+          stopLoss: stopLoss,
+          leverage: String(leverage),
+          quantity: String(Number(state.collateral) * (100 / Number(stopLoss))),
+          makerMargin:
+            Number(state.collateral) * (100 / Number(stopLoss)) * (Number(state.takeProfit) / 100),
+        };
       } else {
         state = {
           ...state,
@@ -157,28 +147,15 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     case 'leverage': {
       const { leverage } = payload;
       if (method === 'collateral') {
-        if (Number(leverage) === 0) {
-          state = {
-            ...state,
-            leverage: '0',
-            quantity: '0',
-            stopLoss: '0',
-            makerMargin: 0,
-          };
-        } else {
-          const [integer, decimals = undefined] = String(
-            Math.round((100 * numberBuffer()) / Number(leverage)) / numberBuffer()
-          ).split('.');
-          const stopLoss = integer + '.' + (isValid(decimals) ? decimals.slice(0, 2) : '0');
-          state = {
-            ...state,
-            leverage,
-            quantity: String(Number(state.collateral) * Number(leverage)),
-            stopLoss,
-            makerMargin:
-              Number(state.collateral) * Number(leverage) * (Number(state.takeProfit) / 100),
-          };
-        }
+        const stopLoss = Math.round((100 * numberBuffer()) / Number(leverage)) / numberBuffer();
+        state = {
+          ...state,
+          leverage: String(leverage),
+          quantity: String(Number(state.collateral) * Number(leverage)),
+          stopLoss: decimalLength(stopLoss, 2),
+          makerMargin:
+            Number(state.collateral) * Number(leverage) * (Number(state.takeProfit) / 100),
+        };
       } else {
         state = {
           ...state,
@@ -201,8 +178,8 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     collateral: state.collateral,
     takeProfit: state.takeProfit,
     stopLoss: state.stopLoss,
-    takerMargin: trimDecimals(state.takerMargin, 2),
-    makerMargin: trimDecimals(state.makerMargin, 2),
+    takerMargin: +decimalLength(state.takerMargin, 2),
+    makerMargin: +decimalLength(state.makerMargin, 2),
     leverage: state.leverage,
   };
   return state;
@@ -215,6 +192,8 @@ export const useTradeInput = () => {
     liquidityPool: pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
+
+  const { totalMargin } = useMargins();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -267,9 +246,9 @@ export const useTradeInput = () => {
 
   const onChange = (
     key: keyof Omit<TradeInput, 'direction' | 'method' | 'takerMargin' | 'makerMargin'>,
-    event: ChangeEvent<HTMLInputElement>
+    newValue: string
   ) => {
-    const value = event.target.value.replace(/,/g, '');
+    const value = newValue.replace(/,/g, '');
     if (value.length === 0) {
       dispatch({
         type: key,
@@ -279,15 +258,14 @@ export const useTradeInput = () => {
       });
       return;
     }
-    const parsed = trimLeftZero(value);
-    if (isNaN(Number(parsed)) || parsed === state[key]) {
+    if (isNaN(Number(value)) || value === state[key]) {
       return;
     }
 
     dispatch({
       type: key,
       payload: {
-        [key]: parsed,
+        [key]: value,
       } as Record<typeof key, string>,
     });
   };
@@ -330,8 +308,42 @@ export const useTradeInput = () => {
     });
   };
 
+  const disabled = useMemo(() => {
+    if (!token) return { status: true };
+
+    const MINIMUM_VALUE = 10;
+    if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
+
+    const totalLiquidity =
+      state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
+    const parsedTotalLiquidity = +trimDecimals(totalLiquidity, token.decimals).toString();
+
+    if (isNaN(parsedTotalLiquidity)) return { status: true };
+
+    const maxAmount =
+      state.method === 'collateral'
+        ? Math.round(parsedTotalLiquidity) /
+          Number(state.leverage) /
+          (Number(state.takeProfit) / 100)
+        : Math.round(parsedTotalLiquidity) / (Number(state.takeProfit) / 100);
+
+    const amount =
+      state.method === 'collateral' ? Number(state.collateral) : Number(state.quantity);
+
+    const balance = +(formatDecimals(totalMargin, token.decimals, 5) ?? '0');
+
+    if (maxAmount < balance && maxAmount < amount) {
+      return { status: true, detail: 'liquidity' };
+    } else if (maxAmount > balance && balance < amount) {
+      return { status: true, detail: 'balance' };
+    } else {
+      return { status: false };
+    }
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]);
+
   return {
     state,
+    disabled,
     tradeFee,
     feePercent,
     onChange,

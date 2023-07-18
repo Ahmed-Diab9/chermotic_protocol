@@ -2,7 +2,7 @@ import { Input } from '../Input';
 // import { Avatar } from "../Avatar";
 import { Button } from '../Button';
 import '../../atom/Input/style.css';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 
 interface OptionInputProps {
   label?: string;
@@ -17,9 +17,8 @@ interface OptionInputProps {
   className?: string;
   disabled?: boolean;
   onClick?: () => unknown;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
+  onChange?: (value: string) => unknown;
   onButtonClick?: (value: string) => unknown;
-  onClickAway?: () => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -36,7 +35,6 @@ export const OptionInput = (props: OptionInputProps) => {
     className,
     onChange,
     onButtonClick,
-    onClickAway,
   } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
@@ -94,7 +92,7 @@ export const OptionInput = (props: OptionInputProps) => {
           onChange?.(event);
         }}
         className="relative border-gray"
-        onClickAway={onClickAway}
+        // onBlur={onBlur}
       />
     </div>
   );

@@ -1,6 +1,9 @@
-import { ChangeEvent, useEffect, useMemo, useRef } from 'react';
-import { Avatar } from '../Avatar';
 import './style.css';
+
+import { ChangeEvent, useEffect, useState } from 'react';
+
+import { Avatar } from '~/stories/atom/Avatar';
+
 import { isValid } from '~/utils/valid';
 import { withComma } from '~/utils/number';
 
@@ -16,9 +19,11 @@ interface InputProps {
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
   disabled?: boolean;
-  onClick?: () => unknown;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => unknown;
-  onClickAway?: () => unknown;
+  autoCorrect?: boolean;
+  min?: number;
+  max?: number;
+  onChange?: (value: string) => unknown;
+  onBlur?: () => unknown;
 }
 
 export const Input = (props: InputProps) => {
@@ -32,48 +37,69 @@ export const Input = (props: InputProps) => {
     css = 'default',
     align = 'right',
     value,
+    min,
+    max,
+    autoCorrect = false,
     onChange,
-    onClick,
-    onClickAway,
+    onBlur,
   } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [tempValue, setTempValue] = useState(value);
 
   useEffect(() => {
-    if (!isValid(onClickAway)) {
-      return;
-    }
-    const handleClickAway = (event: MouseEvent) => {
-      const element = event.target;
-      if (element instanceof Node) {
-        const isContained = inputRef.current?.contains(element);
-        if (!isContained) {
-          onClickAway?.();
-        }
-      }
-    };
-    document.addEventListener('mousedown', handleClickAway);
+    setTempValue(value);
+  }, [value]);
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickAway);
-    };
-  }, [onClickAway, inputRef, value]);
+  function isOverMax(newValue?: string | number) {
+    return newValue === undefined || !isValid(max) || +newValue > max;
+  }
+
+  function isUnderMin(newValue?: string | number) {
+    return newValue === undefined || !isValid(min) || +newValue < min;
+  }
+
+  function trimLeadingZero(str: string) {
+    return str.replace(/^0+(?!\.|$)/, '');
+  }
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const newValue = trimLeadingZero(event.target.value);
+
+    if (!isValid(onChange)) return setTempValue(newValue);
+    if (!autoCorrect) return onChange(newValue);
+
+    if (isValid(max) && isOverMax(newValue)) {
+      onChange(max!.toString());
+      setTempValue(max!.toString());
+    } else if (isValid(min) && isUnderMin(newValue)) {
+      onChange(min!.toString());
+      setTempValue(newValue);
+    } else {
+      onChange(newValue);
+      setTempValue(newValue);
+    }
+  }
+
+  function handleBlur() {
+    if (autoCorrect && isValid(min) && isUnderMin(tempValue)) {
+      setTempValue(value);
+    }
+    if (isValid(onBlur)) {
+      onBlur();
+    }
+  }
 
   return (
     <div className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className}`}>
       {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
       <input
-        ref={inputRef}
         type="string"
         className={`text-${align}`}
-        value={type === 'number' ? withComma(value) : value}
+        value={type === 'number' ? withComma(tempValue) : tempValue}
         placeholder={placeholder}
-        onChange={(event) => {
-          event.preventDefault();
-          onChange && onChange(event);
-        }}
-        onClick={() => {
-          onClick?.();
-        }}
+        onChange={handleChange}
+        onBlur={handleBlur}
       />
       {unit ? <span className="text-black/30">{unit}</span> : null}
     </div>
