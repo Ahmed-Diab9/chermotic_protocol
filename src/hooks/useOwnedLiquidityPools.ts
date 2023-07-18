@@ -6,13 +6,13 @@ import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
+import { checkAllProps } from '../utils';
 import { Logger } from '../utils/log';
 import { numberBuffer } from '../utils/number';
-import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
-import { useError } from './useError';
-import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
+import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
+import { useMarket } from './useMarket';
 
 export const useOwnedLiquidityPools = () => {
   const { encodeTokenId } = ChromaticUtils;
@@ -49,7 +49,7 @@ export const useOwnedLiquidityPools = () => {
       }
       const poolsResponse = await PromiseOnlySuccess(
         marketAddresses.map(async (marketAddress) => {
-          const bins = await client.lens().ownedLiquidityBins(marketAddress, address);
+          const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
           logger.info('sdk response bins', bins);
           const binsResponse = bins.map(async (bin) => {
             const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
