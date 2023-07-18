@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
@@ -49,6 +49,11 @@ export interface TradePanelProps {
 
   isShortDisabled: boolean;
   isLongDisabled: boolean;
+
+  minTakeProfit?: number;
+  maxTakeProfit?: number;
+  maxLeverage?: number;
+  minStopLoss?: number;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
@@ -82,6 +87,11 @@ export const TradePanel = (props: TradePanelProps) => {
     shortLiquidityData,
     isLongDisabled,
     isShortDisabled,
+
+    minTakeProfit,
+    maxTakeProfit,
+    maxLeverage,
+    minStopLoss,
   } = props;
 
   const [isWideView, setIsWideView] = useState(false);
@@ -128,6 +138,10 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={liquidityData}
+                maxLeverage={maxLeverage}
+                minStopLoss={minStopLoss}
+                minTakeProfit={minTakeProfit}
+                maxTakeProfit={maxTakeProfit}
                 disabled={isShortDisabled}
                 onMethodToggle={onShortMethodToggle}
                 onInputChange={onShortChange}
@@ -154,6 +168,10 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={longTradeFee}
                 tradeFeePercent={longTradeFeePercent}
                 liquidityData={liquidityData}
+                maxLeverage={maxLeverage}
+                minStopLoss={minStopLoss}
+                minTakeProfit={minTakeProfit}
+                maxTakeProfit={maxTakeProfit}
                 disabled={isLongDisabled}
                 onMethodToggle={onLongMethodToggle}
                 onInputChange={onLongChange}
@@ -218,6 +236,10 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={shortTotalUnusedLiquidity}
                     tradeFee={shortTradeFee}
                     tradeFeePercent={shortTradeFeePercent}
+                    maxLeverage={maxLeverage}
+                    minStopLoss={minStopLoss}
+                    minTakeProfit={minTakeProfit}
+                    maxTakeProfit={maxTakeProfit}
                     disabled={isShortDisabled}
                     onMethodToggle={onShortMethodToggle}
                     onInputChange={onShortChange}
@@ -239,6 +261,10 @@ export const TradePanel = (props: TradePanelProps) => {
                     totalUnusedLiquidity={longTotalUnusedLiquidity}
                     tradeFee={longTradeFee}
                     tradeFeePercent={longTradeFeePercent}
+                    maxLeverage={maxLeverage}
+                    minStopLoss={minStopLoss}
+                    minTakeProfit={minTakeProfit}
+                    maxTakeProfit={maxTakeProfit}
                     disabled={isLongDisabled}
                     onMethodToggle={onLongMethodToggle}
                     onInputChange={onLongChange}

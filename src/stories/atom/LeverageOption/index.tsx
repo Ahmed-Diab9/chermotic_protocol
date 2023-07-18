@@ -5,11 +5,11 @@ import { useMemo } from 'react';
 
 interface LeverageOptionProps {
   value?: number;
-  max: number;
+  max?: number;
   onClick?: (nextValue: number) => unknown;
 }
 
-export const LeverageOption = ({ value, max, onClick }: LeverageOptionProps) => {
+export const LeverageOption = ({ value, max = 10, onClick }: LeverageOptionProps) => {
   const LEVERAGE_LIST = [1, 2, 5, 10, 15, 20];
 
   const filteredLeverage = useMemo(() => LEVERAGE_LIST.filter((v) => v <= max), [max]);

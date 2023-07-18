@@ -34,6 +34,10 @@ interface TradeContentProps {
   tradeFee?: bigint;
   tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
+  maxLeverage?: number;
+  minStopLoss?: number;
+  minTakeProfit?: number;
+  maxTakeProfit?: number;
   disabled: boolean;
   isLoading?: boolean;
   onInputChange?: (
@@ -64,6 +68,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    maxLeverage,
+    minStopLoss,
+    minTakeProfit,
+    maxTakeProfit,
     disabled,
     isLoading,
     onInputChange,
@@ -141,12 +149,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     createLiquidation();
   }, [createLiquidation]);
 
-  const TIER: number = 0;
-
-  const LEVERAGE_MAX = useMemo(() => (TIER === 0 ? 10 : 20), [TIER]);
-  const STOPLOSS_MIN = useMemo(() => 100 / LEVERAGE_MAX, [LEVERAGE_MAX]);
-  const TAKEPROFIT_MAX = useMemo(() => 1000, []);
-
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
@@ -219,7 +221,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <div className="mt-[-8px]">
                   <Slider
                     min={1}
-                    max={LEVERAGE_MAX}
+                    max={maxLeverage}
                     value={Number(input?.leverage)}
                     onUpdate={(newValue) => {
                       onLeverageChange?.(String(newValue));
@@ -230,7 +232,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               ) : (
                 <LeverageOption
                   value={Number(input?.leverage)}
-                  max={LEVERAGE_MAX}
+                  max={maxLeverage}
                   onClick={(nextValue) => {
                     onLeverageChange?.(String(nextValue));
                   }}
@@ -246,7 +248,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 placeholder="1"
                 autoCorrect
                 min={1}
-                max={LEVERAGE_MAX}
+                max={maxLeverage}
                 onChange={(value) => onInputChange?.('leverage', value)}
               />
             </div>
@@ -267,7 +269,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   placeholder="10"
                   autoCorrect
                   min={10}
-                  max={TAKEPROFIT_MAX}
+                  max={maxTakeProfit}
                   onChange={(value) => {
                     onInputChange?.('takeProfit', value);
                   }}
@@ -278,7 +280,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   min={10}
-                  max={TAKEPROFIT_MAX}
+                  max={maxTakeProfit}
                   value={Number(input.takeProfit)}
                   onUpdate={(newValue) => {
                     onTakeProfitChange?.(String(newValue));
@@ -299,9 +301,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.stopLoss}
-                  placeholder={STOPLOSS_MIN.toString()}
+                  placeholder={minStopLoss?.toString()}
                   autoCorrect
-                  min={STOPLOSS_MIN}
+                  min={minStopLoss}
                   max={100}
                   onChange={(value) => {
                     onInputChange?.('stopLoss', value);
@@ -313,7 +315,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   value={Number(input.stopLoss)}
-                  min={STOPLOSS_MIN}
+                  min={minStopLoss}
                   max={100}
                   onUpdate={(newValue) => {
                     onStopLossChange?.(String(newValue));
