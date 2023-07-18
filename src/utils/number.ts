@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
 import { Price, Token } from '../typings/market';
 import { isValid } from './valid';
@@ -27,33 +27,14 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
   }
 };
 
-export const applyDecimals = (value: bigint | number | string | boolean, decimals: number) => {
-  const multiplicand = BigInt(10) ** BigInt(decimals);
-  if (typeof value === 'number') {
-    return BigInt(value) * multiplicand;
-  }
-
-  const multiplier = BigInt(value);
-  return multiplier ** multiplicand;
-};
-
-export const trimDecimals = (
-  value: bigint | number | string | boolean,
-  decimals: number
-): bigint => {
-  const multiplicand = BigInt(10) ** BigInt(decimals);
-  return BigInt(value ?? 0) / multiplicand;
-};
-
 export const formatDecimals = (
   value?: bigint | number | string | boolean,
   tokenDecimals?: number,
   decimalLimit?: number
 ) => {
-
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
-  })
+  });
   if (isNil(value)) return '0';
   const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
   const [numeric, decimals] = formatted.split('.');
@@ -70,12 +51,12 @@ export const formatDecimals = (
   }
 };
 
-export const expandDecimals = (decimals?: number) => {
-  return 10n ** BigInt(decimals || 0n);
-};
-
 export const formatBalance = (balance: bigint, token: Token, price: Price) => {
-  return (balance * price.value || 0n) / expandDecimals(token.decimals) / expandDecimals(price.decimals);
+  return (
+    (balance * price.value || 0n) /
+    parseUnits('1', token.decimals) /
+    parseUnits('1', price.decimals)
+  );
 };
 
 export const formatFeeRate = (feeRate: number) => {
