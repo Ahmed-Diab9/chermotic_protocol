@@ -24,8 +24,8 @@ interface MainBarProps {
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
-  onDeposit?: () => unknown;
-  onWithdraw?: () => unknown;
+  onDeposit?: (onAfterDeposit?: () => unknown) => unknown;
+  onWithdraw?: (onAfterWithdraw?: () => unknown) => unknown;
   onConnect?: () => unknown;
   onStatusUpdate?: () => unknown;
 }

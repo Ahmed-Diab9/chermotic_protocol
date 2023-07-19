@@ -5,7 +5,6 @@ import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -21,10 +20,10 @@ import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import './style.css';
 
+import { isValid } from '~/utils/valid';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
-import { isValid } from '~/utils/valid';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -40,8 +39,8 @@ interface AssetPopoverProps {
   isLoading?: boolean;
   isBalanceLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onDeposit?: () => unknown;
-  onWithdraw?: () => unknown;
+  onDeposit?: (onAfterDeposit?: () => unknown) => unknown;
+  onWithdraw?: (onAfterWithdraw?: () => unknown) => unknown;
   onConnect?: () => void;
   onStatusUpdate?: () => unknown;
 }
@@ -144,8 +143,8 @@ interface AssetPanelProps {
   assetValue?: bigint;
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
-  onDeposit?: () => unknown;
-  onWithdraw?: () => unknown;
+  onDeposit?: (onAfterDeposit?: () => unknown) => unknown;
+  onWithdraw?: (onAfterWithdraw?: () => unknown) => unknown;
   onStatusUpdate?: () => unknown;
   title: string;
 }
@@ -398,9 +397,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                     className="w-full"
                     onClick={() => {
                       if (title === 'Deposit') {
-                        onDeposit && onDeposit();
+                        onDeposit && onDeposit(close);
                       } else {
-                        onWithdraw && onWithdraw();
+                        onWithdraw && onWithdraw(close);
                       }
                     }}
                   />
