@@ -20,6 +20,20 @@ export const Default: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    label: 'Input',
+    disabled: true,
+  },
+};
+
+export const Error: Story = {
+  args: {
+    label: 'Input',
+    error: true,
+  },
+};
+
 export const WithAssetImage: Story = {
   args: {
     label: 'Base Default OptionInput with Image',

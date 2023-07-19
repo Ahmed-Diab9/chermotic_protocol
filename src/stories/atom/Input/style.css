@@ -1,5 +1,14 @@
 .input {
   @apply max-w-full bg-white;
+  &.disabled {
+    @apply bg-grayL/30 border-gray/30;
+    input {
+      @apply bg-transparent;
+    }
+  }
+  &.error {
+    @apply border-error;
+  }
 }
 .input-sm {
   @apply h-[26px] px-3 text-lg;

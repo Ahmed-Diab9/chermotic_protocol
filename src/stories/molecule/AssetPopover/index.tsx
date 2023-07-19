@@ -5,6 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import {
   ACCOUNT_COMPLETED,
   ACCOUNT_COMPLETING,
@@ -347,21 +348,39 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </article>
                   <article className="flex flex-col w-3/5 gap-3 border-l ml-7 pl-7">
                     <h4 className="text-lg font-semibold">Amount</h4>
-                    <OptionInput
-                      value={amount}
-                      maxValue={
-                        token &&
-                        (title === 'Deposit'
-                          ? formatDecimals(walletBalances?.[token.address], token?.decimals, 5)
-                          : formatDecimals(usumBalances?.[token.address], token?.decimals, 5))
-                      }
-                      onChange={(value) => {
-                        onAmountChange?.(value);
-                      }}
-                      onButtonClick={(value) => {
-                        onAmountChange?.(value);
-                      }}
-                    />
+                    {/* todo: input error */}
+                    {/* - Input : error prop is true when has error */}
+                    {/* - TooltipAlert : is shown when has error */}
+                    <div className="tooltip-input-amount">
+                      <OptionInput
+                        value={amount}
+                        maxValue={
+                          token &&
+                          (title === 'Deposit'
+                            ? formatDecimals(walletBalances?.[token.address], token?.decimals, 5)
+                            : formatDecimals(usumBalances?.[token.address], token?.decimals, 5))
+                        }
+                        onChange={(value) => {
+                          onAmountChange?.(value);
+                        }}
+                        onButtonClick={(value) => {
+                          onAmountChange?.(value);
+                        }}
+                        className="w-full"
+                        // error
+                      />
+                      {/* case 1. exceeded */}
+                      {/* <TooltipAlert
+                        label="input-amount"
+                        tip={
+                          title === 'Deposit'
+                            ? 'Exceeded your wallet balance.'
+                            : 'Exceeded the available margin.'
+                        }
+                      /> */}
+                      {/* case 2. less than minimum */}
+                      {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
+                    </div>
                     <div className="text-sm">
                       <p className="mb-1 text-black/30">
                         To open a position in the Chromatic Protocol, you need to deposit the

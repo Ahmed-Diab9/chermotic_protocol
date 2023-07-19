@@ -31,6 +31,7 @@ import { Logger } from '~/utils/log';
 import { expandDecimals, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 const logger = Logger('PoolPanel');
@@ -239,12 +240,19 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     )}
                   </p>
                 </div>
-                <OptionInput
-                  value={amount}
-                  maxValue={settlementTokenBalance}
-                  onChange={(value) => onAmountChange?.(value)}
-                  onButtonClick={(value) => onAmountChange?.(value)}
-                />
+                {/* todo: input error */}
+                {/* - Input : error prop is true when has error */}
+                {/* - TooltipAlert : is shown when has error */}
+                <div className="tooltip-wallet-balance">
+                  <OptionInput
+                    value={amount}
+                    maxValue={settlementTokenBalance}
+                    onChange={(value) => onAmountChange?.(value)}
+                    onButtonClick={(value) => onAmountChange?.(value)}
+                    error
+                  />
+                  {/* <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." /> */}
+                </div>
               </article>
               <section className="mb-5">
                 <article>

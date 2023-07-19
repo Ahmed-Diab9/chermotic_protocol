@@ -6,6 +6,7 @@ import { poolsAction } from '~/store/reducer/pools';
 import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
@@ -170,16 +171,26 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     ({selectedBin && (Number(amount) * selectedBin?.clbTokenValue).toFixed(2)}{' '}
                     {token?.name})
                   </p>
-                  <Input
-                    unit="CLB"
-                    placeholder="0"
-                    autoCorrect
-                    max={maxAmount}
-                    value={amount}
-                    onChange={(value) => {
-                      onAmountChange?.(value);
-                    }}
-                  />
+                  {/* todo: input error */}
+                  {/* - Input : error prop is true when has error */}
+                  {/* - TooltipAlert : is shown when has error */}
+                  <div className="tooltip-modal-input-clb">
+                    <Input
+                      unit="CLB"
+                      placeholder="0"
+                      autoCorrect
+                      max={maxAmount}
+                      value={amount}
+                      onChange={(value) => {
+                        onAmountChange?.(value);
+                      }}
+                      // error
+                    />
+                    {/* <TooltipAlert
+                      label="modal-input-clb"
+                      tip="Exceeded your removable liquidity."
+                    /> */}
+                  </div>
                 </div>
               </div>
               <p className="mt-4 text-xs text-black/30">
