@@ -5,7 +5,7 @@ export interface Bin {
   clbTokenImage: string;
   clbTokenDescription: string;
   clbTokenDecimals: number;
-  clbTokenValue: number;
+  clbTokenValue: bigint;
   baseFeeRate: number;
   tokenId: bigint;
 }
