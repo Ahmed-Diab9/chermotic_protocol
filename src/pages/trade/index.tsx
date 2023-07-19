@@ -1,12 +1,14 @@
+import './style.css';
+
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import './style.css';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
+import { Toast } from '~/stories/atom/Toast';
 import { Header } from '~/stories/template/Header';
 import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
@@ -16,8 +18,10 @@ import { Modal } from '~/stories/template/Modal';
 import useChartData from '~/hooks/useChartData';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
 import useOracleVersion from '~/hooks/useOracleVersion';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -27,9 +31,6 @@ import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 
-import { useMargins } from '~/hooks/useMargins';
-import { useOracleProperties } from '~/hooks/useOracleProperties';
-import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
 import { usePositions } from '../../hooks/usePositions';
 
