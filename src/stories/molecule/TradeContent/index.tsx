@@ -455,8 +455,8 @@ const AmountSwitch = (props: AmountSwitchProps) => {
         <>
           <div className="max-w-[220px]">
             {/* todo: input error */}
-            {/* - Input error prop is true when has error */}
-            {/* - TooltipAlert is shown when has error */}
+            {/* - Input : error prop is true when has error */}
+            {/* - TooltipAlert : is shown when has error */}
             <div className="tooltip-input-balance">
               <Input
                 value={input.collateral.toString()}
@@ -464,10 +464,15 @@ const AmountSwitch = (props: AmountSwitchProps) => {
                   onAmountChange?.('collateral', value);
                 }}
                 placeholder="0"
-                error
+                // error
               />
+              {/* case 1. exceeded account balance */}
+              {/* <TooltipAlert label="input-balance" tip="Exceeded available account balance." /> */}
+              {/* case 2. exceeded total liq */}
+              {/* <TooltipAlert label="input-balance" tip="Exceeded free liquidity size." /> */}
+              {/* case 3. less than minimum */}
+              {/* <TooltipAlert label="input-balance" tip={`Less than minimum betting amount. (${min})`} /> */}
             </div>
-            <TooltipAlert label="input-balance" tip="Error Message" />
           </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide
