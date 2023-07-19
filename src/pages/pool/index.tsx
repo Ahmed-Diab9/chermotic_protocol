@@ -2,9 +2,6 @@ import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { CHAIN_ID } from '~/constants';
-import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
@@ -38,8 +35,7 @@ import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
 
 const Pool = () => {
-  // useConnectOnce();
-  const { connectAsync } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: chromaticAccountAddress,
@@ -130,12 +126,7 @@ const Pool = () => {
         balances={walletBalances}
         pools={pools}
         onConnect={() => {
-          connectAsync({
-            connector: new InjectedConnector({
-              chains: [CHAINS_WAGMI[CHAIN]],
-            }),
-            chainId: CHAIN_ID,
-          });
+          connectAsync({ connector: connectors[0] });
         }}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
@@ -165,7 +156,7 @@ const Pool = () => {
           onAmountChange={onBalanceAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
-          onConnect={connectAsync}
+          onConnect={() => connectAsync({ connector: connectors[0] })}
           onStatusUpdate={createUsumAccount}
           showAccountPopover={false}
         />

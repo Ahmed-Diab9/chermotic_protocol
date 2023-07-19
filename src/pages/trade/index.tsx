@@ -27,9 +27,6 @@ import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
 
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { CHAIN_ID } from '~/constants';
-import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useMargins } from '~/hooks/useMargins';
 import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { Toast } from '~/stories/atom/Toast';
@@ -37,7 +34,8 @@ import { copyText } from '~/utils/clipboard';
 import { usePositions } from '../../hooks/usePositions';
 
 const Trade = () => {
-  const { connectAsync } = useConnect();
+  const { connectAsync, connectors } = useConnect();
+
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: usumAccount,
@@ -117,14 +115,7 @@ const Trade = () => {
         balances={walletBalances}
         pools={pools}
         isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
-        onConnect={() => {
-          connectAsync({
-            connector: new InjectedConnector({
-              chains: [CHAINS_WAGMI[CHAIN]],
-            }),
-            chainId: CHAIN_ID,
-          });
-        }}
+        onConnect={() => connectAsync({ connector: connectors[0] })}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
         onWalletCopy={copyText}
@@ -153,7 +144,7 @@ const Trade = () => {
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
-          onConnect={connectAsync}
+          onConnect={() => connectAsync({ connector: connectors[0] })}
           onStatusUpdate={createUsumAccount}
           showAccountPopover={true}
         />

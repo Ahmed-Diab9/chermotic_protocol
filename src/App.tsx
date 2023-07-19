@@ -4,42 +4,17 @@ import { RouterProvider } from 'react-router-dom';
 import { SWRConfig } from 'swr';
 import { router } from '~/routes';
 import { store } from '~/store/index';
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
-import { CHAIN } from '~/constants';
+import { WagmiConfig, createConfig, createStorage } from 'wagmi';
 import './typings/bigint';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { CHAINS_WAGMI } from './constants/contracts';
 import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
-// import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-
-// const { chains, publicClient, webSocketPublicClient } = configureChains(
-//   [CHAINS_WAGMI[CHAIN]],
-//   [publicProvider()],
-//   {
-//     batch: {
-//       multicall: {
-//         wait: 100,
-//         batchSize: 2048,
-//       },
-//     },
-//   }
-// );
 
 const config = createConfig({
-  autoConnect: false,
-  connectors: [
-    new InjectedConnector({ chains }),
-    // new CoinbaseWalletConnector({
-    //   chains,
-    //   options: { appName: "usum", reloadOnDisconnect: false },
-    // }),
-  ] as [
-    InjectedConnector
-    // CoinbaseWalletConnector
-  ],
+  autoConnect: true,
+  connectors: [new InjectedConnector({ chains })],
   publicClient,
   webSocketPublicClient,
+  storage: createStorage({ storage: window.localStorage }),
 });
 
 function App() {
