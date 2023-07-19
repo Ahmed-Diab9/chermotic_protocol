@@ -24,9 +24,6 @@ export interface RemoveMultiLiquidityModalProps {
   token?: Token;
   type?: MULTI_TYPE;
   balance?: bigint;
-  // liquidityValue?: bigint;
-  // freeLiquidity?: bigint;
-  // removableRate?: bigint;
   onAmountChange?: (type: MULTI_TYPE) => unknown;
 }
 
@@ -37,9 +34,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     token,
     amount = 0,
     balance = 0n,
-    // liquidityValue = bigNumberify(0),
-    // freeLiquidity = bigNumberify(0),
-    // removableRate = bigNumberify(0),
     onAmountChange,
   } = props;
   const dispatch = useAppDispatch();
@@ -73,26 +67,22 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     const totalBalance = selectedBins
       .map((bin) => bin.clbTokenBalance)
       .reduce((b, curr) => b + curr, 0n);
-    const totalLiquidityValue = selectedBins.reduce((sum, current) => {
+    const totalBinValue = selectedBins.reduce((sum, current) => {
       return sum + current.binValue;
     }, 0n);
-    const totalRemovableLiquidity = selectedBins
-      .map((bin) => {
-        console.log(bin.removableRate, bin.clbTokenBalance);
-        return BigInt(
-          formatUnits(
-            parseUnits(String(bin.removableRate), bin.clbTokenDecimals),
-            bin.clbTokenDecimals + 2
-          )
-        );
-      })
-      .reduce((removableBalance, curr) => removableBalance + curr, 0n);
-    console.log(totalRemovableLiquidity, totalBalance);
+    const totalLiquidity = selectedBins.reduce((acc, current) => {
+      acc += current.liquidity;
+      return acc;
+    }, 0n);
+    const totalFreeLiquidity = selectedBins.reduce((acc, current) => {
+      acc += current.freeLiquidity;
+      return acc;
+    }, 0n);
     return {
       totalBalance,
-      totalRemovableLiquidity,
-      totalLiquidityValue,
-      avgRemovableRate: (totalRemovableLiquidity * 100n) / totalLiquidityValue,
+      totalFreeLiquidity,
+      totalBinValue,
+      avgRemovableRate: (totalFreeLiquidity * 100n) / (totalLiquidity || 1n),
     };
   }, [type, selectedBins]);
   const { onRemoveLiquidities } = useRemoveLiquidities({
@@ -135,12 +125,12 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   const utilizedRate = 100 - bin.removableRate;
                   const utilized = formatUnits(
                     bin.clbTokenBalance * parseUnits(String(utilizedRate), bin.clbTokenDecimals),
-                    bin.clbTokenDecimals + 2
+                    bin.clbTokenDecimals * 2 + 2
                   );
                   const removable = formatUnits(
                     bin.clbTokenBalance *
                       parseUnits(String(bin.removableRate), bin.clbTokenDecimals),
-                    bin.clbTokenDecimals + 2
+                    bin.clbTokenDecimals * 2 + 2
                   );
 
                   return (
@@ -149,8 +139,8 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                       token={token?.name}
                       name={bin.clbTokenDescription}
                       qty={Number(formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2))}
-                      utilizedValue={Number(formatDecimals(utilized, bin?.clbTokenDecimals, 2))}
-                      removableValue={Number(formatDecimals(removable, bin?.clbTokenDecimals, 2))}
+                      utilizedValue={Number(utilized)}
+                      removableValue={Number(removable)}
                     />
                   );
                 })}
@@ -189,7 +179,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </p>
                 <p>
-                  {formatDecimals(calculatedLiquidities.totalLiquidityValue, token?.decimals, 2)}{' '}
+                  {formatDecimals(calculatedLiquidities.totalBinValue, token?.decimals, 2)}{' '}
                   {token?.name}
                 </p>
               </div>
@@ -207,11 +197,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </p>
                 <p>
-                  {formatDecimals(
-                    calculatedLiquidities.totalRemovableLiquidity,
-                    token?.decimals,
-                    2
-                  )}{' '}
+                  {formatDecimals(calculatedLiquidities.totalFreeLiquidity, token?.decimals, 2)}{' '}
                   {token?.name}
                   <span className="ml-1 text-black/30">
                     {`${calculatedLiquidities.avgRemovableRate}%`}

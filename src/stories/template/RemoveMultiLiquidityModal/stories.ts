@@ -28,7 +28,7 @@ export const Default: Story = {
         clbTokenDecimals: 18,
         tokenId: 10n,
         clbTotalSupply: 10000000n,
-        clbTokenValue: 1015,
+        clbTokenValue: 1015n,
       },
       {
         baseFeeRate: 10,
@@ -43,7 +43,7 @@ export const Default: Story = {
         clbTokenDecimals: 18,
         tokenId: 10n,
         clbTotalSupply: 10000000n,
-        clbTokenValue: 1015,
+        clbTokenValue: 1015n,
       },
     ],
     amount: 100.23,

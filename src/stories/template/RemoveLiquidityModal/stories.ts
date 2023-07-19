@@ -27,7 +27,7 @@ export const Default: Story = {
       clbTokenDescription: 'LP BIN DESCRIPTION',
       clbTokenImage: '',
       clbTokenDecimals: 18,
-      clbTokenValue: 1005,
+      clbTokenValue: 1000n,
     },
     token: {
       name: 'USDC',

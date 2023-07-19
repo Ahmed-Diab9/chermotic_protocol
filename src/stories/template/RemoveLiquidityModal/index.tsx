@@ -1,5 +1,4 @@
 import { Dialog } from '@headlessui/react';
-import { isNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
 import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 import { useAppDispatch } from '~/store';
@@ -12,7 +11,7 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { formatDecimals, trimLeftZero } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
@@ -26,7 +25,7 @@ export interface RemoveLiquidityModalProps {
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
-  const { selectedBin, token, amount, maxAmount, onAmountChange } = props;
+  const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
   const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
@@ -34,16 +33,16 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     ? formatUnits(
         selectedBin.clbTokenBalance *
           parseUnits(String(utilizedRate), selectedBin.clbTokenDecimals),
-        selectedBin.clbTokenDecimals + 2
+        selectedBin.clbTokenDecimals * 2 + 2
       )
-    : 0n;
+    : '0';
   const removable = isValid(selectedBin)
     ? formatUnits(
         selectedBin.clbTokenBalance *
           parseUnits(String(selectedBin.removableRate), selectedBin.clbTokenDecimals),
-        selectedBin.clbTokenDecimals + 2
+        selectedBin.clbTokenDecimals * 2 + 2
       )
-    : 0n;
+    : '0';
 
   const { onRemoveLiquidity } = useRemoveLiquidity({
     feeRate: selectedBin?.baseFeeRate,
@@ -78,8 +77,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 token={token?.name}
                 name={selectedBin?.clbTokenDescription}
                 qty={Number(formatDecimals(balance, selectedBin?.clbTokenDecimals, 2))}
-                utilizedValue={Number(formatDecimals(utilized, selectedBin?.clbTokenDecimals, 2))}
-                removableValue={Number(formatDecimals(removable, selectedBin?.clbTokenDecimals, 2))}
+                utilizedValue={Number(utilized)}
+                removableValue={Number(removable)}
               />
             </article>
 
@@ -141,15 +140,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       if (!isValid(selectedBin)) {
                         return;
                       }
-                      const nextAmoundFormatted = formatDecimals(
-                        removable,
-                        token?.decimals,
-                        token?.decimals
-                      );
-                      if (isNil(nextAmoundFormatted)) {
-                        return;
-                      }
-                      onAmountChange?.(nextAmoundFormatted);
+                      onAmountChange?.(removable);
                     }}
                   />
                 </div>
@@ -159,7 +150,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    ({selectedBin && (Number(amount) * selectedBin?.clbTokenValue).toFixed(2)}{' '}
+                    (
+                    {selectedBin &&
+                      formatUnits(
+                        parseUnits(amount, selectedBin.clbTokenDecimals) *
+                          selectedBin?.clbTokenValue,
+                        selectedBin.clbTokenDecimals * 2
+                      )}{' '}
                     {token?.name})
                   </p>
                   {/* todo: input error */}
