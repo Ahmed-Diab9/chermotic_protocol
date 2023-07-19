@@ -6,9 +6,9 @@ import useOracleVersion from './useOracleVersion';
 export function useLastOracle() {
   const { oracleVersions } = useOracleVersion();
   const { currentMarket } = useMarket();
-  const [lapsed, setLapsed] = useState<{ hours: number; minutes: number; seconds: number }>(
-    undefined!
-  );
+  const [lapsed, setLapsed] = useState<
+    { hours: string; minutes: string; seconds: string } | undefined
+  >(undefined);
 
   useEffect(() => {
     if (isNil(oracleVersions) || isNil(currentMarket)) {
@@ -19,20 +19,12 @@ export function useLastOracle() {
       return;
     }
     let timerId = setTimeout(function onTimeout() {
-      const now = new Date();
-      const nowUtc = Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        now.getUTCHours(),
-        now.getUTCMinutes(),
-        now.getUTCSeconds()
-      );
-      const value = nowUtc / 1000 - Number(currentVersion.timestamp);
-      const hours = Math.floor(value / 3600);
-      const minutes = Math.floor((value % 3600) / 60);
-      const seconds = Math.floor((value % 3600) % 60);
+      const timeDiff = Date.now() / 1000 - Number(currentVersion.timestamp);
+      const diffDate = new Date(timeDiff * 1000);
 
+      const [hours, minutes, seconds] = diffDate
+        .toLocaleTimeString('en', { timeStyle: 'medium', hour12: false, timeZone: 'utc' })
+        .split(':');
       setLapsed({ hours, minutes, seconds });
 
       timerId = setTimeout(onTimeout, 1000);
