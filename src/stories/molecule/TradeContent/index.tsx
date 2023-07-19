@@ -9,7 +9,7 @@ import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '../../atom/TooltipGuide';
-import { TooltipError } from '~/stories/atom/TooltipError';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import Skeleton from 'react-loading-skeleton';
 
 import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
@@ -456,7 +456,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
           <div className="max-w-[220px]">
             {/* todo: input error */}
             {/* - Input error prop is true when has error */}
-            {/* - TooltipError is shown when has error */}
+            {/* - TooltipAlert is shown when has error */}
             <div className="tooltip-input-balance">
               <Input
                 value={input.collateral.toString()}
@@ -467,7 +467,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
                 error
               />
             </div>
-            <TooltipError label="input-balance" tip="Error Message" />
+            <TooltipAlert label="input-balance" tip="Error Message" />
           </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide

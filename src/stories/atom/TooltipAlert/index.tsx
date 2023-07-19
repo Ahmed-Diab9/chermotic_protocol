@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import '../TooltipGuide/style.css';
 
-interface TooltipErrorProps {
+interface TooltipAlertProps {
   label?: string;
   tip?: string;
   onClick?: () => unknown;
 }
 
-export const TooltipError = (props: TooltipErrorProps) => {
+export const TooltipAlert = (props: TooltipAlertProps) => {
   const { label, tip } = props;
   const [isOpen, setIsOpen] = useState(true);
 
@@ -16,7 +16,7 @@ export const TooltipError = (props: TooltipErrorProps) => {
     <div className="flex items-center self-center tooltip">
       <Tooltip
         anchorSelect={`.tooltip-${label}`}
-        className={`z-50 !bg-black !rounded-lg`}
+        className="z-50 !bg-black !rounded-lg"
         clickable
         isOpen={isOpen}
       >
