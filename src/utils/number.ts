@@ -83,15 +83,20 @@ export const formatFeeRate = (feeRate: number) => {
 };
 
 export const trimLeftZero = (rawString: string) => {
+  const [integer, decimals = undefined] = rawString.split('.');
   let firstIndex = 0;
-  for (let index = 0; index < rawString.length; index++) {
-    if (rawString[index] !== '0') {
+  for (let index = 0; index < integer.length; index++) {
+    if (integer[index] !== '0') {
       firstIndex = index;
       break;
     }
   }
 
-  return rawString.substring(firstIndex);
+  if (isValid(decimals)) {
+    return integer.substring(firstIndex) + '.' + decimals;
+  } else {
+    return integer.substring(firstIndex);
+  }
 };
 
 export const createAnnualSeconds = (time: Date | number, ms?: boolean) => {
@@ -132,7 +137,13 @@ export const divPreserved = (valueA: bigint, valueB: bigint, preserved_decmials:
 };
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {
-  const formatter = Intl.NumberFormat('en', { maximumFractionDigits: decimals });
-  console.log(formatter.format(Number(value)), parseFloat(formatter.format(Number(value))));
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: decimals,
+    useGrouping: false,
+  });
   return parseUnits(parseFloat(formatter.format(Number(value))).toString(), decimals);
+};
+
+export const toBigInt = (value: number | string) => {
+  return toBigintWithDecimals(value, 0);
 };
