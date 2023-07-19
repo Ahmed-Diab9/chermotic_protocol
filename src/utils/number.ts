@@ -8,6 +8,11 @@ export const abs = (value: bigint | number): bigint => {
   if (typeof value === 'number') value = BigInt(value);
   return value < 0 ? value * -1n : value;
 };
+
+export const padTimeZero = (value: number) => {
+  return value > 10 ? String(value) : `0${value}`;
+};
+
 export const withComma = (value?: bigint | number | string, replace?: string) => {
   const seperator = /\B(?=(\d{3})+(?!\d))/g;
   if (value === undefined) {

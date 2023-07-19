@@ -1,5 +1,6 @@
 import { isNil } from 'ramda';
 import { useEffect, useState } from 'react';
+import { padTimeZero } from '~/utils/number';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
 
@@ -20,12 +21,15 @@ export function useLastOracle() {
     }
     let timerId = setTimeout(function onTimeout() {
       const timeDiff = Date.now() / 1000 - Number(currentVersion.timestamp);
-      const diffDate = new Date(timeDiff * 1000);
+      const hours = Math.floor(timeDiff / 3600);
+      const minutes = Math.floor((timeDiff % 3600) / 60);
+      const seconds = Math.floor((timeDiff % 3600) % 60);
 
-      const [hours, minutes, seconds] = diffDate
-        .toLocaleTimeString('en', { timeStyle: 'medium', hour12: false, timeZone: 'utc' })
-        .split(':');
-      setLapsed({ hours, minutes, seconds });
+      setLapsed({
+        hours: padTimeZero(hours),
+        minutes: padTimeZero(minutes),
+        seconds: padTimeZero(seconds),
+      });
 
       timerId = setTimeout(onTimeout, 1000);
     }, 1000);
