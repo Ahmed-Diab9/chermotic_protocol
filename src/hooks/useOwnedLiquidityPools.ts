@@ -9,7 +9,7 @@ import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { checkAllProps } from '../utils';
 import { Logger } from '../utils/log';
-import { toBigInt } from '../utils/number';
+import { divPreserved, toBigInt } from '../utils/number';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -62,7 +62,8 @@ export const useOwnedLiquidityPools = () => {
             return {
               liquidity: bin.liquidity,
               freeLiquidity: bin.freeLiquidity,
-              removableRate: bin.removableRate * 100,
+              removableRateLegacy: bin.removableRate * 100,
+              removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
               clbTokenName: name,
               clbTokenImage: image,
               clbTokenDescription: description,

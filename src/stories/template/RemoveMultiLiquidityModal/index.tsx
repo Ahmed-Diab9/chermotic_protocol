@@ -51,11 +51,9 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       return selectedBins.reduce((sum, current) => {
         sum =
           sum +
-          (Number(
-            formatDecimals(current.binValue, current.clbTokenDecimals, current.clbTokenDecimals)
-          ) *
-            current.removableRate) /
-            100;
+          Number(
+            formatUnits(current.binValue * current.removableRate, current.clbTokenDecimals * 2)
+          );
         return sum;
       }, 0);
     }
@@ -95,6 +93,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       className=""
       open={selectedBins.length > 0}
       onClose={() => {
+        onAmountChange?.('ALL');
         dispatch(poolsAction.onBinsReset());
       }}
     >
@@ -108,6 +107,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
             <span className="ml-2">({selectedBins.length})</span>
             <ModalCloseButton
               onClick={() => {
+                onAmountChange?.('ALL');
                 dispatch(poolsAction.onBinsReset());
               }}
             />
@@ -122,15 +122,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                    * @TODO
                    * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
                    */
-                  const utilizedRate = 100 - bin.removableRate;
+                  const utilizedRate = parseUnits('1', bin.clbTokenDecimals) - bin.removableRate;
                   const utilized = formatUnits(
-                    bin.clbTokenBalance * parseUnits(String(utilizedRate), bin.clbTokenDecimals),
-                    bin.clbTokenDecimals * 2 + 2
+                    bin.clbTokenBalance * utilizedRate,
+                    bin.clbTokenDecimals * 2
                   );
                   const removable = formatUnits(
-                    bin.clbTokenBalance *
-                      parseUnits(String(bin.removableRate), bin.clbTokenDecimals),
-                    bin.clbTokenDecimals * 2 + 2
+                    bin.clbTokenBalance * bin.removableRate,
+                    bin.clbTokenDecimals * 2
                   );
 
                   return (

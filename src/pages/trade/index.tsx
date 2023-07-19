@@ -32,9 +32,9 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { CHAIN_ID } from '~/constants';
 import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useMargins } from '~/hooks/useMargins';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
-import { useOracleProperties } from '~/hooks/useOracleProperties';
 
 const Trade = () => {
   useConnectOnce();

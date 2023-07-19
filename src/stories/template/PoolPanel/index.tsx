@@ -3,7 +3,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 
 import { MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -29,13 +29,7 @@ import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
-import {
-  divPreserved,
-  formatDecimals,
-  formatFeeRate,
-  toBigInt,
-  withComma,
-} from '../../../utils/number';
+import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
@@ -138,30 +132,23 @@ export const PoolPanel = (props: PoolPanelProps) => {
       sum = sum + current.binValue;
       return sum;
     }, 0n) ?? 0n;
-  const totalRemovableBalance =
+  const totalLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum =
-        sum +
-        toBigInt(
-          formatUnits(
-            current.binValue * parseUnits(String(current.removableRate), current.clbTokenDecimals),
-            current.clbTokenDecimals + 2
-          )
-        );
+      sum += current.liquidity;
       return sum;
     }, 0n) ?? 0n;
-  const avgRemovableBalanceDenominator =
-    (ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.clbTokenBalance;
+  const totalFreeLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      sum += current.freeLiquidity;
       return sum;
-    }, 0n) || 0n) * parseUnits('1', binDecimals) || 1n;
+    }, 0n) ?? 0n;
   const averageRemovableRate = token
     ? Number(
         formatUnits(
           divPreserved(
-            totalRemovableBalance,
-            avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator,
-            token.decimals + 2 + binDecimals
+            totalFreeLiquidity * 100n,
+            totalLiquidity === 0n ? 1n : totalLiquidity,
+            binDecimals
           ),
           token.decimals
         )
@@ -526,8 +513,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Skeleton width={100} />
                       ) : (
                         <>
-                          {formatDecimals(totalRemovableBalance, token?.decimals, 2)} {token?.name}{' '}
-                          ({averageRemovableRate}
+                          {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
+                          {averageRemovableRate}
                           %)
                         </>
                       )}
@@ -761,7 +748,9 @@ const BinItem = (props: BinItemProps) => {
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{isLoading ? <Skeleton width={60} /> : <>{bin?.removableRate.toFixed(2)}%</>}</p>
+            <p>
+              {isLoading ? <Skeleton width={60} /> : <>{bin?.removableRateLegacy.toFixed(2)}%</>}
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">

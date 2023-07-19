@@ -53,13 +53,7 @@ export const useMultiPoolRemoveInput = () => {
     }
     const removableBalance = bins
       .map((bin) =>
-        toBigInt(
-          formatUnits(
-            bin.clbTokenBalance *
-              BigInt(Math.round(bin.removableRate * 10 ** bin.clbTokenDecimals)),
-            bin.clbTokenDecimals + 2
-          )
-        )
+        toBigInt(formatUnits(bin.clbTokenBalance * bin.removableRate, bin.clbTokenDecimals))
       )
       .reduce((balance, removable) => balance + removable, 0n);
     return Number(formatDecimals(removableBalance, token?.decimals, token?.decimals));

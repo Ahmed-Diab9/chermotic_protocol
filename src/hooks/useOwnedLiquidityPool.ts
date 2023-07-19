@@ -6,7 +6,7 @@ import { useAccount } from 'wagmi';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
-import { toBigInt } from '~/utils/number';
+import { divPreserved, toBigInt } from '~/utils/number';
 import { useAppSelector } from '../store';
 import { checkAllProps } from '../utils';
 import { Logger } from '../utils/log';
@@ -46,7 +46,8 @@ export const useOwnedLiquidityPool = () => {
         return {
           liquidity: bin.liquidity,
           freeLiquidity: bin.freeLiquidity,
-          removableRate: bin.removableRate * 100,
+          removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
+          removableRateLegacy: bin.removableRate * 100,
           clbTokenName: name,
           clbTokenImage: image,
           clbTokenDescription: description,

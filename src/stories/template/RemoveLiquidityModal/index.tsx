@@ -28,19 +28,16 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
   const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
-  const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
+  const utilizedRate = isValid(selectedBin)
+    ? parseUnits('1', selectedBin.clbTokenDecimals) - selectedBin.removableRate
+    : 0n;
   const utilized = isValid(selectedBin)
-    ? formatUnits(
-        selectedBin.clbTokenBalance *
-          parseUnits(String(utilizedRate), selectedBin.clbTokenDecimals),
-        selectedBin.clbTokenDecimals * 2 + 2
-      )
+    ? formatUnits(selectedBin.clbTokenBalance * utilizedRate, selectedBin.clbTokenDecimals * 2)
     : '0';
   const removable = isValid(selectedBin)
     ? formatUnits(
-        selectedBin.clbTokenBalance *
-          parseUnits(String(selectedBin.removableRate), selectedBin.clbTokenDecimals),
-        selectedBin.clbTokenDecimals * 2 + 2
+        selectedBin.clbTokenBalance * selectedBin.removableRate,
+        selectedBin.clbTokenDecimals * 2
       )
     : '0';
 
@@ -54,6 +51,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       className=""
       open={!!selectedBin}
       onClose={() => {
+        onAmountChange?.('');
         dispatch(poolsAction.onBinsReset());
       }}
     >
@@ -65,6 +63,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             Remove Liquidity
             <ModalCloseButton
               onClick={() => {
+                onAmountChange?.('');
                 dispatch(poolsAction.onBinsReset());
               }}
             />
@@ -112,7 +111,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
                     <span className="ml-1 text-black/30">
-                      ({selectedBin.removableRate.toFixed(2)}%)
+                      ({selectedBin.removableRateLegacy.toFixed(2)}%)
                     </span>
                   </p>
                 )}
