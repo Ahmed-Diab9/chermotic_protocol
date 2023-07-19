@@ -41,7 +41,7 @@ export const Default: Story = {
           // feeRate:100 * 100000000000n,
           clbTokenBalance: 50000000000n,
           binValue: 10000000000n,
-          clbTokenValue: 1000,
+          clbTokenValue: 1000n,
           removableRate: 87.54,
           clbTotalSupply: 1000n,
           liquidity: 3000000000n,

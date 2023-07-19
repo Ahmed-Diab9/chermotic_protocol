@@ -33,7 +33,7 @@ import {
   divPreserved,
   formatDecimals,
   formatFeeRate,
-  toBigintWithDecimals,
+  toBigInt,
   withComma,
 } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
@@ -50,7 +50,7 @@ interface PoolPanelProps {
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
-  binAverage?: number;
+  binAverage?: bigint;
   longTotalMaxLiquidity?: bigint;
   longTotalUnusedLiquidity?: bigint;
   shortTotalMaxLiquidity?: bigint;
@@ -95,7 +95,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     amount,
     rates,
     binCount = 0,
-    binAverage = 0,
+    binAverage = 0n,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -142,7 +142,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     ownedPool?.bins.reduce((sum, current) => {
       sum =
         sum +
-        BigInt(
+        toBigInt(
           formatUnits(
             current.binValue * parseUnits(String(current.removableRate), current.clbTokenDecimals),
             current.clbTokenDecimals + 2
@@ -424,7 +424,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                     {isValid(token) && (
                       <p>
-                        {binAverage.toFixed(2)} {token.name}
+                        {formatUnits(binAverage, token.decimals)} {token.name}
                       </p>
                     )}
                   </div>
@@ -684,21 +684,13 @@ const BinItem = (props: BinItemProps) => {
   }, [selectedBins, bin]);
 
   const formatter = Intl.NumberFormat('en', {
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 4,
     //@ts-ignore experimental api
     roundingMode: 'trunc',
   });
   const myLiqValue = useMemo(() => {
     if (isNil(token) || isNil(bin)) return 0;
-    return BigInt(
-      formatUnits(
-        toBigintWithDecimals(
-          bin.clbTokenBalance * BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals)),
-          bin.clbTokenDecimals
-        ),
-        token.decimals
-      )
-    );
+    return Number(formatUnits(bin.clbTokenBalance * bin.clbTokenValue, bin.clbTokenDecimals * 2));
   }, [bin, token]);
 
   return (
@@ -761,7 +753,7 @@ const BinItem = (props: BinItemProps) => {
                 <>
                   {bin &&
                     formatter.format(
-                      BigInt(formatUnits(bin.clbTokenBalance, Number(bin.clbTokenDecimals)))
+                      Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals))
                     )}
                 </>
               )}
@@ -776,7 +768,11 @@ const BinItem = (props: BinItemProps) => {
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">CLB Value</p>
             <p>
-              {isLoading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                <>{bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}</>
+              )}
             </p>
           </div>
           <div className="flex gap-2">

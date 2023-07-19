@@ -9,6 +9,7 @@ import {
   divPreserved,
   formatDecimals,
   numberBuffer,
+  toBigInt,
   toBigintWithDecimals,
 } from '~/utils/number';
 import { useAppSelector } from '../store';
@@ -228,14 +229,10 @@ export const useTradeInput = () => {
       const { baseFeeRate, freeLiquidity } = token;
       const feeRate = abs(baseFeeRate);
       if (makerMargin >= freeLiquidity) {
-        tradeFee = BigInt(
-          formatDecimals(tradeFee + freeLiquidity * feeRate, FEE_RATE_DECIMAL, 0) ?? '0'
-        );
+        tradeFee = tradeFee + toBigInt(formatUnits(freeLiquidity * feeRate, FEE_RATE_DECIMAL));
         makerMargin = makerMargin - freeLiquidity;
       } else {
-        tradeFee = BigInt(
-          formatDecimals(makerMargin + freeLiquidity * feeRate, FEE_RATE_DECIMAL, 0) ?? '0'
-        );
+        tradeFee = tradeFee + toBigInt(formatUnits(makerMargin * feeRate, FEE_RATE_DECIMAL));
         makerMargin = 0n;
       }
     }
@@ -330,7 +327,7 @@ export const useTradeInput = () => {
 
     const totalLiquidity =
       state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
-    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, token.decimals));
+    const parsedTotalLiquidity = Number(toBigInt(formatUnits(totalLiquidity, token.decimals)));
 
     if (isNaN(parsedTotalLiquidity)) return { status: true };
 

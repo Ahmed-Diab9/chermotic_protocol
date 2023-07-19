@@ -1,4 +1,4 @@
-import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
+import { LEVERAGE_DECIMALS, QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
@@ -67,7 +67,7 @@ function useOpenPosition(props: Props) {
     }
 
     const quantity = toBigintWithDecimals(state.quantity, QTY_DECIMALS);
-    const leverage = Number(toBigintWithDecimals(state.quantity, QTY_DECIMALS));
+    const leverage = Number(toBigintWithDecimals(state.leverage, LEVERAGE_DECIMALS));
     const takerMargin = toBigintWithDecimals(state.takerMargin, token.decimals);
     const makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
 

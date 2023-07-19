@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { formatUnits } from 'viem';
 import { PERCENT_DECIMALS } from '~/configs/decimals';
 import { useAppSelector } from '~/store';
+import { toBigInt } from '~/utils/number';
 import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 
@@ -19,12 +20,11 @@ export function useMargins() {
     const balance = balances[token.address];
     const [totalCollateral, totalCollateralAdded] = positions.reduce(
       (record, position) => {
-        const added = formatUnits(
-          position.collateral * position.pnl,
-          token.decimals + PERCENT_DECIMALS
-        ).split('.')[0];
+        const added = toBigInt(
+          formatUnits(position.collateral * position.pnl, token.decimals + PERCENT_DECIMALS)
+        );
 
-        return [record[0] + position.collateral, record[1] + BigInt(added)];
+        return [record[0] + position.collateral, record[1] + added];
       },
       [0n, 0n]
     );

@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
-import { numberBuffer } from '~/utils/number';
+import { numberBuffer, toBigInt } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -69,7 +69,7 @@ function useRemoveLiquidities(props: Props) {
     try {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenDecimals, removableRate } = bin;
-        const removable = BigInt(
+        const removable = toBigInt(
           formatUnits(
             clbTokenBalance * BigInt(Math.round(removableRate * numberBuffer(clbTokenDecimals))),
             clbTokenDecimals + 2

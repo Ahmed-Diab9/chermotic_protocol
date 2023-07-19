@@ -1,4 +1,6 @@
+import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
 import { useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { FEE_RATE_DECIMAL } from '~/configs/decimals';
@@ -6,13 +8,11 @@ import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
+import { checkAllProps } from '../utils';
 import { numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
-import useOracleVersion from './useOracleVersion';
-import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
-import { toast } from 'react-toastify';
 import { useError } from './useError';
-import { checkAllProps } from '../utils';
+import useOracleVersion from './useOracleVersion';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
