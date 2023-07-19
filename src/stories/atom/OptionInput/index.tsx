@@ -16,6 +16,7 @@ interface OptionInputProps {
   align?: 'center' | 'left' | 'right';
   className?: string;
   disabled?: boolean;
+  error?: boolean;
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
   onButtonClick?: (value: string) => unknown;
@@ -33,6 +34,8 @@ export const OptionInput = (props: OptionInputProps) => {
     css = 'default',
     align = 'right',
     className,
+    disabled = false,
+    error = false,
     onChange,
     onButtonClick,
   } = props;
@@ -92,6 +95,8 @@ export const OptionInput = (props: OptionInputProps) => {
           onChange?.(event);
         }}
         className="relative border-gray"
+        disabled={disabled}
+        error={error}
         // onBlur={onBlur}
       />
     </div>
