@@ -1,4 +1,5 @@
 import Skeleton from 'react-loading-skeleton';
+import { SkeletonElement } from '../SkeletonElement';
 
 interface TextRowProps {
   label?: string;
@@ -31,14 +32,9 @@ export const TextRow = (props: TextRowProps) => {
       <p className={`text-${labelColor} ${labelClass}`}>{label}</p>
       <div className="flex items-center gap-1">
         {subValueLeft && <p className="text-black/30">{subValueLeft}</p>}
-
-        {isLoading ? (
-          <div className="flex items-center gap-1">
-            <Skeleton width={60} />
-          </div>
-        ) : (
-          <> {value}</>
-        )}
+        <SkeletonElement width={60} isLoading={isLoading}>
+          {value}
+        </SkeletonElement>
         {subValueRight && <p className="text-black/30">{subValueLeft}</p>}
       </div>
     </div>

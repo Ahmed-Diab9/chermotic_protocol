@@ -19,6 +19,7 @@ import './style.css';
 import { usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../../../configs/token';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
@@ -151,22 +152,22 @@ export const WalletPopover = ({
                                     priceFeed &&
                                     tokens?.map((token) => (
                                       <div key={token.address} className="flex items-center">
-                                        {isLoading ? (
-                                          <div className="flex items-center gap-1">
-                                            <Skeleton
-                                              circle
-                                              containerClassName="avatar-skeleton w-[16px] text-[16px]"
-                                            />
-                                            <Skeleton width={40} />
-                                          </div>
-                                        ) : (
-                                          <Avatar
-                                            label={token.name}
-                                            size="sm"
-                                            fontSize="base"
-                                            gap="2"
+                                        <div className="flex items-center gap-1">
+                                          <SkeletonElement
+                                            isLoading={true}
+                                            circle
+                                            containerClassName="avatar-skeleton w-[16px] text-[16px]"
                                           />
-                                        )}
+                                          <SkeletonElement isLoading={true} width={40}>
+                                            <Avatar
+                                              label={token.name}
+                                              size="sm"
+                                              fontSize="base"
+                                              gap="2"
+                                            />
+                                          </SkeletonElement>
+                                        </div>
+
                                         <div className="ml-auto text-right">
                                           <p className="text-sm text-black/30">
                                             {isLoading ? (

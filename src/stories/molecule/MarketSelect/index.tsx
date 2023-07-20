@@ -10,6 +10,7 @@ import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -47,14 +48,10 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
         <div className="flex items-center gap-4 mr-10">
           <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
             <h4>
-              {isLoading ? (
-                <Skeleton width={80} />
-              ) : (
-                <>
-                  {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
-                  %/h
-                </>
-              )}
+              <SkeletonElement width={80} isLoading={isLoading}>
+                {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
+                %/h
+              </SkeletonElement>
             </h4>
             <div className="flex">
               <p>Interest Rate</p>
