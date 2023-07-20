@@ -25,7 +25,7 @@ export const Button = (props: ButtonProps) => {
     align = 'center',
     to,
     href,
-    gap = 2,
+    gap = '2',
     className = '',
     iconLeft,
     iconOnly,
