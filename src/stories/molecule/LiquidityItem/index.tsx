@@ -1,35 +1,48 @@
-import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { isNil } from 'ramda';
+import { formatUnits } from 'viem';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Progress } from '~/stories/atom/Progress';
-import { percentage } from '~/utils/number';
+import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { Token } from '~/typings/market';
+import { OwnedBin } from '~/typings/pools';
+import { divPreserved, toBigInt } from '~/utils/number';
 
 interface LiquidityItemProps {
-  token?: string;
+  token?: Token;
   name?: string;
-  qty?: number;
-  utilizedValue: number;
-  removableValue: number;
+  bin?: OwnedBin;
 }
 
 export const LiquidityItem = (props: LiquidityItemProps) => {
-  const { token = 'USDC', name, qty, utilizedValue, removableValue } = props;
-  const utilizedPercent = (utilizedValue / (qty ?? 1)) * percentage();
-  const remoablePercent = (removableValue / (qty ?? 1)) * percentage();
+  const { token, name, bin } = props;
+  if (isNil(token) || isNil(bin)) return <></>;
 
+  const myLiquidityValue = toBigInt(
+    formatUnits(bin.clbTokenBalance * bin.clbTokenValue, token.decimals)
+  );
+  const removable = bin.freeLiquidity > myLiquidityValue ? myLiquidityValue : bin.freeLiquidity;
+  const utilized = myLiquidityValue - removable;
+  const utilizedRate = formatUnits(
+    divPreserved(utilized, myLiquidityValue, token.decimals),
+    token.decimals - 2
+  );
+  const removableRate = formatUnits(
+    divPreserved(removable, myLiquidityValue, token.decimals),
+    token.decimals - 2
+  );
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기
-
   return (
     <div className="w-full px-4 py-3 bg-grayL/20 [&:not(:last-child)]:border-b border-gray">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
         <Thumbnail size="lg" className="rounded" />
         <div>
-          <Avatar label={token} size="xs" gap="1" />
+          <Avatar label={token.name} size="xs" gap="1" />
           <p className="mt-2 text-black/30">{name}</p>
         </div>
         <div className="ml-auto text-right">
           <p className="text-black/30">Qty</p>
-          <p className="mt-2 text-lg">{qty?.toFixed(2)}</p>
+          <p className="mt-2 text-lg">{formatUnits(bin.clbTokenBalance, token.decimals)}</p>
         </div>
       </div>
       <div className="text-sm">
@@ -37,15 +50,19 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
           <p className="font-semibold">Removable</p>
           <p className="font-semibold">Utilized</p>
         </div>
-        <Progress css="sm" value={removableValue} max={qty} />
+        <Progress
+          css="sm"
+          value={Number(formatUnits(removable, token.decimals))}
+          max={Number(formatUnits(myLiquidityValue, token.decimals))}
+        />
         <div className="flex justify-between mt-1">
           <p className="">
-            {removableValue} CLB
-            <span className="text-black/30 ml-[2px]">({remoablePercent}%)</span>
+            {Number(formatUnits(removable, token.decimals))} {token.name}
+            <span className="text-black/30 ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="">
-            {utilizedValue} CLB
-            <span className="text-black/30 ml-[2px]">({utilizedPercent}%)</span>
+            {Number(formatUnits(utilized, token.decimals))} {token.name}
+            <span className="text-black/30 ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>
       </div>

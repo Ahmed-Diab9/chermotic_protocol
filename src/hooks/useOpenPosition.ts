@@ -1,3 +1,5 @@
+import { LEVERAGE_DECIMALS, QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
+import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
@@ -7,8 +9,7 @@ import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
 import { Logger, errorLog } from '~/utils/log';
-import { expandDecimals, numberBuffer } from '~/utils/number';
-import { isValid } from '~/utils/valid';
+import { toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { usePosition } from './usePosition';
@@ -33,44 +34,42 @@ function useOpenPosition(props: Props) {
   } = useLiquidityPool();
 
   const onOpenPosition = async function () {
-    if (!isValid(state)) {
+    if (isNil(state)) {
       toast('Input data needed');
       return;
     }
-    if (!isValid(market)) {
+    if (isNil(token)) {
+      toast('No settlement tokens');
+      return;
+    }
+    if (isNil(market)) {
       errorLog('no markets selected');
       toast('No markets selected.');
       return;
     }
-    if (!isValid(walletClient)) {
+    if (isNil(walletClient)) {
       errorLog('no signers');
       toast('No signers. Create your account.');
       return;
     }
-    if (!isValid(routerApi)) {
+    if (isNil(routerApi)) {
       errorLog('no routers');
       toast('No routers.');
       return;
     }
     if (
-      isValid(token) &&
-      isValid(balances?.[token!.address]) &&
+      isNotNil(token) &&
+      isNotNil(balances?.[token!.address]) &&
       balances![token!.address] < parseUnits(state.collateral, token.decimals)
     ) {
       toast('Not enough collateral.');
       return;
     }
 
-    const quantity =
-      (BigInt(Math.floor(Number(state.quantity) * numberBuffer())) * expandDecimals(4)) / // 10000
-      BigInt(numberBuffer());
-    const leverage = Math.floor(Number(state.leverage)) * 100; // 100
-    const takerMargin =
-      (BigInt(Math.floor(state.takerMargin * numberBuffer())) * expandDecimals(token?.decimals)) / // 10 ** 6
-      BigInt(numberBuffer());
-    const makerMargin =
-      (BigInt(Math.floor(state.makerMargin * numberBuffer())) * expandDecimals(token?.decimals)) / // 10 ** 6
-      BigInt(numberBuffer());
+    const quantity = toBigintWithDecimals(state.quantity, QTY_DECIMALS);
+    const leverage = Number(toBigintWithDecimals(state.leverage, LEVERAGE_DECIMALS));
+    const takerMargin = toBigintWithDecimals(state.takerMargin, token.decimals);
+    const makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
 
     if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
       toast('the long liquidity is too low');
@@ -84,7 +83,10 @@ function useOpenPosition(props: Props) {
     // FIXME
     // Trading Fee
     try {
-      const maxAllowableTradingFee = makerMargin + expandDecimals(token?.decimals);
+      // max allowance fee 5 %
+      // maxallowableTradingFee = markermargin * 5%
+      // TODO apply max fee allowance
+      const maxAllowableTradingFee = makerMargin;
 
       await routerApi.openPosition(market.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),

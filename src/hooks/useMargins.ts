@@ -1,10 +1,11 @@
-import { useAppSelector } from '~/store';
-import { usePosition } from './usePosition';
-import { useUsumAccount } from './useUsumAccount';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
-import { expandDecimals } from '~/utils/number';
+import { formatUnits } from 'viem';
 import { PERCENT_DECIMALS } from '~/configs/decimals';
+import { useAppSelector } from '~/store';
+import { toBigInt } from '~/utils/number';
+import { usePosition } from './usePosition';
+import { useUsumAccount } from './useUsumAccount';
 
 export function useMargins() {
   const { positions = [] } = usePosition();
@@ -19,10 +20,9 @@ export function useMargins() {
     const balance = balances[token.address];
     const [totalCollateral, totalCollateralAdded] = positions.reduce(
       (record, position) => {
-        const added =
-          (position.collateral * position.pnl) /
-          expandDecimals(token.decimals) /
-          expandDecimals(PERCENT_DECIMALS);
+        const added = toBigInt(
+          formatUnits(position.collateral * position.pnl, token.decimals + PERCENT_DECIMALS)
+        );
 
         return [record[0] + position.collateral, record[1] + added];
       },

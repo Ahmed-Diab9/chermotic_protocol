@@ -13,11 +13,12 @@ import { AppError } from '~/typings/error';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
+import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
-import { checkAllProps } from '../utils';
 const logger = Logger('useUsumAccount');
+
 export const useUsumAccount = () => {
   const { address, connector } = useAccount();
   const [status, setStatus] = useState<ACCOUNT_STATUS>(ACCOUNT_NONE);

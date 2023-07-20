@@ -1,8 +1,9 @@
 import { Client } from '@chromatic-protocol/sdk-viem';
-import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { PublicClient, WalletClient, useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { CHAIN_ID } from '~/constants';
 import { Logger } from '../utils/log';
+
 const logger = Logger('useChromaticClient');
 let chromaticClient: Client | undefined;
 let listeners: Array<() => void> = [];
@@ -33,7 +34,6 @@ const clientStore = {
   },
 };
 
-// let client: Client | undefined;
 export function useChromaticClient() {
   const publicClient = usePublicClient({ chainId: CHAIN_ID });
   const { data: walletClient } = useWalletClient({ chainId: CHAIN_ID });

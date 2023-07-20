@@ -1,27 +1,19 @@
 import { Dialog } from '@headlessui/react';
-import { FEE_RATE_DECIMAL } from '~/configs/decimals';
+import { formatUnits, parseUnits } from 'viem';
 import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import {
-  expandDecimals,
-  formatDecimals,
-  numberBuffer,
-  percentage,
-  trimLeftZero,
-} from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
-import { Outlink } from '~/stories/atom/Outlink';
 import '../Modal/style.css';
-import { isNil } from 'ramda';
 
 export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
@@ -32,20 +24,8 @@ export interface RemoveLiquidityModalProps {
 }
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
-  const { selectedBin, token, amount, maxAmount, onAmountChange } = props;
+  const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
-  const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
-  const utilizedRate = isValid(selectedBin) ? 100 - selectedBin.removableRate : 0;
-  const utilized = isValid(selectedBin)
-    ? (selectedBin.clbTokenBalance * BigInt(Math.round(utilizedRate * percentage()))) /
-      expandDecimals(FEE_RATE_DECIMAL)
-    : 0n;
-  const removable = isValid(selectedBin)
-    ? (selectedBin?.clbTokenBalance *
-        BigInt(Math.round(selectedBin.removableRate * percentage()))) /
-      expandDecimals(FEE_RATE_DECIMAL)
-    : 0n;
-
   const { onRemoveLiquidity } = useRemoveLiquidity({
     feeRate: selectedBin?.baseFeeRate,
     amount,
@@ -56,6 +36,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       className=""
       open={!!selectedBin}
       onClose={() => {
+        onAmountChange?.('');
         dispatch(poolsAction.onBinsReset());
       }}
     >
@@ -67,6 +48,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             Remove Liquidity
             <ModalCloseButton
               onClick={() => {
+                onAmountChange?.('');
                 dispatch(poolsAction.onBinsReset());
               }}
             />
@@ -76,11 +58,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             {/* liquidity items */}
             <article className="flex flex-col border border-gray rounded-xl">
               <LiquidityItem
-                token={token?.name}
+                token={token}
                 name={selectedBin?.clbTokenDescription}
-                qty={Number(formatDecimals(balance, selectedBin?.clbTokenDecimals, 2))}
-                utilizedValue={Number(formatDecimals(utilized, selectedBin?.clbTokenDecimals, 2))}
-                removableValue={Number(formatDecimals(removable, selectedBin?.clbTokenDecimals, 2))}
+                bin={selectedBin}
               />
             </article>
 
@@ -114,7 +94,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
                     <span className="ml-1 text-black/30">
-                      ({selectedBin.removableRate.toFixed(2)}%)
+                      ({formatUnits(selectedBin.removableRate, token.decimals)}%)
                     </span>
                   </p>
                 )}
@@ -134,33 +114,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       onAmountChange?.((maxAmount ?? 0).toString());
                     }}
                   />
-                  <Button
-                    className="flex-auto shadow-base border-gray"
-                    label="Removable"
-                    size="sm"
-                    onClick={() => {
-                      if (!isValid(selectedBin)) {
-                        return;
-                      }
-                      const nextAmount =
-                        (selectedBin.clbTokenBalance *
-                          BigInt(
-                            Math.round(
-                              selectedBin.removableRate * 10 ** selectedBin.clbTokenDecimals
-                            )
-                          )) /
-                        expandDecimals(selectedBin.clbTokenDecimals + 2);
-                      const nextAmoundFormatted = formatDecimals(
-                        nextAmount,
-                        token?.decimals,
-                        token?.decimals
-                      );
-                      if (isNil(nextAmoundFormatted)) {
-                        return;
-                      }
-                      onAmountChange?.(nextAmoundFormatted);
-                    }}
-                  />
                 </div>
                 <div className="max-w-[220px] relative">
                   <p className="absolute right-0 top-[-28px] text-right text-black/30">
@@ -168,7 +121,13 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                      * @TODO
                      * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                      */}
-                    ({selectedBin && (Number(amount) * selectedBin?.clbTokenValue).toFixed(2)}{' '}
+                    (
+                    {selectedBin &&
+                      formatUnits(
+                        parseUnits(amount, selectedBin.clbTokenDecimals) *
+                          selectedBin?.clbTokenValue,
+                        selectedBin.clbTokenDecimals * 2
+                      )}{' '}
                     {token?.name})
                   </p>
                   {/* todo: input error */}

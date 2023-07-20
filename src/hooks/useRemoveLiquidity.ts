@@ -72,7 +72,7 @@ function useRemoveLiquidity(props: Props) {
         receipient: address,
         clbTokenAmount: expandedAmount,
       });
-      dispatch(poolsAction.onModalClose());
+      dispatch(poolsAction.onBinsReset());
 
       await fetchReceipts();
       await fetchWalletBalances();

@@ -12,14 +12,15 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import '../../atom/Tabs/style.css';
 // import { LPReceipt } from "~/typings/receipt";
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useLastOracle } from '~/hooks/useLastOracle';
 import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
+import { OracleVersion } from '~/typings/oracleVersion';
 import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
-import { toast } from 'react-toastify';
-import { OracleVersion } from '~/typings/oracleVersion';
 
 interface PoolProgressProps {
   token?: Token;
@@ -48,6 +49,7 @@ export const PoolProgress = ({
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hasGuide, setHasGuide] = useState(false);
+  const lapsed = useLastOracle();
   const [selectedTab, setSelectedTab] = useState('all');
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
@@ -74,25 +76,10 @@ export const PoolProgress = ({
       }
     }
     window.addEventListener(POOL_EVENT, onPool);
-    const timer = setInterval(() => {
-      setNow(nowSecond());
-    }, 1000);
     return () => {
       window.removeEventListener(POOL_EVENT, onPool);
-      clearInterval(timer);
     };
   }, [isOpen]);
-
-  const nowSecond = () => Math.floor(Date.now() / 1000);
-
-  const [now, setNow] = useState(nowSecond());
-
-  let times = ['00', '00', '00']; // hh mm ss
-  if (oracleVersion) {
-    const timeDiff = now - Number(oracleVersion!.timestamp);
-    const hhmmss = new Date(timeDiff * 1000).toISOString().slice(11, 19);
-    times = hhmmss.split(':')!;
-  }
 
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
@@ -118,9 +105,9 @@ export const PoolProgress = ({
                       outLinkAbout="Next Oracle Round"
                     />
                   </h4>
-                  {open && (
+                  {open && isValid(lapsed) && (
                     <p className="mt-1 ml-auto text-sm text-black/30">
-                      Last oracle update: {times[0]}h {times[1]}m {times[2]}s ago
+                      Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}s ago
                     </p>
                   )}
                 </div>
@@ -178,7 +165,7 @@ export const PoolProgress = ({
                               size="base"
                               css="active"
                               onClick={() => onReceiptClaimBatch?.()}
-                              // disabled={receipts.length === 0 ? true : false}
+                              disabled={!isClaimEnabled}
                             />
                           </div>
                           {isValid(market) &&
@@ -357,18 +344,8 @@ interface ProgressItemProps {
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const {
-    title,
-    status,
-    detail,
-    token,
-    name,
-    image,
-    action,
-    progressPercent,
-    isLoading,
-    onClick,
-  } = props;
+  const { title, status, detail, token, name, image, action, progressPercent, isLoading, onClick } =
+    props;
 
   const renderTitle = useMemo(() => {
     return action === 'add' ? 'minting' : action === 'remove' ? 'burning' : '';

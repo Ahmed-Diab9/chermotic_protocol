@@ -1,7 +1,5 @@
 import type { ChromaticLens, ChromaticMarket } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
-import memoizeOne from 'memoize-one';
-import { isNotNil, lens } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -9,6 +7,7 @@ import { poolsAction } from '~/store/reducer/pools';
 import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool, LiquidityPoolSummary } from '../typings/pools';
+import { checkAllProps } from '../utils';
 import { Logger } from '../utils/log';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { isValid } from '../utils/valid';
@@ -17,7 +16,6 @@ import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
-import { checkAllProps } from '../utils';
 const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId } = ChromaticUtils;
 
@@ -197,7 +195,7 @@ async function getLiquidityPool(
         number,
         {
           tradingFeeRate: number;
-          clbValue: number;
+          clbValue: bigint;
           liquidity: bigint;
           clbTokenTotalSupply: bigint;
           freeLiquidity: bigint;
