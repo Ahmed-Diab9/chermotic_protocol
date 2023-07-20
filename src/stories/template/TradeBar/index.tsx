@@ -41,9 +41,9 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   const value = formatDecimals(position[type], ORACLE_PROVIDER_DECIMALS - 2, 2);
   const hasProfit = type === 'toProfit' ? position.qty > 0n : position.qty <= 0n;
   if (hasProfit) {
-    return `+${withComma(value)}%`;
+    return `(+${withComma(value)}%)`;
   } else {
-    return `${withComma(value)}%`;
+    return `(${withComma(value)}%)`;
   }
 }
 
