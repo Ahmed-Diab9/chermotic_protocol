@@ -20,9 +20,9 @@ export const TextRow = (props: TextRowProps) => {
     subValueLeft,
     subValueRight,
     labelColor = 'black/30',
-    labelClass,
+    labelClass = '',
     align = 'between',
-    className,
+    className = '',
     isLoading,
   } = props;
 

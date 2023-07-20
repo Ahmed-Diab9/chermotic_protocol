@@ -5,7 +5,7 @@ import { ArrowUpRightIcon } from '@heroicons/react/24/outline';
 import './style.css';
 
 interface TooltipGuideProps {
-  label?: string;
+  label: string;
   tip?: string;
   outLink?: string;
   outLinkAbout?: string;
@@ -27,7 +27,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     position = 'top',
     size = 'base',
     align = 'left',
-    className,
+    className = '',
     iconOnly,
     tipOnly,
   } = props;

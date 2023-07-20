@@ -1,9 +1,9 @@
-import "./style.css";
+import './style.css';
 
 interface CheckboxProps {
   label: string | number;
   title?: string;
-  size?: "sm" | "base" | "lg";
+  size?: 'sm' | 'base' | 'lg';
   gap?: string;
   className?: string;
   onClick?: () => unknown;
@@ -15,9 +15,9 @@ export const Checkbox = (props: CheckboxProps) => {
   const {
     label,
     title,
-    size = "base",
-    gap = "2",
-    className,
+    size = 'base',
+    gap = '2',
+    className = '',
     disabled = false,
     isChecked,
     onClick,
@@ -34,10 +34,7 @@ export const Checkbox = (props: CheckboxProps) => {
         disabled={disabled}
         onChange={onClick}
       />
-      <label
-        className={`checkbox-label gap-${gap}`}
-        htmlFor={`checkbox-${label}`}
-      >
+      <label className={`checkbox-label gap-${gap}`} htmlFor={`checkbox-${label}`}>
         {title}
       </label>
     </div>

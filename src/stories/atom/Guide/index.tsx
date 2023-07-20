@@ -5,24 +5,16 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { BellIcon } from '@heroicons/react/24/outline';
 
 interface GuideProps {
-  title?: string;
-  paragraph?: string;
+  title: string;
+  paragraph: string;
   outLink?: string;
   outLinkAbout?: string;
   flex?: boolean;
-  className?: string;
   onClick?: () => unknown;
 }
 
 export const Guide = (props: GuideProps) => {
-  const {
-    title,
-    paragraph,
-    outLink,
-    outLinkAbout,
-    flex,
-    // className,
-  } = props;
+  const { title, paragraph, outLink, outLinkAbout, flex } = props;
 
   const [guideVisible, setGuideVisible] = useState(true);
   const closeGuide = () => {
