@@ -249,7 +249,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     maxValue={settlementTokenBalance}
                     onChange={(value) => onAmountChange?.(value)}
                     onButtonClick={(value) => onAmountChange?.(value)}
-                    error
+                    // error
                   />
                   {/* <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." /> */}
                 </div>
