@@ -13,7 +13,6 @@ import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
 import useChartData from '~/hooks/useChartData';
-import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
@@ -37,10 +36,7 @@ import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
 
 const Trade = () => {
-  useConnectOnce();
-
   const { connectAsync } = useConnect();
-
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: usumAccount,
