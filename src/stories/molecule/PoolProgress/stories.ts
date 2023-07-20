@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PoolProgress } from '.';
 import { Market } from '~/typings/market';
+import { PoolProgress } from '.';
 
 const meta = {
   title: 'Molecule/PoolProgress',
@@ -32,7 +32,7 @@ export const Default: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'standby',
         name: 'Payment',
@@ -42,7 +42,7 @@ export const Default: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'completed',
         name: 'Payment',
@@ -52,7 +52,7 @@ export const Default: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'standby',
         name: 'Payment',
@@ -62,7 +62,7 @@ export const Default: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'in progress',
         name: 'Payment',
@@ -72,7 +72,7 @@ export const Default: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'completed',
         name: 'Payment',
@@ -123,7 +123,7 @@ export const EmptyMinting: Story = {
         id: 10000n,
         version: 10000n,
         amount: 10000n,
-        recipient: '',
+        recipient: '0x00',
         feeRate: 5,
         status: 'completed',
         name: 'Payment',
