@@ -1,12 +1,15 @@
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import useConnectOnce from '~/hooks/useConnectOnce';
+import { CHAIN_ID } from '~/constants';
+import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
+import useOracleVersion from '~/hooks/useOracleVersion';
 import usePoolInput from '~/hooks/usePoolInput';
 import usePoolReceipt from '~/hooks/usePoolReceipt';
 import { useMultiPoolRemoveInput, usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
@@ -21,6 +24,7 @@ import { Toast } from '~/stories/atom/Toast';
 import { PoolProgress } from '~/stories/molecule/PoolProgress';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
+import { isValid } from '~/utils/valid';
 import useChartData from '../../hooks/useChartData';
 import { useMarketLocal } from '../../hooks/useMarketLocal';
 import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
@@ -32,14 +36,9 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
-import { isValid } from '~/utils/valid';
-import { CHAIN_ID } from '~/constants';
-import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
-import useOracleVersion from '~/hooks/useOracleVersion';
-import { useMemo } from 'react';
 
 const Pool = () => {
-  useConnectOnce();
+  // useConnectOnce();
   const { connectAsync } = useConnect();
   const { address: walletAddress } = useAccount();
   const {

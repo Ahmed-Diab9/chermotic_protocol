@@ -3,6 +3,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton from 'react-loading-skeleton';
+import { formatUnits } from 'viem';
 
 import { MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -22,16 +23,21 @@ import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 
 import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { isNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { parseUnits } from 'viem';
 import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
-import { expandDecimals, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  formatFeeRate,
+  toBigInt,
+  withComma,
+} from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 const logger = Logger('PoolPanel');
@@ -43,7 +49,7 @@ interface PoolPanelProps {
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
   binCount?: number;
-  binAverage?: number;
+  binAverage?: bigint;
   longTotalMaxLiquidity?: bigint;
   longTotalUnusedLiquidity?: bigint;
   shortTotalMaxLiquidity?: bigint;
@@ -88,7 +94,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     amount,
     rates,
     binCount = 0,
-    binAverage = 0,
+    binAverage = 0n,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
@@ -131,29 +137,35 @@ export const PoolPanel = (props: PoolPanelProps) => {
       sum = sum + current.binValue;
       return sum;
     }, 0n) ?? 0n;
-  const totalRemovableBalance =
+  const totalLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum =
-        sum +
-        (current.binValue *
-          BigInt(Math.round(current.removableRate * 10 ** current.clbTokenDecimals))) /
-          expandDecimals(current.clbTokenDecimals + 2);
+      sum += current.liquidity;
       return sum;
     }, 0n) ?? 0n;
-  const avgRemovableBalanceDenominator =
-    (ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.clbTokenBalance;
+  const totalFreeLiquidity =
+    ownedPool?.bins.reduce((sum, current) => {
+      const myLiquidityValue = toBigInt(
+        formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals || 0)
+      );
+      if (myLiquidityValue > current.freeLiquidity) {
+        sum += current.freeLiquidity;
+      } else {
+        sum += myLiquidityValue;
+      }
       return sum;
-    }, 0n) || 0n) * expandDecimals(binDecimals) || 1n;
-  const averageRemovableRate = formatDecimals(
-    (totalRemovableBalance *
-      expandDecimals(token?.decimals) *
-      expandDecimals(2) *
-      expandDecimals(binDecimals)) /
-      (avgRemovableBalanceDenominator === 0n ? 1n : avgRemovableBalanceDenominator),
-    token?.decimals,
-    2
-  );
+    }, 0n) ?? 0n;
+  const averageRemovableRate = token
+    ? Number(
+        formatUnits(
+          divPreserved(
+            totalFreeLiquidity * 100n,
+            totalLiquidity === 0n ? 1n : totalLiquidity,
+            binDecimals
+          ),
+          token.decimals
+        )
+      ).toFixed(2)
+    : '-';
   const ownedLongLiquidityBins = useMemo(
     () => ownedPool?.bins.filter((bin) => bin.clbTokenBalance > 0n && bin.baseFeeRate > 0n) || [],
     [ownedPool]
@@ -411,7 +423,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                     {isValid(token) && (
                       <p>
-                        {binAverage.toFixed(2)} {token.name}
+                        {formatUnits(binAverage, token.decimals)} {token.name}
                       </p>
                     )}
                   </div>
@@ -513,8 +525,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Skeleton width={100} />
                       ) : (
                         <>
-                          {formatDecimals(totalRemovableBalance, token?.decimals, 2)} {token?.name}{' '}
-                          ({averageRemovableRate}
+                          {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
+                          {averageRemovableRate}
                           %)
                         </>
                       )}
@@ -668,6 +680,16 @@ const BinItem = (props: BinItemProps) => {
     return isValid(found);
   }, [selectedBins, bin]);
 
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: 4,
+    //@ts-ignore experimental api
+    roundingMode: 'trunc',
+  });
+  const myLiqValue = useMemo(() => {
+    if (isNil(token) || isNil(bin)) return 0;
+    return Number(formatUnits(bin.clbTokenBalance * bin.clbTokenValue, bin.clbTokenDecimals * 2));
+  }, [bin, token]);
+
   return (
     <div className="overflow-hidden border rounded-xl">
       <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-grayL/20">
@@ -725,20 +747,40 @@ const BinItem = (props: BinItemProps) => {
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
-                <>{bin && formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2)}</>
+                <>
+                  {bin &&
+                    formatter.format(
+                      Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals))
+                    )}
+                </>
               )}
             </p>
           </div>
           <div className="flex gap-2">
-            <p className="text-black/30 w-[80px]">Removable</p>
-            <p>{isLoading ? <Skeleton width={60} /> : <>{bin?.removableRate.toFixed(2)}%</>}</p>
+            <p className="text-black/30 w-[80px]">Free Liquidity</p>
+            <p>
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                <>
+                  {formatUnits(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0)} {token?.name}
+                </>
+              )}
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
-            <p className="text-black/30 w-[100px]">CLB Value</p>
+            <p className="text-black/30 w-[100px]">CLB Price</p>
             <p>
-              {isLoading ? <Skeleton width={60} /> : <>{bin && bin.clbTokenValue.toFixed(2)}</>}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                <>
+                  {bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}{' '}
+                  {`${token?.name}/CLB`}
+                </>
+              )}
             </p>
           </div>
           <div className="flex gap-2">
@@ -750,14 +792,7 @@ const BinItem = (props: BinItemProps) => {
                 </div>
               ) : (
                 <>
-                  {bin &&
-                    formatDecimals(
-                      (bin.clbTokenBalance *
-                        BigInt(Math.round(bin.clbTokenValue * 10 ** bin.clbTokenDecimals))) /
-                        expandDecimals(bin.clbTokenDecimals),
-                      token?.decimals,
-                      2
-                    )}
+                  {formatter.format(myLiqValue)} {token?.name}
                 </>
               )}
             </p>

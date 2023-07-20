@@ -1,27 +1,25 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import '~/stories/atom/Select/style.css';
-import '~/stories/atom/Toggle/style.css';
-
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
+import '~/stories/atom/Select/style.css';
 import { Slider } from '~/stories/atom/Slider';
+import '~/stories/atom/Toggle/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import Skeleton from 'react-loading-skeleton';
 
 import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
+import { isNil } from 'ramda';
+import { useOpenPosition } from '~/hooks/useOpenPosition';
+import { Liquidity } from '~/typings/chart';
 import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
-import { Liquidity } from '~/typings/chart';
-import { isNil } from 'ramda';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
-import { useOpenPosition } from '~/hooks/useOpenPosition';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -94,6 +92,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     string | undefined,
     string | undefined
   ]);
+  const [expectedRatio, setExpectedRatio] = useState({
+    profitRatio: undefined,
+    lossRatio: undefined,
+  } as { profitRatio?: number; lossRatio?: number });
   const response = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
@@ -144,6 +146,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       withComma(formatDecimals(price + profitDelta, oracleDecimals, 2)),
       withComma(formatDecimals(price - lossDelta, oracleDecimals, 2)),
     ]);
+    setExpectedRatio({
+      profitRatio: Number((profitDelta * 100n * 10000n) / price),
+      lossRatio: Number((lossDelta * 100n * 10000n) / price),
+    });
   }, [input, token]);
 
   useEffect(() => {
@@ -417,7 +423,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black/30">(+{input?.takeProfit}%)</span>
+                <span className="ml-2 text-black/30">
+                  (+{formatDecimals(expectedRatio.profitRatio, 4, 2)}%)
+                </span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -426,7 +434,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black/30">(-{input?.stopLoss}%)</span>
+                <span className="ml-2 text-black/30">
+                  (-{formatDecimals(expectedRatio.lossRatio, 4, 2)}%)
+                </span>
               </p>
             </div>
           </div>

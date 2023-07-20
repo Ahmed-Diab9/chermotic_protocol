@@ -1,7 +1,7 @@
+import { Square2StackIcon } from '@heroicons/react/24/outline';
 import { MouseEventHandler } from 'react';
 import { Button } from '../Button';
 import Skeleton from 'react-loading-skeleton';
-import { Square2StackIcon } from '@heroicons/react/24/outline';
 
 interface AddressCopyButtonProps {
   address?: string;

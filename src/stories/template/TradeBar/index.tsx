@@ -1,8 +1,15 @@
+import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { Listbox, Popover, Tab } from '@headlessui/react';
+import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { parseUnits } from "viem";
 import CheckIcon from '~/assets/icons/CheckIcon';
+import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
+import { useClaimPosition } from '~/hooks/useClaimPosition';
+import { useClosePosition } from '~/hooks/useClosePosition';
+import { useLastOracle } from '~/hooks/useLastOracle';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
@@ -10,24 +17,14 @@ import { PopoverArrow } from '~/stories/atom/PopoverArrow';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { Button } from '../../atom/Button';
-import '../../atom/Tabs/style.css';
-import { isNil } from 'ramda';
-import { useClaimPosition } from '~/hooks/useClaimPosition';
-import { useClosePosition } from '~/hooks/useClosePosition';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position, PositionOption } from '~/typings/position';
+import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
-import { abs, expandDecimals, formatDecimals, withComma } from '~/utils/number';
-import {
-  LEVERAGE_DECIMALS,
-  ORACLE_PROVIDER_DECIMALS,
-  PERCENT_DECIMALS,
-  PNL_RATE_DECIMALS,
-  QTY_DECIMALS,
-} from '~/configs/decimals';
+import { Button } from '../../atom/Button';
+import '../../atom/Tabs/style.css';
 
 interface TradeBarProps {
   token?: Token;
@@ -55,6 +52,7 @@ export const TradeBar = ({
   isLoading,
 }: TradeBarProps) => {
   // const previousPositions = usePrevious(positions, true);
+  const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [hasGuide, setHasGuide] = useState(false);
   const filterOptions = useMemo<PositionOption[]>(() => {
@@ -136,9 +134,12 @@ export const TradeBar = ({
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
                         <div className="flex items-center gap-5 ml-auto mb-[-8px]">
-                          <p className="text-sm text-black/30">
-                            Last oracle update: 00h 00m 00s ago
-                          </p>
+                          {lapsed && (
+                            <p className="text-sm text-black/30">
+                              Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
+                              s ago
+                            </p>
+                          )}
                           <div className="select min-w-[298px]">
                             <Listbox value={selectedOption} onChange={setSelectedOption}>
                               <Listbox.Button>{selectedOption.title}</Listbox.Button>
@@ -297,8 +298,8 @@ const PositionItem = function (props: Props) {
     const takeProfitRaw =
       abs(qty) === 0n
         ? 0n
-        : (makerMargin * expandDecimals(4) * 100n * 10000n) /
-          (abs(qty) * expandDecimals(token.decimals));
+        : (makerMargin * parseUnits("1", QTY_DECIMALS) * 100n * 10000n) /
+          parseUnits(String(qty), token.decimals)
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
     const currentOracleVersion = oracleVersions[position.marketAddress];
     if (
@@ -320,8 +321,7 @@ const PositionItem = function (props: Props) {
         entryTime: '-',
       };
     }
-    const pnlPercentage =
-      (BigInt(position.pnl) * expandDecimals(PNL_RATE_DECIMALS + PERCENT_DECIMALS)) / takerMargin;
+    const pnlPercentage = divPreserved(BigInt(position.pnl), takerMargin, PNL_RATE_DECIMALS + PERCENT_DECIMALS)
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
       collateral: withComma(formatDecimals(collateral, token.decimals, 2)),

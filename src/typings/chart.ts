@@ -1,4 +1,4 @@
-export type CLBTokenValue = { key: number; value: number };
+export type CLBTokenValue = { key: number; value: bigint };
 
 export type Liquidity = {
   key: number;
@@ -10,6 +10,6 @@ export type Liquidity = {
     {
       label: 'available';
       amount: number;
-    },
+    }
   ];
 };

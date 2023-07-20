@@ -13,7 +13,6 @@ import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
 import useChartData from '~/hooks/useChartData';
-import useConnectOnce from '~/hooks/useConnectOnce';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
@@ -32,15 +31,12 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { CHAIN_ID } from '~/constants';
 import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useMargins } from '~/hooks/useMargins';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
-import { useOracleProperties } from '~/hooks/useOracleProperties';
 
 const Trade = () => {
-  useConnectOnce();
-
   const { connectAsync } = useConnect();
-
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: usumAccount,

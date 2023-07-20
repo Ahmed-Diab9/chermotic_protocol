@@ -1,18 +1,18 @@
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
-import { CLB_TOKEN_VALUE_DECIMALS } from '~/configs/decimals';
+import { formatUnits } from 'viem';
+import { useAccount, useWalletClient } from 'wagmi';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
-import { expandDecimals, numberBuffer } from '~/utils/number';
+import { toBigInt } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useAccount, useWalletClient } from 'wagmi';
-import { useLiquidityPool, useLiquidityPools } from './useLiquidityPool';
-import { useTokenBalances } from './useTokenBalance';
+import { useLiquidityPool } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
+import { useTokenBalances } from './useTokenBalance';
 
 interface Props {
   bins?: OwnedBin[];
@@ -69,9 +69,7 @@ function useRemoveLiquidities(props: Props) {
     try {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenDecimals, removableRate } = bin;
-        const removable =
-          (clbTokenBalance * BigInt(Math.round(removableRate * numberBuffer(clbTokenDecimals)))) /
-          expandDecimals(clbTokenDecimals + 2);
+        const removable = toBigInt(formatUnits(clbTokenBalance * removableRate, clbTokenDecimals));
 
         return type === MULTI_ALL ? clbTokenBalance : removable;
       });
@@ -83,7 +81,7 @@ function useRemoveLiquidities(props: Props) {
           receipient: address,
         }))
       );
-      dispatch(poolsAction.onModalClose());
+      dispatch(poolsAction.onBinsReset());
 
       await fetchReceipts();
       await fetchWalletBalances();

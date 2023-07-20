@@ -1,16 +1,15 @@
-import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { formatUnits } from 'viem';
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 
-import { trimDecimals } from '~/utils/number';
 import { Logger } from '~/utils/log';
+import { checkAllProps } from '../utils';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
-import { checkAllProps } from '../utils';
 
 const logger = Logger('useChartData');
 
@@ -30,8 +29,6 @@ const useChartData = () => {
   const { data, error } = useSWR(
     checkAllProps(fetchKeyData) ? fetchKeyData : null,
     ({ bins, decimals }) => {
-      const BIN_DECIMALS = 6;
-
       const chartData = bins.reduce<{
         clbTokenValue: CLBTokenValue[];
         liquidity: Liquidity[];
@@ -39,16 +36,17 @@ const useChartData = () => {
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
           const key = baseFeeRate / 100;
-          const binValue = Number(
-            trimDecimals(Math.floor((clbTokenValue || 0) * 10 ** BIN_DECIMALS), BIN_DECIMALS)
-          );
+          // const BIN_DECIMALS = 6;
+          // const binValue = Number(
+          //   formatUnits(parseUnits(String(clbTokenValue), BIN_DECIMALS), BIN_DECIMALS)
+          // );
           acc.clbTokenValue.push({
             key,
-            value: binValue,
+            value: clbTokenValue,
           });
 
-          const available = Number(trimDecimals(freeLiquidity, decimals));
-          const utilized = Number(trimDecimals(liquidity - freeLiquidity, decimals));
+          const available = Number(formatUnits(freeLiquidity, decimals));
+          const utilized = Number(formatUnits(liquidity - freeLiquidity, decimals));
           acc.liquidity.push({
             key,
             value: [

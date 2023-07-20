@@ -5,7 +5,7 @@ export interface Bin {
   clbTokenImage: string;
   clbTokenDescription: string;
   clbTokenDecimals: number;
-  clbTokenValue: number;
+  clbTokenValue: bigint;
   baseFeeRate: number;
   tokenId: bigint;
 }
@@ -14,7 +14,7 @@ export interface OwnedBin extends Bin {
   clbTokenBalance: bigint;
   clbTotalSupply: bigint;
   binValue: bigint;
-  removableRate: number;
+  removableRate: bigint;
 }
 
 export interface LiquidityPool<T = Bin> {

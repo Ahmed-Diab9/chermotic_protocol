@@ -1,16 +1,17 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
+import { useMemo } from 'react';
 import useSWR from 'swr';
+import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
+import { divPreserved, toBigInt } from '~/utils/number';
 import { useAppSelector } from '../store';
-import { Logger } from '../utils/log';
-import { useSettlementToken } from './useSettlementToken';
-import { numberBuffer } from '~/utils/number';
 import { checkAllProps } from '../utils';
-import { useMemo } from 'react';
+import { Logger } from '../utils/log';
 import { useError } from './useError';
+import { useSettlementToken } from './useSettlementToken';
 const { encodeTokenId } = ChromaticUtils;
 const logger = Logger('useOwneLiquidityPoolByMarket');
 
@@ -45,7 +46,7 @@ export const useOwnedLiquidityPool = () => {
         return {
           liquidity: bin.liquidity,
           freeLiquidity: bin.freeLiquidity,
-          removableRate: bin.removableRate * 100,
+          removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
           clbTokenName: name,
           clbTokenImage: image,
           clbTokenDescription: description,
@@ -53,9 +54,7 @@ export const useOwnedLiquidityPool = () => {
           clbTokenBalance: bin.clbBalance,
           clbTokenValue: bin.clbValue,
           clbTotalSupply: bin.clbTotalSupply,
-          binValue:
-            (bin.clbBalance * BigInt(Math.round(bin.clbValue * numberBuffer(decimals)))) /
-            BigInt(numberBuffer(decimals)),
+          binValue: toBigInt(formatUnits(bin.clbBalance * bin.clbValue, decimals)),
           baseFeeRate: Number(bin.tradingFeeRate),
           tokenId: tokenId,
         } satisfies OwnedBin;
