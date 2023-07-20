@@ -460,7 +460,7 @@ const PositionItem = function (props: Props) {
             position.status === OPENING ? 'opacity-30' : ''
           }`}
         >
-          <div className="grow w-[20%] max-w-[280px] flex flex-col gap-2">
+          <div className="grow min-w-[12%] flex flex-col gap-2">
             <TextRow
               label="Contract Qty"
               labelClass="text-black/50"
@@ -474,7 +474,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
           </div>
-          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Take Profit"
               labelClass="text-black/50"
@@ -489,7 +489,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
           </div>
-          <div className="grow w-[20%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Stop Loss"
               labelClass="text-black/50"
@@ -504,7 +504,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
           </div>
-          <div className="grow w-[16%] flex flex-col gap-2 pl-6 border-l">
+          <div className="grow min-w-[8%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="PnL"
               labelClass="text-black/50"
