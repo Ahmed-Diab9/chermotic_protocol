@@ -154,42 +154,40 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
       <article className="pb-5 border-grayL">
-        <div className="flex justify-between gap-5">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <h4>Available Balance</h4>
-              <p className="text-black/30">
-                {isLoading ? (
-                  <Skeleton width={40} />
-                ) : (
-                  <>
-                    {balances && token && balances[token.address]
-                      ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
-                      : 0}{' '}
-                    {token?.name}
-                  </>
-                )}
-              </p>
-            </div>
-            <div className="select w-full max-w-[160px]">
-              <Listbox
-                value={input?.method}
-                onChange={(value) => {
-                  if (input?.method !== value) {
-                    onMethodToggle?.();
-                  }
-                }}
-              >
-                <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
-                <Listbox.Options>
-                  {['collateral', 'quantity'].map((method) => (
-                    <Listbox.Option key={method} value={method}>
-                      {methodMap[method]}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Listbox>
-            </div>
+        <div className="flex items-center gap-2">
+          <h4>Available Balance</h4>
+          <p className="text-black/30">
+            {isLoading ? (
+              <Skeleton width={40} />
+            ) : (
+              <>
+                {balances && token && balances[token.address]
+                  ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
+                  : 0}{' '}
+                {token?.name}
+              </>
+            )}
+          </p>
+        </div>
+        <div className="flex justify-between gap-5 mt-3">
+          <div className="select w-full max-w-[160px]">
+            <Listbox
+              value={input?.method}
+              onChange={(value) => {
+                if (input?.method !== value) {
+                  onMethodToggle?.();
+                }
+              }}
+            >
+              <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
+              <Listbox.Options>
+                {['collateral', 'quantity'].map((method) => (
+                  <Listbox.Option key={method} value={method}>
+                    {methodMap[method]}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Listbox>
           </div>
           <div className="flex flex-col items-end">
             <AmountSwitch input={input} token={token} onAmountChange={onInputChange} />
