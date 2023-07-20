@@ -19,7 +19,7 @@ export interface LpReceipt {
   id: bigint;
   version: bigint;
   amount: bigint;
-  recipient: string;
+  recipient: `0x${string}`;
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
@@ -95,11 +95,12 @@ const usePoolReceipt = () => {
       }));
       const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
 
-      return ownedBins
-        .map((bin) => {
-          const receipt = receipts.find((receipt) => bin.tradingFeeRate === receipt.tradingFeeRate);
-          if (!receipt) return null;
-
+      return receipts
+        .map((receipt) => {
+          const bin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
+          if (!bin) {
+            return null;
+          }
           const {
             id,
             oracleVersion: receiptOracleVersion,
@@ -121,7 +122,7 @@ const usePoolReceipt = () => {
             name: binName(tradingFeeRate, market?.description),
           } satisfies LpReceipt;
         })
-        .filter((bin): bin is NonNullable<typeof bin> => !!bin);
+        .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);
     }
   );
 
