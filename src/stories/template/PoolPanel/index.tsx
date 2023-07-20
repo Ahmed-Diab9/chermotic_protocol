@@ -672,7 +672,7 @@ const BinItem = (props: BinItemProps) => {
 
   return (
     <div className="overflow-hidden border rounded-xl">
-      <div className="flex items-center justify-between gap-10 px-5 py-3 border-b bg-grayL/20">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-grayL/20">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
           isChecked={isChecked}
