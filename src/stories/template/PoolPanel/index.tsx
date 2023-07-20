@@ -29,7 +29,13 @@ import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import '~/stories/atom/Tabs/style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
-import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  formatFeeRate,
+  toBigInt,
+  withComma,
+} from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
@@ -138,7 +144,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }, 0n) ?? 0n;
   const totalFreeLiquidity =
     ownedPool?.bins.reduce((sum, current) => {
-      sum += current.freeLiquidity;
+      const myLiquidityValue = toBigInt(
+        formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals || 0)
+      );
+      if (myLiquidityValue > current.freeLiquidity) {
+        sum += current.freeLiquidity;
+      } else {
+        sum += myLiquidityValue;
+      }
       return sum;
     }, 0n) ?? 0n;
   const averageRemovableRate = token
