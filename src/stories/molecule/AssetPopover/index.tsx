@@ -401,7 +401,6 @@ const AssetPanel = (props: AssetPanelProps) => {
                       } else {
                         onWithdraw && onWithdraw(close);
                       }
-                      close();
                     }}
                   />
                   <Button
