@@ -7,7 +7,6 @@ import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
@@ -27,20 +26,6 @@ export interface RemoveLiquidityModalProps {
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
-  const balance = isValid(selectedBin) ? selectedBin.clbTokenBalance : 0n;
-  const utilizedRate = isValid(selectedBin)
-    ? parseUnits('1', selectedBin.clbTokenDecimals) - selectedBin.removableRate
-    : 0n;
-  const utilized = isValid(selectedBin)
-    ? formatUnits(selectedBin.clbTokenBalance * utilizedRate, selectedBin.clbTokenDecimals * 2)
-    : '0';
-  const removable = isValid(selectedBin)
-    ? formatUnits(
-        selectedBin.clbTokenBalance * selectedBin.removableRate,
-        selectedBin.clbTokenDecimals * 2
-      )
-    : '0';
-
   const { onRemoveLiquidity } = useRemoveLiquidity({
     feeRate: selectedBin?.baseFeeRate,
     amount,
@@ -73,11 +58,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             {/* liquidity items */}
             <article className="flex flex-col border border-gray rounded-xl">
               <LiquidityItem
-                token={token?.name}
+                token={token}
                 name={selectedBin?.clbTokenDescription}
-                qty={Number(formatDecimals(balance, selectedBin?.clbTokenDecimals, 2))}
-                utilizedValue={Number(utilized)}
-                removableValue={Number(removable)}
+                bin={selectedBin}
               />
             </article>
 
@@ -111,7 +94,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
                     <span className="ml-1 text-black/30">
-                      ({selectedBin.removableRateLegacy.toFixed(2)}%)
+                      ({formatUnits(selectedBin.removableRate, token.decimals)}%)
                     </span>
                   </p>
                 )}
@@ -129,17 +112,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     size="sm"
                     onClick={() => {
                       onAmountChange?.((maxAmount ?? 0).toString());
-                    }}
-                  />
-                  <Button
-                    className="flex-auto shadow-base border-gray"
-                    label="Removable"
-                    size="sm"
-                    onClick={() => {
-                      if (!isValid(selectedBin)) {
-                        return;
-                      }
-                      onAmountChange?.(removable);
                     }}
                   />
                 </div>

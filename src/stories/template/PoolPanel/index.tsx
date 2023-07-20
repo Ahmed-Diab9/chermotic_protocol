@@ -32,7 +32,6 @@ import { Logger } from '~/utils/log';
 import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 const logger = Logger('PoolPanel');
@@ -747,20 +746,29 @@ const BinItem = (props: BinItemProps) => {
             </p>
           </div>
           <div className="flex gap-2">
-            <p className="text-black/30 w-[80px]">Removable</p>
+            <p className="text-black/30 w-[80px]">Free Liquidity</p>
             <p>
-              {isLoading ? <Skeleton width={60} /> : <>{bin?.removableRateLegacy.toFixed(2)}%</>}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                <>
+                  {formatUnits(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0)} {token?.name}
+                </>
+              )}
             </p>
           </div>
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
-            <p className="text-black/30 w-[100px]">CLB Value</p>
+            <p className="text-black/30 w-[100px]">CLB Price</p>
             <p>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
-                <>{bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}</>
+                <>
+                  {bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}{' '}
+                  {`${token?.name}/CLB`}
+                </>
               )}
             </p>
           </div>
@@ -772,7 +780,9 @@ const BinItem = (props: BinItemProps) => {
                   <Skeleton width={60} />
                 </div>
               ) : (
-                <>{formatter.format(myLiqValue)}</>
+                <>
+                  {formatter.format(myLiqValue)} {token?.name}
+                </>
               )}
             </p>
           </div>

@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { useMemo } from 'react';
-import { formatUnits, parseUnits } from 'viem';
-import { MULTI_ALL, MULTI_REMOVABLE, MULTI_TYPE } from '~/configs/pool';
+import { formatUnits } from 'viem';
+import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
@@ -12,7 +12,8 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { formatDecimals } from '~/utils/number';
+import { formatDecimals, toBigInt } from '~/utils/number';
+import { isValid } from '~/utils/valid';
 import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
@@ -66,14 +67,24 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       .map((bin) => bin.clbTokenBalance)
       .reduce((b, curr) => b + curr, 0n);
     const totalBinValue = selectedBins.reduce((sum, current) => {
-      return sum + current.binValue;
+      return (
+        sum +
+        toBigInt(formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals ?? 0))
+      );
     }, 0n);
     const totalLiquidity = selectedBins.reduce((acc, current) => {
       acc += current.liquidity;
       return acc;
     }, 0n);
     const totalFreeLiquidity = selectedBins.reduce((acc, current) => {
-      acc += current.freeLiquidity;
+      const myLiquidityValue = toBigInt(
+        formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals ?? 0)
+      );
+      if (myLiquidityValue > current.freeLiquidity) {
+        acc += current.freeLiquidity;
+      } else {
+        acc += myLiquidityValue;
+      }
       return acc;
     }, 0n);
     return {
@@ -82,7 +93,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       totalBinValue,
       avgRemovableRate: (totalFreeLiquidity * 100n) / (totalLiquidity || 1n),
     };
-  }, [type, selectedBins]);
+  }, [type, selectedBins, token]);
   const { onRemoveLiquidities } = useRemoveLiquidities({
     bins: selectedBins,
     type,
@@ -117,32 +128,17 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
             {/* liquidity items */}
             <article className="relative flex flex-col border border-gray rounded-xl">
               <div className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto">
-                {selectedBins.map((bin) => {
-                  /**
-                   * @TODO
-                   * 각 LP 토큰마다 Qty, 이미 사용된 유동성, 제거 가능한 유동성을 계산합니다.
-                   */
-                  const utilizedRate = parseUnits('1', bin.clbTokenDecimals) - bin.removableRate;
-                  const utilized = formatUnits(
-                    bin.clbTokenBalance * utilizedRate,
-                    bin.clbTokenDecimals * 2
-                  );
-                  const removable = formatUnits(
-                    bin.clbTokenBalance * bin.removableRate,
-                    bin.clbTokenDecimals * 2
-                  );
-
-                  return (
-                    <LiquidityItem
-                      key={bin.baseFeeRate}
-                      token={token?.name}
-                      name={bin.clbTokenDescription}
-                      qty={Number(formatDecimals(bin.clbTokenBalance, bin?.clbTokenDecimals, 2))}
-                      utilizedValue={Number(utilized)}
-                      removableValue={Number(removable)}
-                    />
-                  );
-                })}
+                {isValid(token) &&
+                  selectedBins.map((bin) => {
+                    return (
+                      <LiquidityItem
+                        key={bin.baseFeeRate}
+                        token={token}
+                        name={bin.clbTokenDescription}
+                        bin={bin}
+                      />
+                    );
+                  })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
                 <ScrollAni />
@@ -215,15 +211,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}
-                  />
-                  <Button
-                    className="flex-auto shadow-base border-gray"
-                    label="Removable"
-                    size="sm"
-                    onClick={() => {
-                      // FIXME
-                      onAmountChange?.(MULTI_REMOVABLE);
-                    }}
                   />
                 </div>
                 <div className="max-w-[220px] relative">

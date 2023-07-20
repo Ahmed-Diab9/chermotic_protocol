@@ -47,7 +47,6 @@ export const useOwnedLiquidityPool = () => {
           liquidity: bin.liquidity,
           freeLiquidity: bin.freeLiquidity,
           removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
-          removableRateLegacy: bin.removableRate * 100,
           clbTokenName: name,
           clbTokenImage: image,
           clbTokenDescription: description,
