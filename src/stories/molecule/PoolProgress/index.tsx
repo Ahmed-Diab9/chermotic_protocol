@@ -388,6 +388,7 @@ const ProgressItem = (props: ProgressItemProps) => {
               <Tag label="in progress" className="text-grayD bg-gray/20" />
             )}
             <TooltipGuide
+              label="status-info"
               outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
               outLinkAbout="Next Oracle Round"
               tip={
