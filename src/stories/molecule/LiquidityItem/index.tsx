@@ -5,7 +5,7 @@ import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { divPreserved, toBigInt } from '~/utils/number';
+import { divPreserved } from '~/utils/number';
 
 interface LiquidityItemProps {
   token?: Token;
@@ -17,17 +17,16 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   const { token, name, bin } = props;
   if (isNil(token) || isNil(bin)) return <></>;
 
-  const myLiquidityValue = toBigInt(
-    formatUnits(bin.clbTokenBalance * bin.clbTokenValue, token.decimals)
-  );
-  const removable = bin.freeLiquidity > myLiquidityValue ? myLiquidityValue : bin.freeLiquidity;
-  const utilized = myLiquidityValue - removable;
+  const { freeLiquidity, clbBalanceOfSettlement } = bin;
+  const removable =
+    freeLiquidity > clbBalanceOfSettlement ? clbBalanceOfSettlement : bin.freeLiquidity;
+  const utilized = clbBalanceOfSettlement - removable;
   const utilizedRate = formatUnits(
-    divPreserved(utilized, myLiquidityValue, token.decimals),
+    divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
     token.decimals - 2
   );
   const removableRate = formatUnits(
-    divPreserved(removable, myLiquidityValue, token.decimals),
+    divPreserved(removable, clbBalanceOfSettlement, token.decimals),
     token.decimals - 2
   );
   // 숫자에 천단위 쉼표 추가
@@ -53,7 +52,7 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         <Progress
           css="sm"
           value={Number(formatUnits(removable, token.decimals))}
-          max={Number(formatUnits(myLiquidityValue, token.decimals))}
+          max={Number(formatUnits(clbBalanceOfSettlement, token.decimals))}
         />
         <div className="flex justify-between mt-1">
           <p className="">
