@@ -1,12 +1,12 @@
-import { useChromaticClient } from './useChromaticClient';
-import { AppError } from '~/typings/error';
 import { isNil } from 'ramda';
-import { usePosition } from './usePosition';
-import { errorLog } from '~/utils/log';
 import { toast } from 'react-toastify';
-import useOracleVersion from './useOracleVersion';
-import { useUsumAccount } from './useUsumAccount';
 import { Address } from 'wagmi';
+import { AppError } from '~/typings/error';
+import { errorLog } from '~/utils/log';
+import { useChromaticClient } from './useChromaticClient';
+import useOracleVersion from './useOracleVersion';
+import { usePosition } from './usePosition';
+import { useUsumAccount } from './useUsumAccount';
 
 interface Props {
   marketAddress: Address;

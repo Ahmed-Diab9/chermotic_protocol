@@ -1,10 +1,10 @@
-import { useChromaticClient } from './useChromaticClient';
-import { errorLog } from '~/utils/log';
-import { AppError } from '~/typings/error';
 import { isNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { usePosition } from './usePosition';
 import { Address } from 'wagmi';
+import { AppError } from '~/typings/error';
+import { errorLog } from '~/utils/log';
+import { useChromaticClient } from './useChromaticClient';
+import { usePosition } from './usePosition';
 
 interface Props {
   marketAddress: Address;

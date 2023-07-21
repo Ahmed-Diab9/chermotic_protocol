@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { Token } from '~/typings/market';
-import { useChromaticClient } from './useChromaticClient';
-import useLocalStorage from './useLocalStorage';
-import { toast } from 'react-toastify';
 import { isValid } from '~/utils/valid';
+import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
+import useLocalStorage from './useLocalStorage';
 
 export const useSettlementToken = () => {
   const { client } = useChromaticClient();

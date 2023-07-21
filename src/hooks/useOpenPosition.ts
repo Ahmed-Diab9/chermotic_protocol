@@ -11,8 +11,8 @@ import { TradeInput } from '~/typings/trade';
 import { Logger, errorLog } from '~/utils/log';
 import { toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
+import { useDedicationPositions } from './useDedicatedPositions';
 import { useLiquidityPool } from './useLiquidityPool';
-import { usePosition } from './usePosition';
 import { useUsumAccount } from './useUsumAccount';
 
 interface Props {
@@ -24,7 +24,7 @@ function useOpenPosition(props: Props) {
   const { state } = props;
   const token = useAppSelector((state) => state.token.selectedToken);
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { fetchPositions } = usePosition();
+  const { fetchPositions } = useDedicationPositions();
   const { data: walletClient } = useWalletClient();
   const { fetchBalances, balances } = useUsumAccount();
   const { client } = useChromaticClient();
