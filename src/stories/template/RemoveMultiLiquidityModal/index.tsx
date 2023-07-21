@@ -44,7 +44,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
         sum =
           sum +
           Number(
-            formatDecimals(current.binValue, current.clbTokenDecimals, current.clbTokenDecimals)
+            formatDecimals(current.clbBalanceOfSettlement, current.clbTokenDecimals, current.clbTokenDecimals)
           );
         return sum;
       }, 0);
@@ -53,7 +53,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
         sum =
           sum +
           Number(
-            formatUnits(current.binValue * current.removableRate, current.clbTokenDecimals * 2)
+            formatUnits(current.clbBalanceOfSettlement * current.removableRate, current.clbTokenDecimals * 2)
           );
         return sum;
       }, 0);
@@ -66,10 +66,10 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     const totalBalance = selectedBins
       .map((bin) => bin.clbTokenBalance)
       .reduce((b, curr) => b + curr, 0n);
-    const totalBinValue = selectedBins.reduce((sum, current) => {
+    const totalBalanceOfSettlement = selectedBins.reduce((sum, current) => {
       return (
         sum +
-        toBigInt(formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals ?? 0))
+        toBigInt(formatUnits(current.clbBalanceOfSettlement, token?.decimals ?? 0))
       );
     }, 0n);
     const totalLiquidity = selectedBins.reduce((acc, current) => {
@@ -78,7 +78,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     }, 0n);
     const totalFreeLiquidity = selectedBins.reduce((acc, current) => {
       const myLiquidityValue = toBigInt(
-        formatUnits(current.clbTokenBalance * current.clbTokenValue, token?.decimals ?? 0)
+        formatUnits(current.clbBalanceOfSettlement, token?.decimals ?? 0)
       );
       if (myLiquidityValue > current.freeLiquidity) {
         acc += current.freeLiquidity;
@@ -90,7 +90,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     return {
       totalBalance,
       totalFreeLiquidity,
-      totalBinValue,
+      totalBalanceOfSettlement,
       avgRemovableRate: (totalFreeLiquidity * 100n) / (totalLiquidity || 1n),
     };
   }, [type, selectedBins, token]);
@@ -174,7 +174,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </p>
                 <p>
-                  {formatDecimals(calculatedLiquidities.totalBinValue, token?.decimals, 2)}{' '}
+                  {formatDecimals(calculatedLiquidities.totalBalanceOfSettlement, token?.decimals, 2)}{' '}
                   {token?.name}
                 </p>
               </div>

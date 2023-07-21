@@ -54,7 +54,8 @@ export const useOwnedLiquidityPool = () => {
           clbTokenBalance: bin.clbBalance,
           clbTokenValue: bin.clbValue,
           clbTotalSupply: bin.clbTotalSupply,
-          binValue: toBigInt(formatUnits(bin.clbBalance * bin.clbValue, decimals)),
+          binValue: bin.binValue,
+          clbBalanceOfSettlement: toBigInt(formatUnits(bin.clbBalance * bin.clbValue, decimals)),
           baseFeeRate: Number(bin.tradingFeeRate),
           tokenId: tokenId,
         } satisfies OwnedBin;

@@ -110,7 +110,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     onRemoveAmountChange,
     onMultiAmountChange,
 
-    clbTokenValue: binValue,
+    clbTokenValue,
     liquidity,
     onRangeChange,
     binFeeRates,
@@ -134,7 +134,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   logger.info('liquidity', liquidity);
   const totalLiquidityValue =
     ownedPool?.bins.reduce((sum, current) => {
-      sum = sum + current.binValue;
+      sum = sum + current.clbBalanceOfSettlement;
       return sum;
     }, 0n) ?? 0n;
   const totalLiquidity =
@@ -331,7 +331,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   <RangeChart
                     id="pool"
                     barData={liquidity}
-                    dotData={binValue}
+                    dotData={clbTokenValue}
                     rangeChartRef={rangeChartRef}
                     height={180}
                     onChange={onRangeChange}
