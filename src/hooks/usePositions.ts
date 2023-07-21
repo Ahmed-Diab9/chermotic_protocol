@@ -83,49 +83,10 @@ export async function getPositions(
   );
 }
 
-export function useDedicationPositions() {
+export const usePositions = () => {
+  const { accountAddress: chromaticAccount } = useUsumAccount();
   const { currentSelectedToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
-  const { client } = useChromaticClient();
-  const { oracleVersions } = useOracleVersion();
-  const fetchKey = useMemo(() => {
-    const key = {
-      id: 'useDedicatedPositions',
-      currentSelectedToken,
-      currentMarket,
-      oracleVersions,
-      client,
-    };
-    return checkAllProps(key) ? key : undefined;
-  }, [currentSelectedToken, currentMarket, oracleVersions, client]);
-  const {
-    data: positions,
-    mutate: fetchPositions,
-    isLoading: isPositionsLoading,
-    error,
-  } = useSWR(fetchKey, async ({ currentSelectedToken, currentMarket, oracleVersions, client }) => {
-    return getPositions(
-      client.account(),
-      client.position(),
-      oracleVersions,
-      currentMarket.address,
-      currentSelectedToken.decimals
-    );
-  });
-
-  useError({ error });
-
-  return {
-    positions,
-    isPositionsLoading,
-    fetchPositions,
-  };
-}
-
-export const usePosition = () => {
-  const { accountAddress: chromaticAccount, fetchBalances } = useUsumAccount();
-  const { currentSelectedToken } = useSettlementToken();
-  const { markets } = useMarket();
+  const { markets, currentMarket } = useMarket();
   const { oracleVersions } = useOracleVersion();
   const { client } = useChromaticClient();
 
@@ -159,11 +120,46 @@ export const usePosition = () => {
     }
   );
 
-  useError({ error, logger });
+  const currentMarketPositionsfetchKey = useMemo(() => {
+    const key = {
+      name: 'getCurrentMarketPositions',
+      currentSelectedToken,
+      currentMarket,
+      oracleVersions,
+      client,
+    };
+    return checkAllProps(key) ? key : undefined;
+  }, [currentSelectedToken, currentMarket, oracleVersions, client]);
+  const {
+    data: currentMarketPositions,
+    mutate: fetchCurrentMarketPositions,
+    isLoading: isCurrentMarketPositionsLoading,
+    error: currentMarketError,
+  } = useSWR(
+    currentMarketPositionsfetchKey,
+    async ({ currentSelectedToken, currentMarket, oracleVersions, client }) => {
+      return getPositions(
+        client.account(),
+        client.position(),
+        oracleVersions,
+        currentMarket.address,
+        currentSelectedToken.decimals
+      );
+    }
+  );
+
+  useError({ error: [currentMarketError, error], logger });
 
   return {
-    positions,
-    isPositionsLoading,
-    fetchPositions,
+    all: {
+      positions,
+      isPositionsLoading,
+      fetchPositions,
+    },
+    currentMarket: {
+      positions: currentMarketPositions,
+      fetchPositions: fetchCurrentMarketPositions,
+      isPositionsLoading: isCurrentMarketPositionsLoading,
+    },
   };
 };

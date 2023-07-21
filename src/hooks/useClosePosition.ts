@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
-import { usePosition } from './usePositions';
+import { usePositions } from './usePositions';
 
 interface Props {
   marketAddress: Address;
@@ -14,7 +14,8 @@ interface Props {
 function useClosePosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
-  const { positions, fetchPositions } = usePosition();
+  const { all: allPositions } = usePositions();
+  const { positions, fetchPositions } = allPositions;
 
   const onClosePosition = async function () {
     if (isNil(client?.router())) {

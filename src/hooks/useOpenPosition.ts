@@ -12,7 +12,7 @@ import { Logger, errorLog } from '~/utils/log';
 import { toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
-import { useDedicationPositions } from './usePositions';
+import { usePositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 interface Props {
@@ -24,7 +24,8 @@ function useOpenPosition(props: Props) {
   const { state } = props;
   const token = useAppSelector((state) => state.token.selectedToken);
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { fetchPositions } = useDedicationPositions();
+  const { currentMarket } = usePositions();
+  const { fetchPositions } = currentMarket;
   const { data: walletClient } = useWalletClient();
   const { fetchBalances, balances } = useUsumAccount();
   const { client } = useChromaticClient();
