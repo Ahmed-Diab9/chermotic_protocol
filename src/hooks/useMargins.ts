@@ -8,7 +8,7 @@ import { usePositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 export function useMargins() {
-  const { all: allPositions } = usePositions();
+  const { allMarket: allPositions } = usePositions();
   const { positions = [] } = allPositions;
   const { balances } = useUsumAccount();
 

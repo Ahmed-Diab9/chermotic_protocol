@@ -14,7 +14,7 @@ interface Props {
 function useClosePosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
-  const { all: allPositions } = usePositions();
+  const { allMarket: allPositions } = usePositions();
   const { positions, fetchPositions } = allPositions;
 
   const onClosePosition = async function () {

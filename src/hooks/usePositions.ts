@@ -151,7 +151,7 @@ export const usePositions = () => {
   useError({ error: [currentMarketError, error], logger });
 
   return {
-    all: {
+    allMarket: {
       positions,
       isPositionsLoading,
       fetchPositions,
