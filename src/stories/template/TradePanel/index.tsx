@@ -138,6 +138,7 @@ export const TradePanel = (props: TradePanelProps) => {
                 tradeFee={shortTradeFee}
                 tradeFeePercent={shortTradeFeePercent}
                 liquidityData={liquidityData}
+                // isLoading={}
                 maxLeverage={maxLeverage}
                 minStopLoss={minStopLoss}
                 minTakeProfit={minTakeProfit}

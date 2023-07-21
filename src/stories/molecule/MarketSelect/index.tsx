@@ -3,13 +3,13 @@ import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import './style.css';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { formatDecimals, withComma } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 
 interface MarketSelectProps {
   tokens?: Token[];
@@ -47,14 +47,10 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
         <div className="flex items-center gap-4 mr-10">
           <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
             <h4>
-              {isLoading ? (
-                <Skeleton width={80} />
-              ) : (
-                <>
-                  {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
-                  %/h
-                </>
-              )}
+              <SkeletonElement isLoading={isLoading} width={80}>
+                {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
+                %/h
+              </SkeletonElement>
             </h4>
             <div className="flex">
               <p>Interest Rate</p>
@@ -66,7 +62,11 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               />
             </div>
           </div>
-          <h2 className="text-3xl">{isLoading ? <Skeleton width={80} /> : <>{marketPrice}</>}</h2>
+          <h2 className="text-3xl">
+            <SkeletonElement isLoading={isLoading} width={80}>
+              {marketPrice}
+            </SkeletonElement>
+          </h2>
         </div>
       </div>
     </>
@@ -94,24 +94,20 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
         <div className="pr-3 border-r">
-          {isLoading ? (
-            <div className="flex items-center gap-1">
-              <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
-              <Skeleton width={60} containerClassName="text-2xl" />
-            </div>
-          ) : (
-            <Avatar label={selectedToken?.name} fontSize="2xl" gap="1" size="sm" />
-          )}
+          <div className="flex items-center gap-1">
+            <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+            <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
+              <Avatar label={selectedToken?.name} fontSize="2xl" gap="1" size="sm" />
+            </SkeletonElement>
+          </div>
         </div>
         <div>
-          {isLoading ? (
-            <div className="flex items-center gap-1">
-              <Skeleton circle containerClassName="avatar-skeleton w-6 text-[24px]" />
-              <Skeleton width={80} containerClassName="text-2xl" />
-            </div>
-          ) : (
-            <Avatar label={selectedMarket?.description} fontSize="2xl" gap="1" size="sm" />
-          )}
+          <div className="flex items-center gap-1">
+            <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+            <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
+              <Avatar label={selectedMarket?.description} fontSize="2xl" gap="1" size="sm" />
+            </SkeletonElement>
+          </div>
         </div>
         <ChevronDownIcon
           className="w-5 h-5 transition duration-150 ease-in-out"

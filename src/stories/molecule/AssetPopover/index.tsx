@@ -1,7 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
-import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -24,6 +23,7 @@ import { isValid } from '~/utils/valid';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 
 interface AssetPopoverProps {
   // onClick?: () => void;
@@ -76,15 +76,11 @@ export const AssetPopover = ({
           {isLoaded ? (
             <>
               <h2 className="text-xl">
-                {isBalanceLoading ? (
-                  <Skeleton width={120} />
-                ) : (
-                  <>
-                    {isValid(totalBalance) &&
-                      withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
-                        ` ${selectedToken.name}`}
-                  </>
-                )}
+                <SkeletonElement isLoading={isBalanceLoading} width={120}>
+                  {isValid(totalBalance) &&
+                    withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
+                      ` ${selectedToken.name}`}
+                </SkeletonElement>
               </h2>
               <Popover.Group className="flex gap-2">
                 <AssetPanel
@@ -313,13 +309,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {isLoading ? (
-                          <Skeleton width={80} />
-                        ) : (
-                          <>
-                            {formatDecimals(availableMargin, token?.decimals, 5)} {token?.name}
-                          </>
-                        )}
+                        <SkeletonElement isLoading={isLoading} width={80}>
+                          {formatDecimals(availableMargin, token?.decimals, 5)} {token?.name}
+                        </SkeletonElement>
                       </p>
                     </div>
                     {/* 
@@ -335,13 +327,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {isLoading ? (
-                          <Skeleton width={80} />
-                        ) : (
-                          <>
-                            {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
-                          </>
-                        )}
+                        <SkeletonElement isLoading={isLoading} width={80}>
+                          {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
+                        </SkeletonElement>
                       </p>
                     </div> */}
                   </article>

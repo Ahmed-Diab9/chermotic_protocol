@@ -2,7 +2,7 @@ import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Skeleton from 'react-loading-skeleton';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { formatUnits } from 'viem';
 
 import { MULTI_TYPE } from '~/configs/pool';
@@ -236,11 +236,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 <div className="flex items-center gap-2">
                   <h4>Wallet Balance</h4>
                   <p className="text-black/30">
-                    {isLoading ? (
-                      <Skeleton width={40} />
-                    ) : (
-                      <>{`${withComma(settlementTokenBalance)} ${token?.name}`}</>
-                    )}
+                    <SkeletonElement isLoading={isLoading} width={40}>
+                      {`${withComma(settlementTokenBalance)} ${token?.name}`}
+                    </SkeletonElement>
                   </p>
                 </div>
                 {/* todo: input error */}
@@ -441,36 +439,22 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         tip="The value of my CLB tokens converted into the current token value."
                       />
                     </p>
-
-                    {isLoading ? (
-                      <div className="flex items-center gap-1 mt-2">
-                        <Skeleton
-                          circle
-                          containerClassName="avatar-skeleton w-[16px] text-[16px]"
-                        />
-                        <Skeleton width={40} />
-                      </div>
-                    ) : (
-                      isValid(token) && (
-                        <div className="mt-2">
-                          <Avatar label={token?.name} size="xs" gap="1" />
-                        </div>
-                      )
-                    )}
+                    <div className="flex items-center gap-1 mt-2">
+                      <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+                      <SkeletonElement isLoading={isLoading} width={40}>
+                        {isValid(token) && <Avatar label={token?.name} size="xs" gap="1" />}
+                      </SkeletonElement>
+                    </div>
                   </div>
                   <h4 className="text-xl text-left xl:text-right">
                     {/**
                      * @TODO
                      * 총 유동성 보여주는 로직
                      */}
-                    {isLoading ? (
-                      <Skeleton width={100} />
-                    ) : (
-                      <>
-                        {formatDecimals(totalLiquidityValue, token?.decimals, 2)}{' '}
-                        {/* {token?.name} */}
-                      </>
-                    )}
+                    <SkeletonElement isLoading={isLoading} width={100}>
+                      {formatDecimals(totalLiquidityValue, token?.decimals, 2)}{' '}
+                      {/* {token?.name} */}
+                    </SkeletonElement>
                   </h4>
                 </article>
                 {/* info */}
@@ -480,7 +464,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       LP Bins
                     </div>
                     <p className="">
-                      {isLoading ? <Skeleton width={100} /> : <>{binLength} Bins</>}
+                      <SkeletonElement isLoading={isLoading} width={100}>
+                        {binLength} Bins
+                      </SkeletonElement>
                     </p>
                   </div>
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
@@ -493,13 +479,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {isLoading ? (
-                        <Skeleton width={100} />
-                      ) : (
-                        <>
-                          {formatDecimals(totalLiquidityValue, token?.decimals, 2)} {token?.name}
-                        </>
-                      )}
+                      <SkeletonElement isLoading={isLoading} width={100}>
+                        {formatDecimals(totalLiquidityValue, token?.decimals, 2)} {token?.name}
+                      </SkeletonElement>
                     </p>
                   </div>
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
@@ -512,15 +494,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p className="">
-                      {isLoading ? (
-                        <Skeleton width={100} />
-                      ) : (
-                        <>
-                          {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
-                          {averageRemovableRate}
-                          %)
-                        </>
-                      )}
+                      <SkeletonElement isLoading={isLoading} width={100}>
+                        {formatDecimals(totalFreeLiquidity, token?.decimals, 2)} {token?.name} (
+                        {averageRemovableRate}
+                        %)
+                      </SkeletonElement>
                     </p>
                   </div>
                 </article>
@@ -690,24 +668,16 @@ const BinItem = (props: BinItemProps) => {
           onClick={() => isValid(bin) && onBinCheck?.(bin)}
         />
         <div className="flex items-center gap-2">
-          {isLoading ? (
-            <div className="flex items-center gap-1">
-              <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
-              <Skeleton width={40} />
-            </div>
-          ) : (
-            <>
+          <div className="flex items-center gap-1">
+            <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+            <SkeletonElement isLoading={isLoading} width={40}>
               <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
-            </>
-          )}
+            </SkeletonElement>
+          </div>
           <p className="font-semibold text-black">
-            {isLoading ? (
-              <Skeleton width={40} />
-            ) : (
-              <>
-                {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
-              </>
-            )}
+            <SkeletonElement isLoading={isLoading} width={40}>
+              {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
+            </SkeletonElement>
           </p>
         </div>
         <div className="flex items-center ml-auto">
@@ -725,38 +695,26 @@ const BinItem = (props: BinItemProps) => {
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
-          {isLoading ? (
-            <Skeleton width={60} containerClassName="text-[60px] leading-none" />
-          ) : (
+          <SkeletonElement isLoading={isLoading} width={60} height={60}>
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
-          )}
+          </SkeletonElement>
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">CLB Qty</p>
             <p>
-              {isLoading ? (
-                <Skeleton width={60} />
-              ) : (
-                <>
-                  {bin &&
-                    formatter.format(
-                      Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals))
-                    )}
-                </>
-              )}
+              <SkeletonElement isLoading={isLoading} width={60}>
+                {bin &&
+                  formatter.format(Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals)))}
+              </SkeletonElement>
             </p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[80px]">Free Liquidity</p>
             <p>
-              {isLoading ? (
-                <Skeleton width={60} />
-              ) : (
-                <>
-                  {formatUnits(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0)} {token?.name}
-                </>
-              )}
+              <SkeletonElement isLoading={isLoading} width={60}>
+                {formatUnits(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0)} {token?.name}
+              </SkeletonElement>
             </p>
           </div>
         </div>
@@ -764,28 +722,18 @@ const BinItem = (props: BinItemProps) => {
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">CLB Price</p>
             <p>
-              {isLoading ? (
-                <Skeleton width={60} />
-              ) : (
-                <>
-                  {bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}{' '}
-                  {`${token?.name}/CLB`}
-                </>
-              )}
+              <SkeletonElement isLoading={isLoading} width={60}>
+                {bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}
+                {`${token?.name}/CLB`}
+              </SkeletonElement>
             </p>
           </div>
           <div className="flex gap-2">
             <p className="text-black/30 w-[100px]">My LIQ.Value</p>
             <p>
-              {isLoading ? (
-                <div className="flex items-center gap-1">
-                  <Skeleton width={60} />
-                </div>
-              ) : (
-                <>
-                  {formatter.format(myLiqValue)} {token?.name}
-                </>
-              )}
+              <SkeletonElement isLoading={isLoading} width={60}>
+                {formatter.format(myLiqValue)} {token?.name}
+              </SkeletonElement>
             </p>
           </div>
         </div>

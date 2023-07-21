@@ -2,9 +2,9 @@ import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { Listbox, Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { parseUnits } from "viem";
+import { parseUnits } from 'viem';
 import CheckIcon from '~/assets/icons/CheckIcon';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
@@ -298,8 +298,8 @@ const PositionItem = function (props: Props) {
     const takeProfitRaw =
       abs(qty) === 0n
         ? 0n
-        : (makerMargin * parseUnits("1", QTY_DECIMALS) * 100n * 10000n) /
-          parseUnits(String(qty), token.decimals)
+        : (makerMargin * parseUnits('1', QTY_DECIMALS) * 100n * 10000n) /
+          parseUnits(String(qty), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
     const currentOracleVersion = oracleVersions[position.marketAddress];
     if (
@@ -321,7 +321,11 @@ const PositionItem = function (props: Props) {
         entryTime: '-',
       };
     }
-    const pnlPercentage = divPreserved(BigInt(position.pnl), takerMargin, PNL_RATE_DECIMALS + PERCENT_DECIMALS)
+    const pnlPercentage = divPreserved(
+      BigInt(position.pnl),
+      takerMargin,
+      PNL_RATE_DECIMALS + PERCENT_DECIMALS
+    );
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
       collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
@@ -367,23 +371,15 @@ const PositionItem = function (props: Props) {
           }`}
         >
           <div className="flex items-center gap-6">
-            {isLoading ? (
-              <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
-                <Skeleton width={40} />
-              </div>
-            ) : (
-              <>
+            <div className="flex items-center gap-1">
+              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+              <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
-              </>
-            )}
-            {isLoading ? (
-              <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
-                <Skeleton width={40} />
-              </div>
-            ) : (
-              <>
+              </SkeletonElement>
+            </div>
+            <div className="flex items-center gap-1">
+              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+              <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar
                   label={
                     markets?.find((market) => market.address === position.marketAddress)
@@ -393,24 +389,24 @@ const PositionItem = function (props: Props) {
                   gap="1"
                   fontSize="base"
                   fontWeight="bold"
-                />
-              </>
-            )}
-            {isLoading ? (
-              <Skeleton width={40} />
-            ) : (
-              <>
-                <Tag label={direction(position)} />
-              </>
-            )}
+                />{' '}
+              </SkeletonElement>
+            </div>
+            <SkeletonElement isLoading={isLoading} width={40}>
+              <Tag label={direction(position)} />
+            </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Price</p>
-            {isLoading ? <Skeleton width={60} /> : <>${calculated.entryPrice}</>}
+            <SkeletonElement isLoading={isLoading} width={60}>
+              ${calculated.entryPrice}
+            </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Time</p>
-            {isLoading ? <Skeleton width={60} /> : <>{calculated.entryTime}</>}
+            <SkeletonElement isLoading={isLoading} width={60}>
+              {calculated.entryTime}
+            </SkeletonElement>
           </div>
         </div>
         <div className="flex items-center gap-1 ml-auto">

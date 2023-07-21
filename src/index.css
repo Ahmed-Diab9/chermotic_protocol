@@ -58,8 +58,3 @@ input[type='number']::-webkit-outer-spin-button {
 .backdrop {
   @apply z-10;
 }
-
-/* skeleton */
-.react-loading-skeleton {
-  @apply leading-none rounded-lg;
-}
