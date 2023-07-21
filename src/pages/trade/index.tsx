@@ -18,7 +18,6 @@ import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityP
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import useOracleVersion from '~/hooks/useOracleVersion';
-import { usePosition } from '~/hooks/usePosition';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
@@ -34,6 +33,7 @@ import { useMargins } from '~/hooks/useMargins';
 import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
+import { usePositions } from '../../hooks/usePositions';
 
 const Trade = () => {
   const { connectAsync } = useConnect();
@@ -41,7 +41,7 @@ const Trade = () => {
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
-    isAccountAddressLoading,
+    // isAccountAddressLoading,
     isChromaticBalanceLoading,
     status,
     balances,
@@ -94,7 +94,8 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { positions, isPositionsLoading } = usePosition();
+  const { currentMarket: currentMarketPositions } = usePositions();
+  const { positions, isPositionsLoading } = currentMarketPositions;
   useTokenLocal();
   useMarketLocal();
 

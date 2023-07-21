@@ -4,11 +4,12 @@ import { formatUnits } from 'viem';
 import { PERCENT_DECIMALS } from '~/configs/decimals';
 import { useAppSelector } from '~/store';
 import { toBigInt } from '~/utils/number';
-import { usePosition } from './usePosition';
+import { usePositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 export function useMargins() {
-  const { positions = [] } = usePosition();
+  const { allMarket: allPositions } = usePositions();
+  const { positions = [] } = allPositions;
   const { balances } = useUsumAccount();
 
   const token = useAppSelector((state) => state.token.selectedToken);

@@ -1,5 +1,5 @@
 import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
-import { Listbox, Popover, Tab } from '@headlessui/react';
+import { Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -20,7 +20,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { CLOSED, CLOSING, OPENED, OPENING, Position, PositionOption } from '~/typings/position';
+import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
@@ -55,42 +55,6 @@ export const TradeBar = ({
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [hasGuide, setHasGuide] = useState(false);
-  const filterOptions = useMemo<PositionOption[]>(() => {
-    if (isNil(token) || isNil(markets)) {
-      /**
-       * FIXME
-       * Option when token or markets are undefined
-       */
-      return [
-        {
-          id: 'all',
-          title: 'All positions',
-        },
-      ];
-    }
-    return [
-      { id: 'all', title: `Positions in all ${token.name} markets` },
-      ...markets.map((market) => ({
-        id: market.description,
-        address: market.address,
-        title: `Positions only in ${market.description} market`,
-      })),
-    ];
-  }, [token, markets]);
-  const [selectedOption, setSelectedOption] = useState<PositionOption>(filterOptions[0]);
-  useEffect(() => {
-    setSelectedOption(filterOptions[0]);
-  }, [filterOptions]);
-  const filteredPositions = useMemo(() => {
-    if (isNil(positions)) {
-      return [];
-    }
-    if (selectedOption.id === 'all') {
-      return positions;
-    }
-    return positions?.filter((position) => position.marketAddress === selectedOption.marketAddress);
-  }, [positions, selectedOption]);
-
   // const currentOracleVersion = useMemo(()=>{
   //   oracleVersions[]
   // })
@@ -140,18 +104,6 @@ export const TradeBar = ({
                               s ago
                             </p>
                           )}
-                          <div className="select min-w-[298px]">
-                            <Listbox value={selectedOption} onChange={setSelectedOption}>
-                              <Listbox.Button>{selectedOption.title}</Listbox.Button>
-                              <Listbox.Options>
-                                {filterOptions.map((option) => (
-                                  <Listbox.Option key={option.id} value={option}>
-                                    {option.title}
-                                  </Listbox.Option>
-                                ))}
-                              </Listbox.Options>
-                            </Listbox>
-                          </div>
                         </div>
                       </div>
                       <Tab.Panels className="pb-16 overflow-auto mx-[-20px] mt-7 max-h-[50vh]">
@@ -181,7 +133,7 @@ export const TradeBar = ({
                                 </p>
                               ) : (
                                 <div>
-                                  {filteredPositions.map((position) => {
+                                  {positions?.map((position) => {
                                     return (
                                       <PositionItem
                                         key={position.id.toString()}
