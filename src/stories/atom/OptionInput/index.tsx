@@ -10,7 +10,6 @@ interface OptionInputProps {
   maxValue?: string | number;
   placeholder?: string;
   assetSrc?: string;
-  type?: string;
   size?: 'sm' | 'base' | 'lg';
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
@@ -28,12 +27,11 @@ export const OptionInput = (props: OptionInputProps) => {
     value,
     maxValue,
     placeholder = '0',
-    type,
     assetSrc,
     size = 'base',
     css = 'default',
     align = 'right',
-    className,
+    className = '',
     disabled = false,
     error = false,
     onChange,
@@ -85,7 +83,6 @@ export const OptionInput = (props: OptionInputProps) => {
         label={label}
         placeholder={placeholder}
         assetSrc={assetSrc}
-        type={type}
         size={size}
         css={css}
         align={align}

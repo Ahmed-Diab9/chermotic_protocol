@@ -1,8 +1,8 @@
-import { Tab } from "@headlessui/react";
-import "./style.css";
+import { Tab } from '@headlessui/react';
+import './style.css';
 
 interface TabsProps {
-  onClick?: () => void;
+  // onClick?: () => void;
 }
 
 export const Tabs = (props: TabsProps) => {

@@ -3,7 +3,7 @@ import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
 import './style.css';
 
 interface ScrollAniProps {
-  disabled?: boolean;
+  // disabled?: boolean;
 }
 
 export const ScrollAni: React.FC<ScrollAniProps> = (props: ScrollAniProps) => {
