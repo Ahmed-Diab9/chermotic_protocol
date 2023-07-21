@@ -1,7 +1,6 @@
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Fragment, useCallback } from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Account } from '../../../typings/account';
@@ -170,27 +169,21 @@ export const WalletPopover = ({
 
                                         <div className="ml-auto text-right">
                                           <p className="text-sm text-black/30">
-                                            {isLoading ? (
-                                              <Skeleton width={40} />
-                                            ) : (
-                                              <>${usdcPrice(token)}</>
-                                            )}
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              ${usdcPrice(token)}
+                                            </SkeletonElement>
                                           </p>
                                           <p className="mt-1 text-base font-medium text-gray-900">
-                                            {isLoading ? (
-                                              <Skeleton width={40} />
-                                            ) : (
-                                              <>
-                                                {withComma(
-                                                  formatDecimals(
-                                                    balances[token.address],
-                                                    token.decimals,
-                                                    5
-                                                  )
-                                                )}{' '}
-                                                {token.name}
-                                              </>
-                                            )}
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              {withComma(
+                                                formatDecimals(
+                                                  balances[token.address],
+                                                  token.decimals,
+                                                  5
+                                                )
+                                              )}{' '}
+                                              {token.name}
+                                            </SkeletonElement>
                                           </p>
                                         </div>
                                       </div>
@@ -211,54 +204,49 @@ export const WalletPopover = ({
                                   {pools?.map((pool, poolIndex) => (
                                     <Link to="#" key={`${pool.token}-${pool.market}`}>
                                       <div className="flex gap-3 pb-3 border-b last:border-b-0">
-                                        {isLoading ? (
-                                          <Skeleton
-                                            circle
-                                            containerClassName="avatar-skeleton w-10 text-[40px]"
-                                          />
-                                        ) : (
+                                        <SkeletonElement
+                                          isLoading={isLoading}
+                                          circle
+                                          containerClassName="avatar-skeleton w-10 text-[40px]"
+                                        >
                                           <Avatar size="lg" src={undefined} />
-                                        )}
+                                        </SkeletonElement>
                                         <div className="flex-1">
                                           <div className="flex gap-2 leading-none">
-                                            {isLoading ? (
-                                              <Skeleton containerClassName="flex-1" width={120} />
-                                            ) : (
-                                              <>
-                                                <p>{pool.token.name}</p>
-                                                <span className="px-1 text-grayL">|</span>
-                                                <p>{pool.market}</p>
-                                              </>
-                                            )}
+                                            <SkeletonElement
+                                              isLoading={isLoading}
+                                              containerClassName="flex-1"
+                                              width={120}
+                                            >
+                                              <p>{pool.token.name}</p>
+                                              <span className="px-1 text-grayL">|</span>
+                                              <p>{pool.market}</p>
+                                            </SkeletonElement>
                                           </div>
                                           <div className="flex mt-3">
                                             <div className="mr-auto">
                                               <p className="text-base font-medium text-black/30">
-                                                {isLoading ? (
-                                                  <Skeleton
-                                                    containerClassName="flex-1"
-                                                    width={80}
-                                                  />
-                                                ) : (
-                                                  <>
-                                                    {formatDecimals(
-                                                      pool.liquidity,
-                                                      pool.token.decimals,
-                                                      2
-                                                    )}{' '}
-                                                    {pool.token.name}
-                                                  </>
-                                                )}
+                                                <SkeletonElement
+                                                  isLoading={isLoading}
+                                                  containerClassName="flex-1"
+                                                  width={80}
+                                                >
+                                                  {formatDecimals(
+                                                    pool.liquidity,
+                                                    pool.token.decimals,
+                                                    2
+                                                  )}{' '}
+                                                  {pool.token.name}
+                                                </SkeletonElement>
                                               </p>
                                               <p className="mt-2 text-base text-black">
-                                                {isLoading ? (
-                                                  <Skeleton
-                                                    containerClassName="flex-1"
-                                                    width={80}
-                                                  />
-                                                ) : (
-                                                  <>{pool.bins} Bins</>
-                                                )}
+                                                <SkeletonElement
+                                                  isLoading={isLoading}
+                                                  containerClassName="flex-1"
+                                                  width={80}
+                                                >
+                                                  {pool.bins} Bins
+                                                </SkeletonElement>
                                               </p>
                                             </div>
                                           </div>

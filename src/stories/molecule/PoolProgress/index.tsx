@@ -1,7 +1,7 @@
 import { Disclosure, Tab } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import CheckIcon from '~/assets/icons/CheckIcon';
-import Skeleton from 'react-loading-skeleton';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Guide } from '~/stories/atom/Guide';
@@ -418,22 +418,28 @@ const ProgressItem = (props: ProgressItemProps) => {
               : ''
           }`}
         >
-          {isLoading ? (
-            <Skeleton width={40} containerClassName="text-[40px] leading-none" />
-          ) : (
+          <SkeletonElement
+            isLoading={isLoading}
+            width={40}
+            containerClassName="text-[40px] leading-none"
+          >
             <Thumbnail className="rounded" src={image} />
-          )}
+          </SkeletonElement>
           <div>
-            {isLoading ? (
-              <div className="flex items-center gap-1">
-                <Skeleton circle containerClassName="avatar-skeleton w-[16px] text-[16px]" />
-                <Skeleton width={40} />
-              </div>
-            ) : (
-              <Avatar label={token} size="xs" gap="1" />
-            )}
+            <div className="flex items-center gap-1">
+              <SkeletonElement
+                isLoading={isLoading}
+                circle
+                containerClassName="avatar-skeleton w-[16px] text-[16px]"
+              />
+              <SkeletonElement isLoading={isLoading} width={40}>
+                <Avatar label={token} size="xs" gap="1" />
+              </SkeletonElement>
+            </div>
             <p className="mt-1 text-left text-black/30">
-              {isLoading ? <Skeleton width={60} /> : <>{name}</>}
+              <SkeletonElement isLoading={isLoading} width={60}>
+                {name}
+              </SkeletonElement>
             </p>
           </div>
         </div>

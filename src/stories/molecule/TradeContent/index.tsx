@@ -1,6 +1,6 @@
 import { Listbox, Switch } from '@headlessui/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
@@ -163,16 +163,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
           <p className="text-black/30">
-            {isLoading ? (
-              <Skeleton width={40} />
-            ) : (
-              <>
-                {balances && token && balances[token.address]
-                  ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
-                  : 0}{' '}
-                {token?.name}
-              </>
-            )}
+            <SkeletonElement isLoading={isLoading} width={40}>
+              {balances && token && balances[token.address]
+                ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
+                : 0}{' '}
+              {token?.name}
+            </SkeletonElement>
           </p>
         </div>
         <div className="flex justify-between gap-5 mt-3">

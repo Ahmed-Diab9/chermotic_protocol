@@ -1,7 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
-import Skeleton from 'react-loading-skeleton';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -78,7 +77,7 @@ export const AssetPopover = ({
             <>
               <h2 className="text-xl">
                 <SkeletonElement isLoading={isBalanceLoading} width={120}>
-                  {isValid(totalBalance) && 
+                  {isValid(totalBalance) &&
                     withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
                       ` ${selectedToken.name}`}
                 </SkeletonElement>
@@ -328,13 +327,9 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        {isLoading ? (
-                          <Skeleton width={80} />
-                        ) : (
-                          <>
-                            {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
-                          </>
-                        )}
+                        <SkeletonElement isLoading={isLoading}>
+                          {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
+                        </SkeletonElement>
                       </p>
                     </div> */}
                   </article>
