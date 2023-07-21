@@ -155,8 +155,8 @@ export const WalletPopover = ({
                                           <SkeletonElement
                                             isLoading={isLoading}
                                             circle
-                                            width={16}
-                                            height={16}
+                                            width={24}
+                                            height={24}
                                           />
                                           <SkeletonElement isLoading={isLoading} width={40}>
                                             <Avatar
