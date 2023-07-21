@@ -155,7 +155,8 @@ export const WalletPopover = ({
                                           <SkeletonElement
                                             isLoading={isLoading}
                                             circle
-                                            containerClassName="avatar-skeleton w-[16px] text-[16px]"
+                                            width={16}
+                                            height={16}
                                           />
                                           <SkeletonElement isLoading={isLoading} width={40}>
                                             <Avatar
@@ -207,17 +208,14 @@ export const WalletPopover = ({
                                         <SkeletonElement
                                           isLoading={isLoading}
                                           circle
-                                          containerClassName="avatar-skeleton w-10 text-[40px]"
+                                          width={40}
+                                          height={40}
                                         >
                                           <Avatar size="lg" src={undefined} />
                                         </SkeletonElement>
                                         <div className="flex-1">
                                           <div className="flex gap-2 leading-none">
-                                            <SkeletonElement
-                                              isLoading={isLoading}
-                                              containerClassName="flex-1"
-                                              width={120}
-                                            >
+                                            <SkeletonElement isLoading={isLoading} width={100}>
                                               <p>{pool.token.name}</p>
                                               <span className="px-1 text-grayL">|</span>
                                               <p>{pool.market}</p>
@@ -226,11 +224,7 @@ export const WalletPopover = ({
                                           <div className="flex mt-3">
                                             <div className="mr-auto">
                                               <p className="text-base font-medium text-black/30">
-                                                <SkeletonElement
-                                                  isLoading={isLoading}
-                                                  containerClassName="flex-1"
-                                                  width={80}
-                                                >
+                                                <SkeletonElement isLoading={isLoading} width={80}>
                                                   {formatDecimals(
                                                     pool.liquidity,
                                                     pool.token.decimals,
@@ -240,11 +234,7 @@ export const WalletPopover = ({
                                                 </SkeletonElement>
                                               </p>
                                               <p className="mt-2 text-base text-black">
-                                                <SkeletonElement
-                                                  isLoading={isLoading}
-                                                  containerClassName="flex-1"
-                                                  width={80}
-                                                >
+                                                <SkeletonElement isLoading={isLoading} width={80}>
                                                   {pool.bins} Bins
                                                 </SkeletonElement>
                                               </p>

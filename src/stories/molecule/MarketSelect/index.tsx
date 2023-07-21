@@ -95,11 +95,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
       <Popover.Button className="flex items-center gap-3 ml-10">
         <div className="pr-3 border-r">
           <div className="flex items-center gap-1">
-            <SkeletonElement
-              isLoading={isLoading}
-              circle
-              containerClassName="avatar-skeleton w-6 text-[24px]"
-            />
+            <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
             <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
               <Avatar label={selectedToken?.name} fontSize="2xl" gap="1" size="sm" />
             </SkeletonElement>
@@ -107,11 +103,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
         </div>
         <div>
           <div className="flex items-center gap-1">
-            <SkeletonElement
-              isLoading={isLoading}
-              circle
-              containerClassName="avatar-skeleton w-6 text-[24px]"
-            />
+            <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
             <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
               <Avatar label={selectedMarket?.description} fontSize="2xl" gap="1" size="sm" />
             </SkeletonElement>

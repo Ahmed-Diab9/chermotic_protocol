@@ -418,20 +418,12 @@ const ProgressItem = (props: ProgressItemProps) => {
               : ''
           }`}
         >
-          <SkeletonElement
-            isLoading={isLoading}
-            width={40}
-            containerClassName="text-[40px] leading-none"
-          >
+          <SkeletonElement isLoading={isLoading} width={40} height={40}>
             <Thumbnail className="rounded" src={image} />
           </SkeletonElement>
           <div>
             <div className="flex items-center gap-1">
-              <SkeletonElement
-                isLoading={isLoading}
-                circle
-                containerClassName="avatar-skeleton w-[16px] text-[16px]"
-              />
+              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
               <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar label={token} size="xs" gap="1" />
               </SkeletonElement>

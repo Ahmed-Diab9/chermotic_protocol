@@ -440,11 +440,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </p>
                     <div className="flex items-center gap-1 mt-2">
-                      <SkeletonElement
-                        isLoading={isLoading}
-                        circle
-                        containerClassName="avatar-skeleton w-[16px] text-[16px]"
-                      />
+                      <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
                       <SkeletonElement isLoading={isLoading} width={40}>
                         {isValid(token) && <Avatar label={token?.name} size="xs" gap="1" />}
                       </SkeletonElement>
@@ -673,11 +669,7 @@ const BinItem = (props: BinItemProps) => {
         />
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <SkeletonElement
-              isLoading={isLoading}
-              circle
-              containerClassName="avatar-skeleton w-[16px] text-[16px]"
-            />
+            <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
             <SkeletonElement isLoading={isLoading} width={40}>
               <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
             </SkeletonElement>
@@ -703,11 +695,7 @@ const BinItem = (props: BinItemProps) => {
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
-          <SkeletonElement
-            isLoading={isLoading}
-            width={60}
-            containerClassName="text-[60px] leading-none"
-          >
+          <SkeletonElement isLoading={isLoading} width={60} height={60}>
             <Thumbnail src={bin?.clbTokenImage} size="lg" className="rounded" />
           </SkeletonElement>
         </div>

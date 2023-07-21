@@ -327,7 +327,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       </p>
                       <p>
-                        <SkeletonElement isLoading={isLoading}>
+                        <SkeletonElement isLoading={isLoading} width={80}>
                           {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
                         </SkeletonElement>
                       </p>

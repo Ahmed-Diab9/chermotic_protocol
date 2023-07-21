@@ -372,21 +372,13 @@ const PositionItem = function (props: Props) {
         >
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1">
-              <SkeletonElement
-                isLoading={isLoading}
-                circle
-                containerClassName="avatar-skeleton w-[16px] text-[16px]"
-              />
+              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
               <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1">
-              <SkeletonElement
-                isLoading={isLoading}
-                circle
-                containerClassName="avatar-skeleton w-[16px] text-[16px]"
-              />
+              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
               <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar
                   label={
