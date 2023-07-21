@@ -6,7 +6,7 @@ interface LoadingProps {
 }
 
 export const Loading = (props: LoadingProps) => {
-  const { color, size = 'sm' } = props;
+  const { color = 'black', size = 'sm' } = props;
 
   return (
     <div className={`loading loading-${size} text-${color} animate-spin`}>

@@ -12,7 +12,7 @@ interface PopoverArrowProps {
 }
 
 export const PopoverArrow = (props: PopoverArrowProps) => {
-  const { onClick, direction = 'top', position = 'top', className } = props;
+  const { onClick, direction = 'top', position = 'top', className = '' } = props;
 
   return (
     <span

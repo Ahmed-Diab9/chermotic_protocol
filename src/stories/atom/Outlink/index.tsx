@@ -1,15 +1,15 @@
-import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
+import { ArrowUpRightIcon } from '@heroicons/react/24/outline';
 
 interface OutlinkProps {
   label?: string;
-  outLink?: string;
+  outLink: string;
   outLinkAbout?: string;
   className?: string;
   onClick?: () => unknown;
 }
 
 export const Outlink = (props: OutlinkProps) => {
-  const { label = "Learn more", outLink, outLinkAbout, className } = props;
+  const { label = 'Learn more', outLink, outLinkAbout, className = '' } = props;
 
   return (
     <a

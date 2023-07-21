@@ -3,7 +3,7 @@ import { Tooltip } from 'react-tooltip';
 import '../TooltipGuide/style.css';
 
 interface TooltipAlertProps {
-  label?: string;
+  label: string;
   tip?: string;
   onClick?: () => unknown;
 }

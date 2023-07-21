@@ -12,7 +12,7 @@ interface ChartTooltipProps extends PropsWithChildren {
 }
 
 export const ChartTooltip = (props: ChartTooltipProps) => {
-  const { anchor, className, offset = 5, render } = props;
+  const { anchor, className = '', offset = 5, render } = props;
 
   const fixToTop: Middleware = {
     name: 'fixToTop',
@@ -31,9 +31,7 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
       <Tooltip
         middlewares={[shift(), fixToTop]}
         anchorSelect={anchor}
-        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${
-          className ? className : ''
-        }`}
+        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${className}`}
         place="top"
         render={render}
         positionStrategy="absolute"

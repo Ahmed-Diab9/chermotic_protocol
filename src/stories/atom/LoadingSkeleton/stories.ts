@@ -15,12 +15,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Loading: Story = {
   args: {
-    loading: true,
+    isLoading: true,
   },
 };
 
 export const Loaded: Story = {
   args: {
-    loading: false,
+    isLoading: false,
   },
 };

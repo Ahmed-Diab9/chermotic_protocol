@@ -16,7 +16,7 @@ interface AvatarProps {
 
 export const Avatar = (props: AvatarProps) => {
   const {
-    className,
+    className = '',
     size = 'base',
     gap = '2',
     src,

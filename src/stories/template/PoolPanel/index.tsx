@@ -261,7 +261,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     maxValue={settlementTokenBalance}
                     onChange={(value) => onAmountChange?.(value)}
                     onButtonClick={(value) => onAmountChange?.(value)}
-                    error
+                    // error
                   />
                   {/* <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." /> */}
                 </div>
@@ -441,7 +441,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row items-center xl:justify-between justify-around flex-auto px-5 border py-7 w-[50%] bg-grayL/20 rounded-xl">
+                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
                     <p className="flex font-semibold text-left text-black/30">
                       Total Liquidity Value
@@ -550,10 +550,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           <Tab>Short LP</Tab>
                         </Tab.List>
 
-                        {/* 우측 버튼요소, 리스트가 있을때만 보여져도 될듯 싶습니다 */}
+                        {/* todo: hide buttons&wrapper when there is no list */}
                         <div className="ml-auto">
-                          {/* 전체 선택 */}
-                          {/* 전체 선택되어있을때 누르면, 전체 선택 해제 > "Unselect All" */}
                           <Button
                             label="Select All"
                             css="unstyled"
@@ -563,10 +561,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
                             }}
                           />
 
-                          {/* 선택된 유동성 일괄 제거 */}
-                          {/* 선택된 항목이 없을 땐, disabled 상태 */}
+                          {/* todo: when there is no selected list, disabled = true */}
                           <Button
                             label="Remove Selected"
+                            css="gray"
                             className="ml-2"
                             onClick={() => {
                               dispatch(poolsAction.onModalOpen());
@@ -694,7 +692,7 @@ const BinItem = (props: BinItemProps) => {
 
   return (
     <div className="overflow-hidden border rounded-xl">
-      <div className="flex items-center justify-between gap-10 px-5 py-3 border-b bg-grayL/20">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-grayL/20">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
           isChecked={isChecked}

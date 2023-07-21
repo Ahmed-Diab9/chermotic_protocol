@@ -20,16 +20,16 @@ export const TextRow = (props: TextRowProps) => {
     subValueLeft,
     subValueRight,
     labelColor = 'black/30',
-    labelClass,
+    labelClass = '',
     align = 'between',
-    className,
+    className = '',
     isLoading,
   } = props;
 
   return (
-    <div className={`flex justify-${align} ${className}`}>
+    <div className={`flex items-center justify-${align} ${className}`}>
       <p className={`text-${labelColor} ${labelClass}`}>{label}</p>
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center justify-end gap-1">
         {subValueLeft && <p className="text-black/30">{subValueLeft}</p>}
 
         {isLoading ? (

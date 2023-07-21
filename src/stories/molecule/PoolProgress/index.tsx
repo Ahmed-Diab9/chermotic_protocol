@@ -1,5 +1,6 @@
 import { Disclosure, Tab } from '@headlessui/react';
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import CheckIcon from '~/assets/icons/CheckIcon';
 import Skeleton from 'react-loading-skeleton';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -374,6 +375,7 @@ const ProgressItem = (props: ProgressItemProps) => {
               <Tag label="in progress" className="text-grayD bg-gray/20" />
             )}
             <TooltipGuide
+              label="status-info"
               outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
               outLinkAbout="Next Oracle Round"
               tip={

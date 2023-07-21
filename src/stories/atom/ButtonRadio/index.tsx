@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 type ButtonRadioOption = {
   label: string;
@@ -9,19 +9,13 @@ type ButtonRadioProps = {
   options: ButtonRadioOption[];
   onChange: (value: string) => void;
   defaultSelected?: string;
-  size?: "xs" | "sm" | "base" | "lg";
+  size?: 'xs' | 'sm' | 'base' | 'lg';
 };
 
 export const ButtonRadio = (props: ButtonRadioProps) => {
-  const {
-    options,
-    onChange,
-    defaultSelected = undefined,
-    size = "base",
-  } = props;
+  const { options, onChange, defaultSelected = undefined, size = 'base' } = props;
   const [selected, setSelected] = useState<string | undefined>(
     // defaultSelected ?? options[0].value
-    // 초기값이 설정되지 않은 경우, 아무것도 선택되어있지 않도록
     defaultSelected ?? undefined
   );
   const handleOptionClick = (value: string) => {
@@ -35,7 +29,7 @@ export const ButtonRadio = (props: ButtonRadioProps) => {
         <button
           key={option.value}
           className={`px-4 py-2 border rounded btn-${size} ${
-            selected === option.value ? "border-black text-black" : ""
+            selected === option.value ? 'border-black text-black' : ''
           }`}
           onClick={() => handleOptionClick(option.value)}
         >

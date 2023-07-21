@@ -10,7 +10,7 @@ interface CurvedButtonProps {
 }
 
 export const CurvedButton = (props: CurvedButtonProps) => {
-  const { onClick, direction, position, className } = props;
+  const { onClick, direction, position, className = '' } = props;
 
   return (
     <button

@@ -33,7 +33,7 @@ export const Input = (props: InputProps) => {
     assetSrc,
     unit,
     type = 'number',
-    className,
+    className = '',
     size = 'base',
     css = 'default',
     align = 'right',
@@ -102,7 +102,7 @@ export const Input = (props: InputProps) => {
       >
         {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
         <input
-          type="string"
+          type="text"
           className={`text-${align}`}
           value={type === 'number' ? withComma(tempValue) : tempValue}
           placeholder={placeholder}
