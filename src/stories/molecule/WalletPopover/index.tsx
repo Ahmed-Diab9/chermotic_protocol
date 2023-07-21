@@ -154,11 +154,11 @@ export const WalletPopover = ({
                                       <div key={token.address} className="flex items-center">
                                         <div className="flex items-center gap-1">
                                           <SkeletonElement
-                                            isLoading={true}
+                                            isLoading={isLoading}
                                             circle
                                             containerClassName="avatar-skeleton w-[16px] text-[16px]"
                                           />
-                                          <SkeletonElement isLoading={true} width={40}>
+                                          <SkeletonElement isLoading={isLoading} width={40}>
                                             <Avatar
                                               label={token.name}
                                               size="sm"
