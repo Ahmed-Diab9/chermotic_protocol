@@ -5,7 +5,7 @@ import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
-import { usePosition } from './usePosition';
+import { usePosition } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 interface Props {

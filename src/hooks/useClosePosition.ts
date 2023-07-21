@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
-import { usePosition } from './usePosition';
+import { usePosition } from './usePositions';
 
 interface Props {
   marketAddress: Address;

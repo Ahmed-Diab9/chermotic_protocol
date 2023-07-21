@@ -1,12 +1,12 @@
 import type { Preview } from '@storybook/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import '../src/index.css';
 import { Provider } from 'react-redux';
-import { store } from '../src/store';
+import { MemoryRouter } from 'react-router-dom';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { hardhat } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import '../src/index.css';
+import { store } from '../src/store';
 
 // import "../src/theme";
 

@@ -13,12 +13,12 @@ import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 
 import useChartData from '~/hooks/useChartData';
-import { useDedicationPositions } from '~/hooks/useDedicatedPositions';
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import useOracleVersion from '~/hooks/useOracleVersion';
+import { useDedicationPositions } from '~/hooks/usePositions';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';

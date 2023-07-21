@@ -4,7 +4,7 @@ import { formatUnits } from 'viem';
 import { PERCENT_DECIMALS } from '~/configs/decimals';
 import { useAppSelector } from '~/store';
 import { toBigInt } from '~/utils/number';
-import { usePosition } from './usePosition';
+import { usePosition } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 export function useMargins() {

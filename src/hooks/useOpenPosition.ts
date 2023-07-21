@@ -11,8 +11,8 @@ import { TradeInput } from '~/typings/trade';
 import { Logger, errorLog } from '~/utils/log';
 import { toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
-import { useDedicationPositions } from './useDedicatedPositions';
 import { useLiquidityPool } from './useLiquidityPool';
+import { useDedicationPositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
 interface Props {
