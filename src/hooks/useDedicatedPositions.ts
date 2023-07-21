@@ -20,6 +20,7 @@ export function useDedicationPositions() {
   const { oracleVersions } = useOracleVersion();
   const fetchKey = useMemo(() => {
     const key = {
+      id: 'useDedicatedPositions',
       currentSelectedToken,
       currentMarket,
       oracleVersions,
