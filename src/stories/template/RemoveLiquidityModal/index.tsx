@@ -76,7 +76,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 </p>
                 {selectedBin && (
                   <p>
-                    {formatDecimals(selectedBin.binValue, token?.decimals, 2)} {token?.name}
+                    {formatDecimals(selectedBin.clbBalanceOfSettlement, token?.decimals, 2)}{' '}
+                    {token?.name}
                   </p>
                 )}
               </div>

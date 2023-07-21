@@ -157,7 +157,7 @@ export const useLiquidityPoolSummary = () => {
 
       for (let index = 0; index < bins.length; index++) {
         const bin = bins[index];
-        liquiditySum = liquiditySum + bin.binValue;
+        liquiditySum = liquiditySum + bin.clbBalanceOfSettlement;
       }
       array.push({
         token: {

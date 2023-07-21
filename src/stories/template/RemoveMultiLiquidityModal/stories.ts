@@ -19,6 +19,7 @@ export const Default: Story = {
         baseFeeRate: 10,
         clbTokenBalance: 50000000000n,
         binValue: 10000000000n,
+        clbBalanceOfSettlement: 1000000000n,
         removableRate: 87500000000000n,
         liquidity: 3000000000n,
         freeLiquidity: 2000000000n,
@@ -33,6 +34,7 @@ export const Default: Story = {
       {
         baseFeeRate: 10,
         clbTokenBalance: 50000000000n,
+        clbBalanceOfSettlement: 1000000000n,
         binValue: 10000000000n,
         removableRate: 87500000000000n,
         liquidity: 3000000000n,
