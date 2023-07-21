@@ -8,8 +8,6 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { hardhat } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
-// import "../src/theme";
-
 const { publicClient, webSocketPublicClient } = configureChains([hardhat], [publicProvider()]);
 
 const config = createConfig({
