@@ -261,7 +261,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <h4>Liquidity Pool Range</h4>
                     <Switch.Group>
                       <div className="toggle-wrapper">
-                        <Switch.Label className="">CLB Values</Switch.Label>
+                        <Switch.Label className="">CLB Price</Switch.Label>
                         <Switch onChange={setIsBinValueVisible} className="toggle toggle-xs" />
                       </div>
                     </Switch.Group>
