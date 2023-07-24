@@ -93,17 +93,22 @@ export const TradeBar = ({
                 <Popover.Panel>
                   <div className="w-full bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
-                      <div className="flex items-end px-10">
+                      <div className="flex items-center px-10">
                         <Tab.List className="pt-4 text-lg">
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
-                        <div className="flex items-center gap-5 ml-auto mb-[-8px]">
+                        <div className="flex items-center gap-5 mt-4 ml-auto">
                           {lapsed && (
-                            <p className="text-sm text-black/30">
-                              Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
+                            <p className="pr-5 text-sm border-r text-black/30">
+                              Last Oracle Update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
                               s ago
                             </p>
                           )}
+                          {/* todo: Current Price */}
+                          {/* <p className="text-sm text-black/30">
+                            Current Price:
+                            <span className="ml-2 text-lg text-black">$0,000.00</span>
+                          </p> */}
                         </div>
                       </div>
                       <Tab.Panels className="overflow-auto mt-7 max-h-[50vh]">
