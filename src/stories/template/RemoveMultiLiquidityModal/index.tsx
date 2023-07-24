@@ -12,7 +12,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { formatDecimals, toBigInt } from '~/utils/number';
+import { formatDecimals, fromExponentials } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Logger } from '../../../utils/log';
 import { Button } from '../../atom/Button';
@@ -74,7 +74,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       .map((bin) => bin.clbTokenBalance)
       .reduce((b, curr) => b + curr, 0n);
     const totalBalanceOfSettlement = selectedBins.reduce((sum, current) => {
-      return sum + toBigInt(formatUnits(current.clbBalanceOfSettlement, token?.decimals ?? 0));
+      return sum + current.clbBalanceOfSettlement;
     }, 0n);
     const totalLiquidity = selectedBins.reduce((acc, current) => {
       acc += current.liquidity;
@@ -216,7 +216,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                    * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                    */}
                   {/* {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name} */}
-                  {convertedAmount} {token?.name}
+                  {fromExponentials(convertedAmount)} {token?.name}
                 </p>
               </div>
               <div className="flex items-center justify-between gap-6 mt-3">

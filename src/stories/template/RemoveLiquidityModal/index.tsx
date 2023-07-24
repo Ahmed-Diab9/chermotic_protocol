@@ -10,7 +10,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { formatDecimals } from '~/utils/number';
+import { formatDecimals, fromExponentials } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
@@ -114,7 +114,8 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   (
                   {selectedBin &&
                     formatUnits(
-                      parseUnits(amount, selectedBin.clbTokenDecimals) * selectedBin?.clbTokenValue,
+                      parseUnits(fromExponentials(amount), selectedBin.clbTokenDecimals) *
+                        selectedBin?.clbTokenValue,
                       selectedBin.clbTokenDecimals * 2
                     )}{' '}
                   {token?.name})

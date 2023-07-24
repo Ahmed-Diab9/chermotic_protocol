@@ -1427,10 +1427,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk-viem@^0.1.0-rc.107":
-  version "0.1.0-rc.107"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.107.tgz#b8751a5c5c9145a003ee8470eb078d2af899a6ef"
-  integrity sha512-NZf/J70CVmShA86Eb2jdhefP3urNE0dJXh40CKHy7P4+RwKwd5llbu3AVV5PYCH5iPQFrBxEhsi4n1FTNNApIQ==
+"@chromatic-protocol/sdk-viem@^0.1.0-rc.109":
+  version "0.1.0-rc.109"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.109.tgz#706fb1586c980836919fb153c1d1bdb4e8c0909f"
+  integrity sha512-kLLCgqcFzcXkCnhd24SCrpjULy8IvxBllcn6Jtocrm+XJ1PSO7FDgzTmiEnoWmUZ4dOWRutwCd/k7pScA1a9nw==
   dependencies:
     viem "1.2.12"
 
@@ -10080,6 +10080,7 @@ wordwrap@^1.0.0:
   integrity sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

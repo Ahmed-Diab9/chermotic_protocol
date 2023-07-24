@@ -5,7 +5,7 @@ import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { divPreserved } from '~/utils/number';
+import { divPreserved, fromExponentials } from '~/utils/number';
 
 interface LiquidityItemProps {
   token?: Token;
@@ -62,11 +62,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         />
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
-            {Number(formatUnits(removable, token.decimals))} {token.name}
+            {fromExponentials(formatUnits(removable, token.decimals))} {token.name}
             <span className="text-black/30 ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
-            {Number(formatUnits(utilized, token.decimals))} {token.name}
+            {fromExponentials(formatUnits(utilized, token.decimals))} {token.name}
             <span className="text-black/30 ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>

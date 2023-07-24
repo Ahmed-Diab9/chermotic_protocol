@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
+import { fromExponentials } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPools } from './useLiquidityPool';
@@ -64,7 +65,7 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    const expandedAmount = parseUnits(amount.toString(), token!.decimals);
+    const expandedAmount = parseUnits(fromExponentials(amount), token!.decimals);
 
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {

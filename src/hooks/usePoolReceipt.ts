@@ -56,7 +56,8 @@ const receiptDetail = (
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { client } = useChromaticClient();
-  const router = useMemo(() => client?.router(), [client]);
+  const router = useMemo(() => client?.router(), [client?.walletClient]);
+  const lensApi = useMemo(() => client?.lens(), [client, client?.walletClient]);
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
@@ -72,7 +73,7 @@ const usePoolReceipt = () => {
 
   const fetchKey = {
     name: 'getPoolReceipt',
-    lensApi: useMemo(() => client?.lens(), [client]),
+    lensApi,
     address: address,
     currentOracleVersion: currentOracleVersion,
     marketAddress: marketAddress,
@@ -94,7 +95,8 @@ const usePoolReceipt = () => {
         oracleVersion: receipt.oracleVersion,
       }));
       const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
-
+      console.log('Receipts', receipts);
+      console.log('Owned bins', ownedBins);
       return receipts
         .map((receipt) => {
           const bin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
