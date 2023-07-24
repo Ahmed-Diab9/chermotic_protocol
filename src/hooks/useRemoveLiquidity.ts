@@ -70,7 +70,7 @@ function useRemoveLiquidity(props: Props) {
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {
         feeRate,
-        receipient: address,
+        recipient: address,
         clbTokenAmount: expandedAmount,
       });
       dispatch(poolsAction.onBinsReset());
