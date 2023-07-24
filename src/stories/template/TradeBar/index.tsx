@@ -459,6 +459,8 @@ const PositionItem = function (props: Props) {
               value={calculated.pnlPercentage}
               isLoading={isLoading}
             />
+            {/* todo: add PnL price (has no label, value only) */}
+            <TextRow value="" isLoading={isLoading} />
           </div>
         </div>
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
