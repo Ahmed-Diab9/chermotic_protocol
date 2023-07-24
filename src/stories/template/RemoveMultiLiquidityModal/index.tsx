@@ -208,7 +208,17 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
 
             {/* input - number */}
             <article className="">
-              <p className="font-semibold">Remove CLB Tokens</p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="flex-none font-semibold">Remove CLB Tokens</p>
+                <p className="text-right text-black/30">
+                  {/**
+                   * @TODO
+                   * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
+                   */}
+                  {/* {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name} */}
+                  {convertedAmount} {token?.name}
+                </p>
+              </div>
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
@@ -219,14 +229,6 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </div>
                 <div className="max-w-[220px] relative">
-                  <p className="absolute right-0 top-[-28px] text-right text-black/30">
-                    {/**
-                     * @TODO
-                     * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
-                     */}
-                    {/* {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name} */}
-                    {convertedAmount} {token?.name}
-                  </p>
                   <p className="text-lg font-semibold text-black">{amount} CLB</p>
                   {/* <Input
                     unit="CLB"

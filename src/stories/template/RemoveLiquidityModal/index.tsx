@@ -104,7 +104,22 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
 
             {/* input - number */}
             <article className="">
-              <p className="font-semibold">Remove CLB Tokens</p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="flex-none font-semibold">Remove CLB Tokens</p>
+                <p className="text-right text-black/30">
+                  {/**
+                   * @TODO
+                   * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
+                   */}
+                  (
+                  {selectedBin &&
+                    formatUnits(
+                      parseUnits(amount, selectedBin.clbTokenDecimals) * selectedBin?.clbTokenValue,
+                      selectedBin.clbTokenDecimals * 2
+                    )}{' '}
+                  {token?.name})
+                </p>
+              </div>
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
@@ -116,21 +131,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     }}
                   />
                 </div>
-                <div className="max-w-[220px] relative">
-                  <p className="absolute right-0 top-[-28px] text-right text-black/30">
-                    {/**
-                     * @TODO
-                     * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
-                     */}
-                    (
-                    {selectedBin &&
-                      formatUnits(
-                        parseUnits(amount, selectedBin.clbTokenDecimals) *
-                          selectedBin?.clbTokenValue,
-                        selectedBin.clbTokenDecimals * 2
-                      )}{' '}
-                    {token?.name})
-                  </p>
+                <div className="max-w-[220px]">
                   {/* todo: input error */}
                   {/* - Input : error prop is true when has error */}
                   {/* - TooltipAlert : is shown when has error */}
