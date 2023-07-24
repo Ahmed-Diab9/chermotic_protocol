@@ -1,6 +1,6 @@
 import { ACCOUNT_STATUS, Account } from '~/typings/account';
 import { Market, Token } from '~/typings/market';
-import { AssetPopover } from '../../molecule/AssetPopover';
+import { AccountPopover } from '../../molecule/AccountPopover';
 import { MarketSelect } from '../../molecule/MarketSelect';
 
 interface MainBarProps {
@@ -20,7 +20,7 @@ interface MainBarProps {
   isMarketLoading?: boolean;
   isAssetLoading?: boolean;
   isBalanceLoading?: boolean;
-  showAssetPopover?: boolean;
+  showAccountPopover?: boolean;
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -47,7 +47,7 @@ export const MainBar = ({
   isMarketLoading,
   isAssetLoading,
   isBalanceLoading,
-  showAssetPopover,
+  showAccountPopover,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -70,9 +70,9 @@ export const MainBar = ({
           onMarketClick={onMarketSelect}
         />
       </div>
-      {showAssetPopover && (
+      {showAccountPopover && (
         <div className="w-2/5 max-w-[500px] min-w-[480px]">
-          <AssetPopover
+          <AccountPopover
             account={account}
             status={status}
             selectedToken={selectedToken}
