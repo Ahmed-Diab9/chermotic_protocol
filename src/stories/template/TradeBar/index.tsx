@@ -91,9 +91,9 @@ export const TradeBar = ({
                   </div>
                 </Popover.Button>
                 <Popover.Panel>
-                  <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
+                  <div className="w-full bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
-                      <div className="flex items-end">
+                      <div className="flex items-end px-10">
                         <Tab.List className="pt-4 text-lg">
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
@@ -106,8 +106,8 @@ export const TradeBar = ({
                           )}
                         </div>
                       </div>
-                      <Tab.Panels className="pb-16 overflow-auto mx-[-20px] mt-7 max-h-[50vh]">
-                        <Tab.Panel className="px-5">
+                      <Tab.Panels className="overflow-auto mt-7 max-h-[50vh]">
+                        <Tab.Panel className="px-10 pb-10 min-w-[1080px]">
                           <article>
                             {/* guide next round */}
                             {hasGuide && (
