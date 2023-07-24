@@ -13,7 +13,7 @@ export const SkeletonElement = (props: PropsWithChildren<SkeletonElementProps>) 
       {isLoading ? (
         <Skeleton
           {...skeletonProps}
-          containerClassName={`leading-none ${containerClassName}`}
+          containerClassName={`leading-none z-0 ${containerClassName}`}
         ></Skeleton>
       ) : (
         children

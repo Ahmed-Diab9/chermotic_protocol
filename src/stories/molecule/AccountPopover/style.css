@@ -1,4 +1,4 @@
-.AssetPopover {
+.AccountPopover {
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
     @apply bg-white rounded-b-2xl;

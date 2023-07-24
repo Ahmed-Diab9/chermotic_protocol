@@ -44,8 +44,13 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
     <>
       <div className="relative bg-white shadow-lg MarketSelect">
         <Popover>{!isGroupLegacy ? <PopoverMain {...props} /> : <PopoverGroupLegacy />}</Popover>
-        <div className="flex items-center gap-4 mr-10">
-          <div className="flex flex-col gap-1 pr-5 text-right border-r text-black/50">
+        <div className="flex items-center gap-5 mr-10">
+          <h2 className="text-3xl">
+            <SkeletonElement isLoading={isLoading} width={80}>
+              {marketPrice}
+            </SkeletonElement>
+          </h2>
+          <div className="flex flex-col gap-1 pl-5 text-left border-l text-black/50">
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
                 {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
@@ -62,11 +67,6 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               />
             </div>
           </div>
-          <h2 className="text-3xl">
-            <SkeletonElement isLoading={isLoading} width={80}>
-              {marketPrice}
-            </SkeletonElement>
-          </h2>
         </div>
       </div>
     </>

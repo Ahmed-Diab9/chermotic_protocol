@@ -166,6 +166,14 @@ export const WalletPopover = ({
                                               gap="2"
                                             />
                                           </SkeletonElement>
+                                          {/* todo: asset button - href to scanner */}
+                                          <Button
+                                            // href=''
+                                            iconOnly={<ArrowTopRightOnSquareIcon />}
+                                            css="unstyled"
+                                            size="sm"
+                                            className="text-black/50"
+                                          />
                                         </div>
 
                                         <div className="ml-auto text-right">

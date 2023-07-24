@@ -25,7 +25,7 @@ import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
 import { SkeletonElement } from '../../atom/SkeletonElement';
 
-interface AssetPopoverProps {
+interface AccountPopoverProps {
   // onClick?: () => void;
   account?: Account;
   status?: ACCOUNT_STATUS;
@@ -45,7 +45,7 @@ interface AssetPopoverProps {
   onStatusUpdate?: () => unknown;
 }
 
-export const AssetPopover = ({
+export const AccountPopover = ({
   account,
   status,
   selectedToken,
@@ -63,12 +63,12 @@ export const AssetPopover = ({
   onConnect,
   onStatusUpdate,
   ...props
-}: AssetPopoverProps) => {
+}: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
 
   return (
     <>
-      <div className="AssetPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
+      <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>
