@@ -1,13 +1,13 @@
 import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { getContract } from '@wagmi/core';
-import { fromPairs, isNil, isNotNil } from 'ramda';
+import { fromPairs } from 'ramda';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
+import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { checkAllProps } from '../utils';
 const logger = Logger('useBalances');
 
 export const useTokenBalances = () => {

@@ -4,7 +4,7 @@ import { Logger } from '~/utils/log';
 const defaultLogger = Logger('Error');
 
 interface Props {
-  error: unknown;
+  error: unknown | unknown[];
   logger?: {
     error: (...args: any) => unknown;
   };
@@ -12,7 +12,11 @@ interface Props {
 export function useError({ error, logger }: Props) {
   useEffect(() => {
     if (error) {
-      (logger ?? defaultLogger).error(error);
+      if (error instanceof Array) {
+        error.forEach((err) => (logger ?? defaultLogger).error(err));
+      } else {
+        (logger ?? defaultLogger).error(error);
+      }
     }
   }, [error]);
 }
