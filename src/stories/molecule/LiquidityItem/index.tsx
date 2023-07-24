@@ -21,14 +21,20 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   const removable =
     freeLiquidity > clbBalanceOfSettlement ? clbBalanceOfSettlement : bin.freeLiquidity;
   const utilized = clbBalanceOfSettlement - removable;
-  const utilizedRate = formatUnits(
-    divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
-    token.decimals - 2
-  );
-  const removableRate = formatUnits(
-    divPreserved(removable, clbBalanceOfSettlement, token.decimals),
-    token.decimals - 2
-  );
+  const utilizedRate =
+    clbBalanceOfSettlement !== 0n
+      ? formatUnits(
+          divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
+          token.decimals - 2
+        )
+      : '0';
+  const removableRate =
+    clbBalanceOfSettlement !== 0n
+      ? formatUnits(
+          divPreserved(removable, clbBalanceOfSettlement, token.decimals),
+          token.decimals - 2
+        )
+      : '0';
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기
   return (
