@@ -1,12 +1,12 @@
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
-import { divPreserved, toBigInt } from '~/utils/number';
+import { divPreserved } from '~/utils/number';
 import { useAppSelector } from '../store';
 import { checkAllProps } from '../utils';
 import { Logger } from '../utils/log';
@@ -55,7 +55,10 @@ export const useOwnedLiquidityPool = () => {
           clbTokenValue: bin.clbValue,
           clbTotalSupply: bin.clbTotalSupply,
           binValue: bin.binValue,
-          clbBalanceOfSettlement: toBigInt(formatUnits(bin.clbBalance * bin.clbValue, decimals)),
+          clbBalanceOfSettlement: parseUnits(
+            formatUnits(bin.clbBalance * bin.clbValue, decimals * 2),
+            decimals
+          ),
           baseFeeRate: Number(bin.tradingFeeRate),
           tokenId: tokenId,
         } satisfies OwnedBin;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
 import { formatDecimals, toBigInt } from '~/utils/number';
@@ -53,7 +53,10 @@ export const useMultiPoolRemoveInput = () => {
     }
     const removableBalance = bins
       .map((bin) =>
-        toBigInt(formatUnits(bin.clbTokenBalance * bin.removableRate, bin.clbTokenDecimals))
+        parseUnits(
+          formatUnits(bin.clbTokenBalance * bin.removableRate, bin.clbTokenDecimals * 2),
+          bin.clbTokenDecimals
+        )
       )
       .reduce((balance, removable) => balance + removable, 0n);
     return Number(formatDecimals(removableBalance, token?.decimals, token?.decimals));

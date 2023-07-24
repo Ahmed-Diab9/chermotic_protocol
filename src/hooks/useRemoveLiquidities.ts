@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useWalletClient } from 'wagmi';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
-import { toBigInt } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -69,7 +68,10 @@ function useRemoveLiquidities(props: Props) {
     try {
       const amounts = bins.map((bin) => {
         const { clbTokenBalance, clbTokenDecimals, removableRate } = bin;
-        const removable = toBigInt(formatUnits(clbTokenBalance * removableRate, clbTokenDecimals));
+        const removable = parseUnits(
+          formatUnits(clbTokenBalance * removableRate, clbTokenDecimals * 2),
+          clbTokenDecimals
+        );
 
         return type === MULTI_ALL ? clbTokenBalance : removable;
       });

@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo, useReducer } from 'react';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
@@ -9,7 +9,6 @@ import {
   divPreserved,
   formatDecimals,
   numberBuffer,
-  toBigInt,
   toBigintWithDecimals,
 } from '~/utils/number';
 import { useAppSelector } from '../store';
@@ -226,13 +225,23 @@ export const useTradeInput = () => {
       if (makerMargin <= 0n) {
         break;
       }
-      const { baseFeeRate, freeLiquidity } = token;
+      const { baseFeeRate, freeLiquidity, clbTokenDecimals } = token;
       const feeRate = abs(baseFeeRate);
       if (makerMargin >= freeLiquidity) {
-        tradeFee = tradeFee + toBigInt(formatUnits(freeLiquidity * feeRate, FEE_RATE_DECIMAL));
+        tradeFee =
+          tradeFee +
+          parseUnits(
+            formatUnits(freeLiquidity * feeRate, clbTokenDecimals + FEE_RATE_DECIMAL),
+            clbTokenDecimals
+          );
         makerMargin = makerMargin - freeLiquidity;
       } else {
-        tradeFee = tradeFee + toBigInt(formatUnits(makerMargin * feeRate, FEE_RATE_DECIMAL));
+        tradeFee =
+          tradeFee +
+          parseUnits(
+            formatUnits(makerMargin * feeRate, clbTokenDecimals + FEE_RATE_DECIMAL),
+            clbTokenDecimals
+          );
         makerMargin = 0n;
       }
     }
@@ -245,7 +254,7 @@ export const useTradeInput = () => {
   }, [
     state.makerMargin,
     state.direction,
-    token?.decimals,
+    token,
     pool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
@@ -327,7 +336,7 @@ export const useTradeInput = () => {
 
     const totalLiquidity =
       state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
-    const parsedTotalLiquidity = Number(toBigInt(formatUnits(totalLiquidity, token.decimals)));
+    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, token.decimals));
 
     if (isNaN(parsedTotalLiquidity)) return { status: true };
 
