@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react';
-import { formatUnits, parseUnits } from 'viem';
+import { parseUnits } from 'viem';
 import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
@@ -22,6 +22,8 @@ export interface RemoveLiquidityModalProps {
   maxAmount?: number;
   onAmountChange?: (nextAmount: string) => unknown;
 }
+
+const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
@@ -95,7 +97,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
                     <span className="ml-1 text-black/30">
-                      ({formatUnits(selectedBin.removableRate, token.decimals)}%)
+                      ({formatDecimals(selectedBin.removableRate, token.decimals, 2)}%)
                     </span>
                   </p>
                 )}
@@ -113,9 +115,11 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                    */}
                   (
                   {selectedBin &&
-                    formatUnits(
-                      parseUnits(amount, selectedBin.clbTokenDecimals) * selectedBin?.clbTokenValue,
-                      selectedBin.clbTokenDecimals * 2
+                    formatDecimals(
+                      parseUnits(formatter.format(Number(amount)), selectedBin.clbTokenDecimals) *
+                        selectedBin?.clbTokenValue,
+                      selectedBin.clbTokenDecimals * 2,
+                      2
                     )}{' '}
                   {token?.name})
                 </p>

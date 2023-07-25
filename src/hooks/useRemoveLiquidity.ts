@@ -17,6 +17,7 @@ interface Props {
 }
 
 const logger = Logger('useRemoveLiquidity');
+const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
 function useRemoveLiquidity(props: Props) {
   const { amount, feeRate } = props;
@@ -64,12 +65,12 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    const expandedAmount = parseUnits(amount.toString(), token!.decimals);
+    const expandedAmount = parseUnits(formatter.format(Number(amount)), token!.decimals);
 
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {
         feeRate,
-        receipient: address,
+        recipient: address,
         clbTokenAmount: expandedAmount,
       });
       dispatch(poolsAction.onBinsReset());

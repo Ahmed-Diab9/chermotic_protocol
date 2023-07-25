@@ -1,9 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
-import { formatUnits } from 'viem';
-import { PERCENT_DECIMALS } from '~/configs/decimals';
 import { useAppSelector } from '~/store';
-import { toBigInt } from '~/utils/number';
 import { usePositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
 
@@ -21,11 +18,7 @@ export function useMargins() {
     const balance = balances[token.address];
     const [totalCollateral, totalCollateralAdded] = positions.reduce(
       (record, position) => {
-        const added = toBigInt(
-          formatUnits(position.collateral * position.pnl, token.decimals + PERCENT_DECIMALS)
-        );
-
-        return [record[0] + position.collateral, record[1] + added];
+        return [record[0] + position.collateral, record[1] + position.collateral + position.pnl];
       },
       [0n, 0n]
     );

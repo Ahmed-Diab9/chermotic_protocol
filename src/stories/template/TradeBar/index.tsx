@@ -268,7 +268,7 @@ const PositionItem = function (props: Props) {
       abs(qty) === 0n
         ? 0n
         : (makerMargin * parseUnits('1', QTY_DECIMALS) * 100n * 10000n) /
-          parseUnits(String(qty), token.decimals);
+          parseUnits(String(abs(qty)), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
     const currentOracleVersion = oracleVersions[position.marketAddress];
     if (
@@ -291,16 +291,9 @@ const PositionItem = function (props: Props) {
       };
     }
     const pnlPercentage = divPreserved(
-      BigInt(position.pnl),
+      position.pnl,
       takerMargin,
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
-    );
-    const pnlAmount = parseUnits(
-      formatUnits(
-        position.collateral * pnlPercentage,
-        token.decimals + PNL_RATE_DECIMALS + PERCENT_DECIMALS
-      ),
-      token.decimals
     );
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
@@ -312,7 +305,7 @@ const PositionItem = function (props: Props) {
       pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
         formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
       )}%`,
-      pnlAmount: formatUnits(pnlAmount, token.decimals),
+      pnlAmount: formatUnits(position.pnl, token.decimals),
       profitPrice: withComma(
         formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
       ),

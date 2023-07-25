@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { formatDecimals, toBigInt } from '~/utils/number';
+import { mulPreserved } from '~/utils/number';
+
+const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
 export const usePoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
@@ -12,10 +14,7 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return (
-        record +
-        Number(formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, bin.clbTokenDecimals))
-      );
+      return record + Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals));
     }, 0);
   }, [bins]);
 
@@ -26,11 +25,12 @@ export const usePoolRemoveInput = () => {
       if (isNaN(Number(nextAmount))) {
         return;
       }
-      setAmount(nextAmount);
+      setAmount(formatter.format(Number(nextAmount)));
+      return;
     } else {
-      setAmount(String(nextAmount));
+      setAmount(formatter.format(nextAmount));
+      return;
     }
-    setAmount(String(nextAmount));
   };
 
   return { amount, maxAmount, onAmountChange };
@@ -49,14 +49,12 @@ export const useMultiPoolRemoveInput = () => {
 
   const amount = useMemo(() => {
     if (type === MULTI_ALL) {
-      return Number(formatDecimals(clbTokenBalance, token?.decimals, token?.decimals));
+      return Number(formatUnits(clbTokenBalance, token?.decimals ?? 0));
     }
     const removableBalance = bins
-      .map((bin) =>
-        toBigInt(formatUnits(bin.clbTokenBalance * bin.removableRate, bin.clbTokenDecimals))
-      )
+      .map((bin) => mulPreserved(bin.clbTokenBalance, bin.removableRate, bin.clbTokenDecimals))
       .reduce((balance, removable) => balance + removable, 0n);
-    return Number(formatDecimals(removableBalance, token?.decimals, token?.decimals));
+    return Number(formatUnits(removableBalance, token?.decimals ?? 0));
   }, [type, token, clbTokenBalance, bins]);
 
   const onAmountChange = (type: MULTI_TYPE) => {
