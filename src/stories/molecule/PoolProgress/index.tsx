@@ -18,9 +18,32 @@ import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { formatDecimals } from '~/utils/number';
+import { divPreserved, formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
+
+const formatter = Intl.NumberFormat('en', {
+  useGrouping: true,
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
+export const receiptDetail = (receipt: LpReceipt, token: Token) => {
+  const { burningAmount = 0n, amount, status, action } = receipt;
+  if (status === 'standby') {
+    return 'Waiting for the next oracle round';
+  }
+  if (action === 'add') {
+    return formatDecimals(receipt.amount, token.decimals, 2);
+  }
+  const amountRatio = divPreserved(burningAmount, amount, 2);
+  return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
+    amount,
+    token.decimals,
+    2,
+    true
+  )} ${token.name} (${formatter.format(amountRatio)}%)`;
+};
 
 interface PoolProgressProps {
   token?: Token;
