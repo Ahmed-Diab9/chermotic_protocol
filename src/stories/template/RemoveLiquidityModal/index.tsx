@@ -43,7 +43,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
       {/* backdrop */}
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
-        <Dialog.Panel className="modal bg-white w-full max-w-[500px]">
+        <Dialog.Panel className="modal modal-base">
           <Dialog.Title className="modal-title">
             Remove Liquidity
             <ModalCloseButton

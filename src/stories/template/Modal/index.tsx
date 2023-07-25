@@ -1,37 +1,53 @@
 import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Button } from '../../atom/Button';
+import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import './style.css';
 
 interface ModalProps {
-  label: string;
-  size?: 'sm' | 'md' | 'lg';
+  title?: string;
+  paragraph?: string;
+  subParagraph?: string;
+  size?: 'sm' | 'base' | 'lg';
+  buttonLabel?: string;
+  buttonCss?: 'default' | 'active' | 'gray' | 'unstyled';
   onClick?: () => void;
 }
 
-export const Modal = ({ label, size = 'md', ...props }: ModalProps) => {
+export const Modal = ({
+  title,
+  paragraph,
+  subParagraph,
+  buttonLabel,
+  buttonCss = 'default',
+  size = 'sm',
+  ...props
+}: ModalProps) => {
   let [isOpen, setIsOpen] = useState(true);
 
   return (
-    <Dialog className="modal" open={isOpen} onClose={() => setIsOpen(false)}>
-      <Dialog.Panel className="flex flex-col gap-5 py-5">
-        <div>
-          <Dialog.Title className="text-lg">Deactivate account</Dialog.Title>
-          <Dialog.Description className="mt-2 text-sm text-black/30">
-            This will permanently deactivate your account
-          </Dialog.Description>
-        </div>
-
-        <p>
-          Are you sure you want to deactivate your account? All of your data will be permanently
-          removed. This action cannot be undone.
-        </p>
-
-        <div className="flex gap-2">
-          <Button label="Confirm" css="active" />
-          <Button label="Cancle" />
-        </div>
-      </Dialog.Panel>
+    <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
+      <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
+        <Dialog.Panel className={`text-center bg-white modal modal-${size}`}>
+          <Dialog.Title className="modal-title !mb-7">
+            <span className="inline-block pb-3 border-b-2 border-black">{title}</span>
+            <ModalCloseButton onClick={() => setIsOpen(false)} />
+          </Dialog.Title>
+          <div>
+            <p>{paragraph}</p>
+            {subParagraph && <p className="mt-3 text-sm text-black/30">{subParagraph}</p>}
+          </div>
+          <div className="flex gap-2 mt-6">
+            <Button
+              label={buttonLabel}
+              css={buttonCss}
+              className="flex-1"
+              onClick={() => setIsOpen(false)}
+            />
+          </div>
+        </Dialog.Panel>
+      </div>
     </Dialog>
   );
 };

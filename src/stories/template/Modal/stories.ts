@@ -14,6 +14,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: 'Modal',
+    title: 'Title',
+    paragraph: 'this is paragraph.',
+    subParagraph: 'hello world, this is sub paragraph.',
+    buttonLabel: 'default',
+    buttonCss: 'gray',
   },
 };
