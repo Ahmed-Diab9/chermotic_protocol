@@ -9,9 +9,10 @@ import { errorLog } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useAppSelector } from '../store';
 import { checkAllProps } from '../utils';
-import { numberBuffer, percentage } from '../utils/number';
+import { mulPreserved, numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
+import { useLiquidityPool } from './useLiquidityPool';
 import useOracleVersion from './useOracleVersion';
 
 export type LpReceiptAction = 'add' | 'remove';
@@ -23,6 +24,7 @@ export interface LpReceipt {
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
+  burningAmount: bigint | undefined;
   action: LpReceiptAction;
 }
 
@@ -62,6 +64,7 @@ const usePoolReceipt = () => {
   const { address } = useAccount();
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
   const marketAddress = market?.address;
+  const { liquidityPool } = useLiquidityPool(marketAddress);
 
   const binName = useCallback((feeRate: number, description?: string) => {
     const prefix = feeRate > 0 ? '+' : '';
@@ -97,8 +100,9 @@ const usePoolReceipt = () => {
       const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
       return receipts
         .map((receipt) => {
-          const bin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
-          if (!bin) {
+          const ownedBin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
+          const bin = liquidityPool?.bins.find((bin) => bin.baseFeeRate === receipt.tradingFeeRate);
+          if (!ownedBin || !bin) {
             return null;
           }
           const {
@@ -110,16 +114,17 @@ const usePoolReceipt = () => {
             tradingFeeRate,
           } = receipt;
           let status: LpReceipt['status'] = 'standby';
-          status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, bin);
+          status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, ownedBin);
           return {
             id,
             action: action === 0 ? 'add' : 'remove',
-            amount,
+            amount: mulPreserved(amount, bin.clbTokenValue, bin.clbTokenDecimals),
             feeRate: tradingFeeRate,
             status,
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, market?.description),
+            burningAmount: action === 0 ? undefined : ownedBin.burningTokenAmount,
           } satisfies LpReceipt;
         })
         .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);

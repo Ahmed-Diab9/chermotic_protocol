@@ -17,8 +17,8 @@ import './style.css';
 
 import { usePublicClient } from 'wagmi';
 import { PRICE_FEED } from '../../../configs/token';
-import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 const logger = Logger('WalletPopOver');
 interface WalletPopoverProps {
@@ -184,12 +184,11 @@ export const WalletPopover = ({
                                           </p>
                                           <p className="mt-1 text-base font-medium text-gray-900">
                                             <SkeletonElement isLoading={isLoading} width={40}>
-                                              {withComma(
-                                                formatDecimals(
-                                                  balances[token.address],
-                                                  token.decimals,
-                                                  5
-                                                )
+                                              {formatDecimals(
+                                                balances[token.address],
+                                                token.decimals,
+                                                5,
+                                                true
                                               )}{' '}
                                               {token.name}
                                             </SkeletonElement>
@@ -236,7 +235,8 @@ export const WalletPopover = ({
                                                   {formatDecimals(
                                                     pool.liquidity,
                                                     pool.token.decimals,
-                                                    2
+                                                    2,
+                                                    true
                                                   )}{' '}
                                                   {pool.token.name}
                                                 </SkeletonElement>

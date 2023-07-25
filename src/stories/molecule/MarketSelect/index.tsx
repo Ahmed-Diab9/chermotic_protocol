@@ -7,7 +7,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { filterIfFulfilled } from '~/utils/array';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
-import { formatDecimals, withComma } from '../../../utils/number';
+import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { SkeletonElement } from '../../atom/SkeletonElement';
 
@@ -32,8 +32,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const oracleDecimals = 18;
 
   const marketPrice = useMemo(
-    () =>
-      `$${withComma(formatDecimals(selectedMarket?.oracleValue?.price || 0, oracleDecimals, 2))}`,
+    () => `$${formatDecimals(selectedMarket?.oracleValue?.price || 0, oracleDecimals, 2, true)}`,
     [selectedMarket, selectedToken]
   );
 
@@ -82,7 +81,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
       return;
     }
     const promise = markets.map(async (market) => {
-      return '$' + withComma(formatDecimals(market.oracleValue.price, selectedToken?.decimals, 2));
+      return '$' + formatDecimals(market.oracleValue.price, selectedToken?.decimals, 2, true);
     });
     const prices = await filterIfFulfilled(promise);
     setMarketPrices(prices);

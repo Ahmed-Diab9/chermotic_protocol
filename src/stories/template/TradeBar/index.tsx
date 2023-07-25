@@ -3,7 +3,7 @@ import { Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { formatUnits, parseUnits } from 'viem';
+import { parseUnits } from 'viem';
 import CheckIcon from '~/assets/icons/CheckIcon';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
@@ -116,7 +116,13 @@ export const TradeBar = ({
                             >
                               {isValid(oracleVersions) && isValid(market) && (
                                 <span className="ml-2 text-lg text-black">
-                                  $ {formatUnits(oracleVersions[market.address].price, 18)}
+                                  ${' '}
+                                  {formatDecimals(
+                                    oracleVersions[market.address].price,
+                                    18,
+                                    2,
+                                    true
+                                  )}
                                 </span>
                               )}{' '}
                             </SkeletonElement>
@@ -277,8 +283,8 @@ const PositionItem = function (props: Props) {
       currentOracleVersion.version <= position.openVersion
     ) {
       return {
-        qty: withComma(formatDecimals(abs(qty), 4, 2)),
-        collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
+        qty: formatDecimals(abs(qty), 4, 2, true),
+        collateral: formatDecimals(collateral, token.decimals, 2, true),
         stopLoss,
         takeProfit,
         profitPriceTo: '-',
@@ -296,21 +302,22 @@ const PositionItem = function (props: Props) {
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
-      qty: withComma(formatDecimals(abs(qty), 4, 2)),
-      collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
+      qty: formatDecimals(abs(qty), 4, 2, true),
+      collateral: formatDecimals(collateral, token.decimals, 2, true),
       takeProfit: withComma(takeProfit),
       stopLoss: withComma(stopLoss),
       profitPriceTo: priceTo(position, 'toProfit'),
       lossPriceTo: priceTo(position, 'toLoss'),
-      pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
-        formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
+      pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${formatDecimals(
+        pnlPercentage,
+        PNL_RATE_DECIMALS,
+        2,
+        true
       )}%`,
-      pnlAmount: formatUnits(position.pnl, token.decimals),
-      profitPrice: withComma(
-        formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
-      ),
-      lossPrice: withComma(formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2)),
-      entryPrice: withComma(formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2)),
+      pnlAmount: formatDecimals(position.pnl, token.decimals, 2, true),
+      profitPrice: formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
+      lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
+      entryPrice: formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
       entryTime: new Intl.DateTimeFormat('en-US', {
         month: 'long',
         day: 'numeric',

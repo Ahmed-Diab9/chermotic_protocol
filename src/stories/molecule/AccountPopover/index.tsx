@@ -13,17 +13,17 @@ import {
   Account,
 } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { formatDecimals, withComma } from '../../../utils/number';
+import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import './style.css';
 
 import { isValid } from '~/utils/valid';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
-import { SkeletonElement } from '../../atom/SkeletonElement';
 
 interface AccountPopoverProps {
   // onClick?: () => void;
@@ -78,7 +78,7 @@ export const AccountPopover = ({
               <h2 className="text-xl">
                 <SkeletonElement isLoading={isBalanceLoading} width={120}>
                   {isValid(totalBalance) &&
-                    withComma(formatDecimals(totalBalance, selectedToken.decimals, 2)) +
+                    formatDecimals(totalBalance, selectedToken.decimals, 2, true) +
                       ` ${selectedToken.name}`}
                 </SkeletonElement>
               </h2>
@@ -310,7 +310,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       </p>
                       <p>
                         <SkeletonElement isLoading={isLoading} width={80}>
-                          {formatDecimals(availableMargin, token?.decimals, 5)} {token?.name}
+                          {formatDecimals(availableMargin, token?.decimals, 5, true)} {token?.name}
                         </SkeletonElement>
                       </p>
                     </div>
