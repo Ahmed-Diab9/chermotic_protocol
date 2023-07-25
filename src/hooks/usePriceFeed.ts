@@ -1,24 +1,23 @@
 import { aggregatorV3InterfaceABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { getContract } from '@wagmi/core';
 import useSWR from 'swr';
-import { Address, useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
-import { isValid } from '../utils/valid';
 import { useError } from './useError';
-import { checkAllProps } from '../utils';
+import { useChromaticClient } from './useChromaticClient';
 
 const usePriceFeed = () => {
-  const { address } = useAccount();
+  const { isReady } = useChromaticClient();
+
   const fetchKey = {
     name: 'getPriceFeeds',
-    address: address,
   };
   const {
     data: priceFeed,
     error,
     mutate: fetchPriceFeed,
     isLoading: isFeedLoading,
-  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ address }) => {
+  } = useSWR(isReady && fetchKey && fetchKey, async () => {
     const tokens = Object.keys(PRICE_FEED);
     const availableToken = tokens
       .filter((token) => PRICE_FEED[token])
