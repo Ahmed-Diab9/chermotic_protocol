@@ -17,7 +17,7 @@ import { Modal } from '~/stories/template/Modal';
 
 import useChartData from '~/hooks/useChartData';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
@@ -30,6 +30,7 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
 import { copyText } from '~/utils/clipboard';
 import { usePositions } from '../../hooks/usePositions';
@@ -50,13 +51,13 @@ const Trade = () => {
     status,
     balances,
   } = useUsumAccount();
-  const { tokens, onTokenSelect, currentSelectedToken, isTokenLoading } = useSettlementToken();
+  const { tokens, onTokenSelect, currentToken, isTokenLoading } = useSettlementToken();
   const { markets, onMarketSelect, currentMarket, isMarketLoading } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
   const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
 
   const { priceFeed, isFeedLoading } = usePriceFeed();
-  const pools = useLiquidityPoolSummary();
+  const { ownedPoolSummary } = useOwnedLiquidityPools();
   const { disconnect } = useDisconnect();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const {
@@ -118,7 +119,7 @@ const Trade = () => {
         markets={markets}
         priceFeed={priceFeed}
         balances={walletBalances}
-        pools={pools}
+        pools={ownedPoolSummary}
         isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
         onConnect={() => connectAsync({ connector: connectors[0] })}
         onCreateAccount={createUsumAccount}
@@ -132,7 +133,7 @@ const Trade = () => {
           status={status}
           tokens={tokens}
           markets={markets}
-          selectedToken={currentSelectedToken}
+          selectedToken={currentToken}
           selectedMarket={currentMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
@@ -178,7 +179,7 @@ const Trade = () => {
             onShortFeeAllowanceChange={onShortFeeAllowanceChange}
             balances={balances}
             priceFeed={priceFeed}
-            token={currentSelectedToken}
+            token={currentToken}
             market={currentMarket}
             longTotalMaxLiquidity={longTotalMaxLiquidity}
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
@@ -210,7 +211,7 @@ const Trade = () => {
         </div>
       </section>
       <TradeBar
-        token={currentSelectedToken}
+        token={currentToken}
         market={currentMarket}
         markets={markets}
         positions={positions}

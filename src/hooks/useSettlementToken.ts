@@ -12,7 +12,7 @@ export const useSettlementToken = () => {
   const { client, isReady } = useChromaticClient();
 
   const dispatch = useAppDispatch();
-  const currentSelectedToken = useAppSelector((state) => state.token.selectedToken);
+  const currentToken = useAppSelector((state) => state.token.selectedToken);
 
   const { setState: setStoredToken } = useLocalStorage('usum:token');
 
@@ -41,5 +41,5 @@ export const useSettlementToken = () => {
     },
     [dispatch]
   );
-  return { tokens, currentSelectedToken, isTokenLoading, fetchTokens, onTokenSelect };
+  return { tokens, currentToken, isTokenLoading, fetchTokens, onTokenSelect };
 };

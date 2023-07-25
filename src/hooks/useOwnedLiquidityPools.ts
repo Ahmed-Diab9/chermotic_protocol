@@ -2,62 +2,49 @@ import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
-import { useAppSelector } from '~/store';
-import { OwnedBin } from '~/typings/pools';
+import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
 import { filterIfFulfilled } from '~/utils/array';
 import { checkAllProps } from '../utils';
-import { Logger } from '../utils/log';
 import { divPreserved, mulPreserved } from '../utils/number';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
+import { useSettlementToken } from './useSettlementToken';
+
+const { encodeTokenId } = ChromaticUtils;
 
 export const useOwnedLiquidityPools = () => {
-  const { encodeTokenId } = ChromaticUtils;
-  const { address } = useAccount();
-  const token = useAppSelector((state) => state.token.selectedToken);
-
-  const { markets } = useMarket();
-  const { client, lensApi } = useChromaticClient();
-  const logger = Logger(useOwnedLiquidityPools);
+  const { client, walletAddress } = useChromaticClient();
+  const { currentToken } = useSettlementToken();
+  const { markets, currentMarket } = useMarket();
+  const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
 
   const fetchKey = {
     name: 'getOwnedPools',
-    address: address,
-    tokenAddress: token?.address,
-    marketAddresses: useMemo(() => markets?.map((market) => market.address), [markets]),
-    lensApi,
+    type: 'EOA',
+    address: walletAddress,
+    tokenAddress: currentToken?.address,
+    marketAddresses: marketAddresses,
   };
 
   const {
     data: ownedPools,
     error,
-    isLoading,
     mutate: fetchOwnedPools,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({
-      address,
-      tokenAddress,
-      marketAddresses,
-      lensApi,
-    }): Promise<Record<string, OwnedBin[] | undefined>> => {
-      if (isNil(client)) {
-        return {};
-      }
+    async ({ address, marketAddresses, tokenAddress }) => {
+      const lensApi = client.lens();
+
       const poolsResponse = await PromiseOnlySuccess(
         marketAddresses.map(async (marketAddress) => {
           const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-          logger.info('sdk response bins', bins);
           const binsResponse = bins.map(async (bin) => {
             const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
-            logger.info('token id ', tokenId);
             const { name, decimals, description, image } = await client
               .market()
               .clbTokenMeta(marketAddress, tokenId);
-            logger.info('NAME', name);
             return {
               liquidity: bin.liquidity,
               freeLiquidity: bin.freeLiquidity,
@@ -76,22 +63,49 @@ export const useOwnedLiquidityPools = () => {
             } satisfies OwnedBin;
           });
           const filteredBins = await filterIfFulfilled(binsResponse);
-          return { marketAddress, bins: filteredBins };
+          return { tokenAddress, marketAddress, bins: filteredBins };
         })
       );
 
-      const ownedPools = poolsResponse.reduce((record, currentPool) => {
-        record[currentPool.marketAddress] = currentPool.bins;
-        return record;
-      }, {} as Record<string, OwnedBin[] | undefined>);
-      return ownedPools;
+      return poolsResponse;
     }
   );
 
-  useError({ error, logger });
+  const currentOwnedPool = useMemo(() => {
+    return ownedPools?.find(({ marketAddress }) => marketAddress === currentMarket?.address);
+  }, [ownedPools, marketAddresses]);
+
+  const ownedPoolSummary = useMemo(() => {
+    if (isNil(currentOwnedPool) || isNil(currentToken) || isNil(markets)) return [];
+
+    const array: LiquidityPoolSummary[] = markets.map((market) => {
+      const { description: marketDescription } = market;
+
+      const liquiditySum = currentOwnedPool.bins.reduce(
+        (total, bin) => total + bin.clbBalanceOfSettlement,
+        0n
+      );
+
+      return {
+        token: {
+          name: currentToken.name,
+          decimals: currentToken.decimals,
+        },
+        market: marketDescription,
+        liquidity: liquiditySum,
+        bins: currentOwnedPool.bins.length,
+      };
+    });
+
+    return array;
+  }, [ownedPools]);
+
+  useError({ error });
 
   return {
     ownedPools,
+    ownedPoolSummary,
+    currentOwnedPool,
     fetchOwnedPools,
   };
 };

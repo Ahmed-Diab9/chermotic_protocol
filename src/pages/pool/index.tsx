@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import useOracleVersion from '~/hooks/useOracleVersion';
@@ -24,7 +24,6 @@ import { copyText } from '~/utils/clipboard';
 import { isValid } from '~/utils/valid';
 import useChartData from '../../hooks/useChartData';
 import { useMarketLocal } from '../../hooks/useMarketLocal';
-import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 import { useTokenLocal } from '../../hooks/useTokenLocal';
 import { Button } from '../../stories/atom/Button';
 import { Outlink } from '../../stories/atom/Outlink';
@@ -33,6 +32,7 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
+import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
 const Pool = () => {
   const { connectAsync, connectors } = useConnect();
@@ -46,7 +46,7 @@ const Pool = () => {
   } = useUsumAccount();
   const {
     tokens,
-    currentSelectedToken: selectedToken,
+    currentToken: selectedToken,
     isTokenLoading,
     onTokenSelect,
   } = useSettlementToken();
@@ -61,7 +61,6 @@ const Pool = () => {
   const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
   // const { usumBalances } = useUsumBalances();
   const { priceFeed, isFeedLoading } = usePriceFeed();
-  const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
   const {
     amount: balanceAmount,
@@ -82,7 +81,7 @@ const Pool = () => {
       shortTotalUnusedLiquidity,
     },
   } = useLiquidityPool();
-  const { ownedPool } = useOwnedLiquidityPool();
+  const { currentOwnedPool, ownedPoolSummary } = useOwnedLiquidityPools();
   const {
     amount,
     rates,
@@ -124,7 +123,7 @@ const Pool = () => {
         markets={markets}
         priceFeed={priceFeed}
         balances={walletBalances}
-        pools={pools}
+        pools={ownedPoolSummary}
         onConnect={() => {
           connectAsync({ connector: connectors[0] });
         }}
@@ -166,7 +165,7 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               balances={walletBalances}
-              ownedPool={ownedPool}
+              ownedPool={currentOwnedPool}
               amount={amount}
               rates={rates}
               binCount={binCount}
