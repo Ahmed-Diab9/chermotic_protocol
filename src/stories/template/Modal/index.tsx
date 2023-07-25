@@ -30,8 +30,8 @@ export const Modal = ({
       <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className={`text-center bg-white modal modal-${size}`}>
-          <Dialog.Title className="modal-title !mb-7">
-            <span className="inline-block pb-3 border-b-2 border-black">{title}</span>
+          <Dialog.Title className="modal-title !mb-8">
+            <span className="inline-block pb-2 border-b-2 border-black">{title}</span>
             <ModalCloseButton onClick={() => setIsOpen(false)} />
           </Dialog.Title>
           <div>

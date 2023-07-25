@@ -11,6 +11,7 @@ import { Header } from '~/stories/template/Header';
 import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
+import { Modal } from '~/stories/template/Modal';
 
 import useChartData from '~/hooks/useChartData';
 import { useFeeRate } from '~/hooks/useFeeRate';
@@ -212,6 +213,14 @@ const Trade = () => {
         isLoading={isPositionsLoading}
       />
       <Toast />
+      {/* todo: Add Modal (Wrong Netwrok) */}
+      {/* <Modal
+        title="Wrong Network"
+        paragraph="Please set network to Arbitrum"
+        subParagraph="Check your wallet and sign to change network."
+        buttonLabel="Try Again"
+        buttonCss="gray"
+      /> */}
     </div>
   );
 };
