@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { fromPairs, isNil } from 'ramda';
 import useSWR from 'swr';
 import {
@@ -15,33 +16,33 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
 import useSharedState from './useSharedState';
-import useClientAccount from './useClientAccount';
 
 const logger = Logger('useUsumAccount');
 
 export const useUsumAccount = () => {
-  const { tokens } = useSettlementToken();
-  const { accountApi } = useChromaticClient();
-  const { address } = useClientAccount();
+  const { client, walletAddress } = useChromaticClient();
 
   const [status, setStatus] = useSharedState<ACCOUNT_STATUS>('accountStatus', ACCOUNT_NONE);
 
-  const accountAddressFetchKey = {
-    name: 'getChromaticAccount',
-    address: address,
-    accountApi: accountApi,
-  };
+  const fetchKey = useMemo(
+    () => ({
+      name: 'getChromaticAccount',
+      type: 'EOA',
+      address: walletAddress,
+    }),
+    [walletAddress]
+  );
 
   const {
     data: accountAddress,
     error,
     mutate: fetchAddress,
     isLoading: isAccountAddressLoading,
-  } = useSWR(checkAllProps(accountAddressFetchKey) ? accountAddressFetchKey : null, async () => {
+  } = useSWR(checkAllProps(fetchKey) && fetchKey, async () => {
     try {
-      const accountAddress = await accountApi?.getAccount();
+      const accountApi = client.account();
+      const accountAddress = await accountApi.getAccount();
 
-      console.log(accountAddress);
       if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
         setStatus(ACCOUNT_NONE);
         return;
@@ -56,22 +57,31 @@ export const useUsumAccount = () => {
     }
   });
 
-  const accountBalanceFetchKey = {
-    name: 'getChromaticAccountBalance',
-    address: address,
-    tokens: tokens,
-  };
+  const { tokens } = useSettlementToken();
+  const accountBalanceFetchKey = useMemo(
+    () => ({
+      name: 'getChromaticAccountBalance',
+      type: 'EOA',
+      address: walletAddress,
+      tokens: tokens,
+    }),
+    [walletAddress, tokens]
+  );
 
   const {
     data: balances,
-    // error: balanceError,
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
     checkAllProps(accountBalanceFetchKey) ? accountBalanceFetchKey : null,
     async ({ tokens }) => {
-      const result = await accountApi!.balances(tokens!.map((token) => token.address));
-      return fromPairs(result?.map((balance) => [balance.token, balance.balance] as const) || []);
+      const accountApi = client.account();
+      const result = await accountApi.balances(tokens.map((token) => token.address));
+
+      const balances = fromPairs(
+        result?.map((balance) => [balance.token, balance.balance] as const) || []
+      );
+      return balances;
     },
     {
       refreshInterval: 3000,
@@ -81,11 +91,12 @@ export const useUsumAccount = () => {
   useError({ error, logger });
 
   const createAccount = async () => {
-    if (isNil(accountApi)) {
-      return AppError.reject('no accountApi', 'createAcccount');
+    if (isNil(walletAddress)) {
+      return AppError.reject('no address', 'createAcccount');
     }
 
     try {
+      const accountApi = client.account();
       logger.info('Creating accounts');
       setStatus(ACCOUNT_CREATING);
       await accountApi.createAccount();
