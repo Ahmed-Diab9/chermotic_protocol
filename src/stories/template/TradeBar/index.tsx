@@ -2,9 +2,8 @@ import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { parseUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import CheckIcon from '~/assets/icons/CheckIcon';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
@@ -14,6 +13,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
 import { PopoverArrow } from '~/stories/atom/PopoverArrow';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -28,6 +28,7 @@ import '../../atom/Tabs/style.css';
 
 interface TradeBarProps {
   token?: Token;
+  market?: Market;
   markets?: Market[];
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
@@ -46,6 +47,7 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
 
 export const TradeBar = ({
   token,
+  market,
   markets,
   positions,
   oracleVersions,
@@ -105,10 +107,16 @@ export const TradeBar = ({
                             </p>
                           )}
                           {/* todo: Current Price */}
-                          {/* <p className="text-sm text-black/30">
+                          <p className="text-sm text-black/30">
                             Current Price:
-                            <span className="ml-2 text-lg text-black">$0,000.00</span>
-                          </p> */}
+                            <SkeletonElement>
+                              {isValid(oracleVersions) && isValid(market) && (
+                                <span className="ml-2 text-lg text-black">
+                                  $ {formatUnits(oracleVersions[market.address].price, 18)}
+                                </span>
+                              )}
+                            </SkeletonElement>
+                          </p>
                         </div>
                       </div>
                       <Tab.Panels className="overflow-auto mt-7 max-h-[50vh]">
@@ -283,6 +291,13 @@ const PositionItem = function (props: Props) {
       takerMargin,
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
+    const pnlAmount = parseUnits(
+      formatUnits(
+        position.collateral * pnlPercentage,
+        token.decimals + PNL_RATE_DECIMALS + PERCENT_DECIMALS
+      ),
+      token.decimals
+    );
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
       collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
@@ -293,6 +308,7 @@ const PositionItem = function (props: Props) {
       pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
         formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
       )}%`,
+      pnlAmount: formatUnits(pnlAmount, token.decimals),
       profitPrice: withComma(
         formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
       ),
@@ -465,7 +481,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}
-            <TextRow value="" isLoading={isLoading} />
+            <TextRow value={calculated.pnlAmount + ' ' + token?.name} isLoading={isLoading} />
           </div>
         </div>
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
