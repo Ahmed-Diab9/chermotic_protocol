@@ -137,8 +137,12 @@ export const decimalLength = (num: number | string, length: number, fix: boolean
   return result;
 };
 
-export const divPreserved = (valueA: bigint, valueB: bigint, preserved_decmials: number) => {
-  return (valueA * parseUnits('1', preserved_decmials)) / valueB;
+export const divPreserved = (numerator: bigint, denominator: bigint, decimals: number) => {
+  return (numerator * 10n ** BigInt(decimals)) / denominator;
+};
+
+export const mulPreserved = (value: bigint, numerator: bigint, decimals: number) => {
+  return (value * numerator) / 10n ** BigInt(decimals);
 };
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {

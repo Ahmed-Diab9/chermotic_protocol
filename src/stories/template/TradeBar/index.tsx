@@ -21,7 +21,7 @@ import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
-import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
+import { abs, divPreserved, formatDecimals, mulPreserved, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
@@ -268,7 +268,7 @@ const PositionItem = function (props: Props) {
       abs(qty) === 0n
         ? 0n
         : (makerMargin * parseUnits('1', QTY_DECIMALS) * 100n * 10000n) /
-          parseUnits(String(qty), token.decimals);
+          parseUnits(String(abs(qty)), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
     const currentOracleVersion = oracleVersions[position.marketAddress];
     if (
@@ -295,12 +295,10 @@ const PositionItem = function (props: Props) {
       takerMargin,
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
-    const pnlAmount = parseUnits(
-      formatUnits(
-        position.collateral * pnlPercentage,
-        token.decimals + PNL_RATE_DECIMALS + PERCENT_DECIMALS
-      ),
-      token.decimals
+    const pnlAmount = mulPreserved(
+      position.collateral,
+      pnlPercentage,
+      PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),

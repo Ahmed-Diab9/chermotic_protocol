@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { formatDecimals, fromExponentials } from '~/utils/number';
+import { fromExponentials, mulPreserved } from '~/utils/number';
 
 export const usePoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
@@ -12,10 +12,7 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return (
-        record +
-        Number(formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, bin.clbTokenDecimals))
-      );
+      return record + Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals));
     }, 0);
   }, [bins]);
 
@@ -49,17 +46,12 @@ export const useMultiPoolRemoveInput = () => {
 
   const amount = useMemo(() => {
     if (type === MULTI_ALL) {
-      return Number(formatDecimals(clbTokenBalance, token?.decimals, token?.decimals));
+      return Number(formatUnits(clbTokenBalance, token?.decimals ?? 0));
     }
     const removableBalance = bins
-      .map((bin) =>
-        parseUnits(
-          formatUnits(bin.clbTokenBalance * bin.removableRate, bin.clbTokenDecimals * 2),
-          bin.clbTokenDecimals
-        )
-      )
+      .map((bin) => mulPreserved(bin.clbTokenBalance, bin.removableRate, bin.clbTokenDecimals))
       .reduce((balance, removable) => balance + removable, 0n);
-    return Number(formatDecimals(removableBalance, token?.decimals, token?.decimals));
+    return Number(formatUnits(removableBalance, token?.decimals ?? 0));
   }, [type, token, clbTokenBalance, bins]);
 
   const onAmountChange = (type: MULTI_TYPE) => {

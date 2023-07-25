@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo, useReducer } from 'react';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
@@ -8,6 +8,7 @@ import {
   decimalLength,
   divPreserved,
   formatDecimals,
+  mulPreserved,
   numberBuffer,
   toBigintWithDecimals,
 } from '~/utils/number';
@@ -225,23 +226,13 @@ export const useTradeInput = () => {
       if (makerMargin <= 0n) {
         break;
       }
-      const { baseFeeRate, freeLiquidity, clbTokenDecimals } = token;
+      const { baseFeeRate, freeLiquidity } = token;
       const feeRate = abs(baseFeeRate);
       if (makerMargin >= freeLiquidity) {
-        tradeFee =
-          tradeFee +
-          parseUnits(
-            formatUnits(freeLiquidity * feeRate, clbTokenDecimals + FEE_RATE_DECIMAL),
-            clbTokenDecimals
-          );
+        tradeFee = tradeFee + mulPreserved(freeLiquidity, feeRate, FEE_RATE_DECIMAL);
         makerMargin = makerMargin - freeLiquidity;
       } else {
-        tradeFee =
-          tradeFee +
-          parseUnits(
-            formatUnits(makerMargin * feeRate, clbTokenDecimals + FEE_RATE_DECIMAL),
-            clbTokenDecimals
-          );
+        tradeFee = tradeFee + mulPreserved(makerMargin, feeRate, FEE_RATE_DECIMAL);
         makerMargin = 0n;
       }
     }
