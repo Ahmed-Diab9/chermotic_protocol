@@ -109,12 +109,16 @@ export const TradeBar = ({
                           {/* todo: Current Price */}
                           <p className="text-sm text-black/30">
                             Current Price:
-                            <SkeletonElement>
+                            <SkeletonElement
+                              isLoading={isLoading}
+                              width={80}
+                              className="ml-2 text-lg"
+                            >
                               {isValid(oracleVersions) && isValid(market) && (
                                 <span className="ml-2 text-lg text-black">
                                   $ {formatUnits(oracleVersions[market.address].price, 18)}
                                 </span>
-                              )}
+                              )}{' '}
                             </SkeletonElement>
                           </p>
                         </div>
