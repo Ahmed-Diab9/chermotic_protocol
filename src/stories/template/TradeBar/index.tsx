@@ -2,9 +2,8 @@ import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { parseUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import CheckIcon from '~/assets/icons/CheckIcon';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { useClaimPosition } from '~/hooks/useClaimPosition';
@@ -14,6 +13,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
 import { PopoverArrow } from '~/stories/atom/PopoverArrow';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -28,6 +28,7 @@ import '../../atom/Tabs/style.css';
 
 interface TradeBarProps {
   token?: Token;
+  market?: Market;
   markets?: Market[];
   positions?: Position[];
   oracleVersions?: Record<string, OracleVersion>;
@@ -46,6 +47,7 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
 
 export const TradeBar = ({
   token,
+  market,
   markets,
   positions,
   oracleVersions,
@@ -91,23 +93,38 @@ export const TradeBar = ({
                   </div>
                 </Popover.Button>
                 <Popover.Panel>
-                  <div className="w-full px-10 bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
+                  <div className="w-full bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
-                      <div className="flex items-end">
+                      <div className="flex items-center px-10">
                         <Tab.List className="pt-4 text-lg">
                           <Tab className="min-w-[140px]">Position</Tab>
                         </Tab.List>
-                        <div className="flex items-center gap-5 ml-auto mb-[-8px]">
+                        <div className="flex items-center gap-5 mt-4 ml-auto">
                           {lapsed && (
-                            <p className="text-sm text-black/30">
-                              Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
+                            <p className="pr-5 text-sm border-r text-black/30">
+                              Last Oracle Update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
                               s ago
                             </p>
                           )}
+                          {/* todo: Current Price */}
+                          <p className="text-sm text-black/30">
+                            Current Price:
+                            <SkeletonElement
+                              isLoading={isLoading}
+                              width={80}
+                              className="ml-2 text-lg"
+                            >
+                              {isValid(oracleVersions) && isValid(market) && (
+                                <span className="ml-2 text-lg text-black">
+                                  $ {formatUnits(oracleVersions[market.address].price, 18)}
+                                </span>
+                              )}{' '}
+                            </SkeletonElement>
+                          </p>
                         </div>
                       </div>
-                      <Tab.Panels className="pb-16 overflow-auto mx-[-20px] mt-7 max-h-[50vh]">
-                        <Tab.Panel className="px-5">
+                      <Tab.Panels className="overflow-auto mt-7 max-h-[50vh]">
+                        <Tab.Panel className="px-10 pb-10 min-w-[1080px]">
                           <article>
                             {/* guide next round */}
                             {hasGuide && (
@@ -278,6 +295,13 @@ const PositionItem = function (props: Props) {
       takerMargin,
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
+    const pnlAmount = parseUnits(
+      formatUnits(
+        position.collateral * pnlPercentage,
+        token.decimals + PNL_RATE_DECIMALS + PERCENT_DECIMALS
+      ),
+      token.decimals
+    );
     return {
       qty: withComma(formatDecimals(abs(qty), 4, 2)),
       collateral: withComma(formatDecimals(collateral, token.decimals, 2)),
@@ -288,6 +312,7 @@ const PositionItem = function (props: Props) {
       pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
         formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
       )}%`,
+      pnlAmount: formatUnits(pnlAmount, token.decimals),
       profitPrice: withComma(
         formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
       ),
@@ -459,6 +484,8 @@ const PositionItem = function (props: Props) {
               value={calculated.pnlPercentage}
               isLoading={isLoading}
             />
+            {/* todo: add PnL price (has no label, value only) */}
+            <TextRow value={calculated.pnlAmount + ' ' + token?.name} isLoading={isLoading} />
           </div>
         </div>
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">

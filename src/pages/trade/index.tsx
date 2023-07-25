@@ -205,6 +205,7 @@ const Trade = () => {
       </section>
       <TradeBar
         token={currentSelectedToken}
+        market={currentMarket}
         markets={markets}
         positions={positions}
         oracleVersions={oracleVersions}
