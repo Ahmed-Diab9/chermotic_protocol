@@ -21,7 +21,7 @@ import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
-import { abs, divPreserved, formatDecimals, mulPreserved, withComma } from '~/utils/number';
+import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
@@ -291,13 +291,8 @@ const PositionItem = function (props: Props) {
       };
     }
     const pnlPercentage = divPreserved(
-      BigInt(position.pnl),
+      position.pnl,
       takerMargin,
-      PNL_RATE_DECIMALS + PERCENT_DECIMALS
-    );
-    const pnlAmount = mulPreserved(
-      position.collateral,
-      pnlPercentage,
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
@@ -310,7 +305,7 @@ const PositionItem = function (props: Props) {
       pnlPercentage: `${pnlPercentage > 0n ? '+' : ''}${withComma(
         formatDecimals(pnlPercentage, PNL_RATE_DECIMALS, 2)
       )}%`,
-      pnlAmount: formatUnits(pnlAmount, token.decimals),
+      pnlAmount: formatUnits(position.pnl, token.decimals),
       profitPrice: withComma(
         formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2)
       ),
