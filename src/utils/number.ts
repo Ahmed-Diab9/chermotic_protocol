@@ -35,24 +35,37 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
 export const formatDecimals = (
   value?: bigint | number | string | boolean,
   tokenDecimals?: number,
-  decimalLimit?: number
+  decimalLimit?: number,
+  useFormatter?: boolean
 ) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
+    minimumFractionDigits: decimalLimit,
   });
   if (isNil(value)) return '0';
   const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
   const [numeric, decimals] = formatted.split('.');
   const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';
   if (!isValid(decimals)) {
-    return numeric + '.00';
+    if (useFormatter) {
+      return formatter.format(Number(numeric));
+    }
+    return numeric;
   }
   if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
-    return numeric + point + decimals.slice(0, decimalLimit);
+    const trimmed = numeric + point + decimals.slice(0, decimalLimit);
+    if (useFormatter) {
+      return formatter.format(Number(trimmed));
+    }
+    return trimmed;
   }
   if (isValid(decimalLimit) && decimals.length < decimalLimit) {
     const padLength = numeric.length + 1 + decimalLimit;
-    return formatted.padEnd(padLength, '0');
+    const padded = formatted.padEnd(padLength, '0');
+    if (useFormatter) {
+      return formatter.format(Number(padded));
+    }
+    return padded;
   }
 };
 
