@@ -58,7 +58,7 @@ const Pool = () => {
     onMarketSelect,
   } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
-  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
+  const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
   // const { usumBalances } = useUsumBalances();
   const { priceFeed, isFeedLoading } = usePriceFeed();
   const pools = useLiquidityPoolSummary();

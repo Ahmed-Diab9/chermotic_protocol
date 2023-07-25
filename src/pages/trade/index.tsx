@@ -53,7 +53,7 @@ const Trade = () => {
   const { tokens, onTokenSelect, currentSelectedToken, isTokenLoading } = useSettlementToken();
   const { markets, onMarketSelect, currentMarket, isMarketLoading } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
-  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
+  const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
 
   const { priceFeed, isFeedLoading } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
