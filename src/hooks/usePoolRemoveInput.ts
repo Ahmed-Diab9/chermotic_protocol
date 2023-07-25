@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
-import { fromExponentials, mulPreserved } from '~/utils/number';
+import { mulPreserved } from '~/utils/number';
+
+const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
 export const usePoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
@@ -23,11 +25,12 @@ export const usePoolRemoveInput = () => {
       if (isNaN(Number(nextAmount))) {
         return;
       }
-      setAmount(fromExponentials(nextAmount));
+      setAmount(formatter.format(Number(nextAmount)));
+      return;
     } else {
-      setAmount(String(nextAmount));
+      setAmount(formatter.format(nextAmount));
+      return;
     }
-    setAmount(String(nextAmount));
   };
 
   return { amount, maxAmount, onAmountChange };

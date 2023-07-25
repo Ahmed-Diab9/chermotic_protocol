@@ -156,28 +156,3 @@ export const toBigintWithDecimals = (value: number | string | bigint, decimals: 
 export const toBigInt = (value: number | string) => {
   return toBigintWithDecimals(value, 0);
 };
-
-export const fromExponentials = (value: number | string) => {
-  const [head, power = undefined] = String(value).split(/[eE]/);
-  if (isNil(power)) {
-    return head;
-  }
-  let converted = '';
-  const sign = Number(value) < 0 ? '-' : '';
-  const lead = head.replace('.', '');
-  let step = Number(power) + 1;
-
-  if (step < 0) {
-    converted = sign + '0.';
-    while (step++) {
-      converted += '0';
-    }
-    return converted + lead.replace(/^\-/, '');
-  } else {
-    step -= lead.length;
-    while (step--) {
-      converted += '0';
-    }
-    return lead + converted;
-  }
-};
