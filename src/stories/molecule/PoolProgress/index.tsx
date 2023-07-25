@@ -1,19 +1,18 @@
 import { Disclosure, Tab } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import CheckIcon from '~/assets/icons/CheckIcon';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
 import { Progress } from '~/stories/atom/Progress';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import '../../atom/Tabs/style.css';
 // import { LPReceipt } from "~/typings/receipt";
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
@@ -72,8 +71,6 @@ export const PoolProgress = ({
       if (isValid(openButtonRef.current) && !isOpen) {
         setHasGuide(true);
         openButtonRef.current.click();
-      } else {
-        toast.error('Check receipts manually please.');
       }
     }
     window.addEventListener(POOL_EVENT, onPool);

@@ -38,5 +38,5 @@ export interface Position extends IChromaticPosition {
   toProfit: bigint;
   collateral: bigint;
   toLoss: bigint;
-  pnl: 0 | bigint;
+  pnl: bigint;
 }

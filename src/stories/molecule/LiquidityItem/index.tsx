@@ -5,13 +5,18 @@ import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { divPreserved } from '~/utils/number';
+import { divPreserved, formatDecimals } from '~/utils/number';
 
 interface LiquidityItemProps {
   token?: Token;
   name?: string;
   bin?: OwnedBin;
 }
+const formatter = Intl.NumberFormat('en', {
+  useGrouping: true,
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
 
 export const LiquidityItem = (props: LiquidityItemProps) => {
   const { token, name, bin } = props;
@@ -21,14 +26,22 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   const removable =
     freeLiquidity > clbBalanceOfSettlement ? clbBalanceOfSettlement : bin.freeLiquidity;
   const utilized = clbBalanceOfSettlement - removable;
-  const utilizedRate = formatUnits(
-    divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
-    token.decimals - 2
-  );
-  const removableRate = formatUnits(
-    divPreserved(removable, clbBalanceOfSettlement, token.decimals),
-    token.decimals - 2
-  );
+  const utilizedRate =
+    clbBalanceOfSettlement !== 0n
+      ? formatDecimals(
+          divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
+          token.decimals - 2,
+          2
+        )
+      : '0';
+  const removableRate =
+    clbBalanceOfSettlement !== 0n
+      ? formatDecimals(
+          divPreserved(removable, clbBalanceOfSettlement, token.decimals),
+          token.decimals - 2,
+          2
+        )
+      : '0';
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기
   return (
@@ -41,7 +54,7 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         </div>
         <div className="ml-auto text-right">
           <p className="text-black/30">Qty</p>
-          <p className="mt-2 text-lg">{formatUnits(bin.clbTokenBalance, token.decimals)}</p>
+          <p className="mt-2 text-lg">{formatDecimals(bin.clbTokenBalance, token.decimals, 2)}</p>
         </div>
       </div>
       <div className="text-sm">
@@ -56,11 +69,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         />
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
-            {Number(formatUnits(removable, token.decimals))} {token.name}
+            {formatter.format(Number(formatUnits(removable, token.decimals)))} {token.name}
             <span className="text-black/30 ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
-            {Number(formatUnits(utilized, token.decimals))} {token.name}
+            {formatter.format(Number(formatUnits(utilized, token.decimals)))} {token.name}
             <span className="text-black/30 ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>
