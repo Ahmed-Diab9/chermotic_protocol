@@ -1,23 +1,28 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { WalletClient, usePublicClient, useWalletClient } from 'wagmi';
+
 import { CHAIN_ID } from '~/constants';
-import { useAppDispatch, useAppSelector } from '~/store';
-import { clientAction } from '~/store/reducer/client';
+
+import { ChromaticContext } from '~/contexts/ChromaticClient';
 
 export function useChromaticClient() {
   const publicClient = usePublicClient({ chainId: CHAIN_ID });
   const { data: walletClient } = useWalletClient({ chainId: CHAIN_ID });
 
-  const client = useAppSelector(({ client }) => client);
-  const dispatch = useAppDispatch();
+  const { isReady, walletAddress, client, setPublicClient, setWalletClient } =
+    useContext(ChromaticContext);
 
   useEffect(() => {
-    dispatch(clientAction.updatePublicClient({ publicClient }));
+    setPublicClient(publicClient);
   }, [publicClient]);
 
   useEffect(() => {
-    dispatch(clientAction.updateWalletClient({ walletClient: walletClient as WalletClient }));
+    setWalletClient(walletClient as WalletClient);
   }, [walletClient]);
 
-  return client;
+  return {
+    walletAddress,
+    isReady,
+    client,
+  };
 }

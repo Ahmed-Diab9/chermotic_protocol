@@ -8,6 +8,7 @@ import { WagmiConfig, createConfig, createStorage } from 'wagmi';
 import './typings/bigint';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
+import { ChromaticProvider } from './contexts/ChromaticClient';
 
 const config = createConfig({
   autoConnect: true,
@@ -26,9 +27,11 @@ function App() {
     >
       <Provider store={store}>
         <WagmiConfig config={config}>
-          <div className="App">
-            <RouterProvider router={router} />
-          </div>
+          <ChromaticProvider>
+            <div className="App">
+              <RouterProvider router={router} />
+            </div>
+          </ChromaticProvider>
         </WagmiConfig>
       </Provider>
     </SWRConfig>
