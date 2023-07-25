@@ -3,13 +3,13 @@ import { Dialog } from '@headlessui/react';
 import { Button } from '../../atom/Button';
 import './style.css';
 
-interface ModalExProps {
+interface ModalProps {
   label: string;
   size?: 'sm' | 'md' | 'lg';
   onClick?: () => void;
 }
 
-export const ModalEx = ({ label, size = 'md', ...props }: ModalExProps) => {
+export const Modal = ({ label, size = 'md', ...props }: ModalProps) => {
   let [isOpen, setIsOpen] = useState(true);
 
   return (
