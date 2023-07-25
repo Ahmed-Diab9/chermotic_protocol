@@ -21,6 +21,7 @@ interface MainBarProps {
   isAssetLoading?: boolean;
   isBalanceLoading?: boolean;
   showAccountPopover?: boolean;
+  isConnected?: boolean;
   onTokenSelect?: (token: Token) => unknown;
   onMarketSelect?: (market: Market) => unknown;
   onAmountChange?: (value: string) => unknown;
@@ -48,6 +49,7 @@ export const MainBar = ({
   isAssetLoading,
   isBalanceLoading,
   showAccountPopover,
+  isConnected,
   onAmountChange,
   onTokenSelect,
   onMarketSelect,
@@ -84,6 +86,7 @@ export const MainBar = ({
             assetValue={assetValue}
             isLoading={isAssetLoading}
             isBalanceLoading={isBalanceLoading}
+            isConnected={isConnected}
             onAmountChange={onAmountChange}
             onDeposit={onDeposit}
             onWithdraw={onWithdraw}

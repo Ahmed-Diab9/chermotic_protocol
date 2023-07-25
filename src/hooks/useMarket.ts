@@ -10,11 +10,11 @@ import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
 
 export const useMarket = (_interval?: number) => {
-  const { client } = useChromaticClient();
+  const { marketFactoryApi, marketApi } = useChromaticClient();
+  
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const currentMarket = useAppSelector((state) => state.market.selectedMarket);
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  const marketApi = useMemo(() => client?.market(), [client]);
+
   const dispatch = useAppDispatch();
   const { setState: setStoredMarket } = useLocalStorage('usum:market');
   const marketsRequired = {

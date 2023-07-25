@@ -21,11 +21,10 @@ const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
 function useRemoveLiquidity(props: Props) {
   const { amount, feeRate } = props;
-  const { client } = useChromaticClient();
+  const { client, routerApi } = useChromaticClient();
   const market = useAppSelector((state) => state.market.selectedMarket);
   const token = useAppSelector((state) => state.token.selectedToken);
   const { liquidityPools: pools } = useLiquidityPools();
-  const routerApi = useMemo(() => client?.router(), [client]);
   const { address } = useAccount();
   const dispatch = useAppDispatch();
   const { fetchReceipts } = usePoolReceipt();

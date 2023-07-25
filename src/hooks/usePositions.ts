@@ -3,7 +3,7 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useMarket } from '~/hooks/useMarket';
@@ -88,13 +88,15 @@ export const usePositions = () => {
   const { currentSelectedToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
   const { oracleVersions } = useOracleVersion();
-  const { client } = useChromaticClient();
+  const { client, accountApi, positionApi } = useChromaticClient();
 
   const fetchKey = {
     name: 'usePositions',
     markets: markets,
     chromaticAccount: chromaticAccount,
     client: client,
+    accountApi,
+    positionApi,
     currentSelectedToken: currentSelectedToken,
     oracleVersions: !isNilOrEmpty(oracleVersions) ? oracleVersions : null,
   };
@@ -105,11 +107,18 @@ export const usePositions = () => {
     isLoading: isPositionsLoading,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ chromaticAccount, client, currentSelectedToken, markets, oracleVersions }) => {
+    async ({
+      chromaticAccount,
+      accountApi,
+      positionApi,
+      currentSelectedToken,
+      markets,
+      oracleVersions,
+    }) => {
       const positionsPromise = markets.map(async (market) => {
         return getPositions(
-          client.account(),
-          client.position(),
+          accountApi,
+          positionApi,
           oracleVersions,
           market.address,
           currentSelectedToken.decimals
@@ -148,7 +157,10 @@ export const usePositions = () => {
     }
   );
 
-  useError({ error: [currentMarketError, error], logger });
+  useError({
+    error: checkAllProps({ currentMarketError, error }) && [currentMarketError, error],
+    logger,
+  });
 
   return {
     allMarket: {

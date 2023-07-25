@@ -28,8 +28,7 @@ function useOpenPosition(props: Props) {
   const { fetchPositions } = currentMarket;
   const { data: walletClient } = useWalletClient();
   const { fetchBalances, balances } = useUsumAccount();
-  const { client } = useChromaticClient();
-  const routerApi = useMemo(() => client?.router(), [client]);
+  const { client, routerApi } = useChromaticClient();
   const {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();

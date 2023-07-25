@@ -33,11 +33,15 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 
 import { copyText } from '~/utils/clipboard';
 import { usePositions } from '../../hooks/usePositions';
+import useClientAccount from '~/hooks/useClientAccount';
 
 const Trade = () => {
   const { connectAsync, connectors } = useConnect();
 
-  const { address: walletAddress } = useAccount();
+  const { address: walletAddress } = useClientAccount();
+
+  const { isConnected } = useAccount();
+
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
@@ -53,7 +57,7 @@ const Trade = () => {
 
   const { priceFeed, isFeedLoading } = usePriceFeed();
   const pools = useLiquidityPoolSummary();
-  const { disconnectAsync } = useDisconnect();
+  const { disconnect } = useDisconnect();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const {
     state: longInput,
@@ -118,7 +122,7 @@ const Trade = () => {
         isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
         onConnect={() => connectAsync({ connector: connectors[0] })}
         onCreateAccount={createUsumAccount}
-        onDisconnect={disconnectAsync}
+        onDisconnect={disconnect}
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
@@ -137,6 +141,7 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
+          isConnected={isConnected}
           isMarketLoading={isMarketLoading || isFeeRateLoading}
           isAssetLoading={isTokenLoading || isTokenBalanceLoading || isFeedLoading}
           isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}

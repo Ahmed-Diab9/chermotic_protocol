@@ -57,9 +57,7 @@ const receiptDetail = (
 
 const usePoolReceipt = () => {
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { client } = useChromaticClient();
-  const router = useMemo(() => client?.router(), [client]);
-  const lensApi = useMemo(() => client?.lens(), [client]);
+  const { client, routerApi, lensApi } = useChromaticClient();
   const { oracleVersions } = useOracleVersion();
   const { address } = useAccount();
   const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
@@ -135,7 +133,7 @@ const usePoolReceipt = () => {
 
   const onClaimCLBTokens = useCallback(
     async (receiptId: bigint, action?: LpReceipt['action']) => {
-      if (!isValid(router)) {
+      if (!isValid(routerApi)) {
         errorLog('no router contracts');
         toast('No routers error');
         return AppError.reject('no router contracts', 'onPoolReceipt');
@@ -147,9 +145,9 @@ const usePoolReceipt = () => {
       }
       try {
         if (action === 'add') {
-          await router.claimLiquidity(market.address, receiptId);
+          await routerApi.claimLiquidity(market.address, receiptId);
         } else if (action === 'remove') {
-          await router.withdrawLiquidity(market.address, receiptId);
+          await routerApi.withdrawLiquidity(market.address, receiptId);
         }
 
         await fetchReceipts();
@@ -162,7 +160,7 @@ const usePoolReceipt = () => {
         toast((error as any).message);
       }
     },
-    [router, market]
+    [routerApi, market]
   );
 
   const onClaimCLBTokensBatch = useCallback(async () => {
@@ -176,7 +174,7 @@ const usePoolReceipt = () => {
       toast('There are no receipts.');
       return AppError.reject('no receipts', 'onPoolReceipt');
     }
-    if (!isValid(router)) {
+    if (!isValid(routerApi)) {
       errorLog('no router contracts');
       toast('Create Chromatic account.');
       return AppError.reject('no router contracts', 'onPoolReceipt');
@@ -195,9 +193,11 @@ const usePoolReceipt = () => {
     }
     try {
       const response = await Promise.allSettled([
-        addCompleted.length > 0 ? router?.claimLiquidites(market.address, addCompleted) : undefined,
+        addCompleted.length > 0
+          ? routerApi?.claimLiquidites(market.address, addCompleted)
+          : undefined,
         removeCompleted.length > 0
-          ? router?.withdrawLiquidities(market.address, removeCompleted)
+          ? routerApi?.withdrawLiquidities(market.address, removeCompleted)
           : undefined,
       ]);
       const errors = response.filter(
@@ -215,7 +215,7 @@ const usePoolReceipt = () => {
     } catch (error) {
       toast((error as any).message);
     }
-  }, [market, receipts, router]);
+  }, [market, receipts, routerApi]);
 
   useError({ error });
 

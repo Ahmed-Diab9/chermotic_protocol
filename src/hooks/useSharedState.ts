@@ -1,5 +1,4 @@
-import useSWR from 'swr';
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 
 let listeners: Array<() => void> = [];
 function emitChanges() {
@@ -7,13 +6,13 @@ function emitChanges() {
     listener();
   }
 }
-let storeValue= {}
+let storeValue: { [key: string]: any } = {};
 const store = {
-  setState(object :any) {
+  setState(object: any) {
     storeValue = {
       ...storeValue,
-      ...object
-    }
+      ...object,
+    };
     emitChanges();
   },
   subscribe(listener: () => void) {
@@ -27,17 +26,19 @@ const store = {
   },
 };
 
-function useSharedState(key: string, initialState: any) {
+function useSharedState<T>(key: string, initialState?: T) {
   const data = useSyncExternalStore(store.subscribe, store.getSnapshot);
-  const setter = (value:any)=>{
+  const setter = (value: T) => {
     store.setState({
-      [key]: value
-    })
-  }
-  return [
-    data,
-    setter
-  ] as const;
+      [key]: value,
+    });
+  };
+  useEffect(() => {
+    if (initialState) {
+      setter(initialState);
+    }
+  }, []);
+  return [data[key] as T, setter] as const;
 }
 
 export default useSharedState;

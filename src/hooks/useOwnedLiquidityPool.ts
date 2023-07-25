@@ -16,15 +16,15 @@ const logger = Logger('useOwneLiquidityPoolByMarket');
 
 export const useOwnedLiquidityPool = () => {
   const { address } = useAccount();
-  // const marketAddress = useAppSelector((state) => state.market.selectedMarket)?.address;
+
   const { currentSelectedToken } = useSettlementToken();
-  const { client } = useChromaticClient();
+  const { lensApi, marketApi } = useChromaticClient();
   const fetchKey = {
     name: 'getOwnedPool',
     address: address,
     marketAddress: useAppSelector((state) => state.market.selectedMarket)?.address,
-    lensApi: useMemo(() => client?.lens(), [client]),
-    marketApi: useMemo(() => client?.market(), [client]),
+    lensApi,
+    marketApi,
     currentSelectedToken: currentSelectedToken,
   };
 

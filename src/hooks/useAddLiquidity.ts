@@ -21,8 +21,7 @@ interface Props {
 function useAddLiquidity(props: Props) {
   const { amount, binFeeRates } = props;
   const market = useAppSelector((state) => state.market.selectedMarket);
-  const { client } = useChromaticClient();
-  const routerApi = client?.router();
+  const { routerApi } = useChromaticClient();
   const token = useAppSelector((state) => state.token.selectedToken);
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(false);

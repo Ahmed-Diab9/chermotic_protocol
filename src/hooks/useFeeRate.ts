@@ -7,8 +7,7 @@ import { checkAllProps } from '../utils';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
-  const { client } = useChromaticClient();
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
+  const { marketFactoryApi } = useChromaticClient();
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
 
   const fetchKeyData = {

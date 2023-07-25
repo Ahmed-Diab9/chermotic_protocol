@@ -41,6 +41,7 @@ interface AccountPopoverProps {
   assetValue?: bigint;
   isLoading?: boolean;
   isBalanceLoading?: boolean;
+  isConnected?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: (onAfterDeposit?: () => unknown) => unknown;
   onWithdraw?: (onAfterWithdraw?: () => unknown) => unknown;
@@ -60,6 +61,7 @@ export const AccountPopover = ({
   assetValue,
   isLoading,
   isBalanceLoading,
+  isConnected,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -68,7 +70,6 @@ export const AccountPopover = ({
   ...props
 }: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
-
   return (
     <>
       <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
@@ -76,7 +77,7 @@ export const AccountPopover = ({
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>
         <div className="flex flex-col gap-1 mr-10 text-right">
-          {isLoaded ? (
+          {isConnected && isLoaded ? (
             <>
               <h2 className="text-xl">
                 <SkeletonElement isLoading={isBalanceLoading} width={120}>

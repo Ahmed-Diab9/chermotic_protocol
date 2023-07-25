@@ -17,8 +17,7 @@ const useTokenTransaction = () => {
   const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
     useUsumAccount();
   const token = useAppSelector((state) => state.token.selectedToken);
-  const { client } = useChromaticClient();
-  const accountApi = useMemo(() => client?.account(), [client]);
+  const { accountApi, client } = useChromaticClient();
   const [amount, setAmount] = useState('');
   const { data: walletClient } = useWalletClient();
   const { data: tokenContractData, writeAsync: transferToken } = useContractWrite({

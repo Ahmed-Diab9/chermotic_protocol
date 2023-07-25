@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -10,9 +10,8 @@ import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
 
 export const useSettlementToken = () => {
-  const { client } = useChromaticClient();
+  const { marketFactoryApi } = useChromaticClient();
   const currentSelectedToken = useAppSelector((state) => state.token.selectedToken);
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
 
   const dispatch = useAppDispatch();
   const { setState: setStoredToken } = useLocalStorage('usum:token');

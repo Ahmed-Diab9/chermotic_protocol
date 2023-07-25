@@ -13,12 +13,12 @@ interface Props {
 
 function useClosePosition(props: Props) {
   const { marketAddress, positionId } = props;
-  const { client } = useChromaticClient();
+  const { routerApi } = useChromaticClient();
   const { allMarket: allPositions } = usePositions();
   const { positions, fetchPositions } = allPositions;
 
   const onClosePosition = async function () {
-    if (isNil(client?.router())) {
+    if (isNil(routerApi)) {
       errorLog('no router contracts');
       return AppError.reject('no router contracts', 'onClosePosition');
     }
@@ -31,7 +31,7 @@ function useClosePosition(props: Props) {
       return AppError.reject('no positions', 'onClosePosition');
     }
     try {
-      await client?.router()?.closePosition(position.marketAddress, position.id);
+      await routerApi?.closePosition(position.marketAddress, position.id);
 
       fetchPositions();
     } catch (error) {

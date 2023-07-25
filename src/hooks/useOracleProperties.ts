@@ -10,14 +10,14 @@ import { checkAllProps } from '~/utils';
 import { formatDecimals } from '~/utils/number';
 
 export const useOracleProperties = () => {
-  const { client } = useChromaticClient();
+  const { marketApi, marketFactoryApi } = useChromaticClient();
   const { currentMarket } = useMarket();
 
   const fetchKeyData = {
     name: 'useOracleProperties',
     marketAddress: currentMarket?.address,
-    marketApi: useMemo(() => client?.market(), [client]),
-    marketFactoryApi: useMemo(() => client?.marketFactory(), [client]),
+    marketApi,
+    marketFactoryApi,
   };
 
   const format = (value: number) => Number(formatDecimals(value, LEVERAGE_DECIMALS));

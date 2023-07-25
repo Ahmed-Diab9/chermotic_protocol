@@ -20,7 +20,7 @@ export const useOwnedLiquidityPools = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
 
   const { markets } = useMarket();
-  const { client } = useChromaticClient();
+  const { client, lensApi } = useChromaticClient();
   const logger = Logger(useOwnedLiquidityPools);
 
   const fetchKey = {
@@ -28,7 +28,7 @@ export const useOwnedLiquidityPools = () => {
     address: address,
     tokenAddress: token?.address,
     marketAddresses: useMemo(() => markets?.map((market) => market.address), [markets]),
-    lensApi: useMemo(() => client?.lens(), [client]),
+    lensApi,
   };
 
   const {

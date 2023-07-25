@@ -12,7 +12,7 @@ const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
   const { markets } = useMarket();
   const { address } = useAccount();
-  const { client } = useChromaticClient();
+  const { marketApi } = useChromaticClient();
 
   // const marketApi = useMemo(() => {
   //   return client?.market();
@@ -20,7 +20,7 @@ const useOracleVersion = () => {
   // const marketAddresses = (markets ?? []).map((market) => market.address);
   const fetchKeyData = {
     name: 'getOracleVersion',
-    marketApi: useMemo(() => client?.market(), [client]),
+    marketApi,
     marketAddresses: useMemo(() => (markets ?? []).map((market) => market.address), [markets]),
     address: address,
   };

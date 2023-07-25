@@ -23,8 +23,7 @@ function useRemoveLiquidities(props: Props) {
   const token = useAppSelector((state) => state.token.selectedToken);
   const market = useAppSelector((state) => state.market.selectedMarket);
   const { liquidityPool: pool } = useLiquidityPool();
-  const { client } = useChromaticClient();
-  const routerApi = useMemo(() => client?.router(), [client]);
+  const { routerApi } = useChromaticClient();
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const dispatch = useAppDispatch();

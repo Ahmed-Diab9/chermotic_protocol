@@ -20,20 +20,16 @@ const logger = Logger('useLiquidityPool.ts');
 const { encodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
-  const { client } = useChromaticClient();
+  const { lensApi, marketFactoryApi, marketApi } = useChromaticClient();
 
   const { tokens } = useSettlementToken();
-  // const marketApi = useMemo(() => client?.market(), [client]);
-  // const lensApi = useMemo(() => client?.lens(), [client]);
-  // const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  // const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
 
   const fetchKeyData = {
     name: 'liquidityPools',
     tokenAddresses: useMemo(() => tokens?.map((token) => token.address), [tokens]),
-    lensApi: useMemo(() => client?.lens(), [client]),
-    marketFactoryApi: useMemo(() => client?.marketFactory(), [client]),
-    marketApi: useMemo(() => client?.market(), [client]),
+    lensApi,
+    marketFactoryApi,
+    marketApi,
   };
   const {
     data: liquidityPools,
@@ -76,12 +72,12 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const currentMarketAddress = marketAddress || market?.address;
   const dispatch = useAppDispatch();
 
-  const { client } = useChromaticClient();
+  const { lensApi, marketApi } = useChromaticClient();
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
-    lensApi: useMemo(() => client?.lens(), [client]),
-    marketApi: useMemo(() => client?.market(), [client]),
+    lensApi,
+    marketApi,
     marketAddress: currentMarketAddress,
   };
 

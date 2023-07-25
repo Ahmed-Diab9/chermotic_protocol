@@ -15,14 +15,13 @@ interface Props {
 
 export function useClaimPosition(props: Props) {
   const { marketAddress, positionId } = props;
-  const { client } = useChromaticClient();
+  const { routerApi } = useChromaticClient();
   const { fetchBalances } = useUsumAccount();
   const { allMarket:allPositions } = usePositions();
   const { positions, fetchPositions } = allPositions;
   const { oracleVersions } = useOracleVersion();
   const onClaimPosition = async function () {
     try {
-      const routerApi = client?.router();
       if (isNil(routerApi)) {
         return AppError.reject('no router contractsd', 'onClaimPosition');
       }
