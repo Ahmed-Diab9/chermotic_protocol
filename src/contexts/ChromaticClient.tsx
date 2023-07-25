@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useMemo, type ReactNode, useEffect } from 'react';
 
-import { PublicClient, WalletClient } from 'wagmi';
+import { Address, PublicClient, WalletClient } from 'wagmi';
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNotNil } from 'ramda';
 
 type ContextValue = {
   readonly isReady: boolean;
-  readonly walletAddress?: `0x${string}`;
+  readonly walletAddress?: Address;
   readonly client: Client;
   readonly setPublicClient: (publicClient: PublicClient) => void;
   readonly setWalletClient: (walletClient: WalletClient) => void;
@@ -24,7 +24,7 @@ export const ChromaticContext = React.createContext<ContextValue>(initialValue);
 function useContextValue(): ContextValue {
   const [client, setClient] = useState<Client>(initialValue.client);
   const [isReady, setIsReady] = useState<boolean>(initialValue.isReady);
-  const [walletAddress, setWalletAddress] = useState<Partial<`0x${string}`>>();
+  const [walletAddress, setWalletAddress] = useState<Partial<Address>>();
 
   const setPublicClient = useCallback((publicClient?: PublicClient) => {
     if (client.publicClient === publicClient) return;
