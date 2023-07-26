@@ -9,4 +9,14 @@
   .tooltip-base {
     @apply max-w-[420px];
   }
+
+  .tooltip-solid {
+    @apply bg-black text-white font-normal;
+  }
+  .tooltip-outline {
+    @apply bg-white text-black font-medium border border-black;
+    &.react-tooltip__place-left .react-tooltip-arrow {
+      @apply border-t border-r border-black mr-[-.5px];
+    }
+  }
 }
