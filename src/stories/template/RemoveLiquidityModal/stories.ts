@@ -36,6 +36,6 @@ export const Default: Story = {
       decimals: 6,
     },
     amount: '1000',
-    maxAmount: 20000,
+    maxAmount: 20000n,
   },
 };

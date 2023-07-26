@@ -65,7 +65,7 @@ function useRemoveLiquidity(props: Props) {
       toast('Create Chromatic account.');
       return;
     }
-    const expandedAmount = parseUnits(formatter.format(Number(amount)), token!.decimals);
+    const expandedAmount = parseUnits(amount, token!.decimals);
 
     try {
       await routerApi.removeLiquidity(pool.marketAddress, {

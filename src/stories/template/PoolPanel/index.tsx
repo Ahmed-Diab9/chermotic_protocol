@@ -53,8 +53,8 @@ interface PoolPanelProps {
   onAmountChange?: (value: string) => unknown;
 
   removeAmount?: string;
-  maxRemoveAmount?: number;
-  onRemoveAmountChange?: (nextAmount: string) => unknown;
+  maxRemoveAmount?: bigint;
+  onRemoveAmountChange?: (nextAmount: string | bigint) => unknown;
 
   multiType?: MULTI_TYPE;
   multiAmount?: number;

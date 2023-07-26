@@ -24,7 +24,7 @@ export interface LpReceipt {
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
-  burningAmount: bigint | undefined;
+  burningAmount: bigint;
   action: LpReceiptAction;
 }
 
@@ -124,7 +124,7 @@ const usePoolReceipt = () => {
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, market?.description),
-            burningAmount: action === 0 ? undefined : ownedBin.burningTokenAmount,
+            burningAmount: action === 0 ? 0n : ownedBin.burningTokenAmount,
           } satisfies LpReceipt;
         })
         .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);

@@ -36,36 +36,28 @@ export const formatDecimals = (
   value?: bigint | number | string | boolean,
   tokenDecimals?: number,
   decimalLimit?: number,
-  useFormatter?: boolean
+  useGrouping?: boolean
 ) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
     minimumFractionDigits: decimalLimit,
+    useGrouping: isValid(useGrouping) ? useGrouping : false,
   });
   if (isNil(value)) return '0';
   const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
   const [numeric, decimals] = formatted.split('.');
   const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';
   if (!isValid(decimals)) {
-    if (useFormatter) {
-      return formatter.format(Number(numeric));
-    }
-    return numeric;
+    return formatter.format(Number(numeric));
   }
   if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
     const trimmed = numeric + point + decimals.slice(0, decimalLimit);
-    if (useFormatter) {
-      return formatter.format(Number(trimmed));
-    }
-    return trimmed;
+    return formatter.format(Number(trimmed));
   }
   if (isValid(decimalLimit) && decimals.length < decimalLimit) {
     const padLength = numeric.length + 1 + decimalLimit;
     const padded = formatted.padEnd(padLength, '0');
-    if (useFormatter) {
-      return formatter.format(Number(padded));
-    }
-    return padded;
+    return formatter.format(Number(padded));
   }
 };
 
