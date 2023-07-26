@@ -15,16 +15,12 @@ interface Props {
 
 export function useClaimPosition(props: Props) {
   const { marketAddress, positionId } = props;
-  const { routerApi } = useChromaticClient();
+  const { client } = useChromaticClient();
   const { fetchBalances } = useUsumAccount();
-  const { allMarket:allPositions } = usePositions();
-  const { positions, fetchPositions } = allPositions;
+  const { positions, fetchPositions } = usePositions();
   const { oracleVersions } = useOracleVersion();
   const onClaimPosition = async function () {
     try {
-      if (isNil(routerApi)) {
-        return AppError.reject('no router contractsd', 'onClaimPosition');
-      }
       const position = positions?.find(
         (position) => position.marketAddress === marketAddress && position.id === positionId
       );
@@ -38,6 +34,7 @@ export function useClaimPosition(props: Props) {
         toast('This position is not closed yet.');
         return AppError.reject('the selected position is not closed', 'onClaimPosition');
       }
+      const routerApi = client.router();
       await routerApi.claimPosition(marketAddress, position.id);
 
       await fetchPositions();

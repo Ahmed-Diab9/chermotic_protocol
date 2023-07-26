@@ -1,10 +1,7 @@
 import { LEVERAGE_DECIMALS, QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
-import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
-import { useWalletClient } from 'wagmi';
-import { useAppSelector } from '~/store';
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
@@ -14,21 +11,19 @@ import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { usePositions } from './usePositions';
 import { useUsumAccount } from './useUsumAccount';
+import { useSettlementToken } from './useSettlementToken';
+import { useMarket } from './useMarket';
 
 interface Props {
   state?: TradeInput;
 }
 
-const logger = Logger('useOpenPosition');
-function useOpenPosition(props: Props) {
-  const { state } = props;
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const { currentMarket } = usePositions();
-  const { fetchPositions } = currentMarket;
-  const { data: walletClient } = useWalletClient();
-  const { fetchBalances, balances } = useUsumAccount();
-  const { client, routerApi } = useChromaticClient();
+function useOpenPosition({ state }: Props) {
+  const { fetchPositions } = usePositions();
+  const { accountAddress, fetchBalances, balances } = useUsumAccount();
+  const { currentToken } = useSettlementToken();
+  const { currentMarket } = useMarket();
+  const { client } = useChromaticClient();
   const {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
@@ -38,29 +33,24 @@ function useOpenPosition(props: Props) {
       toast('Input data needed');
       return;
     }
-    if (isNil(token)) {
+    if (isNil(currentToken)) {
       toast('No settlement tokens');
       return;
     }
-    if (isNil(market)) {
+    if (isNil(currentMarket)) {
       errorLog('no markets selected');
       toast('No markets selected.');
       return;
     }
-    if (isNil(walletClient)) {
-      errorLog('no signers');
-      toast('No signers. Create your account.');
-      return;
-    }
-    if (isNil(routerApi)) {
-      errorLog('no routers');
-      toast('No routers.');
+    if (isNil(accountAddress)) {
+      errorLog('no accountAddress');
+      toast('No accountAddress. Create your account.');
       return;
     }
     if (
-      isNotNil(token) &&
-      isNotNil(balances?.[token!.address]) &&
-      balances![token!.address] < parseUnits(state.collateral, token.decimals)
+      isNotNil(currentToken) &&
+      isNotNil(balances?.[currentToken!.address]) &&
+      balances![currentToken!.address] < parseUnits(state.collateral, currentToken.decimals)
     ) {
       toast('Not enough collateral.');
       return;
@@ -68,8 +58,8 @@ function useOpenPosition(props: Props) {
 
     const quantity = toBigintWithDecimals(state.quantity, QTY_DECIMALS);
     const leverage = Number(toBigintWithDecimals(state.leverage, LEVERAGE_DECIMALS));
-    const takerMargin = toBigintWithDecimals(state.takerMargin, token.decimals);
-    const makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
+    const takerMargin = toBigintWithDecimals(state.takerMargin, currentToken.decimals);
+    const makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
 
     // FIXME
     // Proper decimals needed.
@@ -92,7 +82,9 @@ function useOpenPosition(props: Props) {
       // TODO apply max fee allowance
       const maxAllowableTradingFee = mulPreserved(makerMargin, maxFeeAllowance, 10 + 2);
 
-      await routerApi.openPosition(market.address, {
+      const routerApi = client.router();
+
+      await routerApi.openPosition(currentMarket.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
         leverage,
         takerMargin,

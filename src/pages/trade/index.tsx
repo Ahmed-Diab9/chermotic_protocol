@@ -33,7 +33,7 @@ import { useUsumAccount } from '~/hooks/useUsumAccount';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
 import { copyText } from '~/utils/clipboard';
-import { usePositions } from '../../hooks/usePositions';
+import { usePositions } from '~/hooks/usePositions';
 import useClientAccount from '~/hooks/useClientAccount';
 
 const Trade = () => {
@@ -46,7 +46,6 @@ const Trade = () => {
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
-    // isAccountAddressLoading,
     isChromaticBalanceLoading,
     status,
     balances,
@@ -103,8 +102,7 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { currentMarket: currentMarketPositions } = usePositions();
-  const { positions, isPositionsLoading } = currentMarketPositions;
+  const { currentMarketPositions: positions, isLoading: isPositionsLoading } = usePositions();
   useTokenLocal();
   useMarketLocal();
 
