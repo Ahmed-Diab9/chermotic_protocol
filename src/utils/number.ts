@@ -33,27 +33,24 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
 };
 
 export const formatDecimals = (
-  value?: bigint | number | string | boolean,
+  value?: bigint | number | string,
   tokenDecimals?: number,
-  decimalLimit?: number
+  decimalLimit?: number,
+  useGrouping?: boolean
 ) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
+    minimumFractionDigits: decimalLimit,
+    useGrouping: useGrouping || false,
   });
-  if (isNil(value)) return '0';
-  const formatted = formatUnits(BigInt(value), tokenDecimals ?? 0);
-  const [numeric, decimals] = formatted.split('.');
-  const point = isValid(decimalLimit) && decimalLimit !== 0 ? '.' : '';
-  if (!isValid(decimals)) {
-    return numeric + '.00';
+  let numberValue = Number(value);
+  if (isNaN(numberValue)) return '0';
+  if (!Number.isInteger(numberValue)) {
+    console.warn('The value is not Integer', value)
+    numberValue = Math.floor(numberValue);
   }
-  if (isValid(decimalLimit) && decimals.length >= decimalLimit) {
-    return numeric + point + decimals.slice(0, decimalLimit);
-  }
-  if (isValid(decimalLimit) && decimals.length < decimalLimit) {
-    const padLength = numeric.length + 1 + decimalLimit;
-    return formatted.padEnd(padLength, '0');
-  }
+  const valueWithTokenDecimals = formatUnits(BigInt(numberValue), tokenDecimals ?? 0);
+  return formatter.format(Number(valueWithTokenDecimals));
 };
 
 export const formatBalance = (balance: bigint, token: Token, price: Price) => {

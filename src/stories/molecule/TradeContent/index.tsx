@@ -1,11 +1,11 @@
 import { Listbox, Switch } from '@headlessui/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import '~/stories/atom/Select/style.css';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import '~/stories/atom/Toggle/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
@@ -86,7 +86,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     if (isNil(market)) {
       return '-';
     }
-    return withComma(formatDecimals(market.oracleValue.price, oracleDecimals, 2));
+    return formatDecimals(market.oracleValue.price, oracleDecimals, 2, true);
   }, [market, token]);
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
     string | undefined,
@@ -119,8 +119,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const price = await market.oracleValue.price;
     if (Number(input.collateral) === 0) {
       return setPrices([
-        withComma(formatDecimals(price, oracleDecimals, 2)),
-        withComma(formatDecimals(price, oracleDecimals, 2)),
+        formatDecimals(price, oracleDecimals, 2, true),
+        formatDecimals(price, oracleDecimals, 2, true),
       ]);
     }
 
@@ -143,14 +143,14 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       BigInt(numberBuffer());
 
     setPrices([
-      withComma(formatDecimals(price + profitDelta, oracleDecimals, 2)),
-      withComma(formatDecimals(price - lossDelta, oracleDecimals, 2)),
+      formatDecimals(price + profitDelta, oracleDecimals, 2, true),
+      formatDecimals(price - lossDelta, oracleDecimals, 2, true),
     ]);
     setExpectedRatio({
       profitRatio: Number((profitDelta * 100n * 10000n) / price),
       lossRatio: Number((lossDelta * 100n * 10000n) / price),
     });
-  }, [input, token]);
+  }, [input, token, market]);
 
   useEffect(() => {
     createLiquidation();
@@ -165,7 +165,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           <p className="text-black/30">
             <SkeletonElement isLoading={isLoading} width={40}>
               {balances && token && balances[token.address]
-                ? withComma(formatDecimals(balances[token.address], token.decimals, 5))
+                ? formatDecimals(balances[token.address], token.decimals, 5, true)
                 : 0}{' '}
               {token?.name}
             </SkeletonElement>

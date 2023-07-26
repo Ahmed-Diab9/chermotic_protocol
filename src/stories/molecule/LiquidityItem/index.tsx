@@ -12,11 +12,6 @@ interface LiquidityItemProps {
   name?: string;
   bin?: OwnedBin;
 }
-const formatter = Intl.NumberFormat('en', {
-  useGrouping: true,
-  maximumFractionDigits: 2,
-  minimumFractionDigits: 2,
-});
 
 export const LiquidityItem = (props: LiquidityItemProps) => {
   const { token, name, bin } = props;
@@ -69,11 +64,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         />
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
-            {formatter.format(Number(formatUnits(removable, token.decimals)))} {token.name}
+            {formatDecimals(removable, token.decimals, 2)} {token.name}
             <span className="text-black/30 ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
-            {formatter.format(Number(formatUnits(utilized, token.decimals)))} {token.name}
+            {formatDecimals(utilized, token.decimals, 2)} {token.name}
             <span className="text-black/30 ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>

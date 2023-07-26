@@ -2,8 +2,8 @@ import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { formatUnits } from 'viem';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { MULTI_TYPE } from '~/configs/pool';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -53,8 +53,8 @@ interface PoolPanelProps {
   onAmountChange?: (value: string) => unknown;
 
   removeAmount?: string;
-  maxRemoveAmount?: number;
-  onRemoveAmountChange?: (nextAmount: string) => unknown;
+  maxRemoveAmount?: bigint;
+  onRemoveAmountChange?: (nextAmount: string | bigint) => unknown;
 
   multiType?: MULTI_TYPE;
   multiAmount?: number;
@@ -704,8 +704,7 @@ const BinItem = (props: BinItemProps) => {
             <p className="text-black/30 w-[80px]">CLB Qty</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
-                {bin &&
-                  formatter.format(Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals)))}
+                {bin && formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, 2, true)}
               </SkeletonElement>
             </p>
           </div>
@@ -713,7 +712,8 @@ const BinItem = (props: BinItemProps) => {
             <p className="text-black/30 w-[80px]">Free Liquidity</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
-                {formatUnits(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0)} {token?.name}
+                {formatDecimals(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0, 2, true)}{' '}
+                {token?.name}
               </SkeletonElement>
             </p>
           </div>
@@ -723,7 +723,7 @@ const BinItem = (props: BinItemProps) => {
             <p className="text-black/30 w-[100px]">CLB Price</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
-                {bin && formatUnits(bin.clbTokenValue, bin.clbTokenDecimals)}
+                {bin && formatDecimals(bin.clbTokenValue, bin.clbTokenDecimals, 2, true)}{' '}
                 {`${token?.name}/CLB`}
               </SkeletonElement>
             </p>

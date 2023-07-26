@@ -4,8 +4,6 @@ import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useAppSelector } from '~/store';
 import { mulPreserved } from '~/utils/number';
 
-const formatter = Intl.NumberFormat('en', { useGrouping: false });
-
 export const usePoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
   const bins = useAppSelector((state) => state.pools.selectedBins);
@@ -14,21 +12,30 @@ export const usePoolRemoveInput = () => {
       return;
     }
     return bins.reduce((record, bin) => {
-      return record + Number(formatUnits(bin.clbTokenBalance, bin.clbTokenDecimals));
-    }, 0);
+      return record + bin.clbTokenBalance;
+    }, 0n);
   }, [bins]);
+  const binDecimals = bins[0]?.clbTokenDecimals;
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: binDecimals,
+    useGrouping: false,
+  });
 
-  const onAmountChange = (nextAmount: number | string) => {
+  const onAmountChange = (nextAmount: string | bigint) => {
     if (typeof nextAmount === 'string') {
       nextAmount = nextAmount.replace(/,/g, '');
-
-      if (isNaN(Number(nextAmount))) {
+      if (nextAmount.length === 0) {
+        setAmount('');
         return;
       }
-      setAmount(formatter.format(Number(nextAmount)));
+      const parsed = Number(nextAmount);
+      if (isNaN(parsed)) {
+        return;
+      }
+      setAmount(formatter.format(parsed));
       return;
     } else {
-      setAmount(formatter.format(nextAmount));
+      setAmount(formatUnits(nextAmount, binDecimals));
       return;
     }
   };

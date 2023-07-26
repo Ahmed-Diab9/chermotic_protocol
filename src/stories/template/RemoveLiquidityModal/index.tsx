@@ -19,8 +19,8 @@ export interface RemoveLiquidityModalProps {
   selectedBin?: OwnedBin;
   token?: Token;
   amount?: string;
-  maxAmount?: number;
-  onAmountChange?: (nextAmount: string) => unknown;
+  maxAmount?: bigint;
+  onAmountChange?: (nextAmount: string | bigint) => unknown;
 }
 
 const formatter = Intl.NumberFormat('en', { useGrouping: false });
@@ -131,7 +131,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                     label="All"
                     size="sm"
                     onClick={() => {
-                      onAmountChange?.((maxAmount ?? 0).toString());
+                      onAmountChange?.(maxAmount ?? 0n);
                     }}
                   />
                 </div>
@@ -144,7 +144,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       unit="CLB"
                       placeholder="0"
                       autoCorrect
-                      max={maxAmount}
+                      max={Number(maxAmount)}
                       value={amount}
                       onChange={(value) => {
                         onAmountChange?.(value);

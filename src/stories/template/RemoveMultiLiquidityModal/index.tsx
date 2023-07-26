@@ -1,6 +1,5 @@
 import { Dialog } from '@headlessui/react';
 import { useMemo } from 'react';
-import { formatUnits } from 'viem';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 import { useAppDispatch } from '~/store';
@@ -19,11 +18,6 @@ import { Button } from '../../atom/Button';
 import '../Modal/style.css';
 
 const logger = Logger('RemoveMultiLiquidityModal');
-const formatter = Intl.NumberFormat('en', {
-  useGrouping: true,
-  maximumFractionDigits: 2,
-  minimumFractionDigits: 2,
-});
 export interface RemoveMultiLiquidityModalProps {
   selectedBins?: OwnedBin[];
   amount?: number;
@@ -46,29 +40,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
   const convertedAmount = useMemo(() => {
     if (type === MULTI_ALL) {
       return selectedBins.reduce((sum, current) => {
-        sum =
-          sum +
-          Number(
-            formatDecimals(
-              current.clbBalanceOfSettlement,
-              current.clbTokenDecimals,
-              current.clbTokenDecimals
-            )
-          );
+        sum = sum + current.clbBalanceOfSettlement;
         return sum;
-      }, 0);
+      }, 0n);
     } else {
       return selectedBins.reduce((sum, current) => {
-        sum =
-          sum +
-          Number(
-            formatUnits(
-              current.clbBalanceOfSettlement * current.removableRate,
-              current.clbTokenDecimals * 2
-            )
-          );
+        sum = sum + current.clbBalanceOfSettlement;
         return sum;
-      }, 0);
+      }, 0n);
     }
   }, [type, selectedBins]);
 
@@ -221,7 +200,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                    * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
                    */}
                   {/* {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name} */}
-                  {formatter.format(convertedAmount)} {token?.name}
+                  {formatDecimals(convertedAmount, token?.decimals, 2)} {token?.name}
                 </p>
               </div>
               <div className="flex items-center justify-between gap-6 mt-3">

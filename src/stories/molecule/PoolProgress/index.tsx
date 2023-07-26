@@ -18,9 +18,32 @@ import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { formatDecimals } from '~/utils/number';
+import { divPreserved, formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
+
+const formatter = Intl.NumberFormat('en', {
+  useGrouping: true,
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
+export const receiptDetail = (receipt: LpReceipt, token: Token) => {
+  const { burningAmount = 0n, amount, status, action } = receipt;
+  if (status === 'standby') {
+    return 'Waiting for the next oracle round';
+  }
+  if (action === 'add') {
+    return formatDecimals(receipt.amount, token.decimals, 2);
+  }
+  const amountRatio = divPreserved(burningAmount, amount, 2);
+  return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
+    amount,
+    token.decimals,
+    2,
+    true
+  )} ${token.name} (${formatter.format(amountRatio)}%)`;
+};
 
 interface PoolProgressProps {
   token?: Token;
@@ -166,17 +189,14 @@ export const PoolProgress = ({
                               disabled={!isClaimEnabled}
                             />
                           </div>
-                          {isValid(market) &&
+                          {isValid(token) &&
+                            isValid(market) &&
                             (receipts || previousReceipts).map((receipt, index) => (
                               <ProgressItem
                                 key={`all-${receipt.id.toString()}-${index}`}
                                 // title={receipt.title}
                                 status={receipt.status}
-                                detail={
-                                  receipt.status === 'standby'
-                                    ? 'Waiting for the next oracle round'
-                                    : formatDecimals(receipt.amount, token?.decimals, 2)
-                                }
+                                detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
                                 progressPercent={0}
@@ -208,7 +228,8 @@ export const PoolProgress = ({
                               onClick={() => onReceiptClaimBatch?.()}
                             />
                           </div>
-                          {isValid(market) &&
+                          {isValid(token) &&
+                            isValid(market) &&
                             (receipts || previousReceipts)
                               .filter((receipt) => receipt.action === 'add')
                               .map((receipt, index) => (
@@ -216,11 +237,7 @@ export const PoolProgress = ({
                                   key={`minting-${receipt.id.toString()}-${index}`}
                                   // title={receipt.title}
                                   status={receipt.status}
-                                  detail={
-                                    receipt.status === 'standby'
-                                      ? 'Waiting for the next oracle round'
-                                      : formatDecimals(receipt.amount, token?.decimals, 2)
-                                  }
+                                  detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
                                   progressPercent={0}
@@ -252,7 +269,8 @@ export const PoolProgress = ({
                               onClick={() => onReceiptClaimBatch?.()}
                             />
                           </div>
-                          {isValid(market) &&
+                          {isValid(token) &&
+                            isValid(market) &&
                             (receipts || previousReceipts)
                               .filter((receipt) => receipt.action === 'remove')
                               .map((receipt, index) => (
@@ -260,11 +278,7 @@ export const PoolProgress = ({
                                   key={`burning-${receipt.id.toString()}-${index}`}
                                   // title={receipt.title}
                                   status={receipt.status}
-                                  detail={
-                                    receipt.status === 'standby'
-                                      ? 'Waiting for the next oracle round'
-                                      : formatDecimals(receipt.amount, token?.decimals, 2)
-                                  }
+                                  detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
                                   progressPercent={0}
