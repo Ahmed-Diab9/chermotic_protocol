@@ -9,7 +9,7 @@ import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
 import { Logger, errorLog } from '~/utils/log';
-import { toBigintWithDecimals } from '~/utils/number';
+import { mulPreserved, toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { usePositions } from './usePositions';
@@ -72,6 +72,10 @@ function useOpenPosition(props: Props) {
     const takerMargin = toBigintWithDecimals(state.takerMargin, token.decimals);
     const makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
 
+    // FIXME
+    // Proper decimals needed.
+    const maxFeeAllowance = toBigintWithDecimals(state.maxFeeAllowance, 10);
+
     if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
       toast('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
@@ -87,7 +91,7 @@ function useOpenPosition(props: Props) {
       // max allowance fee 5 %
       // maxallowableTradingFee = markermargin * 5%
       // TODO apply max fee allowance
-      const maxAllowableTradingFee = makerMargin;
+      const maxAllowableTradingFee = mulPreserved(makerMargin, maxFeeAllowance, 10 + 2);
 
       await routerApi.openPosition(market.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),

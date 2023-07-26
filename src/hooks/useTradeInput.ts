@@ -26,6 +26,7 @@ const initialTradeInput = {
   takerMargin: 0,
   makerMargin: 0,
   leverage: '10',
+  maxFeeAllowance: 0.3,
 } satisfies TradeInput;
 
 // const trimDecimals = (num: number, decimals: number) => {
@@ -37,7 +38,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     const nextMethod = state.method === 'collateral' ? 'quantity' : 'collateral';
     switch (nextMethod) {
       case 'collateral': {
-        const { direction, collateral, leverage, takeProfit } = state;
+        const { direction, collateral, leverage, takeProfit, maxFeeAllowance } = state;
         const defaultLeverage = 2;
         if (Number(leverage) === 0) {
           state = {
@@ -50,6 +51,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: String(100 / defaultLeverage),
             takerMargin: Number(collateral),
             makerMargin: Number(collateral) * (Number(takeProfit) / 100) * defaultLeverage,
+            maxFeeAllowance,
           };
         } else {
           state = {
@@ -62,12 +64,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: String(100 / Number(leverage)),
             takerMargin: Number(collateral),
             makerMargin: Number(collateral) * (Number(takeProfit) / 100) * Number(leverage),
+            maxFeeAllowance,
           };
         }
         break;
       }
       case 'quantity': {
-        const { direction, quantity, leverage, takeProfit, stopLoss } = state;
+        const { direction, quantity, leverage, takeProfit, stopLoss, maxFeeAllowance } = state;
         state = {
           direction,
           method: nextMethod,
@@ -78,6 +81,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           leverage,
           takerMargin: Number(quantity) * (Number(stopLoss) / 100),
           makerMargin: Number(quantity) * (Number(takeProfit) / 100),
+          maxFeeAllowance,
         };
         break;
       }
@@ -171,6 +175,16 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
+    case 'maxFeeAllowance': {
+      const { maxFeeAllowance } = payload;
+      if (maxFeeAllowance >= 0) {
+        state = {
+          ...state,
+          maxFeeAllowance,
+        };
+      }
+      break;
+    }
     case 'direction': {
       const { direction } = payload;
       state = {
@@ -256,7 +270,10 @@ export const useTradeInput = () => {
   };
 
   const onChange = (
-    key: keyof Omit<TradeInput, 'direction' | 'method' | 'takerMargin' | 'makerMargin'>,
+    key: keyof Omit<
+      TradeInput,
+      'direction' | 'method' | 'takerMargin' | 'makerMargin' | 'maxFeeAllowance'
+    >,
     newValue: string
   ) => {
     const value = newValue.replace(/,/g, '');

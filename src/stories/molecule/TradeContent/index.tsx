@@ -376,7 +376,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
               <div className="w-20">
-                <Input size="sm" unit="%" value={0.3} />
+                <Input size="sm" unit="%" value={input?.maxFeeAllowance} />
               </div>
             </div>
           </div>
