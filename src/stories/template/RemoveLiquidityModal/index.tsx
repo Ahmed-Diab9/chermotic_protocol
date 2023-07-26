@@ -97,7 +97,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
                     <span className="ml-1 text-black/30">
-                      ({formatDecimals(selectedBin.removableRate, token.decimals, 2)}%)
+                      ({formatDecimals(selectedBin.removableRate, token.decimals - 2, 2)}%)
                     </span>
                   </p>
                 )}
