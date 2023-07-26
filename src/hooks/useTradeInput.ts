@@ -12,9 +12,9 @@ import {
   numberBuffer,
   toBigintWithDecimals,
 } from '~/utils/number';
-import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
+import { useSettlementToken } from './useSettlementToken';
 
 const initialTradeInput = {
   direction: 'long',
@@ -221,7 +221,7 @@ const feeLevel = (percentage: bigint, tokenDecimals: number) => {
 };
 
 export const useTradeInput = () => {
-  const token = useAppSelector((state) => state.token.selectedToken);
+  const { currentToken } = useSettlementToken();
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
   const {
     liquidityPool: pool,
@@ -233,8 +233,8 @@ export const useTradeInput = () => {
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
   const [tradeFee, feePercent] = useMemo(() => {
-    if (isNil(token)) return [];
-    let makerMargin = toBigintWithDecimals(state.makerMargin, token.decimals);
+    if (isNil(currentToken)) return [];
+    let makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
     if (state.direction === 'long' && makerMargin > longTotalUnusedLiquidity) {
       return [];
     }
@@ -273,7 +273,7 @@ export const useTradeInput = () => {
   }, [
     state.makerMargin,
     state.direction,
-    token,
+    currentToken,
     pool?.bins,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
@@ -428,7 +428,7 @@ export const useTradeInput = () => {
   };
 
   const disabled = useMemo(() => {
-    if (!token) return { status: true };
+    if (!currentToken) return { status: true };
     if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
     const MINIMUM_VALUE = 10;
@@ -436,7 +436,7 @@ export const useTradeInput = () => {
 
     const totalLiquidity =
       state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
-    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, token.decimals));
+    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, currentToken.decimals));
 
     if (isNaN(parsedTotalLiquidity)) return { status: true };
 
@@ -450,7 +450,7 @@ export const useTradeInput = () => {
     const amount =
       state.method === 'collateral' ? Number(state.collateral) : Number(state.quantity);
 
-    const balance = +(formatDecimals(totalMargin, token.decimals, 5) ?? '0');
+    const balance = +(formatDecimals(totalMargin, currentToken.decimals, 5) ?? '0');
 
     if (maxAmount < balance && maxAmount < amount) {
       return { status: true, detail: 'liquidity' };
