@@ -266,6 +266,7 @@ const PositionItem = function (props: Props) {
         profitPrice: '-',
         entryPrice: '-',
         entryTime: '-',
+        pnlAmount: '-',
       };
     }
     const { collateral, qty, leverage, makerMargin, takerMargin } = position;
@@ -294,6 +295,7 @@ const PositionItem = function (props: Props) {
         profitPrice: '-',
         entryPrice: '-',
         entryTime: '-',
+        pnlAmount: '-',
       };
     }
     const pnlPercentage = divPreserved(
@@ -314,10 +316,10 @@ const PositionItem = function (props: Props) {
         2,
         true
       )}%`,
-      pnlAmount: formatDecimals(position.pnl, token.decimals, 2, true),
+      pnlAmount: formatDecimals(position.pnl, token.decimals, 2, true) + ' ' + token.name,
       profitPrice: formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
-      entryPrice: formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
+      entryPrice: '$ ' + formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
       entryTime: new Intl.DateTimeFormat('en-US', {
         month: 'long',
         day: 'numeric',
@@ -376,7 +378,7 @@ const PositionItem = function (props: Props) {
           <div className="flex items-center gap-8 pl-6 border-l">
             <p className="text-black/50">Entry Price</p>
             <SkeletonElement isLoading={isLoading} width={60}>
-              ${calculated.entryPrice}
+              {calculated.entryPrice}
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
@@ -485,7 +487,7 @@ const PositionItem = function (props: Props) {
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}
-            <TextRow value={calculated.pnlAmount + ' ' + token?.name} isLoading={isLoading} />
+            <TextRow value={calculated.pnlAmount} isLoading={isLoading} />
           </div>
         </div>
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
