@@ -15,19 +15,16 @@ const logger = Logger('useChartData');
 
 const useChartData = () => {
   const { liquidityPool } = useLiquidityPool();
-  const { currentSelectedToken } = useSettlementToken();
+  const { currentToken } = useSettlementToken();
 
-  const fetchKeyData = useMemo(
-    () => ({
-      name: 'useChartData',
-      bins: liquidityPool?.bins,
-      decimals: currentSelectedToken?.decimals,
-    }),
-    [liquidityPool?.bins, currentSelectedToken?.decimals]
-  );
+  const fetchKeyData = {
+    name: 'useChartData',
+    bins: liquidityPool?.bins,
+    decimals: currentToken?.decimals,
+  };
 
   const { data, error } = useSWR(
-    checkAllProps(fetchKeyData) ? fetchKeyData : null,
+    checkAllProps(fetchKeyData) && fetchKeyData,
     ({ bins, decimals }) => {
       const chartData = bins.reduce<{
         clbTokenValue: CLBTokenValue[];
