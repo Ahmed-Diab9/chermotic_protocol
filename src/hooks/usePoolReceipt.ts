@@ -77,9 +77,10 @@ const usePoolReceipt = () => {
   const fetchKey = {
     name: 'getPoolReceipt',
     lensApi,
-    address: address,
-    currentOracleVersion: currentOracleVersion,
-    marketAddress: marketAddress,
+    address,
+    currentOracleVersion,
+    marketAddress,
+    liquidityPool,
   };
   const {
     data: receipts,
@@ -88,7 +89,7 @@ const usePoolReceipt = () => {
     isLoading: isReceiptsLoading,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ lensApi, marketAddress, address, currentOracleVersion }) => {
+    async ({ lensApi, marketAddress, address, currentOracleVersion, liquidityPool }) => {
       const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
       if (!receipts) {
         return [];
@@ -118,7 +119,8 @@ const usePoolReceipt = () => {
           return {
             id,
             action: action === 0 ? 'add' : 'remove',
-            amount: mulPreserved(amount, bin.clbTokenValue, bin.clbTokenDecimals),
+            amount:
+              action === 0 ? amount : mulPreserved(amount, bin.clbTokenValue, bin.clbTokenDecimals),
             feeRate: tradingFeeRate,
             status,
             version: receiptOracleVersion,
@@ -198,7 +200,15 @@ const usePoolReceipt = () => {
           ? router?.withdrawLiquidities(market.address, removeCompleted)
           : undefined,
       ]);
-      response.filter(({ status }) => status === 'rejected').map(console.error);
+      const errors = response.filter(
+        (result): result is PromiseRejectedResult => result.status === 'rejected'
+      );
+      if (errors.length > 0) {
+        errors.forEach((error) => {
+          toast(error.reason);
+        });
+        return;
+      }
       await fetchReceipts();
       // await fetchLiquidityPools();
       toast('All receipts are claimed.');
