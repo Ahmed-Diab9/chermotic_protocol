@@ -1,5 +1,6 @@
 import { Dialog } from '@headlessui/react';
-import { useMemo } from 'react';
+import { isNil } from 'ramda';
+import { useEffect, useMemo, useState } from 'react';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
 import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
 import { useAppDispatch } from '~/store';
@@ -83,6 +84,33 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     bins: selectedBins,
     type,
   });
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const bins = document.querySelector('#bins');
+    if (isNil(bins)) {
+      return;
+    }
+    if (bins.clientHeight >= bins.scrollHeight) {
+      setIsScrolled(true);
+    }
+
+    const onWindowResize = () => {
+      if (bins.scrollTop !== 0) {
+        // Element already scrolled
+        return;
+      }
+      if (bins.clientHeight >= bins.scrollHeight) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('resize', onWindowResize);
+    return () => {
+      window.removeEventListener('resize', onWindowResize);
+    };
+  }, []);
 
   return (
     <Dialog
@@ -112,7 +140,18 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="relative flex flex-col border border-gray rounded-xl">
-              <div className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto">
+              <div
+                id="bins"
+                className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
+                onScroll={(event) => {
+                  if (!(event.target instanceof HTMLDivElement)) {
+                    return;
+                  }
+                  if (event.target.scrollTop > 0 && !isScrolled) {
+                    setIsScrolled(true);
+                  }
+                }}
+              >
                 {isValid(token) &&
                   selectedBins.map((bin) => {
                     return (
@@ -126,7 +165,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
-                <ScrollAni />
+                <ScrollAni isVisible={!isScrolled} />
               </div>
             </article>
 
