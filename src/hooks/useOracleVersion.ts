@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
@@ -11,28 +10,24 @@ import { checkAllProps } from '../utils';
 const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
   const { markets } = useMarket();
-  const { address } = useAccount();
-  const { marketApi } = useChromaticClient();
+  const { client, walletAddress } = useChromaticClient();
 
-  // const marketApi = useMemo(() => {
-  //   return client?.market();
-  // }, [client]);
-  // const marketAddresses = (markets ?? []).map((market) => market.address);
+  const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
+
   const fetchKeyData = {
     name: 'getOracleVersion',
-    marketApi,
-    marketAddresses: useMemo(() => (markets ?? []).map((market) => market.address), [markets]),
-    address: address,
+    type: 'EOA',
+    address: walletAddress,
+    marketAddresses: marketAddresses,
   };
   const {
     data: oracleVersions,
     error,
     mutate: fetchOracleVersions,
   } = useSWR(
-    checkAllProps(fetchKeyData) ? fetchKeyData : null,
-    async ({ marketApi, marketAddresses }) => {
-      logger.log('Market', markets, ...marketAddresses);
-      if (!marketApi) return {};
+    checkAllProps(fetchKeyData) && fetchKeyData,
+    async ({ marketAddresses }) => {
+      const marketApi = client.market();
 
       const oraclePrices = await marketApi.getCurrentPrices(marketAddresses);
       return oraclePrices.reduce((record, { market, value }) => {
