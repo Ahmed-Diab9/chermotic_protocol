@@ -58,6 +58,12 @@
   @apply border border-[#eee] bg-white !rounded-full;
   @apply hover:bg-grayL/30;
 }
+.btn-wallet {
+  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL text-white;
+  .avatar {
+    @apply !w-[36px] !h-[36px];
+  }
+}
 .btn-xs {
   @apply min-w-[20px];
   font-size: 9px;
