@@ -39,6 +39,7 @@ export const useUsumAccount = () => {
     data: accountAddress,
     error,
     isLoading: isAccountAddressLoading,
+    mutate: fetchAddress,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ accountApi }) => {
     logger.info('account address fetch key ', fetchKey, client?.walletClient?.account?.address);
     try {
@@ -115,6 +116,7 @@ export const useUsumAccount = () => {
       logger.info('Creating accounts');
       setStatus(ACCOUNT_CREATING);
       await accountApi.createAccount();
+      await fetchAddress();
       setStatus(ACCOUNT_COMPLETING);
     } catch (error) {
       setStatus(ACCOUNT_NONE);
