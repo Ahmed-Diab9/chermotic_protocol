@@ -89,7 +89,7 @@ export const Header = (props: HeaderProps) => {
               />
               {/* todo: Wrong Network */}
               {/* when button clicked, wallet popup(change network) is open. */}
-              <button
+              {/* <button
                 // onClick={}
                 title="change network"
                 className="tooltip-change-network min-w-[175px] btn-wallet"
@@ -109,7 +109,7 @@ export const Header = (props: HeaderProps) => {
                   place="left"
                   css="outline"
                 />
-              </button>
+              </button> */}
             </>
           ) : (
             <>
