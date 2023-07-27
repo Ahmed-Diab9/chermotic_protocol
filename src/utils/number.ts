@@ -46,7 +46,7 @@ export const formatDecimals = (
   let numberValue = Number(value);
   if (isNaN(numberValue)) return '0';
   if (!Number.isInteger(numberValue)) {
-    console.warn('The value is not Integer', value)
+    console.warn('The value is not Integer', value);
     numberValue = Math.floor(numberValue);
   }
   const valueWithTokenDecimals = formatUnits(BigInt(numberValue), tokenDecimals ?? 0);
@@ -135,7 +135,7 @@ export const decimalLength = (num: number | string, length: number, fix: boolean
 };
 
 export const divPreserved = (numerator: bigint, denominator: bigint, decimals: number) => {
-  return (numerator * 10n ** BigInt(decimals)) / denominator;
+  return numerator === 0n ? 0n : (numerator * 10n ** BigInt(decimals)) / denominator;
 };
 
 export const mulPreserved = (value: bigint, numerator: bigint, decimals: number) => {
