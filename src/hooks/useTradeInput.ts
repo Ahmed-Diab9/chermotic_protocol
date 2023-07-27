@@ -349,14 +349,8 @@ export const useTradeInput = () => {
     if (isNaN(parsedTotalLiquidity)) return { status: true };
 
     const maxAmount =
-      state.method === 'collateral'
-        ? Math.round(parsedTotalLiquidity) /
-          Number(state.leverage) /
-          (Number(state.takeProfit) / 100)
-        : Math.round(parsedTotalLiquidity) / (Number(state.takeProfit) / 100);
-
-    const amount =
-      state.method === 'collateral' ? Number(state.collateral) : Number(state.quantity);
+      Math.round(parsedTotalLiquidity) / Number(state.leverage) / (Number(state.takeProfit) / 100);
+    const amount = Number(state.collateral);
 
     const balance = +(formatDecimals(totalMargin, token.decimals, 5) ?? '0');
 
@@ -367,7 +361,7 @@ export const useTradeInput = () => {
     } else {
       return { status: false };
     }
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]);
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, token, totalMargin]);
 
   return {
     state,
