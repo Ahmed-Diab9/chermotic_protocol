@@ -1,26 +1,26 @@
 import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
+import { isNil } from 'ramda';
 import useSWR from 'swr';
-import { useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
-import { isValid } from '~/utils/valid';
-import { useAppSelector } from '../store';
 import { checkAllProps } from '../utils';
 import { mulPreserved, numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import useOracleVersion from './useOracleVersion';
+import { useMarket } from './useMarket';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
   id: bigint;
   version: bigint;
   amount: bigint;
-  recipient: `0x${string}`;
+  recipient: Address;
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
@@ -56,13 +56,10 @@ const receiptDetail = (
 };
 
 const usePoolReceipt = () => {
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const { client, routerApi, lensApi } = useChromaticClient();
-  const { oracleVersions } = useOracleVersion();
-  const { address } = useAccount();
-  const currentOracleVersion = market && oracleVersions?.[market.address]?.version;
-  const marketAddress = market?.address;
-  const { liquidityPool } = useLiquidityPool(marketAddress);
+  const { client, walletAddress } = useChromaticClient();
+  const { currentMarket } = useMarket();
+  const { liquidityPool } = useLiquidityPool();
+  const { currentMarketOracleVersion } = useOracleVersion();
 
   const binName = useCallback((feeRate: number, description?: string) => {
     const prefix = feeRate > 0 ? '+' : '';
@@ -74,11 +71,11 @@ const usePoolReceipt = () => {
 
   const fetchKey = {
     name: 'getPoolReceipt',
-    lensApi,
-    address,
-    currentOracleVersion,
-    marketAddress,
-    liquidityPool,
+    type: 'EOA',
+    address: walletAddress,
+    currentOracleVersion: currentMarketOracleVersion?.version,
+    marketAddress: currentMarket?.address,
+    liquidityPool: liquidityPool,
   };
   const {
     data: receipts,
@@ -87,7 +84,8 @@ const usePoolReceipt = () => {
     isLoading: isReceiptsLoading,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ lensApi, marketAddress, address, currentOracleVersion, liquidityPool }) => {
+    async ({ marketAddress, address, currentOracleVersion, liquidityPool }) => {
+      const lensApi = client.lens();
       const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
       if (!receipts) {
         return [];
@@ -101,6 +99,7 @@ const usePoolReceipt = () => {
         .map((receipt) => {
           const ownedBin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
           const bin = liquidityPool?.bins.find((bin) => bin.baseFeeRate === receipt.tradingFeeRate);
+
           if (!ownedBin || !bin) {
             return null;
           }
@@ -114,6 +113,7 @@ const usePoolReceipt = () => {
           } = receipt;
           let status: LpReceipt['status'] = 'standby';
           status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, ownedBin);
+
           return {
             id,
             action: action === 0 ? 'add' : 'remove',
@@ -123,7 +123,7 @@ const usePoolReceipt = () => {
             status,
             version: receiptOracleVersion,
             recipient,
-            name: binName(tradingFeeRate, market?.description),
+            name: binName(tradingFeeRate, currentMarket?.description),
             burningAmount: action === 0 ? 0n : ownedBin.burningTokenAmount,
           } satisfies LpReceipt;
         })
@@ -133,21 +133,22 @@ const usePoolReceipt = () => {
 
   const onClaimCLBTokens = useCallback(
     async (receiptId: bigint, action?: LpReceipt['action']) => {
-      if (!isValid(routerApi)) {
-        errorLog('no router contracts');
-        toast('No routers error');
-        return AppError.reject('no router contracts', 'onPoolReceipt');
-      }
-      if (!isValid(market)) {
+      const routerApi = client.router();
+      if (isNil(currentMarket)) {
         errorLog('no selected markets');
         toast('Market is not selected.');
         return AppError.reject('no selected markets', 'onPoolReceipt');
       }
+      if (isNil(walletAddress)) {
+        errorLog('wallet not connected');
+        toast('Wallet is not connected.');
+        return;
+      }
       try {
         if (action === 'add') {
-          await routerApi.claimLiquidity(market.address, receiptId);
+          await routerApi.claimLiquidity(currentMarket.address, receiptId);
         } else if (action === 'remove') {
-          await routerApi.withdrawLiquidity(market.address, receiptId);
+          await routerApi.withdrawLiquidity(currentMarket.address, receiptId);
         }
 
         await fetchReceipts();
@@ -160,24 +161,24 @@ const usePoolReceipt = () => {
         toast((error as any).message);
       }
     },
-    [routerApi, market]
+    [walletAddress, currentMarket]
   );
 
   const onClaimCLBTokensBatch = useCallback(async () => {
-    if (!isValid(market)) {
+    if (isNil(currentMarket)) {
       errorLog('no selected markets');
       toast('Market is not selected.');
       return AppError.reject('no selected markets', 'onPoolReceipt');
     }
-    if (!isValid(receipts)) {
+    if (isNil(receipts)) {
       errorLog('no receipts');
       toast('There are no receipts.');
       return AppError.reject('no receipts', 'onPoolReceipt');
     }
-    if (!isValid(routerApi)) {
-      errorLog('no router contracts');
-      toast('Create Chromatic account.');
-      return AppError.reject('no router contracts', 'onPoolReceipt');
+    if (isNil(walletAddress)) {
+      errorLog('wallet not connected');
+      toast('Wallet is not connected.');
+      return;
     }
     const addCompleted = receipts
       .filter((receipt) => receipt.action === 'add' && receipt.status === 'completed')
@@ -192,12 +193,13 @@ const usePoolReceipt = () => {
       return;
     }
     try {
+      const routerApi = client.router();
       const response = await Promise.allSettled([
         addCompleted.length > 0
-          ? routerApi?.claimLiquidites(market.address, addCompleted)
+          ? routerApi?.claimLiquidites(currentMarket.address, addCompleted)
           : undefined,
         removeCompleted.length > 0
-          ? routerApi?.withdrawLiquidities(market.address, removeCompleted)
+          ? routerApi?.withdrawLiquidities(currentMarket.address, removeCompleted)
           : undefined,
       ]);
       const errors = response.filter(
@@ -215,7 +217,7 @@ const usePoolReceipt = () => {
     } catch (error) {
       toast((error as any).message);
     }
-  }, [market, receipts, routerApi]);
+  }, [walletAddress, currentMarket, receipts]);
 
   useError({ error });
 
