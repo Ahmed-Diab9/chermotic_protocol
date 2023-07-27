@@ -6,10 +6,11 @@ import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import { useError } from './useError';
 import { checkAllProps } from '../utils';
+import { isNil } from 'ramda';
 
 const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
-  const { markets } = useMarket();
+  const { markets, currentMarket } = useMarket();
   const { client, walletAddress } = useChromaticClient();
 
   const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
@@ -46,9 +47,14 @@ const useOracleVersion = () => {
     }
   );
 
+  const currentMarketOracleVersion = useMemo(() => {
+    if (isNil(currentMarket)) return;
+    return oracleVersions?.[currentMarket.address];
+  }, [oracleVersions, currentMarket]);
+
   useError({ error, logger });
 
-  return { oracleVersions, fetchOracleVersions };
+  return { oracleVersions, fetchOracleVersions, currentMarketOracleVersion };
 };
 
 export default useOracleVersion;
