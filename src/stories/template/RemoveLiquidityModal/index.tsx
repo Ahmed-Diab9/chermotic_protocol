@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import { parseUnits } from 'viem';
-import { useRemoveLiquidity } from '~/hooks/useRemoveLiquidity';
+import { useRemoveLiquidityAmounts } from '~/hooks/useRemoveLiquidityAmounts';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Input } from '~/stories/atom/Input';
@@ -28,7 +28,7 @@ const formatter = Intl.NumberFormat('en', { useGrouping: false });
 export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
   const { selectedBin, token, amount = '', maxAmount, onAmountChange } = props;
   const dispatch = useAppDispatch();
-  const { onRemoveLiquidity } = useRemoveLiquidity({
+  const { onRemoveLiquidity } = useRemoveLiquidityAmounts({
     feeRate: selectedBin?.baseFeeRate,
     amount,
   });

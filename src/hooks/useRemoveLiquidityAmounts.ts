@@ -1,75 +1,73 @@
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
-import { useAccount } from 'wagmi';
-import { useAppDispatch, useAppSelector } from '~/store';
+import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
-import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPools } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
+import { useSettlementToken } from './useSettlementToken';
+import { useMarket } from './useMarket';
+import { isNil } from 'ramda';
+
+const logger = Logger('useRemoveLiquidity');
+
 interface Props {
   feeRate?: number;
   amount?: string;
 }
 
-const logger = Logger('useRemoveLiquidity');
-const formatter = Intl.NumberFormat('en', { useGrouping: false });
-
-function useRemoveLiquidity(props: Props) {
-  const { amount, feeRate } = props;
-  const { client, routerApi } = useChromaticClient();
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const { liquidityPools: pools } = useLiquidityPools();
-  const { address } = useAccount();
+function useRemoveLiquidityAmounts({ amount, feeRate }: Props) {
   const dispatch = useAppDispatch();
+
+  const { client, walletAddress } = useChromaticClient();
+  const { currentMarket } = useMarket();
+  const { currentToken } = useSettlementToken();
+  const { liquidityPools } = useLiquidityPools();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
   const pool = useMemo(() => {
-    if (!isValid(market) || !isValid(token) || !isValid(pools)) {
-      return;
-    }
+    if (isNil(currentMarket) || isNil(currentToken) || isNil(liquidityPools)) return;
 
-    return pools.find(
-      (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
+    return liquidityPools.find(
+      (pool) =>
+        pool.tokenAddress === currentToken.address && pool.marketAddress === currentMarket.address
     );
-  }, [market, token, pools]);
+  }, [liquidityPools, currentMarket, currentToken]);
 
   const onRemoveLiquidity = useCallback(async () => {
-    if (!isValid(amount)) {
+    if (isNil(amount)) {
       toast('Input amount to remove');
       return;
     }
-    if (!isValid(feeRate)) {
+    if (isNil(feeRate)) {
       toast('Select fee rate to remove pool first.');
       return;
     }
-    if (!isValid(client?.walletClient) || !isValid(address)) {
-      logger.info('no signer or address', client?.walletClient, address);
+    if (isNil(currentToken)) {
+      toast('Settlement token is not selected.');
+      return;
+    }
+    if (isNil(walletAddress)) {
       toast('Your wallet is not connected.');
       return;
     }
-    if (!isValid(pool)) {
+    if (isNil(pool)) {
       logger.info('no pool');
       toast('The liquidity pool is not selected.');
       return;
     }
-    if (!isValid(routerApi)) {
-      logger.info('no clients');
-      toast('Create Chromatic account.');
-      return;
-    }
-    const expandedAmount = parseUnits(amount, token!.decimals);
+    const expandedAmount = parseUnits(amount, currentToken.decimals);
 
     try {
+      const routerApi = client.router();
       await routerApi.removeLiquidity(pool.marketAddress, {
-        feeRate,
-        recipient: address,
+        feeRate: feeRate,
+        recipient: walletAddress,
         clbTokenAmount: expandedAmount,
       });
       dispatch(poolsAction.onBinsReset());
@@ -82,9 +80,9 @@ function useRemoveLiquidity(props: Props) {
     } catch (error) {
       toast((error as any).message);
     }
-  }, [client?.walletClient, address, pool, routerApi, amount]);
+  }, [client.walletClient, walletAddress, pool, amount]);
 
   return { onRemoveLiquidity };
 }
 
-export { useRemoveLiquidity };
+export { useRemoveLiquidityAmounts };

@@ -1,66 +1,50 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { useAccount, useWalletClient } from 'wagmi';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
-import { useAppDispatch, useAppSelector } from '~/store';
+import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { OwnedBin } from '~/typings/pools';
 import { mulPreserved } from '~/utils/number';
-import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
+import { useMarket } from './useMarket';
+import { isNil } from 'ramda';
 
 interface Props {
   bins?: OwnedBin[];
   type?: MULTI_TYPE;
 }
 
-function useRemoveLiquidities(props: Props) {
-  const { bins, type } = props;
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const { liquidityPool: pool } = useLiquidityPool();
-  const { routerApi } = useChromaticClient();
-  const { data: walletClient } = useWalletClient();
-  const { address } = useAccount();
+function useRemoveLiquidityBins({ bins, type }: Props) {
   const dispatch = useAppDispatch();
+
+  const { client, walletAddress } = useChromaticClient();
+  const { currentMarket } = useMarket();
+  const { liquidityPool } = useLiquidityPool();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
-  // const pool = useMemo(() => {
-  //   if (!isValid(market) || !isValid(token) || !isValid(pools)) {
-  //     return;
-  //   }
-
-  //   return pools.find(
-  //     (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
-  //   );
-  // }, [market, token, pools]);
   const onRemoveLiquidities = useCallback(async () => {
-    if (!isValid(walletClient) || !isValid(address)) {
+    if (isNil(walletAddress)) {
       toast('Your wallet is not connected.');
       return;
     }
-    if (!isValid(market)) {
+    if (isNil(currentMarket)) {
       toast('Market is not selected.');
       return;
     }
-    if (!isValid(pool)) {
+    if (isNil(liquidityPool)) {
       toast('The liquidity pool is not selected.');
       return;
     }
-    if (!isValid(routerApi)) {
-      toast('Create Chromatic client.');
-      return;
-    }
-    if (!isValid(bins)) {
+    if (isNil(bins)) {
       toast('Select bins to remove first.');
       return;
     }
-    if (!isValid(type)) {
+    if (isNil(type)) {
       toast('Select bins how pools you want to remove.');
       return;
     }
@@ -71,12 +55,14 @@ function useRemoveLiquidities(props: Props) {
 
         return type === MULTI_ALL ? clbTokenBalance : removable;
       });
+
+      const routerApi = client.router();
       await routerApi.removeLiquidities(
-        market.address,
+        currentMarket.address,
         bins.map((bin, binIndex) => ({
           feeRate: bin.baseFeeRate,
           clbTokenAmount: amounts[binIndex],
-          receipient: address,
+          receipient: walletAddress,
         }))
       );
       dispatch(poolsAction.onBinsReset());
@@ -89,11 +75,11 @@ function useRemoveLiquidities(props: Props) {
     } catch (error) {
       toast((error as any).message);
     }
-  }, [walletClient, market, pool, routerApi, bins, type]);
+  }, [walletAddress, currentMarket, liquidityPool, bins, type]);
 
   return {
     onRemoveLiquidities,
   };
 }
 
-export { useRemoveLiquidities };
+export { useRemoveLiquidityBins };

@@ -2,7 +2,7 @@ import { Dialog } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
-import { useRemoveLiquidities } from '~/hooks/useRemoveLiquidities';
+import { useRemoveLiquidityBins } from '~/hooks/useRemoveLiquidityBins';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
@@ -80,7 +80,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       avgRemovableRate: (totalFreeLiquidity * 100n) / (totalLiquidity || 1n),
     };
   }, [type, selectedBins, token]);
-  const { onRemoveLiquidities } = useRemoveLiquidities({
+  const { onRemoveLiquidities } = useRemoveLiquidityBins({
     bins: selectedBins,
     type,
   });
