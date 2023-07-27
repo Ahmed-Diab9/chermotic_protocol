@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
 import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
+import React from 'react';
 import './style.css';
 
 interface ScrollAniProps {
-  // disabled?: boolean;
+  isVisible?: boolean;
+  hasOpacity?: boolean;
 }
 
 export const ScrollAni: React.FC<ScrollAniProps> = (props: ScrollAniProps) => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const { isVisible, hasOpacity } = props;
 
   return (
-    <div className={`scroll-ani transition-opacity ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`scroll-ani ${isVisible ? 'visible' : 'invisible'} transition-opacity ${
+        hasOpacity ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <ChevronDoubleDownIcon className="w-4 animate-bounce" />
     </div>
   );
