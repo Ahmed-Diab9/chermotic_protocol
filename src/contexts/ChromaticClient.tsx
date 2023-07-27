@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, type ReactNode, useEffect } from 'react';
+import React, { useState, useCallback, type ReactNode } from 'react';
 
 import { Address, PublicClient, WalletClient } from 'wagmi';
 import { Client } from '@chromatic-protocol/sdk-viem';
@@ -26,31 +26,38 @@ function useContextValue(): ContextValue {
   const [isReady, setIsReady] = useState<boolean>(initialValue.isReady);
   const [walletAddress, setWalletAddress] = useState<Partial<Address>>();
 
-  const setPublicClient = useCallback((publicClient?: PublicClient) => {
-    if (client.publicClient === publicClient) return;
-    client.publicClient = publicClient;
-    setClient(client);
-    setIsReady(true);
-    setIsReady(isNotNil(publicClient));
-  }, []);
-
-  const setWalletClient = useCallback((walletClient?: WalletClient) => {
-    if (client.walletClient === walletClient) return;
-    client.walletClient = walletClient;
-    setClient(client);
-    setWalletAddress(walletClient?.account.address);
-  }, []);
-
-  return useMemo(
-    () => ({
-      isReady,
-      walletAddress,
-      client,
-      setWalletClient,
-      setPublicClient,
-    }),
-    [isReady, client, client.publicClient, client.walletClient]
+  const setPublicClient = useCallback(
+    (publicClient?: PublicClient) => {
+      if (client.publicClient === publicClient) return;
+      setClient((currentClient) => {
+        currentClient.publicClient = publicClient;
+        return currentClient;
+      });
+      setIsReady(true);
+      setIsReady(isNotNil(publicClient));
+    },
+    [client]
   );
+
+  const setWalletClient = useCallback(
+    (walletClient?: WalletClient) => {
+      if (client.walletClient === walletClient) return;
+      setClient((currentClient) => {
+        currentClient.walletClient = walletClient;
+        return currentClient;
+      });
+      setWalletAddress(walletClient?.account.address);
+    },
+    [client]
+  );
+
+  return {
+    isReady,
+    walletAddress,
+    client,
+    setWalletClient,
+    setPublicClient,
+  };
 }
 
 export function ChromaticProvider({ children }: { children: ReactNode }): JSX.Element {
