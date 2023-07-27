@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
-import { useMemo, useReducer } from 'react';
-import { formatUnits } from 'viem';
+import { useEffect, useMemo, useReducer } from 'react';
+import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
@@ -15,6 +15,7 @@ import {
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
+import { usePrevious } from './usePrevious';
 
 const initialTradeInput = {
   direction: 'long',
@@ -26,12 +27,8 @@ const initialTradeInput = {
   takerMargin: 0,
   makerMargin: 0,
   leverage: '10',
-  maxFeeAllowance: 0.3,
+  maxFeeAllowance: 0.03,
 } satisfies TradeInput;
-
-// const trimDecimals = (num: number, decimals: number) => {
-//   return Math.round(num * 10 ** decimals) / 10 ** decimals;
-// };
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === 'method') {
@@ -206,6 +203,26 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   return state;
 };
 
+const feeLevel = (percentage: bigint, tokenDecimals: number) => {
+  // const tierZero = parseUnits('0.01', tokenDecimals);
+  const tierOne = parseUnits('0.1', tokenDecimals);
+  const tierTwo = parseUnits('1', tokenDecimals);
+  const tierThree = parseUnits('10', tokenDecimals);
+  if (percentage < tierOne) {
+    return 0;
+  }
+  if (percentage >= tierOne && percentage < tierTwo) {
+    return 1;
+  }
+  if (percentage >= tierTwo && percentage < tierThree) {
+    return 2;
+  }
+  if (percentage >= tierThree) {
+    return 3;
+  }
+  return 0;
+};
+
 export const useTradeInput = () => {
   const token = useAppSelector((state) => state.token.selectedToken);
   const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
@@ -264,6 +281,58 @@ export const useTradeInput = () => {
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
   ]);
+
+  const previousFeePercent = usePrevious(feePercent, false);
+  useEffect(() => {
+    if (isNil(token)) {
+      return;
+    }
+    if (
+      feeLevel(feePercent ?? 0n, token.decimals) ===
+      feeLevel(previousFeePercent ?? 0n, token.decimals)
+    ) {
+      return;
+    }
+    const nextLevel = feeLevel(feePercent ?? 0n, token.decimals);
+    switch (nextLevel) {
+      case 0: {
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: 0.03,
+          },
+        });
+        break;
+      }
+      case 1: {
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: 0.3,
+          },
+        });
+        break;
+      }
+      case 2: {
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: 3,
+          },
+        });
+        break;
+      }
+      case 3: {
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: 30,
+          },
+        });
+        break;
+      }
+    }
+  }, [feePercent, previousFeePercent, token]);
 
   const onMethodToggle = () => {
     dispatch({ type: 'method' });
