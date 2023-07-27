@@ -1,6 +1,7 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
+import { formatUnits } from 'viem';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -344,8 +345,8 @@ const AssetPanel = (props: AssetPanelProps) => {
                         maxValue={
                           token &&
                           (title === 'Deposit'
-                            ? formatDecimals(walletBalances?.[token.address], token?.decimals, 5)
-                            : formatDecimals(usumBalances?.[token.address], token?.decimals, 5))
+                            ? formatUnits(walletBalances?.[token.address] ?? 0n, token?.decimals)
+                            : formatUnits(usumBalances?.[token.address] ?? 0n, token?.decimals))
                         }
                         onChange={(value) => {
                           onAmountChange?.(value);
