@@ -73,7 +73,7 @@ export const useUsumAccount = () => {
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
-    checkAllProps(accountBalanceFetchKey) ? accountBalanceFetchKey : null,
+    checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
     async ({ tokens }) => {
       const accountApi = client.account();
       const result = await accountApi.balances(tokens.map((token) => token.address));

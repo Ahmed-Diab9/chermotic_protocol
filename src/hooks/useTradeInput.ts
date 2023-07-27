@@ -431,7 +431,8 @@ export const useTradeInput = () => {
     if (!currentToken) return { status: true };
     if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
-    const MINIMUM_VALUE = 10;
+    // FIXME: Temporary disabled
+    const MINIMUM_VALUE = 0;
     if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
 
     const totalLiquidity =
