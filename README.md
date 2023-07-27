@@ -8,19 +8,3 @@ This repository contains the source code for implementing the frontend of the Ch
 If you want to learn more about the overview of the Chromatic Protocol, please refer to our [GitBook](https://chromatic-protocol.gitbook.io/docs). It provides detailed information about the protocol and its features.
 
 
-## Prerequisites
-Before you can start using the Chromatic Protocol Frontend, make sure you have the following:
-
-- TODO
-
-## Installation
-To install the Chromatic Protocol Frontend, run the following command in your project directory:
-
-- TODO
-
-
-## Setting up and run the Client
-
-- TODO
-
-
