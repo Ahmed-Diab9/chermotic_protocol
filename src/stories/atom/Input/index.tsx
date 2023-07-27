@@ -4,6 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 
 import { Avatar } from '~/stories/atom/Avatar';
 
+import { isNil, isNotNil } from 'ramda';
 import { withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
@@ -54,11 +55,11 @@ export const Input = (props: InputProps) => {
   }, [value]);
 
   function isOverMax(newValue?: string | number) {
-    return newValue === undefined || !isValid(max) || +newValue > max;
+    return newValue === undefined || isNil(max) || +newValue > max;
   }
 
   function isUnderMin(newValue?: string | number) {
-    return newValue === undefined || !isValid(min) || +newValue < min;
+    return newValue === undefined || isNil(min) || +newValue < min;
   }
 
   function trimLeadingZero(str: string) {
@@ -67,15 +68,15 @@ export const Input = (props: InputProps) => {
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    const newValue = trimLeadingZero(event.target.value);
+    const newValue = trimLeadingZero(event.target.value).replaceAll(',', '');
 
-    if (!isValid(onChange)) return setTempValue(newValue);
+    if (isNil(onChange)) return setTempValue(newValue);
     if (!autoCorrect) return onChange(newValue);
 
-    if (isValid(max) && isOverMax(newValue)) {
+    if (isNotNil(max) && isOverMax(newValue)) {
       onChange(max!.toString());
       setTempValue(max!.toString());
-    } else if (isValid(min) && isUnderMin(newValue)) {
+    } else if (isNotNil(min) && isUnderMin(newValue)) {
       onChange(min!.toString());
       setTempValue(newValue);
     } else {
@@ -85,10 +86,10 @@ export const Input = (props: InputProps) => {
   }
 
   function handleBlur() {
-    if (autoCorrect && isValid(min) && isUnderMin(tempValue)) {
+    if (autoCorrect && isNotNil(min) && isUnderMin(tempValue)) {
       setTempValue(value);
     }
-    if (isValid(onBlur)) {
+    if (isNotNil(onBlur)) {
       onBlur();
     }
   }
@@ -101,6 +102,7 @@ export const Input = (props: InputProps) => {
         } ${disabled ? 'disabled' : ''}`}
       >
         {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
+
         <input
           type="text"
           className={`text-${align}`}
