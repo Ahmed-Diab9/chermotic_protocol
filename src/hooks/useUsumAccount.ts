@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { fromPairs, isNil } from 'ramda';
 import useSWR from 'swr';
 import {
@@ -117,7 +117,6 @@ export const useUsumAccount = () => {
     isAccountAddressLoading,
     isChromaticBalanceLoading,
     createAccount,
-    setStatus,
     fetchBalances,
   };
 };

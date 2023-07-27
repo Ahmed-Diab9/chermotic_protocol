@@ -1,44 +1,9 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import useSWR, { KeyedMutator } from 'swr';
 
-let listeners: Array<() => void> = [];
-function emitChanges() {
-  for (const listener of listeners) {
-    listener();
-  }
-}
-let storeValue: { [key: string]: any } = {};
-const store = {
-  setState(object: any) {
-    storeValue = {
-      ...storeValue,
-      ...object,
-    };
-    emitChanges();
-  },
-  subscribe(listener: () => void) {
-    listeners.push(listener);
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
-  },
-  getSnapshot() {
-    return storeValue;
-  },
-};
+function useSharedState<T>(key: string, initial?: T): [T | undefined, KeyedMutator<T>] {
+  const { data: state, mutate: setState } = useSWR<T, any>(key, { fallbackData: initial });
 
-function useSharedState<T>(key: string, initialState?: T) {
-  const data = useSyncExternalStore(store.subscribe, store.getSnapshot);
-  const setter = (value: T) => {
-    store.setState({
-      [key]: value,
-    });
-  };
-  useEffect(() => {
-    if (initialState) {
-      setter(initialState);
-    }
-  }, []);
-  return [data[key] as T, setter] as const;
+  return [state, setState];
 }
 
 export default useSharedState;
