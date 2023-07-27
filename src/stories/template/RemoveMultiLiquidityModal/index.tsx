@@ -84,26 +84,29 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
     bins: selectedBins,
     type,
   });
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [arrowState, setArrowState] = useState({
+    isScrolled: false,
+    hasSameHeight: false,
+  });
 
   useEffect(() => {
     const bins = document.querySelector('#bins');
     if (isNil(bins)) {
       return;
     }
-    if (bins.clientHeight >= bins.scrollHeight) {
-      setIsScrolled(true);
+    if (bins.clientHeight === bins.scrollHeight) {
+      setArrowState((state) => ({ isScrolled: false, hasSameHeight: true }));
     }
 
     const onWindowResize = () => {
       if (bins.scrollTop !== 0) {
-        // Element already scrolled
+        setArrowState((state) => ({ ...state, isScrolled: true }));
         return;
       }
-      if (bins.clientHeight >= bins.scrollHeight) {
-        setIsScrolled(true);
+      if (bins.clientHeight === bins.scrollHeight) {
+        setArrowState({ isScrolled: false, hasSameHeight: true });
       } else {
-        setIsScrolled(false);
+        setArrowState({ isScrolled: false, hasSameHeight: false });
       }
     };
     window.addEventListener('resize', onWindowResize);
@@ -147,8 +150,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   if (!(event.target instanceof HTMLDivElement)) {
                     return;
                   }
-                  if (event.target.scrollTop > 0 && !isScrolled) {
-                    setIsScrolled(true);
+                  if (event.target.clientHeight === event.target.scrollHeight) {
+                    return;
+                  }
+                  if (event.target.scrollTop === 0) {
+                    setArrowState((state) => ({ ...state, isScrolled: false }));
+                  }
+                  if (event.target.scrollTop > 0 && !arrowState.isScrolled) {
+                    setArrowState((state) => ({ ...state, isScrolled: true }));
                   }
                 }}
               >
@@ -165,7 +174,10 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
-                <ScrollAni isVisible={!isScrolled} />
+                <ScrollAni
+                  isVisible={!arrowState.hasSameHeight}
+                  hasOpacity={!arrowState.isScrolled}
+                />
               </div>
             </article>
 

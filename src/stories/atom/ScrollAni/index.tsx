@@ -4,13 +4,18 @@ import './style.css';
 
 interface ScrollAniProps {
   isVisible?: boolean;
+  hasOpacity?: boolean;
 }
 
 export const ScrollAni: React.FC<ScrollAniProps> = (props: ScrollAniProps) => {
-  const { isVisible } = props;
+  const { isVisible, hasOpacity } = props;
 
   return (
-    <div className={`scroll-ani transition-opacity ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`scroll-ani ${isVisible ? 'visible' : 'invisible'} transition-opacity ${
+        hasOpacity ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <ChevronDoubleDownIcon className="w-4 animate-bounce" />
     </div>
   );
