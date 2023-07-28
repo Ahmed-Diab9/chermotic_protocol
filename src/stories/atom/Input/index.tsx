@@ -4,8 +4,8 @@ import { ChangeEvent, useEffect, useState } from 'react';
 
 import { Avatar } from '~/stories/atom/Avatar';
 
-import { isValid } from '~/utils/valid';
 import { withComma } from '~/utils/number';
+import { isValid } from '~/utils/valid';
 
 interface InputProps {
   label?: string;

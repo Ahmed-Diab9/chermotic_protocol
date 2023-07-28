@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
@@ -15,7 +15,6 @@ import {
 import { useAppSelector } from '../store';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
-import { usePrevious } from './usePrevious';
 
 const initialTradeInput = {
   direction: 'long',
@@ -27,7 +26,7 @@ const initialTradeInput = {
   takerMargin: 0,
   makerMargin: 0,
   leverage: '10',
-  maxFeeAllowance: 0.03,
+  maxFeeAllowance: '0.03',
 } satisfies TradeInput;
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
@@ -174,12 +173,10 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     }
     case 'maxFeeAllowance': {
       const { maxFeeAllowance } = payload;
-      if (maxFeeAllowance >= 0) {
-        state = {
-          ...state,
-          maxFeeAllowance,
-        };
-      }
+      state = {
+        ...state,
+        maxFeeAllowance,
+      };
       break;
     }
     case 'direction': {
@@ -282,57 +279,63 @@ export const useTradeInput = () => {
     shortTotalUnusedLiquidity,
   ]);
 
-  const previousFeePercent = usePrevious(feePercent, false);
+  const [previousAllowance, setAllowance] = useState(state.maxFeeAllowance);
   useEffect(() => {
-    if (isNil(token)) {
-      return;
-    }
-    if (
-      feeLevel(feePercent ?? 0n, token.decimals) ===
-      feeLevel(previousFeePercent ?? 0n, token.decimals)
-    ) {
+    if (isNil(token) || isNil(feePercent)) {
       return;
     }
     const nextLevel = feeLevel(feePercent ?? 0n, token.decimals);
     switch (nextLevel) {
       case 0: {
+        const nextAllowance = feePercent + parseUnits('0.03', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
-            maxFeeAllowance: 0.03,
+            maxFeeAllowance: formatted,
           },
         });
+        setAllowance(formatted);
         break;
       }
       case 1: {
+        const nextAllowance = feePercent + parseUnits('0.3', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
-            maxFeeAllowance: 0.3,
+            maxFeeAllowance: formatted,
           },
         });
+        setAllowance(formatted);
         break;
       }
       case 2: {
+        const nextAllowance = feePercent + parseUnits('3', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
-            maxFeeAllowance: 3,
+            maxFeeAllowance: formatted,
           },
         });
+        setAllowance(formatted);
         break;
       }
       case 3: {
+        const nextAllowance = feePercent + parseUnits('30', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
-            maxFeeAllowance: 30,
+            maxFeeAllowance: formatted,
           },
         });
+        setAllowance(formatted);
         break;
       }
     }
-  }, [feePercent, previousFeePercent, token]);
+  }, [feePercent, token]);
 
   const onMethodToggle = () => {
     dispatch({ type: 'method' });
@@ -405,8 +408,28 @@ export const useTradeInput = () => {
     });
   };
 
+  const onFeeAllowanceChange = (allowance: string) => {
+    const parsed = Number(allowance);
+    if (isNaN(parsed) || parsed < 0) {
+      return;
+    }
+    dispatch({ type: 'maxFeeAllowance', payload: { maxFeeAllowance: allowance } });
+  };
+
+  const onFeeAllowanceValidate = () => {
+    if (Number(state.maxFeeAllowance) < Number(previousAllowance)) {
+      dispatch({
+        type: 'maxFeeAllowance',
+        payload: {
+          maxFeeAllowance: previousAllowance,
+        },
+      });
+    }
+  };
+
   const disabled = useMemo(() => {
     if (!token) return { status: true };
+    if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
     const MINIMUM_VALUE = 10;
     if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
@@ -436,7 +459,7 @@ export const useTradeInput = () => {
     } else {
       return { status: false };
     }
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]);
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, token, totalMargin]);
 
   return {
     state,
@@ -449,5 +472,7 @@ export const useTradeInput = () => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
+    onFeeAllowanceChange,
+    onFeeAllowanceValidate,
   };
 };
