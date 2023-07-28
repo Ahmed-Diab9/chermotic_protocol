@@ -5,9 +5,7 @@ import { useChromaticAccount } from './useChromaticAccount';
 import { useSettlementToken } from './useSettlementToken';
 
 export function useMargins() {
-  const {
-    allMarkets: { positions },
-  } = usePositions();
+  const { positions } = usePositions();
   const { balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
 

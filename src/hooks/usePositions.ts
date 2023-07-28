@@ -9,7 +9,6 @@ import { useMarket } from '~/hooks/useMarket';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Position } from '~/typings/position';
-import { filterIfFulfilled } from '~/utils/array';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -20,6 +19,8 @@ import { useError } from './useError';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
 import { Address } from 'wagmi';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
@@ -110,49 +111,53 @@ export const usePositions = () => {
       const accountApi = client.account();
       const positionApi = client.position();
 
-      const positionsPromise = markets.map(async (market) => {
-        return getPositions(
-          accountApi,
-          positionApi,
-          oracleVersions,
-          market.address,
-          currentToken.decimals
-        );
-      });
-      const positions = await filterIfFulfilled(positionsPromise);
-      return positions.flat(1);
+      const positionsResponse = await PromiseOnlySuccess(
+        markets.map(async (market) => {
+          return getPositions(
+            accountApi,
+            positionApi,
+            oracleVersions,
+            market.address,
+            currentToken.decimals
+          );
+        })
+      );
+      return positionsResponse.flat(1);
     }
   );
 
-  const currentMarketFetchKey = {
-    name: 'getCurrentMarketPositions',
-    type: 'EOA',
-    chromaticAccount: accountAddress,
-    currentMarket: currentMarket,
-    currentToken: currentToken,
-    oracleVersions: oracleVersions,
-  };
+  function fetchCurrentPositions() {
+    fetchPositions(async (positions) => {
+      if (
+        isNil(positions) ||
+        isNil(accountAddress) ||
+        isNil(currentMarket) ||
+        isNil(currentToken) ||
+        isNil(oracleVersions)
+      )
+        return positions;
 
-  const {
-    data: currentMarketPositions,
-    error: currentMarketError,
-    mutate: fetchCurrentMarketPositions,
-    isLoading: isCurrentMarketLoading,
-  } = useSWR(
-    checkAllProps(currentMarketFetchKey) && currentMarketFetchKey,
-    async ({ currentToken, currentMarket, oracleVersions }) => {
+      const filteredPositions = positions?.filter(
+        (position) => position.marketAddress !== currentMarket?.address
+      );
+
       const accountApi = client.account();
       const positionApi = client.position();
 
-      return getPositions(
+      const newPositions = await getPositions(
         accountApi,
         positionApi,
         oracleVersions,
         currentMarket.address,
         currentToken.decimals
       );
-    }
-  );
+      return [...filteredPositions, ...newPositions];
+    });
+  }
+
+  const currentPositions = useMemo(() => {
+    return positions?.filter(({ marketAddress }) => marketAddress === currentMarket?.address);
+  }, [positions, currentMarket]);
 
   useError({
     error,
@@ -160,17 +165,11 @@ export const usePositions = () => {
   });
 
   return {
-    allMarkets: {
-      positions,
-      fetchPositions,
-      isLoading,
-      error,
-    },
-    currentMarket: {
-      positions: currentMarketPositions,
-      fetchPositions: fetchCurrentMarketPositions,
-      isLoading: isCurrentMarketLoading,
-      error: currentMarketError,
-    },
+    positions,
+    fetchPositions,
+    currentPositions,
+    fetchCurrentPositions,
+    isLoading,
+    error,
   };
 };
