@@ -8,7 +8,7 @@ import { PoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useLiquidityPool, useLiquidityPools } from './useLiquidityPool';
+import { useLiquidityPools } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
 interface Props {
@@ -22,14 +22,24 @@ const formatter = Intl.NumberFormat('en', { useGrouping: false });
 function useRemoveLiquidity(props: Props) {
   const { amount, feeRate } = props;
   const { client } = useChromaticClient();
+  const market = useAppSelector((state) => state.market.selectedMarket);
   const token = useAppSelector((state) => state.token.selectedToken);
-  const { liquidityPool: pool } = useLiquidityPool();
+  const { liquidityPools: pools } = useLiquidityPools();
   const routerApi = useMemo(() => client?.router(), [client]);
   const { address } = useAccount();
   const dispatch = useAppDispatch();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
 
+  const pool = useMemo(() => {
+    if (!isValid(market) || !isValid(token) || !isValid(pools)) {
+      return;
+    }
+
+    return pools.find(
+      (pool) => pool.tokenAddress === token.address && pool.marketAddress === market.address
+    );
+  }, [market, token, pools]);
 
   const onRemoveLiquidity = useCallback(async () => {
     if (!isValid(amount)) {

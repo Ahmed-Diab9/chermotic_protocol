@@ -124,7 +124,6 @@ export const usePositions = () => {
     const key = {
       name: 'getCurrentMarketPositions',
       currentSelectedToken,
-      address: chromaticAccount,
       currentMarket,
       oracleVersions,
       client,
