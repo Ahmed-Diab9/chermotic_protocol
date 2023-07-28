@@ -1,7 +1,7 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { isNotNil } from 'ramda';
-import { formatUnits } from 'viem';
+import { isNil, isNotNil } from 'ramda';
+import { formatUnits, parseUnits } from 'viem';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -20,6 +20,8 @@ import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import './style.css';
 
+import { useMemo } from 'react';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { isValid } from '~/utils/valid';
 import { SkeletonElement } from '../../atom/SkeletonElement';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
@@ -163,6 +165,25 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+
+  const isExceeded = useMemo(() => {
+    if (
+      isNil(walletBalances) ||
+      isNil(usumBalances) ||
+      isNil(amount) ||
+      isNil(title) ||
+      isNil(token)
+    ) {
+      return false;
+    }
+    if (title === 'Deposit') {
+      return parseUnits(amount, token.decimals) > walletBalances[token.address];
+    }
+    if (title === 'Withdraw') {
+      return parseUnits(amount, token.decimals) > usumBalances[token.address];
+    }
+    return false;
+  }, [amount, title, token, usumBalances, walletBalances]);
 
   return (
     <Popover>
@@ -358,14 +379,16 @@ const AssetPanel = (props: AssetPanelProps) => {
                         // error
                       />
                       {/* case 1. exceeded */}
-                      {/* <TooltipAlert
-                        label="input-amount"
-                        tip={
-                          title === 'Deposit'
-                            ? 'Exceeded your wallet balance.'
-                            : 'Exceeded the available margin.'
-                        }
-                      /> */}
+                      {isExceeded && (
+                        <TooltipAlert
+                          label="input-amount"
+                          tip={
+                            title === 'Deposit'
+                              ? 'Exceeded your wallet balance.'
+                              : 'Exceeded the available margin.'
+                          }
+                        />
+                      )}
                       {/* case 2. less than minimum */}
                       {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
                     </div>
