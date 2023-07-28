@@ -32,18 +32,21 @@
 .btn-active {
   @apply bg-black text-white dark:text-black;
   @apply border border-black;
+  @apply hover:bg-black/70;
   &:disabled {
     @apply text-black/30 bg-[#F9F9F9] border-[#F9F9F9];
   }
 }
 .btn-gray {
   @apply border border-gray bg-white;
+  @apply hover:bg-grayL/30;
   &:disabled {
     @apply border-gray/40 text-gray;
   }
 }
 .btn-default {
   @apply border text-black/50 bg-white;
+  @apply hover:bg-grayL/30;
   &:disabled {
     @apply text-gray;
   }
@@ -53,6 +56,13 @@
 }
 .btn-circle {
   @apply border border-[#eee] bg-white !rounded-full;
+  @apply hover:bg-grayL/30;
+}
+.btn-wallet {
+  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL text-white;
+  .avatar {
+    @apply !w-[36px] !h-[36px];
+  }
 }
 .btn-xs {
   @apply min-w-[20px];

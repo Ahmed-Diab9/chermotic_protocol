@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react';
 import './style.css';
 
 interface AvatarProps {
@@ -12,6 +13,7 @@ interface AvatarProps {
   disabled?: boolean;
   onClick?: () => unknown;
   src?: string;
+  svg?: ReactNode;
 }
 
 export const Avatar = (props: AvatarProps) => {
@@ -20,6 +22,7 @@ export const Avatar = (props: AvatarProps) => {
     size = 'base',
     gap = '2',
     src,
+    svg,
     label,
     fontSize = 'base',
     fontWeight = 'semibold',
@@ -29,9 +32,10 @@ export const Avatar = (props: AvatarProps) => {
     <div className="avatar">
       <div className={`flex items-center gap-${gap}`}>
         <div
-          className={`avatar-${size} ${className} bg-[#D9D9D9] rounded-full overflow-hidden shrink-0`}
+          className={`avatar-${size} ${className} bg-white rounded-full overflow-hidden shrink-0 flex items-center justify-center`}
         >
           {src && <img src={src} alt="" className="object-cover w-full h-full" />}
+          {svg && <span className="inline-block w-[68%] h-[68%]">{svg}</span>}
         </div>
         {label && <p className={`font-${fontWeight} text-${fontSize}`}>{label}</p>}
       </div>
