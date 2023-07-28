@@ -1,3 +1,5 @@
+import { Address } from "wagmi";
+
 export interface Bin {
   liquidity: bigint;
   freeLiquidity: bigint;
@@ -19,8 +21,8 @@ export interface OwnedBin extends Bin {
 }
 
 export interface LiquidityPool<T = Bin> {
-  tokenAddress: `0x${string}`;
-  marketAddress: `0x${string}`;
+  tokenAddress: Address;
+  marketAddress: Address;
   bins: Array<T>;
 }
 

@@ -5,66 +5,58 @@ import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
 import { FEE_RATES } from '../configs/feeRate';
-import { useAppDispatch, useAppSelector } from '../store';
-import { Bin, LiquidityPool, LiquidityPoolSummary } from '../typings/pools';
+import { useAppDispatch } from '../store';
+import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
-import { Logger } from '../utils/log';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
-import { useOwnedLiquidityPools } from './useOwnedLiquidityPools';
 import { useSettlementToken } from './useSettlementToken';
-const logger = Logger('useLiquidityPool.ts');
+import { isNotNil } from 'ramda';
+
 const { encodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
   const { client } = useChromaticClient();
-
   const { tokens } = useSettlementToken();
-  // const marketApi = useMemo(() => client?.market(), [client]);
-  // const lensApi = useMemo(() => client?.lens(), [client]);
-  // const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  // const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
+
+  const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
 
   const fetchKeyData = {
-    name: 'liquidityPools',
-    tokenAddresses: useMemo(() => tokens?.map((token) => token.address), [tokens]),
-    lensApi: useMemo(() => client?.lens(), [client]),
-    marketFactoryApi: useMemo(() => client?.marketFactory(), [client]),
-    marketApi: useMemo(() => client?.market(), [client]),
+    name: 'getLiquidityPools',
+    tokenAddresses,
   };
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(
-    checkAllProps(fetchKeyData) ? fetchKeyData : null,
-    async ({ tokenAddresses, marketFactoryApi, lensApi, marketApi }) => {
-      logger.log('FETCH POOLS');
+  } = useSWR(checkAllProps(fetchKeyData) && fetchKeyData, async ({ tokenAddresses }) => {
+    const lensApi = client.lens();
+    const marketFactoryApi = client.marketFactory();
+    const marketApi = client.market();
 
-      const marketAddresses = (
-        await PromiseOnlySuccess(
-          tokenAddresses.map(async (tokenAddress) => ({
-            tokenAddress,
-            marketAddresses: await marketFactoryApi!
-              .contracts()
-              .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
-          }))
-        )
-      ).reduce((map, row) => {
-        row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
-        return map;
-      }, {} as Record<Address, Address>);
+    const marketAddresses = (
+      await PromiseOnlySuccess(
+        tokenAddresses.map(async (tokenAddress) => ({
+          tokenAddress,
+          marketAddresses: await marketFactoryApi
+            .contracts()
+            .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
+        }))
+      )
+    ).reduce((map, row) => {
+      row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
+      return map;
+    }, {} as Record<Address, Address>);
 
-      const promise = Object.keys(marketAddresses).map(async (ma) => {
-        return getLiquidityPool(marketApi, lensApi, ma as Address);
-      });
+    const promise = Object.keys(marketAddresses).map(async (address) => {
+      return getLiquidityPool(marketApi, lensApi, address as Address);
+    });
 
-      return PromiseOnlySuccess(promise);
-    }
-  );
+    return PromiseOnlySuccess(promise);
+  });
 
   useError({ error });
 
@@ -72,28 +64,30 @@ export const useLiquidityPools = () => {
 };
 
 export const useLiquidityPool = (marketAddress?: Address) => {
-  const market = useAppSelector((state) => state.market.selectedMarket);
-  const currentMarketAddress = marketAddress || market?.address;
   const dispatch = useAppDispatch();
 
-  const { client } = useChromaticClient();
+  const { currentMarket } = useMarket();
+  const currentMarketAddress = marketAddress || currentMarket?.address;
+
+  const { isReady, client } = useChromaticClient();
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
-    lensApi: useMemo(() => client?.lens(), [client]),
-    marketApi: useMemo(() => client?.market(), [client]),
     marketAddress: currentMarketAddress,
   };
 
   const { data: liquidityPool } = useSWR(
-    checkAllProps(fetchKeyData) ? fetchKeyData : null,
-    async ({ lensApi, marketApi, marketAddress }) => {
+    isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    async ({ marketAddress }) => {
+      const lensApi = client.lens();
+      const marketApi = client.market();
+
       return getLiquidityPool(marketApi, lensApi, marketAddress);
     }
   );
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
-    const longCLBTokens = (isValid(liquidityPool) ? liquidityPool.bins : []).filter(
+    const longCLBTokens = (isNotNil(liquidityPool) ? liquidityPool.bins : []).filter(
       (bin) => bin.baseFeeRate > 0
     );
     return longCLBTokens?.reduce(
@@ -105,8 +99,9 @@ export const useLiquidityPool = (marketAddress?: Address) => {
       [0n, 0n]
     );
   }, [liquidityPool]);
+
   const [shortTotalMaxLiquidity, shortTotalUnusedLiquidity] = useMemo(() => {
-    const shortCLBTokens = (isValid(liquidityPool) ? liquidityPool.bins : []).filter(
+    const shortCLBTokens = (isNotNil(liquidityPool) ? liquidityPool.bins : []).filter(
       (clbToken) => clbToken.baseFeeRate < 0
     );
     return shortCLBTokens?.reduce(
@@ -136,44 +131,6 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   };
 };
 
-export const useLiquidityPoolSummary = () => {
-  const { ownedPools: pools } = useOwnedLiquidityPools();
-  const { markets } = useMarket();
-  const { tokens } = useSettlementToken();
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const logger = Logger(useLiquidityPoolSummary);
-  const poolSummary = useMemo(() => {
-    logger.log('pools', pools);
-    if (!isValid(pools) || !isValid(token)) {
-      return [];
-    }
-    const array = [] as LiquidityPoolSummary[];
-    for (const market of markets ?? []) {
-      const marketAddress = market.address;
-      const bins = pools[marketAddress] || [];
-      logger.info('bins', bins);
-      const { description: marketDescription } = market;
-      let liquiditySum = 0n;
-
-      for (let index = 0; index < bins.length; index++) {
-        const bin = bins[index];
-        liquiditySum = liquiditySum + bin.clbBalanceOfSettlement;
-      }
-      array.push({
-        token: {
-          name: token.name,
-          decimals: token.decimals,
-        },
-        market: marketDescription,
-        liquidity: liquiditySum,
-        bins: bins.length,
-      });
-    }
-    return array;
-  }, [pools, markets, tokens]);
-  return poolSummary;
-};
-
 const baseFeeRates = [...FEE_RATES, ...FEE_RATES.map((rate) => rate * -1)];
 const tokenIds = [
   ...FEE_RATES.map((rate) => encodeTokenId(rate)), // LONG COUNTER
@@ -185,7 +142,7 @@ async function getLiquidityPool(
   marketAddress: Address
 ) {
   const tokenAddress = await marketApi.settlementToken(marketAddress);
-  const liquidityBinsPromise = lensApi!.liquidityBins(marketAddress).then((bins) =>
+  const liquidityBinsPromise = lensApi.liquidityBins(marketAddress).then((bins) =>
     bins.reduce(
       (map, bin) => {
         map[bin.tradingFeeRate] = bin;

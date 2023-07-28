@@ -1,25 +1,25 @@
-import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
-import { useAppSelector } from '../store';
 import { useError } from './useError';
 import { checkAllProps } from '../utils';
+import { useSettlementToken } from './useSettlementToken';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
-  const { client } = useChromaticClient();
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const { isReady, client } = useChromaticClient();
+  const { currentToken } = useSettlementToken();
 
-  const fetchKeyData = {
+  const fetchKey = {
     name: 'useFeeRate',
-    tokenAddress: selectedToken?.address,
+    tokenAddress: currentToken?.address,
   };
   const {
     data: feeRate,
     error,
     isLoading: isFeeRateLoading,
-  } = useSWR(checkAllProps(fetchKeyData) ? fetchKeyData : null, async ({ tokenAddress }) => {
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ tokenAddress }) => {
+    const marketFactoryApi = client.marketFactory();
+
     return (await marketFactoryApi?.currentInterestRate(tokenAddress)) || 0n;
   });
 

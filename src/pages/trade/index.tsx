@@ -1,12 +1,14 @@
+import './style.css';
+
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import './style.css';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
+import { Toast } from '~/stories/atom/Toast';
 import { Header } from '~/stories/template/Header';
 import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
@@ -15,9 +17,11 @@ import { Modal } from '~/stories/template/Modal';
 
 import useChartData from '~/hooks/useChartData';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
+import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
 import useOracleVersion from '~/hooks/useOracleVersion';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -25,36 +29,35 @@ import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { CHAIN_ID } from '~/constants';
-import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
-import { useMargins } from '~/hooks/useMargins';
-import { useOracleProperties } from '~/hooks/useOracleProperties';
-import { Toast } from '~/stories/atom/Toast';
 import { copyText } from '~/utils/clipboard';
-import { usePositions } from '../../hooks/usePositions';
+import { usePositions } from '~/hooks/usePositions';
+import useClientAccount from '~/hooks/useClientAccount';
 
 const Trade = () => {
-  const { connectAsync } = useConnect();
-  const { address: walletAddress } = useAccount();
+  const { connectAsync, connectors } = useConnect();
+
+  const { address: walletAddress } = useClientAccount();
+
+  const { isConnected } = useAccount();
+
   const {
     accountAddress: usumAccount,
     createAccount: createUsumAccount,
-    // isAccountAddressLoading,
     isChromaticBalanceLoading,
     status,
     balances,
-  } = useUsumAccount();
-  const { tokens, onTokenSelect, currentSelectedToken, isTokenLoading } = useSettlementToken();
+  } = useChromaticAccount();
+  const { tokens, onTokenSelect, currentToken, isTokenLoading } = useSettlementToken();
   const { markets, onMarketSelect, currentMarket, isMarketLoading } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
-  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
+  const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
 
   const { priceFeed, isFeedLoading } = usePriceFeed();
-  const pools = useLiquidityPoolSummary();
-  const { disconnectAsync } = useDisconnect();
+  const { ownedPoolSummary } = useOwnedLiquidityPools();
+  const { disconnect } = useDisconnect();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const {
     state: longInput,
@@ -99,8 +102,7 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { currentMarket: currentMarketPositions } = usePositions();
-  const { positions, isPositionsLoading } = currentMarketPositions;
+  const { currentPositions: positions, isLoading: isPositionsLoading } = usePositions();
   useTokenLocal();
   useMarketLocal();
 
@@ -115,18 +117,11 @@ const Trade = () => {
         markets={markets}
         priceFeed={priceFeed}
         balances={walletBalances}
-        pools={pools}
+        pools={ownedPoolSummary}
         isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
-        onConnect={() => {
-          connectAsync({
-            connector: new InjectedConnector({
-              chains: [CHAINS_WAGMI[CHAIN]],
-            }),
-            chainId: CHAIN_ID,
-          });
-        }}
+        onConnect={() => connectAsync({ connector: connectors[0] })}
         onCreateAccount={createUsumAccount}
-        onDisconnect={disconnectAsync}
+        onDisconnect={disconnect}
         onWalletCopy={copyText}
         onUsumCopy={copyText}
       />
@@ -136,7 +131,7 @@ const Trade = () => {
           status={status}
           tokens={tokens}
           markets={markets}
-          selectedToken={currentSelectedToken}
+          selectedToken={currentToken}
           selectedMarket={currentMarket}
           feeRate={feeRate}
           walletBalances={walletBalances}
@@ -145,6 +140,7 @@ const Trade = () => {
           totalBalance={totalBalance}
           availableMargin={totalMargin}
           assetValue={totalAsset}
+          isConnected={isConnected}
           isMarketLoading={isMarketLoading || isFeeRateLoading}
           isAssetLoading={isTokenLoading || isTokenBalanceLoading || isFeedLoading}
           isBalanceLoading={isTokenBalanceLoading || isChromaticBalanceLoading}
@@ -153,7 +149,7 @@ const Trade = () => {
           onAmountChange={onAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
-          onConnect={connectAsync}
+          onConnect={() => connectAsync({ connector: connectors[0] })}
           onStatusUpdate={createUsumAccount}
           showAccountPopover={true}
         />
@@ -181,7 +177,7 @@ const Trade = () => {
             onShortFeeAllowanceChange={onShortFeeAllowanceChange}
             balances={balances}
             priceFeed={priceFeed}
-            token={currentSelectedToken}
+            token={currentToken}
             market={currentMarket}
             longTotalMaxLiquidity={longTotalMaxLiquidity}
             longTotalUnusedLiquidity={longTotalUnusedLiquidity}
@@ -213,7 +209,7 @@ const Trade = () => {
         </div>
       </section>
       <TradeBar
-        token={currentSelectedToken}
+        token={currentToken}
         market={currentMarket}
         markets={markets}
         positions={positions}

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -10,39 +10,43 @@ import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
 
 export const useMarket = (_interval?: number) => {
-  const { client } = useChromaticClient();
+  const { isReady, client } = useChromaticClient();
+
   const selectedToken = useAppSelector((state) => state.token.selectedToken);
   const currentMarket = useAppSelector((state) => state.market.selectedMarket);
-  const marketFactoryApi = useMemo(() => client?.marketFactory(), [client]);
-  const marketApi = useMemo(() => client?.market(), [client]);
+
+  const marketFactoryApi = client.marketFactory();
+
   const dispatch = useAppDispatch();
   const { setState: setStoredMarket } = useLocalStorage('usum:market');
-  const marketsRequired = {
+
+  const marketsFetchKey = {
     name: 'getMarkets',
-    marketFactoryApi: marketFactoryApi,
     selectedTokenAddress: selectedToken?.address,
   };
+
   const {
     data: markets,
-    error: marketsError,
     mutate: fetchMarkets,
     isLoading: isMarketLoading,
   } = useSWR(
-    checkAllProps(marketsRequired) ? marketsRequired : null,
-    async ({ marketFactoryApi, selectedTokenAddress }) => {
+    isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
+    async ({ selectedTokenAddress }) => {
       const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
       return markets;
     }
   );
 
-  const getClbTokenAddressRequired = {
+  const marketApi = client.market();
+
+  const clbTokenFetchKey = {
     name: 'getClbToken',
     currentMarket: currentMarket,
-    marketApi: marketApi,
   };
+
   const { data: clbTokenAddress, error } = useSWR(
-    checkAllProps(getClbTokenAddressRequired) ? getClbTokenAddressRequired : null,
-    async ({ marketApi, currentMarket }) => {
+    isReady && checkAllProps(clbTokenFetchKey) && clbTokenFetchKey,
+    async ({ currentMarket }) => {
       return marketApi.clbToken(currentMarket.address);
     }
   );

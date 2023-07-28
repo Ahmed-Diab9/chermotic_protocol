@@ -3,23 +3,24 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
-import { useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useMarket } from '~/hooks/useMarket';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Position } from '~/typings/position';
-import { filterIfFulfilled } from '~/utils/array';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
 import { isValid } from '~/utils/valid';
-import { checkAllProps, isNilOrEmpty } from '../utils';
+import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
+import { Address } from 'wagmi';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
@@ -35,11 +36,11 @@ function determinePositionStatus(position: IChromaticPosition, currentOracleVers
   return 'opened';
 }
 
-export async function getPositions(
+async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
-  oracleVersions: Record<`0x${string}`, OracleVersion>,
-  marketAddress: `0x${string}`,
+  oracleVersions: Record<Address, OracleVersion>,
+  marketAddress: Address,
   tokenDecimals: number
 ) {
   const positionIds = await accountApi.getPositionIds(marketAddress);
@@ -84,82 +85,91 @@ export async function getPositions(
 }
 
 export const usePositions = () => {
-  const { accountAddress: chromaticAccount } = useUsumAccount();
-  const { currentSelectedToken } = useSettlementToken();
+  const { accountAddress } = useChromaticAccount();
+  const { currentToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
   const { oracleVersions } = useOracleVersion();
   const { client } = useChromaticClient();
 
   const fetchKey = {
-    name: 'usePositions',
+    name: 'getPositions',
+    type: 'EOA',
     markets: markets,
-    chromaticAccount: chromaticAccount,
-    client: client,
-    currentSelectedToken: currentSelectedToken,
-    oracleVersions: !isNilOrEmpty(oracleVersions) ? oracleVersions : null,
+    chromaticAccount: accountAddress,
+    currentToken: currentToken,
+    oracleVersions: oracleVersions,
   };
+
   const {
     data: positions,
     error,
     mutate: fetchPositions,
-    isLoading: isPositionsLoading,
+    isLoading,
   } = useSWR(
-    checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ chromaticAccount, client, currentSelectedToken, markets, oracleVersions }) => {
-      const positionsPromise = markets.map(async (market) => {
-        return getPositions(
-          client.account(),
-          client.position(),
-          oracleVersions,
-          market.address,
-          currentSelectedToken.decimals
-        );
-      });
-      const positions = await filterIfFulfilled(positionsPromise);
-      return positions.flat(1);
+    checkAllProps(fetchKey) && fetchKey,
+    async ({ currentToken, markets, oracleVersions }) => {
+      const accountApi = client.account();
+      const positionApi = client.position();
+
+      const positionsResponse = await PromiseOnlySuccess(
+        markets.map(async (market) => {
+          return getPositions(
+            accountApi,
+            positionApi,
+            oracleVersions,
+            market.address,
+            currentToken.decimals
+          );
+        })
+      );
+      return positionsResponse.flat(1);
     }
   );
 
-  const currentMarketPositionsfetchKey = useMemo(() => {
-    const key = {
-      name: 'getCurrentMarketPositions',
-      currentSelectedToken,
-      currentMarket,
-      oracleVersions,
-      client,
-    };
-    return checkAllProps(key) ? key : undefined;
-  }, [currentSelectedToken, currentMarket, oracleVersions, client]);
-  const {
-    data: currentMarketPositions,
-    mutate: fetchCurrentMarketPositions,
-    isLoading: isCurrentMarketPositionsLoading,
-    error: currentMarketError,
-  } = useSWR(
-    currentMarketPositionsfetchKey,
-    async ({ currentSelectedToken, currentMarket, oracleVersions, client }) => {
-      return getPositions(
-        client.account(),
-        client.position(),
+  function fetchCurrentPositions() {
+    fetchPositions(async (positions) => {
+      if (
+        isNil(positions) ||
+        isNil(accountAddress) ||
+        isNil(currentMarket) ||
+        isNil(currentToken) ||
+        isNil(oracleVersions)
+      )
+        return positions;
+
+      const filteredPositions = positions?.filter(
+        (position) => position.marketAddress !== currentMarket?.address
+      );
+
+      const accountApi = client.account();
+      const positionApi = client.position();
+
+      const newPositions = await getPositions(
+        accountApi,
+        positionApi,
         oracleVersions,
         currentMarket.address,
-        currentSelectedToken.decimals
+        currentToken.decimals
       );
-    }
-  );
+      return [...filteredPositions, ...newPositions];
+    });
+  }
 
-  useError({ error: [currentMarketError, error], logger });
+  const currentPositions = useMemo(() => {
+    return positions?.filter(({ marketAddress }) => marketAddress === currentMarket?.address);
+  }, [positions, currentMarket]);
+
+  useError({
+    error,
+    logger,
+  });
 
   return {
-    allMarket: {
-      positions,
-      isPositionsLoading,
-      fetchPositions,
-    },
-    currentMarket: {
-      positions: currentMarketPositions,
-      fetchPositions: fetchCurrentMarketPositions,
-      isPositionsLoading: isCurrentMarketPositionsLoading,
-    },
+    positions,
+    fetchPositions,
+    currentPositions,
+    fetchCurrentPositions,
+    isLoading,
+    error,
   };
 };

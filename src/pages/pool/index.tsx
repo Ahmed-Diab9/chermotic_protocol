@@ -2,11 +2,8 @@ import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { CHAIN_ID } from '~/constants';
-import { CHAIN, CHAINS_WAGMI } from '~/constants/contracts';
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useLiquidityPool, useLiquidityPoolSummary } from '~/hooks/useLiquidityPool';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useMarket } from '~/hooks/useMarket';
 import useOracleVersion from '~/hooks/useOracleVersion';
@@ -17,7 +14,7 @@ import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useAppSelector } from '~/store';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
@@ -27,7 +24,6 @@ import { copyText } from '~/utils/clipboard';
 import { isValid } from '~/utils/valid';
 import useChartData from '../../hooks/useChartData';
 import { useMarketLocal } from '../../hooks/useMarketLocal';
-import { useOwnedLiquidityPool } from '../../hooks/useOwnedLiquidityPool';
 import { useTokenLocal } from '../../hooks/useTokenLocal';
 import { Button } from '../../stories/atom/Button';
 import { Outlink } from '../../stories/atom/Outlink';
@@ -36,10 +32,10 @@ import { Header } from '../../stories/template/Header';
 import { MainBar } from '../../stories/template/MainBar';
 import { PoolPanel } from '../../stories/template/PoolPanel';
 import './style.css';
+import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
 const Pool = () => {
-  // useConnectOnce();
-  const { connectAsync } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { address: walletAddress } = useAccount();
   const {
     accountAddress: chromaticAccountAddress,
@@ -47,10 +43,10 @@ const Pool = () => {
     status,
     balances,
     isChromaticBalanceLoading,
-  } = useUsumAccount();
+  } = useChromaticAccount();
   const {
     tokens,
-    currentSelectedToken: selectedToken,
+    currentToken: selectedToken,
     isTokenLoading,
     onTokenSelect,
   } = useSettlementToken();
@@ -62,10 +58,8 @@ const Pool = () => {
     onMarketSelect,
   } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
-  const { useTokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
-  // const { usumBalances } = useUsumBalances();
+  const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
   const { priceFeed, isFeedLoading } = usePriceFeed();
-  const pools = useLiquidityPoolSummary();
   const { disconnectAsync } = useDisconnect();
   const {
     amount: balanceAmount,
@@ -86,7 +80,7 @@ const Pool = () => {
       shortTotalUnusedLiquidity,
     },
   } = useLiquidityPool();
-  const { ownedPool } = useOwnedLiquidityPool();
+  const { currentOwnedPool, ownedPoolSummary } = useOwnedLiquidityPools();
   const {
     amount,
     rates,
@@ -128,14 +122,9 @@ const Pool = () => {
         markets={markets}
         priceFeed={priceFeed}
         balances={walletBalances}
-        pools={pools}
+        pools={ownedPoolSummary}
         onConnect={() => {
-          connectAsync({
-            connector: new InjectedConnector({
-              chains: [CHAINS_WAGMI[CHAIN]],
-            }),
-            chainId: CHAIN_ID,
-          });
+          connectAsync({ connector: connectors[0] });
         }}
         onCreateAccount={createUsumAccount}
         onDisconnect={disconnectAsync}
@@ -165,7 +154,7 @@ const Pool = () => {
           onAmountChange={onBalanceAmountChange}
           onDeposit={onDeposit}
           onWithdraw={onWithdraw}
-          onConnect={connectAsync}
+          onConnect={() => connectAsync({ connector: connectors[0] })}
           onStatusUpdate={createUsumAccount}
           showAccountPopover={false}
         />
@@ -175,7 +164,7 @@ const Pool = () => {
               token={selectedToken}
               market={selectedMarket}
               balances={walletBalances}
-              ownedPool={ownedPool}
+              ownedPool={currentOwnedPool}
               amount={amount}
               rates={rates}
               binCount={binCount}

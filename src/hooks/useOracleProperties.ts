@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -10,14 +9,12 @@ import { checkAllProps } from '~/utils';
 import { formatDecimals } from '~/utils/number';
 
 export const useOracleProperties = () => {
-  const { client } = useChromaticClient();
+  const { isReady, client } = useChromaticClient();
   const { currentMarket } = useMarket();
 
   const fetchKeyData = {
     name: 'useOracleProperties',
     marketAddress: currentMarket?.address,
-    marketApi: useMemo(() => client?.market(), [client]),
-    marketFactoryApi: useMemo(() => client?.marketFactory(), [client]),
   };
 
   const format = (value: number) => Number(formatDecimals(value, LEVERAGE_DECIMALS));
@@ -26,28 +23,28 @@ export const useOracleProperties = () => {
     data: oracleProperties,
     error,
     isLoading,
-  } = useSWR(
-    checkAllProps(fetchKeyData) ? fetchKeyData : null,
-    async ({ marketApi, marketFactoryApi }) => {
-      const oracleProvider = await marketApi.oracleProvider(currentMarket!.address);
-      const properties = await marketFactoryApi.getOracleProviderProperties(oracleProvider);
+  } = useSWR(isReady && checkAllProps(fetchKeyData) && fetchKeyData, async ({ marketAddress }) => {
+    const marketApi = client.market();
+    const oracleProvider = await marketApi.oracleProvider(marketAddress);
 
-      const tier = properties.leverageLevel;
-      const minTakeProfit = format(properties.minTakeProfitBPS);
-      const maxTakeProfit = format(properties.maxTakeProfitBPS);
-      // TODO: move into components
-      const maxLeverage = tier === 1 ? 20 : 10;
-      const minStopLoss = 100 / maxLeverage;
+    const marketFactoryApi = client.marketFactory();
+    const properties = await marketFactoryApi.getOracleProviderProperties(oracleProvider);
 
-      return {
-        tier,
-        minTakeProfit,
-        maxTakeProfit,
-        maxLeverage,
-        minStopLoss,
-      };
-    }
-  );
+    const tier = properties.leverageLevel;
+    const minTakeProfit = format(properties.minTakeProfitBPS);
+    const maxTakeProfit = format(properties.maxTakeProfitBPS);
+    // TODO: move into components
+    const maxLeverage = tier === 1 ? 20 : 10;
+    const minStopLoss = 100 / maxLeverage;
+
+    return {
+      tier,
+      minTakeProfit,
+      maxTakeProfit,
+      maxLeverage,
+      minStopLoss,
+    };
+  });
 
   useError({ error });
 

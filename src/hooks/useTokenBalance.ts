@@ -2,7 +2,7 @@ import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { getContract } from '@wagmi/core';
 import { fromPairs } from 'ramda';
 import useSWR from 'swr';
-import { Address, useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Logger } from '~/utils/log';
 import { checkAllProps } from '../utils';
@@ -12,30 +12,27 @@ const logger = Logger('useBalances');
 
 export const useTokenBalances = () => {
   const { tokens } = useSettlementToken();
-  const { address: walletAddress } = useAccount();
-  const { client } = useChromaticClient();
-  const requiredVar = {
+  const { isReady, walletAddress } = useChromaticClient();
+
+  const fetchKey = {
+    name: 'getTokenBalances',
     walletAddress: walletAddress,
     tokens: tokens,
-    publicClient: client?.publicClient,
-    walletClient: client?.walletClient,
   };
 
-  const fetchKey = checkAllProps(requiredVar) ? requiredVar : null;
-
   const {
-    data: useTokenBalances,
+    data: tokenBalances,
     error,
     mutate: fetchTokenBalances,
     isLoading: isTokenBalanceLoading,
-  } = useSWR(fetchKey, async ({ walletAddress, tokens, publicClient, walletClient }) => {
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ walletAddress, tokens }) => {
     const results = await Promise.all(
-      (tokens || []).map(async (token) => {
+      tokens.map(async (token) => {
         const contract = getContract({
           address: token.address,
           abi: ierc20ABI,
-          walletClient: publicClient,
         });
+
         return await contract.read.balanceOf([walletAddress]);
       })
     );
@@ -49,5 +46,5 @@ export const useTokenBalances = () => {
 
   useError({ error, logger });
 
-  return { useTokenBalances, isTokenBalanceLoading, fetchTokenBalances } as const;
+  return { tokenBalances, isTokenBalanceLoading, fetchTokenBalances } as const;
 };

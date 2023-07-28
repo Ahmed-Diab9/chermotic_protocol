@@ -7,4 +7,13 @@
   .react_range__label {
     @apply text-xs text-black/30;
   }
+
+  .react_range__slot_wrapper {
+    &.graph + .grid,
+    &.grid:last-child {
+      .react_range__grid_bold {
+        border: none !important;
+      }
+    }
+  }
 }

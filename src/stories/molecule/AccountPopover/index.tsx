@@ -5,14 +5,7 @@ import { formatUnits, parseUnits } from 'viem';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import {
-  ACCOUNT_COMPLETED,
-  ACCOUNT_COMPLETING,
-  ACCOUNT_CREATING,
-  ACCOUNT_NONE,
-  ACCOUNT_STATUS,
-  Account,
-} from '../../../typings/account';
+import { ACCOUNT_STATUS, Account } from '../../../typings/account';
 import { Token } from '../../../typings/market';
 import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
@@ -41,6 +34,7 @@ interface AccountPopoverProps {
   assetValue?: bigint;
   isLoading?: boolean;
   isBalanceLoading?: boolean;
+  isConnected?: boolean;
   onAmountChange?: (value: string) => unknown;
   onDeposit?: (onAfterDeposit?: () => unknown) => unknown;
   onWithdraw?: (onAfterWithdraw?: () => unknown) => unknown;
@@ -60,6 +54,7 @@ export const AccountPopover = ({
   assetValue,
   isLoading,
   isBalanceLoading,
+  isConnected,
   onAmountChange,
   onDeposit,
   onWithdraw,
@@ -68,7 +63,6 @@ export const AccountPopover = ({
   ...props
 }: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
-
   return (
     <>
       <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
@@ -76,7 +70,7 @@ export const AccountPopover = ({
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>
         <div className="flex flex-col gap-1 mr-10 text-right">
-          {isLoaded ? (
+          {isConnected && isLoaded ? (
             <>
               <h2 className="text-xl">
                 <SkeletonElement isLoading={isBalanceLoading} width={120}>
@@ -196,7 +190,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           </Popover.Button>
           {/* account 없을 때 */}
           {/* 1. create account */}
-          {status === ACCOUNT_NONE && (
+          {status === ACCOUNT_STATUS.NONE && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
@@ -238,7 +232,7 @@ const AssetPanel = (props: AssetPanelProps) => {
 
           {/* account 없을 때 */}
           {/* 2. loading to generate account */}
-          {status === ACCOUNT_CREATING && (
+          {status === ACCOUNT_STATUS.CREATING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
@@ -278,7 +272,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {/* account 없을 때 */}
           {/* 3. complete to create account */}
           {/* todo: 3초 정도 보여지고, account 있을 때의 UI로 자연스럽게 전환됨 */}
-          {status === ACCOUNT_COMPLETING && (
+          {status === ACCOUNT_STATUS.COMPLETING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
                 <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
@@ -301,7 +295,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           )}
 
           {/* account 있을 때 */}
-          {status === ACCOUNT_COMPLETED && (
+          {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
                 <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">

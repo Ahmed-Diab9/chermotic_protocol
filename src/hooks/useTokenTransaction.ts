@@ -1,29 +1,28 @@
 import { ierc20ABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { isNil } from 'ramda';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
-import { useAppSelector } from '../store';
 import { Logger } from '../utils/log';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useUsumAccount } from './useUsumAccount';
+import { useChromaticAccount } from './useChromaticAccount';
+import { useSettlementToken } from './useSettlementToken';
 
 const logger = Logger('useTokenTransaction');
 
 const useTokenTransaction = () => {
   const { address: walletAddress } = useAccount();
   const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
-    useUsumAccount();
-  const token = useAppSelector((state) => state.token.selectedToken);
+    useChromaticAccount();
+  const { currentToken } = useSettlementToken();
   const { client } = useChromaticClient();
-  const accountApi = useMemo(() => client?.account(), [client]);
   const [amount, setAmount] = useState('');
   const { data: walletClient } = useWalletClient();
-  const { data: tokenContractData, writeAsync: transferToken } = useContractWrite({
+  const { writeAsync: transferToken } = useContractWrite({
     abi: ierc20ABI,
-    address: token?.address,
+    address: currentToken?.address,
     functionName: 'transfer',
   });
 
@@ -36,12 +35,12 @@ const useTokenTransaction = () => {
           toast('Addresses are not selected.');
           return;
         }
-        if (!isValid(token)) {
+        if (!isValid(currentToken)) {
           logger.info('token are not selected');
           toast('Settlement token is not selected.');
           return;
         }
-        const expanded = parseUnits(amount, token.decimals);
+        const expanded = parseUnits(amount, currentToken.decimals);
         if (!isValid(expanded)) {
           logger.info('invalid amount', expanded);
           toast('Amount is not valid.');
@@ -50,14 +49,14 @@ const useTokenTransaction = () => {
 
         setAmount('');
         const { hash } = await transferToken?.({
-          args: [chromaticAccountAddress, parseUnits(amount, token.decimals)],
+          args: [chromaticAccountAddress, parseUnits(amount, currentToken.decimals)],
         });
         onAfterDeposit?.();
 
         await client?.publicClient?.waitForTransactionReceipt({ hash });
         await fetchChromaticBalances();
 
-        toast(`${amount} ${token.name} has been deposited.`);
+        toast(`${amount} ${currentToken.name} has been deposited.`);
       } catch (error) {
         if (error instanceof Error) {
           toast.error(error.message);
@@ -81,13 +80,13 @@ const useTokenTransaction = () => {
           toast('Connect your wallet first.');
           return;
         }
-        if (!isValid(token)) {
+        if (!isValid(currentToken)) {
           logger.info('token are not selected');
           toast('Settlement token are not selected.');
           return;
         }
         if (isNil(walletAddress)) return;
-        const expanded = parseUnits(amount, token.decimals);
+        const expanded = parseUnits(amount, currentToken.decimals);
         if (!isValid(expanded)) {
           logger.info('invalid amount', expanded);
           toast('Amount is not valid.');
@@ -95,10 +94,11 @@ const useTokenTransaction = () => {
         }
 
         setAmount('');
+        const accountApi = client.account();
         const result = await accountApi
           ?.contracts()
           .account(chromaticAccountAddress)
-          .simulate.withdraw([token.address, expanded], { account: walletClient?.account });
+          .simulate.withdraw([currentToken.address, expanded], { account: walletClient?.account });
         if (!result) return;
 
         const hash = await walletClient?.writeContract(result.request);
@@ -108,7 +108,7 @@ const useTokenTransaction = () => {
         onAfterWithdraw?.();
         await client?.publicClient?.waitForTransactionReceipt({ hash });
         await fetchChromaticBalances();
-        toast(`${amount} ${token.name} has been withdrawn.`);
+        toast(`${amount} ${currentToken.name} has been withdrawn.`);
       } catch (error) {
         if (error instanceof Error) {
           toast.error(error.message);
@@ -117,7 +117,7 @@ const useTokenTransaction = () => {
         }
       }
     },
-    [chromaticAccountAddress, token, amount, client]
+    [chromaticAccountAddress, currentToken, amount, client]
   );
 
   const onAmountChange = useCallback((nextValue: string) => {
