@@ -6,7 +6,7 @@ import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
-import { useLiquidityPools } from './useLiquidityPool';
+import { useLiquidityPool, useLiquidityPools } from './useLiquidityPool';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
 import { useSettlementToken } from './useSettlementToken';
@@ -26,18 +26,9 @@ function useRemoveLiquidityAmounts({ amount, feeRate }: Props) {
   const { client, walletAddress } = useChromaticClient();
   const { currentMarket } = useMarket();
   const { currentToken } = useSettlementToken();
-  const { liquidityPools } = useLiquidityPools();
+  const { liquidityPool: pool } = useLiquidityPool();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();
-
-  const pool = useMemo(() => {
-    if (isNil(currentMarket) || isNil(currentToken) || isNil(liquidityPools)) return;
-
-    return liquidityPools.find(
-      (pool) =>
-        pool.tokenAddress === currentToken.address && pool.marketAddress === currentMarket.address
-    );
-  }, [liquidityPools, currentMarket, currentToken]);
 
   const onRemoveLiquidity = useCallback(async () => {
     if (isNil(amount)) {
