@@ -6,7 +6,7 @@ import { errorLog } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import useOracleVersion from './useOracleVersion';
 import { usePositions } from './usePositions';
-import { useUsumAccount } from './useUsumAccount';
+import { useChromaticAccount } from './useChromaticAccount';
 
 interface Props {
   marketAddress: Address;
@@ -16,7 +16,7 @@ interface Props {
 export function useClaimPosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
-  const { fetchBalances } = useUsumAccount();
+  const { fetchBalances } = useChromaticAccount();
   const { positions, fetchPositions } = usePositions();
   const { oracleVersions } = useOracleVersion();
   const onClaimPosition = async function () {

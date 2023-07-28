@@ -29,7 +29,7 @@ import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
 import { useTradeInput } from '~/hooks/useTradeInput';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 
 import { copyText } from '~/utils/clipboard';
@@ -49,7 +49,7 @@ const Trade = () => {
     isChromaticBalanceLoading,
     status,
     balances,
-  } = useUsumAccount();
+  } = useChromaticAccount();
   const { tokens, onTokenSelect, currentToken, isTokenLoading } = useSettlementToken();
   const { markets, onMarketSelect, currentMarket, isMarketLoading } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();

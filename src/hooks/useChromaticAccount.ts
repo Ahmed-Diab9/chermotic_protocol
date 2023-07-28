@@ -12,9 +12,9 @@ import { useSettlementToken } from './useSettlementToken';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 
-const logger = Logger('useUsumAccount');
+const logger = Logger('useChromaticAccount');
 
-export const useUsumAccount = () => {
+export const useChromaticAccount = () => {
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.account.status);
   const { setAccountStatus } = accountAction;

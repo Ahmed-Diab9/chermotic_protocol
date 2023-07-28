@@ -1,12 +1,12 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { usePositions } from './usePositions';
-import { useUsumAccount } from './useUsumAccount';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useSettlementToken } from './useSettlementToken';
 
 export function useMargins() {
   const { positions } = usePositions();
-  const { balances } = useUsumAccount();
+  const { balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
 
   const [totalBalance, totalAsset] = useMemo(() => {

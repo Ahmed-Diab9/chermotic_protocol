@@ -7,7 +7,7 @@ import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
 import { Logger } from '../utils/log';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import { useUsumAccount } from './useUsumAccount';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useSettlementToken } from './useSettlementToken';
 
 const logger = Logger('useTokenTransaction');
@@ -15,7 +15,7 @@ const logger = Logger('useTokenTransaction');
 const useTokenTransaction = () => {
   const { address: walletAddress } = useAccount();
   const { accountAddress: chromaticAccountAddress, fetchBalances: fetchChromaticBalances } =
-    useUsumAccount();
+    useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { client } = useChromaticClient();
   const [amount, setAmount] = useState('');

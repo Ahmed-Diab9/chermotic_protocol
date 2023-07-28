@@ -10,7 +10,7 @@ import { mulPreserved, toBigintWithDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { usePositions } from './usePositions';
-import { useUsumAccount } from './useUsumAccount';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useSettlementToken } from './useSettlementToken';
 import { useMarket } from './useMarket';
 
@@ -20,7 +20,7 @@ interface Props {
 
 function useOpenPosition({ state }: Props) {
   const { fetchPositions } = usePositions();
-  const { accountAddress, fetchBalances, balances } = useUsumAccount();
+  const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { currentMarket } = useMarket();
   const { client } = useChromaticClient();

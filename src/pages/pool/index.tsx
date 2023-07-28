@@ -14,7 +14,7 @@ import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useAppSelector } from '~/store';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
@@ -43,7 +43,7 @@ const Pool = () => {
     status,
     balances,
     isChromaticBalanceLoading,
-  } = useUsumAccount();
+  } = useChromaticAccount();
   const {
     tokens,
     currentToken: selectedToken,
@@ -59,7 +59,6 @@ const Pool = () => {
   } = useMarket();
   const { feeRate, isFeeRateLoading } = useFeeRate();
   const { tokenBalances: walletBalances, isTokenBalanceLoading } = useTokenBalances();
-  // const { usumBalances } = useUsumBalances();
   const { priceFeed, isFeedLoading } = usePriceFeed();
   const { disconnectAsync } = useDisconnect();
   const {

@@ -1,17 +1,17 @@
 import useSWR from 'swr';
 import { useChromaticClient } from './useChromaticClient';
-import { useAppSelector } from '../store';
 import { useError } from './useError';
 import { checkAllProps } from '../utils';
+import { useSettlementToken } from './useSettlementToken';
 
 // 연이율은 소수점 4자리를 적용해야 합니다. @austin-builds
 export const useFeeRate = () => {
   const { isReady, client } = useChromaticClient();
-  const selectedToken = useAppSelector((state) => state.token.selectedToken);
+  const { currentToken } = useSettlementToken();
 
   const fetchKey = {
     name: 'useFeeRate',
-    tokenAddress: selectedToken?.address,
+    tokenAddress: currentToken?.address,
   };
   const {
     data: feeRate,

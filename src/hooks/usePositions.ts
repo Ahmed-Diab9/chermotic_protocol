@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useMarket } from '~/hooks/useMarket';
-import { useUsumAccount } from '~/hooks/useUsumAccount';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Position } from '~/typings/position';
 import { filterIfFulfilled } from '~/utils/array';
@@ -86,7 +86,7 @@ async function getPositions(
 }
 
 export const usePositions = () => {
-  const { accountAddress } = useUsumAccount();
+  const { accountAddress } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
   const { oracleVersions } = useOracleVersion();
