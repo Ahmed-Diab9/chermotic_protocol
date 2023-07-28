@@ -176,7 +176,6 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               onClick={async () => {
                 if (isValid(selectedBin) && isValid(amount)) {
                   onRemoveLiquidity();
-                  onAmountChange?.('0');
                 }
               }}
             />

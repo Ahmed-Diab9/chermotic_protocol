@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
@@ -20,6 +20,8 @@ export interface TradePanelProps {
   onLongLeverageChange?: (value: string) => unknown;
   onLongTakeProfitChange?: (value: string) => unknown;
   onLongStopLossChange?: (value: string) => unknown;
+  onLongFeeAllowanceChange?: (value: string) => unknown;
+  onLongFeeValidate?: () => unknown;
 
   shortInput?: TradeInput;
   shortTradeFee?: bigint;
@@ -32,6 +34,8 @@ export interface TradePanelProps {
   onShortLeverageChange?: (value: string) => unknown;
   onShortTakeProfitChange?: (value: string) => unknown;
   onShortStopLossChange?: (value: string) => unknown;
+  onShortFeeAllowanceChange?: (value: string) => unknown;
+  onShortFeeValidate?: () => unknown;
 
   balances?: Record<string, bigint>;
   priceFeed?: Record<string, Price>;
@@ -66,6 +70,8 @@ export const TradePanel = (props: TradePanelProps) => {
     onLongLeverageChange,
     onLongTakeProfitChange,
     onLongStopLossChange,
+    onLongFeeAllowanceChange,
+    onLongFeeValidate,
     shortInput,
     shortTradeFee,
     shortTradeFeePercent,
@@ -74,6 +80,8 @@ export const TradePanel = (props: TradePanelProps) => {
     onShortLeverageChange,
     onShortTakeProfitChange,
     onShortStopLossChange,
+    onShortFeeAllowanceChange,
+    onShortFeeValidate,
     balances,
     priceFeed,
     token,
@@ -149,6 +157,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 onLeverageChange={onShortLeverageChange}
                 onTakeProfitChange={onShortTakeProfitChange}
                 onStopLossChange={onShortStopLossChange}
+                onFeeAllowanceChange={onShortFeeAllowanceChange}
+                onFeeValidate={onShortFeeValidate}
               />
             </div>
             <div className="w-full px-0 pt-4 pb-10">
@@ -179,6 +189,8 @@ export const TradePanel = (props: TradePanelProps) => {
                 onLeverageChange={onLongLeverageChange}
                 onTakeProfitChange={onLongTakeProfitChange}
                 onStopLossChange={onLongStopLossChange}
+                onFeeAllowanceChange={onLongFeeAllowanceChange}
+                onFeeValidate={onLongFeeValidate}
               />
             </div>
           </div>
@@ -247,6 +259,8 @@ export const TradePanel = (props: TradePanelProps) => {
                     onLeverageChange={onShortLeverageChange}
                     onTakeProfitChange={onShortTakeProfitChange}
                     onStopLossChange={onShortStopLossChange}
+                    onFeeAllowanceChange={onShortFeeAllowanceChange}
+                    onFeeValidate={onShortFeeValidate}
                   />
                 </Tab.Panel>
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
@@ -272,6 +286,8 @@ export const TradePanel = (props: TradePanelProps) => {
                     onLeverageChange={onLongLeverageChange}
                     onTakeProfitChange={onLongTakeProfitChange}
                     onStopLossChange={onLongStopLossChange}
+                    onFeeAllowanceChange={onLongFeeAllowanceChange}
+                    onFeeValidate={onLongFeeValidate}
                   />
                 </Tab.Panel>
               </Tab.Panels>

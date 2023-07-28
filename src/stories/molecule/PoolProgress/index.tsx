@@ -14,7 +14,6 @@ import '../../atom/Tabs/style.css';
 // import { LPReceipt } from "~/typings/receipt";
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { usePrevious } from '~/hooks/usePrevious';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
@@ -36,7 +35,7 @@ export const receiptDetail = (receipt: LpReceipt, token: Token) => {
   if (action === 'add') {
     return formatDecimals(receipt.amount, token.decimals, 2);
   }
-  const amountRatio = divPreserved(burningAmount, amount, 2);
+  const amountRatio = amount !== 0n ? divPreserved(burningAmount, amount, 2) : 0n;
   return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
     amount,
     token.decimals,
@@ -68,7 +67,6 @@ export const PoolProgress = ({
   onReceiptClaim,
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
-  const previousReceipts = usePrevious(receipts, true);
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [hasGuide, setHasGuide] = useState(false);
@@ -80,7 +78,7 @@ export const PoolProgress = ({
   const { mintings, burnings } = useMemo(() => {
     let mintings = 0;
     let burnings = 0;
-    (receipts ?? previousReceipts).forEach((receipt) => {
+    receipts.forEach((receipt) => {
       if (receipt.action === 'add') {
         mintings++;
       } else {
@@ -191,7 +189,7 @@ export const PoolProgress = ({
                           </div>
                           {isValid(token) &&
                             isValid(market) &&
-                            (receipts || previousReceipts).map((receipt, index) => (
+                            receipts.map((receipt, index) => (
                               <ProgressItem
                                 key={`all-${receipt.id.toString()}-${index}`}
                                 // title={receipt.title}
@@ -230,7 +228,7 @@ export const PoolProgress = ({
                           </div>
                           {isValid(token) &&
                             isValid(market) &&
-                            (receipts || previousReceipts)
+                            receipts
                               .filter((receipt) => receipt.action === 'add')
                               .map((receipt, index) => (
                                 <ProgressItem
@@ -271,7 +269,7 @@ export const PoolProgress = ({
                           </div>
                           {isValid(token) &&
                             isValid(market) &&
-                            (receipts || previousReceipts)
+                            receipts
                               .filter((receipt) => receipt.action === 'remove')
                               .map((receipt, index) => (
                                 <ProgressItem

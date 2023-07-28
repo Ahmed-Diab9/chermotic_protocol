@@ -47,6 +47,8 @@ interface TradeContentProps {
   onLeverageChange?: (nextLeverage: string) => unknown;
   onTakeProfitChange?: (nextRate: string) => unknown;
   onStopLossChange?: (nextRate: string) => unknown;
+  onFeeAllowanceChange?: (nextAllowance: string) => unknown;
+  onFeeValidate?: () => unknown;
 }
 
 const methodMap: Record<string, string> = {
@@ -78,6 +80,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
+    onFeeAllowanceChange,
+    onFeeValidate,
   } = props;
 
   const oracleDecimals = 18;
@@ -155,6 +159,22 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   useEffect(() => {
     createLiquidation();
   }, [createLiquidation]);
+
+  useEffect(() => {
+    const input = document.querySelector('.maxFeeAllowance');
+    const onClickAway = (event: MouseEvent) => {
+      if (!(event.target instanceof HTMLElement)) {
+        return;
+      }
+      if (!input?.contains(event.target)) {
+        onFeeValidate?.();
+      }
+    };
+    window.addEventListener('click', onClickAway);
+    return () => {
+      window.removeEventListener('click', onClickAway);
+    };
+  }, [onFeeValidate]);
 
   return (
     <div className="px-10 w-full max-w-[680px]">
@@ -376,7 +396,15 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 />
               </div>
               <div className="w-20">
-                <Input size="sm" unit="%" value={0.3} />
+                <Input
+                  size="sm"
+                  unit="%"
+                  value={input?.maxFeeAllowance}
+                  className="maxFeeAllowance"
+                  onChange={(value) => {
+                    onFeeAllowanceChange?.(value);
+                  }}
+                />
               </div>
             </div>
           </div>

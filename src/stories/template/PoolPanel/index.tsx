@@ -177,7 +177,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const onSelectAllClick = useCallback(
     (selectedIndex: number) => {
       switch (selectedIndex) {
-        case 0: {
+        case 1: {
           if (
             direction === 'long' &&
             selectedBins.filter((bin) => bin.baseFeeRate > 0).length ===
@@ -189,7 +189,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
           }
           break;
         }
-        case 1: {
+        case 0: {
           if (
             direction === 'short' &&
             selectedBins.filter((bin) => bin.baseFeeRate < 0).length ===
@@ -515,8 +515,8 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <>
                       <div className="flex flex-wrap items-baseline">
                         <Tab.List className="pt-[36px] !justify-start !gap-10">
-                          <Tab>Long LP</Tab>
                           <Tab>Short LP</Tab>
+                          <Tab>Long LP</Tab>
                         </Tab.List>
 
                         {/* todo: hide buttons&wrapper when there is no list */}
@@ -536,7 +536,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                             css="gray"
                             className="ml-2"
                             onClick={() => {
-                              dispatch(poolsAction.onModalOpen());
+                              if (selectedBins.length > 0) {
+                                dispatch(poolsAction.onModalOpen());
+                              }
                             }}
                             // disabled
                           />
@@ -545,13 +547,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       <Tab.Panels className="mt-12">
                         <Tab.Panel>
                           <article>
-                            {ownedLongLiquidityBins?.length === 0 ? (
+                            {ownedShortLiquidityBins.length === 0 ? (
                               <p className="my-10 text-center text-gray">
                                 You have no liquidity yet.
                               </p>
                             ) : (
                               <div className="flex flex-col gap-3">
-                                {ownedLongLiquidityBins.map((bin, binIndex) => (
+                                {ownedShortLiquidityBins.map((bin, binIndex) => (
                                   <BinItem
                                     key={bin.baseFeeRate}
                                     index={binIndex}
@@ -569,13 +571,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         </Tab.Panel>
                         <Tab.Panel>
                           <article>
-                            {ownedShortLiquidityBins.length === 0 ? (
+                            {ownedLongLiquidityBins?.length === 0 ? (
                               <p className="my-10 text-center text-gray">
                                 You have no liquidity yet.
                               </p>
                             ) : (
                               <div className="flex flex-col gap-3">
-                                {ownedShortLiquidityBins.map((bin, binIndex) => (
+                                {ownedLongLiquidityBins.map((bin, binIndex) => (
                                   <BinItem
                                     key={bin.baseFeeRate}
                                     index={binIndex}

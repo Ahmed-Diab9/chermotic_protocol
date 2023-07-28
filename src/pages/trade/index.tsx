@@ -66,6 +66,8 @@ const Trade = () => {
     onLeverageChange: onLongLeverageChange,
     onTakeProfitChange: onLongTakeProfitChange,
     onStopLossChange: onLongStopLossChange,
+    onFeeAllowanceChange: onLongFeeAllowanceChange,
+    onFeeAllowanceValidate: onLongFeeValidate,
   } = useTradeInput();
   const {
     state: shortInput,
@@ -78,6 +80,8 @@ const Trade = () => {
     onLeverageChange: onShortLeverageChange,
     onTakeProfitChange: onShortTakeProfitChange,
     onStopLossChange: onShortStopLossChange,
+    onFeeAllowanceChange: onShortFeeAllowanceChange,
+    onFeeAllowanceValidate: onShortFeeValidate,
   } = useTradeInput();
   const {
     liquidity: {
@@ -163,6 +167,8 @@ const Trade = () => {
             onLongLeverageChange={onLongLeverageChange}
             onLongTakeProfitChange={onLongTakeProfitChange}
             onLongStopLossChange={onLongStopLossChange}
+            onLongFeeValidate={onLongFeeValidate}
+            onLongFeeAllowanceChange={onLongFeeAllowanceChange}
             shortInput={shortInput}
             shortTradeFee={shortTradeFee}
             shortTradeFeePercent={shortFeePercent}
@@ -171,6 +177,8 @@ const Trade = () => {
             onShortLeverageChange={onShortLeverageChange}
             onShortTakeProfitChange={onShortTakeProfitChange}
             onShortStopLossChange={onShortStopLossChange}
+            onShortFeeValidate={onShortFeeValidate}
+            onShortFeeAllowanceChange={onShortFeeAllowanceChange}
             balances={balances}
             priceFeed={priceFeed}
             token={currentSelectedToken}

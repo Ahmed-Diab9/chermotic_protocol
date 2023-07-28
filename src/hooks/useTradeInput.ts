@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
-import { useMemo, useReducer } from 'react';
-import { formatUnits } from 'viem';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
@@ -26,18 +26,15 @@ const initialTradeInput = {
   takerMargin: 0,
   makerMargin: 0,
   leverage: '10',
+  maxFeeAllowance: '0.03',
 } satisfies TradeInput;
-
-// const trimDecimals = (num: number, decimals: number) => {
-//   return Math.round(num * 10 ** decimals) / 10 ** decimals;
-// };
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === 'method') {
     const nextMethod = state.method === 'collateral' ? 'quantity' : 'collateral';
     switch (nextMethod) {
       case 'collateral': {
-        const { direction, collateral, leverage, takeProfit } = state;
+        const { direction, collateral, leverage, takeProfit, maxFeeAllowance } = state;
         const defaultLeverage = 2;
         if (Number(leverage) === 0) {
           state = {
@@ -50,6 +47,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: String(100 / defaultLeverage),
             takerMargin: Number(collateral),
             makerMargin: Number(collateral) * (Number(takeProfit) / 100) * defaultLeverage,
+            maxFeeAllowance,
           };
         } else {
           state = {
@@ -62,12 +60,13 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
             stopLoss: String(100 / Number(leverage)),
             takerMargin: Number(collateral),
             makerMargin: Number(collateral) * (Number(takeProfit) / 100) * Number(leverage),
+            maxFeeAllowance,
           };
         }
         break;
       }
       case 'quantity': {
-        const { direction, quantity, leverage, takeProfit, stopLoss } = state;
+        const { direction, quantity, leverage, takeProfit, stopLoss, maxFeeAllowance } = state;
         state = {
           direction,
           method: nextMethod,
@@ -78,6 +77,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
           leverage,
           takerMargin: Number(quantity) * (Number(stopLoss) / 100),
           makerMargin: Number(quantity) * (Number(takeProfit) / 100),
+          maxFeeAllowance,
         };
         break;
       }
@@ -171,6 +171,14 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       }
       break;
     }
+    case 'maxFeeAllowance': {
+      const { maxFeeAllowance } = payload;
+      state = {
+        ...state,
+        maxFeeAllowance,
+      };
+      break;
+    }
     case 'direction': {
       const { direction } = payload;
       state = {
@@ -190,6 +198,26 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
     leverage: state.leverage,
   };
   return state;
+};
+
+const feeLevel = (percentage: bigint, tokenDecimals: number) => {
+  // const tierZero = parseUnits('0.01', tokenDecimals);
+  const tierOne = parseUnits('0.1', tokenDecimals);
+  const tierTwo = parseUnits('1', tokenDecimals);
+  const tierThree = parseUnits('10', tokenDecimals);
+  if (percentage < tierOne) {
+    return 0;
+  }
+  if (percentage >= tierOne && percentage < tierTwo) {
+    return 1;
+  }
+  if (percentage >= tierTwo && percentage < tierThree) {
+    return 2;
+  }
+  if (percentage >= tierThree) {
+    return 3;
+  }
+  return 0;
 };
 
 export const useTradeInput = () => {
@@ -251,12 +279,73 @@ export const useTradeInput = () => {
     shortTotalUnusedLiquidity,
   ]);
 
+  const [previousAllowance, setAllowance] = useState(state.maxFeeAllowance);
+  useEffect(() => {
+    if (isNil(token) || isNil(feePercent)) {
+      return;
+    }
+    const nextLevel = feeLevel(feePercent ?? 0n, token.decimals);
+    switch (nextLevel) {
+      case 0: {
+        const nextAllowance = feePercent + parseUnits('0.03', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: formatted,
+          },
+        });
+        setAllowance(formatted);
+        break;
+      }
+      case 1: {
+        const nextAllowance = feePercent + parseUnits('0.3', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: formatted,
+          },
+        });
+        setAllowance(formatted);
+        break;
+      }
+      case 2: {
+        const nextAllowance = feePercent + parseUnits('3', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: formatted,
+          },
+        });
+        setAllowance(formatted);
+        break;
+      }
+      case 3: {
+        const nextAllowance = feePercent + parseUnits('30', token.decimals);
+        const formatted = formatUnits(nextAllowance, token.decimals);
+        dispatch({
+          type: 'maxFeeAllowance',
+          payload: {
+            maxFeeAllowance: formatted,
+          },
+        });
+        setAllowance(formatted);
+        break;
+      }
+    }
+  }, [feePercent, token]);
+
   const onMethodToggle = () => {
     dispatch({ type: 'method' });
   };
 
   const onChange = (
-    key: keyof Omit<TradeInput, 'direction' | 'method' | 'takerMargin' | 'makerMargin'>,
+    key: keyof Omit<
+      TradeInput,
+      'direction' | 'method' | 'takerMargin' | 'makerMargin' | 'maxFeeAllowance'
+    >,
     newValue: string
   ) => {
     const value = newValue.replace(/,/g, '');
@@ -319,8 +408,28 @@ export const useTradeInput = () => {
     });
   };
 
+  const onFeeAllowanceChange = (allowance: string) => {
+    const parsed = Number(allowance);
+    if (isNaN(parsed) || parsed < 0) {
+      return;
+    }
+    dispatch({ type: 'maxFeeAllowance', payload: { maxFeeAllowance: allowance } });
+  };
+
+  const onFeeAllowanceValidate = () => {
+    if (Number(state.maxFeeAllowance) < Number(previousAllowance)) {
+      dispatch({
+        type: 'maxFeeAllowance',
+        payload: {
+          maxFeeAllowance: previousAllowance,
+        },
+      });
+    }
+  };
+
   const disabled = useMemo(() => {
     if (!token) return { status: true };
+    if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
     const MINIMUM_VALUE = 10;
     if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
@@ -350,7 +459,7 @@ export const useTradeInput = () => {
     } else {
       return { status: false };
     }
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]);
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, token, totalMargin]);
 
   return {
     state,
@@ -363,5 +472,7 @@ export const useTradeInput = () => {
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
+    onFeeAllowanceChange,
+    onFeeAllowanceValidate,
   };
 };

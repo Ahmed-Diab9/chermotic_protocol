@@ -8,6 +8,7 @@ export interface TradeInput {
   takerMargin: number;
   makerMargin: number;
   leverage: string;
+  maxFeeAllowance: string;
 }
 
 export type TradeInputAction<T = keyof TradeInput> = T extends keyof TradeInput

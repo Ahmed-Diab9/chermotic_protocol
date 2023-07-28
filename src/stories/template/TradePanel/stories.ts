@@ -29,6 +29,7 @@ export const Default: Story = {
       takerMargin: 0,
       makerMargin: 0,
       leverage: '1',
+      maxFeeAllowance: '0.3',
     },
     shortInput: {
       direction: 'short',
@@ -40,6 +41,7 @@ export const Default: Story = {
       takerMargin: 0,
       makerMargin: 0,
       leverage: '1',
+      maxFeeAllowance: '0.3',
     },
     balances: {
       USDC: 1000n,
@@ -54,6 +56,6 @@ export const Default: Story = {
     shortTotalMaxLiquidity: 10000n,
     shortTotalUnusedLiquidity: 10000n,
     isLongDisabled: false,
-    isShortDisabled: false
+    isShortDisabled: false,
   },
 };

@@ -1,8 +1,8 @@
+import { useState } from 'react';
+import '../../atom/Input/style.css';
+import { Button } from '../Button';
 import { Input } from '../Input';
 // import { Avatar } from "../Avatar";
-import { Button } from '../Button';
-import '../../atom/Input/style.css';
-import { useState } from 'react';
 
 interface OptionInputProps {
   label?: string;
@@ -39,6 +39,11 @@ export const OptionInput = (props: OptionInputProps) => {
   } = props;
   const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
   const onClick = (ratio: 25 | 50 | 75 | 100) => {
+    if (ratio === 100) {
+      setRatio(100);
+      onButtonClick?.(String(maxValue) ?? '');
+      return;
+    }
     const nextValue = (Number(maxValue) * (ratio / 100)).toString();
     setRatio(ratio);
     onButtonClick?.(nextValue ?? '');
