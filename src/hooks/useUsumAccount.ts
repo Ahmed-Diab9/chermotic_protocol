@@ -1,13 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { fromPairs, isNil } from 'ramda';
 import useSWR from 'swr';
-import {
-  ACCOUNT_COMPLETED,
-  ACCOUNT_COMPLETING,
-  ACCOUNT_CREATING,
-  ACCOUNT_NONE,
-  ACCOUNT_STATUS,
-} from '~/typings/account';
+import { ACCOUNT_STATUS } from '~/typings/account';
 import { AppError } from '~/typings/error';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
@@ -15,14 +9,17 @@ import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
-import useSharedState from './useSharedState';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { accountAction } from '~/store/reducer/account';
 
 const logger = Logger('useUsumAccount');
 
 export const useUsumAccount = () => {
-  const { client, walletAddress } = useChromaticClient();
+  const dispatch = useAppDispatch();
+  const status = useAppSelector((state) => state.account.status);
+  const { setAccountStatus } = accountAction;
 
-  const [status, setStatus] = useSharedState<ACCOUNT_STATUS>('accountStatus', ACCOUNT_NONE);
+  const { client, walletAddress } = useChromaticClient();
 
   const fetchKey = useMemo(
     () => ({
@@ -44,14 +41,14 @@ export const useUsumAccount = () => {
       const accountAddress = await accountApi.getAccount();
 
       if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
-        setStatus(ACCOUNT_NONE);
+        dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
         return;
       } else {
-        setStatus(ACCOUNT_COMPLETED);
+        dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETED));
         return accountAddress;
       }
     } catch (error) {
-      setStatus(ACCOUNT_NONE);
+      dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
       logger.error(error);
       return;
     }
@@ -98,12 +95,12 @@ export const useUsumAccount = () => {
     try {
       const accountApi = client.account();
       logger.info('Creating accounts');
-      setStatus(ACCOUNT_CREATING);
+      dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
       await accountApi.createAccount();
       await fetchAddress();
-      setStatus(ACCOUNT_COMPLETING);
+      dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
     } catch (error) {
-      setStatus(ACCOUNT_NONE);
+      dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
       logger.error(error);
 
       return AppError.reject(error, 'createAccount');
