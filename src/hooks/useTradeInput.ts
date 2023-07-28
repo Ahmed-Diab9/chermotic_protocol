@@ -281,14 +281,14 @@ export const useTradeInput = () => {
 
   const [previousAllowance, setAllowance] = useState(state.maxFeeAllowance);
   useEffect(() => {
-    if (isNil(token) || isNil(feePercent)) {
+    if (isNil(currentToken) || isNil(feePercent)) {
       return;
     }
-    const nextLevel = feeLevel(feePercent ?? 0n, token.decimals);
+    const nextLevel = feeLevel(feePercent ?? 0n, currentToken.decimals);
     switch (nextLevel) {
       case 0: {
-        const nextAllowance = feePercent + parseUnits('0.03', token.decimals);
-        const formatted = formatUnits(nextAllowance, token.decimals);
+        const nextAllowance = feePercent + parseUnits('0.03', currentToken.decimals);
+        const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
@@ -299,8 +299,8 @@ export const useTradeInput = () => {
         break;
       }
       case 1: {
-        const nextAllowance = feePercent + parseUnits('0.3', token.decimals);
-        const formatted = formatUnits(nextAllowance, token.decimals);
+        const nextAllowance = feePercent + parseUnits('0.3', currentToken.decimals);
+        const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
@@ -311,8 +311,8 @@ export const useTradeInput = () => {
         break;
       }
       case 2: {
-        const nextAllowance = feePercent + parseUnits('3', token.decimals);
-        const formatted = formatUnits(nextAllowance, token.decimals);
+        const nextAllowance = feePercent + parseUnits('3', currentToken.decimals);
+        const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
@@ -323,8 +323,8 @@ export const useTradeInput = () => {
         break;
       }
       case 3: {
-        const nextAllowance = feePercent + parseUnits('30', token.decimals);
-        const formatted = formatUnits(nextAllowance, token.decimals);
+        const nextAllowance = feePercent + parseUnits('30', currentToken.decimals);
+        const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
           type: 'maxFeeAllowance',
           payload: {
@@ -335,7 +335,7 @@ export const useTradeInput = () => {
         break;
       }
     }
-  }, [feePercent, token]);
+  }, [feePercent, currentToken]);
 
   const onMethodToggle = () => {
     dispatch({ type: 'method' });
@@ -460,7 +460,7 @@ export const useTradeInput = () => {
     } else {
       return { status: false };
     }
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, token, totalMargin]);
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, currentToken, totalMargin]);
 
   return {
     state,
