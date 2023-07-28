@@ -17,7 +17,9 @@ export function useClaimPosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
   const { fetchBalances } = useChromaticAccount();
-  const { positions, fetchPositions } = usePositions();
+  const {
+    allMarkets: { positions, fetchPositions },
+  } = usePositions();
   const { oracleVersions } = useOracleVersion();
   const onClaimPosition = async function () {
     try {

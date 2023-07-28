@@ -3,7 +3,6 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
-import { useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useMarket } from '~/hooks/useMarket';
@@ -21,7 +20,6 @@ import { useError } from './useError';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
 import { Address } from 'wagmi';
-import { isNil } from 'ramda';
 const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
@@ -126,13 +124,35 @@ export const usePositions = () => {
     }
   );
 
-  const currentMarketPositions = useMemo(() => {
-    if (isNil(currentMarket)) return undefined;
-    const filtered = positions?.filter(
-      (position) => position.marketAddress === currentMarket.address
-    );
-    return filtered;
-  }, [positions, currentMarket]);
+  const currentMarketFetchKey = {
+    name: 'getCurrentMarketPositions',
+    type: 'EOA',
+    chromaticAccount: accountAddress,
+    currentMarket: currentMarket,
+    currentToken: currentToken,
+    oracleVersions: oracleVersions,
+  };
+
+  const {
+    data: currentMarketPositions,
+    error: currentMarketError,
+    mutate: fetchCurrentMarketPositions,
+    isLoading: isCurrentMarketLoading,
+  } = useSWR(
+    checkAllProps(currentMarketFetchKey) && currentMarketFetchKey,
+    async ({ currentToken, currentMarket, oracleVersions }) => {
+      const accountApi = client.account();
+      const positionApi = client.position();
+
+      return getPositions(
+        accountApi,
+        positionApi,
+        oracleVersions,
+        currentMarket.address,
+        currentToken.decimals
+      );
+    }
+  );
 
   useError({
     error,
@@ -140,10 +160,17 @@ export const usePositions = () => {
   });
 
   return {
-    positions,
-    currentMarketPositions,
-    fetchPositions,
-    isLoading,
-    error,
+    allMarkets: {
+      positions,
+      fetchPositions,
+      isLoading,
+      error,
+    },
+    currentMarket: {
+      positions: currentMarketPositions,
+      fetchPositions: fetchCurrentMarketPositions,
+      isLoading: isCurrentMarketLoading,
+      error: currentMarketError,
+    },
   };
 };

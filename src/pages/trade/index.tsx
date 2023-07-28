@@ -102,7 +102,9 @@ const Trade = () => {
       onShortDirectionToggle();
     }
   }, [shortInput.direction, onShortDirectionToggle]);
-  const { currentMarketPositions: positions, isLoading: isPositionsLoading } = usePositions();
+  const {
+    currentMarket: { positions, isLoading: isPositionsLoading },
+  } = usePositions();
   useTokenLocal();
   useMarketLocal();
 

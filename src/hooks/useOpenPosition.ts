@@ -19,7 +19,9 @@ interface Props {
 }
 
 function useOpenPosition({ state }: Props) {
-  const { fetchPositions } = usePositions();
+  const {
+    allMarkets: { fetchPositions },
+  } = usePositions();
   const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { currentMarket } = useMarket();
