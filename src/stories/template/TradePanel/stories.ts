@@ -29,7 +29,7 @@ export const Default: Story = {
       takerMargin: 0,
       makerMargin: 0,
       leverage: '1',
-      maxFeeAllowance: 0.3,
+      maxFeeAllowance: '0.3',
     },
     shortInput: {
       direction: 'short',
@@ -41,7 +41,7 @@ export const Default: Story = {
       takerMargin: 0,
       makerMargin: 0,
       leverage: '1',
-      maxFeeAllowance: 0.3,
+      maxFeeAllowance: '0.3',
     },
     balances: {
       USDC: 1000n,
