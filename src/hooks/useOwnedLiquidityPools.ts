@@ -1,9 +1,12 @@
-import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
+import {
+  ChromaticLens,
+  ChromaticMarket,
+  utils as ChromaticUtils,
+} from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
-import { filterIfFulfilled } from '~/utils/array';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
 import { PromiseOnlySuccess } from '../utils/promise';
@@ -11,8 +14,44 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
+import { Address } from 'wagmi';
 
 const { encodeTokenId } = ChromaticUtils;
+
+async function getLiquidityPool(
+  lensApi: ChromaticLens,
+  marketApi: ChromaticMarket,
+  address: Address,
+  marketAddress: Address,
+  tokenAddress: Address
+) {
+  const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
+  const binsResponse = bins.map(async (bin: any) => {
+    const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
+    const { name, decimals, description, image } = await marketApi.clbTokenMeta(
+      marketAddress,
+      tokenId
+    );
+    return {
+      liquidity: bin.liquidity,
+      freeLiquidity: bin.freeLiquidity,
+      removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
+      clbTokenName: name,
+      clbTokenImage: image,
+      clbTokenDescription: description,
+      clbTokenDecimals: decimals,
+      clbTokenBalance: bin.clbBalance,
+      clbTokenValue: bin.clbValue,
+      clbTotalSupply: bin.clbTotalSupply,
+      binValue: bin.binValue,
+      clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
+      baseFeeRate: bin.tradingFeeRate,
+      tokenId: tokenId,
+    } satisfies OwnedBin;
+  });
+  const filteredBins = await PromiseOnlySuccess(binsResponse);
+  return { tokenAddress, marketAddress, bins: filteredBins };
+}
 
 export const useOwnedLiquidityPools = () => {
   const { client, walletAddress } = useChromaticClient();
@@ -36,40 +75,39 @@ export const useOwnedLiquidityPools = () => {
     checkAllProps(fetchKey) ? fetchKey : null,
     async ({ address, marketAddresses, tokenAddress }) => {
       const lensApi = client.lens();
+      const marketApi = client.market();
 
       const poolsResponse = await PromiseOnlySuccess(
         marketAddresses.map(async (marketAddress) => {
-          const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-          const binsResponse = bins.map(async (bin) => {
-            const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
-            const { name, decimals, description, image } = await client
-              .market()
-              .clbTokenMeta(marketAddress, tokenId);
-            return {
-              liquidity: bin.liquidity,
-              freeLiquidity: bin.freeLiquidity,
-              removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
-              clbTokenName: name,
-              clbTokenImage: image,
-              clbTokenDescription: description,
-              clbTokenDecimals: decimals,
-              clbTokenBalance: bin.clbBalance,
-              clbTokenValue: bin.clbValue,
-              clbTotalSupply: bin.clbTotalSupply,
-              binValue: bin.binValue,
-              clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
-              baseFeeRate: bin.tradingFeeRate,
-              tokenId: tokenId,
-            } satisfies OwnedBin;
-          });
-          const filteredBins = await filterIfFulfilled(binsResponse);
-          return { tokenAddress, marketAddress, bins: filteredBins };
+          return getLiquidityPool(lensApi, marketApi, address, marketAddress, tokenAddress);
         })
       );
-
       return poolsResponse;
     }
   );
+
+  function fetchCurrentOwnedPool() {
+    fetchOwnedPools(async (ownedPools) => {
+      if (isNil(ownedPools) || isNil(walletAddress) || isNil(currentMarket) || isNil(currentToken))
+        return ownedPools;
+
+      const filteredPoolData = ownedPools?.filter(
+        (pool) => pool.marketAddress !== currentMarket?.address
+      );
+
+      const lensApi = client.lens();
+      const marketApi = client.market();
+
+      const newPoolData = await getLiquidityPool(
+        lensApi,
+        marketApi,
+        walletAddress,
+        currentMarket.address,
+        currentToken.address
+      );
+      return [...filteredPoolData, newPoolData];
+    });
+  }
 
   const currentOwnedPool = useMemo(() => {
     return ownedPools?.find(({ marketAddress }) => marketAddress === currentMarket?.address);
@@ -104,8 +142,9 @@ export const useOwnedLiquidityPools = () => {
 
   return {
     ownedPools,
-    ownedPoolSummary,
     currentOwnedPool,
     fetchOwnedPools,
+    fetchCurrentOwnedPool,
+    ownedPoolSummary,
   };
 };
