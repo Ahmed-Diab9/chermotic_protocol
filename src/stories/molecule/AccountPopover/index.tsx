@@ -1,22 +1,23 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
+import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
+import { useAppDispatch } from '~/store';
+import { accountAction } from '~/store/reducer/account';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { isValid } from '~/utils/valid';
 import { ACCOUNT_STATUS, Account } from '../../../typings/account';
 import { Token } from '../../../typings/market';
 import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
-import './style.css';
-
-import { useMemo } from 'react';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import { isValid } from '~/utils/valid';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
@@ -159,6 +160,19 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined = undefined;
+    if (status === ACCOUNT_STATUS.COMPLETING) {
+      timerId = setTimeout(() => {
+        dispatch(accountAction.setAccountStatus(ACCOUNT_STATUS.COMPLETED));
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [status]);
 
   const isExceeded = useMemo(() => {
     if (
