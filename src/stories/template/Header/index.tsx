@@ -1,47 +1,19 @@
 import { Link, useLocation } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
 import { Account } from '~/typings/account';
-import { Market, Price, Token } from '~/typings/market';
-import { LiquidityPoolSummary } from '~/typings/pools';
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
-import { WalletPopover } from '../../molecule/WalletPopover';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+import { WalletPopover } from '../../container/WalletPopover';
 
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
-import { Address } from 'wagmi';
 
 interface HeaderProps {
   account?: Account;
-  tokens?: Token[];
-  markets?: Market[];
-  balances?: Record<Address, bigint>;
-  priceFeed?: Record<Address, Price>;
-  pools?: LiquidityPoolSummary[];
-  isBalanceLoading?: boolean;
   onConnect?: () => unknown;
-  onDisconnect?: () => unknown;
-  onCreateAccount?: () => void;
-  onWalletCopy?: (text: string) => unknown;
-  onUsumCopy?: (text: string) => unknown;
 }
 
 export const Header = (props: HeaderProps) => {
-  const {
-    account,
-    tokens,
-    markets,
-    balances,
-    priceFeed,
-    pools,
-    isBalanceLoading,
-    onConnect,
-    onDisconnect,
-    onCreateAccount,
-    onWalletCopy,
-    onUsumCopy,
-  } = props;
+  const { account, onConnect } = props;
   const location = useLocation();
 
   return (
@@ -73,20 +45,7 @@ export const Header = (props: HeaderProps) => {
         <div>
           {isValid(account?.walletAddress) ? (
             <>
-              <WalletPopover
-                account={account}
-                tokens={tokens}
-                markets={markets}
-                balances={balances}
-                priceFeed={priceFeed}
-                pools={pools}
-                isLoading={isBalanceLoading}
-                onConnect={onConnect}
-                onDisconnect={onDisconnect}
-                onCreateAccount={onCreateAccount}
-                onWalletCopy={onWalletCopy}
-                onUsumCopy={onUsumCopy}
-              />
+              <WalletPopover />
               {/* todo: Wrong Network */}
               {/* when button clicked, wallet popup(change network) is open. */}
               {/* <button

@@ -1,11 +1,12 @@
+import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
+import { isNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { toast } from 'react-toastify';
 import { formatUnits } from 'viem';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-
-import { MULTI_TYPE } from '~/configs/pool';
+import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -14,26 +15,20 @@ import { Checkbox } from '~/stories/atom/Checkbox';
 import { Counter } from '~/stories/atom/Counter';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { RangeChart } from '~/stories/atom/RangeChart';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-
+import { RemoveLiquidityModal } from '~/stories/container/RemoveLiquidityModal';
+import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
-
-import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
-import { isNil } from 'ramda';
-import { toast } from 'react-toastify';
-import { useAddLiquidity } from '~/hooks/useAddLiquidity';
-import '~/stories/atom/Tabs/style.css';
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
-import { Logger } from '~/utils/log';
 import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
-import { RemoveLiquidityModal } from '../RemoveLiquidityModal';
-import { RemoveMultiLiquidityModal } from '../RemoveMultiLiquidityModal';
 const logger = Logger('PoolPanel');
 
 interface PoolPanelProps {
@@ -52,18 +47,7 @@ interface PoolPanelProps {
   isModalOpen?: boolean;
   onAmountChange?: (value: string) => unknown;
 
-  removeAmount?: string;
-  maxRemoveAmount?: bigint;
-  onRemoveAmountChange?: (nextAmount: string | bigint) => unknown;
-
-  multiType?: MULTI_TYPE;
-  multiAmount?: number;
-  multiBalance?: bigint;
-  multiClbTokenValue?: bigint;
-  onMultiAmountChange?: (type: MULTI_TYPE) => unknown;
-
   rangeChartRef?: any;
-
   clbTokenValue?: any[];
   liquidity?: any[];
 
@@ -95,14 +79,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     shortTotalUnusedLiquidity,
     selectedBins = [],
     isModalOpen = false,
-    removeAmount,
-    maxRemoveAmount,
-    multiType,
-    multiAmount,
-    multiBalance,
     onAmountChange,
-    onRemoveAmountChange,
-    onMultiAmountChange,
 
     clbTokenValue,
     liquidity,
@@ -172,7 +149,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     if (balances && token && balances[token.address])
       return formatDecimals(balances[token.address], token.decimals, 0);
     return '-';
-  }, [balances, token, balances?.[token?.address || 'default']]);
+  }, [balances, token]);
 
   const onSelectAllClick = useCallback(
     (selectedIndex: number) => {
@@ -604,29 +581,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
       </div>
       {selectedBins.length === 1 &&
         isModalOpen &&
-        createPortal(
-          <RemoveLiquidityModal
-            selectedBin={selectedBins[0]}
-            token={token}
-            amount={removeAmount}
-            maxAmount={maxRemoveAmount}
-            onAmountChange={onRemoveAmountChange}
-          />,
-          document.getElementById('modal')!
-        )}
+        createPortal(<RemoveLiquidityModal />, document.getElementById('modal')!)}
       {selectedBins.length > 1 &&
         isModalOpen &&
-        createPortal(
-          <RemoveMultiLiquidityModal
-            selectedBins={selectedBins}
-            token={token}
-            type={multiType}
-            amount={multiAmount}
-            balance={multiBalance}
-            onAmountChange={onMultiAmountChange}
-          />,
-          document.getElementById('modal')!
-        )}
+        createPortal(<RemoveMultiLiquidityModal />, document.getElementById('modal')!)}
     </div>
   );
 };

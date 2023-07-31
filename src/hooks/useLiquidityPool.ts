@@ -1,5 +1,6 @@
 import type { ChromaticLens, ChromaticMarket } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
+import { isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -14,7 +15,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
-import { isNotNil } from 'ramda';
 
 const { encodeTokenId } = ChromaticUtils;
 

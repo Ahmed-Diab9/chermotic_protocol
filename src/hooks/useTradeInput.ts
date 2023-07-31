@@ -17,7 +17,6 @@ import { useMargins } from './useMargins';
 import { useSettlementToken } from './useSettlementToken';
 
 const initialTradeInput = {
-  direction: 'long',
   method: 'collateral',
   quantity: '',
   collateral: '',
@@ -27,7 +26,7 @@ const initialTradeInput = {
   makerMargin: 0,
   leverage: '10',
   maxFeeAllowance: '0.03',
-} satisfies TradeInput;
+} satisfies Omit<TradeInput, 'direction'>;
 
 const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
   if (action.type === 'method') {
@@ -220,9 +219,14 @@ const feeLevel = (percentage: bigint, tokenDecimals: number) => {
   return 0;
 };
 
-export const useTradeInput = () => {
+interface Props {
+  direction?: 'long' | 'short';
+}
+
+export const useTradeInput = (props: Props) => {
+  const { direction = 'long' } = props;
   const { currentToken } = useSettlementToken();
-  const [state, dispatch] = useReducer(tradeInputReducer, initialTradeInput);
+  const [state, dispatch] = useReducer(tradeInputReducer, { direction, ...initialTradeInput });
   const {
     liquidityPool: pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
