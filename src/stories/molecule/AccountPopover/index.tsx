@@ -27,7 +27,7 @@ interface AccountPopoverProps {
   status?: ACCOUNT_STATUS;
   selectedToken?: Token;
   walletBalances?: Record<string, bigint>;
-  usumBalances?: Record<string, bigint>;
+  chromaticBalances?: Record<string, bigint>;
   amount?: string;
   totalBalance?: bigint;
   availableMargin?: bigint;
@@ -47,7 +47,7 @@ export const AccountPopover = ({
   status,
   selectedToken,
   walletBalances,
-  usumBalances,
+  chromaticBalances,
   amount,
   totalBalance,
   availableMargin,
@@ -86,7 +86,7 @@ export const AccountPopover = ({
                   status={status}
                   token={selectedToken}
                   walletBalances={walletBalances}
-                  usumBalances={usumBalances}
+                  chromaticBalances={chromaticBalances}
                   amount={amount}
                   availableMargin={availableMargin}
                   assetValue={assetValue}
@@ -102,7 +102,7 @@ export const AccountPopover = ({
                   status={status}
                   token={selectedToken}
                   walletBalances={walletBalances}
-                  usumBalances={usumBalances}
+                  chromaticBalances={chromaticBalances}
                   amount={amount}
                   availableMargin={availableMargin}
                   assetValue={assetValue}
@@ -130,7 +130,7 @@ interface AssetPanelProps {
   status?: ACCOUNT_STATUS;
   token?: Token;
   walletBalances?: Record<string, bigint>;
-  usumBalances?: Record<string, bigint>;
+  chromaticBalances?: Record<string, bigint>;
   amount?: string;
   availableMargin?: bigint;
   assetValue?: bigint;
@@ -149,7 +149,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     status,
     token,
     walletBalances,
-    usumBalances,
+    chromaticBalances,
     amount,
     availableMargin = BigInt(0),
     assetValue = BigInt(0),
@@ -163,7 +163,7 @@ const AssetPanel = (props: AssetPanelProps) => {
   const isExceeded = useMemo(() => {
     if (
       isNil(walletBalances) ||
-      isNil(usumBalances) ||
+      isNil(chromaticBalances) ||
       isNil(amount) ||
       isNil(title) ||
       isNil(token)
@@ -174,10 +174,10 @@ const AssetPanel = (props: AssetPanelProps) => {
       return parseUnits(amount, token.decimals) > walletBalances[token.address];
     }
     if (title === 'Withdraw') {
-      return parseUnits(amount, token.decimals) > usumBalances[token.address];
+      return parseUnits(amount, token.decimals) > chromaticBalances[token.address];
     }
     return false;
-  }, [amount, title, token, usumBalances, walletBalances]);
+  }, [amount, title, token, chromaticBalances, walletBalances]);
 
   return (
     <Popover>
@@ -301,7 +301,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                 <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">
                   <p className="flex-none pr-4 border-r text-black/30">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
-                    {account?.usumAddress}
+                    {account?.chromaticAddress}
                   </div>
                   <Button
                     size="base"
@@ -361,7 +361,10 @@ const AssetPanel = (props: AssetPanelProps) => {
                           token &&
                           (title === 'Deposit'
                             ? formatUnits(walletBalances?.[token.address] ?? 0n, token?.decimals)
-                            : formatUnits(usumBalances?.[token.address] ?? 0n, token?.decimals))
+                            : formatUnits(
+                                chromaticBalances?.[token.address] ?? 0n,
+                                token?.decimals
+                              ))
                         }
                         onChange={(value) => {
                           onAmountChange?.(value);

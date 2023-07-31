@@ -6,8 +6,8 @@ import { parseUnits } from 'viem';
 import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
 import { Logger } from '../utils/log';
 import { isValid } from '../utils/valid';
-import { useChromaticClient } from './useChromaticClient';
 import { useChromaticAccount } from './useChromaticAccount';
+import { useChromaticClient } from './useChromaticClient';
 import { useSettlementToken } from './useSettlementToken';
 
 const logger = Logger('useTokenTransaction');
@@ -65,7 +65,7 @@ const useTokenTransaction = () => {
         }
       }
     },
-    [amount, walletAddress, chromaticAccountAddress]
+    [amount, walletAddress, chromaticAccountAddress, currentToken]
   );
 
   const onWithdraw = useCallback(

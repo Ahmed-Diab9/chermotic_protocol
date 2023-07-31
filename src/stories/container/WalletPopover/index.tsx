@@ -12,7 +12,7 @@ export const WalletPopover = () => {
   const { connectAsync, connectors } = useConnect();
   const { address: walletAddress } = useAccount();
   const {
-    accountAddress: chromaticAccountAddress,
+    accountAddress: chromaticAddress,
     createAccount,
     isChromaticBalanceLoading,
   } = useChromaticAccount();
@@ -25,7 +25,7 @@ export const WalletPopover = () => {
 
   return (
     <WalletPopoverPresenter
-      account={{ walletAddress, usumAddress: chromaticAccountAddress }}
+      account={{ walletAddress, chromaticAddress }}
       tokens={tokens}
       markets={markets}
       balances={tokenBalances}
@@ -38,7 +38,7 @@ export const WalletPopover = () => {
       onCreateAccount={createAccount}
       onDisconnect={disconnectAsync}
       onWalletCopy={copyText}
-      onUsumCopy={copyText}
+      onChromaticCopy={copyText}
     />
   );
 };

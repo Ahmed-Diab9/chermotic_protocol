@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { WalletPopover } from '.';
 import { Market } from '~/typings/market';
+import { WalletPopover } from '.';
 
 const meta = {
   title: 'Molecule/WalletPopover',
@@ -15,7 +15,7 @@ export const Default: Story = {
     isLoading: false,
     account: {
       walletAddress: '0x1111111111111111111111111111111111111111',
-      usumAddress: '0x2222222222222222222222222222222222222222',
+      chromaticAddress: '0x2222222222222222222222222222222222222222',
     },
     tokens: [
       {

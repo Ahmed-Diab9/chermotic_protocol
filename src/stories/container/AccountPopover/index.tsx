@@ -11,7 +11,7 @@ export const AccountPopover = () => {
   const { address: walletAddress, isConnected } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const {
-    accountAddress: chromaticAccountAddress,
+    accountAddress: chromaticAddress,
     createAccount,
     status,
     balances,
@@ -26,11 +26,11 @@ export const AccountPopover = () => {
 
   return (
     <AccountPopoverPresenter
-      account={{ walletAddress, usumAddress: chromaticAccountAddress }}
+      account={{ walletAddress, chromaticAddress }}
       status={status}
       selectedToken={currentToken}
       walletBalances={tokenBalances}
-      usumBalances={balances}
+      chromaticBalances={balances}
       amount={amount}
       totalBalance={totalBalance}
       availableMargin={totalMargin}
