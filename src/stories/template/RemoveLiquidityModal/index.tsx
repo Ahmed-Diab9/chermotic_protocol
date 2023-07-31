@@ -63,6 +63,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 token={token}
                 name={selectedBin?.clbTokenDescription}
                 bin={selectedBin}
+                imageSrc={selectedBin?.clbTokenImage}
               />
             </article>
 
