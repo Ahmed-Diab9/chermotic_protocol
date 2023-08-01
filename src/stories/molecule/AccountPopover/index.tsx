@@ -3,6 +3,7 @@ import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
+import { usePublicClient } from 'wagmi';
 import { useAppDispatch } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { Loading } from '~/stories/atom/Loading';
@@ -64,6 +65,7 @@ export const AccountPopover = ({
   ...props
 }: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
+
   return (
     <>
       <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
@@ -160,6 +162,18 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+  const publicClient = usePublicClient();
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -318,6 +332,11 @@ const AssetPanel = (props: AssetPanelProps) => {
                     {account?.chromaticAddress}
                   </div>
                   <Button
+                    href={
+                      blockExplorer && account?.chromaticAddress
+                        ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                        : undefined
+                    }
                     size="base"
                     css="unstyled"
                     className="absolute right-2"

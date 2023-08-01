@@ -1,5 +1,8 @@
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
@@ -21,6 +24,19 @@ const Pool = () => {
   const { currentMarket: selectedMarket, clbTokenAddress } = useMarket();
   useTokenLocal();
   useMarketLocal();
+
+  const publicClient = usePublicClient();
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
@@ -45,6 +61,11 @@ const Pool = () => {
                   />
                   {/* todo : outlink button link */}
                   <Button
+                    href={
+                      clbTokenAddress && blockExplorer
+                        ? `${blockExplorer}/token/${clbTokenAddress}`
+                        : undefined
+                    }
                     label="view scanner"
                     css="circle"
                     size="lg"

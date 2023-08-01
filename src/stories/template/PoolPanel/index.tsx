@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 import { formatUnits } from 'viem';
+import { usePublicClient } from 'wagmi';
 import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
@@ -37,6 +38,7 @@ interface PoolPanelProps {
   balances?: Record<string, bigint>;
   ownedPool?: LiquidityPool<OwnedBin>;
   amount?: string;
+  clbTokenAddress?: string;
   binCount?: number;
   binAverage?: bigint;
   longTotalMaxLiquidity?: bigint;
@@ -71,6 +73,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     ownedPool,
     amount,
     rates,
+    clbTokenAddress,
     binCount = 0,
     binAverage = 0n,
     longTotalMaxLiquidity,
@@ -536,6 +539,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                     index={binIndex}
                                     token={token}
                                     market={market}
+                                    clbTokenAddress={clbTokenAddress}
                                     bin={bin}
                                     selectedBins={selectedBins}
                                     onBinCheck={onBinCheck}
@@ -560,6 +564,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                                     index={binIndex}
                                     token={token}
                                     market={market}
+                                    clbTokenAddress={clbTokenAddress}
                                     bin={bin}
                                     selectedBins={selectedBins}
                                     onBinCheck={onBinCheck}
@@ -593,6 +598,7 @@ interface BinItemProps {
   index?: number;
   token?: Token;
   market?: Market;
+  clbTokenAddress?: string;
   bin?: OwnedBin;
   selectedBins?: OwnedBin[];
   isLoading?: boolean;
@@ -600,7 +606,7 @@ interface BinItemProps {
 }
 
 const BinItem = (props: BinItemProps) => {
-  const { index, token, market, bin, selectedBins, isLoading, onBinCheck } = props;
+  const { index, token, market, clbTokenAddress, bin, selectedBins, isLoading, onBinCheck } = props;
   const dispatch = useAppDispatch();
   const isChecked = useMemo(() => {
     const found = selectedBins?.find(
@@ -618,6 +624,19 @@ const BinItem = (props: BinItemProps) => {
     if (isNil(token) || isNil(bin)) return 0;
     return Number(formatUnits(bin.clbBalanceOfSettlement, bin.clbTokenDecimals));
   }, [bin, token]);
+
+  const publicClient = usePublicClient();
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   return (
     <div className="overflow-hidden border rounded-xl">
@@ -650,7 +669,15 @@ const BinItem = (props: BinItemProps) => {
               }
             }}
           />
-          <Button className="ml-2" iconOnly={<ArrowTopRightOnSquareIcon />} />
+          <Button
+            className="ml-2"
+            href={
+              clbTokenAddress && blockExplorer
+                ? `${blockExplorer}/token/${clbTokenAddress}?a=${bin?.tokenId}`
+                : undefined
+            }
+            iconOnly={<ArrowTopRightOnSquareIcon />}
+          />
         </div>
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
