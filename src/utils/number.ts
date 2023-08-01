@@ -153,3 +153,26 @@ export const toBigintWithDecimals = (value: number | string | bigint, decimals: 
 export const toBigInt = (value: number | string) => {
   return toBigintWithDecimals(value, 0);
 };
+
+export const decimalPrecision = (function () {
+  return {
+    round: function (num: number, decimalPlaces: number) {
+      var p = Math.pow(10, decimalPlaces || 0);
+      var n = num * p * (1 + Number.EPSILON);
+      return Math.round(n) / p;
+    },
+    ceil: function (num: number, decimalPlaces: number) {
+      var p = Math.pow(10, decimalPlaces || 0);
+      var n = num * p * (1 - Math.sign(num) * Number.EPSILON);
+      return Math.ceil(n) / p;
+    },
+    floor: function (num: number, decimalPlaces: number) {
+      var p = Math.pow(10, decimalPlaces || 0);
+      var n = num * p * (1 + Math.sign(num) * Number.EPSILON);
+      return Math.floor(n) / p;
+    },
+    trunc: function (num: number, decimalPlaces: number) {
+      return (num < 0 ? this.ceil : this.floor)(num, decimalPlaces);
+    },
+  };
+})();

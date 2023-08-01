@@ -21,7 +21,7 @@ export const TradeContent = (props: Props) => {
     tradeFee,
     feePercent,
     disabled,
-    onChange,
+    onAmountChange,
     onMethodToggle,
     onLeverageChange,
     onTakeProfitChange,
@@ -54,7 +54,7 @@ export const TradeContent = (props: Props) => {
       minTakeProfit={oracleProperties?.minTakeProfit}
       maxLeverage={oracleProperties?.maxLeverage}
       minStopLoss={oracleProperties?.minStopLoss}
-      onInputChange={onChange}
+      onAmountChange={onAmountChange}
       onMethodToggle={onMethodToggle}
       onLeverageChange={onLeverageChange}
       onTakeProfitChange={onTakeProfitChange}

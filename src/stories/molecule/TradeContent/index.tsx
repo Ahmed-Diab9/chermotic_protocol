@@ -39,14 +39,11 @@ interface TradeContentProps {
   maxTakeProfit?: number;
   disabled: boolean;
   isLoading?: boolean;
-  onInputChange?: (
-    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    value: string
-  ) => unknown;
+  onAmountChange?: (value: string) => unknown;
   onMethodToggle?: () => unknown;
-  onLeverageChange?: (nextLeverage: string) => unknown;
-  onTakeProfitChange?: (nextRate: string) => unknown;
-  onStopLossChange?: (nextRate: string) => unknown;
+  onLeverageChange?: (nextLeverage: string | number) => unknown;
+  onTakeProfitChange?: (nextRate: string | number) => unknown;
+  onStopLossChange?: (nextRate: string | number) => unknown;
   onFeeAllowanceChange?: (nextAllowance: string) => unknown;
   onFeeValidate?: () => unknown;
 }
@@ -75,7 +72,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     maxTakeProfit = 1000,
     disabled,
     isLoading,
-    onInputChange,
+    onAmountChange,
     onMethodToggle,
     onLeverageChange,
     onTakeProfitChange,
@@ -204,6 +201,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               value={input?.method}
               onChange={(value) => {
                 if (input?.method !== value) {
+                  console.log('Toggle');
                   onMethodToggle?.();
                 }
               }}
@@ -219,7 +217,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </Listbox>
           </div>
           <div className="flex flex-col items-end">
-            <AmountSwitch input={input} token={token} onAmountChange={onInputChange} />
+            <AmountSwitch input={input} token={token} onAmountChange={onAmountChange} />
           </div>
         </div>
       </article>
@@ -253,9 +251,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                     min={1}
                     max={maxLeverage}
                     value={Number(input?.leverage)}
-                    onUpdate={(newValue) => {
-                      onLeverageChange?.(String(newValue));
-                    }}
+                    onUpdate={onLeverageChange}
                     tick={5}
                   />
                 </div>
@@ -263,9 +259,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <LeverageOption
                   value={Number(input?.leverage)}
                   max={maxLeverage}
-                  onClick={(nextValue) => {
-                    onLeverageChange?.(String(nextValue));
-                  }}
+                  onClick={onLeverageChange}
                 />
               )}
             </div>
@@ -279,7 +273,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 autoCorrect
                 min={1}
                 max={maxLeverage}
-                onChange={(value) => onInputChange?.('leverage', value)}
+                onChange={onLeverageChange}
               />
             </div>
           </div>
@@ -300,9 +294,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   autoCorrect
                   min={minTakeProfit}
                   max={maxTakeProfit}
-                  onChange={(value) => {
-                    onInputChange?.('takeProfit', value);
-                  }}
+                  onChange={onTakeProfitChange}
                 />
               </div>
             </div>
@@ -312,9 +304,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   min={minTakeProfit}
                   max={maxTakeProfit}
                   value={Number(input.takeProfit)}
-                  onUpdate={(newValue) => {
-                    onTakeProfitChange?.(String(newValue));
-                  }}
+                  onUpdate={onTakeProfitChange}
                   tick={5}
                 />
               )}
@@ -335,9 +325,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   autoCorrect
                   min={minStopLoss}
                   max={100}
-                  onChange={(value) => {
-                    onInputChange?.('stopLoss', value);
-                  }}
+                  onChange={onStopLossChange}
                 />
               </div>
             </div>
@@ -347,9 +335,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   value={Number(input.stopLoss)}
                   min={minStopLoss}
                   max={100}
-                  onUpdate={(newValue) => {
-                    onStopLossChange?.(String(newValue));
-                  }}
+                  onUpdate={onStopLossChange}
                   tick={5}
                 />
               )}
@@ -408,9 +394,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   unit="%"
                   value={input?.maxFeeAllowance}
                   className="maxFeeAllowance"
-                  onChange={(value) => {
-                    onFeeAllowanceChange?.(value);
-                  }}
+                  onChange={onFeeAllowanceChange}
                 />
               </div>
             </div>
@@ -482,7 +466,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 interface AmountSwitchProps {
   input?: TradeInput;
   token?: Token;
-  onAmountChange?: (key: 'collateral' | 'quantity', value: string) => unknown;
+  onAmountChange?: (value: string) => unknown;
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
@@ -501,9 +485,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             <div className="tooltip-input-balance">
               <Input
                 value={input.collateral.toString()}
-                onChange={(value) => {
-                  onAmountChange?.('collateral', value);
-                }}
+                onChange={onAmountChange}
                 placeholder="0"
                 // error
               />
@@ -534,12 +516,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       return (
         <>
           <div className="max-w-[220px]">
-            <Input
-              value={input?.quantity.toString()}
-              onChange={(value) => {
-                onAmountChange('quantity', value);
-              }}
-            />
+            <Input value={input?.quantity.toString()} onChange={onAmountChange} placeholder="0" />
           </div>
           <div className="flex items-center justify-end mt-2">
             <TooltipGuide

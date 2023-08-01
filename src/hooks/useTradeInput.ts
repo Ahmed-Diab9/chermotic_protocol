@@ -5,10 +5,9 @@ import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
   abs,
-  decimalLength,
+  decimalPrecision,
   divPreserved,
   mulPreserved,
-  numberBuffer,
   toBigintWithDecimals,
 } from '~/utils/number';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -27,175 +26,93 @@ const initialTradeInput = {
   maxFeeAllowance: '0.03',
 } satisfies Omit<TradeInput, 'direction'>;
 
-const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
-  if (action.type === 'method') {
-    const nextMethod = state.method === 'collateral' ? 'quantity' : 'collateral';
-    switch (nextMethod) {
-      case 'collateral': {
-        const { direction, collateral, leverage, takeProfit, maxFeeAllowance } = state;
-        const defaultLeverage = 2;
-        if (Number(leverage) === 0) {
-          state = {
-            direction,
-            method: nextMethod,
-            collateral,
-            quantity: String(Number(collateral) * defaultLeverage),
-            leverage: String(defaultLeverage),
-            takeProfit,
-            stopLoss: String(100 / defaultLeverage),
-            takerMargin: Number(collateral),
-            makerMargin: Number(collateral) * (Number(takeProfit) / 100) * defaultLeverage,
-            maxFeeAllowance,
-          };
-        } else {
-          state = {
-            direction,
-            method: nextMethod,
-            collateral,
-            quantity: String(Number(collateral) * Number(leverage)),
-            leverage,
-            takeProfit,
-            stopLoss: String(100 / Number(leverage)),
-            takerMargin: Number(collateral),
-            makerMargin: Number(collateral) * (Number(takeProfit) / 100) * Number(leverage),
-            maxFeeAllowance,
-          };
-        }
-        break;
-      }
-      case 'quantity': {
-        const { direction, quantity, leverage, takeProfit, stopLoss, maxFeeAllowance } = state;
-        state = {
-          direction,
-          method: nextMethod,
-          quantity,
-          collateral: String(Number(quantity) * (Number(stopLoss) / 100)),
-          takeProfit,
-          stopLoss,
-          leverage,
-          takerMargin: Number(quantity) * (Number(stopLoss) / 100),
-          makerMargin: Number(quantity) * (Number(takeProfit) / 100),
-          maxFeeAllowance,
-        };
-        break;
-      }
-    }
+function getCalculatedValues({
+  method,
+  takeProfit,
+  stopLoss,
+  amount,
+}: {
+  method: 'quantity' | 'collateral';
+  takeProfit: number;
+  stopLoss: number;
+  amount: number;
+}) {
+  const leverage = 100 / stopLoss;
 
-    return state;
-  }
-  const { type, payload } = action;
-  const { method } = state;
+  const takeProfitRate = takeProfit / 100;
+  const lossCutRate = stopLoss / 100;
 
-  switch (type) {
-    case 'collateral': {
-      const { collateral } = payload;
-      state = {
-        ...state,
-        collateral,
-        quantity: String(Number(collateral) * Number(state.leverage)),
-        takerMargin: Number(collateral),
-        makerMargin: Number(collateral) * Number(state.leverage) * (Number(state.takeProfit) / 100),
-      };
-      break;
-    }
-    case 'quantity': {
-      const { quantity } = payload;
-      state = {
-        ...state,
-        quantity,
-        collateral: String(Number(quantity) * (Number(state.stopLoss) / 100)),
-        takerMargin: Number(quantity) * (Number(state.stopLoss) / 100),
-        makerMargin: Number(quantity) * (Number(state.takeProfit) / 100),
-      };
-      break;
-    }
-    case 'takeProfit': {
-      const { takeProfit } = payload;
-      if (method === 'collateral') {
-        state = {
-          ...state,
-          takeProfit,
-          makerMargin:
-            Number(state.collateral) * Number(state.leverage) * (Number(takeProfit) / 100),
-        };
-      } else {
-        state = {
-          ...state,
-          takeProfit,
-          makerMargin: Number(state.quantity) * (Number(takeProfit) / 100),
-        };
-      }
-      break;
-    }
-    case 'stopLoss': {
-      const { stopLoss } = payload;
-      if (method === 'collateral') {
-        const leverage = 100 / Number(stopLoss);
-        state = {
-          ...state,
-          stopLoss: stopLoss,
-          leverage: String(leverage),
-          quantity: String(Number(state.collateral) * (100 / Number(stopLoss))),
-          makerMargin:
-            Number(state.collateral) * (100 / Number(stopLoss)) * (Number(state.takeProfit) / 100),
-        };
-      } else {
-        state = {
-          ...state,
-          stopLoss,
-          collateral: String(Number(state.quantity) * (Number(stopLoss) / 100)),
-          takerMargin: Number(state.quantity) * (Number(stopLoss) / 100),
-        };
-      }
-      break;
-    }
-    case 'leverage': {
-      const { leverage } = payload;
-      if (method === 'collateral') {
-        const stopLoss = Math.round((100 * numberBuffer()) / Number(leverage)) / numberBuffer();
-        state = {
-          ...state,
-          leverage: String(leverage),
-          quantity: String(Number(state.collateral) * Number(leverage)),
-          stopLoss: decimalLength(stopLoss, 2),
-          makerMargin:
-            Number(state.collateral) * Number(leverage) * (Number(state.takeProfit) / 100),
-        };
-      } else {
-        state = {
-          ...state,
-          leverage,
-        };
-      }
-      break;
-    }
-    case 'maxFeeAllowance': {
-      const { maxFeeAllowance } = payload;
-      state = {
-        ...state,
-        maxFeeAllowance,
-      };
-      break;
-    }
-    case 'direction': {
-      const { direction } = payload;
-      state = {
-        ...state,
-        direction,
-      };
-    }
-  }
+  const { collateral, quantity } =
+    method === 'collateral'
+      ? { quantity: amount / lossCutRate, collateral: amount }
+      : { quantity: amount, collateral: amount * (stopLoss / 100) };
 
-  state = {
-    ...state,
-    quantity: state.quantity,
-    collateral: state.collateral,
-    takeProfit: state.takeProfit,
-    stopLoss: state.stopLoss,
-    takerMargin: Number(state.takerMargin.toFixed(2)),
-    makerMargin: Number(state.makerMargin.toFixed(2)),
-    leverage: state.leverage,
+  const takerMargin = decimalPrecision.round(collateral, 2);
+  const makerMargin = decimalPrecision.round((collateral / lossCutRate) * takeProfitRate, 2);
+
+  return {
+    collateral: String(collateral),
+    leverage: String(leverage),
+    quantity: String(quantity),
+    stopLoss: String(stopLoss),
+    takeProfit: String(takeProfit),
+    takerMargin: takerMargin,
+    makerMargin: makerMargin,
   };
+}
+
+const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputAction) => {
+  switch (type) {
+    case `toggleMethod`: {
+      const { method, ...others } = state;
+      const nextMethod = method === 'collateral' ? 'quantity' : 'collateral';
+
+      state = { ...others, method: nextMethod };
+      break;
+    }
+
+    case `updateAmounts`: {
+      const method = state.method;
+      const takeProfit = +state.takeProfit;
+      const stopLoss = +state.stopLoss;
+      const amount = +payload.amount;
+
+      const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+
+      const amounts =
+        payload.amount === ''
+          ? { quantity: '', collateral: '' }
+          : { quantity: calculated.quantity, collateral: calculated.collateral };
+
+      state = { ...state, ...calculated, ...amounts };
+      break;
+    }
+
+    case `updateValues`: {
+      const method = state.method;
+      const takeProfit = +(payload.takeProfit ?? state.takeProfit);
+      const stopLoss = +(payload.stopLoss ?? state.stopLoss);
+      const amount = method === 'collateral' ? +state.collateral : +state.quantity;
+
+      const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+
+      state = { ...state, ...calculated };
+      break;
+    }
+
+    case 'updateMaxFee': {
+      const { maxFeeAllowance } = payload;
+      state = { ...state, maxFeeAllowance };
+      break;
+    }
+
+    case 'updateDirection': {
+      const { direction } = payload;
+      state = { ...state, direction };
+      break;
+    }
+  }
+
   return state;
 };
 
@@ -294,7 +211,7 @@ export const useTradeInput = (props: Props) => {
         const nextAllowance = feePercent + parseUnits('0.03', currentToken.decimals);
         const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
-          type: 'maxFeeAllowance',
+          type: 'updateMaxFee',
           payload: {
             maxFeeAllowance: formatted,
           },
@@ -306,7 +223,7 @@ export const useTradeInput = (props: Props) => {
         const nextAllowance = feePercent + parseUnits('0.3', currentToken.decimals);
         const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
-          type: 'maxFeeAllowance',
+          type: 'updateMaxFee',
           payload: {
             maxFeeAllowance: formatted,
           },
@@ -318,7 +235,7 @@ export const useTradeInput = (props: Props) => {
         const nextAllowance = feePercent + parseUnits('3', currentToken.decimals);
         const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
-          type: 'maxFeeAllowance',
+          type: 'updateMaxFee',
           payload: {
             maxFeeAllowance: formatted,
           },
@@ -330,7 +247,7 @@ export const useTradeInput = (props: Props) => {
         const nextAllowance = feePercent + parseUnits('30', currentToken.decimals);
         const formatted = formatUnits(nextAllowance, currentToken.decimals);
         dispatch({
-          type: 'maxFeeAllowance',
+          type: 'updateMaxFee',
           payload: {
             maxFeeAllowance: formatted,
           },
@@ -342,62 +259,43 @@ export const useTradeInput = (props: Props) => {
   }, [feePercent, currentToken]);
 
   const onMethodToggle = () => {
-    dispatch({ type: 'method' });
+    dispatch({ type: 'toggleMethod' });
   };
 
-  const onChange = (
-    key: keyof Omit<
-      TradeInput,
-      'direction' | 'method' | 'takerMargin' | 'makerMargin' | 'maxFeeAllowance'
-    >,
-    newValue: string
-  ) => {
-    const value = newValue.replace(/,/g, '');
-    if (value.length === 0) {
-      dispatch({
-        type: key,
-        payload: {
-          [key]: '',
-        } as Record<typeof key, string>,
-      });
-      return;
-    }
-    if (isNaN(Number(value)) || value === state[key]) {
-      return;
-    }
-
+  const onAmountChange = (value: string) => {
     dispatch({
-      type: key,
+      type: 'updateAmounts',
       payload: {
-        [key]: value,
-      } as Record<typeof key, string>,
+        amount: value,
+      },
     });
   };
 
   // TODO: handler function for using leverage slider
-  const onLeverageChange = (value: string) => {
+  const onLeverageChange = (value: string | number) => {
+    const stopLoss = 100 / +value;
     dispatch({
-      type: 'leverage',
+      type: 'updateValues',
       payload: {
-        leverage: value,
+        stopLoss: String(stopLoss),
       },
     });
   };
 
-  const onTakeProfitChange = (value: string) => {
+  const onTakeProfitChange = (value: string | number) => {
     dispatch({
-      type: 'takeProfit',
+      type: 'updateValues',
       payload: {
-        takeProfit: value,
+        takeProfit: String(value),
       },
     });
   };
 
-  const onStopLossChange = (value: string) => {
+  const onStopLossChange = (value: string | number) => {
     dispatch({
-      type: 'stopLoss',
+      type: 'updateValues',
       payload: {
-        stopLoss: value,
+        stopLoss: String(value),
       },
     });
   };
@@ -405,7 +303,7 @@ export const useTradeInput = (props: Props) => {
   const onDirectionToggle = () => {
     const { direction } = state;
     dispatch({
-      type: 'direction',
+      type: 'updateDirection',
       payload: {
         direction: direction === 'long' ? 'short' : 'long',
       },
@@ -417,13 +315,13 @@ export const useTradeInput = (props: Props) => {
     if (isNaN(parsed) || parsed < 0) {
       return;
     }
-    dispatch({ type: 'maxFeeAllowance', payload: { maxFeeAllowance: allowance } });
+    dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance: allowance } });
   };
 
   const onFeeAllowanceValidate = () => {
     if (Number(state.maxFeeAllowance) < Number(previousAllowance)) {
       dispatch({
-        type: 'maxFeeAllowance',
+        type: 'updateMaxFee',
         payload: {
           maxFeeAllowance: previousAllowance,
         },
@@ -445,8 +343,8 @@ export const useTradeInput = (props: Props) => {
 
     const inputAmount = state.method === 'collateral' ? collateral : quantity;
 
-    const isEmpty = inputAmount === 0;
-    if (isEmpty) {
+    const isZeroAmount = inputAmount === 0;
+    if (isZeroAmount) {
       return { status: true };
     }
 
@@ -492,7 +390,7 @@ export const useTradeInput = (props: Props) => {
     disabled,
     tradeFee,
     feePercent,
-    onChange,
+    onAmountChange,
     onDirectionToggle,
     onMethodToggle,
     onLeverageChange,
