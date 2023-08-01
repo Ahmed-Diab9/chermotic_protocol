@@ -7,7 +7,6 @@ import {
   abs,
   decimalLength,
   divPreserved,
-  formatDecimals,
   mulPreserved,
   numberBuffer,
   toBigintWithDecimals,
@@ -186,6 +185,7 @@ const tradeInputReducer = (state: TradeInput, action: TradeInputAction) => {
       };
     }
   }
+
   state = {
     ...state,
     quantity: state.quantity,
@@ -232,7 +232,7 @@ export const useTradeInput = (props: Props) => {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
 
-  const { totalMargin } = useMargins();
+  const { totalMargin: balance } = useMargins();
   // TODO
   // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
   // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
@@ -431,40 +431,61 @@ export const useTradeInput = (props: Props) => {
     }
   };
 
-  const disabled = useMemo(() => {
+  const disabled = useMemo<{
+    status: boolean;
+    detail?: 'minimum' | 'liquidity' | 'balance';
+  }>(() => {
     if (!currentToken) return { status: true };
     if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
+    const leverage = Number(state.leverage);
+    const takeProfit = Number(state.takeProfit);
+    const collateral = Number(state.collateral);
+    const quantity = Number(state.quantity);
+
+    const inputAmount = state.method === 'collateral' ? collateral : quantity;
+
+    const isEmpty = inputAmount === 0;
+    if (isEmpty) {
+      return { status: true };
+    }
+
     // FIXME: Temporary disabled
     const MINIMUM_VALUE = 0;
-    if (Number(state.collateral) < MINIMUM_VALUE) return { status: true, detail: 'minimum' };
-
-    const totalLiquidity =
-      state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
-    const parsedTotalLiquidity = Number(formatUnits(totalLiquidity, currentToken.decimals));
-
-    if (isNaN(parsedTotalLiquidity)) return { status: true };
-
-    const maxAmount =
-      state.method === 'collateral'
-        ? Math.round(parsedTotalLiquidity) /
-          Number(state.leverage) /
-          (Number(state.takeProfit) / 100)
-        : Math.round(parsedTotalLiquidity) / (Number(state.takeProfit) / 100);
-
-    const amount =
-      state.method === 'collateral' ? Number(state.collateral) : Number(state.quantity);
-
-    const balance = +(formatDecimals(totalMargin, currentToken.decimals, 5) ?? '0');
-
-    if (maxAmount < balance && maxAmount < amount) {
-      return { status: true, detail: 'liquidity' };
-    } else if (maxAmount > balance && balance < amount) {
-      return { status: true, detail: 'balance' };
-    } else {
-      return { status: false };
+    const isUnderMin = collateral < MINIMUM_VALUE;
+    if (isUnderMin) {
+      return { status: true, detail: 'minimum' };
     }
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, currentToken, totalMargin]);
+
+    const tokenDecimals = currentToken.decimals;
+
+    const bigTotalLiquidity =
+      state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
+
+    const totalLiquidity = Number(formatUnits(bigTotalLiquidity, tokenDecimals));
+
+    const isNaNTotalLiquidity = isNaN(totalLiquidity);
+    if (isNaNTotalLiquidity) {
+      return { status: true };
+    }
+
+    const maxInputAmount =
+      state.method === 'collateral'
+        ? totalLiquidity / leverage / (takeProfit / 100)
+        : totalLiquidity / (takeProfit / 100);
+
+    const isOverLiquidity = maxInputAmount < inputAmount;
+    if (isOverLiquidity) {
+      return { status: true, detail: 'liquidity' };
+    }
+
+    const isOverBalance = balance < toBigintWithDecimals(collateral, tokenDecimals);
+    if (isOverBalance) {
+      return { status: true, detail: 'balance' };
+    }
+
+    return { status: false };
+  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, currentToken, balance]);
 
   return {
     state,
