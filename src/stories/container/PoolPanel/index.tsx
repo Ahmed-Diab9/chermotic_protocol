@@ -10,7 +10,7 @@ import { PoolPanel as PoolPanelPresenter } from '~/stories/template/PoolPanel';
 
 export const PoolPanel = () => {
   const { currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket, clbTokenAddress } = useMarket();
   const { tokenBalances } = useTokenBalances();
   const { currentOwnedPool } = useOwnedLiquidityPools();
   const {
@@ -44,6 +44,7 @@ export const PoolPanel = () => {
       ownedPool={currentOwnedPool}
       amount={amount}
       rates={rates}
+      clbTokenAddress={clbTokenAddress}
       binCount={binCount}
       binAverage={binAverage}
       clbTokenValue={clbTokenValue}

@@ -1,5 +1,6 @@
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
@@ -15,12 +16,17 @@ import { Header } from '../../stories/container/Header';
 import { PoolPanel } from '../../stories/container/PoolPanel';
 import { Footer } from '../../stories/template/Footer';
 import { MainBar } from '../../stories/template/MainBar';
+
 import './style.css';
 
 const Pool = () => {
   const { currentMarket: selectedMarket, clbTokenAddress } = useMarket();
   useTokenLocal();
   useMarketLocal();
+
+  const publicClient = usePublicClient();
+  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
+  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
@@ -45,6 +51,11 @@ const Pool = () => {
                   />
                   {/* todo : outlink button link */}
                   <Button
+                    href={
+                      clbTokenAddress && blockExplorer
+                        ? `${blockExplorer}token/${clbTokenAddress}`
+                        : undefined
+                    }
                     label="view scanner"
                     css="circle"
                     size="lg"

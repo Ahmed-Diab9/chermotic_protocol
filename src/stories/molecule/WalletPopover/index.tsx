@@ -53,6 +53,9 @@ export const WalletPopover = ({
   ...props
 }: WalletPopoverProps) => {
   const publicClient = usePublicClient();
+  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
+  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
+
   const usdcPrice = useCallback(
     (token: Token) => {
       if (!balances || !priceFeed) return '';
@@ -123,6 +126,11 @@ export const WalletPopover = ({
                           }}
                         />
                         <Button
+                          href={
+                            account?.walletAddress && blockExplorer
+                              ? `${blockExplorer}address/${account?.walletAddress}`
+                              : undefined
+                          }
                           label="view transition"
                           css="circle"
                           size="lg"
@@ -166,9 +174,12 @@ export const WalletPopover = ({
                                               gap="2"
                                             />
                                           </SkeletonElement>
-                                          {/* todo: asset button - href to scanner */}
                                           <Button
-                                            // href=''
+                                            href={
+                                              blockExplorer
+                                                ? `${blockExplorer}token/${token.address}`
+                                                : undefined
+                                            }
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
                                             css="unstyled"
                                             size="sm"
@@ -280,6 +291,11 @@ export const WalletPopover = ({
                             }}
                           />
                           <Button
+                            href={
+                              account?.chromaticAddress && blockExplorer
+                                ? `${blockExplorer}address/${account?.chromaticAddress}`
+                                : undefined
+                            }
                             label="view transition"
                             css="circle"
                             size="lg"

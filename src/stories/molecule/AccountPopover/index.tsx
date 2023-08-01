@@ -21,6 +21,7 @@ import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
+import { usePublicClient } from 'wagmi';
 
 interface AccountPopoverProps {
   // onClick?: () => void;
@@ -64,6 +65,7 @@ export const AccountPopover = ({
   ...props
 }: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
+
   return (
     <>
       <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
@@ -160,6 +162,9 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+  const publicClient = usePublicClient();
+  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
+  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -318,6 +323,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                     {account?.chromaticAddress}
                   </div>
                   <Button
+                    href={(blockExplorer && account?.chromaticAddress)? `${blockExplorer}address/${account?.chromaticAddress}`: undefined}
                     size="base"
                     css="unstyled"
                     className="absolute right-2"
