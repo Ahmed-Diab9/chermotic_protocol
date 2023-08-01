@@ -63,7 +63,7 @@ export const Input = (props: InputProps) => {
   }
 
   function trimLeadingZero(str: string) {
-    return str.replace(/^0+(?!\.|$)/, '');
+    return str.replace(/[^0-9.,-]/g, '').replace(/^0+(?!\.|$)/, '');
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
