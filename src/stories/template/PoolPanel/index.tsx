@@ -381,35 +381,35 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 </div>
                 <div className="flex flex-col gap-2 border-t border-dashed border-gray mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
-                    <p className="flex">
+                    <div className="flex">
                       Number of Liquidity Bins
                       <TooltipGuide
                         label="number-of-liquidity-bins"
                         tip="This is the total count of target Bins I am about to provide liquidity for."
                       />
-                    </p>
+                    </div>
                     <p>{binCount ?? 0} Bins</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="flex">
+                    <div className="flex">
                       Trade Fee Range
                       <TooltipGuide
                         label="trade-fee-range"
                         tip="This is the range of target Bins I am about to provide liquidity for."
                       />
-                    </p>
+                    </div>
                     <p>
                       {rates && (minRate !== maxRate ? `${minRate}% ~ ${maxRate}%` : `${minRate}%`)}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="flex">
+                    <div className="flex">
                       Average Bin Token Values
                       <TooltipGuide
                         label="average-bin-token-values"
                         tip="This is the average token value of the target Bins I am about to provide liquidity for."
                       />
-                    </p>
+                    </div>
                     {isValid(token) && (
                       <p>
                         {formatUnits(binAverage, token.decimals)} {token.name}
@@ -432,13 +432,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
                 {/* liquidity value */}
                 <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-grayL/20 rounded-xl">
                   <div>
-                    <p className="flex font-semibold text-left text-black/30">
+                    <div className="flex font-semibold text-left text-black/30">
                       Total Liquidity Value
                       <TooltipGuide
                         label="total-liquidity-value"
                         tip="The value of my CLB tokens converted into the current token value."
                       />
-                    </p>
+                    </div>
                     <div className="flex items-center gap-1 mt-2">
                       <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
                       <SkeletonElement isLoading={isLoading} width={40}>

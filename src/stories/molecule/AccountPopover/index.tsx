@@ -317,13 +317,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <p className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black/30">
                         Available Margin
                         <TooltipGuide
                           label="available-margin"
                           tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
                         />
-                      </p>
+                      </div>
                       <p>
                         <SkeletonElement isLoading={isLoading} width={80}>
                           {formatDecimals(availableMargin, token?.decimals, 5, true)} {token?.name}
@@ -335,13 +335,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                       https://github.com/chromatic-protocol/frontend/issues/290
                     */}
                     {/* <div>
-                      <p className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black/30">
                         Asset Value
                         <TooltipGuide
                           label="asset-value"
                           tip="This is the total sum of the asset in my account, including the amount collateralized by taker margin and unrealized PnL."
                         />
-                      </p>
+                      </div>
                       <p>
                         <SkeletonElement isLoading={isLoading} width={80}>
                           {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}

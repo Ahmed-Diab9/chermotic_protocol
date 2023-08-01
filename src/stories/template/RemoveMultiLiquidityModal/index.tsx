@@ -188,13 +188,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * LP 토큰 총합 밸런스
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Total CLB
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-clb"
                     tip="The sum of the quantity of the above liquidity tokens(CLB)."
                   />
-                </p>
+                </div>
                 <p>{formatDecimals(balance, token?.decimals, 2)} CLB</p>
               </div>
               {/**
@@ -202,13 +202,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Total Liquidity Value
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-liquidity-value"
                     tip="The total value of the above liquidity tokens(CLB), converted into the current value."
                   />
-                </p>
+                </div>
                 <p>
                   {formatDecimals(
                     calculatedLiquidities.totalBalanceOfSettlement,
@@ -223,14 +223,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 제거 가능한 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
-                </p>
+                </div>
                 <p>
                   {formatDecimals(calculatedLiquidities.totalFreeLiquidity, token?.decimals, 2)}{' '}
                   {token?.name}

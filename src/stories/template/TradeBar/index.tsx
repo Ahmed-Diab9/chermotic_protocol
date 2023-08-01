@@ -393,38 +393,38 @@ const PositionItem = function (props: Props) {
           {position.status === OPENING && (
             <>
               <Loading size="sm" />
-              <p className="flex text-black">
+              <div className="flex text-black">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
                 <TooltipGuide iconOnly label="opening-in-progress" />
-              </p>
+              </div>
             </>
           )}
           {position.status === OPENED && (
             <>
               <CheckIcon className="w-4" />
-              <p className="flex text-black">
+              <div className="flex text-black">
                 Opening completed
                 <TooltipGuide iconOnly label="opening-completed" />
-              </p>
+              </div>
             </>
           )}
           {position.status === CLOSING && (
             <>
               <Loading size="sm" />
-              <p className="flex text-black">
+              <div className="flex text-black">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
-              </p>
+              </div>
             </>
           )}
           {position.status === CLOSED && (
             <>
               <CheckIcon className="w-4" />
-              <p className="flex text-black">
+              <div className="flex text-black">
                 Closing completed
                 <TooltipGuide iconOnly label="closing-completed" />
-              </p>
+              </div>
             </>
           )}
         </div>
