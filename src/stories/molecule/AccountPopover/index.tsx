@@ -3,6 +3,7 @@ import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
+import { usePublicClient } from 'wagmi';
 import { useAppDispatch } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { Loading } from '~/stories/atom/Loading';
@@ -21,7 +22,6 @@ import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
-import { usePublicClient } from 'wagmi';
 
 interface AccountPopoverProps {
   // onClick?: () => void;
@@ -163,8 +163,17 @@ const AssetPanel = (props: AssetPanelProps) => {
     onStatusUpdate,
   } = props;
   const publicClient = usePublicClient();
-  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
-  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -323,7 +332,11 @@ const AssetPanel = (props: AssetPanelProps) => {
                     {account?.chromaticAddress}
                   </div>
                   <Button
-                    href={(blockExplorer && account?.chromaticAddress)? `${blockExplorer}address/${account?.chromaticAddress}`: undefined}
+                    href={
+                      blockExplorer && account?.chromaticAddress
+                        ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                        : undefined
+                    }
                     size="base"
                     css="unstyled"
                     className="absolute right-2"

@@ -1,8 +1,11 @@
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { Fragment, useCallback } from 'react';
+import { isNil } from 'ramda';
+import { Fragment, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { usePublicClient } from 'wagmi';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { PRICE_FEED } from '../../../configs/token';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
 import { LiquidityPoolSummary } from '../../../typings/pools';
@@ -12,12 +15,9 @@ import { formatBalance, formatDecimals, withComma } from '../../../utils/number'
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 import '../../atom/Tabs/style.css';
 import './style.css';
-
-import { usePublicClient } from 'wagmi';
-import { PRICE_FEED } from '../../../configs/token';
-import { SkeletonElement } from '../../atom/SkeletonElement';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 const logger = Logger('WalletPopOver');
@@ -53,8 +53,17 @@ export const WalletPopover = ({
   ...props
 }: WalletPopoverProps) => {
   const publicClient = usePublicClient();
-  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
-  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   const usdcPrice = useCallback(
     (token: Token) => {
@@ -128,7 +137,7 @@ export const WalletPopover = ({
                         <Button
                           href={
                             account?.walletAddress && blockExplorer
-                              ? `${blockExplorer}address/${account?.walletAddress}`
+                              ? `${blockExplorer}/address/${account?.walletAddress}`
                               : undefined
                           }
                           label="view transition"
@@ -177,7 +186,7 @@ export const WalletPopover = ({
                                           <Button
                                             href={
                                               blockExplorer
-                                                ? `${blockExplorer}token/${token.address}`
+                                                ? `${blockExplorer}/token/${token.address}`
                                                 : undefined
                                             }
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
@@ -293,7 +302,7 @@ export const WalletPopover = ({
                           <Button
                             href={
                               account?.chromaticAddress && blockExplorer
-                                ? `${blockExplorer}address/${account?.chromaticAddress}`
+                                ? `${blockExplorer}/address/${account?.chromaticAddress}`
                                 : undefined
                             }
                             label="view transition"

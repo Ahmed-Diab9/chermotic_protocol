@@ -1,4 +1,6 @@
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
@@ -16,7 +18,6 @@ import { Header } from '../../stories/container/Header';
 import { PoolPanel } from '../../stories/container/PoolPanel';
 import { Footer } from '../../stories/template/Footer';
 import { MainBar } from '../../stories/template/MainBar';
-
 import './style.css';
 
 const Pool = () => {
@@ -25,8 +26,17 @@ const Pool = () => {
   useMarketLocal();
 
   const publicClient = usePublicClient();
-  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
-  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayBG">
@@ -53,7 +63,7 @@ const Pool = () => {
                   <Button
                     href={
                       clbTokenAddress && blockExplorer
-                        ? `${blockExplorer}token/${clbTokenAddress}`
+                        ? `${blockExplorer}/token/${clbTokenAddress}`
                         : undefined
                     }
                     label="view scanner"

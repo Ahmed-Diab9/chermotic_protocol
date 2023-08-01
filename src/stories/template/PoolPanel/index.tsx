@@ -626,8 +626,17 @@ const BinItem = (props: BinItemProps) => {
   }, [bin, token]);
 
   const publicClient = usePublicClient();
-  let blockExplorer = publicClient.chain.blockExplorers?.default?.url;
-  blockExplorer = blockExplorer ? blockExplorer.replace(/\/?$/, '/') : undefined;
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
 
   return (
     <div className="overflow-hidden border rounded-xl">
@@ -664,7 +673,7 @@ const BinItem = (props: BinItemProps) => {
             className="ml-2"
             href={
               clbTokenAddress && blockExplorer
-                ? `${blockExplorer}token/${clbTokenAddress}?a=${bin?.tokenId}`
+                ? `${blockExplorer}/token/${clbTokenAddress}?a=${bin?.tokenId}`
                 : undefined
             }
             iconOnly={<ArrowTopRightOnSquareIcon />}
