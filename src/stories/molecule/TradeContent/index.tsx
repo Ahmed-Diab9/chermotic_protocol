@@ -1,5 +1,5 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
@@ -10,7 +10,7 @@ import { Slider } from '~/stories/atom/Slider';
 import '~/stories/atom/Toggle/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 
-import { decimalLength, formatDecimals, numberBuffer, withComma } from '~/utils/number';
+import { decimalLength, decimalPrecision, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 import { isNil } from 'ramda';
@@ -20,6 +20,7 @@ import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
+import { formatUnits } from 'viem';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -89,14 +90,37 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     }
     return formatDecimals(market.oracleValue.price, oracleDecimals, 2, true);
   }, [market]);
-  const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
-    string | undefined,
-    string | undefined
-  ]);
-  const [expectedRatio, setExpectedRatio] = useState({
-    profitRatio: undefined,
-    lossRatio: undefined,
-  } as { profitRatio?: number; lossRatio?: number });
+
+  const { takeProfitRatio, takeProfitPrice, stopLossRatio, stopLossPrice } = useMemo(() => {
+    if (isNil(market) || isNil(input))
+      return {
+        takeProfitRatio: '-',
+        takeProfitPrice: '-',
+        stopLossRatio: '-',
+        stopLossPrice: '-',
+      };
+
+    const { direction, takeProfit, stopLoss } = input;
+    const oraclePrice = formatUnits(market.oracleValue.price, oracleDecimals);
+
+    const takeProfitRate = +takeProfit / 100;
+    const stopLossRate = +stopLoss / 100;
+
+    const sign = direction === 'long' ? 1 : -1;
+
+    const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
+    const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
+
+    const format = (value: string | number) => withComma(decimalPrecision.floor(+value, 2));
+
+    return {
+      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(takeProfit)}`,
+      takeProfitPrice: format(takeProfitPrice),
+      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(stopLoss)}`,
+      stopLossPrice: format(stopLossPrice),
+    };
+  }, [input, market]);
+
   const { onOpenPosition } = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
@@ -110,59 +134,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const formatter = Intl.NumberFormat('en', { notation: 'compact' });
     return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
-  // TODO
-  // 청산가 계산이 올바른지 점검해야 합니다.
-  const createLiquidation = useCallback(async () => {
-    if (!isValid(input) || !isValid(market) || !isValid(token)) {
-      return setPrices([undefined, undefined]);
-    }
-    const { quantity, leverage, takerMargin, makerMargin } = input;
-    const price = market.oracleValue.price;
-    if (Number(input.collateral) === 0) {
-      return setPrices([
-        formatDecimals(price, oracleDecimals, 2, true),
-        formatDecimals(price, oracleDecimals, 2, true),
-      ]);
-    }
-
-    /**
-     * TODO
-     * 예상 청산가가 옳바르게 계산되는지 확인이 필요합니다.
-     */
-    const qty =
-      (BigInt(Math.round(Number(quantity) * numberBuffer())) *
-        BigInt(Math.round(Number(leverage) * numberBuffer()))) /
-      BigInt(numberBuffer()) /
-      BigInt(numberBuffer());
-    const profitDelta =
-      (price * BigInt(Math.round(makerMargin * numberBuffer()))) /
-      (qty === BigInt(0) ? BigInt(1) : qty) /
-      BigInt(numberBuffer());
-    const lossDelta =
-      (price * BigInt(Math.round(takerMargin * numberBuffer()))) /
-      (qty === BigInt(0) ? BigInt(1) : qty) /
-      BigInt(numberBuffer());
-
-    if (direction === 'long') {
-      setPrices([
-        formatDecimals(price + profitDelta, oracleDecimals, 2, true),
-        formatDecimals(price - lossDelta, oracleDecimals, 2, true),
-      ]);
-    } else {
-      setPrices([
-        formatDecimals(price - profitDelta, oracleDecimals, 2, true),
-        formatDecimals(price + lossDelta, oracleDecimals, 2, true),
-      ]);
-    }
-    setExpectedRatio({
-      profitRatio: Number((profitDelta * 100n * 10000n) / price),
-      lossRatio: Number((lossDelta * 100n * 10000n) / price),
-    });
-  }, [direction, input, token, market]);
-
-  useEffect(() => {
-    createLiquidation();
-  }, [createLiquidation]);
 
   useEffect(() => {
     const input = document.querySelector('.maxFeeAllowance');
@@ -438,10 +409,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black/30">
-                  ({direction === 'long' ? '+' : '-'}
-                  {formatDecimals(expectedRatio.profitRatio, 4, 2)}%)
-                </span>
+                <span className="ml-2 text-black/30">({takeProfitRatio}%)</span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -450,10 +418,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black/30">
-                  ({direction === 'long' ? '-' : '+'}
-                  {formatDecimals(expectedRatio.lossRatio, 4, 2)}%)
-                </span>
+                <span className="ml-2 text-black/30">({stopLossRatio}%)</span>
               </p>
             </div>
           </div>
