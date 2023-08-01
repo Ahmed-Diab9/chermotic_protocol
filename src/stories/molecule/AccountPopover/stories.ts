@@ -23,7 +23,7 @@ export const LoggedIn: Story = {
     isLoading: false,
     status: undefined,
     account: {
-      usumAddress: '0x0000000000111111111122222222223333333333',
+      chromaticAddress: '0x0000000000111111111122222222223333333333',
       walletAddress: '0x1111111111222222222233333333334444444444',
     },
     selectedToken: tokens[0],

@@ -169,6 +169,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                         token={token}
                         name={bin.clbTokenDescription}
                         bin={bin}
+                        imageSrc={bin.clbTokenImage}
                       />
                     );
                   })}

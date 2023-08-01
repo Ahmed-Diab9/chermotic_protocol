@@ -1,7 +1,7 @@
 import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
+import { isNil } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { isNil } from 'ramda';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { FEE_RATE_DECIMAL } from '~/configs/decimals';
@@ -12,8 +12,8 @@ import { mulPreserved, numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
-import useOracleVersion from './useOracleVersion';
 import { useMarket } from './useMarket';
+import useOracleVersion from './useOracleVersion';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {

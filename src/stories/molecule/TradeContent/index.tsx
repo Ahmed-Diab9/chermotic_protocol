@@ -91,7 +91,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       return '-';
     }
     return formatDecimals(market.oracleValue.price, oracleDecimals, 2, true);
-  }, [market, token]);
+  }, [market]);
   const [[takeProfitPrice, stopLossPrice], setPrices] = useState([undefined, undefined] as [
     string | undefined,
     string | undefined
@@ -100,7 +100,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     profitRatio: undefined,
     lossRatio: undefined,
   } as { profitRatio?: number; lossRatio?: number });
-  const response = useOpenPosition({ state: input });
+  const { onOpenPosition } = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
@@ -120,7 +120,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       return setPrices([undefined, undefined]);
     }
     const { quantity, leverage, takerMargin, makerMargin } = input;
-    const price = await market.oracleValue.price;
+    const price = market.oracleValue.price;
     if (Number(input.collateral) === 0) {
       return setPrices([
         formatDecimals(price, oracleDecimals, 2, true),
@@ -146,15 +146,22 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       (qty === BigInt(0) ? BigInt(1) : qty) /
       BigInt(numberBuffer());
 
-    setPrices([
-      formatDecimals(price + profitDelta, oracleDecimals, 2, true),
-      formatDecimals(price - lossDelta, oracleDecimals, 2, true),
-    ]);
+    if (direction === 'long') {
+      setPrices([
+        formatDecimals(price + profitDelta, oracleDecimals, 2, true),
+        formatDecimals(price - lossDelta, oracleDecimals, 2, true),
+      ]);
+    } else {
+      setPrices([
+        formatDecimals(price - profitDelta, oracleDecimals, 2, true),
+        formatDecimals(price + lossDelta, oracleDecimals, 2, true),
+      ]);
+    }
     setExpectedRatio({
       profitRatio: Number((profitDelta * 100n * 10000n) / price),
       lossRatio: Number((lossDelta * 100n * 10000n) / price),
     });
-  }, [input, token, market]);
+  }, [direction, input, token, market]);
 
   useEffect(() => {
     createLiquidation();
@@ -417,7 +424,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               css="active"
               disabled={disabled}
               onClick={() => {
-                !disabled && response.onOpenPosition();
+                !disabled && onOpenPosition();
               }}
             />
             {/* todo: wallet connected, no account */}
@@ -448,7 +455,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <p>
                 $ {takeProfitPrice}
                 <span className="ml-2 text-black/30">
-                  (+{formatDecimals(expectedRatio.profitRatio, 4, 2)}%)
+                  ({direction === 'long' ? '+' : '-'}
+                  {formatDecimals(expectedRatio.profitRatio, 4, 2)}%)
                 </span>
               </p>
             </div>
@@ -459,7 +467,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <p>
                 $ {stopLossPrice}
                 <span className="ml-2 text-black/30">
-                  (-{formatDecimals(expectedRatio.lossRatio, 4, 2)}%)
+                  ({direction === 'long' ? '-' : '+'}
+                  {formatDecimals(expectedRatio.lossRatio, 4, 2)}%)
                 </span>
               </p>
             </div>

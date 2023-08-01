@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -14,7 +14,7 @@ export const useSettlementToken = () => {
   const dispatch = useAppDispatch();
   const currentToken = useAppSelector((state) => state.token.selectedToken);
 
-  const { setState: setStoredToken } = useLocalStorage('usum:token');
+  const { setState: setStoredToken } = useLocalStorage('app:token');
 
   const fetchKey = {
     name: 'settlementToken',

@@ -18,7 +18,7 @@ export const useMarket = (_interval?: number) => {
   const marketFactoryApi = client.marketFactory();
 
   const dispatch = useAppDispatch();
-  const { setState: setStoredMarket } = useLocalStorage('usum:market');
+  const { setState: setStoredMarket } = useLocalStorage('app:market');
 
   const marketsFetchKey = {
     name: 'getMarkets',

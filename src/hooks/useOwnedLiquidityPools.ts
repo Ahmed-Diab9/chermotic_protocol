@@ -6,6 +6,7 @@ import {
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
@@ -14,7 +15,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
-import { Address } from 'wagmi';
 
 const { encodeTokenId } = ChromaticUtils;
 

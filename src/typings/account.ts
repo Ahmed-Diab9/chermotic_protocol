@@ -1,6 +1,6 @@
 export type Account = {
   walletAddress?: string;
-  usumAddress?: string;
+  chromaticAddress?: string;
 };
 
 export const enum ACCOUNT_STATUS {

@@ -11,10 +11,11 @@ interface LiquidityItemProps {
   token?: Token;
   name?: string;
   bin?: OwnedBin;
+  imageSrc?: string;
 }
 
 export const LiquidityItem = (props: LiquidityItemProps) => {
-  const { token, name, bin } = props;
+  const { token, name, bin, imageSrc } = props;
   if (isNil(token) || isNil(bin)) return <></>;
 
   const { freeLiquidity, clbBalanceOfSettlement } = bin;
@@ -42,7 +43,7 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   return (
     <div className="w-full px-4 py-3 bg-grayL/20 [&:not(:last-child)]:border-b border-gray">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
-        <Thumbnail size="lg" className="rounded" />
+        <Thumbnail size="lg" className="rounded" src={imageSrc} />
         <div>
           <Avatar label={token.name} size="xs" gap="1" />
           <p className="mt-2 text-black/30">{name}</p>

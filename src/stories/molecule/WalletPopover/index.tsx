@@ -34,7 +34,7 @@ interface WalletPopoverProps {
   onCreateAccount?: () => void;
   onClick?: () => void;
   onWalletCopy?: (text: string) => unknown;
-  onUsumCopy?: (text: string) => unknown;
+  onChromaticCopy?: (text: string) => unknown;
 }
 
 export const WalletPopover = ({
@@ -49,7 +49,7 @@ export const WalletPopover = ({
   onDisconnect,
   onCreateAccount,
   onWalletCopy,
-  onUsumCopy,
+  onChromaticCopy,
   ...props
 }: WalletPopoverProps) => {
   const publicClient = usePublicClient();
@@ -64,7 +64,7 @@ export const WalletPopover = ({
       }
       return '';
     },
-    [balances, tokens, priceFeed]
+    [balances, priceFeed]
   );
 
   return (
@@ -263,18 +263,19 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL/20">
-                    {account?.usumAddress ? (
+                    {account?.chromaticAddress ? (
                       <>
                         <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
                         <div className="flex items-center justify-between gap-2">
                           <AddressCopyButton
                             address={
-                              account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
+                              account?.chromaticAddress &&
+                              trimAddress(account?.chromaticAddress, 7, 5)
                             }
                             onClick={() => {
-                              const address = account?.usumAddress;
+                              const address = account?.chromaticAddress;
                               if (isValid(address)) {
-                                onUsumCopy?.(address);
+                                onChromaticCopy?.(address);
                               }
                             }}
                           />
