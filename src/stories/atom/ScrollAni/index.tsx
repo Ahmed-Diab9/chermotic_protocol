@@ -11,12 +11,12 @@ export const ScrollAni: React.FC<ScrollAniProps> = (props: ScrollAniProps) => {
   const { isVisible, hasOpacity } = props;
 
   return (
-    <div
+    <span
       className={`scroll-ani ${isVisible ? 'visible' : 'invisible'} transition-opacity ${
         hasOpacity ? 'opacity-100' : 'opacity-0'
       }`}
     >
       <ChevronDoubleDownIcon className="w-4 animate-bounce" />
-    </div>
+    </span>
   );
 };
