@@ -29,16 +29,16 @@ export const Avatar = (props: AvatarProps) => {
   } = props;
 
   return (
-    <div className="avatar">
-      <div className={`flex items-center gap-${gap}`}>
-        <div
+    <span className="avatar">
+      <span className={`flex items-center gap-${gap}`}>
+        <span
           className={`avatar-${size} ${className} bg-white rounded-full overflow-hidden shrink-0 flex items-center justify-center`}
         >
           {src && <img src={src} alt="" className="object-cover w-full h-full" />}
           {svg && <span className="inline-block w-[68%] h-[68%]">{svg}</span>}
-        </div>
+        </span>
         {label && <p className={`font-${fontWeight} text-${fontSize}`}>{label}</p>}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 };

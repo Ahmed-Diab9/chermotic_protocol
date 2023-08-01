@@ -1,5 +1,5 @@
 .thumb {
-  @apply overflow-hidden flex-none;
+  @apply flex overflow-hidden flex-none;
   img {
   }
 }

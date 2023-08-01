@@ -114,7 +114,7 @@ export const PoolProgress = ({
                 }}
               >
                 <div className="ml-10 text-left">
-                  <h4 className="flex font-bold">
+                  <div className="flex text-lg font-bold">
                     IN PROGRESS
                     <span className="ml-[2px] mr-1">({receipts.length})</span>
                     <TooltipGuide
@@ -123,7 +123,7 @@ export const PoolProgress = ({
                       outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                       outLinkAbout="Next Oracle Round"
                     />
-                  </h4>
+                  </div>
                   {open && isValid(lapsed) && (
                     <p className="mt-1 ml-auto text-sm text-black/30">
                       Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}s ago
