@@ -1,6 +1,9 @@
 import { Disclosure, Tab } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { isNil } from 'ramda';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import CheckIcon from '~/assets/icons/CheckIcon';
+import { useLastOracle } from '~/hooks/useLastOracle';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Guide } from '~/stories/atom/Guide';
@@ -10,16 +13,13 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import '../../atom/Tabs/style.css';
-// import { LPReceipt } from "~/typings/receipt";
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLastOracle } from '~/hooks/useLastOracle';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { divPreserved, formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
+import '../../atom/Tabs/style.css';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -68,8 +68,8 @@ export const PoolProgress = ({
   onReceiptClaimBatch,
 }: PoolProgressProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
   const [hasGuide, setHasGuide] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
   const [selectedTab, setSelectedTab] = useState('all');
   const isClaimEnabled =
@@ -89,7 +89,7 @@ export const PoolProgress = ({
   }, [receipts]);
   useEffect(() => {
     function onPool() {
-      if (isValid(openButtonRef.current) && !isOpen) {
+      if (isValid(openButtonRef.current) && isNil(ref.current)) {
         setHasGuide(true);
         openButtonRef.current.click();
       }
@@ -98,7 +98,7 @@ export const PoolProgress = ({
     return () => {
       window.removeEventListener(POOL_EVENT, onPool);
     };
-  }, [isOpen]);
+  }, []);
 
   return (
     <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
@@ -106,13 +106,7 @@ export const PoolProgress = ({
         {({ open }) => {
           return (
             <>
-              <Disclosure.Button
-                className="relative flex items-center py-5"
-                ref={openButtonRef}
-                onClick={() => {
-                  setIsOpen(!open);
-                }}
-              >
+              <Disclosure.Button className="relative flex items-center py-5" ref={openButtonRef}>
                 <div className="ml-10 text-left">
                   <div className="flex text-lg font-bold">
                     IN PROGRESS
@@ -136,7 +130,7 @@ export const PoolProgress = ({
                   } w-6 text-black/30 absolute right-6`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="relative px-5 border-t">
+              <Disclosure.Panel className="relative px-5 border-t" ref={ref}>
                 <Tab.Group>
                   <div className="flex mt-5">
                     <Tab.List className="!justify-start !gap-7 px-5">

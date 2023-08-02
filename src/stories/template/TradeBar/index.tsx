@@ -53,22 +53,16 @@ export const TradeBar = ({
   oracleVersions,
   isLoading,
 }: TradeBarProps) => {
-  // const previousPositions = usePrevious(positions, true);
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [hasGuide, setHasGuide] = useState(false);
-  // const currentOracleVersion = useMemo(()=>{
-  //   oracleVersions[]
-  // })
 
   useEffect(() => {
     function onTrade() {
-      console.log('on trade event');
-      if (isValid(openButtonRef.current)) {
+      if (isValid(openButtonRef.current) && isNil(ref.current)) {
         setHasGuide(true);
         openButtonRef.current.click();
-      } else {
-        console.log('ERROR CLICKING');
       }
     }
     window.addEventListener(TRADE_EVENT, onTrade);
@@ -85,7 +79,7 @@ export const TradeBar = ({
             <>
               {/* backdrop */}
               <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
-              <div className="relative popover-panel">
+              <div className="relative popover-panel" ref={ref}>
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
                   <div className="absolute right-0 top-[-16px]">

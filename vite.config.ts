@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
-import eslint from 'vite-plugin-eslint';
+import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,11 +21,5 @@ export default defineConfig({
   ],
   define: {
     'process.env': process.env,
-  },
-  server: {
-    // hmr: false,
-    proxy: {
-      '/api': 'http://127.0.0.1:8545',
-    },
   },
 });
