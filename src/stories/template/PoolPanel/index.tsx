@@ -28,8 +28,10 @@ import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
-import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
+import '../../atom/Tabs/style.css';
+import './style.css';
+
 const logger = Logger('PoolPanel');
 
 interface PoolPanelProps {
@@ -202,7 +204,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   };
 
   return (
-    <div className="inline-flex flex-col w-full bg-white border shadow-lg rounded-2xl">
+    <div className="PoolPanel">
       <div className="tabs tabs-line tabs-lg">
         <Tab.Group>
           <Tab.List className="w-full mx-auto pt-4 flex !justify-center">

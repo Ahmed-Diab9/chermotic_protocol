@@ -2,17 +2,17 @@ import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import './style.css';
 
-interface ScrollAniProps {
+interface ScrollTriggerProps {
   isVisible?: boolean;
   hasOpacity?: boolean;
 }
 
-export const ScrollAni: React.FC<ScrollAniProps> = (props: ScrollAniProps) => {
+export const ScrollTrigger: React.FC<ScrollTriggerProps> = (props: ScrollTriggerProps) => {
   const { isVisible, hasOpacity } = props;
 
   return (
     <span
-      className={`scroll-ani ${isVisible ? 'visible' : 'invisible'} transition-opacity ${
+      className={`scroll-trigger ${isVisible ? 'visible' : 'invisible'} transition-opacity ${
         hasOpacity ? 'opacity-100' : 'opacity-0'
       }`}
     >

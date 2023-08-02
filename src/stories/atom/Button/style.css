@@ -8,7 +8,7 @@
   }
   span,
   svg {
-    @apply inline-block;
+    @apply inline-flex;
   }
   &:disabled {
     @apply cursor-not-allowed;
