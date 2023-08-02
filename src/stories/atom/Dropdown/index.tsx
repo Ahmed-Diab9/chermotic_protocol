@@ -1,5 +1,5 @@
-import { Menu } from "@headlessui/react";
-import "./style.css";
+import { Menu } from '@headlessui/react';
+import './style.css';
 
 interface DropdownProps {
   onClick?: () => void;
@@ -9,18 +9,18 @@ export const Dropdown = (props: DropdownProps) => {
   return (
     <div className="dropdown">
       <Menu>
-        <Menu.Button>dropdown</Menu.Button>
+        <Menu.Button>dropdown example</Menu.Button>
         <Menu.Items>
           <Menu.Item>
             {({ active }) => (
-              <a className={`${active && "bg-black"}`} href="/account-settings">
+              <a className={`${active && 'bg-grayL1'}`} href="/account-settings">
                 Menu Item 01
               </a>
             )}
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-              <a className={`${active && "bg-black"}`} href="/account-settings">
+              <a className={`${active && 'bg-grayL1'}`} href="/account-settings">
                 Menu Item 02
               </a>
             )}
