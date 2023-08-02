@@ -263,7 +263,9 @@ const PositionItem = function (props: Props) {
       };
     }
     const { collateral, qty, makerMargin, takerMargin } = position;
-    const stopLoss = (10000).toFixed(2) + '%';
+    const stopLoss =
+      formatDecimals((collateral * 10n ** BigInt(token.decimals)) / qty, token.decimals - 2, 2) +
+      '%';
     const takeProfitRaw =
       abs(qty) === 0n
         ? 0n
@@ -277,7 +279,7 @@ const PositionItem = function (props: Props) {
       currentOracleVersion.version <= position.openVersion
     ) {
       return {
-        qty: formatDecimals(abs(qty), 4, 2, true),
+        qty: formatDecimals(abs(qty), token.decimals, 2, true),
         collateral: formatDecimals(collateral, token.decimals, 2, true),
         stopLoss,
         takeProfit,
@@ -297,7 +299,7 @@ const PositionItem = function (props: Props) {
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
-      qty: formatDecimals(abs(qty), 4, 2, true),
+      qty: formatDecimals(abs(qty), token.decimals, 2, true),
       collateral: formatDecimals(collateral, token.decimals, 2, true),
       takeProfit: withComma(takeProfit),
       stopLoss: withComma(stopLoss),
