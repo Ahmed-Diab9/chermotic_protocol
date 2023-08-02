@@ -38,17 +38,17 @@
   }
 }
 .btn-gray {
-  @apply border border-gray bg-white;
-  @apply hover:bg-grayL/30;
+  @apply border border-grayL2 bg-white;
+  @apply hover:bg-grayL1/30;
   &:disabled {
-    @apply border-gray/40 text-gray;
+    @apply border-grayL2/40 text-grayL2;
   }
 }
 .btn-default {
   @apply border text-black/50 bg-white;
-  @apply hover:bg-grayL/30;
+  @apply hover:bg-grayL1/30;
   &:disabled {
-    @apply text-gray;
+    @apply text-grayL2;
   }
 }
 .btn-unstyled {
@@ -56,10 +56,10 @@
 }
 .btn-circle {
   @apply border border-[#eee] bg-white !rounded-full;
-  @apply hover:bg-grayL/30;
+  @apply hover:bg-grayL1/30;
 }
 .btn-wallet {
-  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL text-white;
+  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL1 text-white;
   .avatar {
     @apply !w-[36px] !h-[36px];
   }

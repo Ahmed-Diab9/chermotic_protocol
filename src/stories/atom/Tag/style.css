@@ -4,13 +4,13 @@
 }
 .tag-long,
 .tag-Long {
-  @apply text-white bg-grayD;
+  @apply text-white bg-grayD2;
   /* color: #a6d85b;
   background: rgba(166, 216, 91, 0.3); */
 }
 .tag-short,
 .tag-Short {
-  @apply text-grayD bg-gray/20;
+  @apply text-grayD2 bg-grayL2/20;
   /* color: #ff3232;
   background: rgba(255, 50, 50, 0.1); */
 }

@@ -41,7 +41,7 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   // 숫자에 천단위 쉼표 추가
   // 소수점 2자리 표기
   return (
-    <div className="w-full px-4 py-3 bg-grayL/20 [&:not(:last-child)]:border-b border-gray">
+    <div className="w-full px-4 py-3 bg-grayL1/20 [&:not(:last-child)]:border-b border-grayL2">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
         <Thumbnail size="lg" className="rounded" src={imageSrc} />
         <div>
