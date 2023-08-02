@@ -45,7 +45,7 @@ function getCalculatedValues({
   const { collateral, quantity } =
     method === 'collateral'
       ? { quantity: amount / lossCutRate, collateral: amount }
-      : { quantity: amount, collateral: amount * (stopLoss / 100) };
+      : { quantity: amount, collateral: amount * lossCutRate };
 
   const takerMargin = decimalPrecision.round(collateral, 2);
   const makerMargin = decimalPrecision.round((collateral / lossCutRate) * takeProfitRate, 2);
