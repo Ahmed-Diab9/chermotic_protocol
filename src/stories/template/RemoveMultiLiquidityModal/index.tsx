@@ -7,7 +7,7 @@ import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
-import { ScrollAni } from '~/stories/atom/ScrollAni';
+import { ScrollTrigger } from '~/stories/atom/ScrollTrigger';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
@@ -175,7 +175,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
-                <ScrollAni
+                <ScrollTrigger
                   isVisible={!arrowState.hasSameHeight}
                   hasOpacity={!arrowState.isScrolled}
                 />
