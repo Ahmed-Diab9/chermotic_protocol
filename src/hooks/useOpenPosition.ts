@@ -1,4 +1,3 @@
-import { LEVERAGE_DECIMALS, QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
@@ -56,8 +55,7 @@ function useOpenPosition({ state }: Props) {
       return;
     }
 
-    const quantity = toBigintWithDecimals(state.quantity, QTY_DECIMALS);
-    const leverage = Number(toBigintWithDecimals(state.leverage, LEVERAGE_DECIMALS));
+    const quantity = toBigintWithDecimals(state.quantity, currentToken.decimals);
     const takerMargin = toBigintWithDecimals(state.takerMargin, currentToken.decimals);
     const makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
 
@@ -86,7 +84,7 @@ function useOpenPosition({ state }: Props) {
 
       await routerApi.openPosition(currentMarket.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        leverage,
+        // leverage,
         takerMargin,
         makerMargin,
         maxAllowableTradingFee,

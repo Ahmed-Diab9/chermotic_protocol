@@ -8,7 +8,11 @@ import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { checkAllProps } from '../utils';
-import { mulPreserved, numberBuffer, percentage } from '../utils/number';
+import {
+  mulPreserved,
+  numberBuffer,
+  percentage
+} from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -60,6 +64,7 @@ const usePoolReceipt = () => {
   const { currentMarket } = useMarket();
   const { liquidityPool } = useLiquidityPool();
   const { currentMarketOracleVersion } = useOracleVersion();
+  // const { currentToken } = useSettlementToken();
 
   const binName = useCallback((feeRate: number, description?: string) => {
     const prefix = feeRate > 0 ? '+' : '';
@@ -73,6 +78,7 @@ const usePoolReceipt = () => {
     name: 'getPoolReceipt',
     type: 'EOA',
     address: walletAddress,
+    // currentToken: currentToken,
     currentOracleVersion: currentMarketOracleVersion?.version,
     marketAddress: currentMarket?.address,
     liquidityPool: liquidityPool,
@@ -94,13 +100,18 @@ const usePoolReceipt = () => {
         tradingFeeRate: receipt.tradingFeeRate,
         oracleVersion: receipt.oracleVersion,
       }));
-      const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
+      const claimableLiquidities = await lensApi.claimableLiquidities(
+        marketAddress,
+        ownedBinsParam
+      );
       return receipts
         .map((receipt) => {
-          const ownedBin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
+          const claimableLiquidityForReceipt =
+            claimableLiquidities[receipt.tradingFeeRate][receipt.oracleVersion.toString()];
+
           const bin = liquidityPool?.bins.find((bin) => bin.baseFeeRate === receipt.tradingFeeRate);
 
-          if (!ownedBin || !bin) {
+          if (!claimableLiquidityForReceipt || !bin) {
             return null;
           }
           const {
@@ -111,21 +122,43 @@ const usePoolReceipt = () => {
             recipient,
             tradingFeeRate,
           } = receipt;
-          let status: LpReceipt['status'] = 'standby';
-          status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, ownedBin);
 
-          return {
+          const myBurnedCLBAmount =
+            claimableLiquidityForReceipt.burningCLBTokenAmountRequested === 0n
+              ? 0n
+              : (receipt.amount * claimableLiquidityForReceipt.burningCLBTokenAmount) /
+                claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
+          const remainedCLBAmount = amount - myBurnedCLBAmount;
+          const burnedSettlementAmount =
+            claimableLiquidityForReceipt.burningCLBTokenAmountRequested === 0n
+              ? 0n
+              : (claimableLiquidityForReceipt.burningTokenAmount * receipt.amount) /
+                claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
+
+          const settlementTotalAmount =
+            burnedSettlementAmount +
+            mulPreserved(remainedCLBAmount, bin.clbTokenValue, bin.clbTokenDecimals);
+
+          let status: LpReceipt['status'] = 'standby';
+          status = receiptDetail(
+            action,
+            receiptOracleVersion,
+            currentOracleVersion,
+            claimableLiquidityForReceipt
+          );
+
+          const result = {
             id,
             action: action === 0 ? 'add' : 'remove',
-            amount:
-              action === 0 ? amount : mulPreserved(amount, bin.clbTokenValue, bin.clbTokenDecimals),
+            amount: action === 0 ? amount : settlementTotalAmount,
             feeRate: tradingFeeRate,
             status,
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
-            burningAmount: action === 0 ? 0n : ownedBin.burningTokenAmount,
+            burningAmount: action === 0 ? 0n : burnedSettlementAmount,
           } satisfies LpReceipt;
+          return result;
         })
         .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);
     }

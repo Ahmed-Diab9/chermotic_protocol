@@ -76,14 +76,15 @@ export const useLiquidityPool = (marketAddress?: Address) => {
     marketAddress: currentMarketAddress,
   };
 
-  const { data: liquidityPool } = useSWR(
+  const { data: liquidityPool, mutate: fetchLiquidityPool } = useSWR(
     isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress }) => {
       const lensApi = client.lens();
       const marketApi = client.market();
 
       return getLiquidityPool(marketApi, lensApi, marketAddress);
-    }
+    },
+    { keepPreviousData: false }
   );
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
@@ -122,6 +123,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 
   return {
     liquidityPool,
+    fetchLiquidityPool,
     liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
@@ -134,7 +136,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 const baseFeeRates = [...FEE_RATES, ...FEE_RATES.map((rate) => rate * -1)];
 const tokenIds = [
   ...FEE_RATES.map((rate) => encodeTokenId(rate)), // LONG COUNTER
-  ...FEE_RATES.map((rate) => encodeTokenId(rate, false)), // SHORT COUNTER
+  ...FEE_RATES.map((rate) => encodeTokenId(rate * -1)), // SHORT COUNTER
 ];
 async function getLiquidityPool(
   marketApi: ChromaticMarket,

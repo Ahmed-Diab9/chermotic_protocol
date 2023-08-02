@@ -13,6 +13,9 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import '../../atom/Tabs/style.css';
+// import { LPReceipt } from "~/typings/receipt";
+import { useCallback } from 'react';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
@@ -72,6 +75,11 @@ export const PoolProgress = ({
   const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
   const [selectedTab, setSelectedTab] = useState('all');
+  const progressPercent = useCallback((receipt: LpReceipt) => {
+    return (
+      Number(receipt.amount ? Number(receipt.burningAmount) / Number(receipt.amount) : 0) * 100
+    );
+  }, []);
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -193,8 +201,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
-                                progressPercent={0}
+                                progressPercent={progressPercent(receipt)}
                                 action={receipt.action}
                                 onClick={() => {
                                   onReceiptClaim?.(receipt.id, receipt.action);
@@ -238,7 +245,7 @@ export const PoolProgress = ({
                                   amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  progressPercent={0}
+                                  progressPercent={progressPercent(receipt)}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);
@@ -281,8 +288,7 @@ export const PoolProgress = ({
                                   detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
-                                  progressPercent={0}
+                                  progressPercent={progressPercent(receipt)}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);
@@ -428,7 +434,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           </p>
         </div>
       </div>
-      {action === 'add' ? (
+      {action === 'remove' ? (
         <Progress value={progressPercent} max={100} />
       ) : (
         <div className="border-t" />

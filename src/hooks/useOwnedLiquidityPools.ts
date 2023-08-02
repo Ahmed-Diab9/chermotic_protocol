@@ -27,7 +27,7 @@ async function getLiquidityPool(
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
   const binsResponse = bins.map(async (bin: any) => {
-    const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
+    const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
     const { name, decimals, description, image } = await marketApi.clbTokenMeta(
       marketAddress,
       tokenId
