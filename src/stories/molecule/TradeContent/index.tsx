@@ -21,6 +21,7 @@ import { TradeInput } from '~/typings/trade';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
 import { formatUnits } from 'viem';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -38,7 +39,10 @@ interface TradeContentProps {
   minStopLoss?: number;
   minTakeProfit?: number;
   maxTakeProfit?: number;
-  disabled: boolean;
+  disabled: {
+    status: boolean;
+    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
+  };
   isLoading?: boolean;
   onAmountChange?: (value: string) => unknown;
   onMethodToggle?: () => unknown;
@@ -172,7 +176,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               value={input?.method}
               onChange={(value) => {
                 if (input?.method !== value) {
-                  console.log('Toggle');
                   onMethodToggle?.();
                 }
               }}
@@ -188,7 +191,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             </Listbox>
           </div>
           <div className="flex flex-col items-end">
-            <AmountSwitch input={input} token={token} onAmountChange={onAmountChange} />
+            <AmountSwitch
+              input={input}
+              token={token}
+              onAmountChange={onAmountChange}
+              disabled={disabled}
+            />
           </div>
         </div>
       </article>
@@ -377,7 +385,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               size="2xl"
               className="w-full"
               css="active"
-              disabled={disabled}
+              disabled={disabled.status}
               onClick={() => {
                 !disabled && onOpenPosition();
               }}
@@ -431,35 +439,46 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 interface AmountSwitchProps {
   input?: TradeInput;
   token?: Token;
+  disabled?: {
+    status: boolean;
+    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
+  };
+  minimum?: string;
   onAmountChange?: (value: string) => unknown;
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
-  const { input, onAmountChange, token } = props;
+  const { input, onAmountChange, token, disabled, minimum } = props;
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
+
+  const errorMessage = useMemo(() => {
+    switch (disabled?.detail) {
+      case 'balance':
+        return 'Exceeded available account balance.';
+      case 'liquidity':
+        return 'Exceeded free liquidity size.';
+      case 'minimum':
+        return `Less than minimum betting amount. (${minimum})`;
+      default:
+        return undefined;
+    }
+  }, [disabled?.detail]);
+
   switch (input?.method) {
     case 'collateral': {
       return (
         <>
           <div className="max-w-[220px]">
-            {/* todo: input error */}
-            {/* - Input : error prop is true when has error */}
-            {/* - TooltipAlert : is shown when has error */}
             <div className="tooltip-input-balance">
               <Input
                 value={input.collateral.toString()}
                 onChange={onAmountChange}
                 placeholder="0"
-                // error
+                error={disabled?.status}
               />
-              {/* case 1. exceeded account balance */}
-              {/* <TooltipAlert label="input-balance" tip="Exceeded available account balance." /> */}
-              {/* case 2. exceeded total liq */}
-              {/* <TooltipAlert label="input-balance" tip="Exceeded free liquidity size." /> */}
-              {/* case 3. less than minimum */}
-              {/* <TooltipAlert label="input-balance" tip={`Less than minimum betting amount. (${min})`} /> */}
+              {errorMessage && <TooltipAlert label="input-balance" tip={errorMessage} />}
             </div>
           </div>
           <div className="flex items-center justify-end mt-2">

@@ -49,7 +49,7 @@ export const TradeContent = (props: Props) => {
       input={input}
       tradeFee={tradeFee}
       tradeFeePercent={feePercent}
-      disabled={disabled.status}
+      disabled={disabled}
       maxTakeProfit={oracleProperties?.maxTakeProfit}
       minTakeProfit={oracleProperties?.minTakeProfit}
       maxLeverage={oracleProperties?.maxLeverage}
