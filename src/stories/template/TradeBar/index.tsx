@@ -151,7 +151,7 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               {positions?.length === 0 ? (
-                                <p className="mt-10 text-center text-gray">
+                                <p className="mt-10 text-center text-grayL2">
                                   You have no position yet.
                                 </p>
                               ) : (

@@ -359,7 +359,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   {/* onClick: connect wallet */}
                   {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
                 </div>
-                <div className="flex flex-col gap-2 border-t border-dashed border-gray mt-8 mx-[-40px] pt-6 px-10">
+                <div className="flex flex-col gap-2 border-t border-dashed border-grayL2 mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
                     <div className="flex">
                       Number of Liquidity Bins
@@ -528,7 +528,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedShortLiquidityBins.length === 0 ? (
-                              <p className="my-10 text-center text-gray">
+                              <p className="my-10 text-center text-grayL2">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -553,7 +553,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedLongLiquidityBins?.length === 0 ? (
-                              <p className="my-10 text-center text-gray">
+                              <p className="my-10 text-center text-grayL2">
                                 You have no liquidity yet.
                               </p>
                             ) : (

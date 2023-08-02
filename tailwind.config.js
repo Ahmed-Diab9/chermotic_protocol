@@ -24,16 +24,20 @@ export const theme = {
     colors: {
       current: 'currentColor',
       black: '#030303',
-      gray: '#D4D4D4',
-      grayBG: '#FCFCFC',
+
+      grayLbg: '#FCFCFC',
       grayL: '#EEEEEE',
-      grayD: '#4D4D4D',
+      grayL2: '#D4D4D4',
+
+      grayDbg: '#151515',
+      grayD: '#333333',
+      grayD2: '#4D4D4D',
+
       error: '#030303',
 
       standby: '#FF8A00',
       completed: '#00E23F',
       inprocess: '#08E3D6',
-
       long: '#a6d85b',
       short: '#fb6115',
     },

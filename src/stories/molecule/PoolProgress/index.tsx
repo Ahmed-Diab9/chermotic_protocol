@@ -171,7 +171,9 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                        <p className="my-6 text-center text-grayL2">
+                          You have no order in progress.
+                        </p>
                       ) : (
                         <>
                           <div className="absolute top-5 right-5">
@@ -211,7 +213,9 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.filter((receipt) => receipt.action === 'add').length === 0 ? (
-                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                        <p className="my-6 text-center text-grayL2">
+                          You have no order in progress.
+                        </p>
                       ) : (
                         <>
                           <div className="absolute top-5 right-5">
@@ -252,7 +256,9 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.filter((receipt) => receipt.action === 'remove').length === 0 ? (
-                        <p className="my-6 text-center text-gray">You have no order in progress.</p>
+                        <p className="my-6 text-center text-grayL2">
+                          You have no order in progress.
+                        </p>
                       ) : (
                         <>
                           <div className="absolute top-5 right-5">
@@ -369,19 +375,19 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/30 bg-gray/20" />
+              <Tag label="standby" className="text-black/30 bg-grayL2/20" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
               //   className="text-[#03C239] bg-[#23F85F]/10"
               // />
-              <Tag label="completed" className="text-white bg-grayD" />
+              <Tag label="completed" className="text-white bg-grayD2" />
             ) : (
               // <Tag
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-grayD bg-gray/20" />
+              <Tag label="in progress" className="text-grayD2 bg-grayL2/20" />
             )}
             <TooltipGuide
               label="status-info"

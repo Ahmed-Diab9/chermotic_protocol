@@ -380,7 +380,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
         <article className="mt-5">
-          <div className="flex flex-col gap-[10px] border-gray">
+          <div className="flex flex-col gap-[10px] border-grayL2">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -435,7 +435,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
           </div>
 
-          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray mt-8">
+          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-grayL2 mt-8">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>

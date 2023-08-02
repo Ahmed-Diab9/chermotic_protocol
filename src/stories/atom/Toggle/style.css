@@ -4,18 +4,18 @@
 .toggle {
   @apply relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-white focus-visible:ring-opacity-75;
 
-  &[aria-checked="false"] {
-    @apply bg-gray dark:bg-gray;
+  &[aria-checked='false'] {
+    @apply bg-grayL2 dark:bg-grayL2;
     &::after {
       @apply translate-x-0;
     }
   }
-  &[aria-checked="true"] {
+  &[aria-checked='true'] {
     @apply bg-black dark:bg-black;
   }
   &::after {
     @apply inline-block transition duration-200 ease-in-out transform bg-white rounded-full pointer-events-none;
-    content: "";
+    content: '';
   }
 }
 .toggle-xs {
@@ -23,7 +23,7 @@
   &::after {
     @apply h-[12px] w-[12px];
   }
-  &[aria-checked="true"]::after {
+  &[aria-checked='true']::after {
     @apply translate-x-3;
   }
 }
@@ -32,7 +32,7 @@
   &::after {
     @apply h-[12px] w-[12px];
   }
-  &[aria-checked="true"]::after {
+  &[aria-checked='true']::after {
     @apply translate-x-3;
   }
 }
@@ -41,7 +41,7 @@
   &::after {
     @apply h-[20px] w-[20px];
   }
-  &[aria-checked="true"]::after {
+  &[aria-checked='true']::after {
     @apply translate-x-6;
   }
 }
@@ -50,7 +50,7 @@
   &::after {
     @apply h-[28px] w-[28px];
   }
-  &[aria-checked="true"]::after {
+  &[aria-checked='true']::after {
     @apply translate-x-8;
   }
 }
