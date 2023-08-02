@@ -1,5 +1,5 @@
-import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
-import { isNil } from 'ramda';
+import { ClaimableLiquidityResult, PendingLiquidityResult } from '@chromatic-protocol/sdk-viem';
+import { isNil, lens } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
@@ -8,16 +8,13 @@ import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { checkAllProps } from '../utils';
-import {
-  mulPreserved,
-  numberBuffer,
-  percentage
-} from '../utils/number';
+import { mulPreserved, numberBuffer, percentage } from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
+import { indexBy } from 'ramda';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -36,7 +33,8 @@ const receiptDetail = (
   action: 0 | 1 | number,
   receiptOracleVersion: bigint,
   currentOracleVersion: bigint,
-  bin: ClaimableLiquidityResult
+  bin: ClaimableLiquidityResult,
+  pendingLiquidity: PendingLiquidityResult
 ) => {
   switch (action) {
     case 0:
@@ -49,7 +47,10 @@ const receiptDetail = (
       if (receiptOracleVersion >= currentOracleVersion) {
         return 'standby';
       }
-      if (bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount) {
+      if (
+        bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount &&
+        pendingLiquidity.oracleVersion !== receiptOracleVersion
+      ) {
         return 'completed';
       } else {
         return 'in progress';
@@ -96,6 +97,15 @@ const usePoolReceipt = () => {
       if (!receipts) {
         return [];
       }
+      const pendingRemoveLiquidities = await lensApi.pendingLiquidityBatch(
+        marketAddress,
+        receipts.map((receipt) => receipt.tradingFeeRate)
+      );
+
+      const pendingRemoveLiquidityMap = indexBy(
+        (pendingLiquidity) => pendingLiquidity.tradingFeeRate,
+        pendingRemoveLiquidities
+      );
       const ownedBinsParam = receipts.map((receipt) => ({
         tradingFeeRate: receipt.tradingFeeRate,
         oracleVersion: receipt.oracleVersion,
@@ -144,7 +154,8 @@ const usePoolReceipt = () => {
             action,
             receiptOracleVersion,
             currentOracleVersion,
-            claimableLiquidityForReceipt
+            claimableLiquidityForReceipt,
+            pendingRemoveLiquidityMap[tradingFeeRate]
           );
 
           const result = {
