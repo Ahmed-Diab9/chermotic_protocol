@@ -97,7 +97,10 @@ export const useChromaticAccount = () => {
       logger.info('Creating accounts');
       dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
       await accountApi.createAccount();
-      await fetchAddress();
+
+      const newAccount = await accountApi.getAccount();
+      await fetchAddress(newAccount);
+
       dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
     } catch (error) {
       dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
