@@ -343,7 +343,7 @@ const PositionItem = function (props: Props) {
 
   return (
     <div key={position.id.toString()} className="mb-3 border rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL/20">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL1/20">
         <div
           className={`flex flex-auto items-center gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''

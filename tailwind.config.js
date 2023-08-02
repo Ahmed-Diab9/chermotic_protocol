@@ -26,11 +26,11 @@ export const theme = {
       black: '#030303',
 
       grayLbg: '#FCFCFC',
-      grayL: '#EEEEEE',
+      grayL1: '#EEEEEE',
       grayL2: '#D4D4D4',
 
       grayDbg: '#151515',
-      grayD: '#333333',
+      grayD1: '#333333',
       grayD2: '#4D4D4D',
 
       error: '#030303',

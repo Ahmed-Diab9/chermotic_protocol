@@ -1,7 +1,7 @@
 .input {
   @apply max-w-full bg-white;
   &.disabled {
-    @apply bg-grayL/30 border-grayL2/30;
+    @apply bg-grayL1/30 border-grayL2/30;
     input {
       @apply bg-transparent;
     }

@@ -186,7 +186,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
-      <article className="pb-5 border-grayL">
+      <article className="pb-5 border-grayL1">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
           <p className="text-black/30">
@@ -223,7 +223,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayL/20">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayL1/20">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-4">
