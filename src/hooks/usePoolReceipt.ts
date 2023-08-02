@@ -27,6 +27,7 @@ export interface LpReceipt {
   name: string;
   burningAmount: bigint;
   action: LpReceiptAction;
+  progress : number;
 }
 
 const receiptDetail = (
@@ -79,7 +80,6 @@ const usePoolReceipt = () => {
     name: 'getPoolReceipt',
     type: 'EOA',
     address: walletAddress,
-    // currentToken: currentToken,
     currentOracleVersion: currentMarketOracleVersion?.version,
     marketAddress: currentMarket?.address,
     liquidityPool: liquidityPool,
@@ -138,13 +138,13 @@ const usePoolReceipt = () => {
               ? 0n
               : (receipt.amount * claimableLiquidityForReceipt.burningCLBTokenAmount) /
                 claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
-          const remainedCLBAmount = amount - myBurnedCLBAmount;
+
           const burnedSettlementAmount =
             claimableLiquidityForReceipt.burningCLBTokenAmountRequested === 0n
               ? 0n
               : (claimableLiquidityForReceipt.burningTokenAmount * receipt.amount) /
                 claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
-
+          const remainedCLBAmount = amount - myBurnedCLBAmount;
           const settlementTotalAmount =
             burnedSettlementAmount +
             mulPreserved(remainedCLBAmount, bin.clbTokenValue, bin.clbTokenDecimals);
@@ -168,6 +168,7 @@ const usePoolReceipt = () => {
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
             burningAmount: action === 0 ? 0n : burnedSettlementAmount,
+            progress : 1
           } satisfies LpReceipt;
           return result;
         })
