@@ -1,4 +1,4 @@
-export type CLBTokenValue = { key: number; value: bigint };
+export type CLBTokenValue = { key: number; value: number };
 
 export type Liquidity = {
   key: number;
