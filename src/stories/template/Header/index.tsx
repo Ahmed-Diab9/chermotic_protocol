@@ -19,23 +19,27 @@ export const Header = (props: HeaderProps) => {
   return (
     // <header className="sticky top-0 Header">
     <header className="Header">
-      <div className="h-[70px] bg-grayLbg px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] bg-grayLbg dark:bg-black px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
-            <LogoSimple className="h-9" />
+            <LogoSimple className="text-black dark:text-white h-9" />
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 ${
-              location.pathname === '/trade' ? 'border-black' : 'border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black dark:text-white ${
+              location.pathname === '/trade'
+                ? 'border-black dark:border-white'
+                : '!border-transparent'
             }`}
           >
             Trade
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 ${
-              location.pathname === '/pool' ? 'border-black' : 'border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black dark:text-white ${
+              location.pathname === '/pool'
+                ? 'border-black dark:border-white'
+                : '!border-transparent'
             }`}
           >
             Pools

@@ -14,16 +14,21 @@ import TwitterIcon from '~/assets/icons/TwitterIcon';
 
 export const Footer = () => (
   <footer>
-    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-black">
+    {/* <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-black dark:bg-white"> */}
+    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-black dark:border-t">
       <a href="/home" title="Chromatic">
+        {/* <Logo className="text-white dark:text-black" /> */}
         <Logo className="text-white" />
       </a>
-      <p className="text-white/30">A New Era in Decentralized Perpetual Futures</p>
+      {/* <p className="text-white/30 dark:text-black/30"> */}
+      <p className="text-white/40">A New Era in Decentralized Perpetual Futures</p>
+      {/* <div className="flex items-center gap-2 text-white dark:text-black"> */}
       <div className="flex items-center gap-2 text-white">
         <Button
           href="https://twitter.com/chromatic_perp"
           css="circle"
           size="lg"
+          // className="!bg-transparent !border-white/30 dark:!border-black/30"
           className="!bg-transparent !border-white/30"
           iconOnly={<TwitterIcon />}
         />
@@ -31,6 +36,7 @@ export const Footer = () => (
           href=""
           css="circle"
           size="lg"
+          // className="!bg-transparent !border-white/30 dark:!border-black/30"
           className="!bg-transparent !border-white/30"
           iconOnly={<TelegramIcon />}
         />
@@ -38,6 +44,7 @@ export const Footer = () => (
           href=""
           css="circle"
           size="lg"
+          // className="!bg-transparent !border-white/30 dark:!border-black/30"
           className="!bg-transparent !border-white/30"
           iconOnly={<GitbookIcon />}
         />

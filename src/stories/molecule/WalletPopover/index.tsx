@@ -95,7 +95,7 @@ export const WalletPopover = ({
               />
             </Popover.Button>
             {/* backdrop */}
-            <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
+            <Popover.Overlay className="fixed inset-0 backdrop bg-white/80 dark:bg-black/80" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
@@ -105,7 +105,7 @@ export const WalletPopover = ({
               // leaveFrom="opacity-100 translate-x-20"
               // leaveTo="opacity-100 translate-x-0"
             >
-              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel">
+              <Popover.Panel className="transform border-l shadow-xl popover-panel">
                 <div className="relative flex flex-col h-full ">
                   {/* Network */}
                   <Avatar
@@ -118,8 +118,10 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-grayL1/20">
-                      <h4 className="mb-3 text-base text-center text-black/30">Connected Wallet</h4>
+                    <article className="px-4 py-3 border-b bg-grayL1/20 dark:bg-grayD2/40">
+                      <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
+                        Connected Wallet
+                      </h4>
                       <div className="flex items-center justify-between gap-2">
                         <AddressCopyButton
                           address={
@@ -161,7 +163,9 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2">You have no asset.</p>
+                                <p className="text-center text-grayL2 dark:text-grayD2">
+                                  You have no asset.
+                                </p>
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {balances &&
@@ -192,17 +196,17 @@ export const WalletPopover = ({
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
                                             css="unstyled"
                                             size="sm"
-                                            className="text-black/50"
+                                            className="text-black/50 dark:text-white/50"
                                           />
                                         </div>
 
                                         <div className="ml-auto text-right">
-                                          <p className="text-sm text-black/30">
+                                          <p className="text-sm text-black/30 dark:text-white/50">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               ${usdcPrice(token)}
                                             </SkeletonElement>
                                           </p>
-                                          <p className="mt-1 text-base font-medium text-black">
+                                          <p className="mt-1 text-base font-medium text-black dark:text-white">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               {formatDecimals(
                                                 balances[token.address],
@@ -224,7 +228,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2">
+                                <p className="text-center text-grayL2 dark:text-grayD2">
                                   You have no liquidity token.
                                 </p>
                               ) : (
@@ -244,13 +248,15 @@ export const WalletPopover = ({
                                           <div className="flex gap-2 leading-none">
                                             <SkeletonElement isLoading={isLoading} width={100}>
                                               <p>{pool.token.name}</p>
-                                              <span className="px-1 text-grayL1">|</span>
+                                              <span className="px-1 text-grayL1 dark:text-grayD1">
+                                                |
+                                              </span>
                                               <p>{pool.market}</p>
                                             </SkeletonElement>
                                           </div>
                                           <div className="flex mt-3">
                                             <div className="mr-auto">
-                                              <p className="text-base font-medium text-black/30">
+                                              <p className="text-base font-medium text-black/30 dark:text-white/50">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {formatDecimals(
                                                     pool.liquidity,
@@ -261,7 +267,7 @@ export const WalletPopover = ({
                                                   {pool.token.name}
                                                 </SkeletonElement>
                                               </p>
-                                              <p className="mt-2 text-base text-black">
+                                              <p className="mt-2 text-base text-black dark:text-white">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {pool.bins} Bins
                                                 </SkeletonElement>
@@ -282,10 +288,12 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20">
+                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20 dark:bg-grayD2/40">
                     {account?.chromaticAddress ? (
                       <>
-                        <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
+                        <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
+                          My Account
+                        </h4>
                         <div className="flex items-center justify-between gap-2">
                           <AddressCopyButton
                             address={
@@ -314,7 +322,7 @@ export const WalletPopover = ({
                       </>
                     ) : (
                       <>
-                        <h4 className="mb-3 text-base text-center text-black/30">
+                        <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
                           You need to create account first.
                         </h4>
                         <div className="text-center">
@@ -332,7 +340,8 @@ export const WalletPopover = ({
                     label="Disconnect"
                     onClick={onDisconnect}
                     size="xl"
-                    className="w-full mb-3 !text-white !bg-black border-none"
+                    css="active"
+                    className="w-full mb-3 border-none"
                   />
                   <Button
                     label="close popover"
