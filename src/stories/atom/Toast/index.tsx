@@ -16,7 +16,6 @@ export const Toast = (props: ToastProps) => {
 
   return (
     <div>
-      {import.meta.env.DEV && <button onClick={displayMsg}>click</button>}
       <ToastContainer
         position="bottom-right"
         autoClose={3000}

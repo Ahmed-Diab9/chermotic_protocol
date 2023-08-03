@@ -44,26 +44,21 @@ async function getPositions(
   tokenDecimals: number
 ) {
   const positionIds = await accountApi.getPositionIds(marketAddress);
+
   const positions = await positionApi.getPositions(marketAddress, [...positionIds]);
+
   const { price: currentPrice, version: currentVersion } = oracleVersions[marketAddress];
   return PromiseOnlySuccess(
     positions.map(async (position) => {
       const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
         marketAddress,
         position.openPrice,
-        position,
-        tokenDecimals
+        position
       );
       const targetPrice =
         position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
       const pnl = position.openPrice
-        ? await positionApi.getPnl(
-            marketAddress,
-            position.openPrice,
-            targetPrice,
-            position,
-            tokenDecimals
-          )
+        ? await positionApi.getPnl(marketAddress, position.openPrice, targetPrice, position)
         : 0n;
       return {
         ...position,
@@ -137,9 +132,9 @@ export const usePositions = () => {
       )
         return positions;
 
-      const filteredPositions = positions?.filter(
-        (position) => position.marketAddress !== currentMarket?.address
-      );
+      const filteredPositions = positions
+        ?.filter((p) => !!p)
+        .filter((position) => position.marketAddress !== currentMarket?.address);
 
       const accountApi = client.account();
       const positionApi = client.position();
