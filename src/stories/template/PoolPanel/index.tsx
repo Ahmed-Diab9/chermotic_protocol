@@ -28,8 +28,8 @@ import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
-import { TooltipGuide } from '../../atom/TooltipGuide';
 import '../../atom/Tabs/style.css';
+import { TooltipGuide } from '../../atom/TooltipGuide';
 import './style.css';
 
 const logger = Logger('PoolPanel');
@@ -490,7 +490,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <section className="tabs-line tabs-base">
                 <Tab.Group
                   onChange={(index) => {
-                    dispatch(poolsAction.onDirectionToggle(index === 0 ? 'long' : 'short'));
+                    dispatch(poolsAction.onDirectionToggle(index === 0 ? 'short' : 'long'));
                   }}
                 >
                   {({ selectedIndex }) => (
