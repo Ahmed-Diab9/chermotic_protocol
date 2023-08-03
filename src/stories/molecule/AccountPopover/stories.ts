@@ -32,6 +32,14 @@ export const LoggedIn: Story = {
     availableMargin: 1500000000n,
     assetValue: 2500000000n,
     totalBalance: 2000000000n,
+
+    //     account?: Account;
+    // status?: ACCOUNT_STATUS;
+    // selectedToken?: Token;
+    // walletBalances?: Record<string, bigint>;
+    // chromaticBalances?: Record<string, bigint>;
+    // amount?: string;
+    // isBalanceLoading?: boolean;
   },
 };
 

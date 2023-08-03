@@ -18,10 +18,8 @@ import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import { CreateLgIcon, LoadingLgIcon, CompleteLgIcon } from '~/assets/icons/CreateAccountIcon';
 import './style.css';
-import checkIcon from '/src/assets/images/i_check_xl.svg';
-import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
-import loadingIcon from '/src/assets/images/i_loading_xl.svg';
 
 interface AccountPopoverProps {
   // onClick?: () => void;
@@ -68,7 +66,7 @@ export const AccountPopover = ({
 
   return (
     <>
-      <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
+      <div className="AccountPopover">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>
@@ -212,7 +210,9 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${open ? 'border-black !text-black' : ''}`}
+            className={`btn btn-default btn-sm ${
+              open ? '!border-black !text-black dark:!border-white dark:!text-white' : ''
+            }`}
           >
             {title}
           </Popover.Button>
@@ -221,8 +221,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.NONE && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={createAccountIcon} alt="create account" />
+                <article className="inner-box">
+                  <CreateLgIcon />
                   <p>
                     {title === 'Deposit' ? 'To make a deposit' : 'To withdraw an asset'}
                     , you need to <br />
@@ -230,7 +230,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50">
+                  <p className="text-black/50 dark:text-white/50">
                     This process may take approximately 10 seconds or so.
                   </p>
                 </div>
@@ -263,14 +263,16 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.CREATING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={loadingIcon} alt="creating account" className="animate-spin-slow" />
+                <article className="inner-box">
+                  <span className="animate-spin-slow">
+                    <LoadingLgIcon />
+                  </span>
                   <p>
                     The account address is being generated <br /> on the chain.
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50">
+                  <p className="text-black/50 dark:text-white/50">
                     This process may take approximately 10 seconds or so. Please wait a moment.
                   </p>
                 </div>
@@ -303,8 +305,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={checkIcon} alt="creating account" />
+                <article className="inner-box">
+                  <CompleteLgIcon />
                   <p>Account has been created</p>
                 </article>
                 <div className="text-center">
