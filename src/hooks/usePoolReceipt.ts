@@ -227,59 +227,62 @@ const usePoolReceipt = () => {
     [walletAddress, currentMarket]
   );
 
-  const onClaimCLBTokensBatch = useCallback(async () => {
-    if (isNil(currentMarket)) {
-      errorLog('no selected markets');
-      toast('Market is not selected.');
-      return AppError.reject('no selected markets', 'onPoolReceipt');
-    }
-    if (isNil(receipts)) {
-      errorLog('no receipts');
-      toast('There are no receipts.');
-      return AppError.reject('no receipts', 'onPoolReceipt');
-    }
-    if (isNil(walletAddress)) {
-      errorLog('wallet not connected');
-      toast('Wallet is not connected.');
-      return;
-    }
-    const addCompleted = receipts
-      .filter((receipt) => receipt.action === 'add' && receipt.status === 'completed')
-      .map((receipt) => receipt.id);
-    const removeCompleted = receipts
-      .filter((receipt) => receipt.action === 'remove')
-      .map((receipt) => receipt.id);
-    if (addCompleted.length <= 0 && removeCompleted.length <= 0) {
-      errorLog('No receipts');
-      toast('There are no receipts.');
-      AppError.reject('No completed receupts', 'onPoolReceipt');
-      return;
-    }
-    try {
-      const routerApi = client.router();
-      const response = await Promise.allSettled([
-        addCompleted.length > 0
-          ? routerApi?.claimLiquidites(currentMarket.address, addCompleted)
-          : undefined,
-        removeCompleted.length > 0
-          ? routerApi?.withdrawLiquidities(currentMarket.address, removeCompleted)
-          : undefined,
-      ]);
-      const errors = response.filter(
-        (result): result is PromiseRejectedResult => result.status === 'rejected'
-      );
-      if (errors.length > 0) {
-        errors.forEach((error) => {
-          toast(error.reason);
-        });
+  const onClaimCLBTokensBatch = useCallback(
+    async (action?: 'add' | 'remove') => {
+      if (isNil(currentMarket)) {
+        errorLog('no selected markets');
+        toast('Market is not selected.');
+        return AppError.reject('no selected markets', 'onPoolReceipt');
+      }
+      if (isNil(receipts)) {
+        errorLog('no receipts');
+        toast('There are no receipts.');
+        return AppError.reject('no receipts', 'onPoolReceipt');
+      }
+      if (isNil(walletAddress)) {
+        errorLog('wallet not connected');
+        toast('Wallet is not connected.');
         return;
       }
-      await fetchReceipts();
-      toast('All receipts are claimed.');
-    } catch (error) {
-      toast((error as any).message);
-    }
-  }, [walletAddress, currentMarket, receipts]);
+      const addCompleted = receipts
+        .filter((receipt) => receipt.action === 'add' && receipt.status === 'completed')
+        .map((receipt) => receipt.id);
+      const removeCompleted = receipts
+        .filter((receipt) => receipt.action === 'remove')
+        .map((receipt) => receipt.id);
+      if (addCompleted.length <= 0 && removeCompleted.length <= 0) {
+        errorLog('No receipts');
+        toast('There are no receipts.');
+        AppError.reject('No completed receupts', 'onPoolReceipt');
+        return;
+      }
+      try {
+        const routerApi = client.router();
+        const response = await Promise.allSettled([
+          action !== 'remove' && addCompleted.length > 0
+            ? routerApi?.claimLiquidites(currentMarket.address, addCompleted)
+            : undefined,
+          action !== 'add' && removeCompleted.length > 0
+            ? routerApi?.withdrawLiquidities(currentMarket.address, removeCompleted)
+            : undefined,
+        ]);
+        const errors = response.filter(
+          (result): result is PromiseRejectedResult => result.status === 'rejected'
+        );
+        if (errors.length > 0) {
+          errors.forEach((error) => {
+            toast(error.reason);
+          });
+          return;
+        }
+        await fetchReceipts();
+        toast('All receipts are claimed.');
+      } catch (error) {
+        toast((error as any).message);
+      }
+    },
+    [walletAddress, currentMarket, receipts]
+  );
 
   useError({ error });
 
