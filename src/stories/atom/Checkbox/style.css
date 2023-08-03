@@ -1,15 +1,17 @@
 .checkbox {
   @apply flex items-center;
-  .checkbox-input[type="checkbox"] {
+  .checkbox-input[type='checkbox'] {
     @apply hidden;
     + .checkbox-label::before {
-      @apply flex-none inline-block bg-white border border-black/30 rounded;
-      content: "";
+      @apply flex-none inline-block rounded border;
+      @apply bg-white border-black/30;
+      @apply dark:bg-grayDbg border-white/30;
+      content: '';
     }
     &:checked + .checkbox-label::before {
-      @apply flex-none inline-block border-black rounded bg-no-repeat bg-center;
+      @apply flex-none inline-block rounded bg-no-repeat bg-center;
+      @apply border-black dark:border-white;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='8' fill='none' viewBox='0 0 9 8'%3E%3Cpath stroke='%23030303' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M1 4.429 3.625 7 8 1'/%3E%3C/svg%3E");
-      /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='7' fill='none' viewBox='0 0 8 7'%3E%3Cpath stroke='%23030303' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m1 4 2.25 2.25L7 1'/%3E%3C/svg%3E"); */
       background-size: 60% auto;
     }
   }
@@ -17,22 +19,25 @@
     @apply cursor-pointer flex items-center gap-2;
   }
 }
+.dark .checkbox .checkbox-input[type='checkbox']:checked + .checkbox-label::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='8' fill='none' viewBox='0 0 9 8'%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='M8.442.394a.75.75 0 0 1 .164 1.048l-4.375 6a.75.75 0 0 1-1.13.094L.474 4.964a.75.75 0 1 1 1.05-1.071L3.53 5.857 7.394.558A.75.75 0 0 1 8.442.394Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
 .checkbox-sm {
-  .checkbox-input[type="checkbox"] {
+  .checkbox-input[type='checkbox'] {
     + .checkbox-label::before {
       @apply w-4 h-4;
     }
   }
 }
 .checkbox-base {
-  .checkbox-input[type="checkbox"] {
+  .checkbox-input[type='checkbox'] {
     + .checkbox-label::before {
       @apply w-5 h-5;
     }
   }
 }
 .checkbox-lg {
-  .checkbox-input[type="checkbox"] {
+  .checkbox-input[type='checkbox'] {
     + .checkbox-label::before {
       @apply w-8 h-8;
     }

@@ -112,7 +112,7 @@ export const Input = (props: InputProps) => {
           onBlur={handleBlur}
           disabled={disabled}
         />
-        {unit ? <span className="text-black/30">{unit}</span> : null}
+        {unit ? <span className="unit">{unit}</span> : null}
       </div>
     </>
   );

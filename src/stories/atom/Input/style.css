@@ -1,13 +1,21 @@
 .input {
-  @apply max-w-full bg-white;
+  @apply max-w-full;
+  @apply bg-white dark:bg-grayDbg;
   &.disabled {
-    @apply bg-grayL1/30 border-grayL2/30;
+    @apply bg-grayL1/30 border-grayL2/30 dark:bg-grayD1/30 dark:border-grayD2/30;
     input {
       @apply bg-transparent;
     }
   }
   &.error {
     @apply border-error;
+  }
+
+  input {
+    @apply bg-transparent;
+  }
+  .unit {
+    @apply text-black/30 dark:text-white/30;
   }
 }
 .input-sm {
@@ -20,5 +28,6 @@
   @apply h-12 px-5;
 }
 .input-default {
-  @apply border border-grayL2 rounded-lg;
+  @apply border rounded-lg;
+  @apply border-grayL2 dark:border-grayD2;
 }
