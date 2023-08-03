@@ -41,7 +41,7 @@ export const receiptDetail = (receipt: LpReceipt, token: Token) => {
     token.decimals,
     2,
     true
-  )} ${token.name} (${formatter.format(amountRatio)}%)`;
+  )} (${formatter.format(amountRatio)}%)`;
 };
 
 interface PoolProgressProps {
@@ -136,7 +136,7 @@ export const PoolProgress = ({
                   } w-6 text-black/30 absolute right-6`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="relative px-5 text-gray-500 border-t">
+              <Disclosure.Panel className="relative px-5 border-t">
                 <Tab.Group>
                   <div className="flex mt-5">
                     <Tab.List className="!justify-start !gap-7 px-5">
@@ -199,6 +199,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
+                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                 progressPercent={0}
                                 action={receipt.action}
                                 onClick={() => {
@@ -240,6 +241,7 @@ export const PoolProgress = ({
                                   // title={receipt.title}
                                   status={receipt.status}
                                   detail={receiptDetail(receipt, token)}
+                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   name={receipt.name}
                                   token={token?.name}
                                   progressPercent={0}
@@ -285,6 +287,7 @@ export const PoolProgress = ({
                                   detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
+                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   progressPercent={0}
                                   action={receipt.action}
                                   onClick={() => {
@@ -351,6 +354,7 @@ interface ProgressItemProps {
   status: LpReceipt['status'];
   detail?: string;
   token?: string;
+  amount?: string;
   name: string;
   image?: string;
   progressPercent?: number;
@@ -360,8 +364,19 @@ interface ProgressItemProps {
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { title, status, detail, token, name, image, action, progressPercent, isLoading, onClick } =
-    props;
+  const {
+    title,
+    status,
+    detail,
+    token,
+    amount,
+    name,
+    image,
+    action,
+    progressPercent,
+    isLoading,
+    onClick,
+  } = props;
 
   const renderTitle = useMemo(() => {
     return action === 'add' ? 'minting' : action === 'remove' ? 'burning' : '';
@@ -424,7 +439,7 @@ const ProgressItem = (props: ProgressItemProps) => {
       ) : (
         <div className="border-t" />
       )}
-      <div className="flex items-end gap-3 mt-1">
+      <div className="flex justify-between gap-3 mt-1">
         <div
           className={`flex items-center gap-3 ${
             (action === 'add' && status === 'standby') ||
@@ -450,20 +465,25 @@ const ProgressItem = (props: ProgressItemProps) => {
             </p>
           </div>
         </div>
-        <Button
-          label={
-            action === 'remove'
-              ? status === 'in progress'
-                ? `Stop Process & Claim ${token}`
-                : `Claim ${token}`
-              : 'Claim CLB'
-          }
-          css="active"
-          size="sm"
-          className={`ml-auto${status === 'standby' ? ' !text-gray' : ''}`}
-          onClick={status !== 'standby' ? onClick : () => {}}
-          disabled={status === 'standby'}
-        />
+        <div className="flex flex-col items-end justify-end">
+          {action === 'remove' && status !== 'standby' && (
+            <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
+          )}
+          <Button
+            label={
+              action === 'remove'
+                ? status === 'in progress'
+                  ? `Stop Process & Claim ${token}`
+                  : `Claim ${token}`
+                : 'Claim CLB'
+            }
+            css="active"
+            size="sm"
+            className={`self-end ${status === 'standby' ? ' !textL2' : ''}`}
+            onClick={status !== 'standby' ? onClick : () => {}}
+            disabled={status === 'standby'}
+          />
+        </div>
       </div>
     </div>
   );

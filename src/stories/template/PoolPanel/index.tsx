@@ -217,7 +217,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
                   <h4>Wallet Balance</h4>
-                  <p className="text-black/30">
+                  <p className="text-lg text-black/50">
                     <SkeletonElement isLoading={isLoading} width={40}>
                       {`${withComma(settlementTokenBalance)} ${token?.name}`}
                     </SkeletonElement>

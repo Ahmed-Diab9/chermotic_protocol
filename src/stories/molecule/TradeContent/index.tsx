@@ -189,7 +189,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       <article className="pb-5 border-grayL1">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
-          <p className="text-black/30">
+          <p className="text-lg text-black/50">
             <SkeletonElement isLoading={isLoading} width={40}>
               {balances && token && balances[token.address]
                 ? formatDecimals(balances[token.address], token.decimals, 5, true)
@@ -386,7 +386,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <p>EST. Trade Fees</p>
               </div>
               {isValid(token) && (
-                <p>
+                <p className="text-lg">
                   {formatDecimals(tradeFee ?? 0, token.decimals, 2)} {token.name} /{' '}
                   {formatDecimals(tradeFeePercent ?? 0, token.decimals, 3)}%
                 </p>
@@ -523,7 +523,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
               outLinkAbout="Payoff"
             />
             <p>Contract Qty</p>
-            <p className="ml-2 text-black/30">
+            <p className="ml-2 text-lg text-black/50">
               {withComma(Number(decimalLength(input?.quantity, 5)))} {token?.name}
             </p>
           </div>
