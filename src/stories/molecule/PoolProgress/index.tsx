@@ -41,7 +41,7 @@ export const receiptDetail = (receipt: LpReceipt, token: Token) => {
     token.decimals,
     2,
     true
-  )} ${token.name} (${formatter.format(amountRatio)}%)`;
+  )} (${formatter.format(amountRatio)}%)`;
 };
 
 interface PoolProgressProps {
@@ -199,6 +199,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
+                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                 progressPercent={0}
                                 action={receipt.action}
                                 onClick={() => {
@@ -285,6 +286,7 @@ export const PoolProgress = ({
                                   detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
+                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   progressPercent={0}
                                   action={receipt.action}
                                   onClick={() => {
@@ -351,6 +353,7 @@ interface ProgressItemProps {
   status: LpReceipt['status'];
   detail?: string;
   token?: string;
+  amount?: string;
   name: string;
   image?: string;
   progressPercent?: number;
@@ -360,8 +363,19 @@ interface ProgressItemProps {
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { title, status, detail, token, name, image, action, progressPercent, isLoading, onClick } =
-    props;
+  const {
+    title,
+    status,
+    detail,
+    token,
+    amount,
+    name,
+    image,
+    action,
+    progressPercent,
+    isLoading,
+    onClick,
+  } = props;
 
   const renderTitle = useMemo(() => {
     return action === 'add' ? 'minting' : action === 'remove' ? 'burning' : '';
@@ -452,7 +466,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         <div className="flex flex-col items-end justify-end">
           {/* todo : CLB remaining */}
-          <p className="mb-2 -mt-2 text-black/50">{/* 325 CLB remaining */}</p>
+          <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
           <Button
             label={
               action === 'remove'
