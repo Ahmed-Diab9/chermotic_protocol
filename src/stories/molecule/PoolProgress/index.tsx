@@ -136,7 +136,7 @@ export const PoolProgress = ({
                   } w-6 text-black/30 absolute right-6`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="relative px-5 text-gray-500 border-t">
+              <Disclosure.Panel className="relative px-5 border-t">
                 <Tab.Group>
                   <div className="flex mt-5">
                     <Tab.List className="!justify-start !gap-7 px-5">
@@ -478,7 +478,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             }
             css="active"
             size="sm"
-            className={`self-end ${status === 'standby' ? ' !text-gray' : ''}`}
+            className={`self-end ${status === 'standby' ? ' !textL2' : ''}`}
             onClick={status !== 'standby' ? onClick : () => {}}
             disabled={status === 'standby'}
           />

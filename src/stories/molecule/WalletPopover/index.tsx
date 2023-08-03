@@ -202,7 +202,7 @@ export const WalletPopover = ({
                                               ${usdcPrice(token)}
                                             </SkeletonElement>
                                           </p>
-                                          <p className="mt-1 text-base font-medium text-gray-900">
+                                          <p className="mt-1 text-base font-medium text-black">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               {formatDecimals(
                                                 balances[token.address],
