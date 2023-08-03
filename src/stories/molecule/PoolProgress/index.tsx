@@ -13,8 +13,6 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import '../../atom/Tabs/style.css';
-// import { LPReceipt } from "~/typings/receipt";
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
@@ -30,14 +28,14 @@ const formatter = Intl.NumberFormat('en', {
 });
 
 export const receiptDetail = (receipt: LpReceipt, token: Token) => {
-  const { burningAmount = 0n, amount, status, action ,progressPercent} = receipt;
+  const { burningAmount = 0n, amount, status, action, progressPercent } = receipt;
   if (status === 'standby') {
     return 'Waiting for the next oracle round';
   }
   if (action === 'add') {
     return formatDecimals(receipt.amount, token.decimals, 2);
   }
-  
+
   return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
     amount,
     token.decimals,
@@ -53,7 +51,7 @@ interface PoolProgressProps {
   isLoading?: boolean;
   oracleVersion?: OracleVersion;
   onReceiptClaim?: (id: bigint, action: LpReceiptAction) => unknown;
-  onReceiptClaimBatch?: () => unknown;
+  onReceiptClaimBatch?: (action?: 'add' | 'remove') => unknown;
 }
 
 {
@@ -73,21 +71,15 @@ export const PoolProgress = ({
   const [hasGuide, setHasGuide] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
+  const mintings = receipts.filter((receipt) => receipt.action === 'add');
+  const burnings = receipts.filter((receipt) => receipt.action === 'remove');
   const isClaimEnabled =
-    receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
-      .length !== 0;
-  const { mintings, burnings } = useMemo(() => {
-    let mintings = 0;
-    let burnings = 0;
-    receipts.forEach((receipt) => {
-      if (receipt.action === 'add') {
-        mintings++;
-      } else {
-        burnings++;
-      }
-    });
-    return { mintings, burnings };
-  }, [receipts]);
+    receipts.filter((receipt) => receipt.status !== 'standby').map((receipt) => receipt.id).length >
+    0;
+  const isMintingClaimEnabled =
+    mintings.filter((receipt) => receipt.status !== 'standby').length > 0;
+  const isBurningClaimEnabled =
+    burnings.filter((receipt) => receipt.status !== 'standby').length > 0;
   useEffect(() => {
     function onPool() {
       if (isValid(openButtonRef.current) && isNil(ref.current)) {
@@ -136,8 +128,8 @@ export const PoolProgress = ({
                   <div className="flex mt-5">
                     <Tab.List className="!justify-start !gap-7 px-5">
                       <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintings})</Tab>
-                      <Tab id="burning">Burning ({burnings})</Tab>
+                      <Tab id="minting">Minting ({mintings.length})</Tab>
+                      <Tab id="burning">Burning ({burnings.length})</Tab>
                     </Tab.List>
                     {/* todo: when list is empty, button disabled */}
                     {/* <Button
@@ -194,6 +186,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
+                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -207,7 +200,7 @@ export const PoolProgress = ({
                     </Tab.Panel>
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {receipts.filter((receipt) => receipt.action === 'add').length === 0 ? (
+                      {mintings.length === 0 ? (
                         <p className="my-6 text-center text-grayL2">
                           You have no order in progress.
                         </p>
@@ -222,36 +215,34 @@ export const PoolProgress = ({
                               className="ml-auto"
                               size="base"
                               css="active"
-                              onClick={() => onReceiptClaimBatch?.()}
+                              onClick={() => onReceiptClaimBatch?.('add')}
+                              disabled={!isMintingClaimEnabled}
                             />
                           </div>
                           {isValid(token) &&
                             isValid(market) &&
-                            receipts
-                              .filter((receipt) => receipt.action === 'add')
-                              .map((receipt, index) => (
-                                <ProgressItem
-                                  key={`minting-${receipt.id.toString()}-${index}`}
-                                  // title={receipt.title}
-                                  status={receipt.status}
-                                  detail={receiptDetail(receipt, token)}
-                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
-                                  name={receipt.name}
-                                  token={token?.name}
-                                  progressPercent={receipt.progressPercent}
-                                  action={receipt.action}
-                                  onClick={() => {
-                                    onReceiptClaim?.(receipt.id, receipt.action);
-                                  }}
-                                  isLoading={isLoading}
-                                />
-                              ))}
+                            mintings.map((receipt, index) => (
+                              <ProgressItem
+                                key={`minting-${receipt.id.toString()}-${index}`}
+                                // title={receipt.title}
+                                status={receipt.status}
+                                detail={receiptDetail(receipt, token)}
+                                name={receipt.name}
+                                token={token?.name}
+                                progressPercent={receipt.progressPercent}
+                                action={receipt.action}
+                                onClick={() => {
+                                  onReceiptClaim?.(receipt.id, receipt.action);
+                                }}
+                                isLoading={isLoading}
+                              />
+                            ))}
                         </>
                       )}
                     </Tab.Panel>
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {receipts.filter((receipt) => receipt.action === 'remove').length === 0 ? (
+                      {burnings.length === 0 ? (
                         <p className="my-6 text-center text-grayL2">
                           You have no order in progress.
                         </p>
@@ -266,29 +257,29 @@ export const PoolProgress = ({
                               className="ml-auto"
                               size="base"
                               css="active"
-                              onClick={() => onReceiptClaimBatch?.()}
+                              onClick={() => onReceiptClaimBatch?.('remove')}
+                              disabled={!isBurningClaimEnabled}
                             />
                           </div>
                           {isValid(token) &&
                             isValid(market) &&
-                            receipts
-                              .filter((receipt) => receipt.action === 'remove')
-                              .map((receipt, index) => (
-                                <ProgressItem
-                                  key={`burning-${receipt.id.toString()}-${index}`}
-                                  // title={receipt.title}
-                                  status={receipt.status}
-                                  detail={receiptDetail(receipt, token)}
-                                  name={receipt.name}
-                                  token={token?.name}
-                                  progressPercent={receipt.progressPercent}
-                                  action={receipt.action}
-                                  onClick={() => {
-                                    onReceiptClaim?.(receipt.id, receipt.action);
-                                  }}
-                                  isLoading={isLoading}
-                                />
-                              ))}
+                            burnings.map((receipt, index) => (
+                              <ProgressItem
+                                key={`burning-${receipt.id.toString()}-${index}`}
+                                // title={receipt.title}
+                                status={receipt.status}
+                                detail={receiptDetail(receipt, token)}
+                                name={receipt.name}
+                                token={token?.name}
+                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
+                                progressPercent={receipt.progressPercent}
+                                action={receipt.action}
+                                onClick={() => {
+                                  onReceiptClaim?.(receipt.id, receipt.action);
+                                }}
+                                isLoading={isLoading}
+                              />
+                            ))}
                         </>
                       )}
                     </Tab.Panel>
@@ -347,7 +338,7 @@ interface ProgressItemProps {
   status: LpReceipt['status'];
   detail?: string;
   token?: string;
-  amount?: string;
+  remainedCLBAmount?: string;
   name: string;
   image?: string;
   progressPercent?: number;
@@ -362,7 +353,7 @@ const ProgressItem = (props: ProgressItemProps) => {
     status,
     detail,
     token,
-    amount,
+    remainedCLBAmount,
     name,
     image,
     action,
@@ -423,7 +414,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
           <p className="">
-            {detail} {status === 'completed' && token}
+            {detail} {status === 'completed' && action === 'add' && 'CLB'}
           </p>
         </div>
       </div>
@@ -460,7 +451,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         <div className="flex flex-col items-end justify-end">
           {action === 'remove' && status !== 'standby' && (
-            <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
+            <p className="mb-2 -mt-2 text-black/50">{remainedCLBAmount} CLB Remaining</p>
           )}
           <Button
             label={
