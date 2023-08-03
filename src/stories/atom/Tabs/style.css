@@ -43,9 +43,11 @@
     }
     [aria-selected='true'] {
       @apply text-black border-b-2 border-black;
+      @apply dark:text-white dark:border-white;
     }
     [aria-selected='false'] {
-      @apply text-black/20 border-b-2 border-transparent;
+      @apply border-b-2 border-transparent;
+      @apply text-black/20 dark:text-white/40;
     }
   }
   [type='button'] {

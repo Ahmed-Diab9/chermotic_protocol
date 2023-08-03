@@ -59,10 +59,7 @@
 .btn-circle {
   @apply border !rounded-full;
   @apply border-grayL1 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD1 dark:bg-grayDbg hover:bg-grayD1/30;
-  svg {
-    @apply text-black dark:text-white;
-  }
+  @apply dark:border-grayD1 dark:bg-black hover:bg-grayD1/30;
 }
 .btn-wallet {
   @apply p-[2px] flex items-center border rounded-full;

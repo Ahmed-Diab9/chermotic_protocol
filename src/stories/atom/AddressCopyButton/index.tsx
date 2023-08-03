@@ -14,7 +14,7 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between flex-auto bg-white border border-collapse rounded-full max-w-[220px]">
+      <div className="flex items-center justify-between flex-auto border border-collapse rounded-full max-w-[220px] bg-white dark:bg-black">
         <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px]">
           {address ? <>{address}</> : <Skeleton width={60} />}
         </p>
