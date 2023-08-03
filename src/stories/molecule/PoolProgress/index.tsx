@@ -424,7 +424,7 @@ const ProgressItem = (props: ProgressItemProps) => {
       ) : (
         <div className="border-t" />
       )}
-      <div className="flex items-end gap-3 mt-1">
+      <div className="flex justify-between gap-3 mt-1">
         <div
           className={`flex items-center gap-3 ${
             (action === 'add' && status === 'standby') ||
@@ -450,20 +450,24 @@ const ProgressItem = (props: ProgressItemProps) => {
             </p>
           </div>
         </div>
-        <Button
-          label={
-            action === 'remove'
-              ? status === 'in progress'
-                ? `Stop Process & Claim ${token}`
-                : `Claim ${token}`
-              : 'Claim CLB'
-          }
-          css="active"
-          size="sm"
-          className={`ml-auto${status === 'standby' ? ' !text-gray' : ''}`}
-          onClick={status !== 'standby' ? onClick : () => {}}
-          disabled={status === 'standby'}
-        />
+        <div className="flex flex-col items-end justify-end">
+          {/* todo : CLB remaining */}
+          <p className="mb-2 -mt-2 text-black/50">{/* 325 CLB remaining */}</p>
+          <Button
+            label={
+              action === 'remove'
+                ? status === 'in progress'
+                  ? `Stop Process & Claim ${token}`
+                  : `Claim ${token}`
+                : 'Claim CLB'
+            }
+            css="active"
+            size="sm"
+            className={`self-end ${status === 'standby' ? ' !text-gray' : ''}`}
+            onClick={status !== 'standby' ? onClick : () => {}}
+            disabled={status === 'standby'}
+          />
+        </div>
       </div>
     </div>
   );
