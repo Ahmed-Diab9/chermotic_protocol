@@ -7,6 +7,7 @@ import {
   abs,
   decimalPrecision,
   divPreserved,
+  formatDecimals,
   mulPreserved,
   toBigintWithDecimals,
 } from '~/utils/number';
@@ -47,17 +48,19 @@ function getCalculatedValues({
       ? { quantity: amount / lossCutRate, collateral: amount }
       : { quantity: amount, collateral: amount * lossCutRate };
 
-  const takerMargin = decimalPrecision.round(collateral, 2);
-  const makerMargin = decimalPrecision.round((collateral / lossCutRate) * takeProfitRate, 2);
+  const takerMargin = collateral;
+  const makerMargin = (collateral / lossCutRate) * takeProfitRate;
+
+  const trimDecimal = (v: number) => decimalPrecision.round(v, 2);
 
   return {
-    collateral: String(collateral),
-    leverage: String(leverage),
-    quantity: String(quantity),
-    stopLoss: String(stopLoss),
-    takeProfit: String(takeProfit),
-    takerMargin: takerMargin,
-    makerMargin: makerMargin,
+    collateral: String(trimDecimal(collateral)),
+    leverage: String(trimDecimal(leverage)),
+    quantity: String(trimDecimal(quantity)),
+    stopLoss: String(trimDecimal(stopLoss)),
+    takeProfit: String(trimDecimal(takeProfit)),
+    takerMargin: trimDecimal(takerMargin),
+    makerMargin: trimDecimal(makerMargin),
   };
 }
 
@@ -271,7 +274,6 @@ export const useTradeInput = (props: Props) => {
     });
   };
 
-  // TODO: handler function for using leverage slider
   const onLeverageChange = (value: string | number) => {
     const stopLoss = 100 / +value;
     dispatch({
@@ -348,9 +350,9 @@ export const useTradeInput = (props: Props) => {
       return { status: true };
     }
 
-    // FIXME: Temporary disabled
-    const MINIMUM_VALUE = 0;
-    const isUnderMin = collateral < MINIMUM_VALUE;
+    const minimumAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
+    const isUnderMin = collateral < +minimumAmount;
+
     if (isUnderMin) {
       return { status: true, detail: 'minimum' };
     }
