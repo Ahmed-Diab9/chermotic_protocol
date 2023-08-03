@@ -15,11 +15,10 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import '../../atom/Tabs/style.css';
 // import { LPReceipt } from "~/typings/receipt";
-import { useCallback } from 'react';
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { divPreserved, formatDecimals } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import '../../atom/Tabs/style.css';
@@ -74,7 +73,6 @@ export const PoolProgress = ({
   const [hasGuide, setHasGuide] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
-  const [selectedTab, setSelectedTab] = useState('all');
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
