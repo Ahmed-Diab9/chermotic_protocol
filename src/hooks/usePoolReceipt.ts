@@ -8,7 +8,13 @@ import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { checkAllProps } from '../utils';
-import { mulPreserved, numberBuffer, percentage } from '../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  mulPreserved,
+  numberBuffer,
+  percentage,
+} from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -27,7 +33,9 @@ export interface LpReceipt {
   name: string;
   burningAmount: bigint;
   action: LpReceiptAction;
-  progress : number;
+  progressPercent: number;
+  totalCLBAmount: bigint;
+  remainedCLBAmount: bigint;
 }
 
 const receiptDetail = (
@@ -168,7 +176,18 @@ const usePoolReceipt = () => {
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
             burningAmount: action === 0 ? 0n : burnedSettlementAmount,
-            progress : 1
+            progressPercent: Number(
+              formatDecimals(
+                divPreserved(
+                  claimableLiquidityForReceipt.burningCLBTokenAmount,
+                  claimableLiquidityForReceipt.burningCLBTokenAmountRequested,
+                  bin.clbTokenDecimals
+                ),
+                bin.clbTokenDecimals - 2
+              )
+            ),
+            totalCLBAmount: amount,
+            remainedCLBAmount: remainedCLBAmount,
           } satisfies LpReceipt;
           return result;
         })

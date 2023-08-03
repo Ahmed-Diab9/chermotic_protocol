@@ -31,20 +31,20 @@ const formatter = Intl.NumberFormat('en', {
 });
 
 export const receiptDetail = (receipt: LpReceipt, token: Token) => {
-  const { burningAmount = 0n, amount, status, action } = receipt;
+  const { burningAmount = 0n, amount, status, action ,progressPercent} = receipt;
   if (status === 'standby') {
     return 'Waiting for the next oracle round';
   }
   if (action === 'add') {
     return formatDecimals(receipt.amount, token.decimals, 2);
   }
-  const amountRatio = amount !== 0n ? divPreserved(burningAmount, amount, 2) : 0n;
+  
   return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
     amount,
     token.decimals,
     2,
     true
-  )} (${formatter.format(amountRatio)}%)`;
+  )} ${token.name} (${formatter.format(progressPercent)}%)`;
 };
 
 interface PoolProgressProps {
@@ -75,11 +75,6 @@ export const PoolProgress = ({
   const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
   const [selectedTab, setSelectedTab] = useState('all');
-  const progressPercent = useCallback((receipt: LpReceipt) => {
-    return (
-      Number(receipt.amount ? Number(receipt.burningAmount) / Number(receipt.amount) : 0) * 100
-    );
-  }, []);
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -201,7 +196,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                progressPercent={progressPercent(receipt)}
+                                progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
                                   onReceiptClaim?.(receipt.id, receipt.action);
@@ -245,7 +240,7 @@ export const PoolProgress = ({
                                   amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  progressPercent={progressPercent(receipt)}
+                                  progressPercent={receipt.progressPercent}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);
@@ -288,7 +283,7 @@ export const PoolProgress = ({
                                   detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  progressPercent={progressPercent(receipt)}
+                                  progressPercent={receipt.progressPercent}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);

@@ -38,6 +38,9 @@ export const Default: Story = {
         status: 'standby',
         name: 'Payment',
         action: 'add',
+        progressPercent : 0,
+        totalCLBAmount: 100n,
+        remainedCLBAmount : 100n
       },
       {
         id: 10000n,
@@ -49,6 +52,9 @@ export const Default: Story = {
         status: 'completed',
         name: 'Payment',
         action: 'add',
+        progressPercent : 100,
+        totalCLBAmount: 100n,
+        remainedCLBAmount : 0n
       },
       {
         id: 10000n,
@@ -60,6 +66,9 @@ export const Default: Story = {
         status: 'standby',
         name: 'Payment',
         action: 'remove',
+        progressPercent : 0,
+        totalCLBAmount: 0n,
+        remainedCLBAmount : 0n
       },
       {
         id: 10000n,
@@ -71,6 +80,9 @@ export const Default: Story = {
         status: 'in progress',
         name: 'Payment',
         action: 'remove',
+        progressPercent : 50,
+        totalCLBAmount: 100n,
+        remainedCLBAmount : 50n
       },
       {
         id: 10000n,
@@ -82,6 +94,9 @@ export const Default: Story = {
         status: 'completed',
         name: 'Payment',
         action: 'remove',
+        progressPercent : 100,
+        totalCLBAmount: 100n,
+        remainedCLBAmount : 100n
       },
     ],
   },
@@ -134,6 +149,9 @@ export const EmptyMinting: Story = {
         status: 'completed',
         name: 'Payment',
         action: 'remove',
+        progressPercent: 100,
+        totalCLBAmount: 100n,
+        remainedCLBAmount : 100n
       },
     ],
   },
