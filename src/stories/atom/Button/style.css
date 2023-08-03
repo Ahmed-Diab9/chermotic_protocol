@@ -15,9 +15,10 @@
   }
   &.toggle-on {
     @apply border border-black text-black;
+    @apply dark:border-white dark:text-white;
   }
   &.toggle-off {
-    @apply border border-black/50;
+    @apply border border-black/50 dark:border-white/50;
   }
   &.btn-icon-only {
     @apply justify-center text-center flex-none;
@@ -30,45 +31,49 @@
   }
 }
 .btn-active {
-  @apply bg-black text-white dark:text-black;
-  @apply border border-black;
-  @apply hover:bg-black/70;
+  @apply border bg-black text-white border-black hover:bg-black/70;
+  @apply dark:bg-white dark:text-black dark:border-white dark:hover:bg-white/70;
   &:disabled {
-    @apply text-black/30 bg-[#F9F9F9] border-[#F9F9F9];
+    @apply text-black/30 bg-grayLbg border-grayLbg;
+    @apply dark:text-white/30 dark:bg-grayDbg dark:border-grayDbg;
   }
 }
 .btn-gray {
-  @apply border border-grayL2 bg-white;
-  @apply hover:bg-grayL1/30;
+  @apply border border-grayL2 text-black bg-white hover:bg-grayL1/30;
+  @apply dark:border-grayD2 dark:text-white dark:bg-black dark:hover:bg-grayD1/30;
   &:disabled {
     @apply border-grayL2/40 text-grayL2;
+    @apply dark:border-grayD2/40 dark:text-grayD2;
   }
 }
 .btn-default {
-  @apply border text-black/50 bg-white;
-  @apply hover:bg-grayL1/30;
+  @apply border border-grayL1 text-black/80 bg-white hover:bg-grayL1/30;
+  @apply dark:border-grayD1 dark:text-white/80 dark:bg-grayDbg dark:hover:bg-grayD1/30;
   &:disabled {
-    @apply text-grayL2;
+    @apply text-grayL2 dark:text-grayD2;
   }
 }
 .btn-unstyled {
   @apply bg-transparent;
 }
 .btn-circle {
-  @apply border border-[#eee] bg-white !rounded-full;
-  @apply hover:bg-grayL1/30;
+  @apply border !rounded-full;
+  @apply border-grayL1 bg-white hover:bg-grayL1/30;
+  @apply dark:border-grayD1 dark:bg-grayDbg hover:bg-grayD1/30;
+  svg {
+    @apply text-black dark:text-white;
+  }
 }
 .btn-wallet {
-  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL1 text-white;
+  @apply p-[2px] flex items-center border rounded-full;
+  @apply bg-black border-grayL1 text-white;
+  /* @apply dark:bg-white dark:border-grayD1 dark:text-black; */
   .avatar {
     @apply !w-[36px] !h-[36px];
   }
 }
 .btn-xs {
-  @apply min-w-[20px];
-  font-size: 9px;
-  height: 20px;
-  padding: 0 8px;
+  @apply min-w-[20px] h-5 px-2 py-0 text-xs;
   > div {
     gap: 4px;
   }
@@ -80,10 +85,7 @@
   }
 }
 .btn-sm {
-  @apply min-w-[24px];
-  font-size: 11px;
-  height: 24px;
-  padding: 0 12px;
+  @apply min-w-[24px] h-6 px-3 py-0 text-sm;
   > div {
     gap: 4px;
   }
@@ -95,10 +97,7 @@
   }
 }
 .btn-base {
-  @apply min-w-[30px];
-  font-size: 12px;
-  height: 30px;
-  padding: 0 12px;
+  @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
   > div {
     gap: 4px;
   }
@@ -113,10 +112,7 @@
   }
 }
 .btn-lg {
-  @apply min-w-[36px];
-  font-size: 14px;
-  height: 36px;
-  padding: 0 16px;
+  @apply min-w-[36px] h-9 px-4 py-0 text-lg;
   > div {
     gap: 8px;
   }
@@ -128,10 +124,7 @@
   }
 }
 .btn-xl {
-  @apply min-w-[42px];
-  font-size: 16px;
-  height: 42px;
-  padding: 0 16px;
+  @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
   > div {
     gap: 12px;
   }
@@ -143,10 +136,7 @@
   }
 }
 .btn-2xl {
-  @apply min-w-[48px];
-  font-size: 18px;
-  height: 48px;
-  padding: 0 16px;
+  @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
   > div {
     gap: 12px;
   }
