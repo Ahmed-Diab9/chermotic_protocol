@@ -1,4 +1,3 @@
-import { QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { Popover, Tab } from '@headlessui/react';
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -263,12 +262,14 @@ const PositionItem = function (props: Props) {
         pnlAmount: '-',
       };
     }
-    const { collateral, qty, leverage, makerMargin, takerMargin } = position;
-    const stopLoss = (10000 / leverage).toFixed(2) + '%';
+    const { collateral, qty, makerMargin, takerMargin } = position;
+    const stopLoss =
+      formatDecimals((collateral * 10n ** BigInt(token.decimals)) / qty, token.decimals - 2, 2) +
+      '%';
     const takeProfitRaw =
       abs(qty) === 0n
         ? 0n
-        : (makerMargin * parseUnits('1', QTY_DECIMALS) * 100n * 10000n) /
+        : (makerMargin * parseUnits('1', token.decimals) * 100n * 10000n) /
           parseUnits(String(abs(qty)), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
     const currentOracleVersion = oracleVersions[position.marketAddress];
@@ -278,7 +279,7 @@ const PositionItem = function (props: Props) {
       currentOracleVersion.version <= position.openVersion
     ) {
       return {
-        qty: formatDecimals(abs(qty), 4, 2, true),
+        qty: formatDecimals(abs(qty), token.decimals, 2, true),
         collateral: formatDecimals(collateral, token.decimals, 2, true),
         stopLoss,
         takeProfit,
@@ -298,7 +299,7 @@ const PositionItem = function (props: Props) {
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
-      qty: formatDecimals(abs(qty), 4, 2, true),
+      qty: formatDecimals(abs(qty), token.decimals, 2, true),
       collateral: formatDecimals(collateral, token.decimals, 2, true),
       takeProfit: withComma(takeProfit),
       stopLoss: withComma(stopLoss),

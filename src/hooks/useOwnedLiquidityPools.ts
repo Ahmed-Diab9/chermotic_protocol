@@ -15,6 +15,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
+import useOracleVersion from './useOracleVersion';
 
 const { encodeTokenId } = ChromaticUtils;
 
@@ -27,7 +28,7 @@ async function getLiquidityPool(
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
   const binsResponse = bins.map(async (bin: any) => {
-    const tokenId = encodeTokenId(Number(bin.tradingFeeRate), bin.tradingFeeRate > 0);
+    const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
     const { name, decimals, description, image } = await marketApi.clbTokenMeta(
       marketAddress,
       tokenId
@@ -57,6 +58,7 @@ export const useOwnedLiquidityPools = () => {
   const { client, walletAddress } = useChromaticClient();
   const { currentToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
+  const { currentMarketOracleVersion } = useOracleVersion();
   const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
 
   const fetchKey = {
@@ -65,6 +67,7 @@ export const useOwnedLiquidityPools = () => {
     address: walletAddress,
     tokenAddress: currentToken?.address,
     marketAddresses: marketAddresses,
+    oracleVersion: currentMarketOracleVersion?.version,
   };
 
   const {
@@ -109,9 +112,10 @@ export const useOwnedLiquidityPools = () => {
     });
   }
 
-  const currentOwnedPool = useMemo(() => {
-    return ownedPools?.find(({ marketAddress }) => marketAddress === currentMarket?.address);
-  }, [ownedPools, marketAddresses]);
+  const currentOwnedPool = ownedPools?.find(
+    ({ marketAddress }) => marketAddress === currentMarket?.address
+  );
+  // }, [ownedPools, marketAddresses]);
 
   const ownedPoolSummary = useMemo(() => {
     if (isNil(currentOwnedPool) || isNil(currentToken) || isNil(markets)) return [];

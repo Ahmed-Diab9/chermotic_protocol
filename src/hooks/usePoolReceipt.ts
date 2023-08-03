@@ -1,5 +1,5 @@
-import { ClaimableLiquidityResult } from '@chromatic-protocol/sdk-viem';
-import { isNil } from 'ramda';
+import { ClaimableLiquidityResult, PendingLiquidityResult } from '@chromatic-protocol/sdk-viem';
+import { isNil, lens } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
@@ -8,12 +8,19 @@ import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
 import { checkAllProps } from '../utils';
-import { mulPreserved, numberBuffer, percentage } from '../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  mulPreserved,
+  numberBuffer,
+  percentage,
+} from '../utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
+import { indexBy } from 'ramda';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -26,13 +33,17 @@ export interface LpReceipt {
   name: string;
   burningAmount: bigint;
   action: LpReceiptAction;
+  progressPercent: number;
+  totalCLBAmount: bigint;
+  remainedCLBAmount: bigint;
 }
 
 const receiptDetail = (
   action: 0 | 1 | number,
   receiptOracleVersion: bigint,
   currentOracleVersion: bigint,
-  bin: ClaimableLiquidityResult
+  bin: ClaimableLiquidityResult,
+  pendingLiquidity: PendingLiquidityResult
 ) => {
   switch (action) {
     case 0:
@@ -45,7 +56,10 @@ const receiptDetail = (
       if (receiptOracleVersion >= currentOracleVersion) {
         return 'standby';
       }
-      if (bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount) {
+      if (
+        bin.burningCLBTokenAmountRequested === bin.burningCLBTokenAmount &&
+        pendingLiquidity.oracleVersion !== receiptOracleVersion
+      ) {
         return 'completed';
       } else {
         return 'in progress';
@@ -60,6 +74,7 @@ const usePoolReceipt = () => {
   const { currentMarket } = useMarket();
   const { liquidityPool } = useLiquidityPool();
   const { currentMarketOracleVersion } = useOracleVersion();
+  // const { currentToken } = useSettlementToken();
 
   const binName = useCallback((feeRate: number, description?: string) => {
     const prefix = feeRate > 0 ? '+' : '';
@@ -90,17 +105,31 @@ const usePoolReceipt = () => {
       if (!receipts) {
         return [];
       }
+      const pendingRemoveLiquidities = await lensApi.pendingLiquidityBatch(
+        marketAddress,
+        receipts.map((receipt) => receipt.tradingFeeRate)
+      );
+
+      const pendingRemoveLiquidityMap = indexBy(
+        (pendingLiquidity) => pendingLiquidity.tradingFeeRate,
+        pendingRemoveLiquidities
+      );
       const ownedBinsParam = receipts.map((receipt) => ({
         tradingFeeRate: receipt.tradingFeeRate,
         oracleVersion: receipt.oracleVersion,
       }));
-      const ownedBins = await lensApi.claimableLiquidities(marketAddress, ownedBinsParam);
+      const claimableLiquidities = await lensApi.claimableLiquidities(
+        marketAddress,
+        ownedBinsParam
+      );
       return receipts
         .map((receipt) => {
-          const ownedBin = ownedBins.find((bin) => bin.tradingFeeRate === receipt.tradingFeeRate);
+          const claimableLiquidityForReceipt =
+            claimableLiquidities[receipt.tradingFeeRate][receipt.oracleVersion.toString()];
+
           const bin = liquidityPool?.bins.find((bin) => bin.baseFeeRate === receipt.tradingFeeRate);
 
-          if (!ownedBin || !bin) {
+          if (!claimableLiquidityForReceipt || !bin) {
             return null;
           }
           const {
@@ -111,21 +140,56 @@ const usePoolReceipt = () => {
             recipient,
             tradingFeeRate,
           } = receipt;
-          let status: LpReceipt['status'] = 'standby';
-          status = receiptDetail(action, receiptOracleVersion, currentOracleVersion, ownedBin);
 
-          return {
+          const myBurnedCLBAmount =
+            claimableLiquidityForReceipt.burningCLBTokenAmountRequested === 0n
+              ? 0n
+              : (receipt.amount * claimableLiquidityForReceipt.burningCLBTokenAmount) /
+                claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
+
+          const burnedSettlementAmount =
+            claimableLiquidityForReceipt.burningCLBTokenAmountRequested === 0n
+              ? 0n
+              : (claimableLiquidityForReceipt.burningTokenAmount * receipt.amount) /
+                claimableLiquidityForReceipt.burningCLBTokenAmountRequested;
+          const remainedCLBAmount = amount - myBurnedCLBAmount;
+          const settlementTotalAmount =
+            burnedSettlementAmount +
+            mulPreserved(remainedCLBAmount, bin.clbTokenValue, bin.clbTokenDecimals);
+
+          let status: LpReceipt['status'] = 'standby';
+          status = receiptDetail(
+            action,
+            receiptOracleVersion,
+            currentOracleVersion,
+            claimableLiquidityForReceipt,
+            pendingRemoveLiquidityMap[tradingFeeRate]
+          );
+
+          const result = {
             id,
             action: action === 0 ? 'add' : 'remove',
-            amount:
-              action === 0 ? amount : mulPreserved(amount, bin.clbTokenValue, bin.clbTokenDecimals),
+            amount: action === 0 ? amount : settlementTotalAmount,
             feeRate: tradingFeeRate,
             status,
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
-            burningAmount: action === 0 ? 0n : ownedBin.burningTokenAmount,
+            burningAmount: action === 0 ? 0n : burnedSettlementAmount,
+            progressPercent: Number(
+              formatDecimals(
+                divPreserved(
+                  claimableLiquidityForReceipt.burningCLBTokenAmount,
+                  claimableLiquidityForReceipt.burningCLBTokenAmountRequested,
+                  bin.clbTokenDecimals
+                ),
+                bin.clbTokenDecimals - 2
+              )
+            ),
+            totalCLBAmount: amount,
+            remainedCLBAmount: remainedCLBAmount,
           } satisfies LpReceipt;
+          return result;
         })
         .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);
     }

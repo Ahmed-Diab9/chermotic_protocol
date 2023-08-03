@@ -13,10 +13,12 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import '../../atom/Tabs/style.css';
+// import { LPReceipt } from "~/typings/receipt";
 import { POOL_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { divPreserved, formatDecimals } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import '../../atom/Tabs/style.css';
@@ -28,20 +30,20 @@ const formatter = Intl.NumberFormat('en', {
 });
 
 export const receiptDetail = (receipt: LpReceipt, token: Token) => {
-  const { burningAmount = 0n, amount, status, action } = receipt;
+  const { burningAmount = 0n, amount, status, action ,progressPercent} = receipt;
   if (status === 'standby') {
     return 'Waiting for the next oracle round';
   }
   if (action === 'add') {
     return formatDecimals(receipt.amount, token.decimals, 2);
   }
-  const amountRatio = amount !== 0n ? divPreserved(burningAmount, amount, 2) : 0n;
+  
   return `${formatDecimals(burningAmount, token.decimals, 2, true)} / ${formatDecimals(
     amount,
     token.decimals,
     2,
     true
-  )} (${formatter.format(amountRatio)}%)`;
+  )} ${token.name} (${formatter.format(progressPercent)}%)`;
 };
 
 interface PoolProgressProps {
@@ -71,7 +73,6 @@ export const PoolProgress = ({
   const [hasGuide, setHasGuide] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const lapsed = useLastOracle();
-  const [selectedTab, setSelectedTab] = useState('all');
   const isClaimEnabled =
     receipts.filter((receipt) => receipt.status === 'completed').map((receipt) => receipt.id)
       .length !== 0;
@@ -193,8 +194,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
-                                progressPercent={0}
+                                progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
                                   onReceiptClaim?.(receipt.id, receipt.action);
@@ -238,7 +238,7 @@ export const PoolProgress = ({
                                   amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  progressPercent={0}
+                                  progressPercent={receipt.progressPercent}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);
@@ -281,8 +281,7 @@ export const PoolProgress = ({
                                   detail={receiptDetail(receipt, token)}
                                   name={receipt.name}
                                   token={token?.name}
-                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
-                                  progressPercent={0}
+                                  progressPercent={receipt.progressPercent}
                                   action={receipt.action}
                                   onClick={() => {
                                     onReceiptClaim?.(receipt.id, receipt.action);
@@ -428,7 +427,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           </p>
         </div>
       </div>
-      {action === 'add' ? (
+      {action === 'remove' ? (
         <Progress value={progressPercent} max={100} />
       ) : (
         <div className="border-t" />
