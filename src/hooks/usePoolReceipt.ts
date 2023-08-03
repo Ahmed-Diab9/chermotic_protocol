@@ -1,5 +1,5 @@
 import { ClaimableLiquidityResult, PendingLiquidityResult } from '@chromatic-protocol/sdk-viem';
-import { isNil, lens } from 'ramda';
+import { indexBy, isNil } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
@@ -20,7 +20,6 @@ import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 import useOracleVersion from './useOracleVersion';
-import { indexBy } from 'ramda';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
