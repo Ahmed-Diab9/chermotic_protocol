@@ -9,11 +9,12 @@
 *,
 ::before,
 ::after {
-  border-color: #eee;
+  @apply border-grayL1 dark:border-grayD1;
 }
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
+  @apply text-black dark:text-white;
   word-spacing: -0.1em;
 }
 
