@@ -275,7 +275,6 @@ const usePoolReceipt = () => {
         return;
       }
       await fetchReceipts();
-      // await fetchLiquidityPools();
       toast('All receipts are claimed.');
     } catch (error) {
       toast((error as any).message);
