@@ -186,7 +186,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -271,7 +271,7 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                amount={formatDecimals(receipt.amount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -338,7 +338,7 @@ interface ProgressItemProps {
   status: LpReceipt['status'];
   detail?: string;
   token?: string;
-  amount?: string;
+  remainedCLBAmount?: string;
   name: string;
   image?: string;
   progressPercent?: number;
@@ -353,7 +353,7 @@ const ProgressItem = (props: ProgressItemProps) => {
     status,
     detail,
     token,
-    amount,
+    remainedCLBAmount,
     name,
     image,
     action,
@@ -451,7 +451,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         <div className="flex flex-col items-end justify-end">
           {action === 'remove' && status !== 'standby' && (
-            <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
+            <p className="mb-2 -mt-2 text-black/50">{remainedCLBAmount} CLB Remaining</p>
           )}
           <Button
             label={
