@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Skeleton, { SkeletonProps } from 'react-loading-skeleton';
+import './style.css';
 
 export interface SkeletonElementProps extends SkeletonProps {
   isLoading?: boolean | undefined;
