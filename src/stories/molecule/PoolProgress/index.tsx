@@ -466,8 +466,9 @@ const ProgressItem = (props: ProgressItemProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-end">
-          {/* todo : CLB remaining */}
-          <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
+          {action === 'remove' && status !== 'standby' && (
+            <p className="mb-2 -mt-2 text-black/50">{amount} CLB Remaining</p>
+          )}
           <Button
             label={
               action === 'remove'
