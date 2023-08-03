@@ -241,6 +241,7 @@ export const PoolProgress = ({
                                   // title={receipt.title}
                                   status={receipt.status}
                                   detail={receiptDetail(receipt, token)}
+                                  amount={formatDecimals(receipt.amount, token.decimals, 2)}
                                   name={receipt.name}
                                   token={token?.name}
                                   progressPercent={0}
