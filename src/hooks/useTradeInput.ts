@@ -232,7 +232,6 @@ export const useTradeInput = (props: Props) => {
       3
     )}`;
 
-    if (+state.maxFeeAllowance >= +maxFeeAllowance) return;
     dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
   }, [feePercent]);
 
