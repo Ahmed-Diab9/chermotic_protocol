@@ -3,105 +3,30 @@ import { useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
-import { TradeContent } from '~/stories/molecule/TradeContent';
-import { Market, Price, Token } from '~/typings/market';
-import { TradeInput } from '~/typings/trade';
+import { TradeContent } from '~/stories/container/TradeContent';
+import { Liquidity } from '~/typings/chart';
 import { errorLog } from '~/utils/log';
 
 export interface TradePanelProps {
-  longInput?: TradeInput;
-  longTradeFee?: bigint;
-  longTradeFeePercent?: bigint;
-  onLongChange?: (
-    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    value: string
-  ) => unknown;
-  onLongMethodToggle?: () => unknown;
-  onLongLeverageChange?: (value: string) => unknown;
-  onLongTakeProfitChange?: (value: string) => unknown;
-  onLongStopLossChange?: (value: string) => unknown;
-  onLongFeeAllowanceChange?: (value: string) => unknown;
-  onLongFeeValidate?: () => unknown;
-
-  shortInput?: TradeInput;
-  shortTradeFee?: bigint;
-  shortTradeFeePercent?: bigint;
-  onShortChange?: (
-    key: 'quantity' | 'collateral' | 'takeProfit' | 'stopLoss' | 'leverage',
-    value: string
-  ) => unknown;
-  onShortMethodToggle?: () => unknown;
-  onShortLeverageChange?: (value: string) => unknown;
-  onShortTakeProfitChange?: (value: string) => unknown;
-  onShortStopLossChange?: (value: string) => unknown;
-  onShortFeeAllowanceChange?: (value: string) => unknown;
-  onShortFeeValidate?: () => unknown;
-
-  balances?: Record<string, bigint>;
-  priceFeed?: Record<string, Price>;
-  token?: Token;
-  market?: Market;
-
+  liquidityData?: Liquidity[];
+  longLiquidityData?: Liquidity[];
+  shortLiquidityData?: Liquidity[];
   longTotalMaxLiquidity?: bigint;
   longTotalUnusedLiquidity?: bigint;
   shortTotalMaxLiquidity?: bigint;
   shortTotalUnusedLiquidity?: bigint;
-
-  liquidityData?: any[];
-  longLiquidityData?: any[];
-  shortLiquidityData?: any[];
-
-  isShortDisabled: boolean;
-  isLongDisabled: boolean;
-
-  minTakeProfit?: number;
-  maxTakeProfit?: number;
-  maxLeverage?: number;
-  minStopLoss?: number;
 }
 
 export const TradePanel = (props: TradePanelProps) => {
   const {
-    longInput,
-    longTradeFee,
-    longTradeFeePercent,
-    onLongChange,
-    onLongMethodToggle,
-    onLongLeverageChange,
-    onLongTakeProfitChange,
-    onLongStopLossChange,
-    onLongFeeAllowanceChange,
-    onLongFeeValidate,
-    shortInput,
-    shortTradeFee,
-    shortTradeFeePercent,
-    onShortChange,
-    onShortMethodToggle,
-    onShortLeverageChange,
-    onShortTakeProfitChange,
-    onShortStopLossChange,
-    onShortFeeAllowanceChange,
-    onShortFeeValidate,
-    balances,
-    priceFeed,
-    token,
-    market,
+    liquidityData,
+    longLiquidityData,
+    shortLiquidityData,
     longTotalMaxLiquidity,
     longTotalUnusedLiquidity,
     shortTotalMaxLiquidity,
     shortTotalUnusedLiquidity,
-    liquidityData,
-    longLiquidityData,
-    shortLiquidityData,
-    isLongDisabled,
-    isShortDisabled,
-
-    minTakeProfit,
-    maxTakeProfit,
-    maxLeverage,
-    minStopLoss,
   } = props;
-
   const [isWideView, setIsWideView] = useState(false);
   const onToggleView = () => {
     setIsWideView(!isWideView);
@@ -136,29 +61,9 @@ export const TradePanel = (props: TradePanelProps) => {
               </div>
               <TradeContent
                 direction="short"
-                balances={balances}
-                priceFeed={priceFeed}
-                market={market}
-                token={token}
-                input={shortInput}
+                liquidityData={liquidityData}
                 totalMaxLiquidity={shortTotalMaxLiquidity}
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
-                tradeFee={shortTradeFee}
-                tradeFeePercent={shortTradeFeePercent}
-                liquidityData={liquidityData}
-                // isLoading={}
-                maxLeverage={maxLeverage}
-                minStopLoss={minStopLoss}
-                minTakeProfit={minTakeProfit}
-                maxTakeProfit={maxTakeProfit}
-                disabled={isShortDisabled}
-                onMethodToggle={onShortMethodToggle}
-                onInputChange={onShortChange}
-                onLeverageChange={onShortLeverageChange}
-                onTakeProfitChange={onShortTakeProfitChange}
-                onStopLossChange={onShortStopLossChange}
-                onFeeAllowanceChange={onShortFeeAllowanceChange}
-                onFeeValidate={onShortFeeValidate}
               />
             </div>
             <div className="w-full px-0 pt-4 pb-10">
@@ -169,28 +74,9 @@ export const TradePanel = (props: TradePanelProps) => {
               </div>
               <TradeContent
                 direction="long"
-                balances={balances}
-                priceFeed={priceFeed}
-                market={market}
-                token={token}
-                input={longInput}
+                liquidityData={liquidityData}
                 totalMaxLiquidity={longTotalMaxLiquidity}
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
-                tradeFee={longTradeFee}
-                tradeFeePercent={longTradeFeePercent}
-                liquidityData={liquidityData}
-                maxLeverage={maxLeverage}
-                minStopLoss={minStopLoss}
-                minTakeProfit={minTakeProfit}
-                maxTakeProfit={maxTakeProfit}
-                disabled={isLongDisabled}
-                onMethodToggle={onLongMethodToggle}
-                onInputChange={onLongChange}
-                onLeverageChange={onLongLeverageChange}
-                onTakeProfitChange={onLongTakeProfitChange}
-                onStopLossChange={onLongStopLossChange}
-                onFeeAllowanceChange={onLongFeeAllowanceChange}
-                onFeeValidate={onLongFeeValidate}
               />
             </div>
           </div>
@@ -239,55 +125,17 @@ export const TradePanel = (props: TradePanelProps) => {
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
                   <TradeContent
                     direction="short"
-                    balances={balances}
-                    priceFeed={priceFeed}
-                    market={market}
-                    token={token}
-                    input={shortInput}
                     liquidityData={shortLiquidityData}
                     totalMaxLiquidity={shortTotalMaxLiquidity}
                     totalUnusedLiquidity={shortTotalUnusedLiquidity}
-                    tradeFee={shortTradeFee}
-                    tradeFeePercent={shortTradeFeePercent}
-                    maxLeverage={maxLeverage}
-                    minStopLoss={minStopLoss}
-                    minTakeProfit={minTakeProfit}
-                    maxTakeProfit={maxTakeProfit}
-                    disabled={isShortDisabled}
-                    onMethodToggle={onShortMethodToggle}
-                    onInputChange={onShortChange}
-                    onLeverageChange={onShortLeverageChange}
-                    onTakeProfitChange={onShortTakeProfitChange}
-                    onStopLossChange={onShortStopLossChange}
-                    onFeeAllowanceChange={onShortFeeAllowanceChange}
-                    onFeeValidate={onShortFeeValidate}
                   />
                 </Tab.Panel>
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
                   <TradeContent
                     direction="long"
-                    balances={balances}
-                    priceFeed={priceFeed}
-                    market={market}
-                    token={token}
-                    input={longInput}
                     liquidityData={longLiquidityData}
                     totalMaxLiquidity={longTotalMaxLiquidity}
                     totalUnusedLiquidity={longTotalUnusedLiquidity}
-                    tradeFee={longTradeFee}
-                    tradeFeePercent={longTradeFeePercent}
-                    maxLeverage={maxLeverage}
-                    minStopLoss={minStopLoss}
-                    minTakeProfit={minTakeProfit}
-                    maxTakeProfit={maxTakeProfit}
-                    disabled={isLongDisabled}
-                    onMethodToggle={onLongMethodToggle}
-                    onInputChange={onLongChange}
-                    onLeverageChange={onLongLeverageChange}
-                    onTakeProfitChange={onLongTakeProfitChange}
-                    onStopLossChange={onLongStopLossChange}
-                    onFeeAllowanceChange={onLongFeeAllowanceChange}
-                    onFeeValidate={onLongFeeValidate}
                   />
                 </Tab.Panel>
               </Tab.Panels>

@@ -1,22 +1,24 @@
 import { Popover } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
+import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
+import { usePublicClient } from 'wagmi';
+import { useAppDispatch } from '~/store';
+import { accountAction } from '~/store/reducer/account';
 import { Loading } from '~/stories/atom/Loading';
 import { Outlink } from '~/stories/atom/Outlink';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { isValid } from '~/utils/valid';
 import { ACCOUNT_STATUS, Account } from '../../../typings/account';
 import { Token } from '../../../typings/market';
 import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
-import './style.css';
-
-import { useMemo } from 'react';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import { isValid } from '~/utils/valid';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import './style.css';
 import checkIcon from '/src/assets/images/i_check_xl.svg';
 import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
 import loadingIcon from '/src/assets/images/i_loading_xl.svg';
@@ -27,7 +29,7 @@ interface AccountPopoverProps {
   status?: ACCOUNT_STATUS;
   selectedToken?: Token;
   walletBalances?: Record<string, bigint>;
-  usumBalances?: Record<string, bigint>;
+  chromaticBalances?: Record<string, bigint>;
   amount?: string;
   totalBalance?: bigint;
   availableMargin?: bigint;
@@ -47,7 +49,7 @@ export const AccountPopover = ({
   status,
   selectedToken,
   walletBalances,
-  usumBalances,
+  chromaticBalances,
   amount,
   totalBalance,
   availableMargin,
@@ -63,6 +65,7 @@ export const AccountPopover = ({
   ...props
 }: AccountPopoverProps) => {
   const isLoaded = isNotNil(account) && isNotNil(selectedToken);
+
   return (
     <>
       <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
@@ -86,7 +89,7 @@ export const AccountPopover = ({
                   status={status}
                   token={selectedToken}
                   walletBalances={walletBalances}
-                  usumBalances={usumBalances}
+                  chromaticBalances={chromaticBalances}
                   amount={amount}
                   availableMargin={availableMargin}
                   assetValue={assetValue}
@@ -102,7 +105,7 @@ export const AccountPopover = ({
                   status={status}
                   token={selectedToken}
                   walletBalances={walletBalances}
-                  usumBalances={usumBalances}
+                  chromaticBalances={chromaticBalances}
                   amount={amount}
                   availableMargin={availableMargin}
                   assetValue={assetValue}
@@ -130,7 +133,7 @@ interface AssetPanelProps {
   status?: ACCOUNT_STATUS;
   token?: Token;
   walletBalances?: Record<string, bigint>;
-  usumBalances?: Record<string, bigint>;
+  chromaticBalances?: Record<string, bigint>;
   amount?: string;
   availableMargin?: bigint;
   assetValue?: bigint;
@@ -149,7 +152,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     status,
     token,
     walletBalances,
-    usumBalances,
+    chromaticBalances,
     amount,
     availableMargin = BigInt(0),
     assetValue = BigInt(0),
@@ -159,11 +162,36 @@ const AssetPanel = (props: AssetPanelProps) => {
     onWithdraw,
     onStatusUpdate,
   } = props;
+  const publicClient = usePublicClient();
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined = undefined;
+    if (status === ACCOUNT_STATUS.COMPLETING) {
+      timerId = setTimeout(() => {
+        dispatch(accountAction.setAccountStatus(ACCOUNT_STATUS.COMPLETED));
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [status]);
 
   const isExceeded = useMemo(() => {
     if (
       isNil(walletBalances) ||
-      isNil(usumBalances) ||
+      isNil(chromaticBalances) ||
       isNil(amount) ||
       isNil(title) ||
       isNil(token)
@@ -174,10 +202,10 @@ const AssetPanel = (props: AssetPanelProps) => {
       return parseUnits(amount, token.decimals) > walletBalances[token.address];
     }
     if (title === 'Withdraw') {
-      return parseUnits(amount, token.decimals) > usumBalances[token.address];
+      return parseUnits(amount, token.decimals) > chromaticBalances[token.address];
     }
     return false;
-  }, [amount, title, token, usumBalances, walletBalances]);
+  }, [amount, title, token, chromaticBalances, walletBalances]);
 
   return (
     <Popover>
@@ -193,7 +221,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.NONE && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
                   <img src={createAccountIcon} alt="create account" />
                   <p>
                     {title === 'Deposit' ? 'To make a deposit' : 'To withdraw an asset'}
@@ -235,7 +263,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.CREATING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
                   <img src={loadingIcon} alt="creating account" className="animate-spin-slow" />
                   <p>
                     The account address is being generated <br /> on the chain.
@@ -275,7 +303,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL/20">
+                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
                   <img src={checkIcon} alt="creating account" />
                   <p>Account has been created</p>
                 </article>
@@ -298,12 +326,17 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL/20">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL1/20">
                   <p className="flex-none pr-4 border-r text-black/30">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
-                    {account?.usumAddress}
+                    {account?.chromaticAddress}
                   </div>
                   <Button
+                    href={
+                      blockExplorer && account?.chromaticAddress
+                        ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                        : undefined
+                    }
                     size="base"
                     css="unstyled"
                     className="absolute right-2"
@@ -317,13 +350,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <p className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black/30">
                         Available Margin
                         <TooltipGuide
                           label="available-margin"
                           tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
                         />
-                      </p>
+                      </div>
                       <p>
                         <SkeletonElement isLoading={isLoading} width={80}>
                           {formatDecimals(availableMargin, token?.decimals, 5, true)} {token?.name}
@@ -335,13 +368,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                       https://github.com/chromatic-protocol/frontend/issues/290
                     */}
                     {/* <div>
-                      <p className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black/30">
                         Asset Value
                         <TooltipGuide
                           label="asset-value"
                           tip="This is the total sum of the asset in my account, including the amount collateralized by taker margin and unrealized PnL."
                         />
-                      </p>
+                      </div>
                       <p>
                         <SkeletonElement isLoading={isLoading} width={80}>
                           {formatDecimals(assetValue, token?.decimals, 5)} {token?.name}
@@ -361,7 +394,10 @@ const AssetPanel = (props: AssetPanelProps) => {
                           token &&
                           (title === 'Deposit'
                             ? formatUnits(walletBalances?.[token.address] ?? 0n, token?.decimals)
-                            : formatUnits(usumBalances?.[token.address] ?? 0n, token?.decimals))
+                            : formatUnits(
+                                chromaticBalances?.[token.address] ?? 0n,
+                                token?.decimals
+                              ))
                         }
                         onChange={(value) => {
                           onAmountChange?.(value);

@@ -33,13 +33,9 @@ const useChartData = () => {
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
           const key = baseFeeRate / 100;
-          // const BIN_DECIMALS = 6;
-          // const binValue = Number(
-          //   formatUnits(parseUnits(String(clbTokenValue), BIN_DECIMALS), BIN_DECIMALS)
-          // );
           acc.clbTokenValue.push({
             key,
-            value: clbTokenValue,
+            value: Number(formatUnits(clbTokenValue, decimals)),
           });
 
           const available = Number(formatUnits(freeLiquidity, decimals));

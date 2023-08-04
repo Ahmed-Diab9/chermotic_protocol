@@ -1,24 +1,22 @@
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Logger } from '~/utils/log';
-import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
-import { useError } from './useError';
 import { checkAllProps } from '../utils';
-import { isNil } from 'ramda';
+import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
+import { useMarket } from './useMarket';
 
 const logger = Logger('useOracleVersion');
 const useOracleVersion = () => {
   const { markets, currentMarket } = useMarket();
-  const { client, walletAddress } = useChromaticClient();
+  const { client } = useChromaticClient();
 
   const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
 
   const fetchKeyData = {
     name: 'getOracleVersion',
-    type: 'EOA',
-    address: walletAddress,
     marketAddresses: marketAddresses,
   };
   const {

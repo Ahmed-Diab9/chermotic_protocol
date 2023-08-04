@@ -3,10 +3,13 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
-import { useMarket } from '~/hooks/useMarket';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useMarket } from '~/hooks/useMarket';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
@@ -18,9 +21,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
-import { Address } from 'wagmi';
-import { isNil } from 'ramda';
-import { useMemo } from 'react';
 const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
@@ -44,26 +44,21 @@ async function getPositions(
   tokenDecimals: number
 ) {
   const positionIds = await accountApi.getPositionIds(marketAddress);
+
   const positions = await positionApi.getPositions(marketAddress, [...positionIds]);
+
   const { price: currentPrice, version: currentVersion } = oracleVersions[marketAddress];
-  return PromiseOnlySuccess(
+  const withLiquidation = await PromiseOnlySuccess(
     positions.map(async (position) => {
       const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
         marketAddress,
         position.openPrice,
-        position,
-        tokenDecimals
+        position
       );
       const targetPrice =
         position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
       const pnl = position.openPrice
-        ? await positionApi.getPnl(
-            marketAddress,
-            position.openPrice,
-            targetPrice,
-            position,
-            tokenDecimals
-          )
+        ? await positionApi.getPnl(marketAddress, position.openPrice, targetPrice, position)
         : 0n;
       return {
         ...position,
@@ -82,6 +77,10 @@ async function getPositions(
       } satisfies Position;
     })
   );
+
+  return withLiquidation.sort((leftPosition, rightPosition) => {
+    return leftPosition.id < rightPosition.id ? 1 : -1;
+  });
 }
 
 export const usePositions = () => {
@@ -137,9 +136,9 @@ export const usePositions = () => {
       )
         return positions;
 
-      const filteredPositions = positions?.filter(
-        (position) => position.marketAddress !== currentMarket?.address
-      );
+      const filteredPositions = positions
+        ?.filter((p) => !!p)
+        .filter((position) => position.marketAddress !== currentMarket?.address);
 
       const accountApi = client.account();
       const positionApi = client.position();

@@ -1,18 +1,17 @@
-import { LEVERAGE_DECIMALS, QTY_DECIMALS } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
-import { Logger, errorLog } from '~/utils/log';
+import { errorLog } from '~/utils/log';
 import { mulPreserved, toBigintWithDecimals } from '~/utils/number';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
-import { usePositions } from './usePositions';
-import { useChromaticAccount } from './useChromaticAccount';
-import { useSettlementToken } from './useSettlementToken';
 import { useMarket } from './useMarket';
+import { usePositions } from './usePositions';
+import { useSettlementToken } from './useSettlementToken';
 
 interface Props {
   state?: TradeInput;
@@ -56,8 +55,7 @@ function useOpenPosition({ state }: Props) {
       return;
     }
 
-    const quantity = toBigintWithDecimals(state.quantity, QTY_DECIMALS);
-    const leverage = Number(toBigintWithDecimals(state.leverage, LEVERAGE_DECIMALS));
+    const quantity = toBigintWithDecimals(state.quantity, currentToken.decimals);
     const takerMargin = toBigintWithDecimals(state.takerMargin, currentToken.decimals);
     const makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
 
@@ -86,7 +84,7 @@ function useOpenPosition({ state }: Props) {
 
       await routerApi.openPosition(currentMarket.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        leverage,
+        // leverage,
         takerMargin,
         makerMargin,
         maxAllowableTradingFee,

@@ -7,7 +7,7 @@ import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
-import { ScrollAni } from '~/stories/atom/ScrollAni';
+import { ScrollTrigger } from '~/stories/atom/ScrollTrigger';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
@@ -142,7 +142,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           {/* <div className="w-[100px] mx-auto border-b border-2 border-black"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="relative flex flex-col border border-gray rounded-xl">
+            <article className="relative flex flex-col border border-grayL2 rounded-xl">
               <div
                 id="bins"
                 className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
@@ -169,12 +169,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                         token={token}
                         name={bin.clbTokenDescription}
                         bin={bin}
+                        imageSrc={bin.clbTokenImage}
                       />
                     );
                   })}
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
-                <ScrollAni
+                <ScrollTrigger
                   isVisible={!arrowState.hasSameHeight}
                   hasOpacity={!arrowState.isScrolled}
                 />
@@ -188,13 +189,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * LP 토큰 총합 밸런스
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Total CLB
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-clb"
                     tip="The sum of the quantity of the above liquidity tokens(CLB)."
                   />
-                </p>
+                </div>
                 <p>{formatDecimals(balance, token?.decimals, 2)} CLB</p>
               </div>
               {/**
@@ -202,13 +203,13 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Total Liquidity Value
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-liquidity-value"
                     tip="The total value of the above liquidity tokens(CLB), converted into the current value."
                   />
-                </p>
+                </div>
                 <p>
                   {formatDecimals(
                     calculatedLiquidities.totalBalanceOfSettlement,
@@ -223,14 +224,14 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 제거 가능한 유동성 가치
                */}
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
-                </p>
+                </div>
                 <p>
                   {formatDecimals(calculatedLiquidities.totalFreeLiquidity, token?.decimals, 2)}{' '}
                   {token?.name}
@@ -257,7 +258,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-gray"
+                    className="flex-auto shadow-base border-grayL2"
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}

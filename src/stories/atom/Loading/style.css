@@ -1,21 +1,18 @@
 .loading {
-  @apply flex items-center justify-center;
-  svg {
-    @apply w-full h-full;
-  }
+  @apply inline-flex items-center justify-center;
   .ani-rotate {
     transform-origin: center;
   }
   &.loading-xs {
-    width: 12px;
+    @apply w-3 h-3;
   }
   &.loading-sm {
-    width: 16px;
+    @apply w-4 h-4;
   }
   &.loading-base {
-    width: 20px;
+    @apply w-5 h-5;
   }
   &.loading-lg {
-    width: 24px;
+    @apply w-6 h-6;
   }
 }

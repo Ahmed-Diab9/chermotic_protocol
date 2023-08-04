@@ -1,8 +1,11 @@
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { Fragment, useCallback } from 'react';
+import { isNil } from 'ramda';
+import { Fragment, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { usePublicClient } from 'wagmi';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { PRICE_FEED } from '../../../configs/token';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
 import { LiquidityPoolSummary } from '../../../typings/pools';
@@ -12,12 +15,9 @@ import { formatBalance, formatDecimals, withComma } from '../../../utils/number'
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
+import { SkeletonElement } from '../../atom/SkeletonElement';
 import '../../atom/Tabs/style.css';
 import './style.css';
-
-import { usePublicClient } from 'wagmi';
-import { PRICE_FEED } from '../../../configs/token';
-import { SkeletonElement } from '../../atom/SkeletonElement';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 const logger = Logger('WalletPopOver');
@@ -34,7 +34,7 @@ interface WalletPopoverProps {
   onCreateAccount?: () => void;
   onClick?: () => void;
   onWalletCopy?: (text: string) => unknown;
-  onUsumCopy?: (text: string) => unknown;
+  onChromaticCopy?: (text: string) => unknown;
 }
 
 export const WalletPopover = ({
@@ -49,10 +49,22 @@ export const WalletPopover = ({
   onDisconnect,
   onCreateAccount,
   onWalletCopy,
-  onUsumCopy,
+  onChromaticCopy,
   ...props
 }: WalletPopoverProps) => {
   const publicClient = usePublicClient();
+  const blockExplorer = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) {
+        return;
+      }
+      return new URL(rawUrl).origin;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient]);
+
   const usdcPrice = useCallback(
     (token: Token) => {
       if (!balances || !priceFeed) return '';
@@ -64,7 +76,7 @@ export const WalletPopover = ({
       }
       return '';
     },
-    [balances, tokens, priceFeed]
+    [balances, priceFeed]
   );
 
   return (
@@ -106,7 +118,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-grayL/20">
+                    <article className="px-4 py-3 border-b bg-grayL1/20">
                       <h4 className="mb-3 text-base text-center text-black/30">Connected Wallet</h4>
                       <div className="flex items-center justify-between gap-2">
                         <AddressCopyButton
@@ -123,6 +135,11 @@ export const WalletPopover = ({
                           }}
                         />
                         <Button
+                          href={
+                            account?.walletAddress && blockExplorer
+                              ? `${blockExplorer}/address/${account?.walletAddress}`
+                              : undefined
+                          }
                           label="view transition"
                           css="circle"
                           size="lg"
@@ -144,7 +161,7 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray">You have no asset.</p>
+                                <p className="text-center text-grayL2">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {balances &&
@@ -166,9 +183,12 @@ export const WalletPopover = ({
                                               gap="2"
                                             />
                                           </SkeletonElement>
-                                          {/* todo: asset button - href to scanner */}
                                           <Button
-                                            // href=''
+                                            href={
+                                              blockExplorer
+                                                ? `${blockExplorer}/token/${token.address}`
+                                                : undefined
+                                            }
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
                                             css="unstyled"
                                             size="sm"
@@ -182,7 +202,7 @@ export const WalletPopover = ({
                                               ${usdcPrice(token)}
                                             </SkeletonElement>
                                           </p>
-                                          <p className="mt-1 text-base font-medium text-gray-900">
+                                          <p className="mt-1 text-base font-medium text-black">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               {formatDecimals(
                                                 balances[token.address],
@@ -204,7 +224,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray">
+                                <p className="text-center text-grayL2">
                                   You have no liquidity token.
                                 </p>
                               ) : (
@@ -224,7 +244,7 @@ export const WalletPopover = ({
                                           <div className="flex gap-2 leading-none">
                                             <SkeletonElement isLoading={isLoading} width={100}>
                                               <p>{pool.token.name}</p>
-                                              <span className="px-1 text-grayL">|</span>
+                                              <span className="px-1 text-grayL1">|</span>
                                               <p>{pool.market}</p>
                                             </SkeletonElement>
                                           </div>
@@ -262,23 +282,29 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL/20">
-                    {account?.usumAddress ? (
+                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20">
+                    {account?.chromaticAddress ? (
                       <>
                         <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
                         <div className="flex items-center justify-between gap-2">
                           <AddressCopyButton
                             address={
-                              account?.usumAddress && trimAddress(account?.usumAddress, 7, 5)
+                              account?.chromaticAddress &&
+                              trimAddress(account?.chromaticAddress, 7, 5)
                             }
                             onClick={() => {
-                              const address = account?.usumAddress;
+                              const address = account?.chromaticAddress;
                               if (isValid(address)) {
-                                onUsumCopy?.(address);
+                                onChromaticCopy?.(address);
                               }
                             }}
                           />
                           <Button
+                            href={
+                              account?.chromaticAddress && blockExplorer
+                                ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                                : undefined
+                            }
                             label="view transition"
                             css="circle"
                             size="lg"

@@ -21,6 +21,7 @@ export const Default: Story = {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',
       decimals: 6,
+      minimumMargin: 10000000n,
     },
     markets: [
       {
@@ -47,7 +48,6 @@ export const Default: Story = {
         openVersion: BigInt(10),
         closeVersion: BigInt(10),
         qty: BigInt(10),
-        leverage: 1,
         openTimestamp: BigInt(10),
         closeTimestamp: BigInt(10),
         takerMargin: BigInt(10),
@@ -71,7 +71,6 @@ export const Default: Story = {
         openVersion: BigInt(10),
         closeVersion: BigInt(10),
         qty: BigInt(10),
-        leverage: 2,
         openTimestamp: BigInt(10),
         closeTimestamp: BigInt(10),
         takerMargin: BigInt(10),
@@ -95,7 +94,6 @@ export const Default: Story = {
         openVersion: BigInt(888),
         closeVersion: BigInt(888),
         qty: BigInt(888),
-        leverage: 18,
         openTimestamp: BigInt(888),
         closeTimestamp: BigInt(888),
         takerMargin: BigInt(888),
@@ -119,7 +117,6 @@ export const Default: Story = {
         openVersion: BigInt(888),
         closeVersion: BigInt(888),
         qty: BigInt(888),
-        leverage: 18,
         openTimestamp: BigInt(888),
         closeTimestamp: BigInt(888),
         takerMargin: BigInt(888),
@@ -141,6 +138,7 @@ export const Empty: Story = {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',
       decimals: 6,
+      minimumMargin: 10000000n,
     },
     markets: [
       {

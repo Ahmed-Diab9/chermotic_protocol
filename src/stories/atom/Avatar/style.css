@@ -1,5 +1,9 @@
 .avatar {
   @apply flex-none;
+  .wrapper-img {
+    @apply rounded-full overflow-hidden shrink-0 flex items-center justify-center border;
+    @apply bg-grayL1;
+  }
 }
 .avatar-xs {
   @apply w-4 h-4;

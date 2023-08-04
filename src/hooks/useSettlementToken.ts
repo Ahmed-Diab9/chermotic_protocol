@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -7,6 +7,7 @@ import { Token } from '~/typings/market';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
+import { PromiseOnlySuccess } from '~/utils/promise';
 
 export const useSettlementToken = () => {
   const { client, isReady } = useChromaticClient();
@@ -14,7 +15,7 @@ export const useSettlementToken = () => {
   const dispatch = useAppDispatch();
   const currentToken = useAppSelector((state) => state.token.selectedToken);
 
-  const { setState: setStoredToken } = useLocalStorage('usum:token');
+  const { setState: setStoredToken } = useLocalStorage('app:token');
 
   const fetchKey = {
     name: 'settlementToken',
@@ -28,7 +29,19 @@ export const useSettlementToken = () => {
   } = useSWR<Token[]>(isReady && fetchKey, async () => {
     const marketFactoryApi = client.marketFactory();
 
-    return await marketFactoryApi.registeredSettlementTokens();
+    const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
+
+    return PromiseOnlySuccess(
+      registeredSettlementTokens.map(async (token) => {
+        const minimumMargin = await marketFactoryApi
+          .contracts()
+          .marketFactory.read.getMinimumMargin([token.address]);
+        return {
+          ...token,
+          minimumMargin,
+        };
+      })
+    );
   });
 
   useError({ error });

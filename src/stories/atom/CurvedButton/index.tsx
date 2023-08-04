@@ -19,7 +19,7 @@ export const CurvedButton = (props: CurvedButtonProps) => {
       } ${className}`}
       onClick={onClick}
     >
-      <div className="inline-flex items-center justify-center w-full h-full">
+      <span className="inline-flex items-center justify-center w-full h-full">
         <CurvedLineBg direction={direction} position={position} />
         {direction === 'right' ? (
           <ChevronDoubleRightIcon
@@ -30,7 +30,7 @@ export const CurvedButton = (props: CurvedButtonProps) => {
             className={`w-4 relative ${position === direction ? 'ml-[-12px]' : 'ml-[-4px]'}`}
           />
         )}
-      </div>
+      </span>
     </button>
   );
 };

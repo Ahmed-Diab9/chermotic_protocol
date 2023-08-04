@@ -49,11 +49,11 @@ export const Button = (props: ButtonProps) => {
             : onClick
         }
       >
-        <div className={`flex items-center gap-${gap} justify-${align}`}>
+        <span className={`flex items-center gap-${gap} justify-${align}`}>
           {iconLeft !== undefined ? iconLeft : null}
           {iconOnly !== undefined ? iconOnly : label}
           {iconRight !== undefined ? iconRight : null}
-        </div>
+        </span>
       </button>
     </>
   );

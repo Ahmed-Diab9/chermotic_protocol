@@ -25,7 +25,7 @@ export const Guide = (props: GuideProps) => {
     <>
       {guideVisible && (
         <div
-          className={`relative px-5 text-left rounded-xl bg-gray/20 ${
+          className={`relative px-5 text-left rounded-xl bg-grayL2/20 ${
             flex ? 'flex gap-4 py-2 !pr-12' : 'py-4'
           }`}
         >

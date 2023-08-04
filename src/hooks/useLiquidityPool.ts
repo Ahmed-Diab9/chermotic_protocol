@@ -1,5 +1,6 @@
 import type { ChromaticLens, ChromaticMarket } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
+import { isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -14,7 +15,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
-import { isNotNil } from 'ramda';
+import useOracleVersion from './useOracleVersion';
 
 const { encodeTokenId } = ChromaticUtils;
 
@@ -67,6 +68,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const dispatch = useAppDispatch();
 
   const { currentMarket } = useMarket();
+  const { currentMarketOracleVersion } = useOracleVersion();
   const currentMarketAddress = marketAddress || currentMarket?.address;
 
   const { isReady, client } = useChromaticClient();
@@ -74,16 +76,18 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const fetchKeyData = {
     name: 'useLiquidityPool',
     marketAddress: currentMarketAddress,
+    oracleVersion: currentMarketOracleVersion?.version,
   };
 
-  const { data: liquidityPool } = useSWR(
+  const { data: liquidityPool, mutate: fetchLiquidityPool } = useSWR(
     isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress }) => {
       const lensApi = client.lens();
       const marketApi = client.market();
 
       return getLiquidityPool(marketApi, lensApi, marketAddress);
-    }
+    },
+    { keepPreviousData: false }
   );
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {
@@ -122,6 +126,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 
   return {
     liquidityPool,
+    fetchLiquidityPool,
     liquidity: {
       longTotalMaxLiquidity,
       longTotalUnusedLiquidity,
@@ -134,7 +139,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 const baseFeeRates = [...FEE_RATES, ...FEE_RATES.map((rate) => rate * -1)];
 const tokenIds = [
   ...FEE_RATES.map((rate) => encodeTokenId(rate)), // LONG COUNTER
-  ...FEE_RATES.map((rate) => encodeTokenId(rate, false)), // SHORT COUNTER
+  ...FEE_RATES.map((rate) => encodeTokenId(rate * -1)), // SHORT COUNTER
 ];
 async function getLiquidityPool(
   marketApi: ChromaticMarket,

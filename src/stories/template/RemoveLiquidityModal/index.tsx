@@ -58,24 +58,25 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           {/* <div className="w-[100px] mx-auto border-b border-2 border-black"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col border border-gray rounded-xl">
+            <article className="flex flex-col border border-grayL2 rounded-xl">
               <LiquidityItem
                 token={token}
                 name={selectedBin?.clbTokenDescription}
                 bin={selectedBin}
+                imageSrc={selectedBin?.clbTokenImage}
               />
             </article>
 
             {/* info bottom */}
             <article className="flex flex-col gap-2 pb-5 border-b">
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   My Liquidity Value
                   <TooltipGuide
                     label="RemoveLiquidityModal-my-liquidity-value"
                     tip="The value of my CLB tokens converted into the current token value."
                   />
-                </p>
+                </div>
                 {selectedBin && (
                   <p>
                     {formatDecimals(selectedBin.clbBalanceOfSettlement, token?.decimals, 2)}{' '}
@@ -85,14 +86,14 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               </div>
 
               <div className="flex justify-between">
-                <p className="flex text-black/30">
+                <div className="flex text-black/30">
                   Removable Liquidity
                   <TooltipGuide
                     label="RemoveLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
                     outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
                   />
-                </p>
+                </div>
                 {selectedBin && token && (
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
@@ -127,7 +128,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-gray"
+                    className="flex-auto shadow-base border-grayL2"
                     label="All"
                     size="sm"
                     onClick={() => {

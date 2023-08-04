@@ -12,9 +12,9 @@ export const Progress = (props: ProgressProps) => {
   const progressPercent = isValid(value) && isValid(max) ? (value / max) * 100 : 0;
 
   return (
-    <div className={`progress progress-${css} w-full h-1 overflow-hidden rounded bg-gray`}>
+    <div className={`progress progress-${css} w-full h-1 overflow-hidden rounded`}>
       {css === 'sm' ? (
-        <div className="h-full rounded bg-gray">
+        <div className="h-full rounded bg-grayL2">
           <div className={`h-full bg-black rounded`} style={{ width: `${progressPercent}%` }} />
         </div>
       ) : (

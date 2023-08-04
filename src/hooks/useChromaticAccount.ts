@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
 import { fromPairs, isNil } from 'ramda';
+import { useMemo } from 'react';
 import useSWR from 'swr';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { AppError } from '~/typings/error';
 import { ADDRESS_ZERO } from '~/utils/address';
@@ -9,8 +11,6 @@ import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
-import { useAppDispatch, useAppSelector } from '~/store';
-import { accountAction } from '~/store/reducer/account';
 
 const logger = Logger('useChromaticAccount');
 
@@ -97,7 +97,10 @@ export const useChromaticAccount = () => {
       logger.info('Creating accounts');
       dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
       await accountApi.createAccount();
-      await fetchAddress();
+
+      const newAccount = await accountApi.getAccount();
+      await fetchAddress(newAccount);
+
       dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
     } catch (error) {
       dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));

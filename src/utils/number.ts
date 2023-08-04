@@ -135,7 +135,7 @@ export const decimalLength = (num: number | string, length: number, fix: boolean
 };
 
 export const divPreserved = (numerator: bigint, denominator: bigint, decimals: number) => {
-  return numerator === 0n ? 0n : (numerator * 10n ** BigInt(decimals)) / denominator;
+  return denominator === 0n ? 0n : (numerator * 10n ** BigInt(decimals)) / denominator;
 };
 
 export const mulPreserved = (value: bigint, numerator: bigint, decimals: number) => {

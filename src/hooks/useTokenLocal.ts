@@ -8,7 +8,7 @@ import { useSettlementToken } from './useSettlementToken';
 export const useTokenLocal = () => {
   const { tokens, isTokenLoading } = useSettlementToken();
   const dispatch = useAppDispatch();
-  const { state: storedToken, deleteState: deleteToken } = useLocalStorage('usum:token');
+  const { state: storedToken, deleteState: deleteToken } = useLocalStorage('app:token');
 
   const onMount = useCallback(() => {
     if (isTokenLoading) {
