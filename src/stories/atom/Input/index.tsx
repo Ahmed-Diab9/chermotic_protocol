@@ -50,7 +50,7 @@ export const Input = (props: InputProps) => {
 
   useEffect(() => {
     if (!isInternalChange) setTempValue(value);
-    setIsInternalChange(false);
+    return setIsInternalChange(false);
   }, [value]);
 
   function isOverMax(newValue?: string | number) {
@@ -106,7 +106,6 @@ export const Input = (props: InputProps) => {
       return;
     }
     if (isNotNil(onChange) && isNotNil(tempValue)) {
-      setIsInternalChange(true);
       setTempValue(String(+tempValue));
       return;
     }
