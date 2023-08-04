@@ -458,61 +458,52 @@ const AmountSwitch = (props: AmountSwitchProps) => {
     }
   }, [disabled?.detail]);
 
-  switch (input?.method) {
-    case 'collateral': {
-      return (
-        <>
-          <div className="max-w-[220px]">
-            <div className="tooltip-input-balance">
-              <Input
-                value={input.collateral.toString()}
-                onChange={onAmountChange}
-                placeholder="0"
-                error={disabled?.status}
-              />
-              {errorMessage && <TooltipAlert label="input-balance" tip={errorMessage} />}
-            </div>
-          </div>
-          <div className="flex items-center justify-end mt-2">
-            <TooltipGuide
-              label="contract-qty"
-              tip="Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss."
-              outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-              outLinkAbout="Payoff"
-            />
-            <p>Contract Qty</p>
-            <p className="ml-2 text-lg text-black/50">
-              {withComma(Number(decimalLength(input?.quantity, 5)))} {token?.name}
-            </p>
-          </div>
-        </>
-      );
-    }
-    case 'quantity': {
-      return (
-        <>
-          <div className="max-w-[220px]">
-            <Input value={input?.quantity.toString()} onChange={onAmountChange} placeholder="0" />
-          </div>
-          <div className="flex items-center justify-end mt-2">
-            <TooltipGuide
-              label="collateral"
-              tip="Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position."
-              outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-              outLinkAbout="Payoff"
-            />
-            <p>Collateral</p>
-            {isValid(token) && (
-              <p className="ml-2 text-black/30">
-                {withComma(Number(decimalLength(input.collateral, 5)))} {token.name}
-              </p>
-            )}
-          </div>
-        </>
-      );
-    }
-    default: {
-      return <></>;
-    }
-  }
+  const preset = useMemo(
+    () =>
+      ({
+        collateral: {
+          value: input.collateral,
+          subValue: input.quantity,
+          subLabel: 'Contract Qty',
+          tooltip:
+            'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
+        },
+        quantity: {
+          value: input.quantity,
+          subValue: input.collateral,
+          subLabel: 'Collateral',
+          tooltip:
+            'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
+        },
+      }[input?.method || 'collateral']),
+    [input]
+  );
+
+  return (
+    <>
+      <div className="max-w-[220px]">
+        <div className="tooltip-input-balance">
+          <Input
+            value={preset.value.toString()}
+            onChange={onAmountChange}
+            placeholder="0"
+            error={disabled?.status}
+          />
+          {errorMessage && <TooltipAlert label="input-balance" tip={errorMessage} />}
+        </div>
+      </div>
+      <div className="flex items-center justify-end mt-2">
+        <TooltipGuide
+          label="contract-qty"
+          tip={preset.tooltip}
+          outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
+          outLinkAbout="Payoff"
+        />
+        <p>{preset.subLabel}</p>
+        <p className="ml-2 text-lg text-black/50">
+          {withComma(Number(decimalLength(preset.subValue, 5)))} {token?.name}
+        </p>
+      </div>
+    </>
+  );
 };
