@@ -155,7 +155,12 @@ export const PoolPanel = (props: PoolPanelProps) => {
       return formatDecimals(balances[token.address], token.decimals, 0);
     return '-';
   }, [balances, token]);
-
+  const liquidityFormatter = Intl.NumberFormat('en', {
+    useGrouping: false,
+    notation: 'compact',
+    maximumFractionDigits: 4,
+    minimumFractionDigits: 4,
+  });
   const onSelectAllClick = useCallback(
     (selectedIndex: number) => {
       switch (selectedIndex) {
@@ -257,18 +262,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        */}
                       {shortTotalMaxLiquidity && shortTotalUnusedLiquidity && token ? (
                         <p>
-                          {formatDecimals(
-                            shortTotalMaxLiquidity - shortTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M /{' '}
-                          {formatDecimals(
-                            shortTotalMaxLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M
+                          {`${liquidityFormatter.format(
+                            +formatDecimals(
+                              shortTotalMaxLiquidity - shortTotalUnusedLiquidity,
+                              token.decimals
+                            )
+                          )} / ${liquidityFormatter.format(
+                            +formatDecimals(shortTotalMaxLiquidity, token.decimals)
+                          )}`}
                         </p>
                       ) : null}
                     </div>
@@ -280,18 +281,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        */}
                       {longTotalMaxLiquidity && longTotalUnusedLiquidity && token ? (
                         <p>
-                          {formatDecimals(
-                            longTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M /{' '}
-                          {formatDecimals(
-                            longTotalMaxLiquidity - longTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M
+                          {`${liquidityFormatter.format(
+                            +formatDecimals(
+                              longTotalMaxLiquidity - longTotalUnusedLiquidity,
+                              token.decimals
+                            )
+                          )} / ${liquidityFormatter.format(
+                            +formatDecimals(longTotalUnusedLiquidity, token.decimals)
+                          )}`}
                         </p>
                       ) : null}
                     </div>
