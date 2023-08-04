@@ -107,7 +107,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const binDecimals =
     isValid(ownedPool) && ownedPool.bins.length > 0 ? ownedPool.bins[0].clbTokenDecimals : 1;
 
-  logger.info('liquidity', liquidity);
   const totalLiquidityValue =
     ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbBalanceOfSettlement;
@@ -159,7 +158,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     useGrouping: false,
     notation: 'compact',
     maximumFractionDigits: 4,
-    minimumFractionDigits: 4,
+    minimumFractionDigits: 0,
   });
   const onSelectAllClick = useCallback(
     (selectedIndex: number) => {
