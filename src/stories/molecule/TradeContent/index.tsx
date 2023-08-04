@@ -141,7 +141,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       maximumFractionDigits: 4,
       minimumFractionDigits: 0,
     });
-    return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
+    return `${formatter.format(+freeLiq)} / ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
 
   const maxTakeProfitWithDirection = useMemo(() => {
