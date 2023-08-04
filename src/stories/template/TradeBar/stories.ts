@@ -21,6 +21,7 @@ export const Default: Story = {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',
       decimals: 6,
+      minimumMargin: 10000000n,
     },
     markets: [
       {
@@ -137,6 +138,7 @@ export const Empty: Story = {
       name: 'USDC',
       address: '0x8888888888888888888888888888888888888888',
       decimals: 6,
+      minimumMargin: 10000000n,
     },
     markets: [
       {

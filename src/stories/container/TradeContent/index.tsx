@@ -21,13 +21,12 @@ export const TradeContent = (props: Props) => {
     tradeFee,
     feePercent,
     disabled,
-    onChange,
+    onAmountChange,
     onMethodToggle,
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
     onFeeAllowanceChange,
-    onFeeAllowanceValidate,
   } = useTradeInput({ direction });
   const { oracleProperties } = useOracleProperties();
   const { balances, isAccountAddressLoading, isChromaticBalanceLoading } = useChromaticAccount();
@@ -49,18 +48,17 @@ export const TradeContent = (props: Props) => {
       input={input}
       tradeFee={tradeFee}
       tradeFeePercent={feePercent}
-      disabled={disabled.status}
+      disabled={disabled}
       maxTakeProfit={oracleProperties?.maxTakeProfit}
       minTakeProfit={oracleProperties?.minTakeProfit}
       maxLeverage={oracleProperties?.maxLeverage}
       minStopLoss={oracleProperties?.minStopLoss}
-      onInputChange={onChange}
+      onAmountChange={onAmountChange}
       onMethodToggle={onMethodToggle}
       onLeverageChange={onLeverageChange}
       onTakeProfitChange={onTakeProfitChange}
       onStopLossChange={onStopLossChange}
       onFeeAllowanceChange={onFeeAllowanceChange}
-      onFeeValidate={onFeeAllowanceValidate}
     />
   );
 };
