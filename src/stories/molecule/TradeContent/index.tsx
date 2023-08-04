@@ -50,7 +50,6 @@ interface TradeContentProps {
   onTakeProfitChange?: (nextRate: string | number) => unknown;
   onStopLossChange?: (nextRate: string | number) => unknown;
   onFeeAllowanceChange?: (nextAllowance: string) => unknown;
-  onFeeValidate?: () => unknown;
 }
 
 const methodMap: Record<string, string> = {
@@ -83,7 +82,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     onTakeProfitChange,
     onStopLossChange,
     onFeeAllowanceChange,
-    onFeeValidate,
   } = props;
 
   const oracleDecimals = 18;
@@ -139,21 +137,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
 
-  useEffect(() => {
-    const input = document.querySelector('.maxFeeAllowance');
-    const onClickAway = (event: MouseEvent) => {
-      if (!(event.target instanceof HTMLElement)) {
-        return;
-      }
-      if (!input?.contains(event.target)) {
-        onFeeValidate?.();
-      }
-    };
-    window.addEventListener('click', onClickAway);
-    return () => {
-      window.removeEventListener('click', onClickAway);
-    };
-  }, [onFeeValidate]);
+  const maxTakeProfitWithDirection = useMemo(() => {
+    return direction === 'long'
+      ? maxTakeProfit
+      : decimalPrecision.trunc(+(input?.leverage || '2') * 100, 0);
+  }, [direction, input?.leverage]);
 
   return (
     <div className="px-10 w-full max-w-[680px]">
@@ -272,7 +260,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   placeholder="10"
                   autoCorrect
                   min={minTakeProfit}
-                  max={maxTakeProfit}
+                  max={maxTakeProfitWithDirection}
                   onChange={onTakeProfitChange}
                 />
               </div>
@@ -281,7 +269,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               {input && (
                 <Slider
                   min={minTakeProfit}
-                  max={maxTakeProfit}
+                  max={maxTakeProfitWithDirection}
                   value={Number(input.takeProfit)}
                   onUpdate={onTakeProfitChange}
                   tick={5}
@@ -352,8 +340,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               {isValid(token) && (
                 <p className="text-lg">
-                  {formatDecimals(tradeFee ?? 0, token.decimals, 2)} {token.name} /{' '}
-                  {formatDecimals(tradeFeePercent ?? 0, token.decimals, 3)}%
+                  {formatDecimals(tradeFee, token.decimals, 2)} {token.name} /{' '}
+                  {formatDecimals(tradeFeePercent, token.decimals, 3)}%
                 </p>
               )}
             </div>
@@ -372,8 +360,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                   size="sm"
                   unit="%"
                   value={input?.maxFeeAllowance}
+                  min={+formatDecimals(tradeFeePercent, token?.decimals, 3)}
                   className="maxFeeAllowance"
                   onChange={onFeeAllowanceChange}
+                  autoCorrect
                 />
               </div>
             </div>
@@ -443,15 +433,19 @@ interface AmountSwitchProps {
     status: boolean;
     detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
   };
-  minimum?: string;
   onAmountChange?: (value: string) => unknown;
 }
 
 const AmountSwitch = (props: AmountSwitchProps) => {
-  const { input, onAmountChange, token, disabled, minimum } = props;
+  const { input, onAmountChange, token, disabled } = props;
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
+
+  const minimumAmount = useMemo(
+    () => formatDecimals(token?.minimumMargin, token?.decimals),
+    [token]
+  );
 
   const errorMessage = useMemo(() => {
     switch (disabled?.detail) {
@@ -460,7 +454,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       case 'liquidity':
         return 'Exceeded free liquidity size.';
       case 'minimum':
-        return `Less than minimum betting amount. (${minimum})`;
+        return `Less than minimum betting amount. (${minimumAmount} ${token?.name})`;
       default:
         return undefined;
     }

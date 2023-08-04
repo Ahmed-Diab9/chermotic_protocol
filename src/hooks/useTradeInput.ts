@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
@@ -119,7 +119,7 @@ const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputActio
   return state;
 };
 
-const feeLevel = (percentage: bigint, tokenDecimals: number) => {
+const getFeeLevel = (percentage: bigint, tokenDecimals: number) => {
   // const tierZero = parseUnits('0.01', tokenDecimals);
   const tierOne = parseUnits('0.1', tokenDecimals);
   const tierTwo = parseUnits('1', tokenDecimals);
@@ -137,6 +137,20 @@ const feeLevel = (percentage: bigint, tokenDecimals: number) => {
     return 3;
   }
   return 0;
+};
+
+const getBaseFeeAllowance = (feePercent: bigint, tokenDecimal?: number) => {
+  if (isNil(tokenDecimal)) return 0n;
+
+  const BASE_FEE_MAP = {
+    0: 0.03,
+    1: 0.3,
+    2: 3,
+    3: 30,
+  };
+
+  const level = getFeeLevel(feePercent || 0n, tokenDecimal);
+  return parseUnits(String(BASE_FEE_MAP[level]), tokenDecimal);
 };
 
 interface Props {
@@ -190,7 +204,7 @@ export const useTradeInput = (props: Props) => {
     }
     const feePercent = divPreserved(
       tradeFee,
-      Math.round(state.makerMargin) !== 0 ? BigInt(Math.round(state.makerMargin)) : 1n,
+      state.makerMargin !== 0 ? BigInt(state.makerMargin) : 1n,
       PERCENT_DECIMALS
     );
     return [tradeFee, feePercent] as const;
@@ -203,63 +217,20 @@ export const useTradeInput = (props: Props) => {
     shortTotalUnusedLiquidity,
   ]);
 
-  const [previousAllowance, setAllowance] = useState(state.maxFeeAllowance);
   useEffect(() => {
-    if (isNil(currentToken) || isNil(feePercent)) {
-      return;
-    }
-    const nextLevel = feeLevel(feePercent ?? 0n, currentToken.decimals);
-    switch (nextLevel) {
-      case 0: {
-        const nextAllowance = feePercent + parseUnits('0.03', currentToken.decimals);
-        const formatted = formatUnits(nextAllowance, currentToken.decimals);
-        dispatch({
-          type: 'updateMaxFee',
-          payload: {
-            maxFeeAllowance: formatted,
-          },
-        });
-        setAllowance(formatted);
-        break;
-      }
-      case 1: {
-        const nextAllowance = feePercent + parseUnits('0.3', currentToken.decimals);
-        const formatted = formatUnits(nextAllowance, currentToken.decimals);
-        dispatch({
-          type: 'updateMaxFee',
-          payload: {
-            maxFeeAllowance: formatted,
-          },
-        });
-        setAllowance(formatted);
-        break;
-      }
-      case 2: {
-        const nextAllowance = feePercent + parseUnits('3', currentToken.decimals);
-        const formatted = formatUnits(nextAllowance, currentToken.decimals);
-        dispatch({
-          type: 'updateMaxFee',
-          payload: {
-            maxFeeAllowance: formatted,
-          },
-        });
-        setAllowance(formatted);
-        break;
-      }
-      case 3: {
-        const nextAllowance = feePercent + parseUnits('30', currentToken.decimals);
-        const formatted = formatUnits(nextAllowance, currentToken.decimals);
-        dispatch({
-          type: 'updateMaxFee',
-          payload: {
-            maxFeeAllowance: formatted,
-          },
-        });
-        setAllowance(formatted);
-        break;
-      }
-    }
-  }, [feePercent, currentToken]);
+    if (isNil(currentToken) || isNil(feePercent)) return;
+
+    const baseFeeAllowance = getBaseFeeAllowance(feePercent, currentToken.decimals);
+    const maxFeeAllowance = `${+formatDecimals(
+      feePercent + baseFeeAllowance,
+      currentToken.decimals,
+      3
+    )}`;
+
+    console.log(state.maxFeeAllowance, maxFeeAllowance);
+    if (+state.maxFeeAllowance >= +maxFeeAllowance) return;
+    dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
+  }, [feePercent]);
 
   const onMethodToggle = () => {
     dispatch({ type: 'toggleMethod' });
@@ -313,22 +284,12 @@ export const useTradeInput = (props: Props) => {
   };
 
   const onFeeAllowanceChange = (allowance: string) => {
-    const parsed = Number(allowance);
-    if (isNaN(parsed) || parsed < 0) {
-      return;
-    }
-    dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance: allowance } });
-  };
-
-  const onFeeAllowanceValidate = () => {
-    if (Number(state.maxFeeAllowance) < Number(previousAllowance)) {
-      dispatch({
-        type: 'updateMaxFee',
-        payload: {
-          maxFeeAllowance: previousAllowance,
-        },
-      });
-    }
+    dispatch({
+      type: 'updateMaxFee',
+      payload: {
+        maxFeeAllowance: allowance,
+      },
+    });
   };
 
   const disabled = useMemo<{
@@ -399,6 +360,5 @@ export const useTradeInput = (props: Props) => {
     onTakeProfitChange,
     onStopLossChange,
     onFeeAllowanceChange,
-    onFeeAllowanceValidate,
   };
 };

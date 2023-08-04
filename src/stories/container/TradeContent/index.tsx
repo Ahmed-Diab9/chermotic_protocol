@@ -27,7 +27,6 @@ export const TradeContent = (props: Props) => {
     onTakeProfitChange,
     onStopLossChange,
     onFeeAllowanceChange,
-    onFeeAllowanceValidate,
   } = useTradeInput({ direction });
   const { oracleProperties } = useOracleProperties();
   const { balances, isAccountAddressLoading, isChromaticBalanceLoading } = useChromaticAccount();
@@ -60,7 +59,6 @@ export const TradeContent = (props: Props) => {
       onTakeProfitChange={onTakeProfitChange}
       onStopLossChange={onStopLossChange}
       onFeeAllowanceChange={onFeeAllowanceChange}
-      onFeeValidate={onFeeAllowanceValidate}
     />
   );
 };
