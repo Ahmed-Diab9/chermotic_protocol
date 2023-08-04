@@ -134,10 +134,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const freeLiq =
       formatDecimals(
         (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
-        (token?.decimals || 0) + 6,
-        8
+        (token?.decimals || 0)
       ) || '0';
-    const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+    const formatter = Intl.NumberFormat('en', {
+      notation: 'compact',
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 0,
+    });
     return `${formatter.format(+freeLiq)}/ ${formatter.format(+totalLiq)}`;
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
 

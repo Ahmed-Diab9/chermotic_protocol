@@ -157,6 +157,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const liquidityFormatter = Intl.NumberFormat('en', {
     useGrouping: false,
     notation: 'compact',
+    compactDisplay: 'short',
     maximumFractionDigits: 4,
     minimumFractionDigits: 0,
   });
