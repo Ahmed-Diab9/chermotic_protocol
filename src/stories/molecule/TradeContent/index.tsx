@@ -138,10 +138,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
 
   const maxTakeProfitWithDirection = useMemo(() => {
-    return direction === 'long'
-      ? maxTakeProfit
-      : decimalPrecision.trunc(+(input?.leverage || '2') * 100, 0);
-  }, [direction, input?.leverage]);
+    return direction === 'long' ? maxTakeProfit : 100;
+  }, [direction]);
 
   return (
     <div className="px-10 w-full max-w-[680px]">
