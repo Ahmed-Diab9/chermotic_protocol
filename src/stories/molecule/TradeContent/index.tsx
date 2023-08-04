@@ -10,7 +10,7 @@ import { Slider } from '~/stories/atom/Slider';
 import '~/stories/atom/Toggle/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 
-import { decimalLength, decimalPrecision, formatDecimals, withComma } from '~/utils/number';
+import { decimalLength, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 
 import { isNil } from 'ramda';
@@ -113,12 +113,17 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
-    const format = (value: string | number) => withComma(decimalPrecision.floor(+value, 2));
+    // FIXME: decimalPrecision
+    const format = Intl.NumberFormat('en', {
+      useGrouping: false,
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    }).format;
 
     return {
-      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(takeProfit)}`,
+      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(+takeProfit)}`,
       takeProfitPrice: format(takeProfitPrice),
-      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(stopLoss)}`,
+      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(+stopLoss)}`,
       stopLossPrice: format(stopLossPrice),
     };
   }, [input, market]);

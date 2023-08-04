@@ -1,11 +1,10 @@
 import { isNil } from 'ramda';
-import { useCallback, useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
   abs,
-  decimalPrecision,
   divPreserved,
   formatDecimals,
   mulPreserved,
@@ -26,6 +25,12 @@ const initialTradeInput = {
   leverage: '10',
   maxFeeAllowance: '0.03',
 } satisfies Omit<TradeInput, 'direction'>;
+
+const formatter = Intl.NumberFormat('en', {
+  useGrouping: true,
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+}).format;
 
 function getCalculatedValues({
   method,
@@ -51,16 +56,14 @@ function getCalculatedValues({
   const takerMargin = collateral;
   const makerMargin = (collateral / lossCutRate) * takeProfitRate;
 
-  const trimDecimal = (v: number) => decimalPrecision.round(v, 2);
-
   return {
-    collateral: String(trimDecimal(collateral)),
-    leverage: String(trimDecimal(leverage)),
-    quantity: String(trimDecimal(quantity)),
-    stopLoss: String(trimDecimal(stopLoss)),
-    takeProfit: String(trimDecimal(takeProfit)),
-    takerMargin: trimDecimal(takerMargin),
-    makerMargin: trimDecimal(makerMargin),
+    collateral: formatter(collateral),
+    leverage: formatter(leverage),
+    quantity: formatter(quantity),
+    stopLoss: formatter(stopLoss),
+    takeProfit: formatter(takeProfit),
+    takerMargin: +formatter(takerMargin),
+    makerMargin: +formatter(makerMargin),
   };
 }
 
