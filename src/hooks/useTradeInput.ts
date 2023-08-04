@@ -27,7 +27,7 @@ const initialTradeInput = {
 } satisfies Omit<TradeInput, 'direction'>;
 
 const formatter = Intl.NumberFormat('en', {
-  useGrouping: true,
+  useGrouping: false,
   maximumFractionDigits: 2,
   minimumFractionDigits: 2,
   //@ts-ignore experimental api
