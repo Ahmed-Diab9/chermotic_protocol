@@ -17,6 +17,7 @@ export const Default: Story = {
       name: 'USDC',
       decimals: 6,
       address: '0x00',
+      minimumMargin: 10000000n,
     } satisfies Token,
     name: 'CLB Pool',
     bin: {

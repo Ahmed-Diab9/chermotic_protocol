@@ -52,6 +52,7 @@ export const Default: Story = {
       name: 'USDC',
       address: '0x',
       decimals: 6,
+      minimumMargin: 10000000n,
     },
     amount: 100.23,
   },
