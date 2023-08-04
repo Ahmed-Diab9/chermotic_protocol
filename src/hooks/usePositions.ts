@@ -3,10 +3,13 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
-import { useMarket } from '~/hooks/useMarket';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useMarket } from '~/hooks/useMarket';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
@@ -18,9 +21,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
-import { Address } from 'wagmi';
-import { isNil } from 'ramda';
-import { useMemo } from 'react';
 const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
@@ -48,7 +48,7 @@ async function getPositions(
   const positions = await positionApi.getPositions(marketAddress, [...positionIds]);
 
   const { price: currentPrice, version: currentVersion } = oracleVersions[marketAddress];
-  return PromiseOnlySuccess(
+  const withLiquidation = await PromiseOnlySuccess(
     positions.map(async (position) => {
       const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
         marketAddress,
@@ -77,6 +77,10 @@ async function getPositions(
       } satisfies Position;
     })
   );
+
+  return withLiquidation.sort((leftPosition, rightPosition) => {
+    return leftPosition.id < rightPosition.id ? 1 : -1;
+  });
 }
 
 export const usePositions = () => {
