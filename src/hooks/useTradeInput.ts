@@ -202,9 +202,11 @@ export const useTradeInput = (props: Props) => {
         makerMargin = 0n;
       }
     }
+
+    const bigMakerMargin = BigInt(Math.round(state.makerMargin));
     const feePercent = divPreserved(
       tradeFee,
-      state.makerMargin !== 0 ? BigInt(state.makerMargin) : 1n,
+      bigMakerMargin !== 0n ? bigMakerMargin : 1n,
       PERCENT_DECIMALS
     );
     return [tradeFee, feePercent] as const;
@@ -227,7 +229,6 @@ export const useTradeInput = (props: Props) => {
       3
     )}`;
 
-    console.log(state.maxFeeAllowance, maxFeeAllowance);
     if (+state.maxFeeAllowance >= +maxFeeAllowance) return;
     dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
   }, [feePercent]);
