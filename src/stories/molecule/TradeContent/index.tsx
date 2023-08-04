@@ -113,11 +113,12 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
-    // FIXME: decimalPrecision
     const format = Intl.NumberFormat('en', {
       useGrouping: false,
       maximumFractionDigits: 2,
       minimumFractionDigits: 2,
+      //@ts-ignore experimental api
+      roundingMode: 'trunc',
     }).format;
 
     return {

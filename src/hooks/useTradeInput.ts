@@ -30,6 +30,8 @@ const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
   maximumFractionDigits: 2,
   minimumFractionDigits: 2,
+  //@ts-ignore experimental api
+  roundingMode: 'trunc',
 }).format;
 
 function getCalculatedValues({
