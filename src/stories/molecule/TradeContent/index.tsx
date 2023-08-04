@@ -1,5 +1,8 @@
 import { Listbox, Switch } from '@headlessui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { isNil } from 'ramda';
+import { useMemo, useState } from 'react';
+import { formatUnits } from 'viem';
+import { useOpenPosition } from '~/hooks/useOpenPosition';
 import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
@@ -8,20 +11,15 @@ import '~/stories/atom/Select/style.css';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import '~/stories/atom/Toggle/style.css';
-import { TooltipGuide } from '../../atom/TooltipGuide';
-
-import { decimalLength, formatDecimals, withComma } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-
-import { isNil } from 'ramda';
-import { useOpenPosition } from '~/hooks/useOpenPosition';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { Liquidity } from '~/typings/chart';
 import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
+import { decimalLength, formatDecimals, withComma } from '~/utils/number';
+import { isValid } from '~/utils/valid';
+import { TooltipGuide } from '../../atom/TooltipGuide';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
-import { formatUnits } from 'viem';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -381,7 +379,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               css="active"
               disabled={disabled.status}
               onClick={() => {
-                !disabled && onOpenPosition();
+                !disabled.status && onOpenPosition();
               }}
             />
             {/* todo: wallet connected, no account */}
