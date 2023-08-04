@@ -158,7 +158,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     useGrouping: false,
     notation: 'compact',
     compactDisplay: 'short',
-    maximumFractionDigits: 4,
+    maximumFractionDigits: 3,
     minimumFractionDigits: 0,
   });
   const onSelectAllClick = useCallback(
@@ -287,7 +287,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                               token.decimals
                             )
                           )} / ${liquidityFormatter.format(
-                            +formatDecimals(longTotalUnusedLiquidity, token.decimals)
+                            +formatDecimals(longTotalMaxLiquidity, token.decimals)
                           )}`}
                         </p>
                       ) : null}

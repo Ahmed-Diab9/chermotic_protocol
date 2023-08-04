@@ -130,7 +130,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const { onOpenPosition } = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
-    const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals || 0) + 6, 8) || '0';
+    const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals)) || '0';
     const freeLiq =
       formatDecimals(
         (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
@@ -138,7 +138,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       ) || '0';
     const formatter = Intl.NumberFormat('en', {
       notation: 'compact',
-      maximumFractionDigits: 4,
+      maximumFractionDigits: 3,
       minimumFractionDigits: 0,
     });
     return `${formatter.format(+freeLiq)} / ${formatter.format(+totalLiq)}`;
@@ -334,7 +334,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             }`}
           >
             <p className="text-black/30">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume} M</p> : null}
+            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume}</p> : null}
           </div>
         </div>
         <article className="mt-5">
