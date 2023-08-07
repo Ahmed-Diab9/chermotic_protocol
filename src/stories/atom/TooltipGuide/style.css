@@ -11,12 +11,12 @@
   }
 
   .tooltip-solid {
-    @apply bg-black text-white font-normal;
+    @apply bg-black1 text-white1 font-normal;
   }
   .tooltip-outline {
-    @apply bg-white text-black font-medium border border-black;
+    @apply bg-white text-black1 font-medium border border-black1;
     &.react-tooltip__place-left .react-tooltip-arrow {
-      @apply border-t border-r border-black mr-[-.5px];
+      @apply border-t border-r border-black1 mr-[-.5px];
     }
   }
 }

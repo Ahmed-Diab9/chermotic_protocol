@@ -14,11 +14,11 @@
     @apply cursor-not-allowed;
   }
   &.toggle-on {
-    @apply border border-black text-black;
-    @apply dark:border-white dark:text-white;
+    @apply border border-black1 text-black1;
+    @apply dark:border-white dark:text-white1;
   }
   &.toggle-off {
-    @apply border border-black/50 dark:border-white/50;
+    @apply border border-black2 dark:border-white2;
   }
   &.btn-icon-only {
     @apply justify-center text-center flex-none;
@@ -31,24 +31,25 @@
   }
 }
 .btn-active {
-  @apply border bg-black text-white border-black hover:bg-black/70;
-  @apply dark:bg-white dark:text-black dark:border-white dark:hover:bg-white/70;
+  @apply border hover:opacity-70;
+  @apply bg-black1 text-white1 border-black1;
+  @apply dark:bg-white dark:text-black1 dark:border-white;
   &:disabled {
-    @apply text-black/30 bg-grayLbg border-grayLbg;
-    @apply dark:text-white/30 dark:bg-grayDbg dark:border-grayDbg;
+    @apply text-black3 bg-grayLbg border-grayLbg;
+    @apply dark:text-white3 dark:bg-grayDbg dark:border-grayDbg;
   }
 }
 .btn-gray {
-  @apply border border-grayL2 text-black bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD2 dark:text-white dark:bg-black dark:hover:bg-grayD1/30;
+  @apply border border-grayL2 text-black1 bg-white hover:bg-grayL1/50;
+  @apply dark:border-grayD2 dark:text-white1 dark:bg-black1 dark:hover:bg-grayD1/50;
   &:disabled {
     @apply border-grayL2/40 text-grayL2;
     @apply dark:border-grayD2/40 dark:text-grayD2;
   }
 }
 .btn-default {
-  @apply border border-grayL1 text-black/80 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD1 dark:text-white/80 dark:bg-grayDbg dark:hover:bg-grayD1/30;
+  @apply border border-grayL1 text-black2 bg-white hover:bg-grayL1/50;
+  @apply dark:border-grayD1 dark:text-white1/80 dark:bg-grayDbg dark:hover:bg-grayD1/50;
   &:disabled {
     @apply text-grayL2 dark:text-grayD2;
   }
@@ -59,12 +60,12 @@
 .btn-circle {
   @apply border !rounded-full;
   @apply border-grayL1 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD1 dark:bg-black hover:bg-grayD1/30;
+  @apply dark:border-grayD1 dark:bg-black1 hover:bg-grayD1/30;
 }
 .btn-wallet {
   @apply p-[2px] flex items-center border rounded-full;
-  @apply bg-black border-grayL1 text-white;
-  /* @apply dark:bg-white dark:border-grayD1 dark:text-black; */
+  @apply bg-black1 border-grayL1 text-white1;
+  /* @apply dark:bg-white dark:border-grayD1 dark:text-black1; */
   .avatar {
     @apply !w-[36px] !h-[36px];
   }

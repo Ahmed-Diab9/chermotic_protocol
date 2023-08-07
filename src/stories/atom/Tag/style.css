@@ -4,7 +4,7 @@
 }
 .tag-long,
 .tag-Long {
-  @apply text-white bg-grayD2;
+  @apply text-white1 bg-grayD2;
   /* color: #a6d85b;
   background: rgba(166, 216, 91, 0.3); */
 }

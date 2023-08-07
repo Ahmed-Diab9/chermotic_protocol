@@ -6,7 +6,7 @@ interface LoadingProps {
 }
 
 export const Loading = (props: LoadingProps) => {
-  const { color = 'black', size = 'sm' } = props;
+  const { color = 'black1', size = 'sm' } = props;
 
   return (
     <svg

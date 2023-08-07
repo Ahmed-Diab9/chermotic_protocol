@@ -9,6 +9,6 @@
     @apply opacity-100;
   }
   .react-tooltip-arrow {
-    @apply border-b border-r border-black mb-[-.5px];
+    @apply border-b border-r border-black1 mb-[-.5px];
   }
 }

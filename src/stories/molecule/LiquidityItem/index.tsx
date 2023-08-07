@@ -46,10 +46,10 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         <Thumbnail size="lg" className="rounded" src={imageSrc} />
         <div>
           <Avatar label={token.name} size="xs" gap="1" />
-          <p className="mt-2 text-black/30">{name}</p>
+          <p className="mt-2 text-black3">{name}</p>
         </div>
         <div className="ml-auto text-right">
-          <p className="text-black/30">Qty</p>
+          <p className="text-black3">Qty</p>
           <p className="mt-2 text-lg">{formatDecimals(bin.clbTokenBalance, token.decimals, 2)}</p>
         </div>
       </div>
@@ -66,11 +66,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
             {formatDecimals(removable, token.decimals, 2)} {token.name}
-            <span className="text-black/30 ml-[2px]">({removableRate}%)</span>
+            <span className="text-black3 ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
             {formatDecimals(utilized, token.decimals, 2)} {token.name}
-            <span className="text-black/30 ml-[2px]">({utilizedRate}%)</span>
+            <span className="text-black3 ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>
       </div>

@@ -14,7 +14,7 @@
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
-  @apply text-black dark:text-white;
+  @apply text-black1 dark:text-white1;
   word-spacing: -0.1em;
 }
 

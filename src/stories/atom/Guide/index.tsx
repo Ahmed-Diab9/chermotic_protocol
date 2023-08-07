@@ -34,13 +34,13 @@ export const Guide = (props: GuideProps) => {
             {/* <InformationCircleIcon className="w-4" /> */}
             <p className="whitespace-nowrap">{title}</p>
           </div>
-          <p className="my-2 text-sm text-black/30">{paragraph}</p>
+          <p className="my-2 text-sm text-black3">{paragraph}</p>
           {outLink && <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />}
           {/* todo: 버튼 누르면 닫힘 */}
           <Button
             iconOnly={<XMarkIcon />}
             css="unstyled"
-            className="absolute top-1 right-1 text-black/30"
+            className="absolute top-1 right-1 text-black3"
             onClick={closeGuide}
           />
         </div>

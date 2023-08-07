@@ -16,7 +16,7 @@ export const PopoverArrow = (props: PopoverArrowProps) => {
 
   return (
     <span
-      className={`inline-block relative border-none w-[53px] h-[53px] rounded-full text-black/30 hover:text-black/50 overflow-hidden ${className}`}
+      className={`inline-block relative border-none w-[53px] h-[53px] rounded-full text-black3 hover:text-black2 overflow-hidden cursor-pointer ${className}`}
       onClick={onClick}
     >
       <span className="inline-flex items-center justify-center w-full h-full">

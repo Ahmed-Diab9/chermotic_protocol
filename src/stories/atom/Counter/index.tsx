@@ -22,7 +22,7 @@ export const Counter = (props: CounterProps) => {
         onClick={onDecrement}
         label="minus"
         iconOnly={<MinusIcon />}
-        className="!text-black"
+        className="!text-black1"
       />
       <div className="flex items-center justify-center w-1/2">
         <h4 className="font-bold text-center">
@@ -30,7 +30,7 @@ export const Counter = (props: CounterProps) => {
           {symbol}
         </h4>
       </div>
-      <Button onClick={onIncrement} label="plus" iconOnly={<PlusIcon />} className="!text-black" />
+      <Button onClick={onIncrement} label="plus" iconOnly={<PlusIcon />} className="!text-black1" />
     </div>
   );
 };

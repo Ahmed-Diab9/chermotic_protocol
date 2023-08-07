@@ -125,7 +125,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
       }}
     >
       {/* backdrop */}
-      <div className="fixed inset-0 bg-white/80" aria-hidden="true" />
+      <div className="fixed inset-0 bg-white2" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal modal-base">
           <Dialog.Title className="modal-title">
@@ -139,7 +139,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
               }}
             />
           </Dialog.Title>
-          {/* <div className="w-[100px] mx-auto border-b border-2 border-black"></div> */}
+          {/* <div className="w-[100px] mx-auto border-b border-2 border-black1"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="relative flex flex-col border border-grayL2 rounded-xl">
@@ -189,7 +189,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * LP 토큰 총합 밸런스
                */}
               <div className="flex justify-between">
-                <div className="flex text-black/30">
+                <div className="flex text-black3">
                   Total CLB
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-clb"
@@ -203,7 +203,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 유동성 가치
                */}
               <div className="flex justify-between">
-                <div className="flex text-black/30">
+                <div className="flex text-black3">
                   Total Liquidity Value
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-total-liquidity-value"
@@ -224,7 +224,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                * 총합 제거 가능한 유동성 가치
                */}
               <div className="flex justify-between">
-                <div className="flex text-black/30">
+                <div className="flex text-black3">
                   Removable Liquidity
                   <TooltipGuide
                     label="RemoveMultiLiquidityModal-removable-liquidity"
@@ -235,7 +235,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                 <p>
                   {formatDecimals(calculatedLiquidities.totalFreeLiquidity, token?.decimals, 2)}{' '}
                   {token?.name}
-                  <span className="ml-1 text-black/30">
+                  <span className="ml-1 text-black3">
                     {`${calculatedLiquidities.avgRemovableRate}%`}
                   </span>
                 </p>
@@ -246,7 +246,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
             <article className="">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex-none font-semibold">Remove CLB Tokens</p>
-                <p className="text-right text-black/30">
+                <p className="text-right text-black3">
                   {/**
                    * @TODO
                    * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
@@ -265,7 +265,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   />
                 </div>
                 <div className="max-w-[220px] relative">
-                  <p className="text-lg font-semibold text-black">{amount} CLB</p>
+                  <p className="text-lg font-semibold text-black1">{amount} CLB</p>
                   {/* <Input
                     unit="CLB"
                     value={input?.amount}
@@ -288,7 +288,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
                   /> */}
                 </div>
               </div>
-              <p className="mt-4 text-xs text-black/30">
+              <p className="mt-4 text-xs text-black3">
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the

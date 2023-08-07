@@ -11,7 +11,7 @@
     }
   }
   &[aria-checked='true'] {
-    @apply bg-black dark:bg-black;
+    @apply bg-black1 dark:bg-black1;
   }
   &::after {
     @apply inline-block transition duration-200 ease-in-out transform bg-white rounded-full pointer-events-none;

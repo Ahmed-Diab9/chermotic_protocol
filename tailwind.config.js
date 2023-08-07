@@ -23,7 +23,14 @@ export const theme = {
     },
     colors: {
       current: 'currentColor',
-      black: '#030303',
+
+      black1: '#030303',
+      black2: '#03030380',
+      black3: '#0303034d',
+
+      white1: '#ffffffe6',
+      white2: '#FFFFFF80',
+      white3: '#ffffff4d',
 
       grayLbg: '#FCFCFC',
       grayL1: '#EEEEEE',
@@ -34,7 +41,6 @@ export const theme = {
       grayD2: '#4D4D4D',
 
       error: '#030303',
-
       standby: '#FF8A00',
       completed: '#00E23F',
       inprocess: '#08E3D6',

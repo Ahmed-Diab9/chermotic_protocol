@@ -77,7 +77,7 @@ export const TradeBar = ({
           {open ? (
             <>
               {/* backdrop */}
-              <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
+              <Popover.Overlay className="fixed inset-0 backdrop bg-white2" />
               <div className="relative popover-panel" ref={ref}>
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
@@ -94,13 +94,13 @@ export const TradeBar = ({
                         </Tab.List>
                         <div className="flex items-center gap-5 mt-4 ml-auto">
                           {lapsed && (
-                            <p className="pr-5 text-sm border-r text-black/30">
+                            <p className="pr-5 text-sm border-r text-black3">
                               Last Oracle Update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
                               s ago
                             </p>
                           )}
                           {/* todo: Current Price */}
-                          <p className="text-sm text-black/30">
+                          <p className="text-sm text-black3">
                             Current Price:
                             <SkeletonElement
                               isLoading={isLoading}
@@ -108,7 +108,7 @@ export const TradeBar = ({
                               className="ml-2 text-lg"
                             >
                               {isValid(oracleVersions) && isValid(market) && (
-                                <span className="ml-2 text-lg text-black">
+                                <span className="ml-2 text-lg text-black1">
                                   ${' '}
                                   {formatDecimals(
                                     oracleVersions[market.address].price,
@@ -210,7 +210,7 @@ export const TradeBar = ({
                 className="w-full px-[60px] py-5 bg-white border-t tabs tabs-line tabs-base tabs-left"
                 ref={openButtonRef}
               >
-                <h4 className="min-w-[140px] text-black">
+                <h4 className="min-w-[140px] text-black1">
                   Position
                   {/* TODO: position 갯수 보여주기 (갯수 세는 기준은 확인중) */}
                   {/* (2) */}
@@ -371,13 +371,13 @@ const PositionItem = function (props: Props) {
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-black/50">Entry Price</p>
+            <p className="text-black2">Entry Price</p>
             <SkeletonElement isLoading={isLoading} width={60}>
               {calculated.entryPrice}
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-black/50">Entry Time</p>
+            <p className="text-black2">Entry Time</p>
             <SkeletonElement isLoading={isLoading} width={60}>
               {calculated.entryTime}
             </SkeletonElement>
@@ -388,7 +388,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENING && (
             <>
               <Loading size="sm" />
-              <div className="flex text-black">
+              <div className="flex text-black1">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
                 <TooltipGuide iconOnly label="opening-in-progress" />
@@ -398,7 +398,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENED && (
             <>
               <CheckIcon className="w-4" />
-              <div className="flex text-black">
+              <div className="flex text-black1">
                 Opening completed
                 <TooltipGuide iconOnly label="opening-completed" />
               </div>
@@ -407,7 +407,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSING && (
             <>
               <Loading size="sm" />
-              <div className="flex text-black">
+              <div className="flex text-black1">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
               </div>
@@ -416,7 +416,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSED && (
             <>
               <CheckIcon className="w-4" />
-              <div className="flex text-black">
+              <div className="flex text-black1">
                 Closing completed
                 <TooltipGuide iconOnly label="closing-completed" />
               </div>
@@ -433,13 +433,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[12%] flex flex-col gap-2">
             <TextRow
               label="Contract Qty"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.qty}
               isLoading={isLoading}
             />
             <TextRow
               label="Collateral"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.collateral}
               isLoading={isLoading}
             />
@@ -447,13 +447,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Take Profit"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.takeProfit}
               isLoading={isLoading}
             />
             <TextRow
               label="TP Price"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
               isLoading={isLoading}
@@ -462,13 +462,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Stop Loss"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.stopLoss}
               isLoading={isLoading}
             />
             <TextRow
               label="SL Price"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
               isLoading={isLoading}
@@ -477,7 +477,7 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[8%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="PnL"
-              labelClass="text-black/50"
+              labelClass="text-black2"
               value={calculated.pnlPercentage}
               isLoading={isLoading}
             />

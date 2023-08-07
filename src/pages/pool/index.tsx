@@ -39,7 +39,7 @@ const Pool = () => {
   }, [publicClient]);
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayLbg dark:bg-black">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayLbg dark:bg-black1">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar showAccountPopover={false} />
@@ -73,7 +73,7 @@ const Pool = () => {
                   />
                 </div>
               </div>
-              <div className="mt-3 mb-3 text-base text-left text-black/30 dark:text-white/50">
+              <div className="mt-3 mb-3 text-base text-left text-black3 dark:text-white2">
                 When providing liquidity to the liquidity bins of the Chromatic protocol, providers
                 are rewarded by minting CLB tokens. CLB tokens follow the ERC-1155 standard and have
                 one token contract per market, with each bin having its own unique token ID.{' '}

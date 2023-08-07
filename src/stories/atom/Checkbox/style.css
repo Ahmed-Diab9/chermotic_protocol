@@ -4,13 +4,13 @@
     @apply hidden;
     + .checkbox-label::before {
       @apply flex-none inline-block rounded border;
-      @apply bg-white border-black/30;
-      @apply dark:bg-grayDbg border-white/30;
+      @apply bg-white border-black3;
+      @apply dark:bg-grayDbg border-white3;
       content: '';
     }
     &:checked + .checkbox-label::before {
       @apply flex-none inline-block rounded bg-no-repeat bg-center;
-      @apply border-black dark:border-white;
+      @apply border-black1 dark:border-white;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='8' fill='none' viewBox='0 0 9 8'%3E%3Cpath stroke='%23030303' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M1 4.429 3.625 7 8 1'/%3E%3C/svg%3E");
       background-size: 60% auto;
     }

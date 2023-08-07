@@ -11,7 +11,7 @@
     @apply flex items-start;
     .inner-popover-button {
       &[aria-expanded='true'] {
-        @apply bg-black text-white;
+        @apply bg-black1 text-white1;
       }
     }
     .inner-popover-panel {
@@ -20,7 +20,7 @@
       .inner-popover-item {
         @apply flex justify-between cursor-pointer;
         @apply py-3 px-4 gap-6;
-        @apply hover:bg-black hover:text-white;
+        @apply hover:bg-black1 hover:text-white1;
         h4 {
           @apply flex-1;
         }

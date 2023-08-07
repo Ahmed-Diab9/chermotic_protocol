@@ -15,10 +15,10 @@ export const Progress = (props: ProgressProps) => {
     <div className={`progress progress-${css} w-full h-1 overflow-hidden rounded`}>
       {css === 'sm' ? (
         <div className="h-full rounded bg-grayL2">
-          <div className={`h-full bg-black rounded`} style={{ width: `${progressPercent}%` }} />
+          <div className={`h-full bg-black1 rounded`} style={{ width: `${progressPercent}%` }} />
         </div>
       ) : (
-        <div className={`h-full bg-black rounded`} style={{ width: `${progressPercent}%` }} />
+        <div className={`h-full bg-black1 rounded`} style={{ width: `${progressPercent}%` }} />
       )}
     </div>
   );

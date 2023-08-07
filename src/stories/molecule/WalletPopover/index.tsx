@@ -95,7 +95,7 @@ export const WalletPopover = ({
               />
             </Popover.Button>
             {/* backdrop */}
-            <Popover.Overlay className="fixed inset-0 backdrop bg-white/80 dark:bg-black/80" />
+            <Popover.Overlay className="fixed inset-0 backdrop bg-white2 dark:bg-black1/80" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
@@ -119,7 +119,7 @@ export const WalletPopover = ({
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-grayL1/20 dark:bg-grayD2/40">
-                      <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
+                      <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                         Connected Wallet
                       </h4>
                       <div className="flex items-center justify-between gap-2">
@@ -196,17 +196,17 @@ export const WalletPopover = ({
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
                                             css="unstyled"
                                             size="sm"
-                                            className="text-black/50 dark:text-white/50"
+                                            className="text-black2 dark:text-white2"
                                           />
                                         </div>
 
                                         <div className="ml-auto text-right">
-                                          <p className="text-sm text-black/30 dark:text-white/50">
+                                          <p className="text-sm text-black3 dark:text-white2">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               ${usdcPrice(token)}
                                             </SkeletonElement>
                                           </p>
-                                          <p className="mt-1 text-base font-medium text-black dark:text-white">
+                                          <p className="mt-1 text-base font-medium text-black1 dark:text-white1">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               {formatDecimals(
                                                 balances[token.address],
@@ -256,7 +256,7 @@ export const WalletPopover = ({
                                           </div>
                                           <div className="flex mt-3">
                                             <div className="mr-auto">
-                                              <p className="text-base font-medium text-black/30 dark:text-white/50">
+                                              <p className="text-base font-medium text-black3 dark:text-white2">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {formatDecimals(
                                                     pool.liquidity,
@@ -267,7 +267,7 @@ export const WalletPopover = ({
                                                   {pool.token.name}
                                                 </SkeletonElement>
                                               </p>
-                                              <p className="mt-2 text-base text-black dark:text-white">
+                                              <p className="mt-2 text-base text-black1 dark:text-white1">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {pool.bins} Bins
                                                 </SkeletonElement>
@@ -291,7 +291,7 @@ export const WalletPopover = ({
                   <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20 dark:bg-grayD2/40">
                     {account?.chromaticAddress ? (
                       <>
-                        <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
+                        <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                           My Account
                         </h4>
                         <div className="flex items-center justify-between gap-2">
@@ -322,7 +322,7 @@ export const WalletPopover = ({
                       </>
                     ) : (
                       <>
-                        <h4 className="mb-3 text-base text-center text-black/30 dark:text-white/50">
+                        <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                           You need to create account first.
                         </h4>
                         <div className="text-center">

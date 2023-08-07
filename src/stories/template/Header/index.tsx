@@ -19,16 +19,16 @@ export const Header = (props: HeaderProps) => {
   return (
     // <header className="sticky top-0 Header">
     <header className="Header">
-      <div className="h-[70px] bg-grayLbg dark:bg-black px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] bg-grayLbg dark:bg-black1 px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
-            <LogoSimple className="text-black dark:text-white h-9" />
+            <LogoSimple className="text-black1 dark:text-white1 h-9" />
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black dark:text-white ${
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
               location.pathname === '/trade'
-                ? 'border-black dark:border-white'
+                ? 'border-black1 dark:border-white'
                 : '!border-transparent'
             }`}
           >
@@ -36,9 +36,9 @@ export const Header = (props: HeaderProps) => {
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black dark:text-white ${
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
               location.pathname === '/pool'
-                ? 'border-black dark:border-white'
+                ? 'border-black1 dark:border-white'
                 : '!border-transparent'
             }`}
           >
@@ -61,7 +61,7 @@ export const Header = (props: HeaderProps) => {
                   // label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
                   label="0x00000...00000"
                   svg={<ExclamationTriangleIcon />}
-                  className="text-black avatar"
+                  className="text-black1 avatar"
                   fontSize="sm"
                   fontWeight="normal"
                   gap="3"

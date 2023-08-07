@@ -1,7 +1,7 @@
 .WalletPopover {
   .popover-panel {
     @apply fixed w-[320px] h-full top-0 right-0 bottom-0 px-5 py-7 text-left;
-    @apply bg-white shadow-white text-black;
-    @apply dark:shadow-black dark:bg-black dark:text-white;
+    @apply bg-white shadow-white text-black1;
+    @apply dark:shadow-black1 dark:bg-black1 dark:text-white1;
   }
 }

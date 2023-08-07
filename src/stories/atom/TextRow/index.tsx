@@ -20,7 +20,7 @@ export const TextRow = (props: TextRowProps) => {
     value,
     subValueLeft,
     subValueRight,
-    labelColor = 'black/30',
+    labelColor = 'black3',
     labelClass = '',
     align = 'between',
     className = '',
@@ -31,11 +31,11 @@ export const TextRow = (props: TextRowProps) => {
     <div className={`flex items-center justify-${align} ${className}`}>
       <p className={`text-${labelColor} ${labelClass}`}>{label}</p>
       <div className="flex flex-wrap items-center justify-end gap-1">
-        {subValueLeft && <p className="text-black/30">{subValueLeft}</p>}
+        {subValueLeft && <p className="text-black3">{subValueLeft}</p>}
         <SkeletonElement width={60} isLoading={isLoading}>
           {value}
         </SkeletonElement>
-        {subValueRight && <p className="text-black/30">{subValueLeft}</p>}
+        {subValueRight && <p className="text-black3">{subValueLeft}</p>}
       </div>
     </div>
   );

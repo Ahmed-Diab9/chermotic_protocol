@@ -211,7 +211,7 @@ const AssetPanel = (props: AssetPanelProps) => {
         <>
           <Popover.Button
             className={`btn btn-default btn-sm ${
-              open ? '!border-black !text-black dark:!border-white dark:!text-white' : ''
+              open ? '!border-black1 !text-black1 dark:!border-white dark:!text-white1' : ''
             }`}
           >
             {title}
@@ -230,7 +230,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50 dark:text-white/50">
+                  <p className="text-black2 dark:text-white2">
                     This process may take approximately 10 seconds or so.
                   </p>
                 </div>
@@ -272,7 +272,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50 dark:text-white/50">
+                  <p className="text-black2 dark:text-white2">
                     This process may take approximately 10 seconds or so. Please wait a moment.
                   </p>
                 </div>
@@ -329,7 +329,7 @@ const AssetPanel = (props: AssetPanelProps) => {
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
                 <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <p className="flex-none pr-4 border-r text-black/30">My Account</p>
+                  <p className="flex-none pr-4 border-r text-black3">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
                     {account?.chromaticAddress}
                   </div>
@@ -352,7 +352,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <div className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black3">
                         Available Margin
                         <TooltipGuide
                           label="available-margin"
@@ -370,7 +370,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       https://github.com/chromatic-protocol/frontend/issues/290
                     */}
                     {/* <div>
-                      <div className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black3">
                         Asset Value
                         <TooltipGuide
                           label="asset-value"
@@ -425,7 +425,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
                     </div>
                     <div className="text-sm">
-                      <p className="mb-1 text-black/30">
+                      <p className="mb-1 text-black3">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.{' '}
                         <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement" />

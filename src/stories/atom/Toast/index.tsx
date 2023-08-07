@@ -41,7 +41,7 @@ const Msg = (props: MsgProps) => {
 
   return (
     <div className="flex">
-      <InformationCircleIcon className="w-4 mr-2 text-black/30" />
+      <InformationCircleIcon className="w-4 mr-2 text-black3" />
       {message}
     </div>
   );
