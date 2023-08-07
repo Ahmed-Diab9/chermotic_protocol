@@ -19,7 +19,7 @@ export const Header = (props: HeaderProps) => {
   return (
     // <header className="sticky top-0 Header">
     <header className="Header">
-      <div className="h-[70px] bg-grayLbg dark:bg-black1 px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] bg-lightBg1 dark:bg-black1 px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
             <LogoSimple className="text-black1 dark:text-white1 h-9" />

@@ -126,7 +126,7 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
     <div>
       {/* Tick - dot */}
       <div
-        // className={`absolute mt-[-1px] w-[2px] h-[2px] rounded bg-grayL2 left-[${tick.percent}%]`}
+        // className={`absolute mt-[-1px] w-[2px] h-[2px] rounded bg-light2 left-[${tick.percent}%]`}
         className=""
         style={{
           position: 'absolute',

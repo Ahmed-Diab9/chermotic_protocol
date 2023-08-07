@@ -358,7 +358,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   {/* onClick: connect wallet */}
                   {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
                 </div>
-                <div className="flex flex-col gap-2 border-t border-dashed border-grayL2 mt-8 mx-[-40px] pt-6 px-10">
+                <div className="flex flex-col gap-2 border-t border-dashed border-light2 mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
                     <div className="flex">
                       Number of Liquidity Bins
@@ -409,7 +409,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-grayL1/20 rounded-xl">
+                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-light1/20 rounded-xl">
                   <div>
                     <div className="flex font-semibold text-left text-black3">
                       Total Liquidity Value
@@ -437,7 +437,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-grayL1/20 rounded-xl text-left">
+                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-light1/20 rounded-xl text-left">
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-black3">
                       LP Bins
@@ -527,7 +527,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedShortLiquidityBins.length === 0 ? (
-                              <p className="my-10 text-center text-grayL2">
+                              <p className="my-10 text-center text-light2">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -552,7 +552,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedLongLiquidityBins?.length === 0 ? (
-                              <p className="my-10 text-center text-grayL2">
+                              <p className="my-10 text-center text-light2">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -639,7 +639,7 @@ const BinItem = (props: BinItemProps) => {
 
   return (
     <div className="overflow-hidden border rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-grayL1/20">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-light1/20">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
           isChecked={isChecked}

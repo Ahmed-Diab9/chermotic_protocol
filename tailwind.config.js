@@ -32,13 +32,15 @@ export const theme = {
       white2: '#FFFFFF80',
       white3: '#ffffff4d',
 
-      grayLbg: '#FCFCFC',
-      grayL1: '#EEEEEE',
-      grayL2: '#D4D4D4',
+      lightBg1: '#FCFCFC',
+      lightBg2: '#D4D4D433',
+      light1: '#EEEEEE',
+      light2: '#D4D4D4',
 
-      grayDbg: '#151515',
-      grayD1: '#333333',
-      grayD2: '#4D4D4D',
+      darkBg1: '#151515',
+      darkBg2: '#4D4D4D33',
+      dark1: '#333333',
+      dark2: '#4D4D4D',
 
       error: '#030303',
       standby: '#FF8A00',

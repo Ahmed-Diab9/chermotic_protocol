@@ -142,7 +142,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           {/* <div className="w-[100px] mx-auto border-b border-2 border-black1"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="relative flex flex-col border border-grayL2 rounded-xl">
+            <article className="relative flex flex-col border border-light2 rounded-xl">
               <div
                 id="bins"
                 className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
@@ -258,7 +258,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-grayL2"
+                    className="flex-auto shadow-base border-light2"
                     label="All"
                     size="sm"
                     onClick={() => onAmountChange?.(MULTI_ALL)}

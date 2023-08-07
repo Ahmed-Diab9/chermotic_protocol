@@ -14,7 +14,7 @@ export const Progress = (props: ProgressProps) => {
   return (
     <div className={`progress progress-${css} w-full h-1 overflow-hidden rounded`}>
       {css === 'sm' ? (
-        <div className="h-full rounded bg-grayL2">
+        <div className="h-full rounded bg-light2">
           <div className={`h-full bg-black1 rounded`} style={{ width: `${progressPercent}%` }} />
         </div>
       ) : (

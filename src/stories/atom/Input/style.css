@@ -1,8 +1,8 @@
 .input {
   @apply max-w-full;
-  @apply bg-white dark:bg-grayDbg;
+  @apply bg-white dark:bg-darkBg1;
   &.disabled {
-    @apply bg-grayL1/30 border-grayL2/30 dark:bg-grayD1/30 dark:border-grayD2/30;
+    @apply bg-light1/30 border-light2/30 dark:bg-dark1/30 dark:border-dark2/30;
     input {
       @apply bg-transparent;
     }
@@ -29,5 +29,5 @@
 }
 .input-default {
   @apply border rounded-lg;
-  @apply border-grayL2 dark:border-grayD2;
+  @apply border-light2 dark:border-dark2;
 }

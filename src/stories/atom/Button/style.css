@@ -35,23 +35,23 @@
   @apply bg-black1 text-white1 border-black1;
   @apply dark:bg-white dark:text-black1 dark:border-white;
   &:disabled {
-    @apply text-black3 bg-grayLbg border-grayLbg;
-    @apply dark:text-white3 dark:bg-grayDbg dark:border-grayDbg;
+    @apply text-black3 bg-lightBg1 border-lightBg1;
+    @apply dark:text-white3 dark:bg-darkBg1 dark:border-darkBg1;
   }
 }
 .btn-gray {
-  @apply border border-grayL2 text-black1 bg-white hover:bg-grayL1/50;
-  @apply dark:border-grayD2 dark:text-white1 dark:bg-black1 dark:hover:bg-grayD1/50;
+  @apply border border-light2 text-black1 bg-white hover:bg-light1/50;
+  @apply dark:border-dark2 dark:text-white1 dark:bg-black1 dark:hover:bg-dark1/50;
   &:disabled {
-    @apply border-grayL2/40 text-grayL2;
-    @apply dark:border-grayD2/40 dark:text-grayD2;
+    @apply border-light2/40 text-light2;
+    @apply dark:border-dark2/40 dark:text-dark2;
   }
 }
 .btn-default {
-  @apply border border-grayL1 text-black2 bg-white hover:bg-grayL1/50;
-  @apply dark:border-grayD1 dark:text-white1/80 dark:bg-grayDbg dark:hover:bg-grayD1/50;
+  @apply border border-light1 text-black2 bg-white hover:bg-light1/50;
+  @apply dark:border-dark1 dark:text-white1/80 dark:bg-darkBg1 dark:hover:bg-dark1/50;
   &:disabled {
-    @apply text-grayL2 dark:text-grayD2;
+    @apply text-light2 dark:text-dark2;
   }
 }
 .btn-unstyled {
@@ -59,13 +59,13 @@
 }
 .btn-circle {
   @apply border !rounded-full;
-  @apply border-grayL1 bg-white hover:bg-grayL1/30 text-black1;
-  @apply dark:border-grayD1 dark:bg-black1 hover:bg-grayD1/30 dark:text-white1;
+  @apply border-light1 bg-white hover:bg-light1/30 text-black1;
+  @apply dark:border-dark1 dark:bg-black1 hover:bg-dark1/30 dark:text-white1;
 }
 .btn-wallet {
   @apply p-[2px] flex items-center border rounded-full;
-  @apply bg-black1 border-grayL1 text-white1;
-  /* @apply dark:bg-white dark:border-grayD1 dark:text-black1; */
+  @apply bg-black1 border-light1 text-white1;
+  /* @apply dark:bg-white dark:border-dark1 dark:text-black1; */
   .avatar {
     @apply !w-[36px] !h-[36px];
   }

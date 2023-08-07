@@ -118,7 +118,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-grayL1/20 dark:bg-grayD2/40">
+                    <article className="px-4 py-3 border-b bg-light1/20 dark:bg-dark2/40">
                       <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                         Connected Wallet
                       </h4>
@@ -163,7 +163,7 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2 dark:text-grayD2">
+                                <p className="text-center text-light2 dark:text-dark2">
                                   You have no asset.
                                 </p>
                               ) : (
@@ -228,7 +228,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2 dark:text-grayD2">
+                                <p className="text-center text-light2 dark:text-dark2">
                                   You have no liquidity token.
                                 </p>
                               ) : (
@@ -248,7 +248,7 @@ export const WalletPopover = ({
                                           <div className="flex gap-2 leading-none">
                                             <SkeletonElement isLoading={isLoading} width={100}>
                                               <p>{pool.token.name}</p>
-                                              <span className="px-1 text-grayL1 dark:text-grayD1">
+                                              <span className="px-1 text-light1 dark:text-dark1">
                                                 |
                                               </span>
                                               <p>{pool.market}</p>
@@ -288,7 +288,7 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20 dark:bg-grayD2/40">
+                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-light1/20 dark:bg-dark2/40">
                     {account?.chromaticAddress ? (
                       <>
                         <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">

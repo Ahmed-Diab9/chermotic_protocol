@@ -328,7 +328,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL1/20">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-light1/20">
                   <p className="flex-none pr-4 border-r text-black3">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
                     {account?.chromaticAddress}

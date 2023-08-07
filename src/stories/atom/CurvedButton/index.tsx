@@ -62,7 +62,7 @@ const CurvedLineBg = (props: CurvedLineBgProps) => {
       }`}
     >
       <path
-        className="fill-grayL1 dark:fill-grayD1"
+        className="fill-light1 dark:fill-dark1"
         fillRule="evenodd"
         d="M17 53h1c0-3.816 3.234-6.983 7.184-8.497C32.665 41.638 38 34.92 38 27c0-7.919-5.335-14.638-12.816-17.503C21.235 7.983 18 4.817 18 1V0h-1v1c0 4.418 3.7 7.85 7.827 9.43C31.983 13.172 37 19.56 37 27c0 7.441-5.017 13.828-12.173 16.57C20.7 45.15 17 48.581 17 53Z"
         clipRule="evenodd"
@@ -71,7 +71,7 @@ const CurvedLineBg = (props: CurvedLineBgProps) => {
         // fill={position === direction ? '#FFF' : '#FBFBFB'}
         className={
           position === direction
-            ? 'fill-white dark:fill-grayDbg'
+            ? 'fill-white dark:fill-darkBg1'
             : 'fill-[#FBFBFB] dark:fill-black1'
         }
         fillRule="evenodd"
