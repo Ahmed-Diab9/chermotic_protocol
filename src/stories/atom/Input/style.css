@@ -8,7 +8,7 @@
     }
   }
   &.error {
-    @apply border-error;
+    @apply border-darkErr dark:border-lightErr;
   }
 
   input {
