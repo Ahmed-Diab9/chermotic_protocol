@@ -18,6 +18,11 @@ body {
   word-spacing: -0.1em;
 }
 
+.sb-show-main:has(#storybook-root.dark),
+.docs-story:has(.sb-story.dark) {
+  @apply text-white1 bg-black;
+}
+
 h4 {
   @apply text-lg;
   font-weight: 500;

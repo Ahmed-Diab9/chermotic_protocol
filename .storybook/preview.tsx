@@ -26,12 +26,6 @@ const preview: Preview = {
     },
   },
   parameters: {
-    backgrounds: {
-      values: [
-        { name: 'Light', value: '#ffffff' },
-        { name: 'Dark', value: '#151515' },
-      ],
-    },
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
