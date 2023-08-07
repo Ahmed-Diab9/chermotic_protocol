@@ -42,16 +42,16 @@
   }
 }
 .btn-gray {
-  @apply border border-light2 text-black1 bg-white hover:bg-light1/50;
-  @apply dark:border-dark2 dark:text-white1 dark:bg-black1 dark:hover:bg-dark1/50;
+  @apply border border-light2 text-black1 bg-white hover:bg-light1/30;
+  @apply dark:border-dark2 dark:text-white1 dark:bg-black1 dark:hover:bg-dark1/30;
   &:disabled {
     @apply border-light2/40 text-light2;
     @apply dark:border-dark2/40 dark:text-dark2;
   }
 }
 .btn-default {
-  @apply border border-light1 text-black2 bg-white hover:bg-light1/50;
-  @apply dark:border-dark1 dark:text-white1/80 dark:bg-darkBg1 dark:hover:bg-dark1/50;
+  @apply border border-light1 text-black2 bg-white hover:bg-light1/30;
+  @apply dark:border-dark1 dark:text-white1/80 dark:bg-darkBg1 dark:hover:bg-dark1/30;
   &:disabled {
     @apply text-light2 dark:text-dark2;
   }
@@ -62,7 +62,7 @@
 .btn-circle {
   @apply border !rounded-full;
   @apply border-light1 bg-white hover:bg-light1/30 text-black1;
-  @apply dark:border-dark1 dark:bg-black1 hover:bg-dark1/30 dark:text-white1;
+  @apply dark:border-dark1 dark:bg-black1 dark:hover:bg-dark1/30 dark:text-white1;
 }
 .btn-wallet {
   @apply p-[2px] flex items-center border rounded-full;
