@@ -489,14 +489,16 @@ const AmountSwitch = (props: AmountSwitchProps) => {
   return (
     <>
       <div className="max-w-[220px]">
-        <div className="tooltip-input-balance">
+        <div className={`tooltip-input-balance-${input.direction}`}>
           <Input
             value={preset.value.toString()}
             onChange={onAmountChange}
             placeholder="0"
             error={disabled?.status}
           />
-          {errorMessage && <TooltipAlert label="input-balance" tip={errorMessage} />}
+          {errorMessage && (
+            <TooltipAlert label={`input-balance-${input.direction}`} tip={errorMessage} />
+          )}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">
