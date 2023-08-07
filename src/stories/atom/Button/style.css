@@ -31,9 +31,11 @@
   }
 }
 .btn-active {
-  @apply border hover:opacity-70;
-  @apply bg-black1 text-white1 border-black1;
+  @apply border bg-black1 text-white1 border-black1;
   @apply dark:bg-white dark:text-black1 dark:border-white;
+  &:not(.shadow-base) {
+    @apply hover:opacity-70;
+  }
   &:disabled {
     @apply text-black3 bg-lightBg1 border-lightBg1;
     @apply dark:text-white3 dark:bg-darkBg1 dark:border-darkBg1;
