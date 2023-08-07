@@ -193,7 +193,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-light1/20">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-lightBg1">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-4">

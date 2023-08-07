@@ -9,7 +9,7 @@
     width: calc(100% + 2px);
     .inner-box {
       @apply relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl;
-      @apply bg-light1/20 dark:bg-dark1/20;
+      @apply bg-lightBg1 dark:bg-darkBg1;
     }
   }
 }

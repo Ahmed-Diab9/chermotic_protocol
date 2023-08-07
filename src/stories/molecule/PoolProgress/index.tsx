@@ -382,7 +382,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black3 bg-light2/20" />
+              <Tag label="standby" className="text-black3 bg-lightBg2" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
@@ -394,7 +394,7 @@ const ProgressItem = (props: ProgressItemProps) => {
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-dark2 bg-light2/20" />
+              <Tag label="in progress" className="text-dark2 bg-lightBg2" />
             )}
             <TooltipGuide
               label="status-info"

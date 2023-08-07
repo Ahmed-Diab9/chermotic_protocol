@@ -32,12 +32,14 @@ export const theme = {
       white2: '#FFFFFF80',
       white3: '#ffffff4d',
 
-      lightBg1: '#FCFCFC',
+      lightBg0: '#FCFCFC',
+      lightBg1: '#EEEEEE33',
       lightBg2: '#D4D4D433',
       light1: '#EEEEEE',
       light2: '#D4D4D4',
 
-      darkBg1: '#151515',
+      darkBg0: '#151515',
+      darkBg1: '#33333333',
       darkBg2: '#4D4D4D33',
       dark1: '#333333',
       dark2: '#4D4D4D',

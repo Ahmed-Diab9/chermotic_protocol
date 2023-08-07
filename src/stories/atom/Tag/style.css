@@ -10,7 +10,7 @@
 }
 .tag-short,
 .tag-Short {
-  @apply text-dark2 bg-light2/20;
+  @apply text-dark2 bg-lightBg2;
   /* color: #ff3232;
   background: rgba(255, 50, 50, 0.1); */
 }

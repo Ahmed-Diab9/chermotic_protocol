@@ -95,7 +95,7 @@ export const WalletPopover = ({
               />
             </Popover.Button>
             {/* backdrop */}
-            <Popover.Overlay className="fixed inset-0 backdrop bg-white2 dark:bg-black1/80" />
+            <Popover.Overlay className="fixed inset-0 backdrop bg-white2 dark:bg-black2" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
@@ -118,7 +118,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-light1/20 dark:bg-dark2/40">
+                    <article className="px-4 py-3 border-b bg-lightBg1 dark:bg-dark2/40">
                       <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                         Connected Wallet
                       </h4>
@@ -288,7 +288,7 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-light1/20 dark:bg-dark2/40">
+                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-lightBg1 dark:bg-dark2/40">
                     {account?.chromaticAddress ? (
                       <>
                         <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
