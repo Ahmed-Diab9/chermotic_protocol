@@ -17,7 +17,7 @@ export const useChainListener = () => {
     };
   }, [chainId]);
 
-  const onChainCheck = useCallback(() => {
+  const onMount = useCallback(() => {
     window.ethereum?.request({ method: 'eth_chainId' }).then((currentChainId) => {
       const isSameChain = chainId === Number(currentChainId);
       setIsSameChain(isSameChain);
@@ -25,8 +25,8 @@ export const useChainListener = () => {
   }, [chainId]);
 
   useEffect(() => {
-    onChainCheck();
-  }, [onChainCheck]);
+    onMount();
+  }, [onMount]);
 
-  return { isSameChain, onChainCheck };
+  return { isSameChain };
 };
