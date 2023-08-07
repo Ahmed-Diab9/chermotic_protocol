@@ -1,22 +1,20 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { useChainListener } from '~/hooks/useChainListener';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
+import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/container/Header';
 import { TradeBar } from '~/stories/container/TradeBar';
 import { TradePanel } from '~/stories/container/TradePanel';
 import { MainBar } from '~/stories/template/MainBar';
-import { Modal } from '~/stories/template/Modal';
 import './style.css';
 
 const Trade = () => {
   useTokenLocal();
   useMarketLocal();
-  const { isSameChain, onChainCheck } = useChainListener();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-grayLBg1 dark:bg-black1">
@@ -42,19 +40,8 @@ const Trade = () => {
       </section>
       <TradeBar />
       <Toast />
-      {/* todo: Add Modal (Wrong Netwrok) */}
-      {!isSameChain && (
-        <Modal
-          title="Wrong Network"
-          paragraph="Please set network to Arbitrum"
-          subParagraph="Check your wallet and sign to change network."
-          buttonLabel="Try Again"
-          buttonCss="gray"
-          onClick={() => {
-            onChainCheck();
-          }}
-        />
-      )}
+      {/* todo: Add Modal (Wrong Network) */}
+      <ChainModal />
     </div>
   );
 };

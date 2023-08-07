@@ -6,6 +6,7 @@ import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
+import { ChainModal } from '~/stories/container/ChainModal';
 import { PoolProgress } from '~/stories/container/PoolProgress';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
@@ -100,6 +101,7 @@ const Pool = () => {
       </section>
       <Footer />
       <Toast />
+      <ChainModal />
     </div>
   );
 };
