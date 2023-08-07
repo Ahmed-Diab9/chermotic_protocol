@@ -2,20 +2,18 @@ import { isNil } from 'ramda';
 import { useEffect, useState } from 'react';
 import { padTimeZero } from '~/utils/number';
 import { useMarket } from './useMarket';
-import useOracleVersion from './useOracleVersion';
 
 export function useLastOracle() {
-  const { oracleVersions } = useOracleVersion();
   const { currentMarket } = useMarket();
   const [lapsed, setLapsed] = useState<
     { hours: string; minutes: string; seconds: string } | undefined
   >(undefined);
 
   useEffect(() => {
-    if (isNil(oracleVersions) || isNil(currentMarket)) {
+    if (isNil(currentMarket) || isNil(currentMarket)) {
       return;
     }
-    const currentVersion = oracleVersions[currentMarket.address];
+    const currentVersion = currentMarket.oracleValue;
     if (isNil(currentVersion) || isNil(currentVersion.timestamp)) {
       return;
     }
@@ -36,7 +34,7 @@ export function useLastOracle() {
     return () => {
       clearTimeout(timerId);
     };
-  }, [oracleVersions, currentMarket]);
+  }, [currentMarket]);
 
   return lapsed;
 }

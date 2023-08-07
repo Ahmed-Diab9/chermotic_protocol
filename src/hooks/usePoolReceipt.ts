@@ -19,7 +19,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
-import useOracleVersion from './useOracleVersion';
 
 export type LpReceiptAction = 'add' | 'remove';
 export interface LpReceipt {
@@ -72,8 +71,6 @@ const usePoolReceipt = () => {
   const { client, walletAddress } = useChromaticClient();
   const { currentMarket } = useMarket();
   const { liquidityPool } = useLiquidityPool();
-  const { currentMarketOracleVersion } = useOracleVersion();
-  // const { currentToken } = useSettlementToken();
 
   const binName = useCallback((feeRate: number, description?: string) => {
     const prefix = feeRate > 0 ? '+' : '';
@@ -87,7 +84,7 @@ const usePoolReceipt = () => {
     name: 'getPoolReceipt',
     type: 'EOA',
     address: walletAddress,
-    currentOracleVersion: currentMarketOracleVersion?.version,
+    currentOracleVersion: currentMarket?.oracleValue.version,
     marketAddress: currentMarket?.address,
     liquidityPool: liquidityPool,
   };

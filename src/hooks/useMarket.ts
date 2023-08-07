@@ -34,6 +34,9 @@ export const useMarket = (_interval?: number) => {
     async ({ selectedTokenAddress }) => {
       const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
       return markets;
+    },
+    {
+      refreshInterval: 1000 * 30,
     }
   );
 

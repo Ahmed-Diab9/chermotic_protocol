@@ -1,41 +1,42 @@
 import { isNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { Address } from 'wagmi';
 import { AppError } from '~/typings/error';
+import { Market } from '~/typings/market';
 import { errorLog } from '~/utils/log';
-import { useChromaticClient } from './useChromaticClient';
-import useOracleVersion from './useOracleVersion';
-import { usePositions } from './usePositions';
 import { useChromaticAccount } from './useChromaticAccount';
+import { useChromaticClient } from './useChromaticClient';
+import { usePositions } from './usePositions';
 
 interface Props {
-  marketAddress: Address;
+  market?: Market;
   positionId: bigint;
 }
 
 export function useClaimPosition(props: Props) {
-  const { marketAddress, positionId } = props;
+  const { market, positionId } = props;
   const { client } = useChromaticClient();
   const { fetchBalances } = useChromaticAccount();
   const { positions, fetchPositions } = usePositions();
-  const { oracleVersions } = useOracleVersion();
   const onClaimPosition = async function () {
     try {
+      if (isNil(market)) {
+        return AppError.reject('No markets', 'onClaimPosition');
+      }
       const position = positions?.find(
-        (position) => position.marketAddress === marketAddress && position.id === positionId
+        (position) => position.marketAddress === market?.address && position.id === positionId
       );
       if (isNil(position)) {
         errorLog('no positions');
         toast('Positions are not selected.');
         return AppError.reject('no positions', 'onClosePosition');
       }
-      if ((oracleVersions?.[marketAddress]?.version || 0n) <= position.closeVersion) {
+      if ((market?.oracleValue.version || 0n) <= position.closeVersion) {
         errorLog('the selected position is not closed');
         toast('This position is not closed yet.');
         return AppError.reject('the selected position is not closed', 'onClaimPosition');
       }
       const routerApi = client.router();
-      await routerApi.claimPosition(marketAddress, position.id);
+      await routerApi.claimPosition(market?.address, position.id);
 
       await fetchPositions();
       await fetchBalances();

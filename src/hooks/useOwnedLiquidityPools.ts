@@ -15,7 +15,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
-import useOracleVersion from './useOracleVersion';
 
 const { encodeTokenId } = ChromaticUtils;
 
@@ -58,7 +57,6 @@ export const useOwnedLiquidityPools = () => {
   const { client, walletAddress } = useChromaticClient();
   const { currentToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
-  const { currentMarketOracleVersion } = useOracleVersion();
   const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
 
   const fetchKey = {
@@ -67,7 +65,7 @@ export const useOwnedLiquidityPools = () => {
     address: walletAddress,
     tokenAddress: currentToken?.address,
     marketAddresses: marketAddresses,
-    oracleVersion: currentMarketOracleVersion?.version,
+    oracleVersion: currentMarket?.oracleValue.version,
   };
 
   const {
