@@ -5,16 +5,17 @@
   @apply relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-white focus-visible:ring-opacity-75;
 
   &[aria-checked='false'] {
-    @apply bg-light2 dark:bg-light2;
+    @apply bg-light2 dark:bg-dark2;
     &::after {
       @apply translate-x-0;
     }
   }
   &[aria-checked='true'] {
-    @apply bg-black1 dark:bg-black1;
+    @apply bg-black1 dark:bg-white1;
   }
   &::after {
-    @apply inline-block transition duration-200 ease-in-out transform bg-white rounded-full pointer-events-none;
+    @apply inline-block transition duration-200 ease-in-out transform rounded-full pointer-events-none;
+    @apply bg-white dark:bg-black1;
     content: '';
   }
 }

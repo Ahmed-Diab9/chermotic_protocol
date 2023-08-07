@@ -6,14 +6,14 @@ interface LoadingProps {
 }
 
 export const Loading = (props: LoadingProps) => {
-  const { color = 'black1', size = 'sm' } = props;
+  const { color, size = 'sm' } = props;
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
-      fill="none"
+      fill="current"
       viewBox="0 0 16 16"
       className={`loading loading-${size} text-${color} animate-spin`}
     >

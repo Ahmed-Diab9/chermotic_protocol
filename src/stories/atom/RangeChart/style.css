@@ -6,7 +6,7 @@
     @apply box-content;
   }
   .react_range__label {
-    @apply text-xs text-black3;
+    @apply text-xs text-black3 dark:text-white3;
   }
   .react_range__handle_value {
     /* @apply -translate-y-[2px]; */

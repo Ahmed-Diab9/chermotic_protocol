@@ -18,6 +18,10 @@ body {
   word-spacing: -0.1em;
 }
 
+.sb-show-main,
+.docs-story {
+  @apply text-black1 bg-white;
+}
 .sb-show-main:has(#storybook-root.dark),
 .docs-story:has(.sb-story.dark) {
   @apply text-white1 bg-black;

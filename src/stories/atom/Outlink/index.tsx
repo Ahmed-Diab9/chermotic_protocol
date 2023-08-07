@@ -14,7 +14,7 @@ export const Outlink = (props: OutlinkProps) => {
   return (
     <a
       href={outLink}
-      className={`inline-flex hover:underline cursor-pointer text-black2 ${className}`}
+      className={`inline-flex hover:underline cursor-pointer text-black2 dark:text-white2 ${className}`}
       target="_blank"
       rel="noreferrer"
     >
