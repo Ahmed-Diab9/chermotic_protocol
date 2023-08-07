@@ -7,6 +7,7 @@ import { Token } from '~/typings/market';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
+import { PromiseOnlySuccess } from '~/utils/promise';
 
 export const useSettlementToken = () => {
   const { client, isReady } = useChromaticClient();
@@ -28,7 +29,19 @@ export const useSettlementToken = () => {
   } = useSWR<Token[]>(isReady && fetchKey, async () => {
     const marketFactoryApi = client.marketFactory();
 
-    return await marketFactoryApi.registeredSettlementTokens();
+    const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
+
+    return PromiseOnlySuccess(
+      registeredSettlementTokens.map(async (token) => {
+        const minimumMargin = await marketFactoryApi
+          .contracts()
+          .marketFactory.read.getMinimumMargin([token.address]);
+        return {
+          ...token,
+          minimumMargin,
+        };
+      })
+    );
   });
 
   useError({ error });

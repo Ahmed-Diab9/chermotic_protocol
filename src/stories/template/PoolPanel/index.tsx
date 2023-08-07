@@ -107,7 +107,6 @@ export const PoolPanel = (props: PoolPanelProps) => {
   const binDecimals =
     isValid(ownedPool) && ownedPool.bins.length > 0 ? ownedPool.bins[0].clbTokenDecimals : 1;
 
-  logger.info('liquidity', liquidity);
   const totalLiquidityValue =
     ownedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbBalanceOfSettlement;
@@ -155,7 +154,13 @@ export const PoolPanel = (props: PoolPanelProps) => {
       return formatDecimals(balances[token.address], token.decimals, 0);
     return '-';
   }, [balances, token]);
-
+  const liquidityFormatter = Intl.NumberFormat('en', {
+    useGrouping: false,
+    notation: 'compact',
+    compactDisplay: 'short',
+    maximumFractionDigits: 3,
+    minimumFractionDigits: 0,
+  });
   const onSelectAllClick = useCallback(
     (selectedIndex: number) => {
       switch (selectedIndex) {
@@ -257,18 +262,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        */}
                       {shortTotalMaxLiquidity && shortTotalUnusedLiquidity && token ? (
                         <p>
-                          {formatDecimals(
-                            shortTotalMaxLiquidity - shortTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M /{' '}
-                          {formatDecimals(
-                            shortTotalMaxLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M
+                          {`${liquidityFormatter.format(
+                            +formatDecimals(
+                              shortTotalMaxLiquidity - shortTotalUnusedLiquidity,
+                              token.decimals
+                            )
+                          )} / ${liquidityFormatter.format(
+                            +formatDecimals(shortTotalMaxLiquidity, token.decimals)
+                          )}`}
                         </p>
                       ) : null}
                     </div>
@@ -280,18 +281,14 @@ export const PoolPanel = (props: PoolPanelProps) => {
                        */}
                       {longTotalMaxLiquidity && longTotalUnusedLiquidity && token ? (
                         <p>
-                          {formatDecimals(
-                            longTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M /{' '}
-                          {formatDecimals(
-                            longTotalMaxLiquidity - longTotalUnusedLiquidity,
-                            token.decimals + MILLION_UNITS,
-                            4
-                          )}
-                          M
+                          {`${liquidityFormatter.format(
+                            +formatDecimals(
+                              longTotalMaxLiquidity - longTotalUnusedLiquidity,
+                              token.decimals
+                            )
+                          )} / ${liquidityFormatter.format(
+                            +formatDecimals(longTotalMaxLiquidity, token.decimals)
+                          )}`}
                         </p>
                       ) : null}
                     </div>

@@ -5,7 +5,9 @@ const meta = {
   title: 'Molecule/TradeContent',
   component: TradeContent,
   args: {
-    disabled: false,
+    disabled: {
+      status: false,
+    },
   },
 } satisfies Meta<typeof TradeContent>;
 
