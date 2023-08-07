@@ -59,8 +59,8 @@
 }
 .btn-circle {
   @apply border !rounded-full;
-  @apply border-grayL1 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD1 dark:bg-black1 hover:bg-grayD1/30;
+  @apply border-grayL1 bg-white hover:bg-grayL1/30 text-black1;
+  @apply dark:border-grayD1 dark:bg-black1 hover:bg-grayD1/30 dark:text-white1;
 }
 .btn-wallet {
   @apply p-[2px] flex items-center border rounded-full;
