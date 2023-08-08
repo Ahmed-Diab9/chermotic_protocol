@@ -1,7 +1,7 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
-import { usePositions } from './usePositions';
 import { useChromaticAccount } from './useChromaticAccount';
+import { usePositions } from './usePositions';
 import { useSettlementToken } from './useSettlementToken';
 
 export function useMargins() {

@@ -73,7 +73,7 @@ function useRemoveLiquidityBins({ bins, type }: Props) {
 
       toast('The liquidities removing process has been started.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     }
   }, [walletAddress, currentMarket, liquidityPool, bins, type]);
 

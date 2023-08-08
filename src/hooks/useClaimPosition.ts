@@ -42,7 +42,7 @@ export function useClaimPosition(props: Props) {
       await fetchBalances();
       toast('The claiming process has been completed.');
     } catch (error) {
-      toast.error(String(error));
+      toast.error('Transaction rejected.');
     }
   };
 

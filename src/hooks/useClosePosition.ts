@@ -33,7 +33,7 @@ function useClosePosition(props: Props) {
       toast('The closing process has been started.');
     } catch (error) {
       errorLog(error);
-      toast('Position was not deleted, Found error.');
+      toast.error('Transaction rejected.');
 
       return AppError.reject(error, 'onClosePosition');
     }

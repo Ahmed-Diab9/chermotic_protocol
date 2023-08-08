@@ -69,7 +69,7 @@ function useRemoveLiquidityAmounts({ amount, feeRate }: Props) {
 
       toast('The liquidity removing process has been started.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     }
   }, [client.walletClient, walletAddress, pool, amount]);
 
