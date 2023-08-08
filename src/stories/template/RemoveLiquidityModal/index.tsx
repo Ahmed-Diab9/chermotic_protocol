@@ -42,8 +42,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
         dispatch(poolsAction.onBinsReset());
       }}
     >
-      {/* backdrop */}
-      <div className="fixed inset-0 bg-white2" aria-hidden="true" />
+      <div className="backdrop" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal modal-base">
           <Dialog.Title className="modal-title">

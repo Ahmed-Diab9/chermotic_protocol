@@ -68,7 +68,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
           {open ? (
             <>
               {/* backdrop */}
-              <Popover.Overlay className="fixed inset-0 backdrop bg-white2" />
+              <Popover.Overlay className="backdrop" />
               <div className="relative popover-panel" ref={ref}>
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
