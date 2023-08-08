@@ -28,7 +28,7 @@ export const Modal = ({
 
   return (
     <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
-      <div className="fixed inset-0 bg-white2" aria-hidden="true" />
+      <div className="backdrop" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className={`text-center bg-white modal modal-${size}`}>
           <Dialog.Title className="modal-title !mb-8">

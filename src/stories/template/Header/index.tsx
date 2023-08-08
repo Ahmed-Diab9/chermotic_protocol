@@ -101,7 +101,13 @@ const ChainSwitch = (props: ChainSwitchProps) => {
         gap="3"
         label={label}
       />
-      <TooltipAlert label="change-network" tip="Change Network" place="left" css="outline" />
+      <TooltipAlert
+        label="change-network"
+        tip="Change Network"
+        place="left"
+        css="outline"
+        className="!top-5"
+      />
       {children}
     </button>
   );

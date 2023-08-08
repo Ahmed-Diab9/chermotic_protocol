@@ -94,8 +94,7 @@ export const WalletPopover = ({
                 gap="3"
               />
             </Popover.Button>
-            {/* backdrop */}
-            <Popover.Overlay className="fixed inset-0 backdrop bg-white2 dark:bg-black2" />
+            <Popover.Overlay className="backdrop" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"

@@ -52,7 +52,11 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* z-index */
-.tooltip .tooltip-tip {
+.tooltip {
+  @apply z-0;
+}
+.tooltip .tooltip-tip,
+.react-tooltip {
   @apply z-50;
 }
 .modal {
@@ -67,4 +71,5 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .backdrop {
   @apply z-10;
+  @apply fixed inset-0 bg-white1/90 dark:bg-black1/90;
 }
