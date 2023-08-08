@@ -93,7 +93,7 @@ function useOpenPosition({ state }: Props) {
       await fetchBalances();
 
       window.dispatchEvent(TradeEvent);
-      toast('New position is opened.');
+      toast('The opening process has been started.');
     } catch (error) {
       toast((error as any).message);
     } finally {

@@ -29,7 +29,8 @@ function useClosePosition(props: Props) {
       const routerApi = client.router();
       await routerApi?.closePosition(position.marketAddress, position.id);
 
-      fetchPositions();
+      await fetchPositions();
+      toast('The closing process has been started.');
     } catch (error) {
       errorLog(error);
       toast('Position was not deleted, Found error.');
