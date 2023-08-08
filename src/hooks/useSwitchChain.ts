@@ -10,12 +10,11 @@ const useSwitchChain = () => {
   const { switchNetworkAsync } = useSwitchNetwork();
 
   const onChainSwitch = useCallback(async () => {
-    if (isNil(connectAsync) || isNil(switchNetworkAsync)) {
-      errorLog('Error on calling functions');
-      return;
-    }
     if (isConnected) {
-      await switchNetworkAsync(chainId);
+      if (isNil(switchNetworkAsync)) {
+        errorLog('Error on calling a function');
+      }
+      await switchNetworkAsync?.(chainId);
     } else {
       await window.ethereum?.request({
         method: 'wallet_switchEthereumChain',
