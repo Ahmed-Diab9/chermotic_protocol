@@ -13,14 +13,14 @@ export const Dropdown = (props: DropdownProps) => {
         <Menu.Items>
           <Menu.Item>
             {({ active }) => (
-              <a className={`${active && 'bg-light1'}`} href="/account-settings">
+              <a className={`${active && 'bg-grayL1'}`} href="/account-settings">
                 Menu Item 01
               </a>
             )}
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-              <a className={`${active && 'bg-light1'}`} href="/account-settings">
+              <a className={`${active && 'bg-grayL1'}`} href="/account-settings">
                 Menu Item 02
               </a>
             )}

@@ -1,8 +1,8 @@
 .progress-default {
-  @apply bg-light1 dark:bg-dark1;
+  @apply bg-grayL1 dark:bg-grayD1;
 }
 .progress-sm {
   @apply h-3 rounded-xl p-[3px] border;
-  @apply bg-white border-light2;
-  @apply dark:bg-black1 dark:border-dark2;
+  @apply bg-white border-grayL2;
+  @apply dark:bg-black1 dark:border-grayD2;
 }

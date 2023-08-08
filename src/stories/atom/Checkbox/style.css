@@ -5,7 +5,7 @@
     + .checkbox-label::before {
       @apply flex-none inline-block rounded border;
       @apply bg-white border-black3;
-      @apply dark:bg-darkBg1 border-white3;
+      @apply dark:bg-grayDBg1 border-white3;
       content: '';
     }
     &:checked + .checkbox-label::before {

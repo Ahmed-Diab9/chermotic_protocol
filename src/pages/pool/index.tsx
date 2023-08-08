@@ -39,7 +39,7 @@ const Pool = () => {
   }, [publicClient]);
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-lightBg1 dark:bg-black1">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayLBg1 dark:bg-black1">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar showAccountPopover={false} />
@@ -47,7 +47,7 @@ const Pool = () => {
           <div className="flex-auto w-3/5">
             <PoolPanel />
             {/* bottom */}
-            <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl dark:bg-darkBg1">
+            <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl dark:bg-grayDBg1">
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <div className="flex gap-2">

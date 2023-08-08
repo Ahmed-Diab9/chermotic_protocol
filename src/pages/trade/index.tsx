@@ -16,7 +16,7 @@ const Trade = () => {
   useMarketLocal();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-lightBg1 dark:bg-black1">
+    <div className="flex flex-col min-h-[100vh] w-full bg-grayLBg1 dark:bg-black1">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
         <MainBar showAccountPopover={true} />

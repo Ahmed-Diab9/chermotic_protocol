@@ -1,14 +1,14 @@
 .input {
   @apply max-w-full;
-  @apply bg-white dark:bg-darkBg1;
+  @apply bg-white dark:bg-grayDBg1;
   &.disabled {
-    @apply bg-light1/30 border-light2/30 dark:bg-dark1/30 dark:border-dark2/30;
+    @apply bg-grayL1/30 border-grayL2/30 dark:bg-grayD1/30 dark:border-grayD2/30;
     input {
       @apply bg-transparent;
     }
   }
   &.error {
-    @apply border-darkErr dark:border-lightErr;
+    @apply border-grayDErr dark:border-grayLErr;
   }
 
   input {
@@ -29,5 +29,5 @@
 }
 .input-default {
   @apply border rounded-lg;
-  @apply border-light2 dark:border-dark2;
+  @apply border-grayL2 dark:border-grayD2;
 }
