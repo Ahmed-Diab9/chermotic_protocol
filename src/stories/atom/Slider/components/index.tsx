@@ -17,8 +17,8 @@ const railInnerStyle = {
   height: 18,
   marginLeft: '-8px',
   transform: 'translate(0%, -50%)',
-  backgroundColor: '#ffffff',
-  border: '1px solid #d4d4d4',
+  borderWidth: '1px',
+  borderStyle: 'solid',
   borderRadius: 20,
   pointerEvents: 'none' as React.CSSProperties['pointerEvents'],
 };
@@ -27,7 +27,10 @@ export function SliderRail({ getRailProps }: { getRailProps: GetRailProps }) {
   return (
     <Fragment>
       <div style={railOuterStyle} {...getRailProps()} />
-      <div style={railInnerStyle} />
+      <div
+        style={railInnerStyle}
+        className="bg-white border-light2 dark:border-dark2 dark:bg-black"
+      />
     </Fragment>
   );
 }
@@ -76,10 +79,14 @@ export function Handle({
           height: percent === 0 ? 8 : 6,
           borderRadius: '50%',
           boxSizing: 'content-box',
-          border: percent === 0 ? '1px solid #D4D4D4' : '2px solid black',
-          backgroundColor: disabled ? '#666' : '#ffffff',
+          borderStyle: 'solid',
           boxShadow: percent === 0 ? '1px 1px 4px rgba(163, 163, 163, 0.25)' : undefined,
         }}
+        className={`${disabled ? 'bg-dark2 dark:bg-light2' : 'bg-white dark:bg-black1'} ${
+          percent === 0
+            ? 'border border-light2 dark:border-dark2'
+            : 'border-2 border-black1 dark:border-white'
+        }`}
       />
     </Fragment>
   );
@@ -102,13 +109,13 @@ export function Track({ source, target, getTrackProps, disabled = false }: Track
             transform: 'translate(-6px, -50%)',
             height: 10,
             zIndex: 1,
-            backgroundColor: disabled ? '#999' : '#030303',
             borderRadius: '8px 0 0 8px',
             cursor: 'pointer',
             left: `calc(${source.percent}% + 2px)`,
             width: `calc(${target.percent - source.percent}% + 4px)`,
             opacity: target.percent === 0 && 0,
           }}
+          className={disabled ? 'bg-light1' : 'bg-black1 dark:bg-white'}
           {...getTrackProps()}
         />
       </div>
@@ -126,17 +133,15 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
     <div>
       {/* Tick - dot */}
       <div
-        // className={`absolute mt-[-1px] w-[2px] h-[2px] rounded bg-grayL2 left-[${tick.percent}%]`}
-        className=""
         style={{
           position: 'absolute',
           marginTop: -1,
           width: 2,
           height: 2,
           borderRadius: 2,
-          backgroundColor: '#D4D4D4',
           left: `${tick.percent}%`,
         }}
+        className="bg-light2 dark:bg-dark2"
       />
       {/* Tick - number */}
       <button

@@ -23,17 +23,28 @@ export const theme = {
     },
     colors: {
       current: 'currentColor',
-      black: '#030303',
 
-      grayLbg: '#FCFCFC',
-      grayL1: '#EEEEEE',
-      grayL2: '#D4D4D4',
+      black1: '#030303',
+      black2: '#03030380',
+      black3: '#0303034d',
 
-      grayDbg: '#151515',
-      grayD1: '#333333',
-      grayD2: '#4D4D4D',
+      white1: '#ffffffe6',
+      white2: '#FFFFFF80',
+      white3: '#ffffff4d',
 
-      error: '#030303',
+      lightBg0: '#FCFCFC',
+      lightBg1: '#EEEEEE33',
+      lightBg2: '#D4D4D433',
+      light1: '#EEEEEE',
+      light2: '#D4D4D4',
+      lightErr: '#FFFFFF',
+
+      darkBg0: '#151515',
+      darkBg1: '#33333333',
+      darkBg2: '#4D4D4D33',
+      dark1: '#333333',
+      dark2: '#4D4D4D',
+      darkErr: '#030303',
 
       standby: '#FF8A00',
       completed: '#00E23F',

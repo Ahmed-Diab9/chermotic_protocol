@@ -112,7 +112,7 @@ export const PoolProgress = ({
                     />
                   </div>
                   {open && isValid(lapsed) && (
-                    <p className="mt-1 ml-auto text-sm text-black/30">
+                    <p className="mt-1 ml-auto text-sm text-black3">
                       Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}s ago
                     </p>
                   )}
@@ -120,7 +120,7 @@ export const PoolProgress = ({
                 <ChevronDownIcon
                   className={`${
                     open ? 'rotate-180 transform' : ''
-                  } w-6 text-black/30 absolute right-6`}
+                  } w-6 text-black3 absolute right-6`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="relative px-5 border-t" ref={ref}>
@@ -158,7 +158,7 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-light2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -186,7 +186,11 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(
+                                  receipt.remainedCLBAmount,
+                                  token.decimals,
+                                  2
+                                )}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -201,7 +205,7 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {mintings.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-light2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -243,7 +247,7 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {burnings.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-light2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -271,7 +275,11 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(
+                                  receipt.remainedCLBAmount,
+                                  token.decimals,
+                                  2
+                                )}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -374,19 +382,19 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/30 bg-grayL2/20" />
+              <Tag label="standby" className="text-black3 bg-lightBg2" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
               //   className="text-[#03C239] bg-[#23F85F]/10"
               // />
-              <Tag label="completed" className="text-white bg-grayD2" />
+              <Tag label="completed" className="text-white1 bg-dark2" />
             ) : (
               // <Tag
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-grayD2 bg-grayL2/20" />
+              <Tag label="in progress" className="text-dark2 bg-lightBg2" />
             )}
             <TooltipGuide
               label="status-info"
@@ -409,7 +417,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             />
           </span>
         </h4>
-        <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
+        <div className="flex items-center gap-[6px] text-sm tracking-tight text-black1 text-right">
           <span className="">
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
@@ -442,7 +450,7 @@ const ProgressItem = (props: ProgressItemProps) => {
                 <Avatar label={token} size="xs" gap="1" />
               </SkeletonElement>
             </div>
-            <p className="mt-1 text-left text-black/30">
+            <p className="mt-1 text-left text-black3">
               <SkeletonElement isLoading={isLoading} width={60}>
                 {name}
               </SkeletonElement>
@@ -451,7 +459,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         <div className="flex flex-col items-end justify-end">
           {action === 'remove' && status !== 'standby' && (
-            <p className="mb-2 -mt-2 text-black/50">{remainedCLBAmount} CLB Remaining</p>
+            <p className="mb-2 -mt-2 text-black2">{remainedCLBAmount} CLB Remaining</p>
           )}
           <Button
             label={

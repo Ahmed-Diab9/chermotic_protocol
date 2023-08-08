@@ -31,7 +31,7 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
       <Tooltip
         middlewares={[shift(), fixToTop]}
         anchorSelect={anchor}
-        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${className}`}
+        className={`z-50 !bg-white border border-black1 !rounded-lg min-w-[200px] ${className}`}
         place="top"
         render={render}
         positionStrategy="absolute"

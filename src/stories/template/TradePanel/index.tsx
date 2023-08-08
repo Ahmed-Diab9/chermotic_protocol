@@ -55,7 +55,7 @@ export const TradePanel = (props: TradePanelProps) => {
           <div className="flex">
             <div className="w-full px-0 pt-4 pb-10 border-r">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 border-black1 max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   SHORT
                 </h2>
               </div>
@@ -68,7 +68,7 @@ export const TradePanel = (props: TradePanelProps) => {
             </div>
             <div className="w-full px-0 pt-4 pb-10">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-black max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 border-black1 max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   LONG
                 </h2>
               </div>
@@ -110,13 +110,13 @@ export const TradePanel = (props: TradePanelProps) => {
               <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
                 <Tab
                   value="short"
-                  className="pb-2 mx-auto text-3xl font-bold border-b-2 border-black"
+                  className="pb-2 mx-auto text-3xl font-bold border-b-2 border-black1"
                 >
                   SHORT
                 </Tab>
                 <Tab
                   value="long"
-                  className="pb-2 mx-auto text-3xl font-bold border-b-2 border-black"
+                  className="pb-2 mx-auto text-3xl font-bold border-b-2 border-black1"
                 >
                   LONG
                 </Tab>

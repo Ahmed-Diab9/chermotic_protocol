@@ -1,13 +1,21 @@
 .input {
-  @apply max-w-full bg-white;
+  @apply max-w-full;
+  @apply bg-white dark:bg-darkBg1;
   &.disabled {
-    @apply bg-grayL1/30 border-grayL2/30;
+    @apply bg-light1/30 border-light2/30 dark:bg-dark1/30 dark:border-dark2/30;
     input {
       @apply bg-transparent;
     }
   }
   &.error {
-    @apply border-error;
+    @apply border-darkErr dark:border-lightErr;
+  }
+
+  input {
+    @apply bg-transparent;
+  }
+  .unit {
+    @apply text-black3 dark:text-white3;
   }
 }
 .input-sm {
@@ -20,5 +28,6 @@
   @apply h-12 px-5;
 }
 .input-default {
-  @apply border border-grayL2 rounded-lg;
+  @apply border rounded-lg;
+  @apply border-light2 dark:border-dark2;
 }

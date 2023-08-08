@@ -55,8 +55,8 @@ export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
         const { liquidity, utilized, ratio } = getLiquidity(feeRate);
         return (
           <div>
-            <p className="font-semibold text-black">Liquidity Bin {feeRate}</p>
-            <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black/30">
+            <p className="font-semibold text-black1">Liquidity Bin {feeRate}</p>
+            <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-black3">
               <p>Liquidity: {liquidity}</p>
               <p>
                 Utilization: {utilized} ({ratio}%)

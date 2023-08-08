@@ -14,10 +14,11 @@
     @apply cursor-not-allowed;
   }
   &.toggle-on {
-    @apply border border-black text-black;
+    @apply border border-black1 text-black1;
+    @apply dark:border-white dark:text-white1;
   }
   &.toggle-off {
-    @apply border border-black/50;
+    @apply border border-black2 dark:border-white2;
   }
   &.btn-icon-only {
     @apply justify-center text-center flex-none;
@@ -30,45 +31,49 @@
   }
 }
 .btn-active {
-  @apply bg-black text-white dark:text-black;
-  @apply border border-black;
-  @apply hover:bg-black/70;
+  @apply border bg-black1 text-white1 border-black1;
+  @apply dark:bg-white dark:text-black1 dark:border-white;
+  &:not(.shadow-base) {
+    @apply hover:opacity-70;
+  }
   &:disabled {
-    @apply text-black/30 bg-[#F9F9F9] border-[#F9F9F9];
+    @apply text-black3 bg-lightBg1 border-lightBg1;
+    @apply dark:text-white3 dark:bg-darkBg1 dark:border-darkBg1;
   }
 }
 .btn-gray {
-  @apply border border-grayL2 bg-white;
-  @apply hover:bg-grayL1/30;
+  @apply border border-light2 text-black1 bg-white hover:bg-light1/30;
+  @apply dark:border-dark2 dark:text-white1 dark:bg-black1 dark:hover:bg-dark1/30;
   &:disabled {
-    @apply border-grayL2/40 text-grayL2;
+    @apply border-light2/40 text-light2;
+    @apply dark:border-dark2/40 dark:text-dark2;
   }
 }
 .btn-default {
-  @apply border text-black/50 bg-white;
-  @apply hover:bg-grayL1/30;
+  @apply border border-light1 text-black2 bg-white hover:bg-light1/30;
+  @apply dark:border-dark1 dark:text-white1/80 dark:bg-darkBg1 dark:hover:bg-dark1/30;
   &:disabled {
-    @apply text-grayL2;
+    @apply text-light2 dark:text-dark2;
   }
 }
 .btn-unstyled {
   @apply bg-transparent;
 }
 .btn-circle {
-  @apply border border-[#eee] bg-white !rounded-full;
-  @apply hover:bg-grayL1/30;
+  @apply border !rounded-full;
+  @apply border-light1 bg-white hover:bg-light1/30 text-black1;
+  @apply dark:border-dark1 dark:bg-black1 dark:hover:bg-dark1/30 dark:text-white1;
 }
 .btn-wallet {
-  @apply p-[2px] flex items-center border rounded-full bg-black border-grayL1 text-white;
+  @apply p-[2px] flex items-center border rounded-full;
+  @apply bg-black1 border-light1 text-white1;
+  /* @apply dark:bg-white dark:border-dark1 dark:text-black1; */
   .avatar {
     @apply !w-[36px] !h-[36px];
   }
 }
 .btn-xs {
-  @apply min-w-[20px];
-  font-size: 9px;
-  height: 20px;
-  padding: 0 8px;
+  @apply min-w-[20px] h-5 px-2 py-0 text-xs;
   > div {
     gap: 4px;
   }
@@ -80,10 +85,7 @@
   }
 }
 .btn-sm {
-  @apply min-w-[24px];
-  font-size: 11px;
-  height: 24px;
-  padding: 0 12px;
+  @apply min-w-[24px] h-6 px-3 py-0 text-sm;
   > div {
     gap: 4px;
   }
@@ -95,10 +97,7 @@
   }
 }
 .btn-base {
-  @apply min-w-[30px];
-  font-size: 12px;
-  height: 30px;
-  padding: 0 12px;
+  @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
   > div {
     gap: 4px;
   }
@@ -113,10 +112,7 @@
   }
 }
 .btn-lg {
-  @apply min-w-[36px];
-  font-size: 14px;
-  height: 36px;
-  padding: 0 16px;
+  @apply min-w-[36px] h-9 px-4 py-0 text-lg;
   > div {
     gap: 8px;
   }
@@ -128,10 +124,7 @@
   }
 }
 .btn-xl {
-  @apply min-w-[42px];
-  font-size: 16px;
-  height: 42px;
-  padding: 0 16px;
+  @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
   > div {
     gap: 12px;
   }
@@ -143,10 +136,7 @@
   }
 }
 .btn-2xl {
-  @apply min-w-[48px];
-  font-size: 18px;
-  height: 48px;
-  padding: 0 16px;
+  @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
   > div {
     gap: 12px;
   }

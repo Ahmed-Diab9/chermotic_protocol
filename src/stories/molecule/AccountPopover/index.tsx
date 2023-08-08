@@ -18,10 +18,8 @@ import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import { CreateLgIcon, LoadingLgIcon, CompleteLgIcon } from '~/assets/icons/CreateAccountIcon';
 import './style.css';
-import checkIcon from '/src/assets/images/i_check_xl.svg';
-import createAccountIcon from '/src/assets/images/i_create_account_xl.svg';
-import loadingIcon from '/src/assets/images/i_loading_xl.svg';
 
 interface AccountPopoverProps {
   // onClick?: () => void;
@@ -68,7 +66,7 @@ export const AccountPopover = ({
 
   return (
     <>
-      <div className="AccountPopover relative flex items-center justify-between gap-6 border rounded-2xl min-h-[80px] bg-white shadow-lg">
+      <div className="AccountPopover">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>
@@ -212,7 +210,9 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${open ? 'border-black !text-black' : ''}`}
+            className={`btn btn-default btn-sm ${
+              open ? '!border-black1 !text-black1 dark:!border-white dark:!text-white1' : ''
+            }`}
           >
             {title}
           </Popover.Button>
@@ -221,8 +221,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.NONE && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={createAccountIcon} alt="create account" />
+                <article className="inner-box">
+                  <CreateLgIcon />
                   <p>
                     {title === 'Deposit' ? 'To make a deposit' : 'To withdraw an asset'}
                     , you need to <br />
@@ -230,7 +230,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50">
+                  <p className="text-black2 dark:text-white2">
                     This process may take approximately 10 seconds or so.
                   </p>
                 </div>
@@ -263,14 +263,16 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.CREATING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={loadingIcon} alt="creating account" className="animate-spin-slow" />
+                <article className="inner-box">
+                  <span className="animate-spin-slow">
+                    <LoadingLgIcon />
+                  </span>
                   <p>
                     The account address is being generated <br /> on the chain.
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black/50">
+                  <p className="text-black2 dark:text-white2">
                     This process may take approximately 10 seconds or so. Please wait a moment.
                   </p>
                 </div>
@@ -303,8 +305,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETING && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2 text-center">
-                <article className="relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <img src={checkIcon} alt="creating account" />
+                <article className="inner-box">
+                  <CompleteLgIcon />
                   <p>Account has been created</p>
                 </article>
                 <div className="text-center">
@@ -326,8 +328,8 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayL1/20">
-                  <p className="flex-none pr-4 border-r text-black/30">My Account</p>
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-lightBg1">
+                  <p className="flex-none pr-4 border-r text-black3">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
                     {account?.chromaticAddress}
                   </div>
@@ -350,7 +352,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <div className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black3">
                         Available Margin
                         <TooltipGuide
                           label="available-margin"
@@ -368,7 +370,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       https://github.com/chromatic-protocol/frontend/issues/290
                     */}
                     {/* <div>
-                      <div className="flex mb-1 text-black/30">
+                      <div className="flex mb-1 text-black3">
                         Asset Value
                         <TooltipGuide
                           label="asset-value"
@@ -423,7 +425,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
                     </div>
                     <div className="text-sm">
-                      <p className="mb-1 text-black/30">
+                      <p className="mb-1 text-black3">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.{' '}
                         <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement" />

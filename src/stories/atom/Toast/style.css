@@ -23,7 +23,7 @@
 .Toastify__toast--rtl {
 }
 .Toastify__toast-body {
-  @apply !p-0 font-mono text-[12px] text-black;
+  @apply !p-0 font-mono text-[12px] text-black1;
 }
 
 /** Used to position the icon **/
@@ -47,8 +47,8 @@
 }
 
 .Toastify__progress-bar {
-  @apply bg-black/30 !h-1;
-  /* @apply bg-black; */
+  @apply bg-black3 !h-1;
+  /* @apply bg-black1; */
 }
 .Toastify__progress-bar--rtl {
 }
