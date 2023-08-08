@@ -158,7 +158,7 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-light2">
+                        <p className="my-6 text-center text-grayL2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -205,7 +205,7 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {mintings.length === 0 ? (
-                        <p className="my-6 text-center text-light2">
+                        <p className="my-6 text-center text-grayL2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -247,7 +247,7 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {burnings.length === 0 ? (
-                        <p className="my-6 text-center text-light2">
+                        <p className="my-6 text-center text-grayL2">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -382,19 +382,19 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black3 bg-lightBg2" />
+              <Tag label="standby" className="text-black3 bg-grayLBg2" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
               //   className="text-[#03C239] bg-[#23F85F]/10"
               // />
-              <Tag label="completed" className="text-white1 bg-dark2" />
+              <Tag label="completed" className="text-white1 bg-grayD2" />
             ) : (
               // <Tag
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-dark2 bg-lightBg2" />
+              <Tag label="in progress" className="text-grayD2 bg-grayLBg2" />
             )}
             <TooltipGuide
               label="status-info"

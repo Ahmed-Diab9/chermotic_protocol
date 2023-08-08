@@ -4,15 +4,15 @@
 }
 .tag-long,
 .tag-Long {
-  @apply text-white1 bg-dark2;
-  @apply dark:text-black1 dark:bg-light2;
+  @apply text-white1 bg-grayD2;
+  @apply dark:text-black1 dark:bg-grayL2;
   /* color: #a6d85b;
   background: rgba(166, 216, 91, 0.3); */
 }
 .tag-short,
 .tag-Short {
-  @apply text-dark2 bg-lightBg2;
-  @apply dark:text-light2 dark:bg-darkBg2;
+  @apply text-grayD2 bg-grayLBg2;
+  @apply dark:text-grayL2 dark:bg-grayDBg2;
   /* color: #ff3232;
   background: rgba(255, 50, 50, 0.1); */
 }

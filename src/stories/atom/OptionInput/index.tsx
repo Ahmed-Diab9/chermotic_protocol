@@ -96,7 +96,7 @@ export const OptionInput = (props: OptionInputProps) => {
           setRatio(undefined);
           onChange?.(event);
         }}
-        className="relative border-light2"
+        className="relative border-grayL2"
         disabled={disabled}
         error={error}
         // onBlur={onBlur}

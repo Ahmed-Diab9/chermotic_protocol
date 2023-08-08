@@ -9,7 +9,7 @@
 *,
 ::before,
 ::after {
-  @apply border-light1 dark:border-dark1;
+  @apply border-grayL1 dark:border-grayD1;
 }
 
 body {

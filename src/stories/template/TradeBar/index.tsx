@@ -144,7 +144,7 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               {positions?.length === 0 ? (
-                                <p className="mt-10 text-center text-light2">
+                                <p className="mt-10 text-center text-grayL2">
                                   You have no position yet.
                                 </p>
                               ) : (
@@ -338,7 +338,7 @@ const PositionItem = function (props: Props) {
 
   return (
     <div key={position.id.toString()} className="mb-3 border rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-lightBg1">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayLBg1">
         <div
           className={`flex flex-auto items-center gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
