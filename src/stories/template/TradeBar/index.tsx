@@ -18,7 +18,6 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
-import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -30,7 +29,6 @@ interface TradeBarProps {
   market?: Market;
   markets?: Market[];
   positions?: Position[];
-  oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
 }
 
@@ -44,14 +42,7 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   }
 }
 
-export const TradeBar = ({
-  token,
-  market,
-  markets,
-  positions,
-  oracleVersions,
-  isLoading,
-}: TradeBarProps) => {
+export const TradeBar = ({ token, market, markets, positions, isLoading }: TradeBarProps) => {
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -107,15 +98,9 @@ export const TradeBar = ({
                               width={80}
                               className="ml-2 text-lg"
                             >
-                              {isValid(oracleVersions) && isValid(market) && (
-                                <span className="ml-2 text-lg text-black1">
-                                  ${' '}
-                                  {formatDecimals(
-                                    oracleVersions[market.address].price,
-                                    18,
-                                    2,
-                                    true
-                                  )}
+                              {isValid(market) && (
+                                <span className="ml-2 text-lg text-black">
+                                  $ {formatDecimals(market.oracleValue.price, 18, 2, true)}
                                 </span>
                               )}{' '}
                             </SkeletonElement>
@@ -157,7 +142,6 @@ export const TradeBar = ({
                                         isLoading={isLoading}
                                         token={token}
                                         markets={markets}
-                                        oracleVersions={oracleVersions}
                                       />
                                     );
                                   })}
@@ -236,17 +220,16 @@ interface Props {
   isLoading?: boolean;
   token?: Token;
   markets?: Market[];
-  oracleVersions?: Record<string, OracleVersion>;
 }
 
 const PositionItem = function (props: Props) {
-  const { position, isLoading, token, markets, oracleVersions } = props;
+  const { position, isLoading, token, markets } = props;
   /**
    * FIXME
    * Oracle Decimals을 확인해야 함
    */
   const calculated = useMemo(() => {
-    if (isNil(position) || isNil(token) || isNil(oracleVersions)) {
+    if (isNil(position) || isNil(token)) {
       return {
         qty: '-',
         collateral: '-',
@@ -272,7 +255,9 @@ const PositionItem = function (props: Props) {
         : (makerMargin * parseUnits('1', token.decimals) * 100n * 10000n) /
           parseUnits(String(abs(qty)), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
-    const currentOracleVersion = oracleVersions[position.marketAddress];
+    const currentOracleVersion = markets?.find(
+      (market) => market.address === position.marketAddress
+    )?.oracleValue;
     if (
       isNil(currentOracleVersion) ||
       isNil(currentOracleVersion.version) ||
@@ -321,7 +306,7 @@ const PositionItem = function (props: Props) {
         year: 'numeric',
       }).format(new Date(Number(position.openTimestamp) * 1000)),
     };
-  }, [position, token, oracleVersions]);
+  }, [position, token, markets]);
 
   const direction = useCallback((position: Position) => {
     return position.qty > 0n ? 'Long' : 'Short';
@@ -333,7 +318,7 @@ const PositionItem = function (props: Props) {
   });
   const { onClaimPosition } = useClaimPosition({
     positionId: position.id,
-    marketAddress: position.marketAddress,
+    market: markets?.find((market) => market.address === position.marketAddress),
   });
 
   return (

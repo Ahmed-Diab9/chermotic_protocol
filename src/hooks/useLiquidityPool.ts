@@ -15,7 +15,6 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
-import useOracleVersion from './useOracleVersion';
 
 const { encodeTokenId } = ChromaticUtils;
 
@@ -68,7 +67,6 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const dispatch = useAppDispatch();
 
   const { currentMarket } = useMarket();
-  const { currentMarketOracleVersion } = useOracleVersion();
   const currentMarketAddress = marketAddress || currentMarket?.address;
 
   const { isReady, client } = useChromaticClient();
@@ -76,7 +74,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const fetchKeyData = {
     name: 'useLiquidityPool',
     marketAddress: currentMarketAddress,
-    oracleVersion: currentMarketOracleVersion?.version,
+    oracleVersion: currentMarket?.oracleValue.version,
   };
 
   const { data: liquidityPool, mutate: fetchLiquidityPool } = useSWR(
