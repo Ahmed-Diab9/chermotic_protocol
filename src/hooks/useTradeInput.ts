@@ -346,7 +346,7 @@ export const useTradeInput = (props: Props) => {
     }
 
     const isOverBalance = balance < toBigintWithDecimals(collateral, tokenDecimals);
-    if (isOverBalance) {
+    if (isOverBalance || isNil(balance)) {
       return { status: true, detail: 'balance' };
     }
 
