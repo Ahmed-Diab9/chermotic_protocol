@@ -18,7 +18,6 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
-import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -30,7 +29,6 @@ interface TradeBarProps {
   market?: Market;
   markets?: Market[];
   positions?: Position[];
-  oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
 }
 
@@ -44,14 +42,7 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   }
 }
 
-export const TradeBar = ({
-  token,
-  market,
-  markets,
-  positions,
-  oracleVersions,
-  isLoading,
-}: TradeBarProps) => {
+export const TradeBar = ({ token, market, markets, positions, isLoading }: TradeBarProps) => {
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -107,15 +98,9 @@ export const TradeBar = ({
                               width={80}
                               className="ml-2 text-lg"
                             >
-                              {isValid(oracleVersions) && isValid(market) && (
-                                <span className="ml-2 text-lg text-black1">
-                                  ${' '}
-                                  {formatDecimals(
-                                    oracleVersions[market.address].price,
-                                    18,
-                                    2,
-                                    true
-                                  )}
+                              {isValid(market) && (
+                                <span className="ml-2 text-lg text-black">
+                                  $ {formatDecimals(market.oracleValue.price, 18, 2, true)}
                                 </span>
                               )}{' '}
                             </SkeletonElement>
