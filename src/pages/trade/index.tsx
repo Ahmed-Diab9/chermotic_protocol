@@ -5,6 +5,7 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
+import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/container/Header';
 import { TradeBar } from '~/stories/container/TradeBar';
 import { TradePanel } from '~/stories/container/TradePanel';
@@ -39,14 +40,8 @@ const Trade = () => {
       </section>
       <TradeBar />
       <Toast />
-      {/* todo: Add Modal (Wrong Netwrok) */}
-      {/* <Modal
-        title="Wrong Network"
-        paragraph="Please set network to Arbitrum"
-        subParagraph="Check your wallet and sign to change network."
-        buttonLabel="Try Again"
-        buttonCss="gray"
-      /> */}
+      {/* todo: Add Modal (Wrong Network) */}
+      <ChainModal />
     </div>
   );
 };

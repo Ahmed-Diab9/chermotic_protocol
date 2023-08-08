@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
-import { Button } from '../../atom/Button';
+import { useState } from 'react';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { Button } from '../../atom/Button';
 import './style.css';
 
 interface ModalProps {
@@ -21,9 +21,10 @@ export const Modal = ({
   buttonLabel,
   buttonCss = 'default',
   size = 'sm',
+  onClick,
   ...props
 }: ModalProps) => {
-  let [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
@@ -43,7 +44,9 @@ export const Modal = ({
               label={buttonLabel}
               css={buttonCss}
               className="flex-1"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                onClick?.();
+              }}
             />
           </div>
         </Dialog.Panel>

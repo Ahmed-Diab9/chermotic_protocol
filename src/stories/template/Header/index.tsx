@@ -1,19 +1,24 @@
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { isNil } from 'ramda';
 import { Link, useLocation } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
+import { useSwitchChain } from '~/hooks/useSwitchChain';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { Account } from '~/typings/account';
+import { trimAddress } from '~/utils/address';
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { WalletPopover } from '../../container/WalletPopover';
-
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 interface HeaderProps {
   account?: Account;
+  isSameChain?: boolean;
   onConnect?: () => unknown;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { account, onConnect } = props;
+  const { account, isSameChain, onConnect } = props;
   const location = useLocation();
 
   return (
@@ -47,43 +52,57 @@ export const Header = (props: HeaderProps) => {
           {/* dropdown */}
         </div>
         <div>
-          {isValid(account?.walletAddress) ? (
-            <>
-              <WalletPopover />
-              {/* todo: Wrong Network */}
-              {/* when button clicked, wallet popup(change network) is open. */}
-              {/* <button
-                // onClick={}
-                title="change network"
-                className="tooltip-change-network min-w-[175px] btn-wallet"
-              >
-                <Avatar
-                  // label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
-                  label="0x00000...00000"
-                  svg={<ExclamationTriangleIcon />}
-                  className="text-black1 avatar"
-                  fontSize="sm"
-                  fontWeight="normal"
-                  gap="3"
-                />
-                <TooltipAlert
-                  label="change-network"
-                  tip="Change Network"
-                  place="left"
-                  css="outline"
-                />
-              </button> */}
-            </>
-          ) : (
-            <>
-              <button onClick={onConnect} title="connect" className="btn-wallet min-w-[148px]">
-                <Avatar src={arbitrumIcon} className="avatar" />
-                <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
-              </button>
-            </>
+          {isValid(account?.walletAddress) && isSameChain && <WalletPopover />}
+          {isValid(account?.walletAddress) && !isSameChain && (
+            <ChainSwitch
+              width={175}
+              label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
+            />
+          )}
+          {isNil(account?.walletAddress) && isSameChain && (
+            <button onClick={onConnect} title="connect" className="btn-wallet min-w-[148px]">
+              <Avatar src={arbitrumIcon} className="avatar" />
+              <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
+            </button>
+          )}
+          {isNil(account?.walletAddress) && !isSameChain && (
+            <ChainSwitch width={148}>
+              <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
+            </ChainSwitch>
           )}
         </div>
       </div>
     </header>
+  );
+};
+
+interface ChainSwitchProps {
+  width: number;
+  label?: string;
+  children?: JSX.Element;
+}
+
+const ChainSwitch = (props: ChainSwitchProps) => {
+  const { label, width, children } = props;
+  const { onChainSwitch } = useSwitchChain();
+  return (
+    <button
+      onClick={() => {
+        onChainSwitch();
+      }}
+      title="change network"
+      className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
+    >
+      <Avatar
+        svg={<ExclamationTriangleIcon />}
+        className="text-black1 avatar"
+        fontSize="sm"
+        fontWeight="normal"
+        gap="3"
+        label={label}
+      />
+      <TooltipAlert label="change-network" tip="Change Network" place="left" css="outline" />
+      {children}
+    </button>
   );
 };
