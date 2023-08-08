@@ -10,15 +10,11 @@ export function useLastOracle() {
   >(undefined);
 
   useEffect(() => {
-    if (isNil(currentMarket) || isNil(currentMarket)) {
-      return;
-    }
-    const currentVersion = currentMarket.oracleValue;
-    if (isNil(currentVersion) || isNil(currentVersion.timestamp)) {
-      return;
-    }
+    const timestamp = currentMarket?.oracleValue?.timestamp;
+    if (isNil(timestamp)) return;
+
     let timerId = setTimeout(function onTimeout() {
-      const timeDiff = Date.now() / 1000 - Number(currentVersion.timestamp);
+      const timeDiff = Date.now() / 1000 - Number(timestamp);
       const hours = Math.floor(timeDiff / 3600);
       const minutes = Math.floor((timeDiff % 3600) / 60);
       const seconds = Math.floor((timeDiff % 3600) % 60);
