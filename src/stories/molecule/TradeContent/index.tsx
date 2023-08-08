@@ -441,18 +441,19 @@ interface AmountSwitchProps {
   onAmountChange?: (value: string) => unknown;
 }
 
+const derive = <T extends unknown>(handler: () => T) => {
+  return handler();
+};
+
 const AmountSwitch = (props: AmountSwitchProps) => {
   const { input, onAmountChange, token, disabled } = props;
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
 
-  const minimumAmount = useMemo(
-    () => formatDecimals(token?.minimumMargin, token?.decimals),
-    [token]
-  );
+  const minimumAmount = derive(() => formatDecimals(token?.minimumMargin, token?.decimals));
 
-  const errorMessage = useMemo(() => {
+  const errorMessage = derive(() => {
     switch (disabled?.detail) {
       case 'balance':
         return 'Exceeded available account balance.';
@@ -463,9 +464,9 @@ const AmountSwitch = (props: AmountSwitchProps) => {
       default:
         return undefined;
     }
-  }, [disabled?.detail]);
+  });
 
-  const preset = useMemo(
+  const preset = derive(
     () =>
       ({
         collateral: {
@@ -482,8 +483,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
           tooltip:
             'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
         },
-      }[input?.method || 'collateral']),
-    [input]
+      }[input?.method || 'collateral'])
   );
 
   return (
