@@ -52,7 +52,11 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* z-index */
-.tooltip .tooltip-tip {
+.tooltip {
+  @apply z-0;
+}
+.tooltip .tooltip-tip,
+.react-tooltip {
   @apply z-50;
 }
 .modal {
