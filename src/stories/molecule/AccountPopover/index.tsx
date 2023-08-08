@@ -328,9 +328,9 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayLBg1">
-                  <p className="flex-none pr-4 border-r text-black3">My Account</p>
-                  <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayLBg1 dark:bg-grayDBg1">
+                  <p className="flex-none pr-4 border-r text-black3 dark:text-white3">My Account</p>
+                  <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis text-left">
                     {account?.chromaticAddress}
                   </div>
                   <Button
@@ -425,7 +425,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
                     </div>
                     <div className="text-sm">
-                      <p className="mb-1 text-black3">
+                      <p className="mb-1 text-black3 dark:text-white3">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.{' '}
                         <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement" />
