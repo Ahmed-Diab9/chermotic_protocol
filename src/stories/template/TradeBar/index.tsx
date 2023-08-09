@@ -99,7 +99,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                               className="ml-2 text-lg"
                             >
                               {isValid(market) && (
-                                <span className="ml-2 text-lg text-black">
+                                <span className="ml-2 text-lg text-primary">
                                   $ {formatDecimals(market.oracleValue.price, 18, 2, true)}
                                 </span>
                               )}{' '}

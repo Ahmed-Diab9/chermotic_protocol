@@ -14,7 +14,7 @@ import TwitterIcon from '~/assets/icons/TwitterIcon';
 
 export const Footer = () => (
   <footer>
-    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-primary dark:bg-inverted dark:border-t">
+    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-primary dark:bg-paper-lightest dark:border-t">
       <a
         href="https://chromatic.finance/"
         target="_blank"

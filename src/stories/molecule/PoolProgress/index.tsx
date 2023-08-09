@@ -94,7 +94,7 @@ export const PoolProgress = ({
   }, []);
 
   return (
-    <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-paper">
+    <div className="!flex flex-col border PoolProgress shadow-lg dark:shadow-none tabs tabs-line tabs-base rounded-2xl bg-paper">
       <Disclosure>
         {({ open }) => {
           return (

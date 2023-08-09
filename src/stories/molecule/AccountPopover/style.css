@@ -1,6 +1,6 @@
 .AccountPopover {
   @apply relative flex items-center justify-between border;
-  @apply min-h-[80px] gap-6 rounded-2xl shadow-lg;
+  @apply min-h-[80px] gap-6 rounded-2xl shadow-lg dark:shadow-none;
   @apply bg-paper border-gray-lighter text-primary;
   .popover-panel {
     @apply absolute left-0 ml-[-1px] rounded-b-2xl;
