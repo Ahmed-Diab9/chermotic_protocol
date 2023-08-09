@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useMarket } from '~/hooks/useMarket';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 import usePriceFeed from '~/hooks/usePriceFeed';
@@ -23,6 +24,7 @@ export const WalletPopover = () => {
   const { priceFeed } = usePriceFeed();
   const { ownedPoolSummary } = useOwnedLiquidityPools();
   const { disconnectAsync } = useDisconnect();
+  const { client } = useChromaticClient();
 
   return (
     <WalletPopoverPresenter
@@ -37,11 +39,21 @@ export const WalletPopover = () => {
         connectAsync({ connector: connectors[0] });
       }}
       onCreateAccount={async () => {
-        await createAccount(() => {
-          toast(
-            'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
-          );
-        });
+        // FIXME
+        // Should use SDK instead actually.
+        if (!client.walletClient) {
+          return;
+        }
+        const { request } = await client
+          .router()
+          .contracts()
+          .router()
+          .simulate.createAccount({ account: client.walletClient?.account });
+        const hash = await client.walletClient.writeContract(request);
+        toast(
+          'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
+        );
+        client.publicClient?.waitForTransactionReceipt({ hash });
       }}
       onDisconnect={disconnectAsync}
       onWalletCopy={copyText}
