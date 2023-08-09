@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useMarket } from '~/hooks/useMarket';
@@ -35,7 +36,12 @@ export const WalletPopover = () => {
       onConnect={() => {
         connectAsync({ connector: connectors[0] });
       }}
-      onCreateAccount={createAccount}
+      onCreateAccount={async () => {
+        await createAccount();
+        toast(
+          'The account addtress is being generated on the chain. This process may take approximately 10 seconds or more.'
+        );
+      }}
       onDisconnect={disconnectAsync}
       onWalletCopy={copyText}
       onChromaticCopy={copyText}
