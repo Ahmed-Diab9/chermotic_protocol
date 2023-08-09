@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from 'react';
+import { isNil } from 'ramda';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAppDispatch } from '~/store';
@@ -6,12 +7,11 @@ import { poolsAction } from '~/store/reducer/pools';
 import { PoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
-import { useLiquidityPool, useLiquidityPools } from './useLiquidityPool';
-import usePoolReceipt from './usePoolReceipt';
-import { useTokenBalances } from './useTokenBalance';
-import { useSettlementToken } from './useSettlementToken';
+import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
-import { isNil } from 'ramda';
+import usePoolReceipt from './usePoolReceipt';
+import { useSettlementToken } from './useSettlementToken';
+import { useTokenBalances } from './useTokenBalance';
 
 const logger = Logger('useRemoveLiquidity');
 
@@ -67,9 +67,9 @@ function useRemoveLiquidityAmounts({ amount, feeRate }: Props) {
       await fetchWalletBalances();
       window.dispatchEvent(PoolEvent);
 
-      toast('The selected liquidity is removed.');
+      toast('The liquidity removing process has been started.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     }
   }, [client.walletClient, walletAddress, pool, amount]);
 
