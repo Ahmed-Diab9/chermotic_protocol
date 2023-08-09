@@ -1,3 +1,4 @@
+import { isNil } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
@@ -8,10 +9,9 @@ import { OwnedBin } from '~/typings/pools';
 import { mulPreserved } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
+import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
-import { useMarket } from './useMarket';
-import { isNil } from 'ramda';
 
 interface Props {
   bins?: OwnedBin[];
@@ -71,9 +71,9 @@ function useRemoveLiquidityBins({ bins, type }: Props) {
       await fetchWalletBalances();
       window.dispatchEvent(PoolEvent);
 
-      toast('The selected liquidities are removed.');
+      toast('The liquidities removing process has been started.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     }
   }, [walletAddress, currentMarket, liquidityPool, bins, type]);
 

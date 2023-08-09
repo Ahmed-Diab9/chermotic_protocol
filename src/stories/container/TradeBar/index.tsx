@@ -27,10 +27,10 @@ export const TradeBar = () => {
     }
     if (previousOracle !== currentMarket.oracleValue.version) {
       if (isValid(openingPositionSize) && openingPositionSize > 0) {
-        toast.info('The positions has been opened!');
+        toast.info('The opening process has been completed.');
       }
       if (isValid(closingPositionSize) && closingPositionSize > 0) {
-        toast.info('The positions has been closed!');
+        toast.info('The closing process has been completed.');
       }
     }
   }, [currentMarket, previousOracle, openingPositionSize, closingPositionSize]);

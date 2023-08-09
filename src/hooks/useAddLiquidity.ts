@@ -6,10 +6,10 @@ import { PoolEvent } from '~/typings/events';
 import { Logger, errorLog } from '../utils/log';
 import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
-import usePoolReceipt from './usePoolReceipt';
-import { useTokenBalances } from './useTokenBalance';
 import { useMarket } from './useMarket';
+import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
+import { useTokenBalances } from './useTokenBalance';
 
 const logger = Logger('useAddLiquidity');
 
@@ -83,7 +83,7 @@ function useAddLiquidity(props: Props) {
       window.dispatchEvent(PoolEvent);
       toast('New liquidity is added. Claim your CLB.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     } finally {
       setIsLoading(false);
     }

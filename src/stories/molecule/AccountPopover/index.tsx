@@ -4,6 +4,7 @@ import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
+import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { useAppDispatch } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { Loading } from '~/stories/atom/Loading';
@@ -18,7 +19,6 @@ import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
 import { SkeletonElement } from '../../atom/SkeletonElement';
-import { CreateLgIcon, LoadingLgIcon, CompleteLgIcon } from '~/assets/icons/CreateAccountIcon';
 import './style.css';
 
 interface AccountPopoverProps {

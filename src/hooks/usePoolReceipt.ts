@@ -218,7 +218,7 @@ const usePoolReceipt = () => {
           toast('You removed the selected liquidity.');
         }
       } catch (error) {
-        toast((error as any).message);
+        toast.error('Transaction rejected.');
       }
     },
     [walletAddress, currentMarket]
@@ -275,7 +275,7 @@ const usePoolReceipt = () => {
         await fetchReceipts();
         toast('All receipts are claimed.');
       } catch (error) {
-        toast((error as any).message);
+        toast.error('Transaction rejected.');
       }
     },
     [walletAddress, currentMarket, receipts]
