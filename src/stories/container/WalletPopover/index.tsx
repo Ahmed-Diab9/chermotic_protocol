@@ -37,10 +37,11 @@ export const WalletPopover = () => {
         connectAsync({ connector: connectors[0] });
       }}
       onCreateAccount={async () => {
-        await createAccount();
-        toast(
-          'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
-        );
+        await createAccount(() => {
+          toast(
+            'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
+          );
+        });
       }}
       onDisconnect={disconnectAsync}
       onWalletCopy={copyText}

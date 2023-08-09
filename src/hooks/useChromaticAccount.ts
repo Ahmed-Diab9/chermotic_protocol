@@ -87,7 +87,7 @@ export const useChromaticAccount = () => {
 
   useError({ error, logger });
 
-  const createAccount = async () => {
+  const createAccount = async (onAfterCreate?: () => unknown) => {
     if (isNil(walletAddress)) {
       return AppError.reject('no address', 'createAcccount');
     }
@@ -97,6 +97,7 @@ export const useChromaticAccount = () => {
       logger.info('Creating accounts');
       dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
       await accountApi.createAccount();
+      onAfterCreate?.();
 
       const newAccount = await accountApi.getAccount();
       await fetchAddress(newAccount);
