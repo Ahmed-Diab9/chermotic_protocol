@@ -39,7 +39,7 @@ export const WalletPopover = () => {
       onCreateAccount={async () => {
         await createAccount();
         toast(
-          'The account addtress is being generated on the chain. This process may take approximately 10 seconds or more.'
+          'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
         );
       }}
       onDisconnect={disconnectAsync}
