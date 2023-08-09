@@ -5,7 +5,7 @@
     @apply box-content;
   }
   .react_range__label {
-    @apply text-xs text-black3;
+    @apply text-xs text-primary-lighter;
   }
 
   .react_range__slot_wrapper {

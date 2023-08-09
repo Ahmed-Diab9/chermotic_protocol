@@ -6,25 +6,56 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 3 3 3; /* #030303 */
+    --color-inverted: 255 255 255; /* #ffffff */
+
+    --color-gray-light: 212 212 212; /* #d4d4d4 */
+    --color-gray-lighter: 238 238 238; /* #eeeeee */
+    --color-gray-dark: 77 77 77; /* #4d4d4d */
+    --color-gray-darker: 51 51 51; /* #333333 */
+
+    --color-paper: 255 255 255; /* #ffffff */
+    --color-paper-light: 252 252 252; /* #fcfcfc */
+    --color-paper-dark: 21 21 21; /* #151515 */
+
+    --color-error: 3 3 3; /* #030303 */
+  }
+
+  :root[class~='dark'],
+  :root:has(.dark) {
+    --color-primary: 255 255 255; /* #ffffff */
+    --color-inverted: 3 3 3; /* #030303 */
+
+    --color-gray-light: 77 77 77; /* #4d4d4d */
+    --color-gray-lighter: 51 51 51; /* #333333 */
+    --color-gray-dark: 212 212 212; /* #d4d4d4 */
+    --color-gray-darker: 238 238 238; /* #eeeeee */
+
+    --color-paper: 21 21 21; /* #151515 */
+    --color-paper-light: 0 0 0; /* #000000 */
+    --color-paper-dark: 252 252 252; /* #fcfcfc */
+
+    --color-error: 255 255 255; /* #ffffff */
+  }
+}
+
 *,
 ::before,
 ::after {
-  @apply border-grayL1 dark:border-grayD1;
+  @apply border-gray-lighter;
 }
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
-  @apply text-black1 dark:text-white1;
+  @apply text-primary;
   word-spacing: -0.1em;
 }
 
 .sb-show-main,
 .docs-story {
-  @apply text-black1 bg-white;
-}
-.sb-show-main:has(#storybook-root.dark),
-.docs-story:has(.sb-story.dark) {
-  @apply text-white1 bg-black;
+  @apply text-primary bg-paper;
 }
 
 h4 {
@@ -71,5 +102,5 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .backdrop {
   @apply z-10;
-  @apply fixed inset-0 bg-white1/90 dark:bg-black1/90;
+  @apply fixed inset-0 bg-inverted/90;
 }

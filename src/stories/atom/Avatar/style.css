@@ -2,7 +2,7 @@
   @apply flex-none;
   .wrapper-img {
     @apply rounded-full overflow-hidden shrink-0 flex items-center justify-center border;
-    @apply bg-grayL1 dark:bg-grayD1;
+    @apply bg-gray-lighter;
   }
 }
 .avatar-xs {

@@ -54,10 +54,10 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               }}
             />
           </Dialog.Title>
-          {/* <div className="w-[100px] mx-auto border-b border-2 border-black1"></div> */}
+          {/* <div className="w-[100px] mx-auto border-b border-2 border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col border border-grayL2 rounded-xl">
+            <article className="flex flex-col border border-gray-light rounded-xl">
               <LiquidityItem
                 token={token}
                 name={selectedBin?.clbTokenDescription}
@@ -69,7 +69,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             {/* info bottom */}
             <article className="flex flex-col gap-2 pb-5 border-b">
               <div className="flex justify-between">
-                <div className="flex text-black3">
+                <div className="flex text-primary-lighter">
                   My Liquidity Value
                   <TooltipGuide
                     label="RemoveLiquidityModal-my-liquidity-value"
@@ -85,7 +85,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               </div>
 
               <div className="flex justify-between">
-                <div className="flex text-black3">
+                <div className="flex text-primary-lighter">
                   Removable Liquidity
                   <TooltipGuide
                     label="RemoveLiquidityModal-removable-liquidity"
@@ -96,7 +96,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                 {selectedBin && token && (
                   <p>
                     {formatDecimals(selectedBin.freeLiquidity, token.decimals, 2)} {token.name}
-                    <span className="ml-1 text-black3">
+                    <span className="ml-1 text-primary-lighter">
                       ({formatDecimals(selectedBin.removableRate, token.decimals - 2, 2)}%)
                     </span>
                   </p>
@@ -108,7 +108,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
             <article className="">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex-none font-semibold">Remove CLB Tokens</p>
-                <p className="text-right text-black3">
+                <p className="text-right text-primary-lighter">
                   {/**
                    * @TODO
                    * 사용자가 입력한 제거 하려는 LP 토큰의 개수에 대해서 USDC 값으로 변환하는 로직입니다.
@@ -127,7 +127,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-grayL2"
+                    className="flex-auto shadow-base border-gray-light"
                     label="All"
                     size="sm"
                     onClick={() => {
@@ -158,7 +158,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                   </div>
                 </div>
               </div>
-              <p className="mt-4 text-xs text-black3">
+              <p className="mt-4 text-xs text-primary-lighter">
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the

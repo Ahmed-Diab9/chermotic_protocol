@@ -1,17 +1,15 @@
 .AccountPopover {
   @apply relative flex items-center justify-between border;
   @apply min-h-[80px] gap-6 rounded-2xl shadow-lg;
-  @apply bg-white border-grayL1 text-black1;
-  @apply dark:bg-grayDBg0 dark:border-grayD1 dark:text-white1;
+  @apply bg-paper border-gray-lighter text-primary;
   .popover-panel {
     @apply absolute left-0 ml-[-1px] rounded-b-2xl;
     @apply top-[64px] border-x border-b px-10 pt-4;
-    @apply bg-white border-grayL1 text-black1;
-    @apply dark:bg-grayDBg0 dark:border-grayD1 dark:text-white1;
+    @apply bg-paper border-gray-lighter text-primary;
     width: calc(100% + 2px);
     .inner-box {
       @apply relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border rounded-xl;
-      @apply bg-grayLBg1 dark:bg-grayDBg1;
+      @apply bg-paper-lighter;
     }
   }
 }

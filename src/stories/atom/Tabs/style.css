@@ -42,16 +42,15 @@
       margin-bottom: 4px;
     }
     [aria-selected='true'] {
-      @apply text-black1 border-b-2 border-black1;
-      @apply dark:text-white1 dark:border-white;
+      @apply text-primary border-b-2 border-primary;
     }
     [aria-selected='false'] {
       @apply border-b-2 border-transparent;
-      @apply text-black1/20 dark:text-white3;
+      @apply text-primary/20;
     }
   }
   [type='button'] {
-    /* @apply ui-selected:text-black1; */
+    /* @apply ui-selected:text-primary; */
   }
   &.tabs-lg {
     [role='tablist'] {

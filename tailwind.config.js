@@ -23,35 +23,43 @@ export const theme = {
     },
     colors: {
       current: 'currentColor',
+      transparent: 'transparent',
+      error: 'rgb(var(--color-error)/ 1)',
 
-      white1: '#ffffffe6',
-      white2: '#FFFFFF80',
-      white3: '#ffffff4d',
+      primary: {
+        DEFAULT: 'rgb(var(--color-primary)/ 1)',
+        light: 'rgb(var(--color-primary)/ 0.5)',
+        lighter: 'rgb(var(--color-primary)/ 0.3)',
+      },
 
-      grayL1: '#EEEEEE',
-      grayL2: '#D4D4D4',
-      grayLBg0: '#FCFCFC',
-      grayLBg1: '#EEEEEE33',
-      grayLBg2: '#D4D4D433',
-      grayLErr: '#FFFFFF',
+      inverted: {
+        DEFAULT: 'rgb(var(--color-inverted)/ 1)',
+        light: 'rgb(var(--color-inverted)/ 0.5)',
+        lighter: 'rgb(var(--color-inverted)/ 0.3)',
+      },
 
-      black1: '#030303',
-      black2: '#03030380',
-      black3: '#0303034d',
+      gray: {
+        light: 'rgb(var(--color-gray-light)/ 1)',
+        lighter: 'rgb(var(--color-gray-lighter)/ 1)',
+        dark: 'rgb(var(--color-gray-dark)/ 1)',
+        darker: 'rgb(var(--color-gray-darker)/ 1)',
+      },
 
-      grayD1: '#333333',
-      grayD2: '#4D4D4D',
-      grayDBg0: '#151515',
-      grayDBg1: '#33333333',
-      grayDBg2: '#4D4D4D33',
-      grayDErr: '#030303',
+      paper: {
+        DEFAULT: 'rgb(var(--color-paper)/ 1)',
+        light: 'rgb(var(--color-gray-light)/ 0.2)',
+        lighter: 'rgb(var(--color-gray-lighter)/ 0.2)',
+        lightest: 'rgb(var(--color-paper-light)/ 1)',
+        dark: 'rgb(var(--color-gray-dark)/ 0.2)',
+        darker: 'rgb(var(--color-gray-darker)/ 0.2)',
+        darkest: 'rgb(var(--color-paper-dark)/ 1)',
+      },
 
-      // standby: '#FF8A00',
-      // completed: '#00E23F',
-      // inprocess: '#08E3D6',
-      // long: '#a6d85b',
-      // short: '#fb6115',
+      // primary: '#ddd',
+      // 'primary-light': '#ddd',
+      // 'primary-lighter': '#ddd',
     },
+
     boxShadow: {
       base: '4px 4px 20px rgba(121, 121, 121, 0.08)',
       md: '4px 4px 20px 0px rgba(229, 229, 229, 0.16)',

@@ -17,7 +17,7 @@ const Trade = () => {
   useMarketLocal();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayLBg1 dark:bg-black1">
+    <div className="flex flex-col min-h-[100vh] w-full bg-paper-lighter">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
         <MainBar showAccountPopover={true} />
@@ -25,7 +25,7 @@ const Trade = () => {
           <TradePanel />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12 text-base">
-              <div className="my-6 text-center text-black3 dark:text-white2">
+              <div className="my-6 text-center text-primary-lighter">
                 The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
                 that accept the positions. The EST. Trade Fee is calculated based on the current
                 oracle price, and the actual fee paid is determined by the next oracle price.{' '}

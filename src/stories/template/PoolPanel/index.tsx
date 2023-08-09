@@ -222,7 +222,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
               <article className="flex items-start justify-between mb-10">
                 <div className="flex items-center gap-2">
                   <h4>Wallet Balance</h4>
-                  <p className="text-lg text-black2">
+                  <p className="text-lg text-primary-light">
                     <SkeletonElement isLoading={isLoading} width={40}>
                       {`${withComma(settlementTokenBalance)} ${token?.name}`}
                     </SkeletonElement>
@@ -255,7 +255,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </div>
                   <div className="flex justify-between mt-6 mb-5">
                     <div className="text-left">
-                      <p className="mb-1 text-black3">Short LP</p>
+                      <p className="mb-1 text-primary-lighter">Short LP</p>
                       {/**
                        * @TODO
                        * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
@@ -274,7 +274,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       ) : null}
                     </div>
                     <div className="text-right">
-                      <p className="mb-1 text-black3">Long LP</p>
+                      <p className="mb-1 text-primary-lighter">Long LP</p>
                       {/**
                        * @TODO
                        * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
@@ -336,7 +336,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       size="xl"
                       onClick={onFullRange}
                     />
-                    <p className="mt-3 text-sm text-left text-black3">
+                    <p className="mt-3 text-sm text-left text-primary-lighter">
                       The percentage on the price range represents the trade fee (or price gap from
                       the index price) when your liquidity is utilized by takers. When liquidity is
                       supplied to the bins, separate CLB (ERC-1155) tokens are minted for each bin.
@@ -358,7 +358,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   {/* onClick: connect wallet */}
                   {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
                 </div>
-                <div className="flex flex-col gap-2 border-t border-dashed border-grayL2 mt-8 mx-[-40px] pt-6 px-10">
+                <div className="flex flex-col gap-2 border-t border-dashed border-gray-light mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
                     <div className="flex">
                       Number of Liquidity Bins
@@ -409,9 +409,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-grayLBg1 rounded-xl">
+                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-paper-lighter rounded-xl">
                   <div>
-                    <div className="flex font-semibold text-left text-black3">
+                    <div className="flex font-semibold text-left text-primary-lighter">
                       Total Liquidity Value
                       <TooltipGuide
                         label="total-liquidity-value"
@@ -437,9 +437,9 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-grayLBg1 rounded-xl text-left">
+                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-paper-lighter rounded-xl text-left">
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex items-center font-medium text-left text-black3">
+                    <div className="flex items-center font-medium text-left text-primary-lighter">
                       LP Bins
                     </div>
                     <p className="">
@@ -449,7 +449,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                   </div>
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex items-center font-medium text-left text-black3">
+                    <div className="flex items-center font-medium text-left text-primary-lighter">
                       My Liquidity Value
                       <TooltipGuide
                         label="my-liquidity-value"
@@ -464,7 +464,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     </p>
                   </div>
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex font-medium text-left text-black3">
+                    <div className="flex font-medium text-left text-primary-lighter">
                       Removable Liquidity
                       <TooltipGuide
                         label="removable-liquidity"
@@ -503,7 +503,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           <Button
                             label="Select All"
                             css="unstyled"
-                            className="text-black2"
+                            className="text-primary-light"
                             onClick={() => {
                               onSelectAllClick(selectedIndex);
                             }}
@@ -527,7 +527,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedShortLiquidityBins.length === 0 ? (
-                              <p className="my-10 text-center text-grayL2">
+                              <p className="my-10 text-center text-gray-light">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -552,7 +552,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedLongLiquidityBins?.length === 0 ? (
-                              <p className="my-10 text-center text-grayL2">
+                              <p className="my-10 text-center text-gray-light">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -639,7 +639,7 @@ const BinItem = (props: BinItemProps) => {
 
   return (
     <div className="overflow-hidden border rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-grayLBg1">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
           isChecked={isChecked}
@@ -652,7 +652,7 @@ const BinItem = (props: BinItemProps) => {
               <Avatar label={token?.name} size="xs" gap="1" fontSize="base" fontWeight="bold" />
             </SkeletonElement>
           </div>
-          <p className="font-semibold text-black1">
+          <p className="font-semibold text-primary">
             <SkeletonElement isLoading={isLoading} width={40}>
               {market?.description} {bin && formatFeeRate(bin.baseFeeRate)}%
             </SkeletonElement>
@@ -687,7 +687,7 @@ const BinItem = (props: BinItemProps) => {
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
           <div className="flex gap-2">
-            <p className="text-black3 w-[80px]">CLB Qty</p>
+            <p className="text-primary-lighter w-[80px]">CLB Qty</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
                 {bin && formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, 2, true)}
@@ -695,7 +695,7 @@ const BinItem = (props: BinItemProps) => {
             </p>
           </div>
           <div className="flex gap-2">
-            <p className="text-black3 w-[80px]">Free Liquidity</p>
+            <p className="text-primary-lighter w-[80px]">Free Liquidity</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
                 {formatDecimals(bin?.freeLiquidity ?? 0n, token?.decimals ?? 0, 2, true)}{' '}
@@ -706,7 +706,7 @@ const BinItem = (props: BinItemProps) => {
         </div>
         <div className="flex flex-col gap-2 pl-10 text-left border-l">
           <div className="flex gap-2">
-            <p className="text-black3 w-[100px]">CLB Price</p>
+            <p className="text-primary-lighter w-[100px]">CLB Price</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
                 {bin && formatDecimals(bin.clbTokenValue, bin.clbTokenDecimals, 2, true)}{' '}
@@ -715,7 +715,7 @@ const BinItem = (props: BinItemProps) => {
             </p>
           </div>
           <div className="flex gap-2">
-            <p className="text-black3 w-[100px]">My LIQ.Value</p>
+            <p className="text-primary-lighter w-[100px]">My LIQ.Value</p>
             <p>
               <SkeletonElement isLoading={isLoading} width={60}>
                 {formatter.format(myLiqValue)} {token?.name}

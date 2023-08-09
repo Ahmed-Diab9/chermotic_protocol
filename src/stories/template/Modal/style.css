@@ -1,5 +1,5 @@
 .modal {
-  @apply inline-block border rounded-2xl relative bg-white;
+  @apply inline-block border rounded-2xl relative bg-paper;
   box-shadow: 4px 4px 60px 0px rgba(181, 181, 181, 0.16);
   .modal-title {
     @apply text-center text-lg mb-2 font-semibold;

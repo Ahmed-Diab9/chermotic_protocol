@@ -24,27 +24,23 @@ export const Header = (props: HeaderProps) => {
   return (
     // <header className="sticky top-0 Header">
     <header className="Header">
-      <div className="h-[70px] bg-grayLBg1 dark:bg-black1 px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] bg-paper-lighter px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
-            <LogoSimple className="text-black1 dark:text-white1 h-9" />
+            <LogoSimple className="text-primary h-9" />
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
-              location.pathname === '/trade'
-                ? 'border-black1 dark:border-white'
-                : '!border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary ${
+              location.pathname === '/trade' ? 'border-primary' : '!border-transparent'
             }`}
           >
             Trade
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
-              location.pathname === '/pool'
-                ? 'border-black1 dark:border-white'
-                : '!border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary ${
+              location.pathname === '/pool' ? 'border-primary' : '!border-transparent'
             }`}
           >
             Pools
@@ -95,7 +91,7 @@ const ChainSwitch = (props: ChainSwitchProps) => {
     >
       <Avatar
         svg={<ExclamationTriangleIcon />}
-        className="text-black1 avatar"
+        className="text-primary avatar"
         fontSize="sm"
         fontWeight="normal"
         gap="3"
