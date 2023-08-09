@@ -441,50 +441,37 @@ interface AmountSwitchProps {
   onAmountChange?: (value: string) => unknown;
 }
 
-const derive = <T extends unknown>(handler: () => T) => {
-  return handler();
-};
-
 const AmountSwitch = (props: AmountSwitchProps) => {
   const { input, onAmountChange, token, disabled } = props;
   if (!isValid(input) || !isValid(onAmountChange)) {
     return <></>;
   }
 
-  const minimumAmount = derive(() => formatDecimals(token?.minimumMargin, token?.decimals));
+  const minimumAmount = formatDecimals(token?.minimumMargin, token?.decimals);
+  const errors = {
+    balance: 'Exceeded available account balance.',
+    liquidity: 'Exceeded free liquidity size.',
+    minimum: `Less than minimum betting amount. (${minimumAmount} ${token?.name})`,
+  };
+  const errorMessage = disabled?.detail ? errors[disabled.detail] : undefined;
 
-  const errorMessage = derive(() => {
-    switch (disabled?.detail) {
-      case 'balance':
-        return 'Exceeded available account balance.';
-      case 'liquidity':
-        return 'Exceeded free liquidity size.';
-      case 'minimum':
-        return `Less than minimum betting amount. (${minimumAmount} ${token?.name})`;
-      default:
-        return undefined;
-    }
-  });
-
-  const preset = derive(
-    () =>
-      ({
-        collateral: {
-          value: input.collateral,
-          subValue: input.quantity,
-          subLabel: 'Contract Qty',
-          tooltip:
-            'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
-        },
-        quantity: {
-          value: input.quantity,
-          subValue: input.collateral,
-          subLabel: 'Collateral',
-          tooltip:
-            'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
-        },
-      }[input?.method || 'collateral'])
-  );
+  const presets = {
+    collateral: {
+      value: input.collateral,
+      subValue: input.quantity,
+      subLabel: 'Contract Qty',
+      tooltip:
+        'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
+    },
+    quantity: {
+      value: input.quantity,
+      subValue: input.collateral,
+      subLabel: 'Collateral',
+      tooltip:
+        'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
+    },
+  };
+  const preset = presets[input?.method || 'collateral'];
 
   return (
     <>
