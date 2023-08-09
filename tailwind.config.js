@@ -65,6 +65,7 @@ export const theme = {
       md: '4px 4px 20px 0px rgba(229, 229, 229, 0.16)',
       lg: '4px 4px 32px rgba(229, 229, 229, 0.18)',
       xl: '4px 4px 60px rgba(229, 229, 229, 0.16)',
+      modal: '4px 4px 60px 0px rgba(181, 181, 181, 0.16)',
     },
     fontSize: {
       xs: ['10px', 'normal'],
