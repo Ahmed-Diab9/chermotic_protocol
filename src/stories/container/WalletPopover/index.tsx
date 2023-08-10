@@ -1,7 +1,6 @@
-import { toast } from 'react-toastify';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useChromaticClient } from '~/hooks/useChromaticClient';
+import { useCreateAccount } from '~/hooks/useCreateAccount';
 import { useMarket } from '~/hooks/useMarket';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 import usePriceFeed from '~/hooks/usePriceFeed';
@@ -13,18 +12,14 @@ import { copyText } from '~/utils/clipboard';
 export const WalletPopover = () => {
   const { connectAsync, connectors } = useConnect();
   const { address: walletAddress } = useAccount();
-  const {
-    accountAddress: chromaticAddress,
-    createAccount,
-    isChromaticBalanceLoading,
-  } = useChromaticAccount();
+  const { accountAddress: chromaticAddress, isChromaticBalanceLoading } = useChromaticAccount();
+  const { onCreateAccountWithToast } = useCreateAccount();
   const { tokens } = useSettlementToken();
   const { markets } = useMarket();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const { priceFeed } = usePriceFeed();
   const { ownedPoolSummary } = useOwnedLiquidityPools();
   const { disconnectAsync } = useDisconnect();
-  const { client } = useChromaticClient();
 
   return (
     <WalletPopoverPresenter
@@ -38,23 +33,7 @@ export const WalletPopover = () => {
       onConnect={() => {
         connectAsync({ connector: connectors[0] });
       }}
-      onCreateAccount={async () => {
-        // FIXME
-        // Should use SDK instead actually.
-        if (!client.walletClient) {
-          return;
-        }
-        const { request } = await client
-          .router()
-          .contracts()
-          .router()
-          .simulate.createAccount({ account: client.walletClient?.account });
-        const hash = await client.walletClient.writeContract(request);
-        toast(
-          'The account address is being generated on the chain. This process may take approximately 10 seconds or more.'
-        );
-        client.publicClient?.waitForTransactionReceipt({ hash });
-      }}
+      onCreateAccount={onCreateAccountWithToast}
       onDisconnect={disconnectAsync}
       onWalletCopy={copyText}
       onChromaticCopy={copyText}

@@ -4,7 +4,6 @@ import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
-import { AppError } from '~/typings/error';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
 import { checkAllProps } from '../utils';
@@ -87,37 +86,13 @@ export const useChromaticAccount = () => {
 
   useError({ error, logger });
 
-  const createAccount = async (onAfterCreate?: () => unknown) => {
-    if (isNil(walletAddress)) {
-      return AppError.reject('no address', 'createAcccount');
-    }
-
-    try {
-      const accountApi = client.account();
-      logger.info('Creating accounts');
-      dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
-      await accountApi.createAccount();
-      onAfterCreate?.();
-
-      const newAccount = await accountApi.getAccount();
-      await fetchAddress(newAccount);
-
-      dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
-    } catch (error) {
-      dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-      logger.error(error);
-
-      return AppError.reject(error, 'createAccount');
-    }
-  };
-
   return {
     accountAddress,
     balances,
     status,
     isAccountAddressLoading,
     isChromaticBalanceLoading,
-    createAccount,
+    fetchAddress,
     fetchBalances,
   };
 };

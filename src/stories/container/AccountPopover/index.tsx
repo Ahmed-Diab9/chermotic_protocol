@@ -1,5 +1,6 @@
 import { useAccount, useConnect } from 'wagmi';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useCreateAccount } from '~/hooks/useCreateAccount';
 import { useMargins } from '~/hooks/useMargins';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -12,12 +13,12 @@ export const AccountPopover = () => {
   const { connectAsync, connectors } = useConnect();
   const {
     accountAddress: chromaticAddress,
-    createAccount,
     status,
     balances,
     isChromaticBalanceLoading,
     isAccountAddressLoading,
   } = useChromaticAccount();
+  const { onCreateAccount } = useCreateAccount();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const { totalBalance, totalAsset, totalMargin } = useMargins();
@@ -44,7 +45,7 @@ export const AccountPopover = () => {
       onConnect={() => {
         connectAsync({ connector: connectors[0] });
       }}
-      onStatusUpdate={createAccount}
+      onStatusUpdate={onCreateAccount}
     />
   );
 };
