@@ -9,7 +9,6 @@
 @layer base {
   :root {
     --color-primary: 3 3 3; /* #030303 */
-    --alpha-primary: 1;
     --alpha-primary-light: 0.5;
     --alpha-primary-lighter: 0.3;
 
@@ -34,8 +33,7 @@
 
   :root[class~='dark'],
   :root:has(.dark) {
-    --color-primary: 255 255 255; /* #ffffff */
-    --alpha-primary: 0.9;
+    --color-primary: 245 245 245; /* #ffffff */
     --alpha-primary-light: 0.5;
     --alpha-primary-lighter: 0.3;
 

@@ -26,12 +26,12 @@ export const theme = {
       transparent: 'transparent',
       error: 'rgb(var(--color-error))',
       primary: {
-        DEFAULT: 'rgb(var(--color-primary) / var(--alpha-primary))',
+        DEFAULT: 'rgb(var(--color-primary))',
         light: 'rgb(var(--color-primary) / var(--alpha-primary-light))',
         lighter: 'rgb(var(--color-primary) / var(--alpha-primary-lighter))',
       },
       inverted: {
-        DEFAULT: 'rgb(var(--color-inverted) / var(--alpha-inverted))',
+        DEFAULT: 'rgb(var(--color-inverted))',
         light: 'rgb(var(--color-inverted-light) / var(--alpha-inverted-light))',
         lighter: 'rgb(var(--color-inverted-lighter) / var(--alpha-inverted-lighter))',
       },
