@@ -18,7 +18,7 @@
     @apply p-1 bg-paper border border-gray-light rounded-lg shadow-base dark:shadow-none;
   }
   li[role='option'] {
-    @apply flex items-center px-2 py-[6px] hover:bg-gray-lighter/30;
+    @apply flex items-center px-2 py-[6px] hover:bg-paper-lighter;
     @apply rounded-lg;
     @apply cursor-pointer;
     &[aria-selected='true'] {

@@ -1,8 +1,11 @@
 .input {
-  @apply max-w-full;
-  @apply bg-paper;
+  @apply max-w-full bg-paper;
+  @apply dark:bg-gray-lighter/40 dark:border-transparent;
+  &:has(input:focus) {
+    @apply dark:border-gray-lighter;
+  }
   &.disabled {
-    @apply bg-gray-lighter/30 border-gray-light/30;
+    @apply bg-paper-lighter border-gray-light/30;
     input {
       @apply bg-transparent;
     }
