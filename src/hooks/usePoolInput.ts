@@ -2,7 +2,6 @@ import { useRangeChart } from '@chromatic-protocol/react-compound-charts';
 import { isNil } from 'ramda';
 import { useMemo, useState } from 'react';
 import { Logger } from '../utils/log';
-
 import { useLiquidityPool } from './useLiquidityPool';
 
 const logger = Logger('usePoolInput');

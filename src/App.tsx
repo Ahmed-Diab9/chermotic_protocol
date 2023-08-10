@@ -1,14 +1,14 @@
-import '~/App.css';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { SWRConfig } from 'swr';
+import { WagmiConfig, createConfig, createStorage } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import '~/App.css';
 import { router } from '~/routes';
 import { store } from '~/store/index';
-import { WagmiConfig, createConfig, createStorage } from 'wagmi';
-import './typings/bigint';
-import { InjectedConnector } from 'wagmi/connectors/injected';
 import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
 import { ChromaticProvider } from './contexts/ChromaticClient';
+import './typings/bigint';
 
 const config = createConfig({
   autoConnect: true,

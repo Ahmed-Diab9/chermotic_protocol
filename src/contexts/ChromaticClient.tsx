@@ -1,8 +1,7 @@
-import React, { useState, useCallback, type ReactNode } from 'react';
-
-import { Address, PublicClient, WalletClient } from 'wagmi';
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNotNil } from 'ramda';
+import React, { useCallback, useState, type ReactNode } from 'react';
+import { Address, PublicClient, WalletClient } from 'wagmi';
 
 type ContextValue = {
   readonly isReady: boolean;
