@@ -13,7 +13,6 @@
     --alpha-primary-lighter: 0.3;
 
     --color-inverted: 255 255 255; /* #ffffff */
-    --alpha-inverted: 1;
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
@@ -38,7 +37,6 @@
     --alpha-primary-lighter: 0.3;
 
     --color-inverted: 3 3 3; /* #030303 */
-    --alpha-inverted: 1;
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
@@ -99,24 +97,20 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* z-index */
-.tooltip {
-  @apply z-0;
-}
-.tooltip .tooltip-tip,
-.react-tooltip {
-  @apply z-50;
-}
 .modal {
   @apply z-40;
 }
-.select ul[role='listbox'],
-.dropdown [role='menu'] {
-  @apply z-20;
-}
 .popover-panel {
-  @apply z-20;
+  @apply z-40;
 }
 .backdrop {
-  @apply z-10;
+  @apply z-30;
   @apply fixed inset-0 bg-inverted/90;
+}
+.tooltip {
+  @apply z-20;
+}
+.select ul[role='listbox'],
+.dropdown [role='menu'] {
+  @apply z-10;
 }

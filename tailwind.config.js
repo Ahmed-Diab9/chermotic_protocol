@@ -32,8 +32,8 @@ export const theme = {
       },
       inverted: {
         DEFAULT: 'rgb(var(--color-inverted))',
-        light: 'rgb(var(--color-inverted-light) / var(--alpha-inverted-light))',
-        lighter: 'rgb(var(--color-inverted-lighter) / var(--alpha-inverted-lighter))',
+        light: 'rgb(var(--color-inverted) / var(--alpha-inverted-light))',
+        lighter: 'rgb(var(--color-inverted) / var(--alpha-inverted-lighter))',
       },
       gray: {
         light: 'rgb(var(--color-gray-light))',

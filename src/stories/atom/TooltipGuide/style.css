@@ -1,4 +1,7 @@
 .tooltip {
+  .react-tooltip {
+    @apply !opacity-100;
+  }
   .tooltip-icon {
     @apply inline-flex relative;
     /* &:hover::before {
@@ -18,6 +21,10 @@
     @apply bg-paper text-primary border-primary;
     &.react-tooltip__place-left .react-tooltip-arrow {
       @apply border-t border-r mr-[-.5px];
+      @apply border-primary;
+    }
+    &.react-tooltip__place-bottom .react-tooltip-arrow {
+      @apply border-l border-t mt-[-.5px];
       @apply border-primary;
     }
   }
