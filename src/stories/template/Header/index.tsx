@@ -9,6 +9,7 @@ import { trimAddress } from '~/utils/address';
 import { isValid } from '../../../utils/valid';
 import { Avatar } from '../../atom/Avatar';
 import { WalletPopover } from '../../container/WalletPopover';
+import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
 
 interface HeaderProps {
@@ -47,7 +48,10 @@ export const Header = (props: HeaderProps) => {
           </Link>
           {/* dropdown */}
         </div>
-        <div>
+        <div className="flex">
+          <div className="mr-4">
+            <ThemeToggle />
+          </div>
           {isValid(account?.walletAddress) && isSameChain && <WalletPopover />}
           {isValid(account?.walletAddress) && !isSameChain && (
             <ChainSwitch
@@ -82,29 +86,31 @@ const ChainSwitch = (props: ChainSwitchProps) => {
   const { label, width, children } = props;
   const { onChainSwitch } = useSwitchChain();
   return (
-    <button
-      onClick={() => {
-        onChainSwitch();
-      }}
-      title="change network"
-      className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
-    >
-      <Avatar
-        svg={<ExclamationTriangleIcon />}
-        className="text-primary avatar"
-        fontSize="sm"
-        fontWeight="normal"
-        gap="3"
-        label={label}
-      />
+    <>
       <TooltipAlert
         label="change-network"
         tip="Change Network"
-        place="left"
+        place="bottom"
         css="outline"
-        className="!top-5"
+        className=""
       />
-      {children}
-    </button>
+      <button
+        onClick={() => {
+          onChainSwitch();
+        }}
+        title="change network"
+        className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
+      >
+        <Avatar
+          svg={<ExclamationTriangleIcon />}
+          className="text-primary avatar !bg-paper"
+          fontSize="sm"
+          fontWeight="normal"
+          gap="3"
+          label={label}
+        />
+        {children}
+      </button>
+    </>
   );
 };

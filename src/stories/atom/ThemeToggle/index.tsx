@@ -7,7 +7,7 @@ interface ThemeToggleProps {
   label?: string;
   className?: string;
   disabled?: boolean;
-  onToggle: (checked: boolean) => void;
+  onToggle?: (checked: boolean) => void;
 }
 
 export const ThemeToggle = (props: ThemeToggleProps) => {
@@ -20,12 +20,10 @@ export const ThemeToggle = (props: ThemeToggleProps) => {
 
   return (
     <Button
-      className={`mr-4 !w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${
-        darkMode ? '' : ''
-      }`}
+      className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${darkMode ? '' : ''}`}
       css="circle"
       onClick={toggleTheme}
-      iconOnly={darkMode ? <MoonIcon /> : <SunIcon />}
+      iconOnly={darkMode ? <SunIcon /> : <MoonIcon />}
     />
   );
 };
