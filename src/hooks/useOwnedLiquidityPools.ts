@@ -113,7 +113,6 @@ export const useOwnedLiquidityPools = () => {
   const currentOwnedPool = ownedPools?.find(
     ({ marketAddress }) => marketAddress === currentMarket?.address
   );
-  // }, [ownedPools, marketAddresses]);
 
   const ownedPoolSummary = useMemo(() => {
     if (isNil(currentOwnedPool) || isNil(currentToken) || isNil(markets)) return [];

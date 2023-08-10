@@ -1,8 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { WalletClient, usePublicClient, useWalletClient } from 'wagmi';
-
 import { CHAIN_ID } from '~/constants';
-
 import { ChromaticContext } from '~/contexts/ChromaticClient';
 
 export function useChromaticClient() {

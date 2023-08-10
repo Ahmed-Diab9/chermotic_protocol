@@ -3,8 +3,8 @@ import { getContract } from '@wagmi/core';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { PRICE_FEED } from '../configs/token';
-import { useError } from './useError';
 import { useChromaticClient } from './useChromaticClient';
+import { useError } from './useError';
 
 const usePriceFeed = () => {
   const { isReady } = useChromaticClient();

@@ -172,9 +172,8 @@ export const useTradeInput = (props: Props) => {
   } = useLiquidityPool();
 
   const { totalMargin: balance } = useMargins();
-  // TODO
-  // 포지션 진입 시 거래 수수료(Trade Fee)가 올바르게 계산되었는지 확인이 필요합니다.
-  // Maker Margin을 각 LP 토큰을 순회하면서 수수료가 낮은 유동성부터 뺄셈
+  // Traverse bins from low fee rates to high.
+  // Derive trade fees by subtracting free liquidities from maker margin.
   const [tradeFee, feePercent] = useMemo(() => {
     if (isNil(currentToken)) return [];
     let makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
