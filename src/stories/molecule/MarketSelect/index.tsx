@@ -28,8 +28,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const oracleDecimals = 18;
 
   // TODO
-  // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
-  // 현재는 연이율을 1년에 해당하는 시간 값으로 나눗셈
+  // Check converting fee rate to string
   return (
     <>
       <div className="relative bg-white shadow-lg MarketSelect">

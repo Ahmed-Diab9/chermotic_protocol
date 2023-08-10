@@ -1,16 +1,8 @@
-import Logo from '~/assets/icons/Logo';
-import { Button } from '../../atom/Button';
-
 import GitbookIcon from '~/assets/icons/GitbookIcon';
+import Logo from '~/assets/icons/Logo';
 import MediumIcon from '~/assets/icons/MediumIcon';
 import TwitterIcon from '~/assets/icons/TwitterIcon';
-
-// interface FooterProps {
-//   user?: User;
-//   onLogin: () => void;
-//   onLogout: () => void;
-//   onCreateAccount: () => void;
-// }
+import { Button } from '../../atom/Button';
 
 export const Footer = () => (
   <footer>
