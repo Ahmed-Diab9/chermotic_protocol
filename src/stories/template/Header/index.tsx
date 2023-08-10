@@ -86,7 +86,22 @@ const ChainSwitch = (props: ChainSwitchProps) => {
   const { label, width, children } = props;
   const { onChainSwitch } = useSwitchChain();
   return (
-    <>
+    <button
+      onClick={() => {
+        onChainSwitch();
+      }}
+      title="change network"
+      className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
+    >
+      <Avatar
+        svg={<ExclamationTriangleIcon />}
+        className="text-primary avatar !bg-paper"
+        fontSize="sm"
+        fontWeight="normal"
+        gap="3"
+        label={label}
+      />
+      {children}
       <TooltipAlert
         label="change-network"
         tip="Change Network"
@@ -94,23 +109,6 @@ const ChainSwitch = (props: ChainSwitchProps) => {
         css="outline"
         className=""
       />
-      <button
-        onClick={() => {
-          onChainSwitch();
-        }}
-        title="change network"
-        className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
-      >
-        <Avatar
-          svg={<ExclamationTriangleIcon />}
-          className="text-primary avatar !bg-paper"
-          fontSize="sm"
-          fontWeight="normal"
-          gap="3"
-          label={label}
-        />
-        {children}
-      </button>
-    </>
+    </button>
   );
 };
