@@ -9,7 +9,14 @@
 @layer base {
   :root {
     --color-primary: 3 3 3; /* #030303 */
+    --alpha-primary: 1;
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
     --color-inverted: 255 255 255; /* #ffffff */
+    --alpha-inverted: 1;
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
 
     --color-gray-light: 212 212 212; /* #d4d4d4 */
     --color-gray-lighter: 238 238 238; /* #eeeeee */
@@ -19,6 +26,8 @@
     --color-paper: 255 255 255; /* #ffffff */
     --color-paper-light: 252 252 252; /* #fcfcfc */
     --color-paper-dark: 21 21 21; /* #151515 */
+    --alpha-paper-light: 0.2;
+    --alpha-paper-dark: 0.2;
 
     --color-error: 3 3 3; /* #030303 */
   }
@@ -26,7 +35,14 @@
   :root[class~='dark'],
   :root:has(.dark) {
     --color-primary: 255 255 255; /* #ffffff */
+    --alpha-primary: 0.9;
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
     --color-inverted: 3 3 3; /* #030303 */
+    --alpha-inverted: 1;
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
 
     --color-gray-light: 77 77 77; /* #4d4d4d */
     --color-gray-lighter: 51 51 51; /* #333333 */
@@ -36,6 +52,8 @@
     --color-paper: 21 21 21; /* #151515 */
     --color-paper-light: 0 0 0; /* #000000 */
     --color-paper-dark: 252 252 252; /* #fcfcfc */
+    --alpha-paper-light: 0.2;
+    --alpha-paper-dark: 0.2;
 
     --color-error: 255 255 255; /* #ffffff */
   }

@@ -24,40 +24,32 @@ export const theme = {
     colors: {
       current: 'currentColor',
       transparent: 'transparent',
-      error: 'rgb(var(--color-error)/ 1)',
-
+      error: 'rgb(var(--color-error))',
       primary: {
-        DEFAULT: 'rgb(var(--color-primary)/ 1)',
-        light: 'rgb(var(--color-primary)/ 0.5)',
-        lighter: 'rgb(var(--color-primary)/ 0.3)',
+        DEFAULT: 'rgb(var(--color-primary) / var(--alpha-primary))',
+        light: 'rgb(var(--color-primary) / var(--alpha-primary-light))',
+        lighter: 'rgb(var(--color-primary) / var(--alpha-primary-lighter))',
       },
-
       inverted: {
-        DEFAULT: 'rgb(var(--color-inverted)/ 1)',
-        light: 'rgb(var(--color-inverted)/ 0.5)',
-        lighter: 'rgb(var(--color-inverted)/ 0.3)',
+        DEFAULT: 'rgb(var(--color-inverted) / var(--alpha-inverted))',
+        light: 'rgb(var(--color-inverted-light) / var(--alpha-inverted-light))',
+        lighter: 'rgb(var(--color-inverted-lighter) / var(--alpha-inverted-lighter))',
       },
-
       gray: {
-        light: 'rgb(var(--color-gray-light)/ 1)',
-        lighter: 'rgb(var(--color-gray-lighter)/ 1)',
-        dark: 'rgb(var(--color-gray-dark)/ 1)',
-        darker: 'rgb(var(--color-gray-darker)/ 1)',
+        light: 'rgb(var(--color-gray-light))',
+        lighter: 'rgb(var(--color-gray-lighter))',
+        dark: 'rgb(var(--color-gray-dark))',
+        darker: 'rgb(var(--color-gray-darker))',
       },
-
       paper: {
-        DEFAULT: 'rgb(var(--color-paper)/ 1)',
-        light: 'rgb(var(--color-gray-light)/ 0.2)',
-        lighter: 'rgb(var(--color-gray-lighter)/ 0.2)',
-        lightest: 'rgb(var(--color-paper-light)/ 1)',
-        dark: 'rgb(var(--color-gray-dark)/ 0.2)',
-        darker: 'rgb(var(--color-gray-darker)/ 0.2)',
-        darkest: 'rgb(var(--color-paper-dark)/ 1)',
+        DEFAULT: 'rgb(var(--color-paper))',
+        light: 'rgb(var(--color-gray-light) / var(--alpha-paper-light))',
+        lighter: 'rgb(var(--color-gray-lighter) / var(--alpha-paper-light))',
+        lightest: 'rgb(var(--color-paper-light))',
+        dark: 'rgb(var(--color-gray-dark) / var(--alpha-paper-dark))',
+        darker: 'rgb(var(--color-gray-darker) / var(--alpha-paper-dark))',
+        darkest: 'rgb(var(--color-paper-dark))',
       },
-
-      // primary: '#ddd',
-      // 'primary-light': '#ddd',
-      // 'primary-lighter': '#ddd',
     },
 
     boxShadow: {
