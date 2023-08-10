@@ -16,6 +16,7 @@
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
+    --color-gray: 97 97 97; /* #616161 */
     --color-gray-light: 212 212 212; /* #d4d4d4 */
     --color-gray-lighter: 238 238 238; /* #eeeeee */
     --color-gray-dark: 77 77 77; /* #4d4d4d */
@@ -32,7 +33,7 @@
 
   :root[class~='dark'],
   :root:has(.dark) {
-    --color-primary: 245 245 245; /* #ffffff */
+    --color-primary: 240 240 240; /* #ffffff */
     --alpha-primary-light: 0.5;
     --alpha-primary-lighter: 0.3;
 
@@ -40,9 +41,10 @@
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
-    --color-gray-light: 77 77 77; /* #4d4d4d */
+    --color-gray: 97 97 97; /* #616161 */
+    --color-gray-light: 58 58 58; /* #3a3a3a */
     --color-gray-lighter: 51 51 51; /* #333333 */
-    --color-gray-dark: 212 212 212; /* #d4d4d4 */
+    --color-gray-dark: 143 143 143; /* #8f8f8f */
     --color-gray-darker: 238 238 238; /* #eeeeee */
 
     --color-paper: 21 21 21; /* #151515 */

@@ -36,6 +36,7 @@ export const theme = {
         lighter: 'rgb(var(--color-inverted) / var(--alpha-inverted-lighter))',
       },
       gray: {
+        DEFAULT: 'rgb(var(--color-gray))',
         light: 'rgb(var(--color-gray-light))',
         lighter: 'rgb(var(--color-gray-lighter))',
         dark: 'rgb(var(--color-gray-dark))',
