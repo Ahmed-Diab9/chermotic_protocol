@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../Button';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import '../Button/style.css';
@@ -12,6 +12,12 @@ interface ThemeToggleProps {
 
 export const ThemeToggle = (props: ThemeToggleProps) => {
   const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if 'dark' class exists on <html> element
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setDarkMode(isDarkMode);
+  }, []);
 
   const toggleTheme = () => {
     document.documentElement.classList.toggle('dark');
