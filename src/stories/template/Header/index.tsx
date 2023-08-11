@@ -32,7 +32,7 @@ export const Header = (props: HeaderProps) => {
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary ${
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
               location.pathname === '/trade' ? 'border-primary' : '!border-transparent'
             }`}
           >
@@ -40,7 +40,7 @@ export const Header = (props: HeaderProps) => {
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary ${
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
               location.pathname === '/pool' ? 'border-primary' : '!border-transparent'
             }`}
           >

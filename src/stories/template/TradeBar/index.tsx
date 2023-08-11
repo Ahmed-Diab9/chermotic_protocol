@@ -72,9 +72,9 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
               <div className="relative popover-panel" ref={ref}>
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
-                  <div className="absolute right-0 top-[-16px]">
+                  <span className="absolute right-0 top-[-16px]">
                     <PopoverArrow direction="bottom" position="top" />
-                  </div>
+                  </span>
                 </Popover.Button>
                 <Popover.Panel>
                   <div className="w-full bg-paper border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
@@ -194,18 +194,18 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                 className="w-full px-[60px] py-5 bg-paper border-t tabs tabs-line tabs-base tabs-left"
                 ref={openButtonRef}
               >
-                <h4 className="min-w-[140px] text-primary">
+                <span className="min-w-[140px] text-primary text-lg font-semibold">
                   Position
                   {/* TODO: position 갯수 보여주기 (갯수 세는 기준은 확인중) */}
-                  {/* (2) */}
-                </h4>
+                  {/* (n) */}
+                </span>
                 {/* <Button
                   iconOnly={<ChevronDoubleUpIcon />}
                   className="absolute right-10 top-[-16px]"
                 /> */}
-                <div className="absolute right-10 top-[-32px]">
+                <span className="absolute right-10 top-[-32px]">
                   <PopoverArrow direction="top" position="top" />
-                </div>
+                </span>
               </Popover.Button>
             </>
           )}
