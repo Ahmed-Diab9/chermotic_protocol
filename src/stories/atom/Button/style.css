@@ -39,30 +39,30 @@ a {
     }
     &:disabled {
       @apply text-primary-lighter bg-paper-lighter;
-      @apply dark:bg-gray-lighter;
+      @apply dark:bg-gray-light;
     }
   }
   &.btn-gray {
     @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
-    @apply dark:border-gray-lighter dark:bg-gray-lighter dark:hover:bg-gray;
+    @apply dark:border-gray-lighter dark:bg-gray-light dark:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
-      @apply dark:bg-gray-lighter dark:border-transparent;
+      @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
     }
   }
   &.btn-default {
     @apply border border-gray-lighter text-primary-light bg-paper hover:bg-paper-lighter;
-    @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-lighter dark:hover:bg-gray;
+    @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-light dark:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
-      @apply dark:bg-gray-lighter dark:border-transparent;
+      @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
     }
   }
   &.btn-unstyled {
     @apply bg-transparent;
   }
   &.btn-circle {
-    @apply border !rounded-full;
+    @apply border !rounded-full overflow-hidden p-0;
     @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
   }
   &.btn-wallet {
