@@ -1,25 +1,24 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { isNil } from 'ramda';
 import { Link, useLocation } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
-import { useSwitchChain } from '~/hooks/useSwitchChain';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { Account } from '~/typings/account';
 import { trimAddress } from '~/utils/address';
-import { isValid } from '../../../utils/valid';
-import { Avatar } from '../../atom/Avatar';
-import { WalletPopover } from '../../container/WalletPopover';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
+import { Avatar } from '~/stories/atom/Avatar';
+import { WalletPopover } from '~/stories/container/WalletPopover';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
+import useChain from '~/hooks/useChain';
 
 interface HeaderProps {
   account?: Account;
-  isSameChain?: boolean;
+  isConnected?: boolean;
+  isWrongChain?: boolean;
   onConnect?: () => unknown;
 }
 
 export const Header = (props: HeaderProps) => {
-  const { account, isSameChain, onConnect } = props;
+  const { account, isConnected, isWrongChain, onConnect } = props;
   const location = useLocation();
 
   return (
@@ -52,23 +51,18 @@ export const Header = (props: HeaderProps) => {
           <div className="mr-4">
             <ThemeToggle />
           </div>
-          {isValid(account?.walletAddress) && isSameChain && <WalletPopover />}
-          {isValid(account?.walletAddress) && !isSameChain && (
+          {isConnected && !isWrongChain && <WalletPopover />}
+          {isConnected && isWrongChain && (
             <ChainSwitch
               width={175}
               label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
             />
           )}
-          {isNil(account?.walletAddress) && isSameChain && (
+          {!isConnected && (
             <button onClick={onConnect} title="connect" className="btn btn-wallet min-w-[148px]">
               <Avatar src={arbitrumIcon} className="avatar" />
               <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
             </button>
-          )}
-          {isNil(account?.walletAddress) && !isSameChain && (
-            <ChainSwitch width={148}>
-              <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
-            </ChainSwitch>
           )}
         </div>
       </div>
@@ -84,12 +78,10 @@ interface ChainSwitchProps {
 
 const ChainSwitch = (props: ChainSwitchProps) => {
   const { label, width, children } = props;
-  const { onChainSwitch } = useSwitchChain();
+  const { switchChain } = useChain();
   return (
     <button
-      onClick={() => {
-        onChainSwitch();
-      }}
+      onClick={switchChain}
       title="change network"
       className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
     >

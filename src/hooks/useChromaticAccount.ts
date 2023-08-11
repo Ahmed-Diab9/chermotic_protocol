@@ -1,4 +1,5 @@
 import { fromPairs, isNil } from 'ramda';
+import { Address } from 'wagmi';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
@@ -41,15 +42,14 @@ export const useChromaticAccount = () => {
 
       if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
         dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-        return;
       } else {
         dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETED));
-        return accountAddress;
       }
+      return accountAddress;
     } catch (error) {
       dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
       logger.error(error);
-      return;
+      return ADDRESS_ZERO as Address;
     }
   });
 
