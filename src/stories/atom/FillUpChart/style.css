@@ -1,7 +1,7 @@
 .react_range__range_container {
   @apply z-0;
   .react_range__bar_stack.selected {
-    @apply !bg-primary/80;
+    @apply !bg-primary opacity-80 dark:opacity-90;
   }
   .react_range__grid_bold,
   .react_range__track {
