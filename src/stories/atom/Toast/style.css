@@ -23,7 +23,10 @@
 .Toastify__toast--rtl {
 }
 .Toastify__toast-body {
-  @apply !p-0 font-mono text-[12px] text-primary;
+  @apply !p-0;
+  > div:last-child {
+    @apply font-mono text-[12px] text-primary text-left;
+  }
 }
 
 /** Used to position the icon **/
@@ -34,6 +37,7 @@
 .Toastify__toast-theme--dark {
 }
 .Toastify__toast-theme--light {
+  @apply bg-paper;
 }
 .Toastify__toast-theme--colored.Toastify__toast--default {
 }
@@ -47,8 +51,7 @@
 }
 
 .Toastify__progress-bar {
-  @apply bg-primary-lighter !h-1;
-  /* @apply bg-primary; */
+  @apply bg-primary !h-1;
 }
 .Toastify__progress-bar--rtl {
 }
@@ -57,12 +60,16 @@
 .Toastify__progress-bar-theme--dark {
 }
 .Toastify__progress-bar--info {
+  @apply bg-info;
 }
 .Toastify__progress-bar--success {
+  @apply bg-success;
 }
 .Toastify__progress-bar--warning {
+  @apply bg-warning;
 }
 .Toastify__progress-bar--error {
+  @apply bg-error;
 }
 /** colored notifications share the same progress bar color **/
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--info,

@@ -4,9 +4,12 @@ import { Toast } from '.';
 const meta = {
   title: 'Atom/Toast',
   component: Toast,
+  argTypes: {
+    message: {
+      control: 'text',
+    },
+  },
   tags: ['autodocs'],
-  // argTypes: {
-  // },
 } satisfies Meta<typeof Toast>;
 
 export default meta;

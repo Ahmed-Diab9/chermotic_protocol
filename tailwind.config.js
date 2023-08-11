@@ -24,7 +24,7 @@ export const theme = {
     colors: {
       current: 'currentColor',
       transparent: 'transparent',
-      error: 'rgb(var(--color-error))',
+
       primary: {
         DEFAULT: 'rgb(var(--color-primary))',
         light: 'rgb(var(--color-primary) / var(--alpha-primary-light))',
@@ -50,6 +50,23 @@ export const theme = {
         dark: 'rgb(var(--color-gray-dark) / var(--alpha-paper-dark))',
         darker: 'rgb(var(--color-gray-darker) / var(--alpha-paper-dark))',
         darkest: 'rgb(var(--color-paper-dark))',
+      },
+
+      info: {
+        DEFAULT: 'rgb(var(--color-info))',
+        light: 'rgb(var(--color-info-light))',
+      },
+      success: {
+        DEFAULT: 'rgb(var(--color-success))',
+        light: 'rgb(var(--color-success-light))',
+      },
+      warning: {
+        DEFAULT: 'rgb(var(--color-warning))',
+        light: 'rgb(var(--color-warning-light))',
+      },
+      error: {
+        DEFAULT: 'rgb(var(--color-error))',
+        light: 'rgb(var(--color-error-light))',
       },
     },
 

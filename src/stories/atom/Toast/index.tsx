@@ -5,13 +5,14 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 interface ToastProps {
   message?: string;
+  icon?: React.ReactNode;
 }
 
 export const Toast = (props: ToastProps) => {
-  const { message } = props;
+  const { message, icon } = props;
 
   const displayMsg = () => {
-    toast(<Msg message={message} />);
+    toast(<Msg message={message} icon={icon} />);
   };
 
   return (
@@ -26,7 +27,7 @@ export const Toast = (props: ToastProps) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme="light"
       />
     </div>
   );
@@ -34,10 +35,11 @@ export const Toast = (props: ToastProps) => {
 
 interface MsgProps {
   message?: string;
+  icon?: React.ReactNode;
 }
 
 const Msg = (props: MsgProps) => {
-  const { message } = props;
+  const { message, icon } = props;
 
   return (
     <div className="flex">
