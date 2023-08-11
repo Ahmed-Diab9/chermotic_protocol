@@ -1,5 +1,8 @@
 .react_range__range_container {
   @apply z-0;
+  .react_range__bar_stack.selected {
+    @apply !bg-primary/80;
+  }
   .react_range__grid_bold,
   .react_range__track {
     @apply box-content;
