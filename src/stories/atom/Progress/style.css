@@ -1,5 +1,5 @@
 .progress-default {
-  @apply bg-gray-lighter;
+  @apply h-1 bg-gray-lighter;
 }
 .progress-sm {
   @apply h-3 rounded-xl p-[3px] border;
