@@ -42,7 +42,7 @@ const Pool = () => {
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-paper-lightest">
       <Header />
-      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20 z-0">
         <MainBar showAccountPopover={false} />
         <div className="flex items-stretch gap-3">
           <div className="flex-auto w-3/5">

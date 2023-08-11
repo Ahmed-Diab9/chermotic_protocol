@@ -19,7 +19,7 @@ const Trade = () => {
   return (
     <div className="flex flex-col min-h-[100vh] w-full bg-paper-lightest">
       <Header />
-      <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20 z-0">
         <MainBar showAccountPopover={true} />
         <div className="w-full">
           <TradePanel />

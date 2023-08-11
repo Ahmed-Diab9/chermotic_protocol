@@ -62,7 +62,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
   }, []);
 
   return (
-    <Popover className="fixed bottom-0 w-full TradeBar">
+    <Popover className="fixed bottom-0 w-full TradeBar popover-panel">
       {({ open }) => (
         <>
           {open ? (
