@@ -60,7 +60,7 @@ export const Header = (props: HeaderProps) => {
             />
           )}
           {isNil(account?.walletAddress) && isSameChain && (
-            <button onClick={onConnect} title="connect" className="btn-wallet min-w-[148px]">
+            <button onClick={onConnect} title="connect" className="btn btn-wallet min-w-[148px]">
               <Avatar src={arbitrumIcon} className="avatar" />
               <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
             </button>

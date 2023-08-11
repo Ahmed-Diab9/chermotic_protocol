@@ -84,7 +84,7 @@ export const WalletPopover = ({
       <Popover>
         {({ open, close }) => (
           <>
-            <Popover.Button className="btn-wallet min-w-[175px]">
+            <Popover.Button className="btn btn-wallet min-w-[175px]">
               <Avatar
                 label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
                 src={arbitrumIcon}

@@ -29,119 +29,123 @@
     }
   }
 }
-.btn-active {
-  @apply border bg-primary text-inverted border-primary;
-  &:not(.shadow-base):not(:disabled) {
-    @apply hover:opacity-70;
+
+button,
+a {
+  &.btn-active {
+    @apply border border-transparent bg-primary text-inverted;
+    &:not(.shadow-base):not(:disabled) {
+      @apply hover:opacity-70;
+    }
+    &:disabled {
+      @apply text-primary-lighter bg-paper-lighter;
+      @apply dark:bg-gray-lighter;
+    }
   }
-  &:disabled {
-    @apply text-primary-lighter bg-paper-lighter border-paper-lighter;
-    @apply dark:bg-gray-lighter;
+  &.btn-gray {
+    @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
+    @apply dark:border-gray-lighter dark:bg-gray-lighter dark:hover:bg-gray;
+    &:disabled {
+      @apply border-gray-lighter text-gray-light;
+      @apply dark:bg-gray-lighter dark:border-transparent;
+    }
   }
-}
-.btn-gray {
-  @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
-  @apply dark:border-gray-lighter dark:bg-gray-lighter dark:hover:bg-gray;
-  &:disabled {
-    @apply border-gray-lighter text-gray-light;
-    @apply dark:bg-gray-lighter dark:border-transparent;
+  &.btn-default {
+    @apply border border-gray-lighter text-primary-light bg-paper hover:bg-paper-lighter;
+    @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-lighter dark:hover:bg-gray;
+    &:disabled {
+      @apply border-gray-lighter text-gray-light;
+      @apply dark:bg-gray-lighter dark:border-transparent;
+    }
   }
-}
-.btn-default {
-  @apply border border-gray-lighter text-primary-light bg-paper hover:bg-paper-lighter;
-  @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-lighter dark:hover:bg-gray;
-  &:disabled {
-    @apply border-gray-lighter text-gray-light;
-    @apply dark:bg-gray-lighter dark:border-transparent;
-  }
-}
-.btn-unstyled {
-  @apply bg-transparent;
-}
-.btn-circle {
-  @apply border !rounded-full;
-  @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
-}
-.btn-wallet {
-  @apply p-[2px] flex items-center border rounded-full;
-  @apply bg-primary border-gray-lighter text-inverted;
-  @apply dark:bg-gray-lighter dark:text-primary;
-  .avatar {
-    @apply !w-[36px] !h-[36px];
-  }
-}
-.btn-xs {
-  @apply min-w-[20px] h-5 px-2 py-0 text-xs;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 12px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[20px] p-0 items-center justify-center;
-  }
-}
-.btn-sm {
-  @apply min-w-[24px] h-6 px-3 py-0 text-sm;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 14px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[24px] p-0 items-center justify-center;
-  }
-}
-.btn-base {
-  @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 16px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[30px] p-0 items-center justify-center;
+  &.btn-unstyled {
+    @apply bg-transparent;
   }
   &.btn-circle {
-    @apply p-2;
+    @apply border !rounded-full;
+    @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
   }
-}
-.btn-lg {
-  @apply min-w-[36px] h-9 px-4 py-0 text-lg;
-  > div {
-    gap: 8px;
+  &.btn-wallet {
+    @apply p-[2px] flex items-center border rounded-full;
+    @apply bg-primary border-gray-lighter text-inverted;
+    @apply dark:bg-gray-lighter dark:text-primary;
+    .avatar {
+      @apply !w-[36px] !h-[36px];
+    }
   }
-  svg {
-    width: 18px;
+  &.btn-xs {
+    @apply min-w-[20px] h-5 px-2 py-0 text-xs;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 12px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[20px] p-0 items-center justify-center;
+    }
   }
-  &.btn-icon-only {
-    @apply min-h-[36px] p-0 items-center justify-center;
+  &.btn-sm {
+    @apply min-w-[24px] h-6 px-3 py-0 text-sm;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 14px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[24px] p-0 items-center justify-center;
+    }
   }
-}
-.btn-xl {
-  @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
-  > div {
-    gap: 12px;
+  &.btn-base {
+    @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 16px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[30px] p-0 items-center justify-center;
+    }
+    &.btn-circle {
+      @apply p-2;
+    }
   }
-  svg {
-    width: 20px;
+  &.btn-lg {
+    @apply min-w-[36px] h-9 px-4 py-0 text-lg;
+    > div {
+      gap: 8px;
+    }
+    svg {
+      width: 18px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[36px] p-0 items-center justify-center;
+    }
   }
-  &.btn-icon-only {
-    @apply min-h-[42px] p-0 items-center justify-center;
+  &.btn-xl {
+    @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
+    > div {
+      gap: 12px;
+    }
+    svg {
+      width: 20px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[42px] p-0 items-center justify-center;
+    }
   }
-}
-.btn-2xl {
-  @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
-  > div {
-    gap: 12px;
-  }
-  svg {
-    width: 24px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[48px] p-0 items-center justify-center;
+  &.btn-2xl {
+    @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
+    > div {
+      gap: 12px;
+    }
+    svg {
+      width: 24px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[48px] p-0 items-center justify-center;
+    }
   }
 }
