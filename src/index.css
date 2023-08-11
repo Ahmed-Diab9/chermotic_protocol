@@ -28,14 +28,14 @@
     --alpha-paper-light: 0.2;
     --alpha-paper-dark: 0.2;
 
-    --color-info: 3 3 3; /* #3CF2E8 */
-    --color-info-light: 3 3 3; /* #D6FBF9 */
-    --color-success: 3 3 3; /* #A6D85B */
-    --color-success-light: 3 3 3; /* #EBF5DC */
-    --color-warning: 3 3 3; /* #FF9820 */
-    --color-warning-light: 3 3 3; /* #FDE9D1 */
-    --color-error: 3 3 3; /* #FF3232 */
-    --color-error-light: 3 3 3; /* #FDD4D4 */
+    --color-info: 60, 242, 232; /* #3CF2E8 */
+    --color-info-light: 214, 251, 249; /* #D6FBF9 */
+    --color-success: 166, 216, 91; /* #A6D85B */
+    --color-success-light: 235, 245, 220; /* #EBF5DC */
+    --color-warning: 255, 152, 32; /* #FF9820 */
+    --color-warning-light: 253, 233, 209; /* #FDE9D1 */
+    --color-error: 255, 50, 50; /* #FF3232 */
+    --color-error-light: 253, 212, 212; /* #FDD4D4 */
   }
 
   :root[class~='dark'],
@@ -59,8 +59,6 @@
     --color-paper-dark: 252 252 252; /* #fcfcfc */
     --alpha-paper-light: 0.2;
     --alpha-paper-dark: 0.2;
-
-    --color-error: 255 255 255; /* #ffffff */
   }
 }
 

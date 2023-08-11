@@ -18,7 +18,32 @@
 
 /** Classes for the displayed toast **/
 .Toastify__toast {
-  @apply !rounded-xl !shadow-md border !p-4;
+  @apply !rounded-t-xl !rounded-b-none !shadow-md border !p-4 border-b-0 relative;
+  &::before {
+    @apply inline-block absolute bottom-0 left-0 right-0 h-1;
+    @apply bg-gray-lighter;
+    content: '';
+  }
+  &.Toastify__toast--info {
+    &::before {
+      @apply bg-info-light;
+    }
+  }
+  &.Toastify__toast--success {
+    &::before {
+      @apply bg-success-light;
+    }
+  }
+  &.Toastify__toast--warning {
+    &::before {
+      @apply bg-warning-light;
+    }
+  }
+  &.Toastify__toast--error {
+    &::before {
+      @apply bg-error-light;
+    }
+  }
 }
 .Toastify__toast--rtl {
 }
@@ -52,6 +77,7 @@
 
 .Toastify__progress-bar {
   @apply !h-1;
+  background: unset;
 }
 .Toastify__progress-bar--rtl {
 }
@@ -81,7 +107,7 @@
 
 /** Classes for the close button. Better use your own closeButton **/
 .Toastify__close-button {
-  @apply w-4 h-4;
+  @apply w-4 h-4 flex-none;
   background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23D4D4D4' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4 12 8-8M4 4l8 8'/%3E%3C/svg%3E");
 }
 .dark .Toastify__close-button {
