@@ -3,53 +3,31 @@ import { isNil } from 'ramda';
 import { useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useOpenPosition } from '~/hooks/useOpenPosition';
-import { Button } from '~/stories/atom/Button';
 import { FillUpChart } from '~/stories/atom/FillUpChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
-import '~/stories/atom/Select/style.css';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
-import '~/stories/atom/Toggle/style.css';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
-import { Market, Price, Token } from '~/typings/market';
-import { TradeInput } from '~/typings/trade';
-import { decimalLength, formatDecimals, withComma } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
-import { TooltipGuide } from '../../atom/TooltipGuide';
-import { LiquidityTooltip } from '../LiquidityTooltip';
-import { SelectedTooltip } from '../SelectedTooltip';
-import { TransactionButton } from '../TransactionButton';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
+import { TransactionButton } from '~/stories/molecule/TransactionButton';
+import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useMarket } from '~/hooks/useMarket';
+import { useOracleProperties } from '~/hooks/useOracleProperties';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useTradeInput } from '~/hooks/useTradeInput';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
-  balances?: Record<string, bigint>;
-  priceFeed?: Record<string, Price>;
-  token?: Token;
-  market?: Market;
-  input?: TradeInput;
-  totalMaxLiquidity?: bigint;
-  totalUnusedLiquidity?: bigint;
-  tradeFee?: bigint;
-  tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
   clbTokenValues?: CLBTokenValue[];
-  maxLeverage?: number;
-  minStopLoss?: number;
-  minTakeProfit?: number;
-  maxTakeProfit?: number;
-  disabled: {
-    status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
-  };
-  isLoading?: boolean;
-  onAmountChange?: (value: string) => unknown;
-  onMethodToggle?: () => unknown;
-  onLeverageChange?: (nextLeverage: string | number) => unknown;
-  onTakeProfitChange?: (nextRate: string | number) => unknown;
-  onStopLossChange?: (nextRate: string | number) => unknown;
-  onFeeAllowanceChange?: (nextAllowance: string) => unknown;
+  totalMaxLiquidity?: bigint;
+  totalUnusedLiquidity?: bigint;
 }
 
 const methodMap: Record<string, string> = {
@@ -59,31 +37,34 @@ const methodMap: Record<string, string> = {
 
 export const TradeContent = ({ ...props }: TradeContentProps) => {
   const {
-    direction,
-    balances,
-    priceFeed,
-    market,
-    token,
-    input,
+    direction = 'long',
+    liquidityData,
     totalMaxLiquidity = BigInt(0),
     totalUnusedLiquidity = BigInt(0),
-    tradeFee,
-    tradeFeePercent,
-    liquidityData,
     clbTokenValues,
-    maxLeverage = 10,
-    minStopLoss = 1,
-    minTakeProfit = 1,
-    maxTakeProfit = 1000,
+  } = props;
+  const {
+    state: input,
+    tradeFee,
+    feePercent: tradeFeePercent,
     disabled,
-    isLoading,
     onAmountChange,
     onMethodToggle,
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,
     onFeeAllowanceChange,
-  } = props;
+  } = useTradeInput({ direction });
+  const { oracleProperties } = useOracleProperties();
+  const { balances, isAccountAddressLoading, isChromaticBalanceLoading } = useChromaticAccount();
+  const { currentToken: token } = useSettlementToken();
+  const { currentMarket: market } = useMarket();
+
+  const isLoading = isAccountAddressLoading || isChromaticBalanceLoading;
+  const maxTakeProfit = oracleProperties?.maxTakeProfit || 1000;
+  const minTakeProfit = oracleProperties?.minTakeProfit || 1;
+  const maxLeverage = oracleProperties?.maxLeverage || 10;
+  const minStopLoss = oracleProperties?.minStopLoss || 1;
 
   const oracleDecimals = 18;
   const [isSliderOpen, setIsSliderOpen] = useState(false);
@@ -436,78 +417,5 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
       </section>
     </div>
-  );
-};
-
-interface AmountSwitchProps {
-  input?: TradeInput;
-  token?: Token;
-  disabled?: {
-    status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
-  };
-  onAmountChange?: (value: string) => unknown;
-}
-
-const AmountSwitch = (props: AmountSwitchProps) => {
-  const { input, onAmountChange, token, disabled } = props;
-  if (!isValid(input) || !isValid(onAmountChange)) {
-    return <></>;
-  }
-
-  const minimumAmount = formatDecimals(token?.minimumMargin, token?.decimals);
-  const errors = {
-    balance: 'Exceeded available account balance.',
-    liquidity: 'Exceeded free liquidity size.',
-    minimum: `Less than minimum betting amount. (${minimumAmount} ${token?.name})`,
-  };
-  const errorMessage = disabled?.detail ? errors[disabled.detail] : undefined;
-
-  const presets = {
-    collateral: {
-      value: input.collateral,
-      subValue: input.quantity,
-      subLabel: 'Contract Qty',
-      tooltip:
-        'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
-    },
-    quantity: {
-      value: input.quantity,
-      subValue: input.collateral,
-      subLabel: 'Collateral',
-      tooltip:
-        'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
-    },
-  };
-  const preset = presets[input?.method || 'collateral'];
-
-  return (
-    <>
-      <div className="max-w-[220px]">
-        <div className={`tooltip-input-balance-${input.direction}`}>
-          <Input
-            value={preset.value.toString()}
-            onChange={onAmountChange}
-            placeholder="0"
-            error={disabled?.status && !!errorMessage}
-          />
-          {errorMessage && (
-            <TooltipAlert label={`input-balance-${input.direction}`} tip={errorMessage} />
-          )}
-        </div>
-      </div>
-      <div className="flex items-center justify-end mt-2">
-        <TooltipGuide
-          label="contract-qty"
-          tip={preset.tooltip}
-          outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-          outLinkAbout="Payoff"
-        />
-        <p>{preset.subLabel}</p>
-        <p className="ml-2 text-lg text-primary-light">
-          {withComma(Number(decimalLength(preset.subValue, 5)))} {token?.name}
-        </p>
-      </div>
-    </>
   );
 };

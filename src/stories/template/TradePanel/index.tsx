@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
-import { TradeContent } from '~/stories/container/TradeContent';
+import { TradeContent } from '~/stories/molecule/TradeContent';
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
 import { errorLog } from '~/utils/log';
 
