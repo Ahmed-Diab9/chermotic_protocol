@@ -11,18 +11,18 @@ export const Toast = (props: ToastProps) => {
 
   const displayMsg = () => {
     toast(<Msg message={message} />);
-    toast.info(<Msg message={message} />);
-    toast.success(<Msg message={message} />);
-    toast.warning(<Msg message={message} />);
-    toast.error(<Msg message={message} />);
+    // toast.info(<Msg message={message} />);
+    // toast.success(<Msg message={message} />);
+    // toast.warning(<Msg message={message} />);
+    // toast.error(<Msg message={message} />);
   };
 
   return (
     <div>
-      <button onClick={displayMsg}>click</button>
+      {/* <button onClick={displayMsg}>click</button> */}
       <ToastContainer
         position="bottom-right"
-        autoClose={300000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop
         closeOnClick
@@ -38,7 +38,6 @@ export const Toast = (props: ToastProps) => {
 
 interface MsgProps {
   message?: string;
-  icon?: React.ReactNode;
 }
 
 const Msg = (props: MsgProps) => {
