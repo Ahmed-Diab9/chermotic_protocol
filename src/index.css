@@ -106,14 +106,13 @@ input[type='number']::-webkit-outer-spin-button {
   @apply z-40;
 }
 .backdrop {
-  @apply z-30;
+  @apply z-40;
   @apply fixed inset-0 bg-inverted/90;
 }
 .tooltip {
   @apply z-20;
 }
 .select ul[role='listbox'],
-.dropdown [role='menu'],
-.Header {
+.dropdown [role='menu'] {
   @apply z-10;
 }
