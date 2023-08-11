@@ -42,7 +42,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
       {iconOnly || (
         <Tooltip
           anchorSelect={`.tooltip-${label}`}
-          className={`z-50 text-${align} !bg-primary !rounded-lg`}
+          className={`text-${align} !bg-primary !rounded-lg`}
           place={position}
           clickable
           // isOpen

@@ -33,7 +33,7 @@ export const TooltipAlert = (props: TooltipAlertProps) => {
         key={place}
         place={place}
         anchorSelect={`.tooltip-${label}`}
-        className={`z-50 !rounded-lg tooltip-${css} ${className}`}
+        className={`!rounded-lg tooltip-${css} ${className}`}
         clickable
         isOpen={isOpen}
       >
