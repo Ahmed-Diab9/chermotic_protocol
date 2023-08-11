@@ -10,6 +10,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     'storybook-tailwind-dark-mode',
+    'storybook-addon-manual-mocks',
   ],
   framework: {
     name: '@storybook/react-vite',

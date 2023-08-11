@@ -20,6 +20,7 @@ import { isValid } from '~/utils/valid';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import { LiquidityTooltip } from '../LiquidityTooltip';
 import { SelectedTooltip } from '../SelectedTooltip';
+import { TransactionButton } from '../TransactionButton';
 
 interface TradeContentProps {
   direction?: 'long' | 'short';
@@ -381,22 +382,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
 
           <div className="mt-6">
-            <Button
+            <TransactionButton
               label={direction === 'long' ? 'Buy' : 'Sell'}
-              size="2xl"
-              className="w-full"
-              css="active"
               disabled={disabled.status}
-              onClick={() => {
-                !disabled.status && onOpenPosition();
-              }}
+              onClick={onOpenPosition}
             />
-            {/* todo: wallet connected, no account */}
-            {/* onClick: create account */}
-            {/* <Button label="Create Account" size="2xl" className="w-full" css="default" /> */}
-            {/* todo: wallet disconnected */}
-            {/* onClick: connect wallet */}
-            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
           </div>
 
           <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">

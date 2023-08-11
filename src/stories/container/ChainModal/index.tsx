@@ -1,4 +1,4 @@
-import useChain from '~/hooks/useChain';
+import { useChain } from '~/hooks/useChain';
 
 import { Modal } from '~/stories/template/Modal';
 

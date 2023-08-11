@@ -8,7 +8,7 @@ import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { Avatar } from '~/stories/atom/Avatar';
 import { WalletPopover } from '~/stories/container/WalletPopover';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
-import useChain from '~/hooks/useChain';
+import { useChain } from '~/hooks/useChain';
 
 interface HeaderProps {
   account?: Account;

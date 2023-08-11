@@ -1,5 +1,5 @@
 import { useAccount, useConnect } from 'wagmi';
-import useChain from '~/hooks/useChain';
+import { useChain } from '~/hooks/useChain';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { Header as HeaderPresenter } from '~/stories/template/Header';
 
