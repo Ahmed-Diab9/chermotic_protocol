@@ -51,11 +51,12 @@
 }
 
 .Toastify__progress-bar {
-  @apply bg-primary !h-1;
+  @apply !h-1;
 }
 .Toastify__progress-bar--rtl {
 }
 .Toastify__progress-bar-theme--light {
+  @apply bg-primary;
 }
 .Toastify__progress-bar-theme--dark {
 }
