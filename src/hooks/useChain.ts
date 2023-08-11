@@ -10,7 +10,7 @@ function useChain() {
 
   const isWrongChain = useMemo(
     () => isConnected && targetChain.id !== currentChain?.id,
-    [currentChain]
+    [isConnected, currentChain]
   );
 
   const { switchNetwork } = useSwitchNetwork({ chainId: targetChain.id });
