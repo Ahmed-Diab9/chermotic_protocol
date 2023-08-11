@@ -9,7 +9,7 @@ import { PRICE_FEED } from '../../../configs/token';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
 import { LiquidityPoolSummary } from '../../../typings/pools';
-import { trimAddress } from '../../../utils/address';
+import { ADDRESS_ZERO, trimAddress } from '../../../utils/address';
 import { Logger } from '../../../utils/log';
 import { formatBalance, formatDecimals, withComma } from '../../../utils/number';
 import { isValid } from '../../../utils/valid';
@@ -288,7 +288,7 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayLBg1 dark:bg-grayD2/40">
-                    {account?.chromaticAddress ? (
+                    {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
                       <>
                         <h4 className="mb-3 text-base text-center text-black3 dark:text-white2">
                           My Account
