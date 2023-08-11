@@ -84,7 +84,6 @@ function useOpenPosition({ state }: Props) {
 
       await routerApi.openPosition(currentMarket.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        // leverage,
         takerMargin,
         makerMargin,
         maxAllowableTradingFee,

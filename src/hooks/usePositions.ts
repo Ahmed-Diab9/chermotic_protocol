@@ -38,8 +38,6 @@ async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
   market: Market,
-  // oracleVersions: Record<Address, OracleVersion>,
-  // marketAddress: Address,
   tokenDecimals: number
 ) {
   const positionIds = await accountApi.getPositionIds(market.address);

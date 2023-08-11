@@ -1,12 +1,10 @@
 import useSWR from 'swr';
+import { BPS_DECIMALS } from '~/configs/decimals';
+import { checkAllProps } from '~/utils';
+import { formatDecimals } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
-
-import { BPS_DECIMALS } from '~/configs/decimals';
-
-import { checkAllProps } from '~/utils';
-import { formatDecimals } from '~/utils/number';
 
 export const useOracleProperties = () => {
   const { isReady, client } = useChromaticClient();

@@ -140,7 +140,7 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
       />
       {/* Tick - number */}
       <button
-        // todo: 누르면 해당값이 들어가도록
+        // todo: update state with this value by clicking.
         // onClick={}
         style={{
           position: 'absolute',

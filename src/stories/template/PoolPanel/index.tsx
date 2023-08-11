@@ -24,7 +24,6 @@ import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquid
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
-import { MILLION_UNITS } from '../../../configs/token';
 import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
 import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
@@ -514,6 +513,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                             label="Remove Selected"
                             css="gray"
                             className="ml-2"
+                            disabled={selectedBins.length === 0}
                             onClick={() => {
                               if (selectedBins.length > 0) {
                                 dispatch(poolsAction.onModalOpen());

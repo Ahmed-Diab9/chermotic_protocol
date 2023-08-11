@@ -1,5 +1,4 @@
 export const FEE_RATE_DECIMAL = 4;
-// @TODO Decimal for bins is 18
 export const USDC_DECIMALS = 6;
 export const ORACLE_PROVIDER_DECIMALS = 18;
 export const PERCENT_DECIMALS = 2;

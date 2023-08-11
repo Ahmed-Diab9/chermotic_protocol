@@ -1,9 +1,9 @@
-import { useEffect, useSyncExternalStore } from "react";
-import { isPrimitive, isValid } from "../utils/valid";
+import { useEffect, useSyncExternalStore } from 'react';
+import { isPrimitive, isValid } from '../utils/valid';
 
 const cache = new Map<string, unknown>();
 const handlers = new Set<(key: string) => unknown>();
-const IS_PRIMITIVE = "__IS_PRIMITIVE__";
+const IS_PRIMITIVE = '__IS_PRIMITIVE__';
 
 const useLocalStorage = <T>(key: string, defaultValue?: T) => {
   useEffect(() => {
@@ -84,9 +84,9 @@ const useLocalStorage = <T>(key: string, defaultValue?: T) => {
       }
     };
 
-    window.addEventListener("storage", onStorage);
+    window.addEventListener('storage', onStorage);
     return () => {
-      window.removeEventListener("storage", onStorage);
+      window.removeEventListener('storage', onStorage);
     };
   }, [key]);
 
