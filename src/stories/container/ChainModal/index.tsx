@@ -1,22 +1,19 @@
-import { useChainListener } from '~/hooks/useChainListener';
-import { useSwitchChain } from '~/hooks/useSwitchChain';
+import useChain from '~/hooks/useChain';
+
 import { Modal } from '~/stories/template/Modal';
 
 export const ChainModal = () => {
-  const { isSameChain } = useChainListener();
-  const { onChainSwitch } = useSwitchChain();
+  const { isWrongChain, switchChain } = useChain();
 
   return (
-    !isSameChain && (
+    isWrongChain && (
       <Modal
         title="Wrong Network"
         paragraph="Please set network to Arbitrum"
         subParagraph="Check your wallet and sign to change network."
         buttonLabel="Try Again"
         buttonCss="gray"
-        onClick={() => {
-          onChainSwitch();
-        }}
+        onClick={switchChain}
       />
     )
   );

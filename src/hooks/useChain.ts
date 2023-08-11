@@ -1,22 +1,29 @@
 import { useMemo } from 'react';
-import { usePublicClient, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useNetwork, useAccount, useSwitchNetwork } from 'wagmi';
+
+import { CHAINS_WAGMI, CHAIN } from '~/constants/contracts';
 
 function useChain() {
-  const { chain: targetChain } = usePublicClient();
+  const { isConnected } = useAccount();
   const { chain: currentChain } = useNetwork();
-  const { switchNetwork: switchTo } = useSwitchNetwork();
+  const targetChain = CHAINS_WAGMI[CHAIN];
 
-  const isWrongChain = useMemo(() => targetChain.id !== currentChain?.id, [currentChain]);
+  const isWrongChain = useMemo(
+    () => isConnected && targetChain.id !== currentChain?.id,
+    [isConnected, currentChain]
+  );
 
-  function switchNetwork() {
-    switchTo?.(targetChain.id);
+  const { switchNetwork } = useSwitchNetwork({ chainId: targetChain.id });
+
+  function switchChain(_?: unknown) {
+    switchNetwork?.();
   }
 
   return {
     isWrongChain,
     targetChain,
     currentChain,
-    switchNetwork,
+    switchChain,
   };
 }
 

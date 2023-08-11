@@ -40,14 +40,14 @@ function useContextValue(): ContextValue {
 
   const setWalletClient = useCallback(
     (walletClient?: WalletClient) => {
-      if (client.walletClient === walletClient) return;
+      if (walletAddress === walletClient?.account.address) return;
       setClient((currentClient) => {
         currentClient.walletClient = walletClient;
         return currentClient;
       });
       setWalletAddress(walletClient?.account.address);
     },
-    [client]
+    [client, walletAddress]
   );
 
   return {
