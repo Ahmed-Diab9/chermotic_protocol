@@ -44,7 +44,6 @@ export const Input = (props: InputProps) => {
 
   const [tempValue, setTempValue] = useState(value);
   const [isInternalChange, setIsInternalChange] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     if (!isInternalChange) setTempValue(value);
@@ -79,7 +78,6 @@ export const Input = (props: InputProps) => {
     }
 
     setIsInternalChange(true);
-    setIsInitialized(true);
 
     if (!autoCorrect) {
       setTempValue(newValue);
@@ -100,9 +98,6 @@ export const Input = (props: InputProps) => {
   }
 
   function handleBlur() {
-    if (Number(tempValue) === 0 || String(tempValue).length === 0) {
-      setIsInitialized(false);
-    }
     if (autoCorrect && isNotNil(min) && isUnderMin(tempValue)) {
       setTempValue(value);
       return;
@@ -117,7 +112,7 @@ export const Input = (props: InputProps) => {
     <>
       <div
         className={`inline-flex gap-1 items-center input input-${size} input-${css} ${className} ${
-          isInitialized && error ? 'error' : ''
+          error ? 'error' : ''
         } ${disabled ? 'disabled' : ''}`}
       >
         {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
