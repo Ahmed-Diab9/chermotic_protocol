@@ -19,6 +19,7 @@ import { RangeChart } from '~/stories/atom/RangeChart';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '~/stories/container/RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
@@ -26,7 +27,13 @@ import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
 import { LiquidityPool, OwnedBin } from '../../../typings/pools';
-import { divPreserved, formatDecimals, formatFeeRate, withComma } from '../../../utils/number';
+import {
+  divPreserved,
+  formatDecimals,
+  formatFeeRate,
+  isNotZero,
+  withComma,
+} from '../../../utils/number';
 import '../../atom/Tabs/style.css';
 import { TooltipGuide } from '../../atom/TooltipGuide';
 import './style.css';
@@ -207,6 +214,10 @@ export const PoolPanel = (props: PoolPanelProps) => {
     }
   };
 
+  const isExceeded = useMemo(() => {
+    return isNotZero(amount) && Number(amount) > Number(settlementTokenBalance);
+  }, [amount, settlementTokenBalance]);
+
   return (
     <div className="PoolPanel">
       <div className="tabs tabs-line tabs-lg">
@@ -236,9 +247,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     maxValue={settlementTokenBalance}
                     onChange={(value) => onAmountChange?.(value)}
                     onButtonClick={(value) => onAmountChange?.(value)}
-                    // error
+                    error={isExceeded}
                   />
-                  {/* <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." /> */}
+                  {isExceeded && (
+                    <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
+                  )}
                 </div>
               </article>
               <section className="mb-5">
