@@ -21,6 +21,7 @@ export const Counter = (props: CounterProps) => {
       <Button
         onClick={onDecrement}
         label="minus"
+        css="light"
         iconOnly={<MinusIcon />}
         className="!text-primary"
       />
@@ -33,6 +34,7 @@ export const Counter = (props: CounterProps) => {
       <Button
         onClick={onIncrement}
         label="plus"
+        css="light"
         iconOnly={<PlusIcon />}
         className="!text-primary"
       />

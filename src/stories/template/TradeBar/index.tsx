@@ -476,6 +476,7 @@ const PositionItem = function (props: Props) {
           {(position.status === OPENED || position.status === OPENING) && (
             <Button
               label="Close"
+              css="light"
               size="sm"
               onClick={() => {
                 onClosePosition();
@@ -493,7 +494,7 @@ const PositionItem = function (props: Props) {
             />
           )}
           {position.status === CLOSING && (
-            <Button label="Claim" size="sm" disabled={true} css="gray" />
+            <Button label="Claim" size="sm" disabled={true} css="default" />
           )}
         </div>
       </div>

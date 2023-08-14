@@ -20,7 +20,7 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
         </p>
         <Button
           label="Copy Address"
-          css="circle"
+          css="light"
           size="lg"
           className="m-[-1px]"
           iconOnly={<Square2StackIcon />}

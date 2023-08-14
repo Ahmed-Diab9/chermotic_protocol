@@ -29,7 +29,7 @@ export const ThemeToggle = (props: ThemeToggleProps) => {
   return (
     <Button
       className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${darkMode ? '' : ''}`}
-      css="circle"
+      css="light"
       onClick={toggleTheme}
       iconOnly={darkMode ? <SunIcon /> : <MoonIcon />}
     />

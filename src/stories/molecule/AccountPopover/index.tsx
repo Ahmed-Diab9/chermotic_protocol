@@ -117,7 +117,7 @@ export const AccountPopover = ({
             </>
           ) : (
             <>
-              <Button label="Connect Wallet" size="sm" />
+              <Button label="Connect Wallet" css="light" size="sm" />
             </>
           )}
         </div>
@@ -209,9 +209,7 @@ const AssetPanel = (props: AssetPanelProps) => {
     <Popover>
       {({ open, close }) => (
         <>
-          <Popover.Button
-            className={`btn btn-default btn-sm ${open ? '!border-primary !text-primary' : ''}`}
-          >
+          <Popover.Button className={`btn btn-light btn-sm ${open ? '!border-primary' : ''}`}>
             {title}
           </Popover.Button>
           {/* account 없을 때 */}

@@ -12,7 +12,7 @@ export const ChainModal = () => {
         paragraph="Please set network to Arbitrum"
         subParagraph="Check your wallet and sign to change network."
         buttonLabel="Try Again"
-        buttonCss="gray"
+        buttonCss="default"
         onClick={switchChain}
       />
     )

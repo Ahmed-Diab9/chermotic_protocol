@@ -32,7 +32,7 @@ const Trade = () => {
                 <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
               </div>
               <Link to={'/pool'}>
-                <Button label="Provide Liquidity" iconRight={<ChevronRightIcon />} />
+                <Button label="Provide Liquidity" css="light" iconRight={<ChevronRightIcon />} />
               </Link>
             </div>
           </article>

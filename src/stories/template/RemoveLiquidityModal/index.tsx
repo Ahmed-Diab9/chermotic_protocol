@@ -127,8 +127,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-gray-light"
+                    className="flex-auto shadow-base"
                     label="All"
+                    css="default"
                     size="sm"
                     onClick={() => {
                       onAmountChange?.(maxAmount ?? 0n);

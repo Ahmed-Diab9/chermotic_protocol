@@ -332,6 +332,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Button
                       label="Full Range"
                       className="w-full !text-base !rounded-lg"
+                      css="light"
                       size="xl"
                       onClick={onFullRange}
                     />
@@ -355,7 +356,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   />
                   {/* todo: wallet disconnected */}
                   {/* onClick: connect wallet */}
-                  {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
+                  {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
                 </div>
                 <div className="flex flex-col gap-2 border-t border-dashed border-gray-light mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
@@ -511,7 +512,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {/* todo: when there is no selected list, disabled = true */}
                           <Button
                             label="Remove Selected"
-                            css="gray"
+                            css="default"
                             className="ml-2"
                             disabled={selectedBins.length === 0}
                             onClick={() => {
@@ -661,6 +662,7 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex items-center ml-auto">
           <Button
             label="Remove"
+            css="light"
             onClick={(event) => {
               event.stopPropagation();
               if (bin && (bin.clbTokenBalance || 0n) > 0n) {
@@ -670,6 +672,7 @@ const BinItem = (props: BinItemProps) => {
           />
           <Button
             className="ml-2"
+            css="light"
             href={
               clbTokenAddress && blockExplorer
                 ? `${blockExplorer}/token/${clbTokenAddress}?a=${bin?.tokenId}`

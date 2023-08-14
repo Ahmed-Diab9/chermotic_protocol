@@ -142,7 +142,7 @@ export const WalletPopover = ({
                               : undefined
                           }
                           label="view transition"
-                          css="circle"
+                          css="light"
                           size="lg"
                           iconOnly={<ArrowTopRightOnSquareIcon />}
                         />
@@ -309,7 +309,7 @@ export const WalletPopover = ({
                                 : undefined
                             }
                             label="view transition"
-                            css="circle"
+                            css="light"
                             size="lg"
                             iconOnly={<ArrowTopRightOnSquareIcon />}
                           />
@@ -324,7 +324,7 @@ export const WalletPopover = ({
                           <Button
                             label="Create Account"
                             size="base"
-                            css="gray"
+                            css="default"
                             onClick={onCreateAccount}
                           />
                         </div>

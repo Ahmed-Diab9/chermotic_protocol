@@ -18,6 +18,6 @@ export const Default: Story = {
     paragraph: 'this is paragraph.',
     subParagraph: 'hello world, this is sub paragraph.',
     buttonLabel: 'default',
-    buttonCss: 'gray',
+    buttonCss: 'default',
   },
 };

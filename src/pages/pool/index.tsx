@@ -60,7 +60,6 @@ const Pool = () => {
                       }
                     }}
                   />
-                  {/* todo : outlink button link */}
                   <Button
                     href={
                       clbTokenAddress && blockExplorer
@@ -68,7 +67,7 @@ const Pool = () => {
                         : undefined
                     }
                     label="view scanner"
-                    css="circle"
+                    css="light"
                     size="lg"
                     iconOnly={<ArrowTopRightOnSquareIcon />}
                   />
@@ -84,6 +83,7 @@ const Pool = () => {
             <div className="mt-10">
               <Link to={'/trade'}>
                 <Button
+                  css="light"
                   label={
                     isValid(selectedMarket)
                       ? `Trade on ${selectedMarket.description} Pool`
