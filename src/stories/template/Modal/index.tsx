@@ -30,14 +30,14 @@ export const Modal = ({
     <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
       <div className="backdrop" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
-        <Dialog.Panel className={`text-center bg-white modal modal-${size}`}>
+        <Dialog.Panel className={`text-center bg-paper modal modal-${size}`}>
           <Dialog.Title className="modal-title !mb-8">
-            <span className="inline-block pb-2 border-b-2 border-black1">{title}</span>
+            <span className="inline-block pb-2 border-b-2 border-primary">{title}</span>
             <ModalCloseButton onClick={() => setIsOpen(false)} />
           </Dialog.Title>
           <div>
             <p>{paragraph}</p>
-            {subParagraph && <p className="mt-3 text-sm text-black3">{subParagraph}</p>}
+            {subParagraph && <p className="mt-3 text-sm text-primary-lighter">{subParagraph}</p>}
           </div>
           <div className="flex gap-2 mt-6">
             <Button

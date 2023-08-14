@@ -151,10 +151,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
-      <article className="pb-5 border-grayL1">
+      <article className="pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
-          <p className="text-lg text-black2">
+          <p className="text-lg text-primary-light">
             <SkeletonElement isLoading={isLoading} width={40}>
               {balances && token && balances[token.address]
                 ? formatDecimals(balances[token.address], token.decimals, 5, true)
@@ -193,13 +193,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayLBg1">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <p className="text-black3">Up to {maxLeverage}x</p>
+              <p className="text-primary-lighter">Up to {maxLeverage}x</p>
             </div>
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
@@ -329,16 +329,16 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 
           {/* LP volume */}
           <div
-            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-white2 ${
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
               direction === 'long' ? 'items-end right-0' : 'items-start left-0'
             }`}
           >
-            <p className="text-black3">LP Volume</p>
+            <p className="text-primary-lighter">LP Volume</p>
             {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume}</p> : null}
           </div>
         </div>
         <article className="mt-5">
-          <div className="flex flex-col gap-[10px] border-grayL2">
+          <div className="flex flex-col gap-[10px] border-gray-light">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -393,7 +393,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
           </div>
 
-          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-grayL2 mt-8">
+          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
@@ -412,7 +412,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black3">({takeProfitRatio}%)</span>
+                <span className="ml-2 text-primary-lighter">({takeProfitRatio}%)</span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -421,7 +421,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black3">({stopLossRatio}%)</span>
+                <span className="ml-2 text-primary-lighter">({stopLossRatio}%)</span>
               </p>
             </div>
           </div>
@@ -496,7 +496,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
           outLinkAbout="Payoff"
         />
         <p>{preset.subLabel}</p>
-        <p className="ml-2 text-lg text-black2">
+        <p className="ml-2 text-lg text-primary-light">
           {withComma(Number(decimalLength(preset.subValue, 5)))} {token?.name}
         </p>
       </div>

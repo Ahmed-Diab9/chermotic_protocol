@@ -1,21 +1,28 @@
 .input {
-  @apply max-w-full;
-  @apply bg-white dark:bg-grayDBg1;
+  @apply max-w-full bg-paper;
+  @apply dark:bg-gray-lighter/40 dark:border-transparent;
+  @apply focus:outline-none;
+  &.error {
+    @apply border-error;
+  }
+  &:has(input:focus) {
+    @apply dark:border-gray-lighter;
+    &.error {
+      @apply border-error;
+    }
+  }
   &.disabled {
-    @apply bg-grayL1/30 border-grayL2/30 dark:bg-grayD1/30 dark:border-grayD2/30;
+    @apply bg-paper-lighter border-gray-light/30;
     input {
       @apply bg-transparent;
     }
-  }
-  &.error {
-    @apply border-grayDErr dark:border-grayLErr;
   }
 
   input {
     @apply bg-transparent;
   }
   .unit {
-    @apply text-black3 dark:text-white3;
+    @apply text-primary-lighter;
   }
 }
 .input-sm {
@@ -29,5 +36,5 @@
 }
 .input-default {
   @apply border rounded-lg;
-  @apply border-grayL2 dark:border-grayD2;
+  @apply border-gray-light;
 }

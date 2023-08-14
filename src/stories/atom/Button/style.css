@@ -14,11 +14,10 @@
     @apply cursor-not-allowed;
   }
   &.toggle-on {
-    @apply border border-black1 text-black1;
-    @apply dark:border-white dark:text-white1;
+    @apply border border-primary text-primary;
   }
   &.toggle-off {
-    @apply border border-black2 dark:border-white2;
+    @apply border border-primary-light;
   }
   &.btn-icon-only {
     @apply justify-center text-center flex-none;
@@ -30,120 +29,123 @@
     }
   }
 }
-.btn-active {
-  @apply border bg-black1 text-white1 border-black1;
-  @apply dark:bg-white dark:text-black1 dark:border-white;
-  &:not(.shadow-base) {
-    @apply hover:opacity-70;
+
+button,
+a {
+  &.btn-active {
+    @apply border border-transparent bg-primary text-inverted;
+    &:not(.shadow-base):not(:disabled) {
+      @apply hover:opacity-70;
+    }
+    &:disabled {
+      @apply text-primary-lighter bg-paper-lighter;
+      @apply dark:bg-gray-light;
+    }
   }
-  &:disabled {
-    @apply text-black3 bg-grayLBg1 border-grayLBg1;
-    @apply dark:text-white3 dark:bg-grayDBg1 dark:border-grayDBg1;
+  &.btn-gray {
+    @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
+    @apply dark:border-gray-lighter dark:bg-gray-light dark:hover:bg-gray;
+    &:disabled {
+      @apply border-gray-lighter text-gray-light;
+      @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
+    }
   }
-}
-.btn-gray {
-  @apply border border-grayL2 text-black1 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD2 dark:text-white1 dark:bg-black1 dark:hover:bg-grayD1/30;
-  &:disabled {
-    @apply border-grayL2/40 text-grayL2;
-    @apply dark:border-grayD2/40 dark:text-grayD2;
+  &.btn-default {
+    @apply border border-gray-lighter text-primary-light bg-paper hover:bg-paper-lighter;
+    @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-light dark:hover:bg-gray;
+    &:disabled {
+      @apply border-gray-lighter text-gray-light;
+      @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
+    }
   }
-}
-.btn-default {
-  @apply border border-grayL1 text-black2 bg-white hover:bg-grayL1/30;
-  @apply dark:border-grayD1 dark:text-white1/80 dark:bg-grayDBg1 dark:hover:bg-grayD1/30;
-  &:disabled {
-    @apply text-grayL2 dark:text-grayD2;
-  }
-}
-.btn-unstyled {
-  @apply bg-transparent;
-}
-.btn-circle {
-  @apply border !rounded-full;
-  @apply border-grayL1 bg-white hover:bg-grayL1/30 text-black1;
-  @apply dark:border-grayD1 dark:bg-black1 dark:hover:bg-grayD1/30 dark:text-white1;
-}
-.btn-wallet {
-  @apply p-[2px] flex items-center border rounded-full;
-  @apply bg-black1 border-grayL1 text-white1;
-  /* @apply dark:bg-white dark:border-grayD1 dark:text-black1; */
-  .avatar {
-    @apply !w-[36px] !h-[36px];
-  }
-}
-.btn-xs {
-  @apply min-w-[20px] h-5 px-2 py-0 text-xs;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 12px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[20px] p-0 items-center justify-center;
-  }
-}
-.btn-sm {
-  @apply min-w-[24px] h-6 px-3 py-0 text-sm;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 14px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[24px] p-0 items-center justify-center;
-  }
-}
-.btn-base {
-  @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
-  > div {
-    gap: 4px;
-  }
-  svg {
-    width: 16px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[30px] p-0 items-center justify-center;
+  &.btn-unstyled {
+    @apply bg-transparent;
   }
   &.btn-circle {
-    @apply p-2;
+    @apply border !rounded-full overflow-hidden p-0;
+    @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
   }
-}
-.btn-lg {
-  @apply min-w-[36px] h-9 px-4 py-0 text-lg;
-  > div {
-    gap: 8px;
+  &.btn-wallet {
+    @apply p-[2px] flex items-center border rounded-full;
+    @apply bg-primary border-gray-lighter text-inverted;
+    @apply dark:bg-gray-lighter dark:text-primary;
+    .avatar {
+      @apply !w-[36px] !h-[36px];
+    }
   }
-  svg {
-    width: 18px;
+  &.btn-xs {
+    @apply min-w-[20px] h-5 px-2 py-0 text-xs;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 12px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[20px] p-0 items-center justify-center;
+    }
   }
-  &.btn-icon-only {
-    @apply min-h-[36px] p-0 items-center justify-center;
+  &.btn-sm {
+    @apply min-w-[24px] h-6 px-3 py-0 text-sm;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 14px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[24px] p-0 items-center justify-center;
+    }
   }
-}
-.btn-xl {
-  @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
-  > div {
-    gap: 12px;
+  &.btn-base {
+    @apply min-w-[30px] h-[30px] px-3 py-0 text-base;
+    > div {
+      gap: 4px;
+    }
+    svg {
+      width: 16px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[30px] p-0 items-center justify-center;
+    }
+    &.btn-circle {
+      @apply p-2;
+    }
   }
-  svg {
-    width: 20px;
+  &.btn-lg {
+    @apply min-w-[36px] h-9 px-4 py-0 text-lg;
+    > div {
+      gap: 8px;
+    }
+    svg {
+      width: 18px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[36px] p-0 items-center justify-center;
+    }
   }
-  &.btn-icon-only {
-    @apply min-h-[42px] p-0 items-center justify-center;
+  &.btn-xl {
+    @apply min-w-[42px] h-[42px] px-4 py-0 text-xl;
+    > div {
+      gap: 12px;
+    }
+    svg {
+      width: 20px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[42px] p-0 items-center justify-center;
+    }
   }
-}
-.btn-2xl {
-  @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
-  > div {
-    gap: 12px;
-  }
-  svg {
-    width: 24px;
-  }
-  &.btn-icon-only {
-    @apply min-h-[48px] p-0 items-center justify-center;
+  &.btn-2xl {
+    @apply min-w-[48px] h-12 px-4 py-0 text-2xl;
+    > div {
+      gap: 12px;
+    }
+    svg {
+      width: 24px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[48px] p-0 items-center justify-center;
+    }
   }
 }

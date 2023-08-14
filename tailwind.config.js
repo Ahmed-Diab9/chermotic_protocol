@@ -23,40 +23,59 @@ export const theme = {
     },
     colors: {
       current: 'currentColor',
+      transparent: 'transparent',
 
-      white1: '#ffffffe6',
-      white2: '#FFFFFF80',
-      white3: '#ffffff4d',
+      primary: {
+        DEFAULT: 'rgb(var(--color-primary))',
+        light: 'rgb(var(--color-primary) / var(--alpha-primary-light))',
+        lighter: 'rgb(var(--color-primary) / var(--alpha-primary-lighter))',
+      },
+      inverted: {
+        DEFAULT: 'rgb(var(--color-inverted))',
+        light: 'rgb(var(--color-inverted) / var(--alpha-inverted-light))',
+        lighter: 'rgb(var(--color-inverted) / var(--alpha-inverted-lighter))',
+      },
+      gray: {
+        DEFAULT: 'rgb(var(--color-gray))',
+        light: 'rgb(var(--color-gray-light))',
+        lighter: 'rgb(var(--color-gray-lighter))',
+        dark: 'rgb(var(--color-gray-dark))',
+        darker: 'rgb(var(--color-gray-darker))',
+      },
+      paper: {
+        DEFAULT: 'rgb(var(--color-paper))',
+        light: 'rgb(var(--color-gray-light) / var(--alpha-paper-light))',
+        lighter: 'rgb(var(--color-gray-lighter) / var(--alpha-paper-light))',
+        lightest: 'rgb(var(--color-paper-light))',
+        dark: 'rgb(var(--color-gray-dark) / var(--alpha-paper-dark))',
+        darker: 'rgb(var(--color-gray-darker) / var(--alpha-paper-dark))',
+        darkest: 'rgb(var(--color-paper-dark))',
+      },
 
-      grayL1: '#EEEEEE',
-      grayL2: '#D4D4D4',
-      grayLBg0: '#FCFCFC',
-      grayLBg1: '#EEEEEE33',
-      grayLBg2: '#D4D4D433',
-      grayLErr: '#FFFFFF',
-
-      black1: '#030303',
-      black2: '#03030380',
-      black3: '#0303034d',
-
-      grayD1: '#333333',
-      grayD2: '#4D4D4D',
-      grayDBg0: '#151515',
-      grayDBg1: '#33333333',
-      grayDBg2: '#4D4D4D33',
-      grayDErr: '#030303',
-
-      // standby: '#FF8A00',
-      // completed: '#00E23F',
-      // inprocess: '#08E3D6',
-      // long: '#a6d85b',
-      // short: '#fb6115',
+      info: {
+        DEFAULT: 'rgb(var(--color-info))',
+        light: 'rgb(var(--color-info-light))',
+      },
+      success: {
+        DEFAULT: 'rgb(var(--color-success))',
+        light: 'rgb(var(--color-success-light))',
+      },
+      warning: {
+        DEFAULT: 'rgb(var(--color-warning))',
+        light: 'rgb(var(--color-warning-light))',
+      },
+      error: {
+        DEFAULT: 'rgb(var(--color-error))',
+        light: 'rgb(var(--color-error-light))',
+      },
     },
+
     boxShadow: {
       base: '4px 4px 20px rgba(121, 121, 121, 0.08)',
       md: '4px 4px 20px 0px rgba(229, 229, 229, 0.16)',
       lg: '4px 4px 32px rgba(229, 229, 229, 0.18)',
       xl: '4px 4px 60px rgba(229, 229, 229, 0.16)',
+      modal: '4px 4px 60px 0px rgba(181, 181, 181, 0.16)',
     },
     fontSize: {
       xs: ['10px', 'normal'],

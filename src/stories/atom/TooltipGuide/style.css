@@ -1,4 +1,7 @@
 .tooltip {
+  .react-tooltip {
+    @apply !opacity-100;
+  }
   .tooltip-icon {
     @apply inline-flex relative;
     /* &:hover::before {
@@ -11,17 +14,34 @@
   }
 
   .tooltip-solid {
-    @apply bg-black1 text-white1 font-normal;
-    @apply dark:bg-white1 dark:text-black1;
+    @apply bg-primary text-inverted font-normal;
   }
   .tooltip-outline {
     @apply font-medium border;
-    @apply bg-white text-black1 border-black1;
-    @apply dark:bg-black dark:text-white1 dark:border-white1;
-    &.react-tooltip__place-left .react-tooltip-arrow {
+    @apply bg-paper text-primary border-primary;
+    &.react-tooltip__place-top .react-tooltip-arrow,
+    &.react-tooltip__place-top-start .react-tooltip-arrow,
+    &.react-tooltip__place-top-end .react-tooltip-arrow {
+      @apply border-r border-b mb-[-.5px];
+      @apply border-primary;
+    }
+    &.react-tooltip__place-right .react-tooltip-arrow,
+    &.react-tooltip__place-right-start .react-tooltip-arrow,
+    &.react-tooltip__place-right-end .react-tooltip-arrow {
+      @apply border-b border-l ml-[-.5px];
+      @apply border-primary;
+    }
+    &.react-tooltip__place-bottom .react-tooltip-arrow,
+    &.react-tooltip__place-bottom-start .react-tooltip-arrow,
+    &.react-tooltip__place-bottom-end .react-tooltip-arrow {
+      @apply border-l border-t mt-[-.5px];
+      @apply border-primary;
+    }
+    &.react-tooltip__place-left .react-tooltip-arrow,
+    &.react-tooltip__place-left-start .react-tooltip-arrow,
+    &.react-tooltip__place-left-end .react-tooltip-arrow {
       @apply border-t border-r mr-[-.5px];
-      @apply border-black1;
-      @apply dark:border-white1;
+      @apply border-primary;
     }
   }
 }

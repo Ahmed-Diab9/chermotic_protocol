@@ -1,68 +1,79 @@
-/** Used to define container behavior: width, position: fixed etc... **/
-.Toastify__toast-container {
-}
-
-/** Used to define the position of the ToastContainer **/
-.Toastify__toast-container--top-left {
-}
-.Toastify__toast-container--top-center {
-}
-.Toastify__toast-container--top-right {
-}
-.Toastify__toast-container--bottom-left {
-}
-.Toastify__toast-container--bottom-center {
-}
-.Toastify__toast-container--bottom-right {
-}
-
 /** Classes for the displayed toast **/
 .Toastify__toast {
-  @apply !rounded-xl !shadow-md border !p-4;
-}
-.Toastify__toast--rtl {
+  @apply !rounded-t-xl !rounded-b-none !shadow-md border !p-4 relative;
+  /* &::before {
+    @apply inline-block absolute bottom-0 left-0 right-0 h-[2px];
+    @apply bg-gray-lighter;
+    content: '';
+  } */
+  &.Toastify__toast--info {
+    &::before {
+      @apply bg-info-light;
+    }
+    .Toastify__toast-icon svg {
+      @apply fill-info;
+    }
+  }
+  &.Toastify__toast--success {
+    &::before {
+      @apply bg-success-light;
+    }
+    .Toastify__toast-icon svg {
+      @apply fill-success;
+    }
+  }
+  &.Toastify__toast--warning {
+    &::before {
+      @apply bg-warning-light;
+    }
+    .Toastify__toast-icon svg {
+      @apply fill-warning;
+    }
+  }
+  &.Toastify__toast--error {
+    &::before {
+      @apply bg-error-light;
+    }
+    .Toastify__toast-icon svg {
+      @apply fill-error;
+    }
+  }
 }
 .Toastify__toast-body {
-  @apply !p-0 font-mono text-[12px] text-black1;
+  @apply !p-0;
+  > div:last-child {
+    @apply font-mono text-sm text-primary text-left;
+  }
 }
 
 /** Used to position the icon **/
 .Toastify__toast-icon {
+  @apply w-4;
 }
 
 /** handle the notification color and the text color based on the theme **/
-.Toastify__toast-theme--dark {
-}
 .Toastify__toast-theme--light {
-}
-.Toastify__toast-theme--colored.Toastify__toast--default {
-}
-.Toastify__toast-theme--colored.Toastify__toast--info {
-}
-.Toastify__toast-theme--colored.Toastify__toast--success {
-}
-.Toastify__toast-theme--colored.Toastify__toast--warning {
-}
-.Toastify__toast-theme--colored.Toastify__toast--error {
+  @apply bg-paper;
 }
 
 .Toastify__progress-bar {
-  @apply bg-black3 !h-1;
-  /* @apply bg-black1; */
-}
-.Toastify__progress-bar--rtl {
+  @apply !h-[2px] absolute bottom-0;
+  background: unset;
 }
 .Toastify__progress-bar-theme--light {
-}
-.Toastify__progress-bar-theme--dark {
+  @apply bg-primary;
 }
 .Toastify__progress-bar--info {
+  @apply bg-info;
 }
 .Toastify__progress-bar--success {
+  @apply bg-success;
 }
 .Toastify__progress-bar--warning {
+  @apply bg-warning;
 }
 .Toastify__progress-bar--error {
+  @apply bg-error;
 }
 /** colored notifications share the same progress bar color **/
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--info,
@@ -73,8 +84,11 @@
 
 /** Classes for the close button. Better use your own closeButton **/
 .Toastify__close-button {
-  @apply w-4 h-4;
+  @apply w-4 h-4 flex-none opacity-100;
   background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23D4D4D4' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4 12 8-8M4 4l8 8'/%3E%3C/svg%3E");
+}
+.dark .Toastify__close-button {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%234D4D4D' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4 12 8-8M4 4l8 8'/%3E%3C/svg%3E%0A");
 }
 .Toastify__close-button--default {
 }

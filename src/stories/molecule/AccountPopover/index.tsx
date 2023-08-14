@@ -210,9 +210,7 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${
-              open ? '!border-black1 !text-black1 dark:!border-white dark:!text-white1' : ''
-            }`}
+            className={`btn btn-default btn-sm ${open ? '!border-primary !text-primary' : ''}`}
           >
             {title}
           </Popover.Button>
@@ -230,7 +228,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black2 dark:text-white2">
+                  <p className="text-primary-light">
                     This process may take approximately 10 seconds or so.
                   </p>
                 </div>
@@ -272,7 +270,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                   </p>
                 </article>
                 <div className="my-7">
-                  <p className="text-black2 dark:text-white2">
+                  <p className="text-primary-light">
                     This process may take approximately 10 seconds or so. Please wait a moment.
                   </p>
                 </div>
@@ -328,9 +326,9 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-grayLBg1">
-                  <p className="flex-none pr-4 border-r text-black3">My Account</p>
-                  <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-paper-lighter">
+                  <p className="flex-none pr-4 border-r text-primary-lighter">My Account</p>
+                  <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis text-left">
                     {account?.chromaticAddress}
                   </div>
                   <Button
@@ -352,7 +350,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>
-                      <div className="flex mb-1 text-black3">
+                      <div className="flex mb-1 text-primary-lighter">
                         Available Margin
                         <TooltipGuide
                           label="available-margin"
@@ -370,7 +368,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       https://github.com/chromatic-protocol/frontend/issues/290
                     */}
                     {/* <div>
-                      <div className="flex mb-1 text-black3">
+                      <div className="flex mb-1 text-primary-lighter">
                         Asset Value
                         <TooltipGuide
                           label="asset-value"
@@ -425,7 +423,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                       {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
                     </div>
                     <div className="text-sm">
-                      <p className="mb-1 text-black3">
+                      <p className="mb-1 text-primary-lighter">
                         To open a position in the Chromatic Protocol, you need to deposit the
                         required amount of settlement assets into your account.{' '}
                         <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement" />

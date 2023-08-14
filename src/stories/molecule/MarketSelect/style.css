@@ -1,9 +1,10 @@
 .MarketSelect {
   @apply flex items-center justify-between gap-6;
-  @apply border rounded-2xl min-h-[80px];
+  @apply border rounded-2xl min-h-[80px] shadow-lg dark:shadow-none;
+  @apply bg-paper;
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
-    @apply bg-white min-h-[280px] rounded-b-2xl;
+    @apply bg-paper min-h-[280px] rounded-b-2xl;
     @apply top-[64px] border-x border-b px-10 pt-4;
     width: calc(100% + 2px);
   }
@@ -11,7 +12,7 @@
     @apply flex items-start;
     .inner-popover-button {
       &[aria-expanded='true'] {
-        @apply bg-black1 text-white1;
+        @apply bg-primary text-inverted;
       }
     }
     .inner-popover-panel {
@@ -20,7 +21,7 @@
       .inner-popover-item {
         @apply flex justify-between cursor-pointer;
         @apply py-3 px-4 gap-6;
-        @apply hover:bg-black1 hover:text-white1;
+        @apply hover:bg-primary hover:text-inverted;
         h4 {
           @apply flex-1;
         }

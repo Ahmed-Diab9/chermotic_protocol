@@ -31,7 +31,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   // Check converting fee rate to string
   return (
     <>
-      <div className="relative bg-white shadow-lg MarketSelect">
+      <div className="relative MarketSelect">
         <Popover>{<PopoverMain {...props} />}</Popover>
         <div className="flex items-center gap-5 mr-10">
           <h2 className="text-3xl">
@@ -44,7 +44,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               )}`}
             </SkeletonElement>
           </h2>
-          <div className="flex flex-col gap-1 pl-5 text-left border-l text-black2">
+          <div className="flex flex-col gap-1 pl-5 text-left border-l text-primary-light">
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
                 {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
@@ -103,7 +103,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <button
                 key={token.address}
                 className={`flex items-center gap-2 px-4 py-2 ${
-                  token.address === selectedToken?.address && 'text-white1 bg-black1 rounded-lg' // the token selected
+                  token.address === selectedToken?.address && 'text-inverted bg-primary rounded-lg' // the token selected
                 }`}
                 onClick={() => {
                   onTokenClick?.(token);
@@ -123,7 +123,8 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <button
                 key={market.address}
                 className={`flex items-center justify-between gap-4 px-4 py-2 ${
-                  market.address === selectedMarket?.address && 'text-white1 bg-black1 rounded-lg' // the market selected
+                  market.address === selectedMarket?.address &&
+                  'text-inverted bg-primary rounded-lg' // the market selected
                 }`}
                 onClick={() => onMarketClick?.(market)}
               >

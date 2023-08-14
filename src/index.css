@@ -6,25 +6,77 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 3 3 3; /* #030303 */
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
+    --color-inverted: 255 255 255; /* #ffffff */
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
+
+    --color-gray: 97 97 97; /* #616161 */
+    --color-gray-light: 212 212 212; /* #d4d4d4 */
+    --color-gray-lighter: 238 238 238; /* #eeeeee */
+    --color-gray-dark: 77 77 77; /* #4d4d4d */
+    --color-gray-darker: 51 51 51; /* #333333 */
+
+    --color-paper: 255 255 255; /* #ffffff */
+    --color-paper-light: 252 252 252; /* #fcfcfc */
+    --color-paper-dark: 21 21 21; /* #151515 */
+    --alpha-paper-light: 0.2;
+    --alpha-paper-dark: 0.2;
+
+    --color-info: 60, 242, 232; /* #3CF2E8 */
+    --color-info-light: 214, 251, 249; /* #D6FBF9 */
+    --color-success: 166, 216, 91; /* #A6D85B */
+    --color-success-light: 235, 245, 220; /* #EBF5DC */
+    --color-warning: 255, 152, 32; /* #FF9820 */
+    --color-warning-light: 253, 233, 209; /* #FDE9D1 */
+    --color-error: 255, 50, 50; /* #FF3232 */
+    --color-error-light: 253, 212, 212; /* #FDD4D4 */
+  }
+
+  :root[class~='dark'],
+  :root:has(.dark) {
+    --color-primary: 240 240 240; /* #ffffff */
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
+    --color-inverted: 3 3 3; /* #030303 */
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
+
+    --color-gray: 97 97 97; /* #616161 */
+    --color-gray-light: 58 58 58; /* #3a3a3a */
+    --color-gray-lighter: 51 51 51; /* #333333 */
+    --color-gray-dark: 143 143 143; /* #8f8f8f */
+    --color-gray-darker: 238 238 238; /* #eeeeee */
+
+    --color-paper: 21 21 21; /* #151515 */
+    --color-paper-light: 0 0 0; /* #000000 */
+    --color-paper-dark: 252 252 252; /* #fcfcfc */
+    --alpha-paper-light: 0.2;
+    --alpha-paper-dark: 0.2;
+  }
+}
+
 *,
 ::before,
 ::after {
-  @apply border-grayL1 dark:border-grayD1;
+  @apply border-gray-lighter;
 }
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
-  @apply text-black1 dark:text-white1;
+  @apply text-primary;
   word-spacing: -0.1em;
 }
 
 .sb-show-main,
 .docs-story {
-  @apply text-black1 bg-white;
-}
-.sb-show-main:has(#storybook-root.dark),
-.docs-story:has(.sb-story.dark) {
-  @apply text-white1 bg-black;
+  @apply text-primary bg-paper;
 }
 
 h4 {
@@ -38,7 +90,7 @@ h4 {
 
 input {
   width: 100%;
-  border-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* hide input number inner buttons */
@@ -51,25 +103,25 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.backdrop {
+  @apply fixed inset-0 bg-inverted/90;
+}
+
 /* z-index */
-.tooltip {
-  @apply z-0;
-}
-.tooltip .tooltip-tip,
-.react-tooltip {
-  @apply z-50;
-}
 .modal {
   @apply z-40;
 }
-.select ul[role='listbox'],
-.dropdown [role='menu'] {
-  @apply z-20;
+.backdrop,
+.backdrop + div {
+  @apply z-30;
 }
 .popover-panel {
   @apply z-20;
 }
-.backdrop {
+.select ul[role='listbox'],
+.dropdown [role='menu'] {
   @apply z-10;
-  @apply fixed inset-0 bg-white1/90 dark:bg-black1/90;
+}
+.tooltip .react-tooltip {
+  @apply z-10;
 }

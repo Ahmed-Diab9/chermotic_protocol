@@ -41,15 +41,15 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
   // Format with comma
   // With two decimals
   return (
-    <div className="w-full px-4 py-3 bg-grayLBg1 [&:not(:last-child)]:border-b border-grayL2">
+    <div className="w-full px-4 py-3 bg-paper-lighter [&:not(:last-child)]:border-b border-gray-light">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
         <Thumbnail size="lg" className="rounded" src={imageSrc} />
         <div>
           <Avatar label={token.name} size="xs" gap="1" />
-          <p className="mt-2 text-black3">{name}</p>
+          <p className="mt-2 text-primary-lighter">{name}</p>
         </div>
         <div className="ml-auto text-right">
-          <p className="text-black3">Qty</p>
+          <p className="text-primary-lighter">Qty</p>
           <p className="mt-2 text-lg">{formatDecimals(bin.clbTokenBalance, token.decimals, 2)}</p>
         </div>
       </div>
@@ -66,11 +66,11 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
             {formatDecimals(removable, token.decimals, 2)} {token.name}
-            <span className="text-black3 ml-[2px]">({removableRate}%)</span>
+            <span className="text-primary-lighter ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
             {formatDecimals(utilized, token.decimals, 2)} {token.name}
-            <span className="text-black3 ml-[2px]">({utilizedRate}%)</span>
+            <span className="text-primary-lighter ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>
       </div>

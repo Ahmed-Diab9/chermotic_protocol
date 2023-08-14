@@ -1,11 +1,8 @@
-import './style.css';
-
-import { ChangeEvent, useEffect, useState } from 'react';
-
-import { Avatar } from '~/stories/atom/Avatar';
-
 import { isNil, isNotNil } from 'ramda';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Avatar } from '~/stories/atom/Avatar';
 import { withComma } from '~/utils/number';
+import './style.css';
 
 interface InputProps {
   label?: string;

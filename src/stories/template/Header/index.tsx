@@ -4,6 +4,7 @@ import LogoSimple from '~/assets/icons/LogoSimple';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { Account } from '~/typings/account';
 import { trimAddress } from '~/utils/address';
+import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { Avatar } from '~/stories/atom/Avatar';
 import { WalletPopover } from '~/stories/container/WalletPopover';
 import arbitrumIcon from '/src/assets/images/arbitrum.svg';
@@ -23,34 +24,33 @@ export const Header = (props: HeaderProps) => {
   return (
     // <header className="sticky top-0 Header">
     <header className="Header">
-      <div className="h-[70px] bg-grayLBg1 dark:bg-black1 px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] bg-paper-lightest px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
-            <LogoSimple className="text-black1 dark:text-white1 h-9" />
+            <LogoSimple className="text-primary h-9" />
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
-              location.pathname === '/trade'
-                ? 'border-black1 dark:border-white'
-                : '!border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
+              location.pathname === '/trade' ? 'border-primary' : '!border-transparent'
             }`}
           >
             Trade
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-black1 dark:text-white1 ${
-              location.pathname === '/pool'
-                ? 'border-black1 dark:border-white'
-                : '!border-transparent'
+            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
+              location.pathname === '/pool' ? 'border-primary' : '!border-transparent'
             }`}
           >
             Pools
           </Link>
           {/* dropdown */}
         </div>
-        <div>
+        <div className="flex">
+          <div className="mr-4">
+            <ThemeToggle />
+          </div>
           {isConnected && !isWrongChain && <WalletPopover />}
           {isConnected && isWrongChain && (
             <ChainSwitch
@@ -59,7 +59,7 @@ export const Header = (props: HeaderProps) => {
             />
           )}
           {!isConnected && (
-            <button onClick={onConnect} title="connect" className="btn-wallet min-w-[148px]">
+            <button onClick={onConnect} title="connect" className="btn btn-wallet min-w-[148px]">
               <Avatar src={arbitrumIcon} className="avatar" />
               <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
             </button>
@@ -87,20 +87,20 @@ const ChainSwitch = (props: ChainSwitchProps) => {
     >
       <Avatar
         svg={<ExclamationTriangleIcon />}
-        className="text-black1 avatar"
+        className="text-primary avatar !bg-paper"
         fontSize="sm"
         fontWeight="normal"
         gap="3"
         label={label}
       />
+      {children}
       <TooltipAlert
         label="change-network"
         tip="Change Network"
-        place="left"
+        place="bottom"
         css="outline"
-        className="!top-5"
+        className=""
       />
-      {children}
     </button>
   );
 };
