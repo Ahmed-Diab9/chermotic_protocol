@@ -90,7 +90,7 @@ h4 {
 
 input {
   width: 100%;
-  border-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* hide input number inner buttons */
