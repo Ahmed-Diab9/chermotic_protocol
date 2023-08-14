@@ -57,7 +57,7 @@
     --color-paper: 21 21 21; /* #151515 */
     --color-paper-light: 0 0 0; /* #000000 */
     --color-paper-dark: 252 252 252; /* #fcfcfc */
-    --alpha-paper-light: 0.2;
+    --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
   }
 }

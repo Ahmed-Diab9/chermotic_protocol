@@ -84,6 +84,7 @@ const Pool = () => {
               <Link to={'/trade'}>
                 <Button
                   css="light"
+                  className="dark:!bg-paper-light dark:hover:!bg-gray-light"
                   label={
                     isValid(selectedMarket)
                       ? `Trade on ${selectedMarket.description} Pool`
