@@ -27,7 +27,10 @@ export function SliderRail({ getRailProps }: { getRailProps: GetRailProps }) {
   return (
     <Fragment>
       <div style={railOuterStyle} {...getRailProps()} />
-      <div style={railInnerStyle} className="bg-paper border-gray-light" />
+      <div
+        style={railInnerStyle}
+        className="bg-paper border-gray-light dark:border-transparent dark:bg-gray-light"
+      />
     </Fragment>
   );
 }
@@ -79,8 +82,10 @@ export function Handle({
           borderStyle: 'solid',
           boxShadow: percent === 0 ? '1px 1px 4px rgba(163, 163, 163, 0.25)' : undefined,
         }}
-        className={`${disabled ? 'bg-gray-dark' : 'bg-paper'} ${
-          percent === 0 ? 'border border-gray-light' : 'border-2 border-primary'
+        className={`${disabled ? 'bg-gray-dark' : 'bg-paper dark:bg-primary'} ${
+          percent === 0
+            ? 'border border-gray-light dark:border-transparent'
+            : 'border-2 border-primary dark:border-transparent'
         }`}
       />
     </Fragment>
@@ -110,7 +115,7 @@ export function Track({ source, target, getTrackProps, disabled = false }: Track
             width: `calc(${target.percent - source.percent}% + 4px)`,
             opacity: target.percent === 0 && 0,
           }}
-          className={disabled ? 'bg-gray-lighter' : 'bg-primary'}
+          className={disabled ? 'bg-gray-lighter' : 'bg-primary dark:bg-gray-dark'}
           {...getTrackProps()}
         />
       </div>
@@ -136,7 +141,7 @@ export function Tick({ tick, count, format = (v) => v }: TickProps) {
           borderRadius: 2,
           left: `${tick.percent}%`,
         }}
-        className="bg-gray-light"
+        className="bg-gray-light dark:bg-gray-dark"
       />
       {/* Tick - number */}
       <button
