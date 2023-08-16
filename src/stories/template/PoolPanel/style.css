@@ -1,4 +1,4 @@
 .PoolPanel {
-  @apply inline-flex flex-col w-full border shadow-lg dark:shadow-none rounded-2xl max-w-[680px];
-  @apply bg-paper border-gray-lighter;
+  @apply inline-flex flex-col w-full shadow-lg dark:shadow-none rounded-2xl max-w-[680px];
+  @apply bg-paper border-gray-lighter border dark:border-transparent;
 }

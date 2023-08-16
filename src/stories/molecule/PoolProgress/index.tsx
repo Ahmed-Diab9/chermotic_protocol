@@ -20,6 +20,7 @@ import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import '../../atom/Tabs/style.css';
+import './style.css';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -94,7 +95,7 @@ export const PoolProgress = ({
   }, []);
 
   return (
-    <div className="!flex flex-col border PoolProgress shadow-lg dark:shadow-none tabs tabs-line tabs-base rounded-2xl bg-paper">
+    <div className="PoolProgress tabs tabs-line tabs-base">
       <Disclosure>
         {({ open }) => {
           return (
