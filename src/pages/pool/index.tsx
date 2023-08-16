@@ -40,7 +40,7 @@ const Pool = () => {
   }, [publicClient]);
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-paper-lightest">
+    <div className="flex flex-col min-h-[100vh] w-full">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar showAccountPopover={false} />

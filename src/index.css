@@ -61,7 +61,7 @@
     --color-gray-darker: 238 238 238; /* #eeeeee */
 
     --color-paper: 21 21 21; /* #151515 */
-    --color-paper-light: 0 0 0; /* #000000 */
+    --color-paper-light: 3 3 3; /* #030303 */
     --color-paper-dark: 252 252 252; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
@@ -82,7 +82,7 @@
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
-  @apply text-primary;
+  @apply text-primary bg-paper-lightest;
   word-spacing: -0.1em;
 }
 
