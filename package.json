@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.9",
-    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.139",
+    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.140",
     "@floating-ui/dom": "^1.4.2",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
