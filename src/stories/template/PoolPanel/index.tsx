@@ -409,7 +409,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-paper-lighter rounded-xl">
+                <article className="items-start justify-around box-top xl:flex-row xl:items-center xl:justify-between py-7">
                   <div>
                     <div className="flex font-semibold text-left text-primary-lighter">
                       Total Liquidity Value
@@ -437,7 +437,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-paper-lighter rounded-xl text-left">
+                <article className="justify-between gap-3 py-4 text-left box-top xl:gap-2 xl:py-7">
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-primary-lighter">
                       LP Bins
