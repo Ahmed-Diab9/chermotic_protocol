@@ -10,7 +10,7 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useMarket } from '~/hooks/useMarket';
 import { Market, Token } from '~/typings/market';
-import { Position } from '~/typings/position';
+import { Position, POSITION_STATUS } from '~/typings/position';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -23,15 +23,15 @@ const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
   if (currentOracleVersion === position.openVersion) {
-    return 'opening';
+    return POSITION_STATUS.OPENING;
   }
   if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
-    return 'closing';
+    return POSITION_STATUS.CLOSING;
   }
   if (position.closeVersion !== 0n && currentOracleVersion > position.closeVersion) {
-    return 'closed';
+    return POSITION_STATUS.CLOSED;
   }
-  return 'opened';
+  return POSITION_STATUS.OPENED;
 }
 
 async function getPositions(

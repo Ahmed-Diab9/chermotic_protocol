@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Market } from '~/typings/market';
 import { TradeBar } from '.';
+import { POSITION_STATUS } from '~/typings/position';
 
 const meta = {
   title: 'Template/TradeBar',
@@ -41,7 +42,7 @@ export const Default: Story = {
         tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(10),
         profitPrice: BigInt(10),
-        status: 'opening',
+        status: POSITION_STATUS.OPENING,
         toProfit: BigInt(10),
         collateral: BigInt(10),
         toLoss: BigInt(10),
@@ -65,7 +66,7 @@ export const Default: Story = {
         tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(10),
         profitPrice: BigInt(10),
-        status: 'opened',
+        status: POSITION_STATUS.OPENED,
         toProfit: BigInt(10),
         collateral: BigInt(10),
         toLoss: BigInt(10),
@@ -89,7 +90,7 @@ export const Default: Story = {
         tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(888),
         profitPrice: BigInt(888),
-        status: 'closing',
+        status: POSITION_STATUS.CLOSING,
         toProfit: BigInt(888),
         collateral: BigInt(888),
         toLoss: BigInt(888),
@@ -113,7 +114,7 @@ export const Default: Story = {
         tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(888),
         profitPrice: BigInt(888),
-        status: 'closed',
+        status: POSITION_STATUS.CLOSED,
         toProfit: BigInt(888),
         collateral: BigInt(888),
         toLoss: BigInt(888),

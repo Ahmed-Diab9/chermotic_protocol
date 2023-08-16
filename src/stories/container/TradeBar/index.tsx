@@ -6,7 +6,7 @@ import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { TradeBar as TradeBarPresenter } from '~/stories/template/TradeBar';
-import { CLOSING, OPENING } from '~/typings/position';
+import { POSITION_STATUS } from '~/typings/position';
 import { isValid } from '~/utils/valid';
 
 export const TradeBar = () => {
@@ -15,10 +15,10 @@ export const TradeBar = () => {
   const { positions, isLoading } = usePositions();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === OPENING).length ?? 0
+    positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
   );
   const closingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === CLOSING).length ?? 0
+    positions?.filter((position) => position.status === POSITION_STATUS.CLOSING).length ?? 0
   );
 
   useEffect(() => {
