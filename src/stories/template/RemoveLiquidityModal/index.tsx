@@ -57,7 +57,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           {/* <div className="w-[100px] mx-auto border-b border-2 border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col border border-gray-light rounded-xl">
+            <article className="flex flex-col border border-gray-light dark:border-transparent rounded-xl">
               <LiquidityItem
                 token={token}
                 name={selectedBin?.clbTokenDescription}

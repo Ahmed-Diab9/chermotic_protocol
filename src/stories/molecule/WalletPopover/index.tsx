@@ -117,7 +117,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg dark:border-transparent bg-paper">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-paper-lighter">
+                    <article className="px-4 py-3 border-b dark:border-transparent bg-paper-lighter">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
                         Connected Wallet
                       </h4>
