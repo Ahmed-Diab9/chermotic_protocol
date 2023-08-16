@@ -141,7 +141,7 @@ export const RemoveMultiLiquidityModal = (props: RemoveMultiLiquidityModalProps)
           {/* <div className="w-[100px] mx-auto border-b border-2 border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="relative flex flex-col border border-gray-light dark:border-transparent rounded-xl">
+            <article className="wrapper-liq">
               <div
                 id="bins"
                 className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
