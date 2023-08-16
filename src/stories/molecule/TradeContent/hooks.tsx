@@ -16,7 +16,6 @@ import { TradeContentProps } from '.';
 export function useTradeContent(props: TradeContentProps) {
   const {
     direction = 'long',
-    liquidityData,
     totalMaxLiquidity = BigInt(0),
     totalUnusedLiquidity = BigInt(0),
     clbTokenValues,
@@ -153,9 +152,6 @@ export function useTradeContent(props: TradeContentProps) {
   return {
     disabled,
     disableDetail,
-
-    liquidityData,
-    clbTokenValues,
 
     tokenName,
 

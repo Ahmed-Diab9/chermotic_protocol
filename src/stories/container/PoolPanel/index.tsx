@@ -1,4 +1,4 @@
-import useChartData from '~/hooks/useChartData';
+import { useChartData } from '~/hooks/useChartData';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';

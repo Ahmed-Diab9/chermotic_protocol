@@ -2,15 +2,13 @@ import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
 import { Listbox, Switch } from '@headlessui/react';
-import { FillUpChart } from '~/stories/atom/FillUpChart';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
-import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
 import { CLBTokenValue, Liquidity } from '~/typings/chart';
@@ -29,9 +27,6 @@ export const TradeContent = (props: TradeContentProps) => {
   const {
     disabled,
     disableDetail,
-
-    liquidityData,
-    clbTokenValues,
 
     tokenName,
 

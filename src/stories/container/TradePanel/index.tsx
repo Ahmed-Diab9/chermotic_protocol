@@ -1,4 +1,4 @@
-import useChartData from '~/hooks/useChartData';
+import { useChartData } from '~/hooks/useChartData';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { TradePanel as TradePanelPresenter } from '~/stories/template/TradePanel';
 
