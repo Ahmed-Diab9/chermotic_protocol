@@ -41,6 +41,9 @@ a {
       @apply text-primary-lighter bg-paper-lighter;
       @apply dark:bg-gray-light;
     }
+    &.shadow-base {
+      @apply dark:bg-gray-dark dark:text-primary;
+    }
   }
   &.btn-default {
     @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
