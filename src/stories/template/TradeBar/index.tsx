@@ -322,7 +322,10 @@ const PositionItem = function (props: Props) {
   });
 
   return (
-    <div key={position.id.toString()} className="mb-3 border rounded-xl">
+    <div
+      key={position.id.toString()}
+      className="mb-3 overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl"
+    >
       <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter">
         <div
           className={`flex flex-auto items-center gap-6 ${
