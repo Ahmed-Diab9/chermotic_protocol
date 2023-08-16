@@ -28,7 +28,7 @@ export function useTransactionButton(props: TransactionButtonProps) {
     } else if (isWrongChain) {
       switchChain();
     } else {
-      onClick?.(event);
+      props.onClick?.(event);
     }
   };
 
