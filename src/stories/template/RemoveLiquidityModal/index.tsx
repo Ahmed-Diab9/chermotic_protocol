@@ -1,4 +1,5 @@
 import { Dialog } from '@headlessui/react';
+import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 import { useRemoveLiquidityAmounts } from '~/hooks/useRemoveLiquidityAmounts';
 import { useAppDispatch } from '~/store';
@@ -6,11 +7,12 @@ import { poolsAction } from '~/store/reducer/pools';
 import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
 import { Token } from '~/typings/market';
 import { OwnedBin } from '~/typings/pools';
-import { formatDecimals } from '~/utils/number';
+import { formatDecimals, isNotZero } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../Modal/style.css';
@@ -32,6 +34,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
     feeRate: selectedBin?.baseFeeRate,
     amount,
   });
+  const isExceeded = useMemo(() => {
+    return isNotZero(amount) && parseUnits(amount, token?.decimals ?? 0) > Number(maxAmount);
+  }, [amount, token, maxAmount]);
 
   return (
     <Dialog
@@ -149,12 +154,14 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
                       onChange={(value) => {
                         onAmountChange?.(value);
                       }}
-                      // error
+                      error={isExceeded}
                     />
-                    {/* <TooltipAlert
-                      label="modal-input-clb"
-                      tip="Exceeded your removable liquidity."
-                    /> */}
+                    {isExceeded && (
+                      <TooltipAlert
+                        label="modal-input-clb"
+                        tip="Exceeded your removable liquidity."
+                      />
+                    )}
                   </div>
                 </div>
               </div>
