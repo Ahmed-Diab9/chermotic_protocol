@@ -481,7 +481,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
             value={preset.value.toString()}
             onChange={onAmountChange}
             placeholder="0"
-            error={disabled?.status}
+            error={disabled?.status && !!errorMessage}
           />
           {errorMessage && (
             <TooltipAlert label={`input-balance-${input.direction}`} tip={errorMessage} />

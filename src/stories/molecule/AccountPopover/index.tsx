@@ -14,7 +14,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { isValid } from '~/utils/valid';
 import { ACCOUNT_STATUS, Account } from '../../../typings/account';
 import { Token } from '../../../typings/market';
-import { formatDecimals } from '../../../utils/number';
+import { formatDecimals, isNotZero } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { Button } from '../../atom/Button';
 import { OptionInput } from '../../atom/OptionInput';
@@ -187,6 +187,9 @@ const AssetPanel = (props: AssetPanelProps) => {
   }, [status]);
 
   const isExceeded = useMemo(() => {
+    if (!isNotZero(amount)) {
+      return false;
+    }
     if (
       isNil(walletBalances) ||
       isNil(chromaticBalances) ||
@@ -204,6 +207,11 @@ const AssetPanel = (props: AssetPanelProps) => {
     }
     return false;
   }, [amount, title, token, chromaticBalances, walletBalances]);
+
+  const minimum = 10;
+  const isLess = useMemo(() => {
+    return Number(amount) < minimum && isNotZero(amount);
+  }, [amount]);
 
   return (
     <Popover>
@@ -408,7 +416,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                           onAmountChange?.(value);
                         }}
                         className="w-full"
-                        // error
+                        error={isExceeded || isLess}
                       />
                       {/* case 1. exceeded */}
                       {isExceeded && (
@@ -422,7 +430,13 @@ const AssetPanel = (props: AssetPanelProps) => {
                         />
                       )}
                       {/* case 2. less than minimum */}
-                      {/* <TooltipAlert label="input-amount" tip={`Less than minimum amount. (${min})`} /> */}
+                      {/* FIXME Minimum value needed */}
+                      {isLess && (
+                        <TooltipAlert
+                          label="input-amount"
+                          tip={`Less than minimum amount. (${minimum})`}
+                        />
+                      )}
                     </div>
                     <div className="text-sm">
                       <p className="mb-1 text-primary-lighter">
