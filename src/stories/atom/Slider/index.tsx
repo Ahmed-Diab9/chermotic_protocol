@@ -14,7 +14,7 @@ interface SliderProps {
   max?: number;
   step?: number;
   tick?: number | number[];
-  value?: number;
+  value?: number | string;
   onChange?: (newValue: number) => unknown;
   onUpdate?: (newValue: number) => unknown;
   readonly?: boolean;
@@ -32,19 +32,24 @@ export const Slider = ({
   max = 100,
   step = 0.01,
   tick = 1,
-  value,
+  value = 0,
   onChange,
   onUpdate,
   readonly = false,
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: 12,
+    useGrouping: false,
+  }).format;
+
   const handleSetter = (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
     if (!setter) return;
     if (values.length > 1) {
       console.warn('[Range]: single value only');
     }
-    setter(+values[0].toFixed(12));
+    setter(+formatter(values[0]));
   };
 
   const ticksProps: Omit<TicksProps, 'children'> =
@@ -65,7 +70,7 @@ export const Slider = ({
         rootStyle={sliderStyle}
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
-        values={value ? [+value.toFixed(12)] : []}
+        values={value ? [+formatter(+value)] : []}
         disabled={readonly}
       >
         <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>

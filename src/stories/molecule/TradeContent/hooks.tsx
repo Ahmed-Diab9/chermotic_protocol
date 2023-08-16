@@ -84,7 +84,7 @@ export function useTradeContent(props: TradeContentProps) {
   const maxStopLoss = 100;
   const stopLossPlaceholder = minStopLoss.toString();
 
-  const makerMargin = input.makerMargin;
+  const makerMargin = Number(input.makerMargin);
 
   const [totalLiquididy, freeLiquidity] = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, tokenDecimals) || '0';

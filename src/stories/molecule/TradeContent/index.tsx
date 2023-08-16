@@ -157,17 +157,13 @@ export const TradeContent = (props: TradeContentProps) => {
                   <Slider
                     min={minLeverage}
                     max={maxLeverage}
-                    value={Number(leverage)}
+                    value={leverage}
                     onUpdate={onLeverageChange}
                     tick={5}
                   />
                 </div>
               ) : (
-                <LeverageOption
-                  value={Number(leverage)}
-                  max={maxLeverage}
-                  onClick={onLeverageChange}
-                />
+                <LeverageOption value={leverage} max={maxLeverage} onClick={onLeverageChange} />
               )}
             </div>
             <div>
@@ -208,7 +204,7 @@ export const TradeContent = (props: TradeContentProps) => {
               <Slider
                 min={minTakeProfit}
                 max={maxTakeProfit}
-                value={Number(takeProfit)}
+                value={takeProfit}
                 onUpdate={onTakeProfitChange}
                 tick={5}
               />
@@ -234,7 +230,7 @@ export const TradeContent = (props: TradeContentProps) => {
             </div>
             <div className="mt-6">
               <Slider
-                value={Number(stopLoss)}
+                value={stopLoss}
                 min={minStopLoss}
                 max={maxStopLoss}
                 onUpdate={onStopLossChange}
@@ -246,18 +242,11 @@ export const TradeContent = (props: TradeContentProps) => {
       </section>
       <section>
         <div className="mx-[-40px] relative border-b">
-          <SelectedTooltip id={`trade-${direction}`} data={makerMargin} />
-          <LiquidityTooltip
-            id={`trade-${direction}`}
-            data={liquidityData}
-            clbTokenValues={clbTokenValues}
-          />
-          <FillUpChart
+          <TradeChart
             id={`trade-${direction}`}
             positive={isLong}
             height={140}
-            data={liquidityData}
-            selectedAmount={Number(makerMargin)}
+            selectedAmount={makerMargin}
           />
           <div
             className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
