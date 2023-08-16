@@ -1,34 +1,17 @@
-import { Tab } from '@headlessui/react';
-import { useState } from 'react';
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
-import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
+import { useState } from 'react';
+
+import { Tab } from '@headlessui/react';
+import { CurvedButton } from '~/stories/atom/CurvedButton';
 import { TradeContent } from '~/stories/molecule/TradeContent';
-import { CLBTokenValue, Liquidity } from '~/typings/chart';
+
+import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
+
 import { errorLog } from '~/utils/log';
 
-export interface TradePanelProps {
-  liquidityData?: Liquidity[];
-  clbTokenValues?: CLBTokenValue[];
-  longLiquidityData?: Liquidity[];
-  shortLiquidityData?: Liquidity[];
-  longTotalMaxLiquidity?: bigint;
-  longTotalUnusedLiquidity?: bigint;
-  shortTotalMaxLiquidity?: bigint;
-  shortTotalUnusedLiquidity?: bigint;
-}
+export interface TradePanelProps {}
 
 export const TradePanel = (props: TradePanelProps) => {
-  const {
-    liquidityData,
-    clbTokenValues,
-    longLiquidityData,
-    shortLiquidityData,
-    longTotalMaxLiquidity,
-    longTotalUnusedLiquidity,
-    shortTotalMaxLiquidity,
-    shortTotalUnusedLiquidity,
-  } = props;
   const [isWideView, setIsWideView] = useState(false);
   const onToggleView = () => {
     setIsWideView(!isWideView);
@@ -61,13 +44,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   SHORT
                 </h2>
               </div>
-              <TradeContent
-                direction="short"
-                liquidityData={liquidityData}
-                clbTokenValues={clbTokenValues}
-                totalMaxLiquidity={shortTotalMaxLiquidity}
-                totalUnusedLiquidity={shortTotalUnusedLiquidity}
-              />
+              <TradeContent direction="short" />
             </div>
             <div className="w-full px-0 pt-4 pb-10">
               <div className="w-full mb-7">
@@ -75,13 +52,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   LONG
                 </h2>
               </div>
-              <TradeContent
-                direction="long"
-                liquidityData={liquidityData}
-                clbTokenValues={clbTokenValues}
-                totalMaxLiquidity={longTotalMaxLiquidity}
-                totalUnusedLiquidity={longTotalUnusedLiquidity}
-              />
+              <TradeContent direction="long" />
             </div>
           </div>
           <div>
@@ -127,22 +98,10 @@ export const TradePanel = (props: TradePanelProps) => {
               </Tab.List>
               <Tab.Panels className="flex flex-col items-center w-full">
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                  <TradeContent
-                    direction="short"
-                    liquidityData={shortLiquidityData}
-                    clbTokenValues={clbTokenValues}
-                    totalMaxLiquidity={shortTotalMaxLiquidity}
-                    totalUnusedLiquidity={shortTotalUnusedLiquidity}
-                  />
+                  <TradeContent direction="short" />
                 </Tab.Panel>
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                  <TradeContent
-                    direction="long"
-                    liquidityData={longLiquidityData}
-                    clbTokenValues={clbTokenValues}
-                    totalMaxLiquidity={longTotalMaxLiquidity}
-                    totalUnusedLiquidity={longTotalUnusedLiquidity}
-                  />
+                  <TradeContent direction="long" />
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>

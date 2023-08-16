@@ -14,10 +14,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    longTotalMaxLiquidity: 10000n,
-    longTotalUnusedLiquidity: 10000n,
-    shortTotalMaxLiquidity: 10000n,
-    shortTotalUnusedLiquidity: 10000n,
-  },
+  args: {},
 };

@@ -8,7 +8,7 @@ import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/container/Header';
 import { TradeBar } from '~/stories/container/TradeBar';
-import { TradePanel } from '~/stories/container/TradePanel';
+import { TradePanel } from '~/stories/template/TradePanel';
 import { MainBar } from '~/stories/template/MainBar';
 import './style.css';
 

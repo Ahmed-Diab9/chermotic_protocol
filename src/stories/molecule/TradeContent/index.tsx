@@ -11,16 +11,10 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
-import { CLBTokenValue, Liquidity } from '~/typings/chart';
-
 import { useTradeContent } from './hooks';
 
 export interface TradeContentProps {
-  direction?: 'long' | 'short';
-  liquidityData?: Liquidity[];
-  clbTokenValues?: CLBTokenValue[];
-  totalMaxLiquidity?: bigint;
-  totalUnusedLiquidity?: bigint;
+  direction: 'long' | 'short';
 }
 
 export const TradeContent = (props: TradeContentProps) => {

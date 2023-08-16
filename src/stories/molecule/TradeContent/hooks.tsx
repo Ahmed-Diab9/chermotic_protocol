@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
 import { useOpenPosition } from '~/hooks/useOpenPosition';
 import { useOracleProperties } from '~/hooks/useOracleProperties';
@@ -14,12 +15,7 @@ import { formatDecimals } from '~/utils/number';
 import { TradeContentProps } from '.';
 
 export function useTradeContent(props: TradeContentProps) {
-  const {
-    direction = 'long',
-    totalMaxLiquidity = BigInt(0),
-    totalUnusedLiquidity = BigInt(0),
-    clbTokenValues,
-  } = props;
+  const { direction = 'long' } = props;
 
   const {
     state: input,
@@ -63,6 +59,19 @@ export function useTradeContent(props: TradeContentProps) {
   const methodLabel = methodMap[method];
 
   const isLong = direction === 'long';
+
+  const {
+    liquidity: {
+      longTotalMaxLiquidity,
+      longTotalUnusedLiquidity,
+      shortTotalMaxLiquidity,
+      shortTotalUnusedLiquidity,
+    },
+  } = useLiquidityPool();
+
+  const [totalMaxLiquidity = 10000n, totalUnusedLiquidity = 10000n] = isLong
+    ? [longTotalMaxLiquidity, longTotalUnusedLiquidity]
+    : [shortTotalMaxLiquidity, shortTotalUnusedLiquidity];
 
   const [isLeverageSliderOpen, onLeverageSliderToggle] = useState(false);
   const leverage = input.leverage;
