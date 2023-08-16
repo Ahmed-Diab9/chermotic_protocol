@@ -376,7 +376,7 @@ const ProgressItem = (props: ProgressItemProps) => {
   }, [action]);
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
+    <div className="flex flex-col gap-3 px-5 py-4 border dark:border-transparent dark:bg-paper-lighter rounded-xl">
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
           {renderTitle}
