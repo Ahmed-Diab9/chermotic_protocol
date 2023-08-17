@@ -57,14 +57,17 @@
 
     --color-gray: 97 97 97; /* #616161 */
     --color-gray-light: 58 58 58; /* #3a3a3a */
+    --color-gray-light: 65 65 65; /* test */
     --color-gray-lighter: 51 51 51; /* #333333 */
+    --color-gray-lighter: 53 53 53; /* test */
     --color-gray-dark: 143 143 143; /* #8f8f8f */
+    --color-gray-dark: 128 128 128; /* test */
     --color-gray-darker: 238 238 238; /* #eeeeee */
 
     --color-paper: 21 21 21; /* #151515 */
-    --color-paper: 28 28 28; /* test */
+    --color-paper: 25 25 25; /* test */
     --color-paper-light: 3 3 3; /* #030303 */
-    --color-paper-light: 21 21 21; /* test */
+    --color-paper-light: 17 17 17; /* test */
     --color-paper-dark: 252 252 252; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
