@@ -24,4 +24,5 @@ export interface Market {
     version: bigint;
     price: bigint;
   };
+  tokenAddress: Address;
 }
