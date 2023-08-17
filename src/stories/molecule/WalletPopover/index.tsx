@@ -105,7 +105,7 @@ export const WalletPopover = ({
               // leaveTo="opacity-100 translate-x-0"
             >
               <Popover.Panel className="transform border-l shadow-xl popover-panel">
-                <div className="relative flex flex-col h-full ">
+                <div className="relative flex flex-col h-full">
                   {/* Network */}
                   <Avatar
                     src={arbitrumIcon}
@@ -115,7 +115,7 @@ export const WalletPopover = ({
                     gap="3"
                   />
                   {/* box - top */}
-                  <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg dark:border-transparent bg-paper">
+                  <section className="flex flex-col flex-grow mt-6 box-inner">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-paper-lighter">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
@@ -283,7 +283,7 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <section className="mt-10 mb-5 overflow-hidden border rounded-lg bg-paper dark:border-transparent">
+                  <section className="mt-10 mb-5 box-inner">
                     <article className="px-4 py-3 bg-paper-lighter">
                       {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
                         <>
