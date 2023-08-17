@@ -9,7 +9,7 @@ import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useMarket } from '~/hooks/useMarket';
-import { Market } from '~/typings/market';
+import { Market, Token } from '~/typings/market';
 import { Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
@@ -38,8 +38,11 @@ async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
   market: Market,
-  tokenDecimals: number
+  token: Token
 ) {
+  if (market.tokenAddress !== token.address) {
+    return [];
+  }
   const positionIds = await accountApi.getPositionIds(market.address);
 
   const positions = await positionApi.getPositions(market.address, [...positionIds]);
@@ -59,6 +62,7 @@ async function getPositions(
         : 0n;
       return {
         ...position,
+        tokenAddress: token.address,
         marketAddress: market.address,
         lossPrice: lossCutPrice ?? 0n,
         profitPrice: profitStopPrice ?? 0n,
@@ -105,7 +109,7 @@ export const usePositions = () => {
 
     const positionsResponse = await PromiseOnlySuccess(
       markets.map(async (market) => {
-        return getPositions(accountApi, positionApi, market, currentToken.decimals);
+        return getPositions(accountApi, positionApi, market, currentToken);
       })
     );
     return positionsResponse.flat(1);
@@ -123,19 +127,17 @@ export const usePositions = () => {
       const accountApi = client.account();
       const positionApi = client.position();
 
-      const newPositions = await getPositions(
-        accountApi,
-        positionApi,
-        currentMarket,
-        currentToken.decimals
-      );
+      const newPositions = await getPositions(accountApi, positionApi, currentMarket, currentToken);
       return [...filteredPositions, ...newPositions];
     });
   }
 
   const currentPositions = useMemo(() => {
-    return positions?.filter(({ marketAddress }) => marketAddress === currentMarket?.address);
-  }, [positions, currentMarket]);
+    return positions?.filter(
+      ({ marketAddress, tokenAddress }) =>
+        marketAddress === currentMarket?.address && tokenAddress === currentToken?.address
+    );
+  }, [positions, currentMarket, currentToken]);
 
   useError({
     error,
