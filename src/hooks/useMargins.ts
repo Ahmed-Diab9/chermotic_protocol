@@ -5,7 +5,7 @@ import { usePositions } from './usePositions';
 import { useSettlementToken } from './useSettlementToken';
 
 export function useMargins() {
-  const { positions } = usePositions();
+  const { currentPositions } = usePositions();
   const { balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
 
@@ -14,14 +14,17 @@ export function useMargins() {
       return [undefined, undefined];
     }
     const balance = balances[currentToken.address];
-    const [totalCollateral, totalCollateralAdded] = (positions || []).reduce(
+    if (isNil(currentPositions)) {
+      return [balance, balance];
+    }
+    const [totalCollateral, totalCollateralAdded] = currentPositions.reduce(
       (record, position) => {
         return [record[0] + position.collateral, record[1] + position.collateral + position.pnl];
       },
       [0n, 0n]
     );
     return [balance + totalCollateral, balance + totalCollateralAdded];
-  }, [balances, currentToken, positions]);
+  }, [balances, currentToken, currentPositions]);
 
   const totalMargin = useMemo(() => {
     if (isNil(balances) || isNil(currentToken)) {
