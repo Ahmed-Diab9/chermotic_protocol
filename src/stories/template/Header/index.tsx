@@ -1,28 +1,31 @@
+import { Link } from 'react-router-dom';
+
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { Link, useLocation } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import { Account } from '~/typings/account';
-import { trimAddress } from '~/utils/address';
-import { ThemeToggle } from '~/stories/atom/ThemeToggle';
+import arbitrumIcon from '~/assets/images/arbitrum.svg';
+
 import { Avatar } from '~/stories/atom/Avatar';
+import { ThemeToggle } from '~/stories/atom/ThemeToggle';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { WalletPopover } from '~/stories/container/WalletPopover';
-import arbitrumIcon from '/src/assets/images/arbitrum.svg';
-import { useChain } from '~/hooks/useChain';
 
-interface HeaderProps {
-  account?: Account;
-  isConnected?: boolean;
-  isWrongChain?: boolean;
-  onConnect?: () => unknown;
-}
+import { useHeader } from './hooks';
 
-export const Header = (props: HeaderProps) => {
-  const { account, isConnected, isWrongChain, onConnect } = props;
-  const location = useLocation();
+export function Header() {
+  const {
+    isActiveLink,
+
+    isConnected,
+    isWrongChain,
+    isDisconnected,
+
+    walletAddress,
+
+    onConnect,
+    onSwitchChain,
+  } = useHeader();
 
   return (
-    // <header className="sticky top-0 Header">
     <header className="Header">
       <div className="h-[70px] bg-paper-lightest px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
@@ -32,7 +35,7 @@ export const Header = (props: HeaderProps) => {
           <Link
             to="/trade"
             className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
-              location.pathname === '/trade' ? '!border-primary' : '!border-transparent'
+              isActiveLink('trade') ? '!border-primary' : '!border-transparent'
             }`}
           >
             Trade
@@ -40,48 +43,52 @@ export const Header = (props: HeaderProps) => {
           <Link
             to="/pool"
             className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
-              location.pathname === '/pool' ? '!border-primary' : '!border-transparent'
+              isActiveLink('pool') ? '!border-primary' : '!border-transparent'
             }`}
           >
             Pools
           </Link>
-          {/* dropdown */}
         </div>
         <div className="flex">
           <div className="mr-4">
             <ThemeToggle />
           </div>
-          {isConnected && !isWrongChain && <WalletPopover />}
-          {isConnected && isWrongChain && (
-            <ChainSwitch
-              width={175}
-              label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
-            />
+          {isConnected && <WalletPopover />}
+          {/* TODO: MOVE INTO WALLET POPOVER */}
+          {isWrongChain && (
+            <ChainSwitch width={175} onSwitchChain={onSwitchChain} address={walletAddress} />
           )}
-          {!isConnected && (
-            <button onClick={onConnect} title="connect" className="btn btn-wallet min-w-[148px]">
-              <Avatar src={arbitrumIcon} className="avatar" />
-              <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
-            </button>
-          )}
+          {isDisconnected && <Connect width={148} onConnect={onConnect} />}
         </div>
       </div>
     </header>
+  );
+}
+
+interface ConnectProps {
+  width: number;
+  onConnect: () => unknown;
+}
+
+const Connect = ({ width, onConnect }: ConnectProps) => {
+  return (
+    <button onClick={onConnect} title="connect" className={`btn btn-wallet min-w-[${width}px]`}>
+      <Avatar src={arbitrumIcon} className="avatar" />
+      <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
+    </button>
   );
 };
 
 interface ChainSwitchProps {
   width: number;
-  label?: string;
-  children?: JSX.Element;
+  address: string;
+  onSwitchChain: () => unknown;
 }
 
-const ChainSwitch = (props: ChainSwitchProps) => {
-  const { label, width, children } = props;
-  const { switchChain } = useChain();
+const ChainSwitch = ({ address, width, onSwitchChain }: ChainSwitchProps) => {
   return (
     <button
-      onClick={switchChain}
+      onClick={onSwitchChain}
       title="change network"
       className={`tooltip-change-network min-w-[${width}px] btn-wallet`}
     >
@@ -91,9 +98,8 @@ const ChainSwitch = (props: ChainSwitchProps) => {
         fontSize="sm"
         fontWeight="normal"
         gap="3"
-        label={label}
+        label={address}
       />
-      {children}
       <TooltipAlert
         label="change-network"
         tip="Change Network"

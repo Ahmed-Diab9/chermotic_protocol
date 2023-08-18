@@ -6,7 +6,7 @@ import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { Header } from '~/stories/container/Header';
+import { Header } from '~/stories/template/Header';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
 import { MainBar } from '~/stories/template/MainBar';
