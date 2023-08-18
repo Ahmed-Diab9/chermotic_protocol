@@ -70,6 +70,11 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
 export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => {
   const { tokens, selectedToken, markets, selectedMarket, isLoading, onTokenClick, onMarketClick } =
     props;
+  const priceFormatter = Intl.NumberFormat('en', {
+    useGrouping: true,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });
   return (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
@@ -129,7 +134,10 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
                 onClick={() => onMarketClick?.(market)}
               >
                 <Avatar label={market.description} fontSize="lg" gap="2" size="sm" />
-                <p>{'$' + formatDecimals(market.oracleValue.price, 18, 2)}</p>
+                <p>
+                  {'$' +
+                    priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)))}
+                </p>
               </button>
             ))}
           </article>
