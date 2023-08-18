@@ -18,7 +18,7 @@
     }
   }
   .react_range__track {
-    @apply border-primary bg-primary/5 dark:bg-primary/30;
+    @apply border-primary bg-primary/5 dark:bg-primary/10;
   }
   .react_range__grid,
   .react_range__grid_bold {

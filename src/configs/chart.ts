@@ -6,13 +6,13 @@ export const RANGE_CONFIG = [
     color: {
       available:
         // 'linear-gradient(180deg, rgba(215, 215, 215, 0.30) 0%, rgba(230, 230, 230, 0.03) 100%)',
-        'linear-gradient(180deg, rgba(108, 201, 117, 0.30) 0%, rgba(123, 215, 131, 0.06) 100%)',
+        'linear-gradient(180deg, rgba(189, 195, 147, 0.30) 0%, rgba(189, 195, 147, 0.06) 100%)',
       utilized:
         // 'linear-gradient(180deg, #D7D7D7 0%, rgba(229, 229, 229, 0.10) 100%)',
-        'linear-gradient(180deg, #6CC975 0%, rgba(123, 215, 131, 0.10) 100%)',
+        'linear-gradient(180deg, #C4CA9C 0%, rgba(189, 195, 147, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(229, 229, 229, 1) 0%, rgba(229, 229, 229, 0.9) 100%)',
-        '#646464cc',
+        // '#646464cc',
+        '#C4CA9C',
     },
   },
   {
@@ -22,13 +22,13 @@ export const RANGE_CONFIG = [
     color: {
       available:
         // 'linear-gradient(180deg, rgba(199, 199, 199, 0.30) 0%, rgba(206, 206, 206, 0.03) 100%)',
-        'linear-gradient(180deg, rgba(74, 147, 81, 0.30) 0%, rgba(87, 179, 96, 0.03) 100%)',
+        'linear-gradient(180deg, rgba(180, 201, 95, 0.30) 0%, rgba(180, 201, 95, 0.03) 100%)',
       utilized:
         // 'linear-gradient(180deg, #C7C7C7 0%, rgba(206, 206, 206, 0.10) 100%)',
-        'linear-gradient(180deg, #4A9351 0%, rgba(87, 178, 96, 0.10) 100%)',
+        'linear-gradient(180deg, #B4C95F 0%, rgba(180, 201, 95, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(206, 206, 206, 1) 0%, rgba(206, 206, 206, 0.9) 100%)',
-        '#424242cc',
+        // '#424242cc',
+        '#B4C95F',
     },
   },
   {
@@ -38,13 +38,13 @@ export const RANGE_CONFIG = [
     color: {
       available:
         // 'linear-gradient(180deg, rgba(184, 184, 184, 0.30) 0%, rgba(191, 191, 191, 0.03) 100%)',
-        'linear-gradient(180deg, rgba(57, 181, 47, 0.30) 0%, rgba(106, 181, 113, 0.03) 100%)',
+        'linear-gradient(180deg, rgba(149, 197, 88, 0.30) 0%, rgba(149, 197, 88, 0.03) 100%)',
       utilized:
         // 'linear-gradient(180deg, #B8B8B8 0%, rgba(191, 191, 191, 0.10) 100%)',
-        'linear-gradient(180deg, #2FB53C 0%, rgba(106, 181, 113, 0.10) 100%)',
+        'linear-gradient(180deg, #95C558 0%, rgba(149, 197, 88, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(191, 191, 191, 1) 0%, rgba(191, 191, 191, 0.9) 100%)',
-        '#262626cc',
+        // '#262626cc',
+        '#95C558',
     },
   },
   {
@@ -54,13 +54,13 @@ export const RANGE_CONFIG = [
     color: {
       available:
         // 'linear-gradient(180deg, rgba(176, 176, 176, 0.30) 0%, rgba(148, 148, 148, 0.03) 100%)',
-        'linear-gradient(180deg, rgba(143, 222, 94, 0.30) 0%, rgba(121, 198, 75, 0.03) 100%)',
+        'linear-gradient(180deg, rgba(88, 171, 96, 0.30) 0%, rgba(88, 171, 96, 0.03) 100%)',
       utilized:
         // 'linear-gradient(180deg, #B0B0B0 0%, rgba(148, 148, 148, 0.10) 100%)',
-        'linear-gradient(180deg, #8CD95D 0%, rgba(122, 190, 80, 0.10) 100%)',
+        'linear-gradient(180deg, #58AB60 0%, rgba(88, 171, 96, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(148, 148, 148, 1) 0%, rgba(148, 148, 148, 0.9) 100%)',
-        '#030303cc',
+        // '#030303cc',
+        '#58AB60',
     },
   },
   {
@@ -70,14 +70,13 @@ export const RANGE_CONFIG = [
     color: {
       available:
         // 'linear-gradient(180deg, rgba(176, 176, 176, 0.30) 0%, rgba(148, 148, 148, 0.03) 100%)',
-        'linear-gradient(180deg, rgba(254, 139, 99, 0.30) 0%, rgba(224, 101, 63, 0.03) 100%)',
+        'linear-gradient(180deg, rgba(231, 116, 80, 0.30) 0%, rgba(231, 116, 80, 0.03) 100%)',
       utilized:
         // 'linear-gradient(180deg, #B0B0B0 0%, rgba(148, 148, 148, 0.10) 100%)',
-        'linear-gradient(180deg, #FE8B63 0%, rgba(224, 101, 63, 0.10) 100%)',
+        'linear-gradient(180deg, #E77450 0%, rgba(231, 116, 80, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(224, 101, 63, 1) 0%, rgba(224, 101, 63, 0.9) 100%)',
-        // 'linear-gradient(180deg, rgba(148, 148, 148, 1) 0%, rgba(148, 148, 148, 0.9) 100%)',
-        '#030303cc',
+        // '#030303cc',
+        '#E77450',
     },
   },
   {
@@ -92,9 +91,8 @@ export const RANGE_CONFIG = [
         // 'linear-gradient(180deg, #B8B8B8 0%, rgba(191, 191, 191, 0.10) 100%)',
         'linear-gradient(180deg, #FF975A 0%, rgba(255, 118, 38, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(255, 118, 38, 1) 0%, rgba(255, 118, 38, 0.9) 100%)',
-        // 'linear-gradient(180deg, rgba(191, 191, 191, 1) 0%, rgba(191, 191, 191, 0.9) 100%)',
-        '#262626cc',
+        // '#262626cc',
+        '#FF975A',
     },
   },
   {
@@ -109,9 +107,8 @@ export const RANGE_CONFIG = [
         // 'linear-gradient(180deg, #C7C7C7 0%, rgba(206, 206, 206, 0.10) 100%)',
         'linear-gradient(180deg, #FFAB5E 0%, rgba(255, 153, 60, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(255, 153, 60, 1) 0%, rgba(255, 153, 60, 0.9) 100%)',
-        // 'linear-gradient(180deg, rgba(206, 206, 206, 1) 0%, rgba(206, 206, 206, 0.9) 100%)',
-        '#424242cc',
+        // '#424242cc',
+        '#FFAB5E',
     },
   },
   {
@@ -126,9 +123,8 @@ export const RANGE_CONFIG = [
         // 'linear-gradient(180deg, #D7D7D7 0%, rgba(229, 229, 229, 0.10) 100%)',
         'linear-gradient(180deg, #FFCE94 0%, rgba(255, 196, 126, 0.10) 100%)',
       selected:
-        // 'linear-gradient(180deg, rgba(255, 196, 126, 1) 0%, rgba(255, 196, 126, 0.9) 100%)',
-        // 'linear-gradient(180deg, rgba(229, 229, 229, 1) 0%, rgba(229, 229, 229, 0.9) 100%)',
-        '#646464cc',
+        // '#646464cc',
+        '#FFCE94',
     },
   },
 ];
