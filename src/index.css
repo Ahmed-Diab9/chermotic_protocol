@@ -6,6 +6,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* FIXME: Duplicated variables */
 @layer base {
   :root {
     --color-primary: 3 3 3; /* #030303 */
