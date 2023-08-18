@@ -49,7 +49,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
           // events={["click"]}
         >
           <div className={`tooltip-${size}`}>
-            <p className="text-sm font-normal text-inverted">{tip}</p>
+            <p className="text-sm font-medium text-inverted">{tip}</p>
             {outLink && (
               <Outlink
                 outLink={outLink}

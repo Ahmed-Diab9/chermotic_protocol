@@ -14,10 +14,10 @@
   }
 
   .tooltip-solid {
-    @apply bg-primary text-inverted font-normal;
+    @apply bg-primary text-inverted;
   }
   .tooltip-outline {
-    @apply font-medium border;
+    @apply border;
     @apply bg-paper text-primary border-gray-light dark:border-gray-lighter;
     &.react-tooltip__place-top .react-tooltip-arrow,
     &.react-tooltip__place-top-start .react-tooltip-arrow,
