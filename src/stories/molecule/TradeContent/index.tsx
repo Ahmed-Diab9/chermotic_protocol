@@ -112,7 +112,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
     const format = Intl.NumberFormat('en', {
-      useGrouping: false,
+      useGrouping: true,
       maximumFractionDigits: 2,
       minimumFractionDigits: 2,
       //@ts-ignore experimental api
