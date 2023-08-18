@@ -159,7 +159,7 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -206,7 +206,7 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {mintings.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -248,7 +248,7 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {burnings.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (

@@ -541,7 +541,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedShortLiquidityBins.length === 0 ? (
-                              <p className="my-10 text-center text-gray-light">
+                              <p className="my-10 text-center text-primary/20">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -566,7 +566,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedLongLiquidityBins?.length === 0 ? (
-                              <p className="my-10 text-center text-gray-light">
+                              <p className="my-10 text-center text-primary/20">
                                 You have no liquidity yet.
                               </p>
                             ) : (

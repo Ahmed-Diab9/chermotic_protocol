@@ -129,7 +129,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               {positions?.length === 0 ? (
-                                <p className="mt-10 text-center text-gray-light">
+                                <p className="mt-10 text-center text-primary/20">
                                   You have no position yet.
                                 </p>
                               ) : (

@@ -162,7 +162,7 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray-light">You have no asset.</p>
+                                <p className="text-center text-primary/20">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {balances &&
@@ -225,7 +225,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray-light">
+                                <p className="text-center text-primary/20">
                                   You have no liquidity token.
                                 </p>
                               ) : (
