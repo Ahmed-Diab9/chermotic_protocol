@@ -125,9 +125,6 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                                       <PositionItem
                                         key={position.id.toString()}
                                         position={position}
-                                        isLoading={isLoading}
-                                        token={token}
-                                        markets={markets}
                                       />
                                     );
                                   })}
