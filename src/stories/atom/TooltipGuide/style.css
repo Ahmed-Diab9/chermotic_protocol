@@ -17,7 +17,7 @@
   }
   .tooltip-outline {
     @apply border;
-    @apply bg-paper text-primary border-gray-light dark:border-gray-lighter;
+    @apply bg-inverted text-primary border-gray-light dark:border-gray-lighter;
     &.react-tooltip__place-top .react-tooltip-arrow,
     &.react-tooltip__place-top-start .react-tooltip-arrow,
     &.react-tooltip__place-top-end .react-tooltip-arrow {
