@@ -31,6 +31,7 @@ export type PositionOption = {
 };
 export type PositionStatus = 'opened' | 'closed' | ' closing';
 export interface Position extends IChromaticPosition {
+  tokenAddress: Address;
   marketAddress: Address;
   lossPrice: bigint;
   profitPrice: bigint;
