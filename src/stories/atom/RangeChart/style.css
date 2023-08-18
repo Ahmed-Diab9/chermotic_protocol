@@ -38,4 +38,7 @@
       @apply left-2;
     }
   }
+  .react_range__dot {
+    @apply w-[3px] h-[3px] border-transparent bg-primary-lighter;
+  }
 }
