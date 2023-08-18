@@ -48,7 +48,7 @@ const Pool = () => {
           <div className="flex-auto w-3/5">
             <PoolPanel />
             {/* bottom */}
-            <article className="p-5 mx-auto mt-5 border shadow-lg dark:border-transparent dark:shadow-none bg-paper rounded-2xl">
+            <article className="p-5 mx-auto mt-3 border shadow-lg dark:border-transparent dark:shadow-none bg-paper rounded-2xl">
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <div className="flex gap-2">
