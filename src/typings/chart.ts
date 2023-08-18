@@ -10,6 +10,7 @@ export type Liquidity = {
     {
       label: 'available';
       amount: number;
-    }
+    },
+    { label: 'clbTokenValue'; amount: number }
   ];
 };

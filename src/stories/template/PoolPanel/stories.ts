@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { PoolPanel } from '.';
 
 import { Default as RangeChartStories } from '~/stories/atom/RangeChart/stories';
+import { Liquidity } from '~/typings/chart';
 
 const meta = {
   title: 'Template/PoolPanel',
@@ -61,7 +62,7 @@ export const Default: Story = {
     shortTotalMaxLiquidity: 100n,
     shortTotalUnusedLiquidity: 100n,
     selectedBins: [],
-    liquidity: RangeChartStories.args?.barData,
+    liquidity: RangeChartStories.args?.barData as Liquidity[],
   },
 };
 export const Empty: Story = {
@@ -92,6 +93,6 @@ export const Empty: Story = {
     shortTotalMaxLiquidity: 100n,
     shortTotalUnusedLiquidity: 100n,
     selectedBins: [],
-    liquidity: RangeChartStories.args?.barData,
+    liquidity: RangeChartStories.args?.barData as Liquidity[],
   },
 };
