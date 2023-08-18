@@ -1,5 +1,5 @@
 .wrapper-tooltip {
-  /* @apply flex items-center self-center; */
+  @apply flex items-center self-center;
   .react-tooltip {
     @apply !opacity-100;
   }
