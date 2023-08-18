@@ -1,4 +1,4 @@
-import { RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { DotData, RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { isNil } from 'ramda';
@@ -23,6 +23,7 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '~/stories/container/RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { Liquidity } from '~/typings/chart';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
@@ -58,8 +59,8 @@ interface PoolPanelProps {
   onAmountChange?: (value: string) => unknown;
 
   rangeChartRef?: any;
-  clbTokenValue?: any[];
-  liquidity?: any[];
+  clbTokenValue?: DotData[];
+  liquidity?: Liquidity[];
 
   rates: [number, number];
   binFeeRates: number[];
