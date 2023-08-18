@@ -52,23 +52,22 @@
     --alpha-primary-lighter: 0.3;
 
     --color-inverted: 3 3 3; /* #030303 */
-    --color-inverted: 12 12 12; /* test */
+    --color-inverted: 23 23 23; /*  */
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
     --color-gray: 97 97 97; /* #616161 */
     --color-gray-light: 58 58 58; /* #3a3a3a */
-    --color-gray-light: 67 67 67; /* test */
     --color-gray-lighter: 51 51 51; /* #333333 */
-    --color-gray-lighter: 49 49 49; /* test */
+    --color-gray-lighter: 58 58 58; /*  */
     --color-gray-dark: 143 143 143; /* #8f8f8f */
-    --color-gray-dark: 121 121 121; /* test */
+    --color-gray-dark: 111 111 111; /*  */
     --color-gray-darker: 238 238 238; /* #eeeeee */
 
     --color-paper: 21 21 21; /* #151515 */
-    --color-paper: 22 22 22; /* test */
+    --color-paper: 34 34 34; /*  */
     --color-paper-light: 3 3 3; /* #030303 */
-    --color-paper-light: 12 12 12; /* test */
+    --color-paper-light: 23 23 23; /*  */
     --color-paper-dark: 252 252 252; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
