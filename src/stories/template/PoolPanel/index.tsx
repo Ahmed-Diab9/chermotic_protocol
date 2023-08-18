@@ -321,7 +321,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
                       <p>Min trade Fee</p>
                       <Counter
                         value={rates && minRate}
@@ -331,7 +331,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p>~</p>
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
                       <p>Max trade Fee</p>
                       <Counter
                         value={rates && maxRate}
