@@ -27,11 +27,11 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
   };
 
   return (
-    <div className="tooltip chart-tooltip" style={{ position: 'absolute' }}>
+    <div className="absolute wrapper-tooltip">
       <Tooltip
         middlewares={[shift(), fixToTop]}
         anchorSelect={anchor}
-        className={`tooltip-outline min-w-[200px] ${className}`}
+        className={`tooltip tooltip-outline min-w-[200px] ${className}`}
         place="top"
         render={render}
         positionStrategy="absolute"

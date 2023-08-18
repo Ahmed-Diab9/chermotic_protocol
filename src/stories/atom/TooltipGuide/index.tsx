@@ -33,7 +33,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
   } = props;
 
   return (
-    <div className="flex items-center self-center tooltip">
+    <div className="wrapper-tooltip">
       {tipOnly || (
         <span className={`mx-1 tooltip-${label} tooltip-icon ${className}`}>
           <InformationCircleIcon className="w-4 text-primary-lighter" />
@@ -42,7 +42,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
       {iconOnly || (
         <Tooltip
           anchorSelect={`.tooltip-${label}`}
-          className={`text-${align} !bg-primary !rounded-lg`}
+          className={`tooltip tooltip-solid text-${align}`}
           place={position}
           clickable
           // isOpen

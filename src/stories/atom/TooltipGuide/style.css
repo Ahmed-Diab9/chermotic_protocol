@@ -1,4 +1,5 @@
-.tooltip {
+.wrapper-tooltip {
+  /* @apply flex items-center self-center; */
   .react-tooltip {
     @apply !opacity-100;
   }
@@ -8,7 +9,9 @@
   .tooltip-base {
     @apply max-w-[420px];
   }
-
+  .tooltip {
+    @apply rounded-lg;
+  }
   .tooltip-solid {
     @apply bg-primary text-inverted;
   }

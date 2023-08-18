@@ -28,12 +28,12 @@ export const TooltipAlert = (props: TooltipAlertProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="flex items-center self-center tooltip">
+    <div className="wrapper-tooltip">
       <Tooltip
         key={place}
         place={place}
         anchorSelect={`.tooltip-${label}`}
-        className={`!rounded-lg tooltip-${css} ${className}`}
+        className={`tooltip tooltip-${css} ${className}`}
         clickable
         isOpen={isOpen}
       >
