@@ -17,7 +17,7 @@ const Trade = () => {
   useMarketLocal();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-paper-lightest">
+    <div className="flex flex-col min-h-[100vh] w-full">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
         <MainBar showAccountPopover={true} />
@@ -32,7 +32,12 @@ const Trade = () => {
                 <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
               </div>
               <Link to={'/pool'}>
-                <Button label="Provide Liquidity" iconRight={<ChevronRightIcon />} />
+                <Button
+                  label="Provide Liquidity"
+                  css="light"
+                  className="dark:!bg-paper-light dark:hover:!bg-gray-light"
+                  iconRight={<ChevronRightIcon />}
+                />
               </Link>
             </div>
           </article>

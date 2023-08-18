@@ -3,7 +3,10 @@
   button[aria-haspopup='listbox'] {
     @apply flex items-center text-left gap-2 justify-between px-3 py-2 mb-1;
     @apply w-full h-9;
-    @apply border border-gray-light rounded-lg;
+    @apply border border-gray-light dark:border-transparent dark:bg-paper-lighter rounded-lg;
+    &[aria-expanded='true'] {
+      @apply dark:border-gray-lighter;
+    }
     &::after {
       content: '';
       display: inline-block;
@@ -15,7 +18,7 @@
   /* Select(listbox) panel */
   ul[role='listbox'] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
-    @apply p-1 bg-paper border border-gray-light rounded-lg shadow-base dark:shadow-none;
+    @apply p-1 bg-paper border border-gray-light dark:border-gray-lighter rounded-lg shadow-base dark:shadow-none;
   }
   li[role='option'] {
     @apply flex items-center px-2 py-[6px] hover:bg-paper-lighter;

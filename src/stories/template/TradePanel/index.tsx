@@ -51,7 +51,7 @@ export const TradePanel = (props: TradePanelProps) => {
   return (
     <div className="flex justify-center">
       {isWideView ? (
-        <div className="relative w-full bg-paper border shadow-lg dark:shadow-none rounded-2xl">
+        <div className="relative w-full border shadow-lg bg-paper dark:border-transparent dark:shadow-none rounded-2xl">
           <div className="flex">
             <div className="w-full px-0 pt-4 pb-10 border-r">
               <div className="w-full mb-7">
@@ -104,7 +104,7 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
         </div>
       ) : (
-        <div className="relative w-full max-w-[680px] bg-paper border shadow-lg dark:shadow-none rounded-2xl">
+        <div className="relative w-full max-w-[680px] bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded-2xl">
           <div className="w-full tabs tabs-line tabs-lg">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
               <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">

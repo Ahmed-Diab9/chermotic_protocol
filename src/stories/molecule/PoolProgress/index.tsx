@@ -20,6 +20,7 @@ import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import '../../atom/Tabs/style.css';
+import './style.css';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -94,7 +95,7 @@ export const PoolProgress = ({
   }, []);
 
   return (
-    <div className="!flex flex-col border PoolProgress shadow-lg dark:shadow-none tabs tabs-line tabs-base rounded-2xl bg-paper">
+    <div className="PoolProgress tabs tabs-line tabs-base">
       <Disclosure>
         {({ open }) => {
           return (
@@ -158,7 +159,7 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -205,7 +206,7 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {mintings.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -247,7 +248,7 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {burnings.length === 0 ? (
-                        <p className="my-6 text-center text-gray-light">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -375,7 +376,7 @@ const ProgressItem = (props: ProgressItemProps) => {
   }, [action]);
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
+    <div className="flex flex-col gap-3 px-5 py-4 border dark:border-transparent dark:bg-paper-lighter rounded-xl">
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
           {renderTitle}

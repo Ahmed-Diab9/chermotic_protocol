@@ -129,7 +129,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               {positions?.length === 0 ? (
-                                <p className="mt-10 text-center text-gray-light">
+                                <p className="mt-10 text-center text-primary/20">
                                   You have no position yet.
                                 </p>
                               ) : (
@@ -322,7 +322,10 @@ const PositionItem = function (props: Props) {
   });
 
   return (
-    <div key={position.id.toString()} className="mb-3 border rounded-xl">
+    <div
+      key={position.id.toString()}
+      className="mb-3 overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl"
+    >
       <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter">
         <div
           className={`flex flex-auto items-center gap-6 ${
@@ -476,6 +479,7 @@ const PositionItem = function (props: Props) {
           {(position.status === OPENED || position.status === OPENING) && (
             <Button
               label="Close"
+              css="light"
               size="sm"
               onClick={() => {
                 onClosePosition();
@@ -493,7 +497,7 @@ const PositionItem = function (props: Props) {
             />
           )}
           {position.status === CLOSING && (
-            <Button label="Claim" size="sm" disabled={true} css="gray" />
+            <Button label="Claim" size="sm" disabled={true} css="default" />
           )}
         </div>
       </div>

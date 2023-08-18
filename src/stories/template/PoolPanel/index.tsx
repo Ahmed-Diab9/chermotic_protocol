@@ -321,7 +321,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
                       <p>Min trade Fee</p>
                       <Counter
                         value={rates && minRate}
@@ -331,7 +331,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                       />
                     </div>
                     <p>~</p>
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
                       <p>Max trade Fee</p>
                       <Counter
                         value={rates && maxRate}
@@ -345,6 +345,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                     <Button
                       label="Full Range"
                       className="w-full !text-base !rounded-lg"
+                      css="light"
                       size="xl"
                       onClick={onFullRange}
                     />
@@ -368,7 +369,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   />
                   {/* todo: wallet disconnected */}
                   {/* onClick: connect wallet */}
-                  {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
+                  {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
                 </div>
                 <div className="flex flex-col gap-2 border-t border-dashed border-gray-light mt-8 mx-[-40px] pt-6 px-10">
                   <div className="flex items-center justify-between">
@@ -421,7 +422,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
             <Tab.Panel className="w-full">
               <section className="flex items-stretch gap-5">
                 {/* liquidity value */}
-                <article className="flex flex-col xl:flex-row items-start xl:items-center xl:justify-between justify-around flex-auto px-4 border py-7 w-[50%] bg-paper-lighter rounded-xl">
+                <article className="flex-col items-start justify-around box-top lg:flex-row lg:items-center lg:justify-between py-7">
                   <div>
                     <div className="flex font-semibold text-left text-primary-lighter">
                       Total Liquidity Value
@@ -449,7 +450,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </h4>
                 </article>
                 {/* info */}
-                <article className="flex flex-col justify-between flex-auto gap-3 xl:gap-2 px-4 border py-4 xl:py-7 w-[50%] bg-paper-lighter rounded-xl text-left">
+                <article className="flex-col justify-between gap-3 py-4 text-left box-top xl:gap-2 xl:py-7">
                   <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
                     <div className="flex items-center font-medium text-left text-primary-lighter">
                       LP Bins
@@ -524,7 +525,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                           {/* todo: when there is no selected list, disabled = true */}
                           <Button
                             label="Remove Selected"
-                            css="gray"
+                            css="default"
                             className="ml-2"
                             disabled={selectedBins.length === 0}
                             onClick={() => {
@@ -540,7 +541,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedShortLiquidityBins.length === 0 ? (
-                              <p className="my-10 text-center text-gray-light">
+                              <p className="my-10 text-center text-primary/20">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -565,7 +566,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
                         <Tab.Panel>
                           <article>
                             {ownedLongLiquidityBins?.length === 0 ? (
-                              <p className="my-10 text-center text-gray-light">
+                              <p className="my-10 text-center text-primary/20">
                                 You have no liquidity yet.
                               </p>
                             ) : (
@@ -651,7 +652,7 @@ const BinItem = (props: BinItemProps) => {
   }, [publicClient]);
 
   return (
-    <div className="overflow-hidden border rounded-xl">
+    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl">
       <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
         <Checkbox
           label={isValid(index) ? index + 1 : 0}
@@ -674,6 +675,7 @@ const BinItem = (props: BinItemProps) => {
         <div className="flex items-center ml-auto">
           <Button
             label="Remove"
+            css="light"
             onClick={(event) => {
               event.stopPropagation();
               if (bin && (bin.clbTokenBalance || 0n) > 0n) {
@@ -683,6 +685,7 @@ const BinItem = (props: BinItemProps) => {
           />
           <Button
             className="ml-2"
+            css="light"
             href={
               clbTokenAddress && blockExplorer
                 ? `${blockExplorer}/token/${clbTokenAddress}?a=${bin?.tokenId}`

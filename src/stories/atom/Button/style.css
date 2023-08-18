@@ -41,18 +41,21 @@ a {
       @apply text-primary-lighter bg-paper-lighter;
       @apply dark:bg-gray-light;
     }
+    &.shadow-base {
+      @apply dark:bg-gray-dark dark:text-primary;
+    }
   }
-  &.btn-gray {
+  &.btn-default {
     @apply border border-gray-light text-primary bg-paper hover:bg-paper-lighter;
-    @apply dark:border-gray-lighter dark:bg-gray-light dark:hover:bg-gray;
+    @apply dark:border-transparent dark:bg-gray-light dark:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
     }
   }
-  &.btn-default {
-    @apply border border-gray-lighter text-primary-light bg-paper hover:bg-paper-lighter;
-    @apply dark:border-gray-lighter dark:text-primary dark:bg-gray-light dark:hover:bg-gray;
+  &.btn-light {
+    @apply border border-gray-lighter text-primary bg-paper hover:bg-paper-lighter;
+    @apply dark:border-transparent dark:bg-gray-light dark:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
@@ -66,7 +69,7 @@ a {
     @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
   }
   &.btn-wallet {
-    @apply p-[2px] flex items-center border rounded-full;
+    @apply !h-[42px] p-[2px] flex items-center border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
     @apply dark:bg-gray-lighter dark:text-primary;
     .avatar {

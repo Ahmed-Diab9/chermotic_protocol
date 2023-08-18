@@ -105,7 +105,7 @@ export const WalletPopover = ({
               // leaveTo="opacity-100 translate-x-0"
             >
               <Popover.Panel className="transform border-l shadow-xl popover-panel">
-                <div className="relative flex flex-col h-full ">
+                <div className="relative flex flex-col h-full">
                   {/* Network */}
                   <Avatar
                     src={arbitrumIcon}
@@ -115,7 +115,7 @@ export const WalletPopover = ({
                     gap="3"
                   />
                   {/* box - top */}
-                  <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
+                  <section className="flex flex-col flex-grow mt-6 box-inner">
                     {/* Wallet address */}
                     <article className="px-4 py-3 border-b bg-paper-lighter">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
@@ -142,7 +142,7 @@ export const WalletPopover = ({
                               : undefined
                           }
                           label="view transition"
-                          css="circle"
+                          css="light"
                           size="lg"
                           iconOnly={<ArrowTopRightOnSquareIcon />}
                         />
@@ -162,7 +162,7 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray-light">You have no asset.</p>
+                                <p className="text-center text-primary/20">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {balances &&
@@ -225,7 +225,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-gray-light">
+                                <p className="text-center text-primary/20">
                                   You have no liquidity token.
                                 </p>
                               ) : (
@@ -283,54 +283,56 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-paper-lighter">
-                    {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
-                      <>
-                        <h4 className="mb-3 text-base text-center text-primary-lighter">
-                          My Account
-                        </h4>
-                        <div className="flex items-center justify-between gap-2">
-                          <AddressCopyButton
-                            address={
-                              account?.chromaticAddress &&
-                              trimAddress(account?.chromaticAddress, 7, 5)
-                            }
-                            onClick={() => {
-                              const address = account?.chromaticAddress;
-                              if (isValid(address)) {
-                                onChromaticCopy?.(address);
+                  <section className="mt-10 mb-5 box-inner">
+                    <article className="px-4 py-3 bg-paper-lighter">
+                      {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
+                        <>
+                          <h4 className="mb-3 text-base text-center text-primary-lighter">
+                            My Account
+                          </h4>
+                          <div className="flex items-center justify-between gap-2">
+                            <AddressCopyButton
+                              address={
+                                account?.chromaticAddress &&
+                                trimAddress(account?.chromaticAddress, 7, 5)
                               }
-                            }}
-                          />
-                          <Button
-                            href={
-                              account?.chromaticAddress && blockExplorer
-                                ? `${blockExplorer}/address/${account?.chromaticAddress}`
-                                : undefined
-                            }
-                            label="view transition"
-                            css="circle"
-                            size="lg"
-                            iconOnly={<ArrowTopRightOnSquareIcon />}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h4 className="mb-3 text-base text-center text-primary-lighter">
-                          You need to create account first.
-                        </h4>
-                        <div className="text-center">
-                          <Button
-                            label="Create Account"
-                            size="base"
-                            css="gray"
-                            onClick={onCreateAccount}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </article>
+                              onClick={() => {
+                                const address = account?.chromaticAddress;
+                                if (isValid(address)) {
+                                  onChromaticCopy?.(address);
+                                }
+                              }}
+                            />
+                            <Button
+                              href={
+                                account?.chromaticAddress && blockExplorer
+                                  ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                                  : undefined
+                              }
+                              label="view transition"
+                              css="light"
+                              size="lg"
+                              iconOnly={<ArrowTopRightOnSquareIcon />}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h4 className="mb-3 text-base text-center text-primary-lighter">
+                            You need to create account first.
+                          </h4>
+                          <div className="text-center">
+                            <Button
+                              label="Create Account"
+                              size="base"
+                              css="default"
+                              onClick={onCreateAccount}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </article>
+                  </section>
                   <Button
                     label="Disconnect"
                     onClick={onDisconnect}

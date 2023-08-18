@@ -10,7 +10,7 @@ interface ModalProps {
   subParagraph?: string;
   size?: 'sm' | 'base' | 'lg';
   buttonLabel?: string;
-  buttonCss?: 'default' | 'active' | 'gray' | 'unstyled';
+  buttonCss?: 'default' | 'light' | 'active' | 'unstyled';
   onClick?: () => void;
 }
 

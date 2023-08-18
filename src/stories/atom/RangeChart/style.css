@@ -18,7 +18,7 @@
     }
   }
   .react_range__track {
-    @apply border-primary;
+    @apply border-primary bg-primary/5 dark:bg-primary/10;
   }
   .react_range__grid,
   .react_range__grid_bold {
@@ -37,5 +37,9 @@
       /* @apply left-0 translate-x-[-50%]; */
       @apply left-2;
     }
+  }
+  .react_range__dot {
+    @apply w-[3px] h-[3px] border-transparent bg-primary-lighter dark:bg-primary-light;
+    @apply z-10;
   }
 }

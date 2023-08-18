@@ -1,7 +1,10 @@
 .MarketSelect {
   @apply flex items-center justify-between gap-6;
-  @apply border rounded-2xl min-h-[80px] shadow-lg dark:shadow-none;
+  @apply border dark:border-transparent rounded-2xl min-h-[80px] shadow-lg dark:shadow-none;
   @apply bg-paper;
+  &:has([data-headlessui-state='open']) {
+    @apply dark:border-gray-lighter dark:shadow-lg;
+  }
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
     @apply bg-paper min-h-[280px] rounded-b-2xl;

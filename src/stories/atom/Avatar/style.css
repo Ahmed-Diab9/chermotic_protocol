@@ -1,8 +1,8 @@
 .avatar {
   @apply flex-none;
   .wrapper-img {
-    @apply rounded-full overflow-hidden shrink-0 flex items-center justify-center border;
-    @apply bg-gray-lighter;
+    @apply rounded-full overflow-hidden shrink-0 flex items-center justify-center border-none;
+    @apply bg-[#D9D9D9] dark:bg-[#696969];
   }
 }
 .avatar-xs {

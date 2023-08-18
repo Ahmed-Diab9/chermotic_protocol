@@ -62,7 +62,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
           {/* <div className="w-[100px] mx-auto border-b border-2 border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
-            <article className="flex flex-col border border-gray-light rounded-xl">
+            <article className="wrapper-liq">
               <LiquidityItem
                 token={token}
                 name={selectedBin?.clbTokenDescription}
@@ -132,8 +132,9 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               <div className="flex items-center justify-between gap-6 mt-3">
                 <div className="flex gap-1">
                   <Button
-                    className="flex-auto shadow-base border-gray-light"
+                    className="flex-auto shadow-base"
                     label="All"
+                    css="default"
                     size="sm"
                     onClick={() => {
                       onAmountChange?.(maxAmount ?? 0n);

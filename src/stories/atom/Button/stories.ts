@@ -22,9 +22,9 @@ export const Default: Story = {
   },
 };
 
-export const Gray: Story = {
+export const Light: Story = {
   args: {
-    css: 'gray',
+    css: 'light',
     label: 'Button',
   },
 };

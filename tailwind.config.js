@@ -71,11 +71,11 @@ export const theme = {
     },
 
     boxShadow: {
-      base: '4px 4px 20px rgba(121, 121, 121, 0.08)',
-      md: '4px 4px 20px 0px rgba(229, 229, 229, 0.16)',
-      lg: '4px 4px 32px rgba(229, 229, 229, 0.18)',
-      xl: '4px 4px 60px rgba(229, 229, 229, 0.16)',
-      modal: '4px 4px 60px 0px rgba(181, 181, 181, 0.16)',
+      base: '4px 4px 20px var(--color-shadow-base)',
+      md: '4px 4px 20px 0px var(--color-shadow-md)',
+      lg: '4px 4px 32px var(--color-shadow-lg)',
+      xl: '4px 4px 60px var(--color-shadow-xl)',
+      modal: '4px 4px 60px 0px var(--color-shadow-modal)',
     },
     fontSize: {
       xs: ['10px', 'normal'],

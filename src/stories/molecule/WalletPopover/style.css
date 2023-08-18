@@ -1,6 +1,9 @@
 .WalletPopover {
   .popover-panel {
-    @apply fixed w-[320px] h-full top-0 right-0 bottom-0 px-5 py-7 text-left;
-    @apply bg-paper shadow-paper text-primary;
+    @apply fixed w-[320px] h-full top-0 right-0 bottom-0 px-5 py-7 text-left flex-shrink-0;
+    @apply bg-inverted shadow-paper text-primary;
+  }
+  .box-inner {
+    @apply rounded-lg bg-paper border dark:border-transparent overflow-hidden;
   }
 }

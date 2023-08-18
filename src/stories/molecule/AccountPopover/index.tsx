@@ -117,7 +117,7 @@ export const AccountPopover = ({
             </>
           ) : (
             <>
-              <Button label="Connect Wallet" size="sm" />
+              <Button label="Connect Wallet" css="light" size="sm" />
             </>
           )}
         </div>
@@ -218,7 +218,9 @@ const AssetPanel = (props: AssetPanelProps) => {
       {({ open, close }) => (
         <>
           <Popover.Button
-            className={`btn btn-default btn-sm ${open ? '!border-primary !text-primary' : ''}`}
+            className={`btn btn-light btn-sm ${
+              open ? '!border-primary dark:!border-transparent dark:!bg-gray-dark' : ''
+            }`}
           >
             {title}
           </Popover.Button>
@@ -334,7 +336,7 @@ const AssetPanel = (props: AssetPanelProps) => {
           {status === ACCOUNT_STATUS.COMPLETED && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border rounded-xl bg-paper-lighter">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border dark:border-transparent rounded-xl bg-paper-lighter">
                   <p className="flex-none pr-4 border-r text-primary-lighter">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis text-left">
                     {account?.chromaticAddress}
@@ -354,7 +356,7 @@ const AssetPanel = (props: AssetPanelProps) => {
                 <section className="flex mt-5 text-left">
                   <article className="flex flex-col items-start w-2/5 min-w-[140px] gap-3">
                     <h4 className="text-lg font-semibold">{title}</h4>
-                    <div className="px-3 py-2 border rounded-full">
+                    <div className="py-2 pl-2 pr-3 border rounded-full">
                       <Avatar size="xs" label={token?.name} gap="1" />
                     </div>
                     <div>

@@ -23,7 +23,7 @@ export const LeverageOption = ({ value, max = 10, onClick }: LeverageOptionProps
             className="w-12 shadow-base"
             label={`${leverage}x`}
             size="sm"
-            css={value === leverage ? 'active' : 'gray'}
+            css={value === leverage ? 'active' : 'default'}
             onClick={() => {
               onClick?.(leverage);
             }}

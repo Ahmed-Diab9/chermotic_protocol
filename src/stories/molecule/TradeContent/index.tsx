@@ -193,7 +193,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y dark:border-transparent bg-paper-lighter dark:bg-[#272727]">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-4">
@@ -387,10 +387,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             />
             {/* todo: wallet connected, no account */}
             {/* onClick: create account */}
-            {/* <Button label="Create Account" size="2xl" className="w-full" css="gray" /> */}
+            {/* <Button label="Create Account" size="2xl" className="w-full" css="default" /> */}
             {/* todo: wallet disconnected */}
             {/* onClick: connect wallet */}
-            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
+            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
           </div>
 
           <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">

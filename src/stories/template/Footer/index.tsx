@@ -21,21 +21,21 @@ export const Footer = () => (
       <div className="flex items-center gap-2">
         <Button
           href="https://twitter.com/chromatic_perp"
-          css="circle"
+          css="light"
           size="lg"
           className="!bg-transparent !border-inverted-lighter !text-inverted dark:!border-primary-lighter dark:!text-primary"
           iconOnly={<TwitterIcon />}
         />
         <Button
           href="https://medium.com/@chromatic-protocol"
-          css="circle"
+          css="light"
           size="lg"
           className="!bg-transparent !border-inverted-lighter !text-inverted dark:!border-primary-lighter dark:!text-primary"
           iconOnly={<MediumIcon />}
         />
         <Button
           href="https://chromatic.gitbook.io/docs"
-          css="circle"
+          css="light"
           size="lg"
           className="!bg-transparent !border-inverted-lighter !text-inverted dark:!border-primary-lighter dark:!text-primary"
           iconOnly={<GitbookIcon />}

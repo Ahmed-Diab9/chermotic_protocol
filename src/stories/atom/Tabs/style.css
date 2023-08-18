@@ -46,7 +46,7 @@
     }
     [aria-selected='false'] {
       @apply border-b-2 border-transparent;
-      @apply text-primary/20;
+      @apply text-primary/20 dark:text-primary-lighter;
     }
   }
   [type='button'] {
