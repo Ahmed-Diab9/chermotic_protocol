@@ -1,14 +1,12 @@
 export function useHeader() {
+  const walletPopoverProps = {
+    isWrongChain: false,
+    isDisconnected: false,
+  };
+
   return {
     isActiveLink: () => false,
 
-    isConnected: true,
-    isWrongChain: false,
-    isDisconnected: false,
-
-    walletAddress: '0x00000...00000',
-
-    onConnect: () => {},
-    onSwitchChain: () => {},
+    walletPopoverProps,
   };
 }
