@@ -42,7 +42,7 @@
       margin-bottom: 4px;
     }
     [aria-selected='true'] {
-      @apply text-primary border-b-2 border-primary;
+      @apply text-primary border-b-2 !border-primary;
     }
     [aria-selected='false'] {
       @apply border-b-2 border-transparent;
