@@ -24,13 +24,13 @@ const useChartData = () => {
     checkAllProps(fetchKeyData) && fetchKeyData,
     ({ bins, decimals }) => {
       const chartData = bins.reduce<{
-        clbTokenValue: CLBTokenValue[];
+        clbTokenValues: CLBTokenValue[];
         liquidity: Liquidity[];
       }>(
         // 1 => 0.01
         (acc, { liquidity, freeLiquidity, clbTokenValue, baseFeeRate }) => {
           const key = baseFeeRate / 100;
-          acc.clbTokenValue.push({
+          acc.clbTokenValues.push({
             key,
             value: Number(formatUnits(clbTokenValue, decimals)),
           });
@@ -42,13 +42,12 @@ const useChartData = () => {
             value: [
               { label: 'utilized', amount: utilized },
               { label: 'available', amount: available },
-              { label: 'clbTokenValue', amount: Number(formatUnits(clbTokenValue, decimals)) },
             ],
           });
           return acc;
         },
         {
-          clbTokenValue: [],
+          clbTokenValues: [],
           liquidity: [],
         }
       );
@@ -70,7 +69,7 @@ const useChartData = () => {
   }, [data?.liquidity]);
 
   return {
-    clbTokenValue: data?.clbTokenValue || [],
+    clbTokenValues: data?.clbTokenValues || [],
     liquidity: data?.liquidity || [],
     negative: negative,
     positive: positive,
