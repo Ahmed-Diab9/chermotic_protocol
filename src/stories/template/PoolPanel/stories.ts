@@ -62,7 +62,8 @@ export const Default: Story = {
     shortTotalMaxLiquidity: 100n,
     shortTotalUnusedLiquidity: 100n,
     selectedBins: [],
-    liquidity: RangeChartStories.args?.barData as Liquidity[],
+    liquidity: RangeChartStories.args?.barData,
+    clbTokenValues: [],
   },
 };
 export const Empty: Story = {
