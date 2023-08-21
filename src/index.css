@@ -55,13 +55,15 @@
     --alpha-inverted-lighter: 0.3;
 
     --color-gray: 97 97 99; /* #616161 */
-    --color-gray-light: 72 72 76;
-    --color-gray-lighter: 72 72 76;
+    --color-gray-light: 74 74 82;
+    --color-gray-lighter: 74 74 82;
     --color-gray-dark: 111 111 115;
     --color-gray-darker: 238 238 242; /* #eeeeee */
 
-    --color-paper: 44 44 46;
+    --color-paper: 44 44 48;
+    --color-paper: 46 46 50;
     --color-paper-light: 28 28 29;
+    --color-paper-light: 31 31 35;
     --color-paper-dark: 252 252 254; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
