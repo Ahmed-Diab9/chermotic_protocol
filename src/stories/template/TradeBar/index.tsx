@@ -73,7 +73,11 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
                   <span className="absolute right-0 top-[-16px]">
-                    <PopoverArrow direction="bottom" position="top" />
+                    <PopoverArrow
+                      direction="bottom"
+                      position="top"
+                      backgroundClass="dark:fill-inverted"
+                    />
                   </span>
                 </Popover.Button>
                 <Popover.Panel>

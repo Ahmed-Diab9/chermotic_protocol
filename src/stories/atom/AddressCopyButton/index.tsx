@@ -15,20 +15,22 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between flex-auto border dark:border-transparent border-collapse rounded-full max-w-[220px] bg-paper dark:bg-paper-light text-primary">
-        <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px]">
-          {address ? <>{address}</> : <Skeleton width={60} />}
-        </p>
-        <Button
-          label="Copy Address"
-          css="light"
-          size="lg"
-          className="m-[-1px] tooltip-copy-address"
-          iconOnly={<Square2StackIcon />}
-          onClick={onClick}
-        />
+      <div>
+        <div className="flex items-center justify-between flex-auto border dark:border-transparent border-collapse rounded-full max-w-[220px] bg-paper dark:bg-paper-light text-primary">
+          <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px]">
+            {address ? <>{address}</> : <Skeleton width={60} />}
+          </p>
+          <Button
+            label="Copy Address"
+            css="light"
+            size="lg"
+            className="m-[-1px] tooltip-copy-address"
+            iconOnly={<Square2StackIcon />}
+            onClick={onClick}
+          />
+        </div>
+        <TooltipGuide tipOnly tip="Copy" label="copy-address" />
       </div>
-      <TooltipGuide tipOnly tip="Copy" label="copy-address" />
     </>
   );
 };
