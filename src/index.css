@@ -46,7 +46,7 @@
 
   :root[class~='dark'],
   :root:has(.dark) {
-    --color-primary: 216 216 220;
+    --color-primary: 232 232 232;
     --alpha-primary-light: 0.5;
     --alpha-primary-lighter: 0.3;
 
@@ -63,7 +63,7 @@
     --color-paper: 44 44 48;
     --color-paper: 46 46 50;
     --color-paper-light: 28 28 29;
-    --color-paper-light: 31 31 35;
+    --color-paper-light: 31 31 33;
     --color-paper-dark: 252 252 254; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;

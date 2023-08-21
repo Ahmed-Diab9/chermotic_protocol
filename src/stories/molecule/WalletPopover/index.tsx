@@ -149,7 +149,7 @@ export const WalletPopover = ({
                       </div>
                     </article>
                     {/* Tab - Asset, Liquidity */}
-                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-[#272727]">
+                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-[#29292D]">
                       <Tab.Group>
                         {/* tab - menu */}
                         <Tab.List className="absolute left-0 w-full top-4">
