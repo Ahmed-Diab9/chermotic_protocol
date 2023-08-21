@@ -301,9 +301,13 @@ const PositionItem = function (props: Props) {
       lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       entryPrice: '$ ' + formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
       entryTime: new Intl.DateTimeFormat('en-US', {
+        second: '2-digit',
+        minute: '2-digit',
+        hour: '2-digit',
         month: 'long',
         day: 'numeric',
         year: 'numeric',
+        hour12: false,
       }).format(new Date(Number(position.openTimestamp) * 1000)),
     };
   }, [position, token, markets]);

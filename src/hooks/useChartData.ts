@@ -42,6 +42,7 @@ const useChartData = () => {
             value: [
               { label: 'utilized', amount: utilized },
               { label: 'available', amount: available },
+              { label: 'clbTokenValue', amount: Number(formatUnits(clbTokenValue, decimals)) },
             ],
           });
           return acc;

@@ -9,6 +9,7 @@ import { BarData } from '@chromatic-protocol/react-compound-charts';
 export type LiquidityTooltipData = {
   available: number;
   utilized: number;
+  clbValue: number;
   selected?: boolean;
 };
 
@@ -34,11 +35,13 @@ export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
 
       const available = getValueByLabel('available');
       const utilized = getValueByLabel('utilized');
+      const clbTokenValue = getValueByLabel('clbTokenValue');
 
       const liquidity = utilized + available;
       const ratio = liquidity !== 0 ? +((utilized / liquidity) * 100).toFixed(2) : undefined;
 
       return {
+        clbTokenValue: clbTokenValue,
         liquidity: toString(liquidity),
         utilized: toString(utilized),
         ratio: toString(ratio),
@@ -52,11 +55,12 @@ export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
       anchor={`#${id} .react_range__bar_stack.available, #${id} .react_range__bar_stack.utilized`}
       render={({ content }) => {
         const feeRate = +(content ?? 0);
-        const { liquidity, utilized, ratio } = getLiquidity(feeRate);
+        const { clbTokenValue, liquidity, utilized, ratio } = getLiquidity(feeRate);
         return (
           <div>
             <p className="font-semibold text-primary">Liquidity Bin {feeRate}</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
+              <p>CLB Value: {clbTokenValue}</p>
               <p>Liquidity: {liquidity}</p>
               <p>
                 Utilization: {utilized} ({ratio}%)
