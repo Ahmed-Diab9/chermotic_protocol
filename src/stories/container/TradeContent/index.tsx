@@ -5,17 +5,24 @@ import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 import { TradeContent as TradeContentPresenter } from '~/stories/molecule/TradeContent';
-import { Liquidity } from '~/typings/chart';
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
 interface Props {
   direction?: 'long' | 'short';
   liquidityData?: Liquidity[];
+  clbTokenValues?: CLBTokenValue[];
   totalMaxLiquidity?: bigint;
   totalUnusedLiquidity?: bigint;
 }
 
 export const TradeContent = (props: Props) => {
-  const { direction = 'long', liquidityData, totalMaxLiquidity, totalUnusedLiquidity } = props;
+  const {
+    direction = 'long',
+    liquidityData,
+    clbTokenValues,
+    totalMaxLiquidity,
+    totalUnusedLiquidity,
+  } = props;
   const {
     state: input,
     tradeFee,
@@ -45,6 +52,7 @@ export const TradeContent = (props: Props) => {
       totalMaxLiquidity={totalMaxLiquidity}
       totalUnusedLiquidity={totalUnusedLiquidity}
       liquidityData={liquidityData}
+      clbTokenValues={clbTokenValues}
       input={input}
       tradeFee={tradeFee}
       tradeFeePercent={feePercent}

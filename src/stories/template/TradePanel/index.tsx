@@ -4,11 +4,12 @@ import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
 import { TradeContent } from '~/stories/container/TradeContent';
-import { Liquidity } from '~/typings/chart';
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 import { errorLog } from '~/utils/log';
 
 export interface TradePanelProps {
   liquidityData?: Liquidity[];
+  clbTokenValues?: CLBTokenValue[];
   longLiquidityData?: Liquidity[];
   shortLiquidityData?: Liquidity[];
   longTotalMaxLiquidity?: bigint;
@@ -20,6 +21,7 @@ export interface TradePanelProps {
 export const TradePanel = (props: TradePanelProps) => {
   const {
     liquidityData,
+    clbTokenValues,
     longLiquidityData,
     shortLiquidityData,
     longTotalMaxLiquidity,
@@ -62,6 +64,7 @@ export const TradePanel = (props: TradePanelProps) => {
               <TradeContent
                 direction="short"
                 liquidityData={liquidityData}
+                clbTokenValues={clbTokenValues}
                 totalMaxLiquidity={shortTotalMaxLiquidity}
                 totalUnusedLiquidity={shortTotalUnusedLiquidity}
               />
@@ -75,6 +78,7 @@ export const TradePanel = (props: TradePanelProps) => {
               <TradeContent
                 direction="long"
                 liquidityData={liquidityData}
+                clbTokenValues={clbTokenValues}
                 totalMaxLiquidity={longTotalMaxLiquidity}
                 totalUnusedLiquidity={longTotalUnusedLiquidity}
               />
@@ -126,6 +130,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   <TradeContent
                     direction="short"
                     liquidityData={shortLiquidityData}
+                    clbTokenValues={clbTokenValues}
                     totalMaxLiquidity={shortTotalMaxLiquidity}
                     totalUnusedLiquidity={shortTotalUnusedLiquidity}
                   />
@@ -134,6 +139,7 @@ export const TradePanel = (props: TradePanelProps) => {
                   <TradeContent
                     direction="long"
                     liquidityData={longLiquidityData}
+                    clbTokenValues={clbTokenValues}
                     totalMaxLiquidity={longTotalMaxLiquidity}
                     totalUnusedLiquidity={longTotalUnusedLiquidity}
                   />

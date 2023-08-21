@@ -3,7 +3,7 @@ import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { TradePanel as TradePanelPresenter } from '~/stories/template/TradePanel';
 
 export const TradePanel = () => {
-  const { liquidity, positive, negative } = useChartData();
+  const { liquidity, positive, negative, clbTokenValues } = useChartData();
   const {
     liquidity: {
       longTotalMaxLiquidity,
@@ -16,6 +16,7 @@ export const TradePanel = () => {
   return (
     <TradePanelPresenter
       liquidityData={liquidity}
+      clbTokenValues={clbTokenValues}
       longLiquidityData={positive}
       shortLiquidityData={negative}
       longTotalMaxLiquidity={longTotalMaxLiquidity}

@@ -34,7 +34,7 @@ export const PoolPanel = () => {
   } = useLiquidityPool();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
-  const { liquidity, clbTokenValue } = useChartData();
+  const { liquidity, clbTokenValues } = useChartData();
 
   return (
     <PoolPanelPresenter
@@ -47,7 +47,7 @@ export const PoolPanel = () => {
       clbTokenAddress={clbTokenAddress}
       binCount={binCount}
       binAverage={binAverage}
-      clbTokenValue={clbTokenValue}
+      clbTokenValues={clbTokenValues}
       liquidity={liquidity}
       longTotalMaxLiquidity={longTotalMaxLiquidity}
       longTotalUnusedLiquidity={longTotalUnusedLiquidity}

@@ -19,6 +19,7 @@ export const Default: Story = {
   args: {
     longLiquidityData: FillUpChartMeta.args?.data,
     shortLiquidityData: FillUpChartMeta.args?.data,
+    clbTokenValues: [],
     longTotalMaxLiquidity: 10000n,
     longTotalUnusedLiquidity: 10000n,
     shortTotalMaxLiquidity: 10000n,
