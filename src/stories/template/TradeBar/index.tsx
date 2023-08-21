@@ -77,7 +77,7 @@ export const TradeBar = ({ token, market, markets, positions, isLoading }: Trade
                   </span>
                 </Popover.Button>
                 <Popover.Panel>
-                  <div className="w-full bg-paper border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
+                  <div className="w-full bg-inverted border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
                       <div className="flex items-center px-10">
                         <Tab.List className="pt-4 text-lg">
@@ -328,9 +328,9 @@ const PositionItem = function (props: Props) {
   return (
     <div
       key={position.id.toString()}
-      className="mb-3 overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl"
+      className="mb-3 overflow-hidden border dark:border-transparent bg-paper rounded-xl"
     >
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter dark:bg-paper">
         <div
           className={`flex flex-auto items-center gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
@@ -416,7 +416,7 @@ const PositionItem = function (props: Props) {
           )}
         </div>
       </div>
-      <div className="flex items-stretch justify-between gap-6 px-5 py-4">
+      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-[#272727]">
         <div
           className={`flex flex-auto items-stretch justify-between gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
