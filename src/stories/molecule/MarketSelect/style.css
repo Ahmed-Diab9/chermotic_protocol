@@ -3,7 +3,7 @@
   @apply border dark:border-transparent rounded-2xl min-h-[80px] shadow-lg dark:shadow-none;
   @apply bg-paper;
   &:has([data-headlessui-state='open']) {
-    @apply dark:border-gray-lighter dark:shadow-lg;
+    @apply dark:border-paper-lighter dark:shadow-lg;
   }
   .popover-panel {
     @apply absolute left-0 ml-[-1px];

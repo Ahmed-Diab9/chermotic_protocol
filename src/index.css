@@ -46,23 +46,23 @@
 
   :root[class~='dark'],
   :root:has(.dark) {
-    --color-primary: 216 216 216;
+    --color-primary: 216 216 220;
     --alpha-primary-light: 0.5;
     --alpha-primary-lighter: 0.3;
 
-    --color-inverted: 28 28 28;
+    --color-inverted: 28 28 29;
     --alpha-inverted-light: 0.5;
     --alpha-inverted-lighter: 0.3;
 
-    --color-gray: 97 97 97; /* #616161 */
-    --color-gray-light: 72 72 72;
-    --color-gray-lighter: 72 72 72;
-    --color-gray-dark: 111 111 111;
-    --color-gray-darker: 238 238 238; /* #eeeeee */
+    --color-gray: 97 97 99; /* #616161 */
+    --color-gray-light: 72 72 76;
+    --color-gray-lighter: 72 72 76;
+    --color-gray-dark: 111 111 115;
+    --color-gray-darker: 238 238 242; /* #eeeeee */
 
-    --color-paper: 44 44 44;
-    --color-paper-light: 28 28 28;
-    --color-paper-dark: 252 252 252; /* #fcfcfc */
+    --color-paper: 44 44 46;
+    --color-paper-light: 28 28 29;
+    --color-paper-dark: 252 252 254; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
 
