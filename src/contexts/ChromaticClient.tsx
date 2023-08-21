@@ -1,8 +1,7 @@
-import React, { useState, useCallback, type ReactNode } from 'react';
-
-import { Address, PublicClient, WalletClient } from 'wagmi';
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNotNil } from 'ramda';
+import React, { useCallback, useState, type ReactNode } from 'react';
+import { Address, PublicClient, WalletClient } from 'wagmi';
 
 type ContextValue = {
   readonly isReady: boolean;
@@ -41,14 +40,14 @@ function useContextValue(): ContextValue {
 
   const setWalletClient = useCallback(
     (walletClient?: WalletClient) => {
-      if (client.walletClient === walletClient) return;
+      if (walletAddress === walletClient?.account.address) return;
       setClient((currentClient) => {
         currentClient.walletClient = walletClient;
         return currentClient;
       });
       setWalletAddress(walletClient?.account.address);
     },
-    [client]
+    [client, walletAddress]
   );
 
   return {

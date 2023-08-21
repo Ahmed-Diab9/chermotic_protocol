@@ -112,7 +112,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
     const format = Intl.NumberFormat('en', {
-      useGrouping: false,
+      useGrouping: true,
       maximumFractionDigits: 2,
       minimumFractionDigits: 2,
       //@ts-ignore experimental api
@@ -130,11 +130,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   const { onOpenPosition } = useOpenPosition({ state: input });
 
   const lpVolume = useMemo(() => {
-    const totalLiq = formatDecimals(totalMaxLiquidity, (token?.decimals)) || '0';
+    const totalLiq = formatDecimals(totalMaxLiquidity, token?.decimals) || '0';
     const freeLiq =
       formatDecimals(
         (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
-        (token?.decimals || 0)
+        token?.decimals || 0
       ) || '0';
     const formatter = Intl.NumberFormat('en', {
       notation: 'compact',
@@ -151,10 +151,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
   return (
     <div className="px-10 w-full max-w-[680px]">
       {/* Available Account Balance */}
-      <article className="pb-5 border-grayL1">
+      <article className="pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
-          <p className="text-lg text-black/50">
+          <p className="text-lg text-primary-light">
             <SkeletonElement isLoading={isLoading} width={40}>
               {balances && token && balances[token.address]
                 ? formatDecimals(balances[token.address], token.decimals, 5, true)
@@ -193,13 +193,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-grayL1/20">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y dark:border-transparent bg-paper-lighter dark:bg-[#272727]">
         {/* Leverage */}
         <article className="">
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <p className="text-black/30">Up to {maxLeverage}x</p>
+              <p className="text-primary-lighter">Up to {maxLeverage}x</p>
             </div>
             {/* Toggle: {enabled ? "On" : "Off"} */}
 
@@ -329,16 +329,16 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
 
           {/* LP volume */}
           <div
-            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-white/60 ${
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
               direction === 'long' ? 'items-end right-0' : 'items-start left-0'
             }`}
           >
-            <p className="text-black/30">LP Volume</p>
+            <p className="text-primary-lighter">LP Volume</p>
             {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume}</p> : null}
           </div>
         </div>
         <article className="mt-5">
-          <div className="flex flex-col gap-[10px] border-grayL2">
+          <div className="flex flex-col gap-[10px] border-gray-light">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -387,13 +387,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
             />
             {/* todo: wallet connected, no account */}
             {/* onClick: create account */}
-            {/* <Button label="Create Account" size="2xl" className="w-full" css="gray" /> */}
+            {/* <Button label="Create Account" size="2xl" className="w-full" css="default" /> */}
             {/* todo: wallet disconnected */}
             {/* onClick: connect wallet */}
-            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="gray" /> */}
+            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
           </div>
 
-          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-grayL2 mt-8">
+          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
@@ -412,7 +412,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-black/30">({takeProfitRatio}%)</span>
+                <span className="ml-2 text-primary-lighter">({takeProfitRatio}%)</span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -421,7 +421,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-black/30">({stopLossRatio}%)</span>
+                <span className="ml-2 text-primary-lighter">({stopLossRatio}%)</span>
               </p>
             </div>
           </div>
@@ -447,56 +447,45 @@ const AmountSwitch = (props: AmountSwitchProps) => {
     return <></>;
   }
 
-  const minimumAmount = useMemo(
-    () => formatDecimals(token?.minimumMargin, token?.decimals),
-    [token]
-  );
+  const minimumAmount = formatDecimals(token?.minimumMargin, token?.decimals);
+  const errors = {
+    balance: 'Exceeded available account balance.',
+    liquidity: 'Exceeded free liquidity size.',
+    minimum: `Less than minimum betting amount. (${minimumAmount} ${token?.name})`,
+  };
+  const errorMessage = disabled?.detail ? errors[disabled.detail] : undefined;
 
-  const errorMessage = useMemo(() => {
-    switch (disabled?.detail) {
-      case 'balance':
-        return 'Exceeded available account balance.';
-      case 'liquidity':
-        return 'Exceeded free liquidity size.';
-      case 'minimum':
-        return `Less than minimum betting amount. (${minimumAmount} ${token?.name})`;
-      default:
-        return undefined;
-    }
-  }, [disabled?.detail]);
-
-  const preset = useMemo(
-    () =>
-      ({
-        collateral: {
-          value: input.collateral,
-          subValue: input.quantity,
-          subLabel: 'Contract Qty',
-          tooltip:
-            'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
-        },
-        quantity: {
-          value: input.quantity,
-          subValue: input.collateral,
-          subLabel: 'Collateral',
-          tooltip:
-            'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
-        },
-      }[input?.method || 'collateral']),
-    [input]
-  );
+  const presets = {
+    collateral: {
+      value: input.collateral,
+      subValue: input.quantity,
+      subLabel: 'Contract Qty',
+      tooltip:
+        'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
+    },
+    quantity: {
+      value: input.quantity,
+      subValue: input.collateral,
+      subLabel: 'Collateral',
+      tooltip:
+        'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
+    },
+  };
+  const preset = presets[input?.method || 'collateral'];
 
   return (
     <>
       <div className="max-w-[220px]">
-        <div className="tooltip-input-balance">
+        <div className={`tooltip-input-balance-${input.direction}`}>
           <Input
             value={preset.value.toString()}
             onChange={onAmountChange}
             placeholder="0"
-            error={disabled?.status}
+            error={disabled?.status && !!errorMessage}
           />
-          {errorMessage && <TooltipAlert label="input-balance" tip={errorMessage} />}
+          {errorMessage && (
+            <TooltipAlert label={`input-balance-${input.direction}`} tip={errorMessage} />
+          )}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">
@@ -507,7 +496,7 @@ const AmountSwitch = (props: AmountSwitchProps) => {
           outLinkAbout="Payoff"
         />
         <p>{preset.subLabel}</p>
-        <p className="ml-2 text-lg text-black/50">
+        <p className="ml-2 text-lg text-primary-light">
           {withComma(Number(decimalLength(preset.subValue, 5)))} {token?.name}
         </p>
       </div>

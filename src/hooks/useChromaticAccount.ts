@@ -1,10 +1,10 @@
 import { fromPairs, isNil } from 'ramda';
+import { Address } from 'wagmi';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
-import { AppError } from '~/typings/error';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
 import { checkAllProps } from '../utils';
@@ -42,15 +42,14 @@ export const useChromaticAccount = () => {
 
       if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
         dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-        return;
       } else {
         dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETED));
-        return accountAddress;
       }
+      return accountAddress;
     } catch (error) {
       dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
       logger.error(error);
-      return;
+      return ADDRESS_ZERO as Address;
     }
   });
 
@@ -87,36 +86,13 @@ export const useChromaticAccount = () => {
 
   useError({ error, logger });
 
-  const createAccount = async () => {
-    if (isNil(walletAddress)) {
-      return AppError.reject('no address', 'createAcccount');
-    }
-
-    try {
-      const accountApi = client.account();
-      logger.info('Creating accounts');
-      dispatch(setAccountStatus(ACCOUNT_STATUS.CREATING));
-      await accountApi.createAccount();
-
-      const newAccount = await accountApi.getAccount();
-      await fetchAddress(newAccount);
-
-      dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
-    } catch (error) {
-      dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-      logger.error(error);
-
-      return AppError.reject(error, 'createAccount');
-    }
-  };
-
   return {
     accountAddress,
     balances,
     status,
     isAccountAddressLoading,
     isChromaticBalanceLoading,
-    createAccount,
+    fetchAddress,
     fetchBalances,
   };
 };

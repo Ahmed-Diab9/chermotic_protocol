@@ -9,7 +9,7 @@ import { PRICE_FEED } from '../../../configs/token';
 import { Account } from '../../../typings/account';
 import { Market, Price, Token } from '../../../typings/market';
 import { LiquidityPoolSummary } from '../../../typings/pools';
-import { trimAddress } from '../../../utils/address';
+import { ADDRESS_ZERO, trimAddress } from '../../../utils/address';
 import { Logger } from '../../../utils/log';
 import { formatBalance, formatDecimals, withComma } from '../../../utils/number';
 import { isValid } from '../../../utils/valid';
@@ -84,7 +84,7 @@ export const WalletPopover = ({
       <Popover>
         {({ open, close }) => (
           <>
-            <Popover.Button className="btn-wallet min-w-[175px]">
+            <Popover.Button className="btn btn-wallet min-w-[175px]">
               <Avatar
                 label={account?.walletAddress && trimAddress(account?.walletAddress, 7, 5)}
                 src={arbitrumIcon}
@@ -94,8 +94,7 @@ export const WalletPopover = ({
                 gap="3"
               />
             </Popover.Button>
-            {/* backdrop */}
-            <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
+            <Popover.Overlay className="backdrop" />
             <Transition
               as={Fragment}
               enter="transition ease-out duration-200"
@@ -105,8 +104,8 @@ export const WalletPopover = ({
               // leaveFrom="opacity-100 translate-x-20"
               // leaveTo="opacity-100 translate-x-0"
             >
-              <Popover.Panel className="transform border-l shadow-xl shadow-white popover-panel">
-                <div className="relative flex flex-col h-full ">
+              <Popover.Panel className="transform border-l shadow-xl popover-panel">
+                <div className="relative flex flex-col h-full">
                   {/* Network */}
                   <Avatar
                     src={arbitrumIcon}
@@ -116,10 +115,12 @@ export const WalletPopover = ({
                     gap="3"
                   />
                   {/* box - top */}
-                  <section className="flex flex-col flex-grow mt-6 overflow-hidden border rounded-lg">
+                  <section className="flex flex-col flex-grow mt-6 box-inner">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-grayL1/20">
-                      <h4 className="mb-3 text-base text-center text-black/30">Connected Wallet</h4>
+                    <article className="px-4 py-3 border-b bg-paper-lighter">
+                      <h4 className="mb-3 text-base text-center text-primary-lighter">
+                        Connected Wallet
+                      </h4>
                       <div className="flex items-center justify-between gap-2">
                         <AddressCopyButton
                           address={
@@ -141,7 +142,7 @@ export const WalletPopover = ({
                               : undefined
                           }
                           label="view transition"
-                          css="circle"
+                          css="light"
                           size="lg"
                           iconOnly={<ArrowTopRightOnSquareIcon />}
                         />
@@ -161,7 +162,7 @@ export const WalletPopover = ({
                             {/* Assets */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2">You have no asset.</p>
+                                <p className="text-center text-primary/20">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {balances &&
@@ -192,17 +193,17 @@ export const WalletPopover = ({
                                             iconOnly={<ArrowTopRightOnSquareIcon />}
                                             css="unstyled"
                                             size="sm"
-                                            className="text-black/50"
+                                            className="text-primary-light"
                                           />
                                         </div>
 
                                         <div className="ml-auto text-right">
-                                          <p className="text-sm text-black/30">
+                                          <p className="text-sm text-primary-lighter">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               ${usdcPrice(token)}
                                             </SkeletonElement>
                                           </p>
-                                          <p className="mt-1 text-base font-medium text-black">
+                                          <p className="mt-1 text-base font-medium text-primary">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               {formatDecimals(
                                                 balances[token.address],
@@ -224,7 +225,7 @@ export const WalletPopover = ({
                             {/* Liquidity NFT */}
                             <article>
                               {tokens?.length === 0 ? (
-                                <p className="text-center text-grayL2">
+                                <p className="text-center text-primary/20">
                                   You have no liquidity token.
                                 </p>
                               ) : (
@@ -244,13 +245,13 @@ export const WalletPopover = ({
                                           <div className="flex gap-2 leading-none">
                                             <SkeletonElement isLoading={isLoading} width={100}>
                                               <p>{pool.token.name}</p>
-                                              <span className="px-1 text-grayL1">|</span>
+                                              <span className="px-1 text-gray-lighter">|</span>
                                               <p>{pool.market}</p>
                                             </SkeletonElement>
                                           </div>
                                           <div className="flex mt-3">
                                             <div className="mr-auto">
-                                              <p className="text-base font-medium text-black/30">
+                                              <p className="text-base font-medium text-primary-lighter">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {formatDecimals(
                                                     pool.liquidity,
@@ -261,7 +262,7 @@ export const WalletPopover = ({
                                                   {pool.token.name}
                                                 </SkeletonElement>
                                               </p>
-                                              <p className="mt-2 text-base text-black">
+                                              <p className="mt-2 text-base text-primary">
                                                 <SkeletonElement isLoading={isLoading} width={80}>
                                                   {pool.bins} Bins
                                                 </SkeletonElement>
@@ -282,57 +283,62 @@ export const WalletPopover = ({
                   </section>
                   {/* box - bottom */}
                   {/* Account address */}
-                  <article className="px-4 py-3 mt-10 mb-5 border rounded-lg bg-grayL1/20">
-                    {account?.chromaticAddress ? (
-                      <>
-                        <h4 className="mb-3 text-base text-center text-black/30">My Account</h4>
-                        <div className="flex items-center justify-between gap-2">
-                          <AddressCopyButton
-                            address={
-                              account?.chromaticAddress &&
-                              trimAddress(account?.chromaticAddress, 7, 5)
-                            }
-                            onClick={() => {
-                              const address = account?.chromaticAddress;
-                              if (isValid(address)) {
-                                onChromaticCopy?.(address);
+                  <section className="mt-10 mb-5 box-inner">
+                    <article className="px-4 py-3 bg-paper-lighter">
+                      {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
+                        <>
+                          <h4 className="mb-3 text-base text-center text-primary-lighter">
+                            My Account
+                          </h4>
+                          <div className="flex items-center justify-between gap-2">
+                            <AddressCopyButton
+                              address={
+                                account?.chromaticAddress &&
+                                trimAddress(account?.chromaticAddress, 7, 5)
                               }
-                            }}
-                          />
-                          <Button
-                            href={
-                              account?.chromaticAddress && blockExplorer
-                                ? `${blockExplorer}/address/${account?.chromaticAddress}`
-                                : undefined
-                            }
-                            label="view transition"
-                            css="circle"
-                            size="lg"
-                            iconOnly={<ArrowTopRightOnSquareIcon />}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h4 className="mb-3 text-base text-center text-black/30">
-                          You need to create account first.
-                        </h4>
-                        <div className="text-center">
-                          <Button
-                            label="Create Account"
-                            size="base"
-                            css="gray"
-                            onClick={onCreateAccount}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </article>
+                              onClick={() => {
+                                const address = account?.chromaticAddress;
+                                if (isValid(address)) {
+                                  onChromaticCopy?.(address);
+                                }
+                              }}
+                            />
+                            <Button
+                              href={
+                                account?.chromaticAddress && blockExplorer
+                                  ? `${blockExplorer}/address/${account?.chromaticAddress}`
+                                  : undefined
+                              }
+                              label="view transition"
+                              css="light"
+                              size="lg"
+                              iconOnly={<ArrowTopRightOnSquareIcon />}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h4 className="mb-3 text-base text-center text-primary-lighter">
+                            You need to create account first.
+                          </h4>
+                          <div className="text-center">
+                            <Button
+                              label="Create Account"
+                              size="base"
+                              css="default"
+                              onClick={onCreateAccount}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </article>
+                  </section>
                   <Button
                     label="Disconnect"
                     onClick={onDisconnect}
                     size="xl"
-                    className="w-full mb-3 !text-white !bg-black border-none"
+                    css="active"
+                    className="w-full mb-3 border-none"
                   />
                   <Button
                     label="close popover"

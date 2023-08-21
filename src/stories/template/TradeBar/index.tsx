@@ -18,7 +18,6 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
-import { OracleVersion } from '~/typings/oracleVersion';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
@@ -30,7 +29,6 @@ interface TradeBarProps {
   market?: Market;
   markets?: Market[];
   positions?: Position[];
-  oracleVersions?: Record<string, OracleVersion>;
   isLoading?: boolean;
 }
 
@@ -44,14 +42,7 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   }
 }
 
-export const TradeBar = ({
-  token,
-  market,
-  markets,
-  positions,
-  oracleVersions,
-  isLoading,
-}: TradeBarProps) => {
+export const TradeBar = ({ token, market, markets, positions, isLoading }: TradeBarProps) => {
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -71,22 +62,22 @@ export const TradeBar = ({
   }, []);
 
   return (
-    <Popover className="fixed bottom-0 w-full TradeBar">
+    <Popover className="fixed bottom-0 w-full TradeBar popover-panel">
       {({ open }) => (
         <>
           {open ? (
             <>
               {/* backdrop */}
-              <Popover.Overlay className="fixed inset-0 backdrop bg-white/80" />
+              <Popover.Overlay className="backdrop" />
               <div className="relative popover-panel" ref={ref}>
                 <Popover.Button className="absolute right-10 top-[-16px]">
                   {/* <Button iconOnly={<ChevronDoubleUpIcon />} className="transform rotate-180" /> */}
-                  <div className="absolute right-0 top-[-16px]">
+                  <span className="absolute right-0 top-[-16px]">
                     <PopoverArrow direction="bottom" position="top" />
-                  </div>
+                  </span>
                 </Popover.Button>
                 <Popover.Panel>
-                  <div className="w-full bg-white border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
+                  <div className="w-full bg-paper border-t tabs tabs-line tabs-base tabs-left min-h-[50vh] max-h-[90vh]">
                     <Tab.Group>
                       <div className="flex items-center px-10">
                         <Tab.List className="pt-4 text-lg">
@@ -94,28 +85,22 @@ export const TradeBar = ({
                         </Tab.List>
                         <div className="flex items-center gap-5 mt-4 ml-auto">
                           {lapsed && (
-                            <p className="pr-5 text-sm border-r text-black/30">
+                            <p className="pr-5 text-sm border-r text-primary-lighter">
                               Last Oracle Update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}
                               s ago
                             </p>
                           )}
                           {/* todo: Current Price */}
-                          <p className="text-sm text-black/30">
+                          <p className="text-sm text-primary-lighter">
                             Current Price:
                             <SkeletonElement
                               isLoading={isLoading}
                               width={80}
                               className="ml-2 text-lg"
                             >
-                              {isValid(oracleVersions) && isValid(market) && (
-                                <span className="ml-2 text-lg text-black">
-                                  ${' '}
-                                  {formatDecimals(
-                                    oracleVersions[market.address].price,
-                                    18,
-                                    2,
-                                    true
-                                  )}
+                              {isValid(market) && (
+                                <span className="ml-2 text-lg text-primary">
+                                  $ {formatDecimals(market.oracleValue.price, 18, 2, true)}
                                 </span>
                               )}{' '}
                             </SkeletonElement>
@@ -144,7 +129,7 @@ export const TradeBar = ({
                             <div className="flex flex-col gap-3">
                               {/* 리스트 한개 단위: 리스트 + entry time */}
                               {positions?.length === 0 ? (
-                                <p className="mt-10 text-center text-grayL2">
+                                <p className="mt-10 text-center text-primary/20">
                                   You have no position yet.
                                 </p>
                               ) : (
@@ -157,7 +142,6 @@ export const TradeBar = ({
                                         isLoading={isLoading}
                                         token={token}
                                         markets={markets}
-                                        oracleVersions={oracleVersions}
                                       />
                                     );
                                   })}
@@ -207,21 +191,21 @@ export const TradeBar = ({
           ) : (
             <>
               <Popover.Button
-                className="w-full px-[60px] py-5 bg-white border-t tabs tabs-line tabs-base tabs-left"
+                className="w-full px-[60px] py-5 bg-paper border-t tabs tabs-line tabs-base tabs-left"
                 ref={openButtonRef}
               >
-                <h4 className="min-w-[140px] text-black">
+                <span className="min-w-[140px] text-primary text-lg font-semibold">
                   Position
                   {/* TODO: position 갯수 보여주기 (갯수 세는 기준은 확인중) */}
-                  {/* (2) */}
-                </h4>
+                  {/* (n) */}
+                </span>
                 {/* <Button
                   iconOnly={<ChevronDoubleUpIcon />}
                   className="absolute right-10 top-[-16px]"
                 /> */}
-                <div className="absolute right-10 top-[-32px]">
+                <span className="absolute right-10 top-[-32px]">
                   <PopoverArrow direction="top" position="top" />
-                </div>
+                </span>
               </Popover.Button>
             </>
           )}
@@ -236,17 +220,16 @@ interface Props {
   isLoading?: boolean;
   token?: Token;
   markets?: Market[];
-  oracleVersions?: Record<string, OracleVersion>;
 }
 
 const PositionItem = function (props: Props) {
-  const { position, isLoading, token, markets, oracleVersions } = props;
+  const { position, isLoading, token, markets } = props;
   /**
    * FIXME
    * Oracle Decimals을 확인해야 함
    */
   const calculated = useMemo(() => {
-    if (isNil(position) || isNil(token) || isNil(oracleVersions)) {
+    if (isNil(position) || isNil(token)) {
       return {
         qty: '-',
         collateral: '-',
@@ -272,7 +255,9 @@ const PositionItem = function (props: Props) {
         : (makerMargin * parseUnits('1', token.decimals) * 100n * 10000n) /
           parseUnits(String(abs(qty)), token.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
-    const currentOracleVersion = oracleVersions[position.marketAddress];
+    const currentOracleVersion = markets?.find(
+      (market) => market.address === position.marketAddress
+    )?.oracleValue;
     if (
       isNil(currentOracleVersion) ||
       isNil(currentOracleVersion.version) ||
@@ -316,12 +301,16 @@ const PositionItem = function (props: Props) {
       lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       entryPrice: '$ ' + formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
       entryTime: new Intl.DateTimeFormat('en-US', {
+        second: '2-digit',
+        minute: '2-digit',
+        hour: '2-digit',
         month: 'long',
         day: 'numeric',
         year: 'numeric',
+        hour12: false,
       }).format(new Date(Number(position.openTimestamp) * 1000)),
     };
-  }, [position, token, oracleVersions]);
+  }, [position, token, markets]);
 
   const direction = useCallback((position: Position) => {
     return position.qty > 0n ? 'Long' : 'Short';
@@ -333,12 +322,15 @@ const PositionItem = function (props: Props) {
   });
   const { onClaimPosition } = useClaimPosition({
     positionId: position.id,
-    marketAddress: position.marketAddress,
+    market: markets?.find((market) => market.address === position.marketAddress),
   });
 
   return (
-    <div key={position.id.toString()} className="mb-3 border rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-grayL1/20">
+    <div
+      key={position.id.toString()}
+      className="mb-3 overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl"
+    >
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter">
         <div
           className={`flex flex-auto items-center gap-6 ${
             position.status === OPENING ? 'opacity-30' : ''
@@ -371,13 +363,13 @@ const PositionItem = function (props: Props) {
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-black/50">Entry Price</p>
+            <p className="text-primary-light">Entry Price</p>
             <SkeletonElement isLoading={isLoading} width={60}>
               {calculated.entryPrice}
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-black/50">Entry Time</p>
+            <p className="text-primary-light">Entry Time</p>
             <SkeletonElement isLoading={isLoading} width={60}>
               {calculated.entryTime}
             </SkeletonElement>
@@ -388,7 +380,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENING && (
             <>
               <Loading size="sm" />
-              <div className="flex text-black">
+              <div className="flex text-primary">
                 {/* Opening in progress */}
                 Waiting for the next oracle round
                 <TooltipGuide iconOnly label="opening-in-progress" />
@@ -398,7 +390,7 @@ const PositionItem = function (props: Props) {
           {position.status === OPENED && (
             <>
               <CheckIcon className="w-4" />
-              <div className="flex text-black">
+              <div className="flex text-primary">
                 Opening completed
                 <TooltipGuide iconOnly label="opening-completed" />
               </div>
@@ -407,7 +399,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSING && (
             <>
               <Loading size="sm" />
-              <div className="flex text-black">
+              <div className="flex text-primary">
                 Closing in progress
                 <TooltipGuide iconOnly label="closing-in-progress" />
               </div>
@@ -416,7 +408,7 @@ const PositionItem = function (props: Props) {
           {position.status === CLOSED && (
             <>
               <CheckIcon className="w-4" />
-              <div className="flex text-black">
+              <div className="flex text-primary">
                 Closing completed
                 <TooltipGuide iconOnly label="closing-completed" />
               </div>
@@ -433,13 +425,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[12%] flex flex-col gap-2">
             <TextRow
               label="Contract Qty"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.qty}
               isLoading={isLoading}
             />
             <TextRow
               label="Collateral"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.collateral}
               isLoading={isLoading}
             />
@@ -447,13 +439,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Take Profit"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.takeProfit}
               isLoading={isLoading}
             />
             <TextRow
               label="TP Price"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
               isLoading={isLoading}
@@ -462,13 +454,13 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="Stop Loss"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.stopLoss}
               isLoading={isLoading}
             />
             <TextRow
               label="SL Price"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
               isLoading={isLoading}
@@ -477,7 +469,7 @@ const PositionItem = function (props: Props) {
           <div className="grow min-w-[8%] flex flex-col gap-2 pl-6 border-l">
             <TextRow
               label="PnL"
-              labelClass="text-black/50"
+              labelClass="text-primary-light"
               value={calculated.pnlPercentage}
               isLoading={isLoading}
             />
@@ -491,6 +483,7 @@ const PositionItem = function (props: Props) {
           {(position.status === OPENED || position.status === OPENING) && (
             <Button
               label="Close"
+              css="light"
               size="sm"
               onClick={() => {
                 onClosePosition();
@@ -508,7 +501,7 @@ const PositionItem = function (props: Props) {
             />
           )}
           {position.status === CLOSING && (
-            <Button label="Claim" size="sm" disabled={true} css="gray" />
+            <Button label="Claim" size="sm" disabled={true} css="default" />
           )}
         </div>
       </div>

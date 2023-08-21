@@ -1,0 +1,4 @@
+.PoolProgress {
+  @apply !flex flex-col border dark:border-transparent;
+  @apply shadow-lg dark:shadow-none rounded-2xl bg-paper;
+}

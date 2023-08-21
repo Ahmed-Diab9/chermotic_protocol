@@ -1,4 +1,4 @@
-import './style.css';
+import '../TooltipGuide/style.css';
 import { PropsWithChildren } from 'react';
 import { Tooltip, ITooltip } from 'react-tooltip';
 import { shift, Middleware } from '@floating-ui/dom';
@@ -27,11 +27,11 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
   };
 
   return (
-    <div className="chart-tooltip" style={{ position: 'absolute' }}>
+    <div className="absolute wrapper-tooltip">
       <Tooltip
         middlewares={[shift(), fixToTop]}
         anchorSelect={anchor}
-        className={`z-50 !bg-white border border-black !rounded-lg min-w-[200px] ${className}`}
+        className={`tooltip tooltip-outline min-w-[200px] ${className}`}
         place="top"
         render={render}
         positionStrategy="absolute"

@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-
 import { formatUnits } from 'viem';
-import { CLBTokenValue, Liquidity } from '~/typings/chart';
-
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 import { Logger } from '~/utils/log';
 import { checkAllProps } from '../utils';
 import { useError } from './useError';
@@ -45,6 +42,7 @@ const useChartData = () => {
             value: [
               { label: 'utilized', amount: utilized },
               { label: 'available', amount: available },
+              { label: 'clbTokenValue', amount: Number(formatUnits(clbTokenValue, decimals)) },
             ],
           });
           return acc;

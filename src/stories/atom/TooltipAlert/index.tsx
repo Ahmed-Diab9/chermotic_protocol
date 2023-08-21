@@ -6,6 +6,7 @@ interface TooltipAlertProps {
   label: string;
   tip?: string;
   css?: 'solid' | 'outline';
+  className?: string;
   place?:
     | 'top'
     | 'top-start'
@@ -23,16 +24,16 @@ interface TooltipAlertProps {
 }
 
 export const TooltipAlert = (props: TooltipAlertProps) => {
-  const { label, tip, place, css = 'solid' } = props;
+  const { label, tip, place, css = 'solid', className } = props;
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="flex items-center self-center tooltip">
+    <div className="wrapper-tooltip">
       <Tooltip
         key={place}
         place={place}
         anchorSelect={`.tooltip-${label}`}
-        className={`z-50 !rounded-lg tooltip-${css}`}
+        className={`tooltip tooltip-${css} ${className}`}
         clickable
         isOpen={isOpen}
       >

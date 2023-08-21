@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ACCOUNT_STATUS } from '../../../typings/account';
 import { AccountPopover } from '.';
+import { ACCOUNT_STATUS } from '../../../typings/account';
 import { Token } from '../../../typings/market';
 
 const meta = {

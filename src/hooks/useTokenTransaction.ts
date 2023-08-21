@@ -58,11 +58,7 @@ const useTokenTransaction = () => {
 
         toast(`${amount} ${currentToken.name} has been deposited.`);
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else {
-          toast.error(String(error));
-        }
+        toast.error('Transaction rejected.');
       }
     },
     [amount, walletAddress, chromaticAccountAddress, currentToken]
@@ -110,11 +106,7 @@ const useTokenTransaction = () => {
         await fetchChromaticBalances();
         toast(`${amount} ${currentToken.name} has been withdrawn.`);
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else {
-          toast.error(String(error));
-        }
+        toast.error('Transaction rejected.');
       }
     },
     [chromaticAccountAddress, currentToken, amount, client]

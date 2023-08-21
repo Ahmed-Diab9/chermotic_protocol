@@ -25,6 +25,7 @@ export const Default: Story = {
     },
     markets: [
       {
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         address: '0x8888888888888888888888888888888888888888',
         description: 'ETH/USD',
         oracleValue: {
@@ -37,6 +38,7 @@ export const Default: Story = {
     positions: [
       {
         marketAddress: '0x000',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(10),
         profitPrice: BigInt(10),
         status: 'opening',
@@ -60,6 +62,7 @@ export const Default: Story = {
       },
       {
         marketAddress: '0x000',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(10),
         profitPrice: BigInt(10),
         status: 'opened',
@@ -83,6 +86,7 @@ export const Default: Story = {
       },
       {
         marketAddress: '0x000',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(888),
         profitPrice: BigInt(888),
         status: 'closing',
@@ -106,6 +110,7 @@ export const Default: Story = {
       },
       {
         marketAddress: '0x000',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         lossPrice: BigInt(888),
         profitPrice: BigInt(888),
         status: 'closed',
@@ -143,6 +148,7 @@ export const Empty: Story = {
     markets: [
       {
         address: '0x8888888888888888888888888888888888888888',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
         description: 'ETH/USD',
         oracleValue: {
           price: BigInt(10000),

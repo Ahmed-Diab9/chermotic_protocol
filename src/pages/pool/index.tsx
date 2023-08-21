@@ -6,6 +6,7 @@ import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Toast } from '~/stories/atom/Toast';
+import { ChainModal } from '~/stories/container/ChainModal';
 import { PoolProgress } from '~/stories/container/PoolProgress';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
@@ -39,7 +40,7 @@ const Pool = () => {
   }, [publicClient]);
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full bg-grayLbg">
+    <div className="flex flex-col min-h-[100vh] w-full">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
         <MainBar showAccountPopover={false} />
@@ -47,7 +48,7 @@ const Pool = () => {
           <div className="flex-auto w-3/5">
             <PoolPanel />
             {/* bottom */}
-            <article className="p-5 mx-auto mt-5 bg-white border shadow-lg rounded-2xl">
+            <article className="p-5 mx-auto mt-3 border shadow-lg dark:border-transparent dark:shadow-none bg-paper rounded-2xl">
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <div className="flex gap-2">
@@ -59,7 +60,6 @@ const Pool = () => {
                       }
                     }}
                   />
-                  {/* todo : outlink button link */}
                   <Button
                     href={
                       clbTokenAddress && blockExplorer
@@ -67,13 +67,13 @@ const Pool = () => {
                         : undefined
                     }
                     label="view scanner"
-                    css="circle"
+                    css="light"
                     size="lg"
                     iconOnly={<ArrowTopRightOnSquareIcon />}
                   />
                 </div>
               </div>
-              <div className="mt-3 mb-3 text-base text-left text-black/30">
+              <div className="mt-3 mb-3 text-base text-left text-primary-lighter">
                 When providing liquidity to the liquidity bins of the Chromatic protocol, providers
                 are rewarded by minting CLB tokens. CLB tokens follow the ERC-1155 standard and have
                 one token contract per market, with each bin having its own unique token ID.{' '}
@@ -83,6 +83,8 @@ const Pool = () => {
             <div className="mt-10">
               <Link to={'/trade'}>
                 <Button
+                  css="light"
+                  className="dark:!bg-paper-light dark:hover:!bg-gray-light"
                   label={
                     isValid(selectedMarket)
                       ? `Trade on ${selectedMarket.description} Pool`
@@ -100,6 +102,7 @@ const Pool = () => {
       </section>
       <Footer />
       <Toast />
+      <ChainModal />
     </div>
   );
 };

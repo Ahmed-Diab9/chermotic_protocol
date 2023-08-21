@@ -21,7 +21,7 @@ export const SelectedTooltip = ({ id = '', data }: SelectedTooltipProps) => {
       render={() => {
         return (
           <div>
-            <p className="font-semibold text-black">Maker Margin: {toString(data)}</p>
+            <p className="font-semibold text-primary">Maker Margin: {toString(data)}</p>
           </div>
         );
       }}

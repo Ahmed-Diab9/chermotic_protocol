@@ -33,7 +33,17 @@ export const useMarket = (_interval?: number) => {
     isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
     async ({ selectedTokenAddress }) => {
       const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
-      return markets;
+      return markets.map(
+        (market) =>
+          ({
+            ...market,
+            description: market.description.split(/\s*\/\s*/).join('/'),
+            tokenAddress: selectedTokenAddress,
+          } satisfies Market)
+      );
+    },
+    {
+      refreshInterval: 1000 * 30,
     }
   );
 

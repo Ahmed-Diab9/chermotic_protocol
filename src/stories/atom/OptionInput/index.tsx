@@ -57,7 +57,7 @@ export const OptionInput = (props: OptionInputProps) => {
           className="flex-auto shadow-base"
           label="25%"
           size="sm"
-          css={ratio === 25 ? 'active' : 'gray'}
+          css={ratio === 25 ? 'active' : 'default'}
           onClick={() => {
             onClick(25);
           }}
@@ -66,21 +66,21 @@ export const OptionInput = (props: OptionInputProps) => {
           className="flex-auto shadow-base"
           label="50%"
           size="sm"
-          css={ratio === 50 ? 'active' : 'gray'}
+          css={ratio === 50 ? 'active' : 'default'}
           onClick={() => onClick(50)}
         />
         <Button
           className="flex-auto shadow-base"
           label="75%"
           size="sm"
-          css={ratio === 75 ? 'active' : 'gray'}
+          css={ratio === 75 ? 'active' : 'default'}
           onClick={() => onClick(75)}
         />
         <Button
           className="flex-auto shadow-base"
           label="Max"
           size="sm"
-          css={ratio === 100 ? 'active' : 'gray'}
+          css={ratio === 100 ? 'active' : 'default'}
           onClick={() => onClick(100)}
         />
       </div>
@@ -96,7 +96,7 @@ export const OptionInput = (props: OptionInputProps) => {
           setRatio(undefined);
           onChange?.(event);
         }}
-        className="relative border-grayL2"
+        className="relative border-gray-light"
         disabled={disabled}
         error={error}
         // onBlur={onBlur}

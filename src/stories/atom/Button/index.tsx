@@ -3,7 +3,8 @@ import './style.css';
 
 interface ButtonProps {
   label?: string;
-  css?: 'default' | 'active' | 'gray' | 'unstyled' | 'circle';
+  css?: 'default' | 'light' | 'active' | 'circle' | 'unstyled';
+  disabled?: boolean;
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl';
   align?: 'center' | 'left' | 'right';
   to?: string;
@@ -13,7 +14,6 @@ interface ButtonProps {
   iconLeft?: any;
   iconOnly?: any;
   iconRight?: any;
-  disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -21,6 +21,7 @@ export const Button = (props: ButtonProps) => {
   const {
     label,
     css = 'default',
+    disabled = false,
     size = 'base',
     align = 'center',
     to,
@@ -30,7 +31,6 @@ export const Button = (props: ButtonProps) => {
     iconLeft,
     iconOnly,
     iconRight,
-    disabled = false,
     onClick,
   } = props;
   const btnIconOnly = iconOnly ? 'btn-icon-only' : '';

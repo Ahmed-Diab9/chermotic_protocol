@@ -1,4 +1,3 @@
-import { Address } from 'wagmi';
 import { arbitrum, arbitrumGoerli, hardhat } from 'wagmi/chains';
 
 export const CHAIN = import.meta.env.VITE_TARGET_CHAIN ?? 'anvil';

@@ -84,7 +84,6 @@ function useOpenPosition({ state }: Props) {
 
       await routerApi.openPosition(currentMarket.address, {
         quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        // leverage,
         takerMargin,
         makerMargin,
         maxAllowableTradingFee,
@@ -93,9 +92,9 @@ function useOpenPosition({ state }: Props) {
       await fetchBalances();
 
       window.dispatchEvent(TradeEvent);
-      toast('New position is opened.');
+      toast('The opening process has been started.');
     } catch (error) {
-      toast((error as any).message);
+      toast.error('Transaction rejected.');
     } finally {
       return;
     }

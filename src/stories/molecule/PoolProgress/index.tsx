@@ -20,6 +20,7 @@ import { formatDecimals } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { LpReceipt, LpReceiptAction } from '../../../hooks/usePoolReceipt';
 import '../../atom/Tabs/style.css';
+import './style.css';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -94,7 +95,7 @@ export const PoolProgress = ({
   }, []);
 
   return (
-    <div className="!flex flex-col border PoolProgress shadow-lg tabs tabs-line tabs-base rounded-2xl bg-white">
+    <div className="PoolProgress tabs tabs-line tabs-base">
       <Disclosure>
         {({ open }) => {
           return (
@@ -112,7 +113,7 @@ export const PoolProgress = ({
                     />
                   </div>
                   {open && isValid(lapsed) && (
-                    <p className="mt-1 ml-auto text-sm text-black/30">
+                    <p className="mt-1 ml-auto text-sm text-primary-lighter">
                       Last oracle update: {lapsed.hours}h {lapsed.minutes}m {lapsed.seconds}s ago
                     </p>
                   )}
@@ -120,7 +121,7 @@ export const PoolProgress = ({
                 <ChevronDownIcon
                   className={`${
                     open ? 'rotate-180 transform' : ''
-                  } w-6 text-black/30 absolute right-6`}
+                  } w-6 text-primary-lighter absolute right-6`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="relative px-5 border-t" ref={ref}>
@@ -158,7 +159,7 @@ export const PoolProgress = ({
                     {/* tab1 - all */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {receipts.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -186,7 +187,11 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(
+                                  receipt.remainedCLBAmount,
+                                  token.decimals,
+                                  2
+                                )}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -201,7 +206,7 @@ export const PoolProgress = ({
                     {/* tab1 - minting */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {mintings.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -243,7 +248,7 @@ export const PoolProgress = ({
                     {/* tab1 - burning */}
                     <Tab.Panel className="flex flex-col gap-3 mb-5">
                       {burnings.length === 0 ? (
-                        <p className="my-6 text-center text-grayL2">
+                        <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
@@ -271,7 +276,11 @@ export const PoolProgress = ({
                                 detail={receiptDetail(receipt, token)}
                                 name={receipt.name}
                                 token={token?.name}
-                                remainedCLBAmount={formatDecimals(receipt.remainedCLBAmount, token.decimals, 2)}
+                                remainedCLBAmount={formatDecimals(
+                                  receipt.remainedCLBAmount,
+                                  token.decimals,
+                                  2
+                                )}
                                 progressPercent={receipt.progressPercent}
                                 action={receipt.action}
                                 onClick={() => {
@@ -367,26 +376,26 @@ const ProgressItem = (props: ProgressItemProps) => {
   }, [action]);
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 border rounded-xl">
+    <div className="flex flex-col gap-3 px-5 py-4 border dark:border-transparent dark:bg-paper-lighter rounded-xl">
       <div className="flex items-center justify-between gap-2">
         <h4 className="flex items-center gap-2 capitalize">
           {renderTitle}
           <span className="flex mr-1">
             {status === 'standby' ? (
               // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-black/30 bg-grayL2/20" />
+              <Tag label="standby" className="text-primary-lighter bg-paper-light" />
             ) : status === 'completed' ? (
               // <Tag
               //   label="completed"
               //   className="text-[#03C239] bg-[#23F85F]/10"
               // />
-              <Tag label="completed" className="text-white bg-grayD2" />
+              <Tag label="completed" className="text-inverted bg-gray-dark" />
             ) : (
               // <Tag
               //   label="in progress"
               //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
               // />
-              <Tag label="in progress" className="text-grayD2 bg-grayL2/20" />
+              <Tag label="in progress" className="text-gray-dark bg-paper-light" />
             )}
             <TooltipGuide
               label="status-info"
@@ -409,7 +418,7 @@ const ProgressItem = (props: ProgressItemProps) => {
             />
           </span>
         </h4>
-        <div className="flex items-center gap-[6px] text-sm tracking-tight text-black text-right">
+        <div className="flex items-center gap-[6px] text-sm tracking-tight text-primary text-right">
           <span className="">
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
@@ -442,7 +451,7 @@ const ProgressItem = (props: ProgressItemProps) => {
                 <Avatar label={token} size="xs" gap="1" />
               </SkeletonElement>
             </div>
-            <p className="mt-1 text-left text-black/30">
+            <p className="mt-1 text-left text-primary-lighter">
               <SkeletonElement isLoading={isLoading} width={60}>
                 {name}
               </SkeletonElement>
@@ -451,7 +460,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         </div>
         <div className="flex flex-col items-end justify-end">
           {action === 'remove' && status !== 'standby' && (
-            <p className="mb-2 -mt-2 text-black/50">{remainedCLBAmount} CLB Remaining</p>
+            <p className="mb-2 -mt-2 text-primary-light">{remainedCLBAmount} CLB Remaining</p>
           )}
           <Button
             label={

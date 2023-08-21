@@ -6,12 +6,28 @@
     @apply box-content;
   }
   .react_range__label {
-    @apply text-xs text-black/30;
+    @apply text-xs text-primary-lighter;
+  }
+  .react_range__handle_wrapper {
+    @apply bg-primary;
+    &.left {
+      @apply rounded-l-sm;
+    }
+    &.right {
+      @apply rounded-r-sm;
+    }
+  }
+  .react_range__track {
+    @apply border-primary bg-primary/5 dark:bg-primary/10;
+  }
+  .react_range__grid,
+  .react_range__grid_bold {
+    @apply !border-gray-lighter;
   }
   .react_range__handle_value {
     /* @apply -translate-y-[2px]; */
     @apply top-[-48px] -translate-y-[100%];
-    @apply inline-block rounded-3xl border py-1 px-2 min-w-[40px] text-center leading-none text-xs;
+    @apply inline-block rounded-3xl border py-1 px-2 min-w-[40px] text-center leading-none text-xs bg-paper;
     backdrop-filter: blur(2px);
     &.left {
       /* @apply right-0 translate-x-[50%]; */
@@ -21,5 +37,9 @@
       /* @apply left-0 translate-x-[-50%]; */
       @apply left-2;
     }
+  }
+  .react_range__dot {
+    @apply w-[3px] h-[3px] border-transparent bg-primary-lighter dark:bg-primary-light;
+    @apply z-10;
   }
 }

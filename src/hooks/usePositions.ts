@@ -6,11 +6,10 @@ import {
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useMarket } from '~/hooks/useMarket';
-import { OracleVersion } from '~/typings/oracleVersion';
+import { Market, Token } from '~/typings/market';
 import { Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
@@ -19,7 +18,6 @@ import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import useOracleVersion from './useOracleVersion';
 import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('usePosition');
 
@@ -39,30 +37,33 @@ function determinePositionStatus(position: IChromaticPosition, currentOracleVers
 async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
-  oracleVersions: Record<Address, OracleVersion>,
-  marketAddress: Address,
-  tokenDecimals: number
+  market: Market,
+  token: Token
 ) {
-  const positionIds = await accountApi.getPositionIds(marketAddress);
+  if (market.tokenAddress !== token.address) {
+    return [];
+  }
+  const positionIds = await accountApi.getPositionIds(market.address);
 
-  const positions = await positionApi.getPositions(marketAddress, [...positionIds]);
+  const positions = await positionApi.getPositions(market.address, [...positionIds]);
 
-  const { price: currentPrice, version: currentVersion } = oracleVersions[marketAddress];
+  const { price: currentPrice, version: currentVersion } = market.oracleValue;
   const withLiquidation = await PromiseOnlySuccess(
     positions.map(async (position) => {
       const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
-        marketAddress,
+        market.address,
         position.openPrice,
         position
       );
       const targetPrice =
         position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
       const pnl = position.openPrice
-        ? await positionApi.getPnl(marketAddress, position.openPrice, targetPrice, position)
+        ? await positionApi.getPnl(market.address, position.openPrice, targetPrice, position)
         : 0n;
       return {
         ...position,
-        marketAddress,
+        tokenAddress: token.address,
+        marketAddress: market.address,
         lossPrice: lossCutPrice ?? 0n,
         profitPrice: profitStopPrice ?? 0n,
         pnl,
@@ -87,7 +88,6 @@ export const usePositions = () => {
   const { accountAddress } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { markets, currentMarket } = useMarket();
-  const { oracleVersions } = useOracleVersion();
   const { client } = useChromaticClient();
 
   const fetchKey = {
@@ -96,7 +96,6 @@ export const usePositions = () => {
     markets: markets,
     chromaticAccount: accountAddress,
     currentToken: currentToken,
-    oracleVersions: oracleVersions,
   };
 
   const {
@@ -104,36 +103,21 @@ export const usePositions = () => {
     error,
     mutate: fetchPositions,
     isLoading,
-  } = useSWR(
-    checkAllProps(fetchKey) && fetchKey,
-    async ({ currentToken, markets, oracleVersions }) => {
-      const accountApi = client.account();
-      const positionApi = client.position();
+  } = useSWR(checkAllProps(fetchKey) && fetchKey, async ({ currentToken, markets }) => {
+    const accountApi = client.account();
+    const positionApi = client.position();
 
-      const positionsResponse = await PromiseOnlySuccess(
-        markets.map(async (market) => {
-          return getPositions(
-            accountApi,
-            positionApi,
-            oracleVersions,
-            market.address,
-            currentToken.decimals
-          );
-        })
-      );
-      return positionsResponse.flat(1);
-    }
-  );
+    const positionsResponse = await PromiseOnlySuccess(
+      markets.map(async (market) => {
+        return getPositions(accountApi, positionApi, market, currentToken);
+      })
+    );
+    return positionsResponse.flat(1);
+  });
 
   function fetchCurrentPositions() {
     fetchPositions(async (positions) => {
-      if (
-        isNil(positions) ||
-        isNil(accountAddress) ||
-        isNil(currentMarket) ||
-        isNil(currentToken) ||
-        isNil(oracleVersions)
-      )
+      if (isNil(positions) || isNil(accountAddress) || isNil(currentMarket) || isNil(currentToken))
         return positions;
 
       const filteredPositions = positions
@@ -143,20 +127,17 @@ export const usePositions = () => {
       const accountApi = client.account();
       const positionApi = client.position();
 
-      const newPositions = await getPositions(
-        accountApi,
-        positionApi,
-        oracleVersions,
-        currentMarket.address,
-        currentToken.decimals
-      );
+      const newPositions = await getPositions(accountApi, positionApi, currentMarket, currentToken);
       return [...filteredPositions, ...newPositions];
     });
   }
 
   const currentPositions = useMemo(() => {
-    return positions?.filter(({ marketAddress }) => marketAddress === currentMarket?.address);
-  }, [positions, currentMarket]);
+    return positions?.filter(
+      ({ marketAddress, tokenAddress }) =>
+        marketAddress === currentMarket?.address && tokenAddress === currentToken?.address
+    );
+  }, [positions, currentMarket, currentToken]);
 
   useError({
     error,

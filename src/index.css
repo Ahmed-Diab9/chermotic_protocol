@@ -6,15 +6,89 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 3 3 3; /* #030303 */
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
+    --color-inverted: 255 255 255; /* #ffffff */
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
+
+    --color-gray: 97 97 97; /* #616161 */
+    --color-gray-light: 212 212 212; /* #d4d4d4 */
+    --color-gray-lighter: 238 238 238; /* #eeeeee */
+    --color-gray-dark: 77 77 77; /* #4d4d4d */
+    --color-gray-darker: 51 51 51; /* #333333 */
+
+    --color-paper: 255 255 255; /* #ffffff */
+    --color-paper-light: 252 252 252; /* #fcfcfc */
+    --color-paper-dark: 21 21 21; /* #151515 */
+    --alpha-paper-light: 0.2;
+    --alpha-paper-dark: 0.2;
+
+    --color-info: 60 242 232; /* #3CF2E8 */
+    --color-info-light: 214 251 249; /* #D6FBF9 */
+    --color-success: 166 216 91; /* #A6D85B */
+    --color-success-light: 235 245 220; /* #EBF5DC */
+    --color-warning: 255 152 32; /* #FF9820 */
+    --color-warning-light: 253 233 209; /* #FDE9D1 */
+    --color-error: 255 50 50; /* #FF3232 */
+    --color-error-light: 253 212 212; /* #FDD4D4 */
+
+    --color-shadow-base: rgba(121, 121, 121, 0.08);
+    --color-shadow-md: rgba(229, 229, 229, 0.16);
+    --color-shadow-lg: rgba(229, 229, 229, 0.18);
+    --color-shadow-xl: rgba(229, 229, 229, 0.16);
+    --color-shadow-modal: rgba(181, 181, 181, 0.16);
+  }
+
+  :root[class~='dark'],
+  :root:has(.dark) {
+    --color-primary: 216 216 216;
+    --alpha-primary-light: 0.5;
+    --alpha-primary-lighter: 0.3;
+
+    --color-inverted: 23 23 23;
+    --alpha-inverted-light: 0.5;
+    --alpha-inverted-lighter: 0.3;
+
+    --color-gray: 97 97 97; /* #616161 */
+    --color-gray-light: 58 58 58; /* #3a3a3a */
+    --color-gray-lighter: 58 58 58;
+    --color-gray-dark: 111 111 111;
+    --color-gray-darker: 238 238 238; /* #eeeeee */
+
+    --color-paper: 34 34 34;
+    --color-paper-light: 23 23 23;
+    --color-paper-dark: 252 252 252; /* #fcfcfc */
+    --alpha-paper-light: 0.4;
+    --alpha-paper-dark: 0.2;
+
+    /* --color-shadow-base: rgba(121, 121, 121, 0.08); */
+    /* --color-shadow-md: rgba(229, 229, 229, 0.16); */
+    --color-shadow-lg: rgba(67, 67, 67, 0.18);
+    --color-shadow-xl: rgba(229, 229, 229, 0.16);
+    /* --color-shadow-modal: rgba(181, 181, 181, 0.16); */
+  }
+}
+
 *,
 ::before,
 ::after {
-  border-color: #eee;
+  @apply border-gray-lighter;
 }
 
 body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
+  @apply text-primary bg-paper-lightest;
   word-spacing: -0.1em;
+}
+
+.sb-show-main,
+.docs-story {
+  @apply text-primary bg-inverted;
 }
 
 h4 {
@@ -28,7 +102,7 @@ h4 {
 
 input {
   width: 100%;
-  border-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* hide input number inner buttons */
@@ -41,20 +115,25 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* z-index */
-.tooltip .tooltip-tip {
-  @apply z-50;
+.backdrop {
+  @apply fixed inset-0 bg-inverted/90;
 }
+
+/* z-index */
 .modal {
   @apply z-40;
 }
-.select ul[role='listbox'],
-.dropdown [role='menu'] {
-  @apply z-20;
+.backdrop,
+.backdrop + div {
+  @apply z-30;
 }
 .popover-panel {
   @apply z-20;
 }
-.backdrop {
+.select ul[role='listbox'],
+.dropdown [role='menu'] {
+  @apply z-10;
+}
+.wrapper-tooltip .react-tooltip {
   @apply z-10;
 }

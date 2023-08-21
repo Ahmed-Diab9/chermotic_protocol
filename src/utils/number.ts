@@ -1,4 +1,3 @@
-import { isNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
 import { Price, Token } from '../typings/market';
@@ -152,4 +151,11 @@ export const toBigintWithDecimals = (value: number | string | bigint, decimals: 
 
 export const toBigInt = (value: number | string) => {
   return toBigintWithDecimals(value, 0);
+};
+
+export const isNotZero = (value: number | string | undefined) => {
+  if (value === undefined) {
+    return false;
+  }
+  return Number(value) !== 0;
 };

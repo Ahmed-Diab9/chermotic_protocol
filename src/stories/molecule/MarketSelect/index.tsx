@@ -28,11 +28,10 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
   const oracleDecimals = 18;
 
   // TODO
-  // 연이율(feeRate)을 문자열로 변환하는 과정이 올바른지 확인이 필요합니다.
-  // 현재는 연이율을 1년에 해당하는 시간 값으로 나눗셈
+  // Check converting fee rate to string
   return (
     <>
-      <div className="relative bg-white shadow-lg MarketSelect">
+      <div className="relative MarketSelect">
         <Popover>{<PopoverMain {...props} />}</Popover>
         <div className="flex items-center gap-5 mr-10">
           <h2 className="text-3xl">
@@ -45,7 +44,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
               )}`}
             </SkeletonElement>
           </h2>
-          <div className="flex flex-col gap-1 pl-5 text-left border-l text-black/50">
+          <div className="flex flex-col gap-1 pl-5 text-left border-l text-primary-light">
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
                 {formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4)}
@@ -71,6 +70,11 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
 export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => {
   const { tokens, selectedToken, markets, selectedMarket, isLoading, onTokenClick, onMarketClick } =
     props;
+  const priceFormatter = Intl.NumberFormat('en', {
+    useGrouping: true,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });
   return (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
@@ -104,7 +108,7 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <button
                 key={token.address}
                 className={`flex items-center gap-2 px-4 py-2 ${
-                  token.address === selectedToken?.address && 'text-white bg-black rounded-lg' // the token selected
+                  token.address === selectedToken?.address && 'text-inverted bg-primary rounded-lg' // the token selected
                 }`}
                 onClick={() => {
                   onTokenClick?.(token);
@@ -124,12 +128,16 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
               <button
                 key={market.address}
                 className={`flex items-center justify-between gap-4 px-4 py-2 ${
-                  market.address === selectedMarket?.address && 'text-white bg-black rounded-lg' // the market selected
+                  market.address === selectedMarket?.address &&
+                  'text-inverted bg-primary rounded-lg' // the market selected
                 }`}
                 onClick={() => onMarketClick?.(market)}
               >
                 <Avatar label={market.description} fontSize="lg" gap="2" size="sm" />
-                <p>{'$' + formatDecimals(market.oracleValue.price, 18, 2)}</p>
+                <p>
+                  {'$' +
+                    priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)))}
+                </p>
               </button>
             ))}
           </article>

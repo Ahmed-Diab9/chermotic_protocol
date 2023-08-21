@@ -4,10 +4,10 @@ import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { Token } from '~/typings/market';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
-import { PromiseOnlySuccess } from '~/utils/promise';
 
 export const useSettlementToken = () => {
   const { client, isReady } = useChromaticClient();
