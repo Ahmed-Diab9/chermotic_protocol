@@ -1,4 +1,4 @@
-import { AccountPopover } from '../../container/AccountPopover';
+import { AccountPopover } from '~/stories/molecule/AccountPopover';
 import { MarketSelect } from '~/stories/molecule/MarketSelect';
 
 interface MainBarProps {
