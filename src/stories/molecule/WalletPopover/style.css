@@ -4,6 +4,6 @@
     @apply bg-inverted shadow-paper text-primary;
   }
   .box-inner {
-    @apply rounded-lg bg-paper/50 border dark:border-transparent overflow-hidden;
+    @apply rounded-lg bg-paper border dark:border-transparent overflow-hidden;
   }
 }

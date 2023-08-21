@@ -117,7 +117,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 box-inner">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-paper">
+                    <article className="px-4 py-3 border-b bg-paper-lighter">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
                         Connected Wallet
                       </h4>
@@ -284,7 +284,7 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <section className="mt-10 mb-5 box-inner">
-                    <article className="px-4 py-3 bg-paper">
+                    <article className="px-4 py-3 bg-paper-lighter">
                       {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
                         <>
                           <h4 className="mb-3 text-base text-center text-primary-lighter">
