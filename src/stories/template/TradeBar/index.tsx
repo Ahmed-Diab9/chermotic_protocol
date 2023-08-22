@@ -42,20 +42,18 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   }
 }
 
-// SUGGESTION
-// How about using `text-price-higher` instead of `text-long`?
 function priceClass(position: Position, type: 'toProfit' | 'toLoss') {
   if (position.qty > 0n && type === 'toProfit') {
-    return `!text-long`;
+    return `!text-price-higher`;
   }
   if (position.qty > 0n && type === 'toLoss') {
-    return `!text-short`;
+    return `!text-price-lower`;
   }
   if (position.qty <= 0n && type === 'toProfit') {
-    return `!text-short`;
+    return `!text-price-lower`;
   }
   if (position.qty <= 0n && type === 'toLoss') {
-    return `!text-long`;
+    return `!text-price-higher`;
   }
   return '';
 }
@@ -495,9 +493,7 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
-              // Suggestion
-              // How about using `text-profit` instead of `text-long` in PnL?
-              valueClass={position.pnl > 0n ? 'text-long' : 'text-short'}
+              valueClass={position.pnl > 0n ? 'text-price-higher' : 'text-price-lower'}
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}

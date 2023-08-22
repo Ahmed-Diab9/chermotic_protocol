@@ -69,8 +69,10 @@ export const theme = {
         light: 'rgb(var(--color-error-light))',
       },
 
-      long: 'rgb(var(--color-long))',
-      short: 'rgb(var(--color-short))',
+      price: {
+        higher: 'rgb(var(--color-price-higher))',
+        lower: 'rgb(var(--color-price-lower))',
+      },
     },
 
     boxShadow: {
