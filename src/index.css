@@ -37,6 +37,9 @@
     --color-error: 255 50 50; /* #FF3232 */
     --color-error-light: 253 212 212; /* #FDD4D4 */
 
+    --color-long: 166 216 91;
+    --color-short: 255 50 50;
+
     --color-shadow-base: rgba(121, 121, 121, 0.08);
     --color-shadow-md: rgba(229, 229, 229, 0.16);
     --color-shadow-lg: rgba(229, 229, 229, 0.18);
