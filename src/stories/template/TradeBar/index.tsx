@@ -452,7 +452,15 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
-              subValueClass=""
+              subValueClass={
+                calculated.profitPriceTo === undefined
+                  ? ''
+                  : calculated.profitPriceTo.startsWith('+')
+                  ? 'text-long'
+                  : calculated.profitPriceTo === '-'
+                  ? ''
+                  : 'text-short'
+              }
               isLoading={isLoading}
             />
           </div>
@@ -468,7 +476,15 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
-              subValueClass=""
+              subValueClass={
+                calculated.lossPriceTo === undefined
+                  ? ''
+                  : calculated.lossPriceTo.startsWith('+')
+                  ? 'text-long'
+                  : calculated.lossPriceTo === '-'
+                  ? ''
+                  : 'text-short'
+              }
               isLoading={isLoading}
             />
           </div>
