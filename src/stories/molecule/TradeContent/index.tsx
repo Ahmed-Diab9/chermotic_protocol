@@ -12,7 +12,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import '~/stories/atom/Toggle/style.css';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import { Liquidity } from '~/typings/chart';
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 import { Market, Price, Token } from '~/typings/market';
 import { TradeInput } from '~/typings/trade';
 import { decimalLength, formatDecimals, withComma } from '~/utils/number';
@@ -33,6 +33,7 @@ interface TradeContentProps {
   tradeFee?: bigint;
   tradeFeePercent?: bigint;
   liquidityData?: Liquidity[];
+  clbTokenValues?: CLBTokenValue[];
   maxLeverage?: number;
   minStopLoss?: number;
   minTakeProfit?: number;
@@ -68,6 +69,7 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
     tradeFee,
     tradeFeePercent,
     liquidityData,
+    clbTokenValues,
     maxLeverage = 10,
     minStopLoss = 1,
     minTakeProfit = 1,
@@ -318,7 +320,11 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
       <section className="">
         <div className="mx-[-40px] relative border-b">
           <SelectedTooltip id={`trade-${direction}`} data={input?.makerMargin} />
-          <LiquidityTooltip id={`trade-${direction}`} data={liquidityData} />
+          <LiquidityTooltip
+            id={`trade-${direction}`}
+            data={liquidityData}
+            clbTokenValues={clbTokenValues}
+          />
           <FillUpChart
             id={`trade-${direction}`}
             positive={direction === 'long'}

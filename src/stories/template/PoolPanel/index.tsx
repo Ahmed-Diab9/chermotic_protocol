@@ -1,4 +1,4 @@
-import { DotData, RangeChartData } from '@chromatic-protocol/react-compound-charts';
+import { BarData, DotData, RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import { Switch, Tab } from '@headlessui/react';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { isNil } from 'ramda';
@@ -23,7 +23,6 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { RemoveLiquidityModal } from '~/stories/container/RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
-import { Liquidity } from '~/typings/chart';
 import { Logger } from '~/utils/log';
 import { isValid } from '~/utils/valid';
 import { Market, Token } from '../../../typings/market';
@@ -59,8 +58,8 @@ interface PoolPanelProps {
   onAmountChange?: (value: string) => unknown;
 
   rangeChartRef?: any;
-  clbTokenValue?: DotData[];
-  liquidity?: Liquidity[];
+  clbTokenValues?: DotData[];
+  liquidity?: BarData[];
 
   rates: [number, number];
   binFeeRates: number[];
@@ -93,7 +92,7 @@ export const PoolPanel = (props: PoolPanelProps) => {
     isModalOpen = false,
     onAmountChange,
 
-    clbTokenValue,
+    clbTokenValues,
     liquidity,
     onRangeChange,
     binFeeRates,
@@ -308,11 +307,11 @@ export const PoolPanel = (props: PoolPanelProps) => {
                   </div>
                 </article>
                 <article>
-                  <LiquidityTooltip id="pool" data={liquidity} />
+                  <LiquidityTooltip id="pool" data={liquidity} clbTokenValues={clbTokenValues} />
                   <RangeChart
                     id="pool"
                     barData={liquidity}
-                    dotData={clbTokenValue}
+                    dotData={clbTokenValues}
                     rangeChartRef={rangeChartRef}
                     height={180}
                     onChange={onRangeChange}
