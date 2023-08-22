@@ -452,6 +452,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
+              subValueClass=""
               isLoading={isLoading}
             />
           </div>
@@ -467,6 +468,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
+              subValueClass=""
               isLoading={isLoading}
             />
           </div>
@@ -475,6 +477,15 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
+              valueClass={
+                calculated.pnlPercentage === undefined
+                  ? ''
+                  : calculated.pnlPercentage.startsWith('+')
+                  ? 'text-long'
+                  : calculated.pnlPercentage === '-'
+                  ? ''
+                  : 'text-short'
+              }
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}
