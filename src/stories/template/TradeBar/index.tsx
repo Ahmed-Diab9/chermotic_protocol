@@ -452,15 +452,15 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
-              // subValueClass={
-              //   calculated.profitPriceTo === undefined
-              //     ? ''
-              //     : calculated.profitPriceTo.startsWith('(+')
-              //     ? '!text-long'
-              //     : calculated.profitPriceTo === '-'
-              //     ? ''
-              //     : '!text-short'
-              // }
+              subValueClass={
+                calculated.profitPriceTo === undefined
+                  ? ''
+                  : calculated.profitPriceTo.startsWith('(+')
+                  ? '!text-long'
+                  : calculated.profitPriceTo === '-'
+                  ? ''
+                  : '!text-short'
+              }
               isLoading={isLoading}
             />
           </div>
@@ -476,15 +476,15 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
-              // subValueClass={
-              //   calculated.lossPriceTo === undefined
-              //     ? ''
-              //     : calculated.lossPriceTo.startsWith('(+')
-              //     ? '!text-long'
-              //     : calculated.lossPriceTo === '-'
-              //     ? ''
-              //     : '!text-short'
-              // }
+              subValueClass={
+                calculated.lossPriceTo === undefined
+                  ? ''
+                  : calculated.lossPriceTo.startsWith('(+')
+                  ? '!text-long'
+                  : calculated.lossPriceTo === '-'
+                  ? ''
+                  : '!text-short'
+              }
               isLoading={isLoading}
             />
           </div>
@@ -493,15 +493,15 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
-              // valueClass={
-              //   calculated.pnlPercentage === undefined
-              //     ? ''
-              //     : calculated.pnlPercentage.startsWith('+')
-              //     ? 'text-long'
-              //     : calculated.pnlPercentage === '-'
-              //     ? ''
-              //     : 'text-short'
-              // }
+              valueClass={
+                calculated.pnlPercentage === undefined
+                  ? ''
+                  : calculated.pnlPercentage.startsWith('+')
+                  ? 'text-long'
+                  : calculated.pnlPercentage === '-'
+                  ? ''
+                  : 'text-short'
+              }
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}

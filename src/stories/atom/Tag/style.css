@@ -4,11 +4,11 @@
 }
 .tag-long,
 .tag-Long {
-  @apply text-inverted bg-primary;
-  /* @apply text-long bg-long/10; */
+  /* @apply text-inverted bg-primary; */
+  @apply text-long bg-long/10;
 }
 .tag-short,
 .tag-Short {
-  @apply text-primary bg-inverted;
-  /* @apply text-short bg-short/10; */
+  /* @apply text-primary bg-inverted; */
+  @apply text-short bg-short/10;
 }
