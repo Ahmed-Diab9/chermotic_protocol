@@ -42,6 +42,24 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   }
 }
 
+// SUGGESTION
+// How about using `text-price-higher` instead of `text-long`?
+function priceClass(position: Position, type: 'toProfit' | 'toLoss') {
+  if (position.qty > 0n && type === 'toProfit') {
+    return `!text-long`;
+  }
+  if (position.qty > 0n && type === 'toLoss') {
+    return `!text-short`;
+  }
+  if (position.qty <= 0n && type === 'toProfit') {
+    return `!text-short`;
+  }
+  if (position.qty <= 0n && type === 'toLoss') {
+    return `!text-long`;
+  }
+  return '';
+}
+
 export const TradeBar = ({ token, market, markets, positions, isLoading }: TradeBarProps) => {
   const lapsed = useLastOracle();
   const openButtonRef = useRef<HTMLButtonElement>(null);
@@ -452,15 +470,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
-              subValueClass={
-                calculated.profitPriceTo === undefined
-                  ? ''
-                  : calculated.profitPriceTo.startsWith('(+')
-                  ? '!text-long'
-                  : calculated.profitPriceTo === '-'
-                  ? ''
-                  : '!text-short'
-              }
+              subValueClass={priceClass(position, 'toProfit')}
               isLoading={isLoading}
             />
           </div>
@@ -476,15 +486,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
-              subValueClass={
-                calculated.lossPriceTo === undefined
-                  ? ''
-                  : calculated.lossPriceTo.startsWith('(+')
-                  ? '!text-long'
-                  : calculated.lossPriceTo === '-'
-                  ? ''
-                  : '!text-short'
-              }
+              subValueClass={priceClass(position, 'toLoss')}
               isLoading={isLoading}
             />
           </div>
@@ -493,15 +495,9 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
-              valueClass={
-                calculated.pnlPercentage === undefined
-                  ? ''
-                  : calculated.pnlPercentage.startsWith('+')
-                  ? 'text-long'
-                  : calculated.pnlPercentage === '-'
-                  ? ''
-                  : 'text-short'
-              }
+              // Suggestion
+              // How about using `text-profit` instead of `text-long` in PnL?
+              valueClass={position.pnl > 0n ? 'text-long' : 'text-short'}
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}
