@@ -456,10 +456,10 @@ const PositionItem = function (props: Props) {
                 calculated.profitPriceTo === undefined
                   ? ''
                   : calculated.profitPriceTo.startsWith('+')
-                  ? 'text-long'
+                  ? '!text-long'
                   : calculated.profitPriceTo === '-'
                   ? ''
-                  : 'text-short'
+                  : '!text-short'
               }
               isLoading={isLoading}
             />
@@ -480,10 +480,10 @@ const PositionItem = function (props: Props) {
                 calculated.lossPriceTo === undefined
                   ? ''
                   : calculated.lossPriceTo.startsWith('+')
-                  ? 'text-long'
+                  ? '!text-long'
                   : calculated.lossPriceTo === '-'
                   ? ''
-                  : 'text-short'
+                  : '!text-short'
               }
               isLoading={isLoading}
             />
