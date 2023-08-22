@@ -59,7 +59,7 @@ export const RemoveLiquidityModal = (props: RemoveLiquidityModalProps) => {
               }}
             />
           </Dialog.Title>
-          {/* <div className="w-[100px] mx-auto border-b border-2 border-primary"></div> */}
+          {/* <div className="w-[100px] mx-auto border-b border-2 !border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             {/* liquidity items */}
             <article className="wrapper-liq">

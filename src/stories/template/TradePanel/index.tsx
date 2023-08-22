@@ -57,7 +57,7 @@ export const TradePanel = (props: TradePanelProps) => {
           <div className="flex">
             <div className="w-full px-0 pt-4 pb-10 border-r">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 !border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   SHORT
                 </h2>
               </div>
@@ -71,7 +71,7 @@ export const TradePanel = (props: TradePanelProps) => {
             </div>
             <div className="w-full px-0 pt-4 pb-10">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 !border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   LONG
                 </h2>
               </div>

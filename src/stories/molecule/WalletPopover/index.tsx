@@ -117,7 +117,7 @@ export const WalletPopover = ({
                   {/* box - top */}
                   <section className="flex flex-col flex-grow mt-6 box-inner">
                     {/* Wallet address */}
-                    <article className="px-4 py-3 border-b bg-paper-lighter">
+                    <article className="px-4 py-3 border-b bg-paper-lighter dark:bg-paper">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
                         Connected Wallet
                       </h4>
@@ -149,7 +149,7 @@ export const WalletPopover = ({
                       </div>
                     </article>
                     {/* Tab - Asset, Liquidity */}
-                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line">
+                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-[#29292D]">
                       <Tab.Group>
                         {/* tab - menu */}
                         <Tab.List className="absolute left-0 w-full top-4">
@@ -284,7 +284,7 @@ export const WalletPopover = ({
                   {/* box - bottom */}
                   {/* Account address */}
                   <section className="mt-10 mb-5 box-inner">
-                    <article className="px-4 py-3 bg-paper-lighter">
+                    <article className="px-4 py-3 bg-paper-lighter dark:bg-paper">
                       {account?.chromaticAddress && account?.chromaticAddress !== ADDRESS_ZERO ? (
                         <>
                           <h4 className="mb-3 text-base text-center text-primary-lighter">

@@ -68,6 +68,9 @@ export const theme = {
         DEFAULT: 'rgb(var(--color-error))',
         light: 'rgb(var(--color-error-light))',
       },
+
+      long: 'rgb(var(--color-long))',
+      short: 'rgb(var(--color-short))',
     },
 
     boxShadow: {

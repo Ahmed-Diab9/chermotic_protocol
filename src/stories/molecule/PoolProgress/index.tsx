@@ -382,20 +382,11 @@ const ProgressItem = (props: ProgressItemProps) => {
           {renderTitle}
           <span className="flex mr-1">
             {status === 'standby' ? (
-              // <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
-              <Tag label="standby" className="text-primary-lighter bg-paper-light" />
+              <Tag label="standby" className="text-[#FF9820] bg-[#FF8900]/10" />
             ) : status === 'completed' ? (
-              // <Tag
-              //   label="completed"
-              //   className="text-[#03C239] bg-[#23F85F]/10"
-              // />
-              <Tag label="completed" className="text-inverted bg-gray-dark" />
+              <Tag label="completed" className="text-[#1BE253] bg-[#23F85F]/10" />
             ) : (
-              // <Tag
-              //   label="in progress"
-              //   className="text-[#13D2C7] bg-[#1EFCEF]/10"
-              // />
-              <Tag label="in progress" className="text-gray-dark bg-paper-light" />
+              <Tag label="in progress" className="text-[#13D2C7] bg-[#1EFCEF]/10" />
             )}
             <TooltipGuide
               label="status-info"
