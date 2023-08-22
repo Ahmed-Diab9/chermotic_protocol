@@ -479,7 +479,7 @@ const PositionItem = function (props: Props) {
               subValueClass={
                 calculated.lossPriceTo === undefined
                   ? ''
-                  : calculated.lossPriceTo.startsWith('+')
+                  : calculated.lossPriceTo.startsWith('(+')
                   ? '!text-long'
                   : calculated.lossPriceTo === '-'
                   ? ''
@@ -496,7 +496,7 @@ const PositionItem = function (props: Props) {
               valueClass={
                 calculated.pnlPercentage === undefined
                   ? ''
-                  : calculated.pnlPercentage.startsWith('+')
+                  : calculated.pnlPercentage.startsWith('(+')
                   ? 'text-long'
                   : calculated.pnlPercentage === '-'
                   ? ''
