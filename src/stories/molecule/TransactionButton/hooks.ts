@@ -44,17 +44,10 @@ export function useTransactionButton(props: TransactionButtonProps) {
     }
   }, [isDisconnected, isNoAccount, isWrongChain]);
 
-  const css: TransactionButtonProps['css'] = disabled ? 'default' : 'active';
-  const className = props.className || 'w-full';
-  const size = props.size || '2xl';
-
   return {
     ...props,
     label,
-    className,
-    size,
     onClick,
     disabled,
-    css,
   };
 }
