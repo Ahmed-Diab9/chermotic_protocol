@@ -285,6 +285,8 @@ export const TradeContent = (props: TradeContentProps) => {
           <div className="mt-6">
             <TransactionButton
               label={isLong ? 'Buy' : 'Sell'}
+              size="2xl"
+              className="w-full"
               disabled={disabled}
               onClick={onOpenPosition}
             />

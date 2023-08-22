@@ -11,14 +11,14 @@ import { PoolProgress } from '~/stories/container/PoolProgress';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { isValid } from '~/utils/valid';
-import { useMarketLocal } from '../../hooks/useMarketLocal';
-import { useTokenLocal } from '../../hooks/useTokenLocal';
-import { Button } from '../../stories/atom/Button';
-import { Outlink } from '../../stories/atom/Outlink';
-import { Header } from '../../stories/template/Header';
-import { PoolPanel } from '../../stories/container/PoolPanel';
-import { Footer } from '../../stories/template/Footer';
-import { MainBar } from '../../stories/template/MainBar';
+import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { Button } from '~/stories/atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
+import { Header } from '~/stories/template/Header';
+import { PoolPanel } from '~/stories/template/PoolPanel';
+import { Footer } from '~/stories/template/Footer';
+import { MainBar } from '~/stories/template/MainBar';
 import './style.css';
 
 const Pool = () => {

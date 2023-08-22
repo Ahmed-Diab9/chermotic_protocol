@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PoolPanel } from '.';
 
-import { Default as RangeChartStories } from '~/stories/atom/RangeChart/stories';
+import { Default as RangeChartStories } from '~/stories/atom/PoolChart/stories';
 import { Liquidity } from '~/typings/chart';
 
 const meta = {

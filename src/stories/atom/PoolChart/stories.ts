@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { RANGE_CONFIG } from '~/configs/chart';
-import { RangeChart } from '.';
+import { PoolChart } from '.';
 
 const meta = {
-  title: 'Atom/RangeChart',
-  component: RangeChart,
+  title: 'Atom/PoolChart',
+  component: PoolChart,
   tags: ['autodocs'],
   args: {
     height: 300,
   },
-} satisfies Meta<typeof RangeChart>;
+} satisfies Meta<typeof PoolChart>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
