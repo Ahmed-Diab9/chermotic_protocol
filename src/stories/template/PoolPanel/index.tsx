@@ -15,7 +15,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { RemoveLiquidityModal } from '~/stories/container/RemoveLiquidityModal';
+import { RemoveLiquidityModal } from '~/stories/template/RemoveLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
 
 import { usePoolPanel } from './hooks';
