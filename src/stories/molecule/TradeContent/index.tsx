@@ -418,7 +418,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {takeProfitPrice}
-                <span className="ml-2 text-primary-lighter">({takeProfitRatio}%)</span>
+                <span
+                  className={`ml-2 text-primary-lighter ${
+                    takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
+                  } ${takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''}`}
+                >
+                  ({takeProfitRatio}%)
+                </span>
               </p>
             </div>
             <div className="flex justify-between">
@@ -427,7 +433,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               </div>
               <p>
                 $ {stopLossPrice}
-                <span className="ml-2 text-primary-lighter">({stopLossRatio}%)</span>
+                <span
+                  className={`ml-2 text-primary-lighter ${
+                    stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
+                  } ${stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''}`}
+                >
+                  ({stopLossRatio}%)
+                </span>
               </p>
             </div>
           </div>
