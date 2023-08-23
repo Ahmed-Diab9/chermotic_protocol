@@ -39,6 +39,8 @@
 
     --color-long: 166 216 91;
     --color-short: 255 50 50;
+    --color-price-higher: 166 216 91;
+    --color-price-lower: 255 50 50;
 
     --color-shadow-base: rgba(121, 121, 121, 0.08);
     --color-shadow-md: rgba(229, 229, 229, 0.16);
@@ -74,6 +76,9 @@
     --color-shadow-lg: rgba(67, 67, 67, 0.18);
     --color-shadow-xl: rgba(229, 229, 229, 0.16);
     /* --color-shadow-modal: rgba(181, 181, 181, 0.16); */
+
+    --color-price-higher: 166 216 91;
+    --color-price-lower: 255 50 50;
   }
 }
 
