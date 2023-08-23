@@ -1,10 +1,13 @@
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { OracleVersion } from '~/typings/oracleVersion';
+import { compareOracles } from '~/utils/oracle';
 import { Market, Token } from '../../../typings/market';
 import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';
 import { SkeletonElement } from '../../atom/SkeletonElement';
+import { PopoverItem } from '../PopoverItem';
 import './style.css';
 
 interface MarketSelectProps {
@@ -12,6 +15,7 @@ interface MarketSelectProps {
   markets?: Market[];
   selectedToken?: Token;
   selectedMarket?: Market;
+  previousMarketOracle?: OracleVersion;
   feeRate?: bigint;
   isGroupLegacy?: boolean;
   isLoading?: boolean;
@@ -23,9 +27,11 @@ interface MarketSelectProps {
  * FIXME
  * should remove the component `Legacy`.
  */
+
 export const MarketSelect = ({ ...props }: MarketSelectProps) => {
-  const { selectedMarket, feeRate = BigInt(0), isLoading } = props;
+  const { selectedMarket, feeRate = BigInt(0), previousMarketOracle, isLoading } = props;
   const oracleDecimals = 18;
+  const priceClass = compareOracles(previousMarketOracle, selectedMarket?.oracleValue);
 
   // TODO
   // Check converting fee rate to string
@@ -34,7 +40,7 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
       <div className="relative MarketSelect">
         <Popover>{<PopoverMain {...props} />}</Popover>
         <div className="flex items-center gap-5 mr-10">
-          <h2 className="text-3xl">
+          <h2 className={`text-3xl ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
               {`$${formatDecimals(
                 selectedMarket?.oracleValue?.price || 0,
@@ -70,11 +76,6 @@ export const MarketSelect = ({ ...props }: MarketSelectProps) => {
 export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => {
   const { tokens, selectedToken, markets, selectedMarket, isLoading, onTokenClick, onMarketClick } =
     props;
-  const priceFormatter = Intl.NumberFormat('en', {
-    useGrouping: true,
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  });
   return (
     <>
       <Popover.Button className="flex items-center gap-3 ml-10">
@@ -125,20 +126,11 @@ export const PopoverMain = (props: Omit<MarketSelectProps, 'isGroupLegacy'>) => 
           <article className="flex flex-col flex-auto">
             {/* default */}
             {markets?.map((market) => (
-              <button
-                key={market.address}
-                className={`flex items-center justify-between gap-4 px-4 py-2 ${
-                  market.address === selectedMarket?.address &&
-                  'text-inverted bg-primary rounded-lg' // the market selected
-                }`}
-                onClick={() => onMarketClick?.(market)}
-              >
-                <Avatar label={market.description} fontSize="lg" gap="2" size="sm" />
-                <p>
-                  {'$' +
-                    priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)))}
-                </p>
-              </button>
+              <PopoverItem
+                market={market}
+                selectedMarket={selectedMarket}
+                onMarketClick={() => onMarketClick?.(market)}
+              />
             ))}
           </article>
         </section>
