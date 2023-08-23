@@ -22,6 +22,7 @@ import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
+import { priceClass } from '~/utils/price';
 import '../../atom/Tabs/style.css';
 
 interface TradeBarProps {
@@ -40,22 +41,6 @@ function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
   } else {
     return `(${withComma(value)}%)`;
   }
-}
-
-function priceClass(position: Position, type: 'toProfit' | 'toLoss') {
-  if (position.qty > 0n && type === 'toProfit') {
-    return `!text-price-higher`;
-  }
-  if (position.qty > 0n && type === 'toLoss') {
-    return `!text-price-lower`;
-  }
-  if (position.qty <= 0n && type === 'toProfit') {
-    return `!text-price-lower`;
-  }
-  if (position.qty <= 0n && type === 'toLoss') {
-    return `!text-price-higher`;
-  }
-  return '';
 }
 
 export const TradeBar = ({ token, market, markets, positions, isLoading }: TradeBarProps) => {
