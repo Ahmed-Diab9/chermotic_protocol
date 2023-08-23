@@ -93,12 +93,12 @@ export const theme = {
       '4xl': ['24px', 'normal'],
     },
     fontWeight: {
-      light: 200,
-      normal: 300,
-      medium: 400,
-      semibold: 500,
-      bold: 600,
-      extrabold: 700,
+      // light: 200,
+      // normal: 300,
+      // medium: 400,
+      // semibold: 500,
+      // bold: 600,
+      // extrabold: 700,
     },
     animation: {
       'spin-slow': 'spin 3s linear infinite',
