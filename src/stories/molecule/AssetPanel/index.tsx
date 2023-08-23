@@ -1,7 +1,6 @@
-import { ArrowTopRightOnSquareIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
-
 import { Popover } from '@headlessui/react';
+import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
@@ -11,6 +10,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { useAssetPanel } from './hooks';
 
 export interface AssetPanelProps {
@@ -168,7 +168,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     size="base"
                     css="unstyled"
                     className="absolute right-2"
-                    iconOnly={<ArrowTopRightOnSquareIcon />}
+                    iconOnly={<OutlinkIcon />}
                   />
                 </article>
                 <section className="flex mt-5 text-left">

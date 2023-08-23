@@ -1,4 +1,5 @@
-import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -69,7 +70,7 @@ const Pool = () => {
                     label="view scanner"
                     css="light"
                     size="lg"
-                    iconOnly={<ArrowTopRightOnSquareIcon />}
+                    iconOnly={<OutlinkIcon />}
                   />
                 </div>
               </div>

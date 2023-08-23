@@ -4,18 +4,19 @@ import './style.css';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import arbitrumIcon from '~/assets/images/arbitrum.svg';
 
 import { Popover, Tab, Transition } from '@headlessui/react';
-import { ArrowTopRightOnSquareIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
+import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
-import { useWalletPopover } from './hooks';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+import { useWalletPopover } from './hooks';
 
 interface WalletPopoverProps {
   isDisconnected?: boolean;
@@ -122,7 +123,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                           label="view transition"
                           css="light"
                           size="lg"
-                          iconOnly={<ArrowTopRightOnSquareIcon />}
+                          iconOnly={<OutlinkIcon />}
                         />
                       </div>
                     </article>
@@ -153,11 +154,23 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                         </SkeletonElement>
                                         <Button
                                           href={explorerUrl}
-                                          iconOnly={<ArrowTopRightOnSquareIcon />}
+                                          iconOnly={<OutlinkIcon />}
                                           css="unstyled"
                                           size="sm"
                                           className="text-primary-light"
                                         />
+                                        <div className="ml-auto text-right">
+                                          <p className="text-sm text-primary-lighter">
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              ${usdPrice}
+                                            </SkeletonElement>
+                                          </p>
+                                          <p className="mt-1 text-base font-medium text-primary">
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              {balance} {name}
+                                            </SkeletonElement>
+                                          </p>
+                                        </div>
                                       </div>
 
                                       <div className="ml-auto text-right">
@@ -248,7 +261,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                               label="view transition"
                               css="light"
                               size="lg"
-                              iconOnly={<ArrowTopRightOnSquareIcon />}
+                              iconOnly={<OutlinkIcon />}
                             />
                           </div>
                         </>

@@ -4,7 +4,6 @@ import './style.css';
 import { createPortal } from 'react-dom';
 
 import { Switch, Tab } from '@headlessui/react';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';
@@ -15,9 +14,10 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
+import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { usePoolPanel } from './hooks';
 
 export function PoolPanel() {
@@ -457,12 +457,7 @@ const BinItem = (props: BinItemProps) => {
         </div>
         <div className="flex items-center ml-auto">
           <Button label="Remove" css="light" onClick={onClickRemove} />
-          <Button
-            className="ml-2"
-            css="light"
-            href={explorerUrl}
-            iconOnly={<ArrowTopRightOnSquareIcon />}
-          />
+          <Button className="ml-2" css="light" href={explorerUrl} iconOnly={<OutlinkIcon />} />
         </div>
       </div>
       <div className="flex items-center gap-8 py-5 px-7">
