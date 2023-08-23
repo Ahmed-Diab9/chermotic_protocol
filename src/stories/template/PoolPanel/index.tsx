@@ -16,7 +16,7 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveLiquidityModal } from '~/stories/template/RemoveLiquidityModal';
-import { RemoveMultiLiquidityModal } from '~/stories/container/RemoveMultiLiquidityModal';
+import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 
 import { usePoolPanel } from './hooks';
 
