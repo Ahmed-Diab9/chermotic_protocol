@@ -1,9 +1,6 @@
-import '~/stories/atom/Tabs/style.css';
-import './style.css';
-
-import { createPortal } from 'react-dom';
-
 import { Switch, Tab } from '@headlessui/react';
+import { createPortal } from 'react-dom';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';
@@ -11,14 +8,14 @@ import { Counter } from '~/stories/atom/Counter';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
-
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { usePoolPanel } from './hooks';
+import './style.css';
 
 export function PoolPanel() {
   const {

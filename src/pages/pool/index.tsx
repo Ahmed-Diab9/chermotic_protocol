@@ -1,9 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
-import { isNil } from 'ramda';
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { usePublicClient } from 'wagmi';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -27,18 +25,7 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const publicClient = usePublicClient();
-  const blockExplorer = useMemo(() => {
-    try {
-      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
-      if (isNil(rawUrl)) {
-        return;
-      }
-      return new URL(rawUrl).origin;
-    } catch (error) {
-      return;
-    }
-  }, [publicClient]);
+  const blockExplorer = useBlockExplorer();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
