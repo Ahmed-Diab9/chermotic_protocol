@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { RemoveLiquidityModal } from '.';
+import { RemoveSingleLiquidityModal } from '.';
 
 const meta = {
-  title: 'Template/Modal/RemoveLiquidityModal',
-  component: RemoveLiquidityModal,
+  title: 'Template/Modal/RemoveSingleLiquidityModal',
+  component: RemoveSingleLiquidityModal,
   // argTypes: {
   // },
-} satisfies Meta<typeof RemoveLiquidityModal>;
+} satisfies Meta<typeof RemoveSingleLiquidityModal>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

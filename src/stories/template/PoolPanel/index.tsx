@@ -15,7 +15,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { RemoveLiquidityModal } from '~/stories/template/RemoveLiquidityModal';
+import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 
 import { usePoolPanel } from './hooks';
@@ -396,7 +396,7 @@ export function PoolPanel() {
         </Tab.Group>
       </div>
       {isSingleRemoveModalOpen &&
-        createPortal(<RemoveLiquidityModal />, document.getElementById('modal')!)}
+        createPortal(<RemoveSingleLiquidityModal />, document.getElementById('modal')!)}
       {isMultipleRemoveModalOpen &&
         createPortal(<RemoveMultiLiquidityModal />, document.getElementById('modal')!)}
     </div>

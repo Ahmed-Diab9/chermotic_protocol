@@ -13,7 +13,7 @@ import { formatDecimals, isNotZero } from '~/utils/number';
 
 const formatter = Intl.NumberFormat('en', { useGrouping: false });
 
-export function useRemoveLiquidityModal() {
+export function useRemoveSingleLiquidityModal() {
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
 
   const selectedBin = selectedBins[0];

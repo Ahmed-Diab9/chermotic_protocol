@@ -9,9 +9,9 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItems } from '~/stories/molecule/LiquidityItems';
 
-import { useRemoveLiquidityModal } from './hooks';
+import { useRemoveSingleLiquidityModal } from './hooks';
 
-export function RemoveLiquidityModal() {
+export function RemoveSingleLiquidityModal() {
   const {
     open,
     onClose,
@@ -30,7 +30,7 @@ export function RemoveLiquidityModal() {
     isExceeded,
 
     onClickRemove,
-  } = useRemoveLiquidityModal();
+  } = useRemoveSingleLiquidityModal();
 
   return (
     <Dialog open={open} onClose={onClose}>
