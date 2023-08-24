@@ -1,4 +1,3 @@
-import Skeleton from 'react-loading-skeleton';
 import { SkeletonElement } from '../SkeletonElement';
 
 interface TextRowProps {
@@ -19,7 +18,7 @@ export const TextRow = (props: TextRowProps) => {
   const {
     label,
     value,
-    valueClass,
+    valueClass = '',
     subValueLeft,
     subValueRight,
     subValueClass,

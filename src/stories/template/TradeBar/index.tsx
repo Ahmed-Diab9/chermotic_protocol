@@ -20,6 +20,7 @@ import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
+import { comparePrices } from '~/utils/price';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
 import '../../atom/Tabs/style.css';
@@ -452,15 +453,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
-              // subValueClass={
-              //   calculated.profitPriceTo === undefined
-              //     ? ''
-              //     : calculated.profitPriceTo.startsWith('(+')
-              //     ? '!text-long'
-              //     : calculated.profitPriceTo === '-'
-              //     ? ''
-              //     : '!text-short'
-              // }
+              subValueClass={comparePrices(position, 'toProfit')}
               isLoading={isLoading}
             />
           </div>
@@ -476,15 +469,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
-              // subValueClass={
-              //   calculated.lossPriceTo === undefined
-              //     ? ''
-              //     : calculated.lossPriceTo.startsWith('(+')
-              //     ? '!text-long'
-              //     : calculated.lossPriceTo === '-'
-              //     ? ''
-              //     : '!text-short'
-              // }
+              subValueClass={comparePrices(position, 'toLoss')}
               isLoading={isLoading}
             />
           </div>
@@ -493,15 +478,13 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
-              // valueClass={
-              //   calculated.pnlPercentage === undefined
-              //     ? ''
-              //     : calculated.pnlPercentage.startsWith('+')
-              //     ? 'text-long'
-              //     : calculated.pnlPercentage === '-'
-              //     ? ''
-              //     : 'text-short'
-              // }
+              valueClass={
+                position.pnl > 0n
+                  ? 'text-price-higher'
+                  : position.pnl < 0n
+                  ? 'text-price-lower'
+                  : ''
+              }
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}

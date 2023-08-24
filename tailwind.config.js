@@ -69,11 +69,23 @@ export const theme = {
         light: 'rgb(var(--color-error-light))',
       },
 
-      long: 'rgb(var(--color-long))',
-      short: 'rgb(var(--color-short))',
       price: {
         higher: 'rgb(var(--color-price-higher))',
         lower: 'rgb(var(--color-price-lower))',
+      },
+      status: {
+        standby: {
+          DEFAULT: 'rgb(var(--color-status-standby))',
+          light: 'rgb(var(--color-status-standby-light))',
+        },
+        completed: {
+          DEFAULT: 'rgb(var(--color-status-completed))',
+          light: 'rgb(var(--color-status-completed-light))',
+        },
+        inprogress: {
+          DEFAULT: 'rgb(var(--color-status-inprogress))',
+          light: 'rgb(var(--color-status-inprogress-light))',
+        },
       },
     },
 
@@ -95,9 +107,9 @@ export const theme = {
       '4xl': ['24px', 'normal'],
     },
     fontWeight: {
-      light: 200,
-      normal: 300,
-      medium: 400,
+      // light: 200,
+      // normal: 300,
+      // medium: 400,
       semibold: 500,
       bold: 600,
       extrabold: 700,
