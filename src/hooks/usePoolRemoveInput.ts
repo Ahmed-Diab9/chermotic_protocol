@@ -2,8 +2,10 @@ import { useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAppSelector } from '~/store';
 import { mulPreserved } from '~/utils/number';
+import { useSettlementToken } from './useSettlementToken';
+import { isNil } from 'ramda';
 
-export const usePoolRemoveInput = () => {
+export const useAPoolRemoveInput = () => {
   const [amount, setAmount] = useState('');
   const bins = useAppSelector((state) => state.pools.selectedBins);
   const maxAmount = useMemo(() => {
@@ -42,10 +44,12 @@ export const usePoolRemoveInput = () => {
   return { amount, maxAmount, onAmountChange };
 };
 
-export const useMultiPoolRemoveInput = () => {
-  const [amount, setAmount] = useState(0n);
+export const usePoolRemoveInput = () => {
+  const [amount, setAmount] = useState<bigint>();
 
   const bins = useAppSelector((state) => state.pools.selectedBins);
+
+  const { currentToken } = useSettlementToken();
 
   const calculated = useMemo(() => {
     const reduced = bins.reduce(
@@ -87,11 +91,13 @@ export const useMultiPoolRemoveInput = () => {
     setAmount(calculated.removableClbBalance);
   };
 
-  const onAmountChange = (nextAmount: string, decimals: number) => {
-    setAmount(parseUnits(nextAmount, decimals));
+  const onAmountChange = (nextAmount?: string) => {
+    if (isNil(nextAmount) || nextAmount.length === 0) setAmount(undefined);
+    else setAmount(parseUnits(nextAmount, currentToken?.decimals || 0));
   };
 
   return {
+    bins,
     amount,
     onAmountChange,
     onSelectAll,

@@ -1,7 +1,7 @@
 import { isNil } from 'ramda';
 import { useEffect, useState } from 'react';
 
-import { useMultiPoolRemoveInput } from '~/hooks/usePoolRemoveInput';
+import { usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
 import { useRemoveLiquidityBins } from '~/hooks/useRemoveLiquidityBins';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
@@ -64,7 +64,7 @@ export function useRemoveMultiLiquidityModal() {
     totalFreeLiquidity,
     avgRemovableRate,
     balanceOfSettlement,
-  } = useMultiPoolRemoveInput();
+  } = usePoolRemoveInput();
 
   const [type, setType] = useState(REMOVE_LIQUIDITY_TYPE.ALL);
 
@@ -81,13 +81,15 @@ export function useRemoveMultiLiquidityModal() {
 
   const tokenName = currentToken?.name || '-';
 
-  const totalClb = formatDecimals(totalClbBalance, currentToken?.decimals, 2);
-  const totalLiquidityValue = formatDecimals(balanceOfSettlement, currentToken?.decimals, 2);
-  const removableLiquidity = formatDecimals(totalFreeLiquidity, currentToken?.decimals, 2);
+  const totalClb = formatDecimals(totalClbBalance, currentToken?.decimals, 2, true);
+  const totalLiquidityValue = formatDecimals(balanceOfSettlement, currentToken?.decimals, 2, true);
+  const removableLiquidity = formatDecimals(totalFreeLiquidity, currentToken?.decimals, 2, true);
   const removableRate = Number(avgRemovableRate);
   const removeAmount = formatDecimals(
     type === REMOVE_LIQUIDITY_TYPE.ALL ? totalClbBalance : removableClbBalance,
-    currentToken?.decimals
+    currentToken?.decimals,
+    currentToken?.decimals,
+    true
   );
 
   const onClickAll = () => {

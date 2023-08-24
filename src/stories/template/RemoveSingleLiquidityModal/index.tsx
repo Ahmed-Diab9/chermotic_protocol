@@ -13,27 +13,28 @@ import { useRemoveSingleLiquidityModal } from './hooks';
 
 export function RemoveSingleLiquidityModal() {
   const {
-    open,
+    isOpen,
     onClose,
 
     tokenName,
     liquidityValue,
     removableLiquidity,
     removableRate,
-    tokenAmount,
 
     onClickAll,
+    // onClickRemovable,
 
-    amount,
-    maxAmount,
+    maxInput,
+    inputClb,
+    inputClbValue,
     onAmountChange,
     isExceeded,
 
-    onClickRemove,
+    onClickSubmit,
   } = useRemoveSingleLiquidityModal();
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose}>
       <div className="backdrop" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal modal-base">
@@ -81,7 +82,7 @@ export function RemoveSingleLiquidityModal() {
               <div className="flex items-center justify-between gap-2">
                 <p className="flex-none font-semibold">Remove CLB Tokens</p>
                 <p className="text-right text-primary-lighter">
-                  ({tokenAmount} {tokenName})
+                  {inputClbValue} {tokenName}
                 </p>
               </div>
               <div className="flex items-center justify-between gap-6 mt-3">
@@ -93,6 +94,13 @@ export function RemoveSingleLiquidityModal() {
                     size="sm"
                     onClick={onClickAll}
                   />
+                  {/* <Button
+                    className="flex-auto shadow-base"
+                    label="Removable"
+                    css="default"
+                    size="sm"
+                    onClick={onClickRemovable}
+                  /> */}
                 </div>
                 <div className="max-w-[220px]">
                   <div className="tooltip-modal-input-clb">
@@ -100,8 +108,8 @@ export function RemoveSingleLiquidityModal() {
                       unit="CLB"
                       placeholder="0"
                       autoCorrect
-                      max={maxAmount}
-                      value={amount}
+                      max={maxInput}
+                      value={inputClb}
                       onChange={onAmountChange}
                       error={isExceeded}
                     />
@@ -129,7 +137,7 @@ export function RemoveSingleLiquidityModal() {
               size="xl"
               className="text-lg"
               css="active"
-              onClick={onClickRemove}
+              onClick={onClickSubmit}
             />
           </div>
         </Dialog.Panel>

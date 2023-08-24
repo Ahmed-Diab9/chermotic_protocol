@@ -1,90 +1,95 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
-import { parseUnits } from 'viem';
 
 import { usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
 import { useRemoveLiquidityAmounts } from '~/hooks/useRemoveLiquidityAmounts';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
-import { useAppDispatch, useAppSelector } from '~/store';
+import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
 
-import { formatDecimals, isNotZero } from '~/utils/number';
-
-const formatter = Intl.NumberFormat('en', { useGrouping: false });
+import { formatDecimals } from '~/utils/number';
 
 export function useRemoveSingleLiquidityModal() {
-  const selectedBins = useAppSelector((state) => state.pools.selectedBins);
-
-  const selectedBin = selectedBins[0];
-
-  const { amount, maxAmount: max, onAmountChange } = usePoolRemoveInput();
+  const {
+    amount,
+    bins,
+    balanceOfSettlement,
+    totalClbBalance,
+    totalFreeLiquidity,
+    avgRemovableRate,
+    onSelectAll,
+    onSelectRemovable,
+    onAmountChange,
+  } = usePoolRemoveInput();
   const { currentToken } = useSettlementToken();
   const dispatch = useAppDispatch();
-  const { onRemoveLiquidity } = useRemoveLiquidityAmounts({
-    feeRate: selectedBin?.baseFeeRate,
-    amount,
-  });
+
+  const selectedBin = bins[0];
+
+  const { onRemoveLiquidity } = useRemoveLiquidityAmounts();
 
   const tokenName = currentToken?.name || '-';
 
-  const liquidityValue = formatDecimals(
-    selectedBin.clbBalanceOfSettlement,
-    currentToken?.decimals,
-    2
-  );
-  const removableLiquidity = formatDecimals(selectedBin.freeLiquidity, currentToken?.decimals, 2);
+  const liquidityValue = formatDecimals(balanceOfSettlement, currentToken?.decimals, 2, true);
+  const removableLiquidity = formatDecimals(totalFreeLiquidity, currentToken?.decimals, 2, true);
   const removableRate = formatDecimals(
-    selectedBin.removableRate,
+    avgRemovableRate,
     (currentToken?.decimals || 2) - 2,
-    2
+    2,
+    true
   );
-
-  const tokenAmount = formatDecimals(
-    parseUnits(formatter.format(Number(amount)), selectedBin.clbTokenDecimals) *
-      selectedBin?.clbTokenValue,
+  const inputClb = formatDecimals(amount, currentToken?.decimals, currentToken?.decimals);
+  const inputClbValue = formatDecimals(
+    (amount || 0n) * selectedBin.clbTokenValue,
     selectedBin.clbTokenDecimals * 2,
-    2
+    2,
+    true
   );
+  const maxInput = +formatDecimals(totalClbBalance, currentToken?.decimals, currentToken?.decimals);
 
-  const maxAmount = Number(max);
   const isExceeded = useMemo(() => {
-    return isNotZero(amount) && parseUnits(amount, currentToken?.decimals ?? 0) > maxAmount;
-  }, [amount, currentToken, max]);
+    return isNotNil(amount) && amount > 0n && amount > totalClbBalance;
+  }, [amount, currentToken]);
 
   const onClose = () => {
-    onAmountChange('');
+    onAmountChange();
     dispatch(poolsAction.onBinsReset());
   };
 
-  const open = !!selectedBin;
+  const isOpen = !!selectedBin;
 
   const onClickAll = () => {
-    onAmountChange(max ?? 0n);
+    onSelectAll();
   };
 
-  const onClickRemove = () => {
+  const onClickRemovable = () => {
+    onSelectRemovable();
+  };
+
+  const onClickSubmit = () => {
     if (isNil(selectedBin) || isNil(amount)) return;
-    onRemoveLiquidity();
+    onRemoveLiquidity(selectedBin.baseFeeRate, amount);
   };
 
   return {
-    open,
+    isOpen,
     onClose,
 
     tokenName,
     liquidityValue,
     removableLiquidity,
     removableRate,
-    tokenAmount,
 
-    onClickAll,
-
-    amount,
-    maxAmount,
+    inputClb,
+    inputClbValue,
     onAmountChange,
+    maxInput,
     isExceeded,
 
-    onClickRemove,
+    onClickAll,
+    onClickRemovable,
+
+    onClickSubmit,
   };
 }
