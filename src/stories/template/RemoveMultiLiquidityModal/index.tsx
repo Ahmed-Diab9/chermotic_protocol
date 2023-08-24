@@ -15,10 +15,6 @@ export function RemoveMultiLiquidityModal() {
     isOpen,
     onClose,
 
-    isScrollTriggerVisible,
-    isScrollTriggerHasOpacity,
-    onScrollLiquidityWrapper,
-
     selectedBinsCount,
 
     tokenName,
@@ -47,19 +43,7 @@ export function RemoveMultiLiquidityModal() {
           {/* <div className="w-[100px] mx-auto border-b border-2 !border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             <article className="wrapper-liq">
-              <div
-                id="bins"
-                className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
-                onScroll={onScrollLiquidityWrapper}
-              >
-                <LiquidityItems />
-              </div>
-              <div className="absolute bottom-0 flex justify-center w-full">
-                <ScrollTrigger
-                  isVisible={isScrollTriggerVisible}
-                  hasOpacity={isScrollTriggerHasOpacity}
-                />
-              </div>
+              <LiquidityItems />
             </article>
 
             <article className="flex flex-col gap-2 pb-5 border-b">

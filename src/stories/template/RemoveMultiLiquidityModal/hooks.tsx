@@ -1,5 +1,4 @@
-import { isNil } from 'ramda';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { usePoolRemoveInput } from '~/hooks/usePoolRemoveInput';
 import { useRemoveLiquidityBins } from '~/hooks/useRemoveLiquidityBins';
@@ -13,49 +12,6 @@ import { REMOVE_LIQUIDITY_TYPE } from '~/typings/pools';
 import { formatDecimals } from '~/utils/number';
 
 export function useRemoveMultiLiquidityModal() {
-  const [arrowState, setArrowState] = useState({
-    isScrolled: false,
-    hasSameHeight: false,
-  });
-  useEffect(() => {
-    const bins = document.querySelector('#bins');
-    if (isNil(bins)) return;
-    if (bins.clientHeight === bins.scrollHeight) {
-      setArrowState(() => ({ isScrolled: false, hasSameHeight: true }));
-    }
-    const onWindowResize = () => {
-      if (bins.scrollTop !== 0) {
-        setArrowState((state) => ({ ...state, isScrolled: true }));
-      } else if (bins.clientHeight === bins.scrollHeight) {
-        setArrowState({ isScrolled: false, hasSameHeight: true });
-      } else {
-        setArrowState({ isScrolled: false, hasSameHeight: false });
-      }
-    };
-    window.addEventListener('resize', onWindowResize);
-    return () => {
-      window.removeEventListener('resize', onWindowResize);
-    };
-  }, []);
-
-  const isScrollTriggerVisible = !arrowState.hasSameHeight;
-  const isScrollTriggerHasOpacity = !arrowState.isScrolled;
-
-  const onScrollLiquidityWrapper = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    if (!(event.target instanceof HTMLDivElement)) {
-      return;
-    }
-    if (event.target.clientHeight === event.target.scrollHeight) {
-      return;
-    }
-    if (event.target.scrollTop === 0) {
-      setArrowState((state) => ({ ...state, isScrolled: false }));
-    }
-    if (event.target.scrollTop > 0 && !arrowState.isScrolled) {
-      setArrowState((state) => ({ ...state, isScrolled: true }));
-    }
-  };
-
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const { currentToken } = useSettlementToken();
   const {
@@ -106,10 +62,6 @@ export function useRemoveMultiLiquidityModal() {
   return {
     isOpen,
     onClose,
-
-    isScrollTriggerVisible,
-    isScrollTriggerHasOpacity,
-    onScrollLiquidityWrapper,
 
     selectedBinsCount,
 
