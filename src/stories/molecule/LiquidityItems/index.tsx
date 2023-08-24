@@ -19,8 +19,8 @@ export function LiquidityItems() {
         className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
         onScroll={onScrollLiquidityWrapper}
       >
-        {liquidityItems.map((props) => (
-          <LiquidityItem {...props} />
+        {liquidityItems.map(({ key, ...props }) => (
+          <LiquidityItem key={key} {...props} />
         ))}
       </div>
       <div className="absolute bottom-0 flex justify-center w-full">

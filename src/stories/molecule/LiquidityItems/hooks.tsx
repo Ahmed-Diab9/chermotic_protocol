@@ -87,6 +87,7 @@ export function useLiquidityItems() {
         : '0';
 
     return {
+      key: selectedBin.clbTokenDescription,
       image: selectedBin.clbTokenImage,
       tokenName: currentToken?.name || '-',
       clbTokenName: selectedBin.clbTokenDescription,
