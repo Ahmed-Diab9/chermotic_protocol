@@ -2,12 +2,11 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
+import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
-import { Button } from '~/stories/atom/Button';
 import { useMarketSelect } from './hooks';
 
 export function MarketSelect() {
@@ -20,6 +19,7 @@ export function MarketSelect() {
     price,
     priceClass,
     interestRate,
+    explorerUrl,
   } = useMarketSelect();
 
   return (
@@ -106,7 +106,12 @@ export function MarketSelect() {
             </div>
           </div>
           <div className="flex pl-3 mr-3 border-l text-primary-light">
-            <Button css="unstyled" iconOnly={<OutlinkIcon />} className="self-center" />
+            <Button
+              css="unstyled"
+              iconOnly={<OutlinkIcon />}
+              className="self-center"
+              href={explorerUrl}
+            />
           </div>
         </div>
       </div>
