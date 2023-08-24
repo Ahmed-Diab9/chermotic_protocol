@@ -20,9 +20,9 @@ import { TRADE_EVENT } from '~/typings/events';
 import { Market, Token } from '~/typings/market';
 import { CLOSED, CLOSING, OPENED, OPENING, Position } from '~/typings/position';
 import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
+import { comparePrices } from '~/utils/price';
 import { isValid } from '~/utils/valid';
 import { Button } from '../../atom/Button';
-import { priceClass } from '~/utils/price';
 import '../../atom/Tabs/style.css';
 
 interface TradeBarProps {
@@ -453,7 +453,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.profitPrice}
               subValueLeft={calculated.profitPriceTo}
-              subValueClass={priceClass(position, 'toProfit')}
+              subValueClass={comparePrices(position, 'toProfit')}
               isLoading={isLoading}
             />
           </div>
@@ -469,7 +469,7 @@ const PositionItem = function (props: Props) {
               labelClass="text-primary-light"
               value={calculated.lossPrice}
               subValueLeft={calculated.lossPriceTo}
-              subValueClass={priceClass(position, 'toLoss')}
+              subValueClass={comparePrices(position, 'toLoss')}
               isLoading={isLoading}
             />
           </div>

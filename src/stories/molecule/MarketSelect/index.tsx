@@ -2,7 +2,7 @@ import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { OracleVersion } from '~/typings/oracleVersion';
-import { compareOracles } from '~/utils/oracle';
+import { compareOracles } from '~/utils/price';
 import { Market, Token } from '../../../typings/market';
 import { formatDecimals } from '../../../utils/number';
 import { Avatar } from '../../atom/Avatar';

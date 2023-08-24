@@ -1,6 +1,6 @@
 import { usePreviousOracle } from '~/hooks/usePreviousVersion';
 import { formatDecimals } from '~/utils/number';
-import { compareOracles } from '~/utils/oracle';
+import { compareOracles } from '~/utils/price';
 import { PopoverItemProps } from '.';
 
 export const usePopoverItem = (props: PopoverItemProps) => {
