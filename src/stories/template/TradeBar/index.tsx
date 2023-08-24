@@ -478,7 +478,13 @@ const PositionItem = function (props: Props) {
               label="PnL"
               labelClass="text-primary-light"
               value={calculated.pnlPercentage}
-              valueClass={position.pnl > 0n ? 'text-price-higher' : 'text-price-lower'}
+              valueClass={
+                position.pnl > 0n
+                  ? 'text-price-higher'
+                  : position.pnl < 0n
+                  ? 'text-price-lower'
+                  : ''
+              }
               isLoading={isLoading}
             />
             {/* todo: add PnL price (has no label, value only) */}
