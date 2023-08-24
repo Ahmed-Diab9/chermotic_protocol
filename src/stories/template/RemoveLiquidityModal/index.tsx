@@ -7,7 +7,7 @@ import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
+import { LiquidityItems } from '~/stories/molecule/LiquidityItems';
 
 import { useRemoveLiquidityModal } from './hooks';
 
@@ -30,8 +30,6 @@ export function RemoveLiquidityModal() {
     isExceeded,
 
     onClickRemove,
-
-    liquidityItemProps,
   } = useRemoveLiquidityModal();
 
   return (
@@ -46,7 +44,7 @@ export function RemoveLiquidityModal() {
           {/* <div className="w-[100px] mx-auto border-b border-2 !border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content">
             <article className="wrapper-liq">
-              <LiquidityItem {...liquidityItemProps} />
+              <LiquidityItems />
             </article>
 
             <article className="flex flex-col gap-2 pb-5 border-b">

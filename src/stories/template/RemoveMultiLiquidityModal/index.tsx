@@ -6,7 +6,7 @@ import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
 import { ScrollTrigger } from '~/stories/atom/ScrollTrigger';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { LiquidityItem } from '~/stories/molecule/LiquidityItem';
+import { LiquidityItems } from '~/stories/molecule/LiquidityItems';
 
 import { useRemoveMultiLiquidityModal } from './hooks';
 
@@ -25,15 +25,13 @@ export function RemoveMultiLiquidityModal() {
     totalClb,
     totalLiquidityValue,
     removableLiquidity,
-    avgRemovableRate,
-    clbTokensAmount,
+    removableRate,
 
-    amount,
+    removeAmount,
     onClickAll,
+    // onClickRemovable,
 
-    onRemoveLiquidities,
-
-    liquidityItems,
+    onClickSubmit,
   } = useRemoveMultiLiquidityModal();
 
   return (
@@ -54,9 +52,7 @@ export function RemoveMultiLiquidityModal() {
                 className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
                 onScroll={onScrollLiquidityWrapper}
               >
-                {liquidityItems.map((props) => {
-                  return <LiquidityItem {...props} />;
-                })}
+                <LiquidityItems />
               </div>
               <div className="absolute bottom-0 flex justify-center w-full">
                 <ScrollTrigger
@@ -100,7 +96,7 @@ export function RemoveMultiLiquidityModal() {
                 </div>
                 <p>
                   {removableLiquidity} {tokenName}
-                  <span className="ml-1 text-primary-lighter">{avgRemovableRate}%</span>
+                  <span className="ml-1 text-primary-lighter">({removableRate}%)</span>
                 </p>
               </div>
             </article>
@@ -110,7 +106,7 @@ export function RemoveMultiLiquidityModal() {
               <div className="flex items-center justify-between gap-2">
                 <p className="flex-none font-semibold">Remove CLB Tokens</p>
                 <p className="text-right text-primary-lighter">
-                  {clbTokensAmount} {tokenName}
+                  {totalLiquidityValue} {tokenName}
                 </p>
               </div>
               <div className="flex items-center justify-between gap-6 mt-3">
@@ -122,9 +118,16 @@ export function RemoveMultiLiquidityModal() {
                     size="sm"
                     onClick={onClickAll}
                   />
+                  {/* <Button
+                    className="flex-auto shadow-base"
+                    label="Removable"
+                    css="default"
+                    size="sm"
+                    onClick={onClickRemovable}
+                  /> */}
                 </div>
                 <div className="max-w-[220px] relative">
-                  <p className="text-lg font-semibold text-primary">{amount} CLB</p>
+                  <p className="text-lg font-semibold text-primary">{removeAmount} CLB</p>
                 </div>
               </div>
               <p className="mt-4 text-xs text-primary-lighter">
@@ -142,7 +145,7 @@ export function RemoveMultiLiquidityModal() {
               size="xl"
               className="text-lg"
               css="active"
-              onClick={onRemoveLiquidities}
+              onClick={onClickSubmit}
             />
           </div>
         </Dialog.Panel>

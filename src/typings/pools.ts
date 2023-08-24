@@ -1,4 +1,4 @@
-import { Address } from "wagmi";
+import { Address } from 'wagmi';
 
 export interface Bin {
   liquidity: bigint;
@@ -17,7 +17,7 @@ export interface OwnedBin extends Bin {
   clbTotalSupply: bigint;
   binValue: bigint;
   removableRate: bigint;
-  clbBalanceOfSettlement: bigint
+  clbBalanceOfSettlement: bigint;
 }
 
 export interface LiquidityPool<T = Bin> {
@@ -43,3 +43,8 @@ export interface LiquidityPoolSummary {
 
 export type ADD_LIQUIDITY_STATUS = 'IDLE' | 'PENDING' | 'FINISHED';
 export type REMOVE_LIQUIDITY_STATUS = 'IDLE' | 'PENDING' | 'FINISHED';
+
+export const enum REMOVE_LIQUIDITY_TYPE {
+  'ALL',
+  'REMOVABLE',
+}

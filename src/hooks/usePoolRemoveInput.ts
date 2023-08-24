@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
-import { MULTI_ALL, MULTI_TYPE } from '~/configs/pool';
+import { formatUnits, parseUnits } from 'viem';
 import { useAppSelector } from '~/store';
 import { mulPreserved } from '~/utils/number';
 
@@ -44,34 +43,59 @@ export const usePoolRemoveInput = () => {
 };
 
 export const useMultiPoolRemoveInput = () => {
-  const [type, setType] = useState<MULTI_TYPE>(MULTI_ALL);
+  const [amount, setAmount] = useState(0n);
+
   const bins = useAppSelector((state) => state.pools.selectedBins);
-  const token = useAppSelector((state) => state.token.selectedToken);
-  const clbTokenBalance = useMemo(() => {
-    return bins.reduce((balance, bin) => {
-      const { clbTokenBalance } = bin;
-      return balance + clbTokenBalance;
-    }, 0n);
+
+  const calculated = useMemo(() => {
+    const reduced = bins.reduce(
+      (acc, cur) => {
+        acc.totalClbBalance += cur.clbTokenBalance;
+        acc.removableClbBalance += mulPreserved(
+          cur.clbTokenBalance,
+          cur.removableRate,
+          cur.clbTokenDecimals
+        );
+        acc.balanceOfSettlement += cur.clbBalanceOfSettlement;
+        acc.totalLiquidity += cur.liquidity;
+        acc.totalFreeLiquidity +=
+          cur.clbBalanceOfSettlement > cur.freeLiquidity
+            ? cur.freeLiquidity
+            : cur.clbBalanceOfSettlement;
+        return acc;
+      },
+      {
+        totalClbBalance: 0n,
+        removableClbBalance: 0n,
+        balanceOfSettlement: 0n,
+        totalLiquidity: 0n,
+        totalFreeLiquidity: 0n,
+      }
+    );
+    const avgRemovableRate = (reduced.totalFreeLiquidity * 100n) / (reduced.totalLiquidity || 1n);
+    return {
+      ...reduced,
+      avgRemovableRate,
+    };
   }, [bins]);
 
-  const amount = useMemo(() => {
-    if (type === MULTI_ALL) {
-      return Number(formatUnits(clbTokenBalance, token?.decimals ?? 0));
-    }
-    const removableBalance = bins
-      .map((bin) => mulPreserved(bin.clbTokenBalance, bin.removableRate, bin.clbTokenDecimals))
-      .reduce((balance, removable) => balance + removable, 0n);
-    return Number(formatUnits(removableBalance, token?.decimals ?? 0));
-  }, [type, token, clbTokenBalance, bins]);
+  const onSelectAll = () => {
+    setAmount(calculated.totalClbBalance);
+  };
 
-  const onAmountChange = (type: MULTI_TYPE) => {
-    setType(type);
+  const onSelectRemovable = () => {
+    setAmount(calculated.removableClbBalance);
+  };
+
+  const onAmountChange = (nextAmount: string, decimals: number) => {
+    setAmount(parseUnits(nextAmount, decimals));
   };
 
   return {
-    type,
     amount,
-    clbTokenBalance,
     onAmountChange,
+    onSelectAll,
+    onSelectRemovable,
+    ...calculated,
   };
 };
