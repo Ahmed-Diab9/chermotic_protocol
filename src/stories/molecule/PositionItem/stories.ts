@@ -13,6 +13,7 @@ export const Default: Story = {
   args: {
     position: {
       id: 2n,
+      tokenAddress: '0x0000000000000000',
       openVersion: 3n,
       closeVersion: 0n,
       qty: -100000000n,

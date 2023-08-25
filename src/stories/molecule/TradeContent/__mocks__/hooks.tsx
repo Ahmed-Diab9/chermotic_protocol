@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { TradeContentProps } from '../';
 
 export function useTradeContent(props: TradeContentProps) {
-  const { direction = 'long', liquidityData } = props;
+  const { direction = 'long' } = props;
 
   const [isLeverageSliderOpen, onLeverageSliderToggle] = useState(false);
 
@@ -14,8 +14,6 @@ export function useTradeContent(props: TradeContentProps) {
   return {
     disabled: false,
     disableDetail: undefined,
-
-    liquidityData,
 
     tokenName: 'USDC',
 

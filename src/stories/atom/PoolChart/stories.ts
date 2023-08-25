@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { RANGE_CONFIG } from '~/configs/chart';
 import { PoolChart } from '.';
 
 const meta = {
@@ -15,44 +14,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const trackMap = RANGE_CONFIG.reduce((acc: any, { start, end, interval }) => {
-  acc.push(start);
-  do {
-    const tick = parseFloat((acc[acc.length - 1] + interval).toFixed(12));
-    acc.push(tick);
-  } while (acc[acc.length - 1] < end);
-  return acc;
-}, []);
-
-const barSample = trackMap.map((tick: number, idx: number) => {
-  const value = idx < 36 ? 2 - Math.log10(36 - idx) : 2 - Math.log10(idx - 35);
-  const clbTokenValue = Math.random() / 10 + 1;
-
-  return {
-    key: tick,
-    value: [
-      { label: 'utilized', amount: +(value * 100).toFixed(0) },
-      { label: 'available', amount: +(value * 70).toFixed(0) },
-      { label: 'clbTokenValue', amount: +clbTokenValue.toFixed(2) },
-    ],
-  };
-});
-
-const dotSample = trackMap.map((tick: number, idx: number) => {
-  return {
-    key: tick,
-    value: (Math.random() * 2).toFixed(2),
-  };
-});
-
 export const Default: Story = {
   args: {
+    id: 'pool-chart',
+    onChange: () => {},
+    height: 400,
     isDotVisible: false,
-    barData: barSample,
-    dotData: dotSample,
   },
-};
-
-export const Empty: Story = {
-  args: {},
 };
