@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 import './style.css';
 
-interface ButtonProps {
+export interface ButtonProps {
   label?: string;
   css?: 'default' | 'light' | 'active' | 'circle' | 'unstyled';
   disabled?: boolean;

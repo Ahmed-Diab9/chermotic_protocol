@@ -4,21 +4,21 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { usePublicClient } from 'wagmi';
 import { useMarket } from '~/hooks/useMarket';
+import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { Button } from '~/stories/atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { PoolProgress } from '~/stories/container/PoolProgress';
+import { PoolProgress } from '~/stories/molecule/PoolProgress';
+import { Footer } from '~/stories/template/Footer';
+import { Header } from '~/stories/template/Header';
+import { MainBar } from '~/stories/template/MainBar';
+import { PoolPanel } from '~/stories/template/PoolPanel';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { isValid } from '~/utils/valid';
-import { useMarketLocal } from '../../hooks/useMarketLocal';
-import { useTokenLocal } from '../../hooks/useTokenLocal';
-import { Button } from '../../stories/atom/Button';
-import { Outlink } from '../../stories/atom/Outlink';
-import { Header } from '../../stories/container/Header';
-import { PoolPanel } from '../../stories/container/PoolPanel';
-import { Footer } from '../../stories/template/Footer';
-import { MainBar } from '../../stories/template/MainBar';
 import './style.css';
 
 const Pool = () => {
@@ -43,7 +43,7 @@ const Pool = () => {
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] px-5 mx-auto mb-20">
-        <MainBar showAccountPopover={false} />
+        <MainBar />
         <div className="flex items-stretch gap-3">
           <div className="flex-auto w-3/5">
             <PoolPanel />

@@ -6,13 +6,13 @@ import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { Header } from '~/stories/container/Header';
-import { TradeBar } from '~/stories/container/TradeBar';
-import { TradePanel } from '~/stories/container/TradePanel';
+import { Header } from '~/stories/template/Header';
+import { TradeBar } from '~/stories/template/TradeBar';
+import { TradePanel } from '~/stories/template/TradePanel';
 import { MainBar } from '~/stories/template/MainBar';
 import './style.css';
 
-const Trade = () => {
+function Trade() {
   useTokenLocal();
   useMarketLocal();
 
@@ -20,7 +20,7 @@ const Trade = () => {
     <div className="flex flex-col min-h-[100vh] w-full">
       <Header />
       <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
-        <MainBar showAccountPopover={true} />
+        <MainBar accountPopover />
         <div className="w-full">
           <TradePanel />
           <article className="w-full mx-auto mt-8 max-w-[840px]">
@@ -45,10 +45,9 @@ const Trade = () => {
       </section>
       <TradeBar />
       <Toast />
-      {/* todo: Add Modal (Wrong Network) */}
       <ChainModal />
     </div>
   );
-};
+}
 
 export default Trade;

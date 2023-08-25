@@ -1,185 +1,106 @@
+import '~/stories/atom/Select/style.css';
+import '~/stories/atom/Toggle/style.css';
+
 import { Listbox, Switch } from '@headlessui/react';
-import { isNil } from 'ramda';
-import { useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
-import { useOpenPosition } from '~/hooks/useOpenPosition';
-import { Button } from '~/stories/atom/Button';
-import { FillUpChart } from '~/stories/atom/FillUpChart';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
-import '~/stories/atom/Select/style.css';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
-import '~/stories/atom/Toggle/style.css';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
-import { CLBTokenValue, Liquidity } from '~/typings/chart';
-import { Market, Price, Token } from '~/typings/market';
-import { TradeInput } from '~/typings/trade';
-import { decimalLength, formatDecimals, withComma } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-import { TooltipGuide } from '../../atom/TooltipGuide';
-import { LiquidityTooltip } from '../LiquidityTooltip';
-import { SelectedTooltip } from '../SelectedTooltip';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
+import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
-interface TradeContentProps {
-  direction?: 'long' | 'short';
-  balances?: Record<string, bigint>;
-  priceFeed?: Record<string, Price>;
-  token?: Token;
-  market?: Market;
-  input?: TradeInput;
-  totalMaxLiquidity?: bigint;
-  totalUnusedLiquidity?: bigint;
-  tradeFee?: bigint;
-  tradeFeePercent?: bigint;
-  liquidityData?: Liquidity[];
-  clbTokenValues?: CLBTokenValue[];
-  maxLeverage?: number;
-  minStopLoss?: number;
-  minTakeProfit?: number;
-  maxTakeProfit?: number;
-  disabled: {
-    status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
-  };
-  isLoading?: boolean;
-  onAmountChange?: (value: string) => unknown;
-  onMethodToggle?: () => unknown;
-  onLeverageChange?: (nextLeverage: string | number) => unknown;
-  onTakeProfitChange?: (nextRate: string | number) => unknown;
-  onStopLossChange?: (nextRate: string | number) => unknown;
-  onFeeAllowanceChange?: (nextAllowance: string) => unknown;
+import { useTradeContent } from './hooks';
+
+export interface TradeContentProps {
+  direction: 'long' | 'short';
 }
 
-const methodMap: Record<string, string> = {
-  collateral: 'Collateral',
-  quantity: 'Contract Qty',
-};
-
-export const TradeContent = ({ ...props }: TradeContentProps) => {
+export const TradeContent = (props: TradeContentProps) => {
   const {
+    disabled,
+    disableDetail,
+
+    tokenName,
+
+    isBalanceLoading,
+    balance,
+
+    method,
+    onMethodChange,
+    methodMap,
+    methodLabel,
+
     direction,
-    balances,
-    priceFeed,
-    market,
-    token,
-    input,
-    totalMaxLiquidity = BigInt(0),
-    totalUnusedLiquidity = BigInt(0),
+    isLong,
+
+    isLeverageSliderOpen,
+    onLeverageSliderToggle,
+
+    collateral,
+    quantity,
+    minAmount,
+    onAmountChange,
+
+    leverage,
+    minLeverage,
+    maxLeverage,
+    leveragePlaceholder,
+    onLeverageChange,
+
+    takeProfit,
+    minTakeProfit,
+    maxTakeProfit,
+    takeProfitPlaceholder,
+    onTakeProfitChange,
+
+    stopLoss,
+    minStopLoss,
+    maxStopLoss,
+    stopLossPlaceholder,
+    onStopLossChange,
+
+    makerMargin,
+
+    totalLiquididy,
+    freeLiquidity,
+
     tradeFee,
     tradeFeePercent,
-    liquidityData,
-    clbTokenValues,
-    maxLeverage = 10,
-    minStopLoss = 1,
-    minTakeProfit = 1,
-    maxTakeProfit = 1000,
-    disabled,
-    isLoading,
-    onAmountChange,
-    onMethodToggle,
-    onLeverageChange,
-    onTakeProfitChange,
-    onStopLossChange,
+
+    maxFeeAllowance,
+    minMaxFeeAllowance,
     onFeeAllowanceChange,
-  } = props;
 
-  const oracleDecimals = 18;
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
-  const executionPrice = useMemo(() => {
-    if (isNil(market)) {
-      return '-';
-    }
-    return formatDecimals(market.oracleValue.price, oracleDecimals, 2, true);
-  }, [market]);
+    executionPrice,
+    takeProfitRatio,
+    takeProfitPrice,
+    stopLossRatio,
+    stopLossPrice,
 
-  const { takeProfitRatio, takeProfitPrice, stopLossRatio, stopLossPrice } = useMemo(() => {
-    if (isNil(market) || isNil(input))
-      return {
-        takeProfitRatio: '-',
-        takeProfitPrice: '-',
-        stopLossRatio: '-',
-        stopLossPrice: '-',
-      };
-
-    const { direction, takeProfit, stopLoss } = input;
-    const oraclePrice = formatUnits(market.oracleValue.price, oracleDecimals);
-
-    const takeProfitRate = +takeProfit / 100;
-    const stopLossRate = +stopLoss / 100;
-
-    const sign = direction === 'long' ? 1 : -1;
-
-    const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
-    const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
-
-    const format = Intl.NumberFormat('en', {
-      useGrouping: true,
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-      //@ts-ignore experimental api
-      roundingMode: 'trunc',
-    }).format;
-
-    return {
-      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(+takeProfit)}`,
-      takeProfitPrice: format(takeProfitPrice),
-      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(+stopLoss)}`,
-      stopLossPrice: format(stopLossPrice),
-    };
-  }, [input, market]);
-
-  const { onOpenPosition } = useOpenPosition({ state: input });
-
-  const lpVolume = useMemo(() => {
-    const totalLiq = formatDecimals(totalMaxLiquidity, token?.decimals) || '0';
-    const freeLiq =
-      formatDecimals(
-        (totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n),
-        token?.decimals || 0
-      ) || '0';
-    const formatter = Intl.NumberFormat('en', {
-      notation: 'compact',
-      maximumFractionDigits: 3,
-      minimumFractionDigits: 0,
-    });
-    return `${formatter.format(+freeLiq)} / ${formatter.format(+totalLiq)}`;
-  }, [totalUnusedLiquidity, totalMaxLiquidity, token]);
-
-  const maxTakeProfitWithDirection = useMemo(() => {
-    return direction === 'long' ? maxTakeProfit : 100;
-  }, [direction]);
+    onOpenPosition,
+  } = useTradeContent(props);
 
   return (
     <div className="px-10 w-full max-w-[680px]">
-      {/* Available Account Balance */}
       <article className="pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
           <p className="text-lg text-primary-light">
-            <SkeletonElement isLoading={isLoading} width={40}>
-              {balances && token && balances[token.address]
-                ? formatDecimals(balances[token.address], token.decimals, 5, true)
-                : 0}{' '}
-              {token?.name}
+            <SkeletonElement isLoading={isBalanceLoading} width={40}>
+              {balance} {tokenName}
             </SkeletonElement>
           </p>
         </div>
         <div className="flex justify-between gap-5 mt-3">
           <div className="select w-full max-w-[160px]">
-            <Listbox
-              value={input?.method}
-              onChange={(value) => {
-                if (input?.method !== value) {
-                  onMethodToggle?.();
-                }
-              }}
-            >
-              <Listbox.Button>{methodMap[input?.method ?? '']}</Listbox.Button>
+            <Listbox value={method} onChange={onMethodChange}>
+              <Listbox.Button>{methodLabel}</Listbox.Button>
               <Listbox.Options>
                 {['collateral', 'quantity'].map((method) => (
                   <Listbox.Option key={method} value={method}>
-                    {methodMap[method]}
+                    {methodMap[method as 'collateral' | 'quantity']}
                   </Listbox.Option>
                 ))}
               </Listbox.Options>
@@ -187,30 +108,32 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
           <div className="flex flex-col items-end">
             <AmountSwitch
-              input={input}
-              token={token}
-              onAmountChange={onAmountChange}
+              collateral={collateral}
+              quantity={quantity}
+              method={method}
+              direction={direction}
               disabled={disabled}
+              disableDetail={disableDetail}
+              tokenName={tokenName}
+              minAmount={minAmount}
+              onAmountChange={onAmountChange}
             />
           </div>
         </div>
       </article>
       <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter dark:bg-[#29292D]">
-        {/* Leverage */}
-        <article className="">
+        <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
               <p className="text-primary-lighter">Up to {maxLeverage}x</p>
             </div>
-            {/* Toggle: {enabled ? "On" : "Off"} */}
-
             <Switch.Group>
               <div className="toggle-wrapper">
-                <Switch.Label className="">Slider</Switch.Label>
+                <Switch.Label>Slider</Switch.Label>
                 <Switch
-                  checked={isSliderOpen}
-                  onChange={setIsSliderOpen}
+                  checked={isLeverageSliderOpen}
+                  onChange={onLeverageSliderToggle}
                   className="toggle toggle-xs"
                 />
               </div>
@@ -218,23 +141,18 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
           <div className="flex items-center justify-between">
             <div className="w-3/5 min-w-[280px]">
-              {/* default, slider off */}
-              {isSliderOpen ? (
+              {isLeverageSliderOpen ? (
                 <div className="mt-[-8px]">
                   <Slider
-                    min={1}
+                    min={minLeverage}
                     max={maxLeverage}
-                    value={Number(input?.leverage)}
+                    value={leverage}
                     onUpdate={onLeverageChange}
                     tick={5}
                   />
                 </div>
               ) : (
-                <LeverageOption
-                  value={Number(input?.leverage)}
-                  max={maxLeverage}
-                  onClick={onLeverageChange}
-                />
+                <LeverageOption value={leverage} max={maxLeverage} onClick={onLeverageChange} />
               )}
             </div>
             <div>
@@ -242,10 +160,10 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 size="sm"
                 unit="x"
                 className="w-20 ml-auto"
-                value={input?.leverage}
-                placeholder="1"
+                value={leverage}
+                placeholder={leveragePlaceholder}
                 autoCorrect
-                min={1}
+                min={minLeverage}
                 max={maxLeverage}
                 onChange={onLeverageChange}
               />
@@ -253,7 +171,6 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
         </article>
         <div className="flex mt-8">
-          {/* TP */}
           <article className="flex-auto pr-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -263,28 +180,25 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
-                  value={input?.takeProfit}
-                  placeholder="10"
+                  value={takeProfit}
+                  placeholder={takeProfitPlaceholder}
                   autoCorrect
                   min={minTakeProfit}
-                  max={maxTakeProfitWithDirection}
+                  max={maxTakeProfit}
                   onChange={onTakeProfitChange}
                 />
               </div>
             </div>
             <div className="mt-6">
-              {input && (
-                <Slider
-                  min={minTakeProfit}
-                  max={maxTakeProfitWithDirection}
-                  value={Number(input.takeProfit)}
-                  onUpdate={onTakeProfitChange}
-                  tick={5}
-                />
-              )}
+              <Slider
+                min={minTakeProfit}
+                max={maxTakeProfit}
+                value={takeProfit}
+                onUpdate={onTakeProfitChange}
+                tick={5}
+              />
             </div>
           </article>
-          {/* SL */}
           <article className="flex-auto h-20 pl-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -294,53 +208,44 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
-                  value={input?.stopLoss}
-                  placeholder={minStopLoss?.toString()}
+                  value={stopLoss}
+                  placeholder={stopLossPlaceholder}
                   autoCorrect
                   min={minStopLoss}
-                  max={100}
+                  max={maxStopLoss}
                   onChange={onStopLossChange}
                 />
               </div>
             </div>
             <div className="mt-6">
-              {input && (
-                <Slider
-                  value={Number(input.stopLoss)}
-                  min={minStopLoss}
-                  max={100}
-                  onUpdate={onStopLossChange}
-                  tick={5}
-                />
-              )}
+              <Slider
+                value={stopLoss}
+                min={minStopLoss}
+                max={maxStopLoss}
+                onUpdate={onStopLossChange}
+                tick={5}
+              />
             </div>
           </article>
         </div>
       </section>
-      <section className="">
+      <section>
         <div className="mx-[-40px] relative border-b">
-          <SelectedTooltip id={`trade-${direction}`} data={input?.makerMargin} />
-          <LiquidityTooltip
+          <TradeChart
             id={`trade-${direction}`}
-            data={liquidityData}
-            clbTokenValues={clbTokenValues}
-          />
-          <FillUpChart
-            id={`trade-${direction}`}
-            positive={direction === 'long'}
+            positive={isLong}
             height={140}
-            data={liquidityData}
-            selectedAmount={Number(input?.makerMargin)}
+            selectedAmount={makerMargin}
           />
-
-          {/* LP volume */}
           <div
             className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
-              direction === 'long' ? 'items-end right-0' : 'items-start left-0'
+              isLong ? 'items-end right-0' : 'items-start left-0'
             }`}
           >
-            <p className="text-primary-lighter">LP Volume</p>
-            {totalMaxLiquidity && totalUnusedLiquidity && token ? <p>{lpVolume}</p> : null}
+            <p className="text-black3">LP Volume</p>
+            <p>
+              {totalLiquididy} / {freeLiquidity}
+            </p>
           </div>
         </div>
         <article className="mt-5">
@@ -349,12 +254,9 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
               </div>
-              {isValid(token) && (
-                <p className="text-lg">
-                  {formatDecimals(tradeFee, token.decimals, 2)} {token.name} /{' '}
-                  {formatDecimals(tradeFeePercent, token.decimals, 3)}%
-                </p>
-              )}
+              <p className="text-lg">
+                {tradeFee} {tokenName} / {tradeFeePercent}%
+              </p>
             </div>
             <div className="flex justify-between">
               <div className="flex items-center">
@@ -370,8 +272,8 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
                 <Input
                   size="sm"
                   unit="%"
-                  value={input?.maxFeeAllowance}
-                  min={+formatDecimals(tradeFeePercent, token?.decimals, 3)}
+                  value={maxFeeAllowance}
+                  min={minMaxFeeAllowance}
                   className="maxFeeAllowance"
                   onChange={onFeeAllowanceChange}
                   autoCorrect
@@ -381,22 +283,13 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
           </div>
 
           <div className="mt-6">
-            <Button
-              label={direction === 'long' ? 'Buy' : 'Sell'}
+            <TransactionButton
+              label={isLong ? 'Buy' : 'Sell'}
               size="2xl"
               className="w-full"
-              css="active"
-              disabled={disabled.status}
-              onClick={() => {
-                !disabled.status && onOpenPosition();
-              }}
+              disabled={disabled}
+              onClick={onOpenPosition}
             />
-            {/* todo: wallet connected, no account */}
-            {/* onClick: create account */}
-            {/* <Button label="Create Account" size="2xl" className="w-full" css="default" /> */}
-            {/* todo: wallet disconnected */}
-            {/* onClick: connect wallet */}
-            {/* <Button label="Connect Wallet" size="2xl" className="w-full" css="default" /> */}
           </div>
 
           <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">
@@ -446,78 +339,5 @@ export const TradeContent = ({ ...props }: TradeContentProps) => {
         </article>
       </section>
     </div>
-  );
-};
-
-interface AmountSwitchProps {
-  input?: TradeInput;
-  token?: Token;
-  disabled?: {
-    status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance' | undefined;
-  };
-  onAmountChange?: (value: string) => unknown;
-}
-
-const AmountSwitch = (props: AmountSwitchProps) => {
-  const { input, onAmountChange, token, disabled } = props;
-  if (!isValid(input) || !isValid(onAmountChange)) {
-    return <></>;
-  }
-
-  const minimumAmount = formatDecimals(token?.minimumMargin, token?.decimals);
-  const errors = {
-    balance: 'Exceeded available account balance.',
-    liquidity: 'Exceeded free liquidity size.',
-    minimum: `Less than minimum betting amount. (${minimumAmount} ${token?.name})`,
-  };
-  const errorMessage = disabled?.detail ? errors[disabled.detail] : undefined;
-
-  const presets = {
-    collateral: {
-      value: input.collateral,
-      subValue: input.quantity,
-      subLabel: 'Contract Qty',
-      tooltip:
-        'Contract Qty is the base unit of the trading contract when opening a position. Contract Qty = Collateral / Stop Loss.',
-    },
-    quantity: {
-      value: input.quantity,
-      subValue: input.collateral,
-      subLabel: 'Collateral',
-      tooltip:
-        'Collateral is the amount that needs to be actually deposited as taker margin(collateral) in the trading contract to open the position.',
-    },
-  };
-  const preset = presets[input?.method || 'collateral'];
-
-  return (
-    <>
-      <div className="max-w-[220px]">
-        <div className={`tooltip-input-balance-${input.direction}`}>
-          <Input
-            value={preset.value.toString()}
-            onChange={onAmountChange}
-            placeholder="0"
-            error={disabled?.status && !!errorMessage}
-          />
-          {errorMessage && (
-            <TooltipAlert label={`input-balance-${input.direction}`} tip={errorMessage} />
-          )}
-        </div>
-      </div>
-      <div className="flex items-center justify-end mt-2">
-        <TooltipGuide
-          label="contract-qty"
-          tip={preset.tooltip}
-          outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-          outLinkAbout="Payoff"
-        />
-        <p>{preset.subLabel}</p>
-        <p className="ml-2 text-lg text-primary-light">
-          {withComma(Number(decimalLength(preset.subValue, 5)))} {token?.name}
-        </p>
-      </div>
-    </>
   );
 };

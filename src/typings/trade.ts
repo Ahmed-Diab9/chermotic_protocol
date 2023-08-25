@@ -33,9 +33,9 @@ type UpdateDirection = {
   payload: Pick<TradeInput, 'direction'>;
 };
 
-type ToggleMethod = {
-  type: 'toggleMethod';
-  payload?: undefined;
+type UpdateMethod = {
+  type: 'updateMethod';
+  payload?: Pick<TradeInput, 'method'>;
 };
 
 export type TradeInputAction =
@@ -43,4 +43,4 @@ export type TradeInputAction =
   | UpdateValues
   | UpdateMaxFee
   | UpdateDirection
-  | ToggleMethod;
+  | UpdateMethod;

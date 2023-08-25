@@ -3,7 +3,7 @@ import { useNetwork, useAccount, useSwitchNetwork } from 'wagmi';
 
 import { CHAINS_WAGMI, CHAIN } from '~/constants/contracts';
 
-function useChain() {
+export function useChain() {
   const { isConnected } = useAccount();
   const { chain: currentChain } = useNetwork();
   const targetChain = CHAINS_WAGMI[CHAIN];
@@ -26,5 +26,3 @@ function useChain() {
     switchChain,
   };
 }
-
-export default useChain;

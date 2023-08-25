@@ -10,7 +10,7 @@ import { useSettlementToken } from './useSettlementToken';
 
 const logger = Logger('useChartData');
 
-const useChartData = () => {
+export const useChartData = () => {
   const { liquidityPool } = useLiquidityPool();
   const { currentToken } = useSettlementToken();
 
@@ -75,5 +75,3 @@ const useChartData = () => {
     positive: positive,
   };
 };
-
-export default useChartData;

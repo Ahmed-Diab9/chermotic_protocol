@@ -1,56 +1,43 @@
-import { isNil } from 'ramda';
-import { formatUnits } from 'viem';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { Token } from '~/typings/market';
-import { OwnedBin } from '~/typings/pools';
-import { divPreserved, formatDecimals } from '~/utils/number';
 
 interface LiquidityItemProps {
-  token?: Token;
-  name?: string;
-  bin?: OwnedBin;
-  imageSrc?: string;
+  image: string;
+  tokenName: string;
+  clbTokenName: string;
+  qty: string;
+  progress: number;
+  progressMax: number;
+  removable: string;
+  utilized: string;
+  removableRate: string;
+  utilizedRate: string;
 }
 
-export const LiquidityItem = (props: LiquidityItemProps) => {
-  const { token, name, bin, imageSrc } = props;
-  if (isNil(token) || isNil(bin)) return <></>;
-
-  const { freeLiquidity, clbBalanceOfSettlement } = bin;
-  const removable =
-    freeLiquidity > clbBalanceOfSettlement ? clbBalanceOfSettlement : bin.freeLiquidity;
-  const utilized = clbBalanceOfSettlement - removable;
-  const utilizedRate =
-    clbBalanceOfSettlement !== 0n
-      ? formatDecimals(
-          divPreserved(utilized, clbBalanceOfSettlement, token.decimals),
-          token.decimals - 2,
-          2
-        )
-      : '0';
-  const removableRate =
-    clbBalanceOfSettlement !== 0n
-      ? formatDecimals(
-          divPreserved(removable, clbBalanceOfSettlement, token.decimals),
-          token.decimals - 2,
-          2
-        )
-      : '0';
-  // Format with comma
-  // With two decimals
+export const LiquidityItem = ({
+  image,
+  tokenName,
+  clbTokenName,
+  qty,
+  progress,
+  progressMax,
+  removable,
+  removableRate,
+  utilized,
+  utilizedRate,
+}: LiquidityItemProps) => {
   return (
     <div className="w-full px-4 py-3 bg-paper-lighter [&:not(:last-child)]:border-b border-gray-light">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
-        <Thumbnail size="lg" className="rounded" src={imageSrc} />
+        <Thumbnail size="lg" className="rounded" src={image} />
         <div>
-          <Avatar label={token.name} size="xs" gap="1" />
-          <p className="mt-2 text-primary-lighter">{name}</p>
+          <Avatar label={tokenName} size="xs" gap="1" />
+          <div className="mt-2 text-primary-lighter">{clbTokenName}</div>
         </div>
         <div className="ml-auto text-right">
           <p className="text-primary-lighter">Qty</p>
-          <p className="mt-2 text-lg">{formatDecimals(bin.clbTokenBalance, token.decimals, 2)}</p>
+          <p className="mt-2 text-lg">{qty}</p>
         </div>
       </div>
       <div className="text-sm">
@@ -58,18 +45,14 @@ export const LiquidityItem = (props: LiquidityItemProps) => {
           <p className="font-semibold">Removable</p>
           <p className="font-semibold">Utilized</p>
         </div>
-        <Progress
-          css="sm"
-          value={Number(formatUnits(removable, token.decimals))}
-          max={Number(formatUnits(clbBalanceOfSettlement, token.decimals))}
-        />
+        <Progress css="sm" value={progress} max={progressMax} />
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
-            {formatDecimals(removable, token.decimals, 2)} {token.name}
+            {removable} {tokenName}
             <span className="text-primary-lighter ml-[2px]">({removableRate}%)</span>
           </p>
           <p className="text-right">
-            {formatDecimals(utilized, token.decimals, 2)} {token.name}
+            {utilized} {tokenName}
             <span className="text-primary-lighter ml-[2px]">({utilizedRate}%)</span>
           </p>
         </div>

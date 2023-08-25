@@ -52,12 +52,13 @@ export const formatDecimals = (
   return formatter.format(Number(valueWithTokenDecimals));
 };
 
-export const formatBalance = (balance: bigint, token: Token, price: Price) => {
-  return (
-    (balance * price.value || 0n) /
-    parseUnits('1', token.decimals) /
-    parseUnits('1', price.decimals)
-  );
+export const formatBalance = (
+  balance: bigint,
+  price: bigint,
+  tokenDecimals: number,
+  priceDecimals: number
+) => {
+  return (balance * price || 0n) / parseUnits('1', tokenDecimals) / parseUnits('1', priceDecimals);
 };
 
 export const formatFeeRate = (feeRate: number) => {

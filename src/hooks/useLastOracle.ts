@@ -5,9 +5,11 @@ import { useMarket } from './useMarket';
 
 export function useLastOracle() {
   const { currentMarket } = useMarket();
-  const [lapsed, setLapsed] = useState<
-    { hours: string; minutes: string; seconds: string } | undefined
-  >(undefined);
+  const [lapsed, setLapsed] = useState<{ hours: string; minutes: string; seconds: string }>({
+    hours: '-',
+    minutes: '-',
+    seconds: '-',
+  });
 
   useEffect(() => {
     const timestamp = currentMarket?.oracleValue?.timestamp;

@@ -71,7 +71,7 @@ function getCalculatedValues({
 
 const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputAction) => {
   switch (type) {
-    case `toggleMethod`: {
+    case `updateMethod`: {
       const { method, ...others } = state;
       const nextMethod = method === 'collateral' ? 'quantity' : 'collateral';
 
@@ -236,8 +236,8 @@ export const useTradeInput = (props: Props) => {
     dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
   }, [feePercent]);
 
-  const onMethodToggle = () => {
-    dispatch({ type: 'toggleMethod' });
+  const onMethodChange = (value: 'collateral' | 'quantity') => {
+    dispatch({ type: 'updateMethod', payload: { method: value } });
   };
 
   const onAmountChange = (value: string) => {
@@ -359,7 +359,7 @@ export const useTradeInput = (props: Props) => {
     feePercent,
     onAmountChange,
     onDirectionToggle,
-    onMethodToggle,
+    onMethodChange,
     onLeverageChange,
     onTakeProfitChange,
     onStopLossChange,

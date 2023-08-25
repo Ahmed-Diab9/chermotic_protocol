@@ -17,7 +17,7 @@ export function useClaimPosition(props: Props) {
   const { client } = useChromaticClient();
   const { fetchBalances } = useChromaticAccount();
   const { positions, fetchPositions } = usePositions();
-  const onClaimPosition = async function () {
+  async function onClaimPosition() {
     try {
       if (isNil(market)) {
         return AppError.reject('No markets', 'onClaimPosition');
@@ -44,7 +44,7 @@ export function useClaimPosition(props: Props) {
     } catch (error) {
       toast.error('Transaction rejected.');
     }
-  };
+  }
 
   return {
     onClaimPosition,

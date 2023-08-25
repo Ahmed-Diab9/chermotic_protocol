@@ -16,7 +16,7 @@ function useClosePosition(props: Props) {
   const { client } = useChromaticClient();
   const { positions, fetchPositions } = usePositions();
 
-  const onClosePosition = async function () {
+  async function onClosePosition() {
     const position = positions?.find(
       (position) => position.marketAddress === marketAddress && position.id === positionId
     );
@@ -37,7 +37,7 @@ function useClosePosition(props: Props) {
 
       return AppError.reject(error, 'onClosePosition');
     }
-  };
+  }
 
   return {
     onClosePosition,

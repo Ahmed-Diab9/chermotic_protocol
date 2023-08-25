@@ -4,9 +4,7 @@ import { Header } from '.';
 const meta = {
   title: 'Template/Header',
   component: Header,
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   parameters: {
-    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'fullscreen',
   },
 } satisfies Meta<typeof Header>;
@@ -14,13 +12,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const LoggedIn: Story = {
-  args: {
-    account: {
-      walletAddress: '0x8888888888888888888888888888888888888888',
-      chromaticAddress: '0x8888888888888888888888888888888888888888',
-    },
-  },
+export const Default: Story = {
+  args: {},
 };
-
-export const LoggedOut: Story = {};
