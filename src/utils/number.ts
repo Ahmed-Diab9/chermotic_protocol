@@ -141,6 +141,22 @@ export const mulPreserved = (value: bigint, numerator: bigint, decimals: number)
   return (value * numerator) / 10n ** BigInt(decimals);
 };
 
+function lengthAfterDecimal(float: number) {
+  const [, afterDecimal] = String(float).split('.');
+  if (afterDecimal === undefined) return 0;
+  return afterDecimal.length;
+}
+
+export function mulFloat(value: bigint, numerator: number) {
+  const multiplier = 10 ** lengthAfterDecimal(numerator);
+  return (value * BigInt(numerator * multiplier)) / BigInt(multiplier);
+}
+
+export function divFloat(numerator: bigint, denominator: number) {
+  const multiplier = 10 ** lengthAfterDecimal(denominator);
+  return denominator === 0 ? 0n : numerator / BigInt(denominator * multiplier) / BigInt(multiplier);
+}
+
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimals,

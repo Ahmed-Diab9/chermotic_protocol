@@ -5,8 +5,10 @@ import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
 import {
   abs,
+  divFloat,
   divPreserved,
   formatDecimals,
+  mulFloat,
   mulPreserved,
   toBigintWithDecimals,
 } from '~/utils/number';
@@ -14,22 +16,21 @@ import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
 import { useSettlementToken } from './useSettlementToken';
 
-const initialTradeInput = {
+const initialTradeInput: Omit<TradeInput, 'direction'> = {
   method: 'collateral',
-  quantity: '',
-  collateral: '',
-  takeProfit: '100',
-  stopLoss: '10',
-  takerMargin: 0,
-  makerMargin: 0,
-  leverage: '10',
-  maxFeeAllowance: '0.03',
-} satisfies Omit<TradeInput, 'direction'>;
+  quantity: 0n,
+  collateral: 0n,
+  takerMargin: 0n,
+  makerMargin: 0n,
+  takeProfit: 100,
+  stopLoss: 10,
+  leverage: 10,
+  maxFeeAllowance: 0.03,
+};
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: false,
   maximumFractionDigits: 2,
-  minimumFractionDigits: 2,
   //@ts-ignore experimental api
   roundingMode: 'trunc',
 }).format;
@@ -43,29 +44,29 @@ function getCalculatedValues({
   method: 'quantity' | 'collateral';
   takeProfit: number;
   stopLoss: number;
-  amount: number;
-}) {
-  const leverage = 100 / stopLoss;
+  amount: bigint;
+}): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance'> {
+  const leverage = +formatter(100 / stopLoss);
 
-  const takeProfitRate = takeProfit / 100;
-  const lossCutRate = stopLoss / 100;
+  const takeProfitRate = +formatter(takeProfit / 100);
+  const lossCutRate = +formatter(stopLoss / 100);
 
   const { collateral, quantity } =
     method === 'collateral'
-      ? { quantity: amount / lossCutRate, collateral: amount }
-      : { quantity: amount, collateral: amount * lossCutRate };
+      ? { quantity: divFloat(amount, lossCutRate), collateral: amount }
+      : { quantity: amount, collateral: mulFloat(amount, lossCutRate) };
 
   const takerMargin = collateral;
-  const makerMargin = (collateral / lossCutRate) * takeProfitRate;
+  const makerMargin = divFloat(collateral, lossCutRate) * BigInt(takeProfitRate);
 
   return {
-    collateral: String(collateral),
-    leverage: formatter(leverage),
-    quantity: String(quantity),
-    stopLoss: formatter(stopLoss),
-    takeProfit: formatter(takeProfit),
-    takerMargin: +formatter(takerMargin),
-    makerMargin: +formatter(makerMargin),
+    collateral: collateral,
+    quantity: quantity,
+    stopLoss: stopLoss,
+    takeProfit: takeProfit,
+    leverage: leverage,
+    takerMargin: takerMargin,
+    makerMargin: makerMargin,
   };
 }
 
@@ -81,15 +82,15 @@ const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputActio
 
     case `updateAmounts`: {
       const method = state.method;
-      const takeProfit = +state.takeProfit;
-      const stopLoss = +state.stopLoss;
-      const amount = +payload.amount;
+      const takeProfit = state.takeProfit;
+      const stopLoss = state.stopLoss;
+      const amount = payload.amount;
 
       const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
 
       const amounts =
-        payload.amount === ''
-          ? { quantity: '', collateral: '' }
+        payload.amount === undefined
+          ? { quantity: 0n, collateral: 0n }
           : { quantity: calculated.quantity, collateral: calculated.collateral };
 
       state = { ...state, ...calculated, ...amounts };
@@ -98,9 +99,9 @@ const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputActio
 
     case `updateValues`: {
       const method = state.method;
-      const takeProfit = +(payload.takeProfit ?? state.takeProfit);
-      const stopLoss = +(payload.stopLoss ?? state.stopLoss);
-      const amount = method === 'collateral' ? +state.collateral : +state.quantity;
+      const takeProfit = payload.takeProfit ?? state.takeProfit;
+      const stopLoss = payload.stopLoss ?? state.stopLoss;
+      const amount = method === 'collateral' ? state.collateral : state.quantity;
 
       const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
 
@@ -174,46 +175,44 @@ export const useTradeInput = (props: Props) => {
   const { totalMargin: balance } = useMargins();
   // Traverse bins from low fee rates to high.
   // Derive trade fees by subtracting free liquidities from maker margin.
-  const [tradeFee, feePercent] = useMemo(() => {
-    if (isNil(currentToken)) return [];
-    let makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
-    if (state.direction === 'long' && makerMargin > longTotalUnusedLiquidity) {
-      return [];
+  const { tradeFee, feePercent } = useMemo(() => {
+    if (
+      isNil(currentToken) ||
+      (state.direction === 'long' && state.makerMargin > longTotalUnusedLiquidity) ||
+      (state.direction === 'short' && state.makerMargin > shortTotalUnusedLiquidity)
+    ) {
+      return { tradeFee: 0n, feePercent: 0n };
     }
-    if (state.direction === 'short' && makerMargin > shortTotalUnusedLiquidity) {
-      return [];
-    }
-    let tradeFee = 0n;
-    let bins =
-      pool?.bins.filter((bin) => {
-        if (state.direction === 'long') {
-          return bin.baseFeeRate > 0;
-        } else {
-          return bin.baseFeeRate < 0;
-        }
-      }) ?? [];
-    for (const token of bins) {
-      if (makerMargin <= 0n) {
-        break;
-      }
-      const { baseFeeRate, freeLiquidity } = token;
-      const feeRate = abs(baseFeeRate);
-      if (makerMargin >= freeLiquidity) {
-        tradeFee = tradeFee + mulPreserved(freeLiquidity, feeRate, FEE_RATE_DECIMAL);
-        makerMargin = makerMargin - freeLiquidity;
-      } else {
-        tradeFee = tradeFee + mulPreserved(makerMargin, feeRate, FEE_RATE_DECIMAL);
-        makerMargin = 0n;
-      }
-    }
+    const { tradeFee, makerMargin } = (pool?.bins || []).reduce(
+      (acc, cur) => {
+        if (
+          (state.direction === 'long' && cur.baseFeeRate > 0) ||
+          (state.direction === 'short' && cur.baseFeeRate < 0) ||
+          acc.makerMargin > 0n
+        ) {
+          const feeRate = abs(cur.baseFeeRate);
 
-    const bigMakerMargin = BigInt(Math.round(state.makerMargin));
+          if (acc.makerMargin >= cur.freeLiquidity) {
+            acc.tradeFee =
+              acc.tradeFee + mulPreserved(cur.freeLiquidity, feeRate, FEE_RATE_DECIMAL);
+            console.log(acc.makerMargin, cur.freeLiquidity);
+            acc.makerMargin = acc.makerMargin - cur.freeLiquidity;
+          } else {
+            acc.tradeFee = acc.tradeFee + mulPreserved(acc.makerMargin, feeRate, FEE_RATE_DECIMAL);
+            acc.makerMargin = 0n;
+          }
+        }
+        return acc;
+      },
+      { tradeFee: 0n, makerMargin: state.makerMargin }
+    );
+
     const feePercent = divPreserved(
       tradeFee,
-      bigMakerMargin !== 0n ? bigMakerMargin : 1n,
+      makerMargin !== 0n ? makerMargin : 1n,
       PERCENT_DECIMALS
     );
-    return [tradeFee, feePercent] as const;
+    return { tradeFee, feePercent };
   }, [
     state.makerMargin,
     state.direction,
@@ -227,11 +226,11 @@ export const useTradeInput = (props: Props) => {
     if (isNil(currentToken) || isNil(feePercent)) return;
 
     const baseFeeAllowance = getBaseFeeAllowance(feePercent, currentToken.decimals);
-    const maxFeeAllowance = `${+formatDecimals(
+    const maxFeeAllowance = +formatDecimals(
       feePercent + baseFeeAllowance,
       currentToken.decimals,
       3
-    )}`;
+    );
 
     dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
   }, [feePercent]);
@@ -240,7 +239,7 @@ export const useTradeInput = (props: Props) => {
     dispatch({ type: 'updateMethod', payload: { method: value } });
   };
 
-  const onAmountChange = (value: string) => {
+  const onAmountChange = (value: bigint) => {
     dispatch({
       type: 'updateAmounts',
       payload: {
@@ -249,30 +248,30 @@ export const useTradeInput = (props: Props) => {
     });
   };
 
-  const onLeverageChange = (value: string | number) => {
+  const onLeverageChange = (value: number) => {
     const stopLoss = 100 / +value;
     dispatch({
       type: 'updateValues',
       payload: {
-        stopLoss: String(stopLoss),
+        stopLoss: stopLoss,
       },
     });
   };
 
-  const onTakeProfitChange = (value: string | number) => {
+  const onTakeProfitChange = (value: number) => {
     dispatch({
       type: 'updateValues',
       payload: {
-        takeProfit: String(value),
+        takeProfit: value,
       },
     });
   };
 
-  const onStopLossChange = (value: string | number) => {
+  const onStopLossChange = (value: number) => {
     dispatch({
       type: 'updateValues',
       payload: {
-        stopLoss: String(value),
+        stopLoss: value,
       },
     });
   };
@@ -287,7 +286,7 @@ export const useTradeInput = (props: Props) => {
     });
   };
 
-  const onFeeAllowanceChange = (allowance: string) => {
+  const onFeeAllowanceChange = (allowance: number) => {
     dispatch({
       type: 'updateMaxFee',
       payload: {
@@ -303,22 +302,19 @@ export const useTradeInput = (props: Props) => {
     if (!currentToken) return { status: true };
     if (Number(state.maxFeeAllowance) > 50) return { status: true };
 
-    const leverage = Number(state.leverage);
-    const takeProfit = Number(state.takeProfit);
-    const collateral = Number(state.collateral);
-    const quantity = Number(state.quantity);
+    const leverage = state.leverage;
+    const takeProfit = state.takeProfit;
+    const collateral = state.collateral;
+    const quantity = state.quantity;
 
     const inputAmount = state.method === 'collateral' ? collateral : quantity;
 
-    const isZeroAmount = inputAmount === 0;
+    const isZeroAmount = inputAmount === 0n;
     if (isZeroAmount) {
       return { status: true };
     }
 
-    const minimumAmount = formatDecimals(10000000000000000n, 18);
-    // formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
-
-    console.log('minimumAmount', minimumAmount);
+    const minimumAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
 
     const isUnderMin = collateral < +minimumAmount;
 
