@@ -59,9 +59,9 @@ function getCalculatedValues({
   const makerMargin = (collateral / lossCutRate) * takeProfitRate;
 
   return {
-    collateral: formatter(collateral),
+    collateral: String(collateral),
     leverage: formatter(leverage),
-    quantity: formatter(quantity),
+    quantity: String(quantity),
     stopLoss: formatter(stopLoss),
     takeProfit: formatter(takeProfit),
     takerMargin: +formatter(takerMargin),
@@ -315,7 +315,11 @@ export const useTradeInput = (props: Props) => {
       return { status: true };
     }
 
-    const minimumAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
+    const minimumAmount = formatDecimals(10000000000000000n, 18);
+    // formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
+
+    console.log('minimumAmount', minimumAmount);
+
     const isUnderMin = collateral < +minimumAmount;
 
     if (isUnderMin) {
