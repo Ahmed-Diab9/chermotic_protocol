@@ -36,13 +36,13 @@ export function useTradeContent(props: TradeContentProps) {
   const { currentMarket } = useMarket();
 
   const oracleDecimals = 18;
+  const tokenDecimals = currentToken?.decimals || 0;
 
-  const quantity = input.quantity;
-  const collateral = input.collateral;
-  const minAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
+  const quantity = formatDecimals(input.quantity, tokenDecimals);
+  const collateral = formatDecimals(input.collateral, tokenDecimals);
+  const minAmount = formatDecimals(currentToken?.minimumMargin, oracleDecimals);
 
   const tokenAddress = currentToken?.address;
-  const tokenDecimals = currentToken?.decimals || 0;
   const tokenName = currentToken?.name;
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
@@ -92,7 +92,7 @@ export function useTradeContent(props: TradeContentProps) {
   const maxStopLoss = 100;
   const stopLossPlaceholder = minStopLoss.toString();
 
-  const makerMargin = Number(input.makerMargin);
+  const makerMargin = +formatDecimals(input.makerMargin, tokenDecimals);
 
   const [totalLiquididy, freeLiquidity] = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, tokenDecimals) || '0';
@@ -102,7 +102,6 @@ export function useTradeContent(props: TradeContentProps) {
     const formatter = Intl.NumberFormat('en', {
       notation: 'compact',
       maximumFractionDigits: 3,
-      minimumFractionDigits: 0,
     });
     return [`${formatter.format(+freeLiq)}`, `${formatter.format(+totalLiq)}`];
   }, [totalUnusedLiquidity, totalMaxLiquidity, currentToken]);

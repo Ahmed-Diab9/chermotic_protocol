@@ -239,16 +239,17 @@ export const useTradeInput = (props: Props) => {
     dispatch({ type: 'updateMethod', payload: { method: value } });
   };
 
-  const onAmountChange = (value: bigint) => {
+  const onAmountChange = (value: string) => {
+    const amount = parseUnits(value, currentToken?.decimals || 0);
     dispatch({
       type: 'updateAmounts',
       payload: {
-        amount: value,
+        amount: amount,
       },
     });
   };
 
-  const onLeverageChange = (value: number) => {
+  const onLeverageChange = (value: number | string) => {
     const stopLoss = 100 / +value;
     dispatch({
       type: 'updateValues',
@@ -258,20 +259,20 @@ export const useTradeInput = (props: Props) => {
     });
   };
 
-  const onTakeProfitChange = (value: number) => {
+  const onTakeProfitChange = (value: number | string) => {
     dispatch({
       type: 'updateValues',
       payload: {
-        takeProfit: value,
+        takeProfit: +value,
       },
     });
   };
 
-  const onStopLossChange = (value: number) => {
+  const onStopLossChange = (value: number | string) => {
     dispatch({
       type: 'updateValues',
       payload: {
-        stopLoss: value,
+        stopLoss: +value,
       },
     });
   };
@@ -286,11 +287,11 @@ export const useTradeInput = (props: Props) => {
     });
   };
 
-  const onFeeAllowanceChange = (allowance: number) => {
+  const onFeeAllowanceChange = (allowance: number | string) => {
     dispatch({
       type: 'updateMaxFee',
       payload: {
-        maxFeeAllowance: allowance,
+        maxFeeAllowance: +allowance,
       },
     });
   };
