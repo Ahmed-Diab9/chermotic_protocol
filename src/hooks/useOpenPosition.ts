@@ -5,7 +5,7 @@ import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
 import { errorLog } from '~/utils/log';
-import { mulPreserved, toBigintWithDecimals } from '~/utils/number';
+import { mulFloat } from '~/utils/number';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -49,43 +49,31 @@ function useOpenPosition({ state }: Props) {
     if (
       isNotNil(currentToken) &&
       isNotNil(balances?.[currentToken!.address]) &&
-      balances![currentToken!.address] < parseUnits(state.collateral, currentToken.decimals)
+      balances![currentToken!.address] < state.collateral
     ) {
       toast('Not enough collateral.');
       return;
     }
 
-    const quantity = toBigintWithDecimals(state.quantity, currentToken.decimals);
-    const takerMargin = toBigintWithDecimals(state.takerMargin, currentToken.decimals);
-    const makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
-
-    // FIXME
-    // Proper decimals needed.
-    const maxFeeAllowance = toBigintWithDecimals(state.maxFeeAllowance, 10);
-
-    if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
+    if (state.direction === 'long' && longTotalUnusedLiquidity <= state.makerMargin) {
       toast('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
-    if (state.direction === 'short' && shortTotalUnusedLiquidity <= makerMargin) {
+    if (state.direction === 'short' && shortTotalUnusedLiquidity <= state.makerMargin) {
       toast('the short liquidity is too low');
       return AppError.reject('the short liquidity is too low', 'onOpenPosition');
     }
 
-    // FIXME
-    // Trading Fee
     try {
-      // max allowance fee 5 %
-      // maxallowableTradingFee = markermargin * 5%
-      // TODO apply max fee allowance
-      const maxAllowableTradingFee = mulPreserved(makerMargin, maxFeeAllowance, 10 + 2);
+      // maxAllowableTradingFee = markermargin * 5%
+      const maxAllowableTradingFee = mulFloat(state.makerMargin, state.maxFeeAllowance);
 
       const routerApi = client.router();
 
       await routerApi.openPosition(currentMarket.address, {
-        quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        takerMargin,
-        makerMargin,
+        quantity: state.quantity * (state.direction === 'long' ? 1n : -1n),
+        takerMargin: state.takerMargin,
+        makerMargin: state.makerMargin,
         maxAllowableTradingFee,
       });
       await fetchPositions();
