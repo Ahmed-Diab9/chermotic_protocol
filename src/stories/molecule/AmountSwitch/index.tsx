@@ -8,7 +8,7 @@ interface AmountSwitchProps {
   method: 'quantity' | 'collateral';
   direction: 'long' | 'short';
   disabled: boolean;
-  disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
+  disableDetail?: 'minimum' | 'liquidity' | 'balance' | 'maxFeeAllowance' | undefined;
   tokenName?: string;
   minAmount: string;
   onAmountChange: (value: string) => unknown;
@@ -31,6 +31,8 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     balance: 'Exceeded available account balance.',
     liquidity: 'Exceeded free liquidity size.',
     minimum: `Less than minimum betting amount. (${minAmount} ${tokenName})`,
+    // FIXME:
+    maxFeeAllowance: 'Max fee allowance.',
   };
   const errorMessage = disableDetail ? errors[disableDetail] : undefined;
 

@@ -195,7 +195,6 @@ export const useTradeInput = (props: Props) => {
           if (acc.makerMargin >= cur.freeLiquidity) {
             acc.tradeFee =
               acc.tradeFee + mulPreserved(cur.freeLiquidity, feeRate, FEE_RATE_DECIMAL);
-            console.log(acc.makerMargin, cur.freeLiquidity);
             acc.makerMargin = acc.makerMargin - cur.freeLiquidity;
           } else {
             acc.tradeFee = acc.tradeFee + mulPreserved(acc.makerMargin, feeRate, FEE_RATE_DECIMAL);
@@ -298,10 +297,10 @@ export const useTradeInput = (props: Props) => {
 
   const disabled = useMemo<{
     status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance';
+    detail?: 'minimum' | 'liquidity' | 'balance' | 'maxFeeAllowance';
   }>(() => {
     if (!currentToken) return { status: true };
-    if (Number(state.maxFeeAllowance) > 50) return { status: true };
+    if (state.maxFeeAllowance > 50) return { status: true, detail: 'maxFeeAllowance' };
 
     const leverage = state.leverage;
     const takeProfit = state.takeProfit;
@@ -315,9 +314,7 @@ export const useTradeInput = (props: Props) => {
       return { status: true };
     }
 
-    const minimumAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
-
-    const isUnderMin = collateral < +minimumAmount;
+    const isUnderMin = collateral < currentToken?.minimumMargin;
 
     if (isUnderMin) {
       return { status: true, detail: 'minimum' };
@@ -328,10 +325,11 @@ export const useTradeInput = (props: Props) => {
     const bigTotalLiquidity =
       state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
 
-    const totalLiquidity = Number(formatUnits(bigTotalLiquidity, tokenDecimals));
+    const totalLiquidity = +formatUnits(bigTotalLiquidity, tokenDecimals);
 
     const isNaNTotalLiquidity = isNaN(totalLiquidity);
     if (isNaNTotalLiquidity) {
+      console.log(isNaNTotalLiquidity, totalLiquidity);
       return { status: true };
     }
 
@@ -340,12 +338,12 @@ export const useTradeInput = (props: Props) => {
         ? totalLiquidity / leverage / (takeProfit / 100)
         : totalLiquidity / (takeProfit / 100);
 
-    const isOverLiquidity = maxInputAmount < inputAmount;
+    const isOverLiquidity = maxInputAmount < +formatUnits(inputAmount, tokenDecimals);
     if (isOverLiquidity) {
       return { status: true, detail: 'liquidity' };
     }
 
-    const isOverBalance = balance < toBigintWithDecimals(collateral, tokenDecimals);
+    const isOverBalance = balance < collateral;
     if (isOverBalance || isNil(balance)) {
       return { status: true, detail: 'balance' };
     }
