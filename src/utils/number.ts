@@ -154,7 +154,9 @@ export function mulFloat(value: bigint, numerator: number) {
 
 export function divFloat(numerator: bigint, denominator: number) {
   const multiplier = 10 ** lengthAfterDecimal(denominator);
-  return denominator === 0 ? 0n : numerator / BigInt(denominator * multiplier) / BigInt(multiplier);
+  return denominator === 0
+    ? 0n
+    : (numerator / BigInt(denominator * multiplier)) * BigInt(multiplier);
 }
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {

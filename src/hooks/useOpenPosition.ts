@@ -1,6 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { parseUnits } from 'viem';
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
