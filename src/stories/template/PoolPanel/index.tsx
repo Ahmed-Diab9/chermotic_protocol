@@ -14,6 +14,7 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
+import { formatFeeRate } from '~/utils/number';
 import { usePoolPanel } from './hooks';
 import './style.css';
 
@@ -377,7 +378,10 @@ export function PoolPanel() {
                             ) : (
                               <div className="flex flex-col gap-3">
                                 {longLiquidityBins.map((props) => (
-                                  <BinItem {...props} />
+                                  <BinItem
+                                    {...props}
+                                    baseFeeRate={formatFeeRate(props.baseFeeRate)}
+                                  />
                                 ))}
                               </div>
                             )}
@@ -407,7 +411,7 @@ interface BinItemProps {
   onSelectBin: () => unknown;
   label: string;
   marketDescription: string;
-  baseFeeRate: number;
+  baseFeeRate: number | string;
   onClickRemove: (e: React.MouseEvent<HTMLButtonElement>) => unknown;
   explorerUrl?: string;
   tokenImage: string;

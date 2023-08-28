@@ -159,18 +159,6 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                           size="sm"
                                           className="text-primary-light"
                                         />
-                                        <div className="ml-auto text-right">
-                                          <p className="text-sm text-primary-lighter">
-                                            <SkeletonElement isLoading={isLoading} width={40}>
-                                              ${usdPrice}
-                                            </SkeletonElement>
-                                          </p>
-                                          <p className="mt-1 text-base font-medium text-primary">
-                                            <SkeletonElement isLoading={isLoading} width={40}>
-                                              {balance} {name}
-                                            </SkeletonElement>
-                                          </p>
-                                        </div>
                                       </div>
 
                                       <div className="ml-auto text-right">
