@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Tab } from '@headlessui/react';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
-import { TradeContent } from '~/stories/molecule/TradeContent';
+import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
 
 import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
 
@@ -30,7 +30,7 @@ export const TradePanelV2 = (props: TradePanelV2Props) => {
 
   return (
     <div className="flex justify-center">
-      <div className="relative w-full max-w-[680px] bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded-2xl">
+      <div className="relative w-full max-w-[480px] bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded">
         <div className="w-full tabs tabs-line tabs-lg">
           <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
             <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
@@ -49,10 +49,10 @@ export const TradePanelV2 = (props: TradePanelV2Props) => {
             </Tab.List>
             <Tab.Panels className="flex flex-col items-center w-full">
               <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                <TradeContent direction="short" />
+                <TradeContentV2 direction="short" />
               </Tab.Panel>
               <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                <TradeContent direction="long" />
+                <TradeContentV2 direction="long" />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
