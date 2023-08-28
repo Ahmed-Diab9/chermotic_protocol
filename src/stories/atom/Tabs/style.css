@@ -18,38 +18,31 @@
 }
 .tabs-default {
   [role='tablist'] {
-    gap: 8px;
-    justify-content: space-around;
+    @apply justify-between;
     button {
-      padding: 4px;
-      margin-bottom: 4px;
+      @apply text-3xl font-bold;
+      @apply px-4 py-0 flex items-center justify-center flex-auto border-r border-gray-lighter;
+      &:last-child {
+        @apply border-r-0;
+      }
     }
     [aria-selected='true'] {
-      @apply text-primary border-b-2 !border-primary;
+      @apply text-primary border-b-0;
     }
     [aria-selected='false'] {
-      @apply border-b-2 border-transparent;
-      @apply text-primary/20 dark:text-primary-lighter;
+      @apply text-primary/20 dark:text-primary-lighter border-b bg-paper-lighter;
     }
-  }
-  [type='button'] {
-    /* @apply ui-selected:text-primary; */
   }
   &.tabs-lg {
     [role='tablist'] {
       button {
-        @apply w-1/2 max-w-[240px] p-2 m-0 font-extrabold;
-      }
-      [aria-selected='true'] {
-      }
-      [aria-selected='false'] {
+        @apply h-12 font-extrabold;
       }
     }
   }
   &.tabs-base {
     [role='tablist'] {
       button {
-        @apply w-auto max-w-none font-bold py-[6px] px-0;
       }
     }
   }

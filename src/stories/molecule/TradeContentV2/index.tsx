@@ -83,7 +83,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
   } = useTradeContentV2(props);
 
   return (
-    <div className="px-10 w-full max-w-[680px]">
+    <div className="px-5 w-full max-w-[480px]">
       <article className="pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
@@ -121,7 +121,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter dark:bg-[#29292D]">
+      <section className="mx-[-20px] px-5 pt-5 pb-5 border-y bg-paper-lighter dark:bg-[#29292D]">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             </div>
           </div>
         </article>
-        <div className="flex mt-8">
+        <div className="flex mt-7">
           <article className="flex-auto pr-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -230,26 +230,18 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
         </div>
       </section>
       <section>
-        <div className="mx-[-40px] relative border-b">
-          <TradeChart
-            id={`trade-${direction}`}
-            positive={isLong}
-            height={140}
-            selectedAmount={makerMargin}
-          />
-          <div
-            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
-              isLong ? 'items-end right-0' : 'items-start left-0'
-            }`}
-          >
-            <p className="text-black3">LP Volume</p>
-            <p>
-              {totalLiquididy} / {freeLiquidity}
-            </p>
+        <article className="">
+          <div className="mt-5 mb-4">
+            <TransactionButton
+              label={isLong ? 'Buy' : 'Sell'}
+              size="2xl"
+              className="w-full"
+              disabled={disabled}
+              onClick={onOpenPosition}
+            />
           </div>
-        </div>
-        <article className="mt-5">
-          <div className="flex flex-col gap-[10px] border-gray-light">
+
+          <div className="flex flex-col gap-1 border-gray-light">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -282,17 +274,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             </div>
           </div>
 
-          <div className="mt-6">
-            <TransactionButton
-              label={isLong ? 'Buy' : 'Sell'}
-              size="2xl"
-              className="w-full"
-              disabled={disabled}
-              onClick={onOpenPosition}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2 border-t border-dashed pt-6 mx-[-40px] px-10 border-gray-light mt-8">
+          <div className="flex flex-col gap-2 mt-4 border-gray-light">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>

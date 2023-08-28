@@ -37,8 +37,8 @@
     --color-error: 255 50 50; /* #FF3232 */
     --color-error-light: 253 212 212; /* #FDD4D4 */
 
-    --color-price-higher: 166 216 91;
-    --color-price-lower: 255 50 50;
+    --color-price-higher: 49 208 170;
+    --color-price-lower: 231 93 12;
     --color-status-standby: 255 152 32;
     --color-status-standby-light: 255 137 0;
     --color-status-completed: 27 225 83;

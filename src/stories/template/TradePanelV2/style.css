@@ -1,0 +1,17 @@
+.TradePanel {
+  /* @apply flex justify-center; */
+  @apply relative w-full max-w-[480px] bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded;
+  .tabs {
+    .btn-tabs {
+      @apply gap-1 pl-1 pr-4;
+      &[aria-selected='true'] {
+        &.short {
+          @apply !text-price-lower;
+        }
+        &.long {
+          @apply !text-price-higher;
+        }
+      }
+    }
+  }
+}
