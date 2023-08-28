@@ -42,10 +42,10 @@ export const TradePanelV2 = (props: TradePanelV2Props) => {
             </Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full">
-            <Tab.Panel className="w-full px-0 py-8">
+            <Tab.Panel className="w-full">
               <TradeContentV2 direction="short" />
             </Tab.Panel>
-            <Tab.Panel className="w-full px-0 py-8">
+            <Tab.Panel className="w-full">
               <TradeContentV2 direction="long" />
             </Tab.Panel>
           </Tab.Panels>

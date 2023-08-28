@@ -25,6 +25,9 @@
     @apply text-primary-lighter;
   }
 }
+.input-xs {
+  @apply h-[22px] px-2 text-lg;
+}
 .input-sm {
   @apply h-[26px] px-3 text-lg;
 }

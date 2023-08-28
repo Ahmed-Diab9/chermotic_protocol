@@ -84,7 +84,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
 
   return (
     <div className="px-5 w-full max-w-[480px]">
-      <article className="pb-5 border-gray-lighter">
+      <article className="pt-8 pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
           <p className="text-lg text-primary-light">
@@ -121,7 +121,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-5 pb-5 border-y bg-paper-lighter dark:bg-[#29292D]">
+      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-lighter dark:bg-[#29292D]">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -231,17 +231,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
       </section>
       <section>
         <article className="">
-          <div className="mt-5 mb-4">
-            <TransactionButton
-              label={isLong ? 'Buy' : 'Sell'}
-              size="2xl"
-              className="w-full"
-              disabled={disabled}
-              onClick={onOpenPosition}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1 border-gray-light">
+          <div className="flex flex-col gap-1 mt-5 border-gray-light">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -262,7 +252,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
               </div>
               <div className="w-20">
                 <Input
-                  size="sm"
+                  size="xs"
                   unit="%"
                   value={maxFeeAllowance}
                   min={minMaxFeeAllowance}
@@ -274,7 +264,17 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 mt-4 border-gray-light">
+          <div className="my-4">
+            <TransactionButton
+              label={isLong ? 'Buy' : 'Sell'}
+              size="2xl"
+              className="w-full"
+              disabled={disabled}
+              onClick={onOpenPosition}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 px-5 pt-4 mt-4 pb-5 -mx-5 border-t border-dashed border-gray-light  bg-paper-lighter dark:bg-[#29292D]">
             <div className="flex justify-between">
               <div className="flex">
                 <p>EST. Execution Price</p>
