@@ -22,7 +22,7 @@ export function MarketSelectV2() {
 
   return (
     <>
-      <div className="relative MarketSelect">
+      <div className="relative MarketSelect panel">
         <Popover>
           <Popover.Button className="flex items-center gap-3 ml-10">
             <div className="pr-3 border-r">

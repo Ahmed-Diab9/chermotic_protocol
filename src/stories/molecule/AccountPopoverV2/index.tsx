@@ -14,7 +14,7 @@ export function AccountPopoverV2() {
 
   return (
     <>
-      <div className="AccountPopover">
+      <div className="AccountPopover panel">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>

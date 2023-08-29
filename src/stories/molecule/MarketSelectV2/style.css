@@ -1,7 +1,5 @@
 .MarketSelect {
-  @apply flex items-center justify-between gap-6;
-  @apply border dark:border-transparent rounded-2xl min-h-[80px] shadow-lg dark:shadow-none;
-  @apply bg-paper;
+  @apply flex items-center justify-between gap-6 min-h-[80px];
   &:has([data-headlessui-state='open']) {
     @apply dark:border-paper-lighter dark:shadow-lg;
   }
