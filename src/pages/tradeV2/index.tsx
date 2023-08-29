@@ -12,6 +12,7 @@ import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { TradeList } from '~/stories/template/TradeList';
 import { TradeLiquidity } from '~/stories/template/TradeLiquidity';
+import { TradeChartView } from '~/stories/template/TradeChartView';
 import './style.css';
 
 function TradeV2() {
@@ -26,6 +27,7 @@ function TradeV2() {
         <MainBarV2 accountPopover />
         <div className="flex w-full gap-2">
           <article className="flex-auto w-full">
+            <TradeChartView />
             <div className="my-6 text-left text-primary-lighter">
               The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
               that accept the positions. The EST. Trade Fee is calculated based on the current
