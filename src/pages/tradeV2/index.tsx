@@ -40,7 +40,7 @@ function TradeV2() {
               to={'/pool'}
             />
           </article>
-          <article className="max-w-[480px] min-w-[440px]">
+          <article className="max-w-[480px]">
             <TradePanelV2 />
             <div className="my-6 text-left text-primary-lighter">
               The Trade Fee is calculated by summing up the different fees from the Liquidity Bins

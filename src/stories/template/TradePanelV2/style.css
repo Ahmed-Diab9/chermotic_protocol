@@ -1,7 +1,7 @@
 .TradePanel {
   /* @apply flex justify-center; */
   /* @apply w-full max-w-[480px] min-w-[440px]; */
-  @apply relative bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded;
+  @apply relative bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded overflow-hidden;
   .tabs {
     .btn-tabs {
       @apply gap-1 pl-1 pr-4;

@@ -10,6 +10,7 @@ import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
+import { Tag } from '~/stories/atom/Tag';
 
 import { useTradeContentV2 } from './hooks';
 
@@ -126,7 +127,10 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <p className="text-primary-lighter">Up to {maxLeverage}x</p>
+              <Tag
+                label={`Up to ${maxLeverage}x`}
+                className="normal-case bg-[#13DED3]/10 text-[#13DED3]"
+              />
             </div>
             <Switch.Group>
               <div className="toggle-wrapper">
@@ -199,7 +203,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
               />
             </div>
           </article>
-          <article className="flex-auto h-20 pl-5">
+          <article className="flex-auto h-20 pl-5 border-l">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4>Stop Loss</h4>
