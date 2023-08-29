@@ -8,8 +8,8 @@ import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/template/Header';
 import { TradeBar } from '~/stories/template/TradeBar';
-import { MainBar } from '~/stories/template/MainBar';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
+import { MainBarV2 } from '~/stories/template/MainBarV2';
 import './style.css';
 
 function TradeV2() {
@@ -20,8 +20,8 @@ function TradeV2() {
     <div className="flex flex-col min-h-[100vh] w-full">
       <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
-      <section className="flex flex-col grow w-full max-w-[1200px] items-stretch px-5 mx-auto mb-20">
-        <MainBar accountPopover />
+      <section className="flex flex-col grow w-full max-w-[1400px] items-stretch px-5 mx-auto mb-20">
+        <MainBarV2 accountPopover />
         <div className="w-full flex gap-[10px]">
           <article className="w-full mx-auto mt-8 max-w-[840px]">
             <div className="mb-12 text-base">
@@ -40,7 +40,7 @@ function TradeV2() {
               to={'/pool'}
             />
           </article>
-          <article className="max-w-[480px]">
+          <article className="w-[480px]">
             <TradePanelV2 />
             <div className="my-6 text-left text-primary-lighter">
               The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
