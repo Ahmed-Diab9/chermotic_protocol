@@ -2,15 +2,14 @@ import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
 import { Listbox, Switch } from '@headlessui/react';
-import { TradeChart } from '~/stories/atom/TradeChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
+import { Tag } from '~/stories/atom/Tag';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
-import { Tag } from '~/stories/atom/Tag';
 
 import { useTradeContentV2 } from './hooks';
 
