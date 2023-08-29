@@ -38,7 +38,7 @@ a {
       @apply hover:opacity-70;
     }
     &:disabled {
-      @apply text-primary-lighter bg-paper-lighter;
+      @apply text-primary-lighter bg-[#f9f9f9] dark:bg-paper-lighter;
       @apply dark:bg-gray-light;
     }
     &.shadow-base {
