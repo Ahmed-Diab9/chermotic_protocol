@@ -10,6 +10,8 @@ import { Header } from '~/stories/template/Header';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
+import { TradeList } from '~/stories/template/TradeList';
+import { TradeLiquidity } from '~/stories/template/TradeLiquidity';
 import './style.css';
 
 function TradeV2() {
@@ -22,25 +24,19 @@ function TradeV2() {
       <Header />
       <section className="flex flex-col grow w-full max-w-[1400px] items-stretch px-5 mx-auto mb-20">
         <MainBarV2 accountPopover />
-        <div className="w-full flex gap-[10px]">
-          <article className="w-full mx-auto mt-8 max-w-[840px]">
-            <div className="mb-12 text-base">
-              <div className="my-6 text-left text-primary-lighter">
-                The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
-                that accept the positions. The EST. Trade Fee is calculated based on the current
-                oracle price, and the actual fee paid is determined by the next oracle price.
-              </div>
+        <div className="flex w-full gap-2">
+          <article className="flex-auto w-full">
+            <div className="my-6 text-left text-primary-lighter">
+              The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
+              that accept the positions. The EST. Trade Fee is calculated based on the current
+              oracle price, and the actual fee paid is determined by the next oracle price.
             </div>
           </article>
-          <article>
-            <Button
-              label="Provide Liquidity"
-              css="unstyled"
-              iconRight={<ChevronRightIcon />}
-              to={'/pool'}
-            />
+          <article className="w-[240px] flex-none flex flex-col gap-2">
+            <TradeLiquidity />
+            <TradeList />
           </article>
-          <article className="w-[480px]">
+          <article className="w-[480px] flex-none">
             <TradePanelV2 />
             <div className="my-6 text-left text-primary-lighter">
               The Trade Fee is calculated by summing up the different fees from the Liquidity Bins

@@ -1,0 +1,19 @@
+.TradeList {
+  .table {
+    .tr {
+      @apply table-row;
+      .td {
+        @apply table-cell text-left pb-1;
+        &:last-child {
+          @apply pl-3 text-primary-lighter w-1/4;
+        }
+      }
+    }
+    .thead {
+      @apply text-primary-lighter;
+      .td {
+        @apply pb-2;
+      }
+    }
+  }
+}
