@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TradePanel } from '.';
+import { TradePanelV2 } from '.';
 
 const meta = {
-  title: 'Template/TradePanel',
-  component: TradePanel,
+  title: 'Template/TradePanelV2',
+  component: TradePanelV2,
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof TradePanel>;
+} satisfies Meta<typeof TradePanelV2>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
