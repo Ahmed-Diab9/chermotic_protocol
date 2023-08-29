@@ -1,9 +1,7 @@
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
-import { useState } from 'react';
-import { Tab } from '@headlessui/react';
 import { Button } from '~/stories/atom/Button';
-import { ChevronRightIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 
 const tradeListItems = [

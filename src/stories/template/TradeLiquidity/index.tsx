@@ -1,7 +1,7 @@
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
 import { useState } from 'react';
-import { Tab } from '@headlessui/react';
+// import { Tab } from '@headlessui/react';
 import { Button } from '~/stories/atom/Button';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import ViewShortIcon from '~/assets/icons/ViewShortIcon';
