@@ -68,6 +68,12 @@ a {
     @apply border !rounded-full overflow-hidden p-0;
     @apply border-gray-lighter bg-paper hover:bg-paper-lighter text-primary;
   }
+  &.btn-square {
+    @apply border-l rounded-none;
+    &.btn-base {
+      @apply h-10 w-10;
+    }
+  }
   &.btn-wallet {
     @apply !h-[42px] p-[2px] flex items-center border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;

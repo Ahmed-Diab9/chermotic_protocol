@@ -112,6 +112,10 @@ body {
   @apply text-primary bg-inverted;
 }
 
+.panel {
+  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none overflow-hidden;
+}
+
 h4 {
   @apply text-lg;
   font-weight: 500;
