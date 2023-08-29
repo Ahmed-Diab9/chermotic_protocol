@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { TradeContentProps } from '../';
+import { TradeContentV2Props } from '../';
 
-export function useTradeContent(props: TradeContentProps) {
+export function useTradeContent(props: TradeContentV2Props) {
   const { direction = 'long' } = props;
 
   const [isLeverageSliderOpen, onLeverageSliderToggle] = useState(false);
