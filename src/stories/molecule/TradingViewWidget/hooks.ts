@@ -1,13 +1,18 @@
-import { isNil } from 'ramda';
+import { isNotNil } from 'ramda';
 import { useState } from 'react';
-import { MARKET_SYMBOLS } from '~/configs/widget';
 import useLocalStorage from '~/hooks/useLocalStorage';
+import { useMarket } from '~/hooks/useMarket';
 import { WidgetConfig } from '~/typings/chart';
 
+const marketMap: Record<string, string | undefined> = {
+  'ETH/USD': 'PYTH:ETHUSD',
+  'BTC/USD': 'PYTH:BTCUSD',
+};
+
 export function useTradingViewChart() {
-  const [marketSymbol, setMarketSymbol] = useState<(typeof MARKET_SYMBOLS)[number]>(
-    MARKET_SYMBOLS[0]
-  );
+  const { markets, currentMarket, onMarketSelect } = useMarket();
+  const marketSymbol = isNotNil(currentMarket) ? marketMap[currentMarket.description] : undefined;
+
   const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
   const [config, setConfig] = useState<WidgetConfig>({
     width: 980,
@@ -24,13 +29,14 @@ export function useTradingViewChart() {
     hasDataRanges: true,
   });
 
-  const onSymbolChange = (selectedIndex: number) => {
-    const nextSymbol = MARKET_SYMBOLS[selectedIndex];
-    if (isNil(nextSymbol)) {
-      return;
-    }
+  const onSymbolChange = (nextSymbol: string) => {
+    const entries = Object.entries(marketMap);
+    const foundSymbol = entries.find((entry) => entry[1] === nextSymbol)?.[0];
 
-    setMarketSymbol(nextSymbol);
+    const nextMarket = markets?.find((market) => market.description === foundSymbol);
+    if (isNotNil(nextMarket)) {
+      onMarketSelect(nextMarket);
+    }
   };
 
   const onConfigChange = <K extends keyof WidgetConfig>(

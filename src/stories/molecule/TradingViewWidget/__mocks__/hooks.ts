@@ -2,12 +2,7 @@ import { isNil } from 'ramda';
 import { useState } from 'react';
 import { WidgetConfig } from '~/typings/chart';
 
-const marketSymbols = [
-  'COINBASE:BTCUSD',
-  'COINBASE:ETHUSD',
-  'COINBASE:MATICUSD',
-  'COINBASE:ARBUSD',
-] as const;
+const marketSymbols = ['PYTH:ETHUSD', 'PYTH:BTCUSD', 'PYTH:MATICUSD', 'PYTH:ARBUSD'] as const;
 
 export function useTradingViewChart() {
   const [marketSymbol, setMarketSymbol] = useState<(typeof marketSymbols)[number]>(
@@ -28,13 +23,13 @@ export function useTradingViewChart() {
     hasDataRanges: true,
   });
 
-  const onSymbolChange = (selectedIndex: number) => {
-    const nextSymbol = marketSymbols[selectedIndex];
-    if (isNil(nextSymbol)) {
+  const onSymbolChange = (nextSymbol: string) => {
+    const foundSymbol = marketSymbols.find((symbol) => symbol === nextSymbol);
+    if (isNil(foundSymbol)) {
       return;
     }
 
-    setMarketSymbol(nextSymbol);
+    setMarketSymbol(foundSymbol);
   };
 
   const onConfigChange = <K extends keyof WidgetConfig>(
