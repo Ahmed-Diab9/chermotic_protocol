@@ -113,7 +113,7 @@ body {
 }
 
 .panel {
-  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none overflow-hidden;
+  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
 }
 
 h4 {
