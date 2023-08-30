@@ -9,7 +9,7 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { formatDecimals } from '~/utils/number';
 import { ACCOUNT_STATUS } from '~/typings/account';
 
-export function useAccountPopover() {
+export function useAccountPopoverV2() {
   const { isConnected } = useAccount();
   const { isChromaticBalanceLoading } = useChromaticAccount();
   const { isTokenBalanceLoading } = useTokenBalances();

@@ -6,15 +6,15 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { AssetPanel } from '~/stories/molecule/AssetPanel';
 
-import { useAccountPopover } from './hooks';
+import { useAccountPopoverV2 } from './hooks';
 
 export function AccountPopoverV2() {
   const { isConnected, isLoading, isAccountExist, balance, tokenName, onClickConnect } =
-    useAccountPopover();
+    useAccountPopoverV2();
 
   return (
     <>
-      <div className="AccountPopover panel">
+      <div className="AccountPopoverV2 panel">
         <div className="ml-10">
           <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
         </div>

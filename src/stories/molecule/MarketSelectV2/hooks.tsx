@@ -8,7 +8,7 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
-export function useMarketSelect() {
+export function useMarketSelectV2() {
   const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
   const { previousOracle } = usePreviousOracle({ market: currentMarket });

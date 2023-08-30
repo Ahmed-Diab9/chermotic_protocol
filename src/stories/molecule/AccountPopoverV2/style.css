@@ -1,4 +1,4 @@
-.AccountPopover {
+.AccountPopoverV2 {
   @apply relative flex items-center justify-between;
   @apply min-h-[80px] gap-6;
   @apply text-primary;

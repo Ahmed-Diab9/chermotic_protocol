@@ -6,7 +6,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import { useMarketSelect } from './hooks';
+import { useMarketSelectV2 } from './hooks';
 
 export function MarketSelectV2() {
   const {
@@ -18,11 +18,11 @@ export function MarketSelectV2() {
     price,
     priceClass,
     interestRate,
-  } = useMarketSelect();
+  } = useMarketSelectV2();
 
   return (
     <>
-      <div className="relative MarketSelect panel">
+      <div className="relative MarketSelectV2 panel">
         <Popover>
           <Popover.Button className="flex items-center gap-3 ml-10">
             <div className="pr-3 border-r">

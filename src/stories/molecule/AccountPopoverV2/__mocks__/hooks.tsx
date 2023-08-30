@@ -1,4 +1,4 @@
-export function useAccountPopover() {
+export function useAccountPopoverV2() {
   return {
     isConnected: true,
     isAccountExist: true,

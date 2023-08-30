@@ -28,7 +28,7 @@ export const TradePanelV2 = (props: TradePanelV2Props) => {
   };
 
   return (
-    <div className="TradePanel panel">
+    <div className="TradePanelV2 panel">
       <div className="w-full tabs tabs-default tabs-lg">
         <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
           <Tab.List className="flex w-full">
