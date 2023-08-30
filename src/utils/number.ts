@@ -51,6 +51,37 @@ export const formatDecimals = (
   return formatter.format(Number(valueWithTokenDecimals));
 };
 
+export const numberFormat = <T extends string | number | bigint, U extends 'string' | 'number'>(
+  value: T,
+  options: {
+    maxDigits?: number;
+    minDigits?: number;
+    useGrouping?: boolean;
+    roundingMode?: 'ceil' | 'floor' | 'trunc';
+    type?: U;
+  } = {
+    useGrouping: false,
+  }
+): U extends 'number' ? number : string => {
+  const isRetrunTypeNumber = options.type === 'number';
+
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: options.maxDigits,
+    minimumFractionDigits: options.minDigits,
+    useGrouping: isRetrunTypeNumber ? false : options.useGrouping,
+    //@ts-ignore experimental api
+    roundingMode: options.roundingMode,
+  });
+  const numberizedValue = Number(value.toString());
+  if (isNaN(numberizedValue))
+    return (isRetrunTypeNumber ? 0 : value) as U extends 'number' ? number : string;
+
+  const formattedValue = formatter.format(numberizedValue);
+  return (isRetrunTypeNumber ? Number(formattedValue) : formattedValue) as U extends 'number'
+    ? number
+    : string;
+};
+
 export const formatBalance = (
   balance: bigint,
   price: bigint,
