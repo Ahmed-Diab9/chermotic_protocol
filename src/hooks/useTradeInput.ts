@@ -7,10 +7,10 @@ import {
   abs,
   divFloat,
   divPreserved,
+  fixFloatMath,
   formatDecimals,
   mulFloat,
   mulPreserved,
-  toBigintWithDecimals,
 } from '~/utils/number';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
@@ -46,10 +46,10 @@ function getCalculatedValues({
   stopLoss: number;
   amount: bigint;
 }): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance'> {
-  const leverage = +formatter(100 / stopLoss);
+  const leverage = fixFloatMath(100 / stopLoss);
 
-  const takeProfitRate = +formatter(takeProfit / 100);
-  const lossCutRate = +formatter(stopLoss / 100);
+  const takeProfitRate = fixFloatMath(takeProfit / 100);
+  const lossCutRate = fixFloatMath(stopLoss / 100);
 
   const { collateral, quantity } =
     method === 'collateral'
@@ -57,14 +57,14 @@ function getCalculatedValues({
       : { quantity: amount, collateral: mulFloat(amount, lossCutRate) };
 
   const takerMargin = collateral;
-  const makerMargin = divFloat(collateral, lossCutRate) * BigInt(takeProfitRate);
+  const makerMargin = mulFloat(divFloat(collateral, lossCutRate), takeProfitRate);
 
   return {
     collateral: collateral,
     quantity: quantity,
-    stopLoss: stopLoss,
-    takeProfit: takeProfit,
-    leverage: leverage,
+    stopLoss: +formatter(stopLoss),
+    takeProfit: +formatter(takeProfit),
+    leverage: +formatter(leverage),
     takerMargin: takerMargin,
     makerMargin: makerMargin,
   };

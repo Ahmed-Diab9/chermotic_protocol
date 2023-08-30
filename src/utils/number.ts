@@ -1,6 +1,6 @@
 import { isNotNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
-import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
+import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 
 export const abs = (value: bigint | number): bigint => {
   if (typeof value === 'number') value = BigInt(value);
@@ -147,16 +147,20 @@ function lengthAfterDecimal(float: number) {
   return afterDecimal.length;
 }
 
+export function fixFloatMath(number: number) {
+  return Number(number.toPrecision(15));
+}
+
 export function mulFloat(value: bigint, numerator: number) {
   const multiplier = 10 ** lengthAfterDecimal(numerator);
-  return (value * BigInt(numerator * multiplier)) / BigInt(multiplier);
+  return (value * BigInt(fixFloatMath(numerator * multiplier))) / BigInt(multiplier);
 }
 
 export function divFloat(numerator: bigint, denominator: number) {
   const multiplier = 10 ** lengthAfterDecimal(denominator);
   return denominator === 0
     ? 0n
-    : (numerator / BigInt(denominator * multiplier)) * BigInt(multiplier);
+    : (numerator / BigInt(fixFloatMath(denominator * multiplier))) * BigInt(multiplier);
 }
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {

@@ -8,6 +8,7 @@ import {
   TicksProps,
 } from 'react-compound-slider';
 import { SliderRail, Handle, Track, Tick } from './components'; // example render components - source below
+import { fixFloatMath } from '~/utils/number';
 
 interface SliderProps {
   min?: number;
@@ -39,17 +40,12 @@ export const Slider = ({
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
-  const formatter = Intl.NumberFormat('en', {
-    maximumFractionDigits: 12,
-    useGrouping: false,
-  }).format;
-
   const handleSetter = (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
     if (!setter) return;
     if (values.length > 1) {
       console.warn('[Range]: single value only');
     }
-    setter(+formatter(values[0]));
+    setter(fixFloatMath(values[0]));
   };
 
   const ticksProps: Omit<TicksProps, 'children'> =
@@ -70,7 +66,7 @@ export const Slider = ({
         rootStyle={sliderStyle}
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
-        values={value ? [+formatter(+value)] : []}
+        values={value ? [fixFloatMath(+value)] : []}
         disabled={readonly}
       >
         <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>
