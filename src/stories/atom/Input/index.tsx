@@ -1,8 +1,9 @@
+import './style.css';
+
 import { isNil, isNotNil } from 'ramda';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Avatar } from '~/stories/atom/Avatar';
-import { withComma } from '~/utils/number';
-import './style.css';
+import { numberFormat } from '~/utils/number';
 
 interface InputProps {
   label?: string;
@@ -19,7 +20,9 @@ interface InputProps {
   autoCorrect?: boolean;
   min?: number;
   max?: number;
-  withoutComma?: boolean;
+  minDigits?: number;
+  maxDigits?: number;
+  useGrouping?: boolean;
   onChange?: (value: string) => unknown;
 }
 
@@ -38,15 +41,22 @@ export const Input = (props: InputProps) => {
     disabled = false,
     error = false,
     autoCorrect = false,
-    withoutComma = false,
+    minDigits,
+    maxDigits,
+    useGrouping = true,
     onChange,
   } = props;
-
-  const [tempValue, setTempValue] = useState(value);
+  const [displayValue, setDisplayValue] = useState(value);
   const [isInternalChange, setIsInternalChange] = useState(false);
 
+  const setFormattedDisplayValue = (value?: number | string) => {
+    if (isNil(value)) return setDisplayValue(value);
+    const formatted = numberFormat(value, { minDigits, maxDigits, useGrouping });
+    return setDisplayValue(formatted);
+  };
+
   useEffect(() => {
-    if (!isInternalChange) setTempValue(value);
+    if (!isInternalChange) setFormattedDisplayValue(value);
     return setIsInternalChange(false);
   }, [value]);
 
@@ -68,42 +78,42 @@ export const Input = (props: InputProps) => {
       .replaceAll(',', '')
       .replace(/[^0-9.]/g, '');
 
-    if (newValue === tempValue || isNaN(+newValue)) {
+    if (newValue === displayValue || isNaN(+newValue)) {
       return;
     }
 
     if (isNil(onChange)) {
-      setTempValue(newValue);
+      setDisplayValue(newValue);
       return;
     }
 
     setIsInternalChange(true);
 
     if (!autoCorrect) {
-      setTempValue(newValue);
+      setDisplayValue(newValue);
       onChange(newValue);
       return;
     }
 
     if (isNotNil(max) && isOverMax(newValue)) {
       onChange(max!.toString());
-      setTempValue(max!.toString());
+      setDisplayValue(max!.toString());
     } else if (isNotNil(min) && isUnderMin(newValue)) {
       onChange(min!.toString());
-      setTempValue(newValue);
+      setDisplayValue(newValue);
     } else {
       onChange(newValue);
-      setTempValue(newValue);
+      setDisplayValue(newValue);
     }
   }
 
   function handleBlur() {
-    if (autoCorrect && isNotNil(min) && isUnderMin(tempValue)) {
-      setTempValue(value);
+    if (autoCorrect && isNotNil(min) && isUnderMin(displayValue)) {
+      setFormattedDisplayValue(value);
       return;
     }
-    if (isNotNil(onChange) && isNotNil(tempValue)) {
-      setTempValue(String(+tempValue));
+    if (isNotNil(onChange) && isNotNil(displayValue)) {
+      setFormattedDisplayValue(+displayValue);
       return;
     }
   }
@@ -120,7 +130,7 @@ export const Input = (props: InputProps) => {
         <input
           type="text"
           className={`text-${align}`}
-          value={withoutComma ? tempValue : withComma(tempValue)}
+          value={displayValue}
           placeholder={placeholder}
           onChange={handleChange}
           onBlur={handleBlur}

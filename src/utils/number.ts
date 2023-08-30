@@ -1,3 +1,4 @@
+import bigDecimal from 'js-big-decimal';
 import { isNotNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
@@ -178,20 +179,28 @@ function lengthAfterDecimal(float: number) {
   return afterDecimal.length;
 }
 
-export function fixFloatMath(number: number) {
-  return Number(number.toPrecision(15));
+export function floatMath(value: number) {
+  const decimal = new bigDecimal(value);
+  const methods = ['multiply', 'divide', 'add', 'subtract'] as const;
+  return methods.reduce((acc, method) => {
+    acc[method] = (secondValue: number) => {
+      const secondDecimal = new bigDecimal(secondValue);
+      return parseFloat(decimal[method](secondDecimal).getValue());
+    };
+    return acc;
+  }, {} as { [key in (typeof methods)[number]]: (value: number) => number });
 }
 
 export function mulFloat(value: bigint, numerator: number) {
   const multiplier = 10 ** lengthAfterDecimal(numerator);
-  return (value * BigInt(fixFloatMath(numerator * multiplier))) / BigInt(multiplier);
+  const multipliedDenominator = floatMath(numerator).multiply(multiplier);
+  return (value * BigInt(multipliedDenominator)) / BigInt(multiplier);
 }
 
 export function divFloat(numerator: bigint, denominator: number) {
   const multiplier = 10 ** lengthAfterDecimal(denominator);
-  return denominator === 0
-    ? 0n
-    : (numerator / BigInt(fixFloatMath(denominator * multiplier))) * BigInt(multiplier);
+  const multipliedDenominator = floatMath(denominator).multiply(multiplier);
+  return denominator === 0 ? 0n : (numerator / BigInt(multipliedDenominator)) * BigInt(multiplier);
 }
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {

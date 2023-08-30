@@ -7,7 +7,7 @@ import {
   abs,
   divFloat,
   divPreserved,
-  fixFloatMath,
+  floatMath,
   formatDecimals,
   mulFloat,
   mulPreserved,
@@ -28,13 +28,6 @@ const initialTradeInput: Omit<TradeInput, 'direction'> = {
   maxFeeAllowance: 0.03,
 };
 
-const formatter = Intl.NumberFormat('en', {
-  useGrouping: false,
-  maximumFractionDigits: 2,
-  //@ts-ignore experimental api
-  roundingMode: 'trunc',
-}).format;
-
 function getCalculatedValues({
   method,
   takeProfit,
@@ -46,10 +39,10 @@ function getCalculatedValues({
   stopLoss: number;
   amount: bigint;
 }): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance'> {
-  const leverage = fixFloatMath(100 / stopLoss);
+  const leverage = floatMath(100).divide(stopLoss);
 
-  const takeProfitRate = fixFloatMath(takeProfit / 100);
-  const lossCutRate = fixFloatMath(stopLoss / 100);
+  const takeProfitRate = floatMath(takeProfit).divide(100);
+  const lossCutRate = floatMath(stopLoss).divide(100);
 
   const { collateral, quantity } =
     method === 'collateral'
@@ -62,9 +55,9 @@ function getCalculatedValues({
   return {
     collateral: collateral,
     quantity: quantity,
-    stopLoss: +formatter(stopLoss),
-    takeProfit: +formatter(takeProfit),
-    leverage: +formatter(leverage),
+    stopLoss: stopLoss,
+    takeProfit: takeProfit,
+    leverage: leverage,
     takerMargin: takerMargin,
     makerMargin: makerMargin,
   };
@@ -249,7 +242,7 @@ export const useTradeInput = (props: Props) => {
   };
 
   const onLeverageChange = (value: number | string) => {
-    const stopLoss = 100 / +value;
+    const stopLoss = floatMath(100).divide(+value);
     dispatch({
       type: 'updateValues',
       payload: {

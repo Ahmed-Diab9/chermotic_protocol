@@ -8,7 +8,7 @@ import {
   TicksProps,
 } from 'react-compound-slider';
 import { SliderRail, Handle, Track, Tick } from './components'; // example render components - source below
-import { fixFloatMath } from '~/utils/number';
+import { numberFormat } from '~/utils/number';
 
 interface SliderProps {
   min?: number;
@@ -40,22 +40,19 @@ export const Slider = ({
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
+  const format = (value: number | string) => numberFormat(value, { maxDigits: 2, type: 'number' });
+
   const handleSetter = (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
     if (!setter) return;
     if (values.length > 1) {
       console.warn('[Range]: single value only');
     }
-    setter(fixFloatMath(values[0]));
+    setter(format(values[0]));
   };
 
-  const ticksProps: Omit<TicksProps, 'children'> =
-    typeof tick === 'number'
-      ? {
-          count: tick,
-        }
-      : {
-          values: tick,
-        };
+  const ticksProps: Omit<TicksProps, 'children'> = {
+    [typeof tick === 'number' ? 'count' : 'values']: tick,
+  };
 
   return (
     <div className="w-full h-auto">
@@ -66,7 +63,7 @@ export const Slider = ({
         rootStyle={sliderStyle}
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
-        values={value ? [fixFloatMath(+value)] : []}
+        values={value ? [format(value)] : []}
         disabled={readonly}
       >
         <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>
