@@ -190,7 +190,7 @@ export function mulFloat(value: bigint, numerator: number) {
 export function divFloat(numerator: bigint, denominator: number) {
   const multiplier = 10 ** lengthAfterDecimal(denominator);
   const multipliedDenominator = floatMath(denominator).multiply(multiplier);
-  return denominator === 0 ? 0n : (numerator / BigInt(multipliedDenominator)) * BigInt(multiplier);
+  return denominator === 0 ? 0n : (numerator * BigInt(multiplier)) / BigInt(multipliedDenominator);
 }
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {
