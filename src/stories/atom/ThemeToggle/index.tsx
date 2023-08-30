@@ -12,7 +12,7 @@ interface ThemeToggleProps {
 }
 
 export const ThemeToggle = (props: ThemeToggleProps) => {
-  const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', false);
+  const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', true);
 
   useEffect(() => {
     if (darkMode) {
