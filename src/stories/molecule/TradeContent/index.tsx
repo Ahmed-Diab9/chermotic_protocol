@@ -165,6 +165,8 @@ export const TradeContent = (props: TradeContentProps) => {
                 autoCorrect
                 min={minLeverage}
                 max={maxLeverage}
+                minDigits={2}
+                maxDigits={2}
                 onChange={onLeverageChange}
               />
             </div>
@@ -185,6 +187,8 @@ export const TradeContent = (props: TradeContentProps) => {
                   autoCorrect
                   min={minTakeProfit}
                   max={maxTakeProfit}
+                  minDigits={2}
+                  maxDigits={2}
                   onChange={onTakeProfitChange}
                 />
               </div>
@@ -213,6 +217,8 @@ export const TradeContent = (props: TradeContentProps) => {
                   autoCorrect
                   min={minStopLoss}
                   max={maxStopLoss}
+                  minDigits={2}
+                  maxDigits={2}
                   onChange={onStopLossChange}
                 />
               </div>
@@ -276,6 +282,8 @@ export const TradeContent = (props: TradeContentProps) => {
                   min={minMaxFeeAllowance}
                   className="maxFeeAllowance"
                   onChange={onFeeAllowanceChange}
+                  minDigits={2}
+                  maxDigits={2}
                   autoCorrect
                 />
               </div>

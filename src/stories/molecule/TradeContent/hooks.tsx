@@ -10,7 +10,7 @@ import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 
-import { formatDecimals } from '~/utils/number';
+import { formatDecimals, numberFormat } from '~/utils/number';
 
 import { TradeContentProps } from '.';
 
@@ -46,9 +46,13 @@ export function useTradeContent(props: TradeContentProps) {
   const tokenName = currentToken?.name;
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
+
   const balance =
     balances && tokenAddress && balances[tokenAddress]
-      ? formatDecimals(balances[tokenAddress], tokenDecimals, 5, true)
+      ? numberFormat(formatUnits(balances[tokenAddress], tokenDecimals), {
+          maxDigits: 5,
+          useGrouping: true,
+        })
       : 0;
 
   const method = input.method;
@@ -130,29 +134,27 @@ export function useTradeContent(props: TradeContentProps) {
         stopLossPrice: '-',
       };
 
-    const { direction, takeProfit, stopLoss } = input;
+    const { takeProfit, stopLoss } = input;
+
+    const isLong = input.direction === 'long';
+
     const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
 
     const takeProfitRate = +takeProfit / 100;
     const stopLossRate = +stopLoss / 100;
 
-    const sign = direction === 'long' ? 1 : -1;
+    const sign = isLong ? 1 : -1;
 
     const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
-    const format = Intl.NumberFormat('en', {
-      useGrouping: false,
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-      //@ts-ignore experimental api
-      roundingMode: 'trunc',
-    }).format;
+    const format = (value: number) =>
+      numberFormat(value, { maxDigits: 2, minDigits: 2, useGrouping: true });
 
     return {
-      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(+takeProfit)}`,
+      takeProfitRatio: `${isLong ? '+' : '-'}${format(takeProfit)}`,
       takeProfitPrice: format(takeProfitPrice),
-      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(+stopLoss)}`,
+      stopLossRatio: `${isLong ? '-' : '+'}${format(stopLoss)}`,
       stopLossPrice: format(stopLossPrice),
     };
   }, [input, currentMarket]);

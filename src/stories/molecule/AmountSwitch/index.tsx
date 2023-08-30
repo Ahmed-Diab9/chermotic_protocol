@@ -1,7 +1,7 @@
 import { Input } from '~/stories/atom/Input';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { decimalLength, withComma } from '~/utils/number';
+import { decimalLength, numberFormat, withComma } from '~/utils/number';
 interface AmountSwitchProps {
   collateral: string;
   quantity: string;
@@ -76,7 +76,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
         />
         <p>{preset.subLabel}</p>
         <p className="ml-2 text-lg text-black2">
-          {withComma(Number(decimalLength(preset.subValue, 5)))} {tokenName}
+          {numberFormat(preset.subValue, { maxDigits: 5, useGrouping: true })} {tokenName}
         </p>
       </div>
     </>

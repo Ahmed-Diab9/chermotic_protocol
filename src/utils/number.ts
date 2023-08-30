@@ -17,18 +17,8 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
   if (value === undefined) {
     return replace;
   }
-  if (typeof value === 'number') {
-    const [integer, decimals] = String(value).split('.') as [string, string | undefined];
-    return String(integer).replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
-  }
-  if (typeof value === 'string') {
-    const [integer, decimals] = value.split('.');
-    return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
-  }
-  if (typeof value === 'bigint') {
-    const [integer, decimals] = value.toString().split('.');
-    return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
-  }
+  const [integer, decimals] = value.toString().split('.');
+  return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
 };
 
 export const formatDecimals = (
