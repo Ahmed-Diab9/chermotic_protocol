@@ -44,10 +44,10 @@ export const useBeforeDayOracles = () => {
             const averageVersion = (minVersion + maxVersion) / 2n;
             const averageOracle = await oracleProvider.read.atVersion([averageVersion]);
             const oracleDiff = Number(market.oracleValue.timestamp - averageOracle.timestamp);
-            if (oracleDiff < 60 * 60 * 24 - 60 * 10) {
+            if (oracleDiff < 60 * 60 * 24) {
               return func(minVersion, averageVersion);
             }
-            if (oracleDiff > 60 * 60 * 24) {
+            if (oracleDiff > 60 * 60 * 24 + 60 * 10) {
               return func(averageVersion, maxVersion);
             }
             return { ...averageOracle, marketAddress: market.address };
