@@ -1,12 +1,12 @@
 .MarketSelectV2 {
-  @apply flex items-center justify-between gap-6 min-h-[80px];
+  @apply flex items-center justify-between gap-6 min-h-[80px] pl-5 pr-3;
   &:has([data-headlessui-state='open']) {
     @apply dark:border-paper-lighter dark:shadow-lg;
   }
   .popover-panel {
     @apply absolute left-0 ml-[-1px];
-    @apply bg-paper min-h-[280px] rounded-b-2xl;
-    @apply top-[64px] border-x border-b px-10 pt-4;
+    @apply bg-paper min-h-[280px] rounded-b;
+    @apply top-[64px] border-x border-b px-5 pt-4;
     width: calc(100% + 2px);
   }
   .inner-popover {

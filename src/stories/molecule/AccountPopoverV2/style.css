@@ -6,9 +6,9 @@
     @apply dark:border-paper-lighter dark:shadow-lg;
   }
   .popover-panel {
-    @apply absolute left-0 ml-[-1px] rounded-b-2xl;
+    @apply absolute left-0 ml-[-1px] rounded-b;
     @apply top-[64px] border-x border-b px-10 pt-4;
-    @apply bg-paper border-paper-lighter text-primary;
+    @apply bg-paper text-primary;
     width: calc(100% + 2px);
     .inner-box {
       @apply relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border dark:border-transparent rounded-xl;
