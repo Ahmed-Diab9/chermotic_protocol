@@ -8,7 +8,6 @@ import { Token } from '~/typings/market';
 import usePoolReceipt, { LpReceipt } from '~/hooks/usePoolReceipt';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { formatDecimals } from '~/utils/number';
-import { isValid } from '~/utils/valid';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -40,7 +39,7 @@ export const usePoolProgress = () => {
   const [isGuideOpen, setGuideOpen] = useState(false);
   useEffect(() => {
     function onPool() {
-      if (isValid(openButtonRef.current) && isNil(ref.current)) {
+      if (isNotNil(openButtonRef.current) && isNil(ref.current)) {
         setGuideOpen(true);
         openButtonRef.current.click();
       }

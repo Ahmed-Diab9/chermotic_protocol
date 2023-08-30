@@ -1,9 +1,8 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { formatUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
-
 import { useAddLiquidity } from '~/hooks/useAddLiquidity';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMarket } from '~/hooks/useMarket';
@@ -11,14 +10,10 @@ import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 import usePoolInput from '~/hooks/usePoolInput';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
-
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-
 import { OwnedBin } from '~/typings/pools';
-
 import { divPreserved, formatDecimals, isNotZero, withComma } from '~/utils/number';
-import { isValid } from '~/utils/valid';
 
 export function usePoolPanel() {
   const { currentToken } = useSettlementToken();
@@ -53,7 +48,7 @@ export function usePoolPanel() {
 
   const [minRate, maxRate] = rates;
   const binDecimals =
-    isValid(currentOwnedPool) && currentOwnedPool.bins.length > 0
+    isNotNil(currentOwnedPool) && currentOwnedPool.bins.length > 0
       ? currentOwnedPool.bins[0].clbTokenDecimals
       : 1;
 
@@ -211,7 +206,7 @@ export function usePoolPanel() {
 
   const onSelectBin = (bin: OwnedBin) => {
     const found = selectedBins.find((selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate);
-    if (isValid(found)) {
+    if (isNotNil(found)) {
       dispatch(poolsAction.onBinsUnselect(bin));
     } else {
       dispatch(poolsAction.onBinsSelect(bin));
