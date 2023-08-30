@@ -20,6 +20,7 @@ export function MarketSelect() {
     priceClass,
     interestRate,
     explorerUrl,
+    beforeDayPrice,
   } = useMarketSelect();
 
   return (
@@ -76,7 +77,10 @@ export function MarketSelect() {
                     onClick={onClickMarket}
                   >
                     <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                    <p>${price}</p>
+                    <div className="flex flex-col gap-y-0.5">
+                      <p>${price}</p>
+                      <p className="text-[6px]">24H ${beforeDayPrice}</p>
+                    </div>
                   </button>
                 ))}
               </article>
@@ -87,6 +91,7 @@ export function MarketSelect() {
           <h2 className={`text-3xl h-full self-center ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
               ${price}
+              <p className="text-xs">24H ${beforeDayPrice}</p>
             </SkeletonElement>
           </h2>
           <div className="flex flex-col gap-1 pl-5 text-left border-l text-primary-light">
