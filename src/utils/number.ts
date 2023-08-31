@@ -49,9 +49,11 @@ export const numberFormat = <T extends string | number | bigint, U extends 'stri
     minDigits?: number;
     useGrouping?: boolean;
     roundingMode?: 'ceil' | 'floor' | 'trunc';
+    compact?: boolean;
     type?: U;
   } = {
     useGrouping: false,
+    compact: false,
   }
 ): U extends 'number' ? number : string => {
   const isRetrunTypeNumber = options.type === 'number';
@@ -60,6 +62,7 @@ export const numberFormat = <T extends string | number | bigint, U extends 'stri
     maximumFractionDigits: options.maxDigits,
     minimumFractionDigits: options.minDigits,
     useGrouping: isRetrunTypeNumber ? false : options.useGrouping,
+    notation: options.compact ? 'compact' : undefined,
     //@ts-ignore experimental api
     roundingMode: options.roundingMode,
   });

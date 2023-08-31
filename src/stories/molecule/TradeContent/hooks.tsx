@@ -103,11 +103,11 @@ export function useTradeContent(props: TradeContentProps) {
     const freeLiq =
       formatDecimals((totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n), tokenDecimals) ||
       '0';
-    const formatter = Intl.NumberFormat('en', {
-      notation: 'compact',
-      maximumFractionDigits: 3,
-    });
-    return [`${formatter.format(+freeLiq)}`, `${formatter.format(+totalLiq)}`];
+    const format = (value: string) =>
+      value === '0'
+        ? '-'
+        : numberFormat(value, { useGrouping: true, compact: true, type: 'string' });
+    return [format(freeLiq), format(totalLiq)];
   }, [totalUnusedLiquidity, totalMaxLiquidity, currentToken]);
 
   const tradeFee = formatDecimals(fee, tokenDecimals, 2);
