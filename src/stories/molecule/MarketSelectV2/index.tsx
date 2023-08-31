@@ -55,7 +55,7 @@ export function MarketSelectV2() {
               />
             </Popover.Button>
             <Popover.Panel className="popover-panel">
-              <p className="text-primary-lighter">Select Market</p>
+              <p className="text-left text-primary-lighter">Select Market</p>
               <section className="flex flex-auto w-full py-3">
                 <article className="flex flex-col pr-3 mr-3 border-r">
                   {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (

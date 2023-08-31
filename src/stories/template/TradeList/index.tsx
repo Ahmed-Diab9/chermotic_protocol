@@ -21,9 +21,9 @@ export interface TradeListProps {}
 export const TradeList = (props: TradeListProps) => {
   const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 240,
-    initialHeight: 200,
+    initialHeight: 242,
     minHeight: 120,
-    maxHeight: 400,
+    maxHeight: 800,
   });
 
   return (
