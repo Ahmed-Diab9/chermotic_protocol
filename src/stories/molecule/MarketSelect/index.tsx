@@ -76,9 +76,7 @@ export function MarketSelect() {
                     onClick={onClickMarket}
                   >
                     <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                    <div className="flex flex-col gap-y-0.5">
-                      <p>${price}</p>
-                    </div>
+                    <p>${price}</p>
                   </button>
                 ))}
               </article>
