@@ -3,7 +3,7 @@ import './style.css';
 import { isNil, isNotNil } from 'ramda';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Avatar } from '~/stories/atom/Avatar';
-import { numberFormat } from '~/utils/number';
+import { numberFormat, withComma } from '~/utils/number';
 
 interface InputProps {
   label?: string;
@@ -90,7 +90,7 @@ export const Input = (props: InputProps) => {
     setIsInternalChange(true);
 
     if (!autoCorrect) {
-      setDisplayValue(newValue);
+      setDisplayValue(withComma(newValue));
       onChange(newValue);
       return;
     }
