@@ -8,7 +8,6 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { usePublicClient } from 'wagmi';
-import { useBeforeDayOracles } from '~/hooks/useBeforeDayOracles';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
@@ -18,7 +17,6 @@ export function useMarketSelect() {
   const { previousOracle } = usePreviousOracle({ market: currentMarket });
   const { feeRate } = useFeeRate();
   const publicClient = usePublicClient();
-  const { oracle: beforeDayOracle } = useBeforeDayOracles();
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
@@ -58,7 +56,6 @@ export function useMarketSelect() {
     2,
     true
   );
-  const beforeDayPrice = formatDecimals(beforeDayOracle?.price, ORACLE_PROVIDER_DECIMALS, 2, true);
   const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
@@ -85,6 +82,5 @@ export function useMarketSelect() {
     priceClass,
     interestRate,
     explorerUrl,
-    beforeDayPrice,
   };
 }

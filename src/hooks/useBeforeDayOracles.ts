@@ -8,6 +8,7 @@ import { useMarket } from './useMarket';
 
 type OracleWithMarket = OracleVersion & { marketAddress: string };
 
+// TODO: Use hooks in v2 frontend
 export const useBeforeDayOracles = () => {
   const { markets, currentMarket } = useMarket();
   const { isReady, client } = useChromaticClient();
