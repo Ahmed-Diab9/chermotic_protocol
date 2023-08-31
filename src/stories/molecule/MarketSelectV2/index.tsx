@@ -110,7 +110,7 @@ export function MarketSelectV2() {
           </h2>
         </div>
         <div className="flex items-stretch gap-5 text-right text-primary-light font-regular">
-          <div className="flex flex-col gap-1 pl-5">
+          <div className="flex flex-col gap-1">
             <div className="flex">
               <p>Last update</p>
             </div>
@@ -120,7 +120,7 @@ export function MarketSelectV2() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex flex-col gap-1 pl-5">
+          <div className="flex flex-col gap-1">
             <div className="flex">
               <p>24H Change</p>
               {/* <TooltipGuide
@@ -139,7 +139,7 @@ export function MarketSelectV2() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex flex-col gap-1 pl-5">
+          <div className="flex flex-col gap-1">
             <div className="flex">
               <p>Interest Rate</p>
               <TooltipGuide
