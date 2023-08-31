@@ -83,7 +83,7 @@ export function MarketSelect() {
             </section>
           </Popover.Panel>
         </Popover>
-        <div className="flex items-center gap-5 mr-10">
+        <div className="flex items-stretch gap-5 mr-2">
           <h2 className={`text-3xl h-full self-center ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
               ${price}

@@ -5,6 +5,9 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
+import { isNil } from 'ramda';
+import { useMemo } from 'react';
+import { usePublicClient } from 'wagmi';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
@@ -13,6 +16,7 @@ export function useMarketSelectV2() {
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
   const { previousOracle } = usePreviousOracle({ market: currentMarket });
   const { feeRate } = useFeeRate();
+  const publicClient = usePublicClient();
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
@@ -56,6 +60,18 @@ export function useMarketSelectV2() {
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
 
+  const explorerUrl = useMemo(() => {
+    try {
+      const rawUrl = publicClient.chain.blockExplorers?.default?.url;
+      if (isNil(rawUrl)) return;
+      const origin = new URL(rawUrl).origin;
+      if (isNil(origin) || isNil(currentMarket)) return;
+      return `${origin}/address/${currentMarket.address}`;
+    } catch (error) {
+      return;
+    }
+  }, [publicClient, currentMarket]);
+
   return {
     isLoading,
     tokenName,
@@ -65,5 +81,6 @@ export function useMarketSelectV2() {
     price,
     priceClass,
     interestRate,
+    explorerUrl,
   };
 }
