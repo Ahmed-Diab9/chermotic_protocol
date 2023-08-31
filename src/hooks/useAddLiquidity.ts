@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { PoolEvent } from '~/typings/events';
 import { Logger, errorLog } from '../utils/log';
-import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
@@ -63,7 +62,7 @@ function useAddLiquidity(props: Props) {
       // FIXME
       const expandedAmount =
         BigInt(Number(amount) * 100000) * parseUnits('1', currentToken.decimals - 5);
-      if (!isValid(expandedAmount)) {
+      if (isNil(expandedAmount)) {
         errorLog('amount is invalid');
         return;
       }

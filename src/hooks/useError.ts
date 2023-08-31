@@ -1,6 +1,6 @@
+import { isNotNil } from 'ramda';
 import { useEffect } from 'react';
 import { Logger } from '~/utils/log';
-import { isValid } from '~/utils/valid';
 
 const defaultLogger = Logger('Error');
 
@@ -14,7 +14,7 @@ export function useError({ error, logger }: Props) {
   useEffect(() => {
     if (error) {
       if (error instanceof Array) {
-        error.filter((err) => isValid(err)).forEach((err) => (logger ?? defaultLogger).error(err));
+        error.filter((err) => isNotNil(err)).forEach((err) => (logger ?? defaultLogger).error(err));
       } else {
         (logger ?? defaultLogger).error(error);
       }

@@ -1,7 +1,7 @@
+import { isNotNil } from 'ramda';
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
-import { isValid } from '~/utils/valid';
 import useLocalStorage from './useLocalStorage';
 import { useSettlementToken } from './useSettlementToken';
 
@@ -15,12 +15,12 @@ export const useTokenLocal = () => {
       return;
     }
     let token = tokens?.find((token) => token.name === storedToken);
-    if (isValid(token)) {
+    if (isNotNil(token)) {
       dispatch(tokenAction.onTokenSelect(token));
       return;
     }
     token = tokens?.[0];
-    if (isValid(token)) {
+    if (isNotNil(token)) {
       dispatch(tokenAction.onTokenSelect(token));
       return;
     }

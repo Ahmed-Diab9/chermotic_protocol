@@ -1,18 +1,29 @@
+import { isNotNil } from 'ramda';
 import { useEffect, useSyncExternalStore } from 'react';
-import { isPrimitive, isValid } from '../utils/valid';
 
 const cache = new Map<string, unknown>();
 const handlers = new Set<(key: string) => unknown>();
 const IS_PRIMITIVE = '__IS_PRIMITIVE__';
 
+const isPrimitive = (value: unknown) => {
+  switch (typeof value) {
+    case 'number':
+    case 'string':
+    case 'boolean':
+      return true;
+    default:
+      return false;
+  }
+};
+
 const useLocalStorage = <T>(key: string, defaultValue?: T) => {
   useEffect(() => {
     const cachedValue = cache.get(key);
-    if (isValid(cachedValue)) {
+    if (isNotNil(cachedValue)) {
       return;
     }
     const storedItem = window.localStorage.getItem(key);
-    if (isValid(storedItem)) {
+    if (isNotNil(storedItem)) {
       const parsed = JSON.parse(storedItem);
       if (parsed[IS_PRIMITIVE]) {
         cache.set(key, parsed[key]);
@@ -21,7 +32,7 @@ const useLocalStorage = <T>(key: string, defaultValue?: T) => {
       }
       return;
     }
-    if (isValid(defaultValue)) {
+    if (isNotNil(defaultValue)) {
       if (isPrimitive(defaultValue)) {
         const wrapped = {
           [IS_PRIMITIVE]: true,
