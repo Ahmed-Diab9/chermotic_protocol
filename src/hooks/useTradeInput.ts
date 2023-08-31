@@ -199,11 +199,7 @@ export const useTradeInput = (props: Props) => {
       { tradeFee: 0n, makerMargin: state.makerMargin }
     );
 
-    const feePercent = divPreserved(
-      tradeFee,
-      makerMargin !== 0n ? makerMargin : 1n,
-      PERCENT_DECIMALS
-    );
+    const feePercent = tradeFee / (makerMargin !== 0n ? makerMargin : 1n);
     return { tradeFee, feePercent };
   }, [
     state.makerMargin,
