@@ -27,7 +27,7 @@ export function MarketSelectV2() {
         <div className="flex items-center gap-3">
           <BookmarkButton size="lg" />
           <Popover>
-            <Popover.Button className="flex items-center gap-3">
+            <Popover.Button className="flex items-center h-20 gap-3">
               <div className="pr-3 border-r">
                 <div className="flex items-center gap-1">
                   <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
@@ -49,8 +49,9 @@ export function MarketSelectV2() {
                 aria-hidden="true"
               />
             </Popover.Button>
-            <Popover.Panel className="flex popover-panel">
-              <section className="flex w-full py-4 border-t">
+            <Popover.Panel className="popover-panel">
+              <p className="text-primary-lighter">Select Market</p>
+              <section className="flex flex-auto w-full py-3">
                 <article className="flex flex-col pr-6 mr-6 border-r">
                   {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
                     <button
