@@ -13,6 +13,7 @@ import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { TradeList } from '~/stories/template/TradeList';
 import { TradeLiquidity } from '~/stories/template/TradeLiquidity';
 import { TradeChartView } from '~/stories/template/TradeChartView';
+import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import './style.css';
 
 function TradeV2() {
@@ -24,6 +25,7 @@ function TradeV2() {
       <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
       <section className="flex flex-col grow w-full max-w-[1600px] items-stretch px-5 mx-auto mb-20">
+        <BookmarkBoard />
         <MainBarV2 accountPopover />
         <div className="flex w-full gap-1">
           <article className="flex-auto w-full">
