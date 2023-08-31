@@ -59,14 +59,14 @@ export const TradeList = (props: TradeListProps) => {
           </div>
         </div>
         <div className="flex flex-col w-full gap-1 px-3 overflow-y-auto">
-          {tradeListItems.map((trade, index) => (
+          {tradeListItems.map((item, index) => (
             <div key={index} className="tr">
               <span className="td">
                 <span className="flex items-center gap-[2px]">
-                  {trade.price}
+                  {item.price}
                   <span
                     className={
-                      trade.direction === 'long'
+                      item.direction === 'long'
                         ? 'text-price-higher rotate-180'
                         : 'text-price-lower'
                     }
@@ -77,12 +77,12 @@ export const TradeList = (props: TradeListProps) => {
               </span>
               <span
                 className={`td ${
-                  trade.direction === 'long' ? 'text-price-higher' : 'text-price-lower'
+                  item.direction === 'long' ? 'text-price-higher' : 'text-price-lower'
                 }`}
               >
-                {trade.amount}
+                {item.amount}
               </span>
-              <span className="td">{trade.time}</span>
+              <span className="td">{item.time}</span>
             </div>
           ))}
         </div>
