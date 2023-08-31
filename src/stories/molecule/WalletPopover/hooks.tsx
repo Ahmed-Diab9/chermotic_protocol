@@ -16,7 +16,8 @@ import { Token } from '~/typings/market';
 
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
-import { formatBalance, formatDecimals, withComma } from '~/utils/number';
+import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
+import { formatUnits } from 'viem';
 
 export function useWalletPopover() {
   const { connectAsync, connectors } = useConnect();
@@ -94,7 +95,15 @@ export function useWalletPopover() {
     const key = token.address;
     const name = token.name;
     const usdPrice = getTokenPrice(token);
-    const balance = formatDecimals(tokenBalances?.[token.address], token.decimals, 5, true);
+    const balance = numberFormat(
+      formatUnits(tokenBalances?.[token.address] || 0n, token.decimals),
+      {
+        maxDigits: 5,
+        useGrouping: true,
+        roundingMode: 'floor',
+        type: 'string',
+      }
+    );
     const explorerUrl = getExplorerUrl('token', token.address);
     acc.push({ key, name, usdPrice, balance, explorerUrl });
     return acc;
