@@ -1,24 +1,19 @@
 import { isNil } from 'ramda';
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { FEE_RATE_DECIMAL } from '~/configs/decimals';
-import { TradeInput, TradeInputAction } from '~/typings/trade';
-import { abs, divFloat, floatMath, formatDecimals, mulFloat, mulPreserved } from '~/utils/number';
-import { useLiquidityPool } from './useLiquidityPool';
-import { useMargins } from './useMargins';
-import { useSettlementToken } from './useSettlementToken';
 
-const initialTradeInput: Omit<TradeInput, 'direction'> = {
-  method: 'collateral',
-  quantity: 0n,
-  collateral: 0n,
-  takerMargin: 0n,
-  makerMargin: 0n,
-  takeProfit: 100,
-  stopLoss: 10,
-  leverage: 10,
-  maxFeeAllowance: 0.03,
-};
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
+import { useMargins } from '~/hooks/useMargins';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+
+import { FEE_RATE_DECIMAL } from '~/configs/decimals';
+
+import { TradeInput } from '~/typings/trade';
+
+import { abs, divFloat, floatMath, formatDecimals, mulFloat, mulPreserved } from '~/utils/number';
+
+import { useAppDispatch, useAppSelector } from '~/store';
+import { tradesAction } from '~/store/reducer/trades';
 
 function getCalculatedValues({
   method,
@@ -54,61 +49,6 @@ function getCalculatedValues({
     makerMargin: makerMargin,
   };
 }
-
-const tradeInputReducer = (state: TradeInput, { type, payload }: TradeInputAction) => {
-  switch (type) {
-    case `updateMethod`: {
-      const { method, ...others } = state;
-      const nextMethod = method === 'collateral' ? 'quantity' : 'collateral';
-
-      state = { ...others, method: nextMethod };
-      break;
-    }
-
-    case `updateAmounts`: {
-      const method = state.method;
-      const takeProfit = state.takeProfit;
-      const stopLoss = state.stopLoss;
-      const amount = payload.amount;
-
-      const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
-
-      const amounts =
-        payload.amount === undefined
-          ? { quantity: 0n, collateral: 0n }
-          : { quantity: calculated.quantity, collateral: calculated.collateral };
-
-      state = { ...state, ...calculated, ...amounts };
-      break;
-    }
-
-    case `updateValues`: {
-      const method = state.method;
-      const takeProfit = payload.takeProfit ?? state.takeProfit;
-      const stopLoss = payload.stopLoss ?? state.stopLoss;
-      const amount = method === 'collateral' ? state.collateral : state.quantity;
-
-      const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
-
-      state = { ...state, ...calculated };
-      break;
-    }
-
-    case 'updateMaxFee': {
-      const { maxFeeAllowance } = payload;
-      state = { ...state, maxFeeAllowance };
-      break;
-    }
-
-    case 'updateDirection': {
-      const { direction } = payload;
-      state = { ...state, direction };
-      break;
-    }
-  }
-
-  return state;
-};
 
 const getFeeLevel = (percentage: bigint, tokenDecimals: number) => {
   // const tierZero = parseUnits('0.01', tokenDecimals);
@@ -151,7 +91,10 @@ interface Props {
 export const useTradeInput = (props: Props) => {
   const { direction = 'long' } = props;
   const { currentToken } = useSettlementToken();
-  const [state, dispatch] = useReducer(tradeInputReducer, { direction, ...initialTradeInput });
+
+  const state = useAppSelector((state) => state.trades[direction]);
+  const dispatch = useAppDispatch();
+
   const {
     liquidityPool: pool,
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
@@ -163,16 +106,16 @@ export const useTradeInput = (props: Props) => {
   const { tradeFee, feePercent } = useMemo(() => {
     if (
       isNil(currentToken) ||
-      (state.direction === 'long' && state.makerMargin > longTotalUnusedLiquidity) ||
-      (state.direction === 'short' && state.makerMargin > shortTotalUnusedLiquidity)
+      (direction === 'long' && state.makerMargin > longTotalUnusedLiquidity) ||
+      (direction === 'short' && state.makerMargin > shortTotalUnusedLiquidity)
     ) {
       return { tradeFee: 0n, feePercent: 0n };
     }
     const { tradeFee, makerMargin } = (pool?.bins || []).reduce(
       (acc, cur) => {
         if (
-          (state.direction === 'long' && cur.baseFeeRate > 0) ||
-          (state.direction === 'short' && cur.baseFeeRate < 0) ||
+          (direction === 'long' && cur.baseFeeRate > 0) ||
+          (direction === 'short' && cur.baseFeeRate < 0) ||
           acc.makerMargin > 0n
         ) {
           const feeRate = abs(cur.baseFeeRate);
@@ -195,7 +138,7 @@ export const useTradeInput = (props: Props) => {
     return { tradeFee, feePercent };
   }, [
     state.makerMargin,
-    state.direction,
+    direction,
     currentToken,
     pool?.bins,
     longTotalUnusedLiquidity,
@@ -212,76 +155,63 @@ export const useTradeInput = (props: Props) => {
       3
     );
 
-    dispatch({ type: 'updateMaxFee', payload: { maxFeeAllowance } });
+    onFeeAllowanceChange(maxFeeAllowance);
   }, [feePercent]);
 
   const onMethodChange = (value: 'collateral' | 'quantity') => {
-    dispatch({ type: 'updateMethod', payload: { method: value } });
+    dispatch(tradesAction.updateTradesState({ direction, method: value }));
   };
 
   const onAmountChange = (value: string) => {
     const amount = parseUnits(value, currentToken?.decimals || 0);
-    dispatch({
-      type: 'updateAmounts',
-      payload: {
-        amount: amount,
-      },
-    });
+
+    const { method, takeProfit, stopLoss } = state;
+
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+
+    const amounts =
+      amount === undefined
+        ? { quantity: 0n, collateral: 0n }
+        : { quantity: calculated.quantity, collateral: calculated.collateral };
+
+    dispatch(tradesAction.updateTradesState({ direction, ...calculated, ...amounts }));
   };
+
+  const amount = state.method === 'collateral' ? state.collateral : state.quantity;
 
   const onLeverageChange = (value: number | string) => {
     const stopLoss = floatMath(100).divide(+value);
-    dispatch({
-      type: 'updateValues',
-      payload: {
-        stopLoss: stopLoss,
-      },
-    });
+    const { method, takeProfit } = state;
+
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+    dispatch(tradesAction.updateTradesState({ direction, ...calculated }));
   };
 
   const onTakeProfitChange = (value: number | string) => {
-    dispatch({
-      type: 'updateValues',
-      payload: {
-        takeProfit: +value,
-      },
-    });
+    const { method, stopLoss } = state;
+    const takeProfit = Number(value);
+
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+    dispatch(tradesAction.updateTradesState({ direction, ...calculated }));
   };
 
   const onStopLossChange = (value: number | string) => {
-    dispatch({
-      type: 'updateValues',
-      payload: {
-        stopLoss: +value,
-      },
-    });
-  };
+    const { method, takeProfit } = state;
+    const stopLoss = Number(value);
 
-  const onDirectionToggle = () => {
-    const { direction } = state;
-    dispatch({
-      type: 'updateDirection',
-      payload: {
-        direction: direction === 'long' ? 'short' : 'long',
-      },
-    });
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+    dispatch(tradesAction.updateTradesState({ direction, ...calculated }));
   };
 
   const onFeeAllowanceChange = (allowance: number | string) => {
-    dispatch({
-      type: 'updateMaxFee',
-      payload: {
-        maxFeeAllowance: +allowance,
-      },
-    });
+    dispatch(tradesAction.updateTradesState({ direction, maxFeeAllowance: +allowance }));
   };
 
   const disabled = useMemo<{
     status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance' | 'maxFeeAllowance';
+    detail?: 'minimum' | 'liquidity' | 'balance';
   }>(() => {
     if (!currentToken) return { status: true };
-    if (state.maxFeeAllowance > 50) return { status: true, detail: 'maxFeeAllowance' };
 
     const leverage = state.leverage;
     const takeProfit = state.takeProfit;
@@ -304,13 +234,12 @@ export const useTradeInput = (props: Props) => {
     const tokenDecimals = currentToken.decimals;
 
     const bigTotalLiquidity =
-      state.direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
+      direction === 'long' ? longTotalUnusedLiquidity : shortTotalUnusedLiquidity;
 
     const totalLiquidity = +formatUnits(bigTotalLiquidity, tokenDecimals);
 
     const isNaNTotalLiquidity = isNaN(totalLiquidity);
     if (isNaNTotalLiquidity) {
-      console.log(isNaNTotalLiquidity, totalLiquidity);
       return { status: true };
     }
 
@@ -338,7 +267,6 @@ export const useTradeInput = (props: Props) => {
     tradeFee,
     feePercent,
     onAmountChange,
-    onDirectionToggle,
     onMethodChange,
     onLeverageChange,
     onTakeProfitChange,

@@ -116,7 +116,7 @@ export function useTradeContent(props: TradeContentProps) {
   const maxFeeAllowance = input?.maxFeeAllowance;
   const minMaxFeeAllowance = +tradeFeePercent;
 
-  const { onOpenPosition } = useOpenPosition({ state: input });
+  const { onOpenPosition } = useOpenPosition({ state: { ...input, direction } });
 
   const executionPrice = useMemo(() => {
     if (isNil(currentMarket)) {
@@ -136,7 +136,7 @@ export function useTradeContent(props: TradeContentProps) {
 
     const { takeProfit, stopLoss } = input;
 
-    const isLong = input.direction === 'long';
+    const isLong = direction === 'long';
 
     const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
 
