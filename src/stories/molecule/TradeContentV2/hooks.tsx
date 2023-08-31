@@ -10,7 +10,7 @@ import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 
-import { formatDecimals } from '~/utils/number';
+import { formatDecimals, numberFormat } from '~/utils/number';
 
 import { TradeContentV2Props } from '.';
 
@@ -36,19 +36,23 @@ export function useTradeContentV2(props: TradeContentV2Props) {
   const { currentMarket } = useMarket();
 
   const oracleDecimals = 18;
+  const tokenDecimals = currentToken?.decimals || 0;
 
-  const quantity = input.quantity;
-  const collateral = input.collateral;
-  const minAmount = formatDecimals(currentToken?.minimumMargin, currentToken?.decimals);
+  const quantity = formatDecimals(input.quantity, tokenDecimals);
+  const collateral = formatDecimals(input.collateral, tokenDecimals);
+  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
 
   const tokenAddress = currentToken?.address;
-  const tokenDecimals = currentToken?.decimals || 0;
   const tokenName = currentToken?.name;
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
+
   const balance =
     balances && tokenAddress && balances[tokenAddress]
-      ? formatDecimals(balances[tokenAddress], tokenDecimals, 5, true)
+      ? numberFormat(formatUnits(balances[tokenAddress], tokenDecimals), {
+          maxDigits: 5,
+          useGrouping: true,
+        })
       : 0;
 
   const method = input.method;
@@ -92,19 +96,18 @@ export function useTradeContentV2(props: TradeContentV2Props) {
   const maxStopLoss = 100;
   const stopLossPlaceholder = minStopLoss.toString();
 
-  const makerMargin = Number(input.makerMargin);
+  const makerMargin = +formatDecimals(input.makerMargin, tokenDecimals);
 
   const [totalLiquididy, freeLiquidity] = useMemo(() => {
     const totalLiq = formatDecimals(totalMaxLiquidity, tokenDecimals) || '0';
     const freeLiq =
       formatDecimals((totalMaxLiquidity ?? 0n) - (totalUnusedLiquidity ?? 0n), tokenDecimals) ||
       '0';
-    const formatter = Intl.NumberFormat('en', {
-      notation: 'compact',
-      maximumFractionDigits: 3,
-      minimumFractionDigits: 0,
-    });
-    return [`${formatter.format(+freeLiq)}`, `${formatter.format(+totalLiq)}`];
+    const format = (value: string) =>
+      value === '0'
+        ? '-'
+        : numberFormat(value, { useGrouping: true, compact: true, type: 'string' });
+    return [format(freeLiq), format(totalLiq)];
   }, [totalUnusedLiquidity, totalMaxLiquidity, currentToken]);
 
   const tradeFee = formatDecimals(fee, tokenDecimals, 2);
@@ -131,29 +134,27 @@ export function useTradeContentV2(props: TradeContentV2Props) {
         stopLossPrice: '-',
       };
 
-    const { direction, takeProfit, stopLoss } = input;
+    const { takeProfit, stopLoss } = input;
+
+    const isLong = input.direction === 'long';
+
     const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
 
     const takeProfitRate = +takeProfit / 100;
     const stopLossRate = +stopLoss / 100;
 
-    const sign = direction === 'long' ? 1 : -1;
+    const sign = isLong ? 1 : -1;
 
     const takeProfitPrice = +oraclePrice * (1 + sign * takeProfitRate);
     const stopLossPrice = +oraclePrice * (1 - sign * stopLossRate);
 
-    const format = Intl.NumberFormat('en', {
-      useGrouping: false,
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-      //@ts-ignore experimental api
-      roundingMode: 'trunc',
-    }).format;
+    const format = (value: number) =>
+      numberFormat(value, { maxDigits: 2, minDigits: 2, useGrouping: true });
 
     return {
-      takeProfitRatio: `${direction === 'long' ? '+' : '-'}${format(+takeProfit)}`,
+      takeProfitRatio: `${isLong ? '+' : '-'}${format(takeProfit)}`,
       takeProfitPrice: format(takeProfitPrice),
-      stopLossRatio: `${direction === 'long' ? '-' : '+'}${format(+stopLoss)}`,
+      stopLossRatio: `${isLong ? '-' : '+'}${format(stopLoss)}`,
       stopLossPrice: format(stopLossPrice),
     };
   }, [input, currentMarket]);
