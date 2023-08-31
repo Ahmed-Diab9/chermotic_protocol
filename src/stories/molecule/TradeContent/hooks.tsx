@@ -40,7 +40,7 @@ export function useTradeContent(props: TradeContentProps) {
 
   const quantity = formatDecimals(input.quantity, tokenDecimals);
   const collateral = formatDecimals(input.collateral, tokenDecimals);
-  const minAmount = formatDecimals(currentToken?.minimumMargin, oracleDecimals);
+  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
 
   const tokenAddress = currentToken?.address;
   const tokenName = currentToken?.name;
