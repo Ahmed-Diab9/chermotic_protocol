@@ -33,7 +33,7 @@ export const TradeList = (props: TradeListProps) => {
         minHeight={minHeight}
         maxHeight={maxHeight}
         enable={{
-          top: true,
+          top: false,
           right: false,
           bottom: true,
           left: false,
