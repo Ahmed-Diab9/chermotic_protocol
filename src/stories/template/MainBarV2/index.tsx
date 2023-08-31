@@ -7,8 +7,8 @@ interface MainBarV2Props {
 
 export function MainBarV2({ accountPopover = false }: MainBarV2Props) {
   return (
-    <div className="relative py-2">
-      <div className="flex gap-2 justify-stretch">
+    <div className="relative py-1">
+      <div className="flex gap-1 justify-stretch">
         <div className="flex-auto w-full">
           <MarketSelectV2 />
         </div>

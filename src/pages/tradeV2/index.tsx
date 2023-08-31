@@ -23,9 +23,9 @@ function TradeV2() {
     <div className="flex flex-col min-h-[100vh] w-full">
       <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
-      <section className="flex flex-col grow w-full max-w-[1400px] items-stretch px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full max-w-[1600px] items-stretch px-5 mx-auto mb-20">
         <MainBarV2 accountPopover />
-        <div className="flex w-full gap-2">
+        <div className="flex w-full gap-1">
           <article className="flex-auto w-full">
             <TradeChartView />
             <div className="my-6 text-left text-primary-lighter">
@@ -34,7 +34,7 @@ function TradeV2() {
               oracle price, and the actual fee paid is determined by the next oracle price.
             </div>
           </article>
-          <article className="w-[240px] flex-none flex flex-col gap-2">
+          <article className="w-[240px] flex-none flex flex-col gap-1">
             <TradeLiquidity />
             <TradeList />
           </article>
