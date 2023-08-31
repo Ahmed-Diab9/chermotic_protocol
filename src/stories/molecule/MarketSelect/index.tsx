@@ -2,10 +2,11 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
+import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-
 import { useMarketSelect } from './hooks';
 
 export function MarketSelect() {
@@ -18,6 +19,7 @@ export function MarketSelect() {
     price,
     priceClass,
     interestRate,
+    explorerUrl,
   } = useMarketSelect();
 
   return (
@@ -82,7 +84,7 @@ export function MarketSelect() {
           </Popover.Panel>
         </Popover>
         <div className="flex items-center gap-5 mr-10">
-          <h2 className={`text-3xl ${priceClass}`}>
+          <h2 className={`text-3xl h-full self-center ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
               ${price}
             </SkeletonElement>
@@ -102,6 +104,14 @@ export function MarketSelect() {
                 className="mr-0"
               />
             </div>
+          </div>
+          <div className="flex pl-3 mr-3 border-l text-primary-light">
+            <Button
+              css="unstyled"
+              iconOnly={<OutlinkIcon />}
+              className="self-center"
+              href={explorerUrl}
+            />
           </div>
         </div>
       </div>

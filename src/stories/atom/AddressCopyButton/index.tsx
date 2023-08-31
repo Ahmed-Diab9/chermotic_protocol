@@ -1,4 +1,5 @@
 import { Square2StackIcon } from '@heroicons/react/24/outline';
+// import CopyIcon from '~/assets/icons/CopyIcon';
 import { MouseEventHandler } from 'react';
 import { Button } from '../Button';
 import { TooltipGuide } from '../TooltipGuide';
