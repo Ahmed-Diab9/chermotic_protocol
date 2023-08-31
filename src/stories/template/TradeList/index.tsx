@@ -3,32 +3,62 @@ import './style.css';
 import { Button } from '~/stories/atom/Button';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
+import { Resizable } from 're-resizable';
+import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
 const tradeListItems = [
   { direction: 'long', price: 2424.1212, amount: 0.1212, time: '10:00:30' },
+  { direction: 'short', price: 2424.1212, amount: 0.1212, time: '11:00:00' },
+  { direction: 'short', price: 24.1212, amount: 0.12, time: '11:00:00' },
+  { direction: 'short', price: 2424.1212, amount: 0.1212, time: '11:00:00' },
+  { direction: 'short', price: 2424.1212, amount: 0.1212, time: '11:00:00' },
+  { direction: 'short', price: 2424.1212, amount: 0.1212, time: '11:00:00' },
   { direction: 'short', price: 2424.1212, amount: 0.1212, time: '11:00:00' },
 ];
 
 export interface TradeListProps {}
 
 export const TradeList = (props: TradeListProps) => {
+  const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
+    initialWidth: 240,
+    initialHeight: 200,
+    minHeight: 120,
+    maxHeight: 400,
+  });
+
   return (
-    <div className="TradeList panel min-h-[236px]">
-      <div className="flex items-stretch border-b">
-        <div className="flex items-center flex-auto px-3">
-          <h4>Trades</h4>
+    <div className="TradeList min-h-[236px]">
+      <Resizable
+        size={{ width, height }}
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+        enable={{
+          top: true,
+          right: false,
+          bottom: true,
+          left: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+        }}
+        onResizeStop={handleResizeStop}
+        className="relative flex flex-col pb-2 overflow-hidden panel"
+      >
+        <div className="sticky flex items-stretch flex-none border-b">
+          <div className="flex items-center flex-auto px-3">
+            <h4>Trades</h4>
+          </div>
+          <Button iconOnly={<ArrowPathIcon />} css="square" />
         </div>
-        <Button iconOnly={<ArrowPathIcon />} css="square" />
-      </div>
-      <div className="table w-full px-3 py-2">
-        <div className="table-row-group thead">
+        <div className="w-full px-3 py-2 text-primary-lighter">
           <div className="tr">
             <span className="td">Price</span>
             <span className="td">Amount</span>
             <span className="td">Time</span>
           </div>
         </div>
-        <div className="table-row-group tbody">
+        <div className="flex flex-col w-full gap-1 px-3 overflow-y-auto">
           {tradeListItems.map((trade, index) => (
             <div key={index} className="tr">
               <span className="td">
@@ -56,7 +86,7 @@ export const TradeList = (props: TradeListProps) => {
             </div>
           ))}
         </div>
-      </div>
+      </Resizable>
     </div>
   );
 };

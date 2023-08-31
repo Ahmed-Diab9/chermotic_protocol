@@ -2,7 +2,7 @@ import { Resizable } from 're-resizable';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
 interface ResizablePanelProps {
-  className?: string;
+  // className?: string;
 }
 
 export const ResizablePanel = (props: ResizablePanelProps) => {

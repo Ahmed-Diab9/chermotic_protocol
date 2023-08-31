@@ -1,18 +1,16 @@
 .TradeList {
-  .table {
-    .tr {
-      @apply table-row;
-      .td {
-        @apply table-cell text-left pb-1;
-        &:last-child {
-          @apply pl-3 text-primary-lighter w-1/4;
-        }
+  .tr {
+    @apply w-full flex justify-between gap-2;
+    .td {
+      @apply text-left grow;
+      &:nth-child(1) {
+        @apply w-[80px];
       }
-    }
-    .thead {
-      @apply text-primary-lighter;
-      .td {
-        @apply pb-2;
+      &:nth-child(2) {
+        @apply w-[40px];
+      }
+      &:nth-child(3) {
+        @apply pl-3 text-primary-lighter w-[60px];
       }
     }
   }
