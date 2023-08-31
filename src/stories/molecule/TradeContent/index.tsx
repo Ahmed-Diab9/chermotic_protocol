@@ -98,11 +98,8 @@ export const TradeContent = (props: TradeContentProps) => {
             <Listbox value={method} onChange={onMethodChange}>
               <Listbox.Button>{methodLabel}</Listbox.Button>
               <Listbox.Options>
-                {['collateral', 'quantity'].map((method) => (
-                  <Listbox.Option key={method} value={method}>
-                    {methodMap[method as 'collateral' | 'quantity']}
-                  </Listbox.Option>
-                ))}
+                <Listbox.Option value="collateral">{methodMap.collateral}</Listbox.Option>
+                <Listbox.Option value="quantity">{methodMap.quantity}</Listbox.Option>
               </Listbox.Options>
             </Listbox>
           </div>
