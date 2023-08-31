@@ -1,14 +1,14 @@
 import { Input } from '~/stories/atom/Input';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { decimalLength, withComma } from '~/utils/number';
+import { decimalLength, numberFormat, withComma } from '~/utils/number';
 interface AmountSwitchProps {
   collateral: string;
   quantity: string;
   method: 'quantity' | 'collateral';
   direction: 'long' | 'short';
   disabled: boolean;
-  disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
+  disableDetail?: 'minimum' | 'liquidity' | 'balance' | 'maxFeeAllowance' | undefined;
   tokenName?: string;
   minAmount: string;
   onAmountChange: (value: string) => unknown;
@@ -31,6 +31,8 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     balance: 'Exceeded available account balance.',
     liquidity: 'Exceeded free liquidity size.',
     minimum: `Less than minimum betting amount. (${minAmount} ${tokenName})`,
+    // FIXME:
+    maxFeeAllowance: 'Max fee allowance.',
   };
   const errorMessage = disableDetail ? errors[disableDetail] : undefined;
 
@@ -74,7 +76,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
         />
         <p>{preset.subLabel}</p>
         <p className="ml-2 text-lg text-black2">
-          {withComma(Number(decimalLength(preset.subValue, 5)))} {tokenName}
+          {numberFormat(preset.subValue, { maxDigits: 5, useGrouping: true })} {tokenName}
         </p>
       </div>
     </>

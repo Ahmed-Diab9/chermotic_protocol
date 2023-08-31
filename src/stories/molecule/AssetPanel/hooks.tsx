@@ -16,7 +16,7 @@ import { accountAction } from '~/store/reducer/account';
 
 import { ACCOUNT_STATUS } from '~/typings/account';
 
-import { formatDecimals, isNotZero } from '~/utils/number';
+import { formatDecimals, isNotZero, numberFormat } from '~/utils/number';
 
 import { AssetPanelProps } from '.';
 
@@ -75,7 +75,11 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
 
   const tokenName = currentToken?.name || '-';
 
-  const availableMargin = formatDecimals(totalMargin, currentToken?.decimals, 5, true);
+  const availableMargin = numberFormat(formatUnits(totalMargin, currentToken?.decimals || 0), {
+    maxDigits: 5,
+    useGrouping: true,
+    roundingMode: 'floor',
+  });
 
   const maxAmount =
     currentToken &&
