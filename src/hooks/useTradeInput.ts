@@ -1,17 +1,9 @@
 import { isNil } from 'ramda';
 import { useEffect, useMemo, useReducer } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
+import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 import { TradeInput, TradeInputAction } from '~/typings/trade';
-import {
-  abs,
-  divFloat,
-  divPreserved,
-  floatMath,
-  formatDecimals,
-  mulFloat,
-  mulPreserved,
-} from '~/utils/number';
+import { abs, divFloat, floatMath, formatDecimals, mulFloat, mulPreserved } from '~/utils/number';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMargins } from './useMargins';
 import { useSettlementToken } from './useSettlementToken';

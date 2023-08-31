@@ -51,9 +51,15 @@ export const Input = (props: InputProps) => {
 
   const setFormattedDisplayValue = (value?: number | string) => {
     if (isNil(value)) return setDisplayValue(value);
+    if (displayValue === placeholder) return setDisplayValue('');
     const formatted = numberFormat(value, { minDigits, maxDigits, useGrouping });
     return setDisplayValue(formatted);
   };
+
+  const getPureValue = (value: string) =>
+    trimLeadingZero(value)
+      .replaceAll(',', '')
+      .replace(/[^0-9.]/g, '');
 
   useEffect(() => {
     if (!isInternalChange) setFormattedDisplayValue(value);
@@ -74,9 +80,7 @@ export const Input = (props: InputProps) => {
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    const newValue = trimLeadingZero(event.target.value)
-      .replaceAll(',', '')
-      .replace(/[^0-9.]/g, '');
+    const newValue = getPureValue(event.target.value);
 
     if (newValue === displayValue || isNaN(+newValue)) {
       return;
@@ -109,12 +113,7 @@ export const Input = (props: InputProps) => {
 
   function handleBlur() {
     if (autoCorrect && isNotNil(min) && isUnderMin(displayValue)) {
-      setFormattedDisplayValue(value);
-      return;
-    }
-    if (isNotNil(onChange) && isNotNil(displayValue)) {
-      setFormattedDisplayValue(+displayValue);
-      return;
+      return setFormattedDisplayValue(value);
     }
   }
 
