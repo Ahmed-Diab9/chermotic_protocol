@@ -13,3 +13,18 @@ export type Liquidity = {
     }
   ];
 };
+
+export type WidgetConfig = {
+  width: number;
+  height: number;
+  interval: number | 'D' | 'W';
+  theme: 'light' | 'dark';
+  isPublishingEnabled: boolean;
+  isSymbolChangeAllowed: boolean;
+  hasVolume: boolean;
+  hasToolbar: boolean;
+  hasDetails: boolean;
+  hasHotlist: boolean;
+  hasCalendar: boolean;
+  hasDataRanges: boolean;
+};
