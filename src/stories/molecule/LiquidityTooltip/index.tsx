@@ -1,9 +1,9 @@
 import { BarData } from '@chromatic-protocol/react-compound-charts';
+import { isNotNil } from 'ramda';
 import { useCallback } from 'react';
 import { ChartTooltip } from '~/stories/atom/ChartTooltip';
 import { CLBTokenValue } from '~/typings/chart';
 import { withComma } from '~/utils/number';
-import { isValid } from '~/utils/valid';
 
 export type LiquidityTooltipData = {
   available: number;
@@ -22,7 +22,7 @@ export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityToo
   if (!data || !clbTokenValues) return null;
 
   function toString(num?: number) {
-    return isValid(num) ? withComma(num) : '-';
+    return isNotNil(num) ? withComma(num) : '-';
   }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks

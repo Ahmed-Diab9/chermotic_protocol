@@ -10,7 +10,6 @@ import { useAppDispatch } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
-import { isValid } from '../utils/valid';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
@@ -117,7 +116,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   }, [liquidityPool]);
 
   useEffect(() => {
-    if (isValid(liquidityPool)) {
+    if (isNotNil(liquidityPool)) {
       dispatch(poolsAction.onPoolSelect(liquidityPool));
     }
   }, [liquidityPool]);

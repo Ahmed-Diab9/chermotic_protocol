@@ -1,4 +1,4 @@
-import { isValid } from '~/utils/valid';
+import { isNotNil } from 'ramda';
 import './style.css';
 
 interface ProgressProps {
@@ -9,7 +9,7 @@ interface ProgressProps {
 
 export const Progress = (props: ProgressProps) => {
   const { value, max, css = 'default' } = props;
-  const progressPercent = isValid(value) && isValid(max) ? (value / max) * 100 : 0;
+  const progressPercent = isNotNil(value) && isNotNil(max) ? (value / max) * 100 : 0;
 
   return (
     <div className={`progress progress-${css} w-full overflow-hidden rounded`}>

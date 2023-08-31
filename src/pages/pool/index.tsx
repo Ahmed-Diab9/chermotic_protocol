@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { isNotNil } from 'ramda';
 import { Link } from 'react-router-dom';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
@@ -17,7 +18,6 @@ import { MainBar } from '~/stories/template/MainBar';
 import { PoolPanel } from '~/stories/template/PoolPanel';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
-import { isValid } from '~/utils/valid';
 import './style.css';
 
 const Pool = () => {
@@ -74,7 +74,7 @@ const Pool = () => {
                   css="light"
                   className="dark:!bg-paper-light dark:hover:!bg-gray-light"
                   label={
-                    isValid(selectedMarket)
+                    isNotNil(selectedMarket)
                       ? `Trade on ${selectedMarket.description} Pool`
                       : 'Market loading'
                   }

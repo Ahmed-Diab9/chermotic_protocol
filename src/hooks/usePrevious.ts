@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
-import { isValid } from "~/utils/valid";
+import { isNotNil } from 'ramda';
+import { useEffect, useRef } from 'react';
 
 export const usePrevious = <T>(newValue: T, save?: boolean) => {
   const ref = useRef<T>();
 
   useEffect(() => {
     if (save) {
-      if (isValid(newValue)) {
+      if (isNotNil(newValue)) {
         ref.current = newValue;
       }
     } else {

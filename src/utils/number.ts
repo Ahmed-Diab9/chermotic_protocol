@@ -1,7 +1,6 @@
+import { isNotNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
 import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
-import { Price, Token } from '../typings/market';
-import { isValid } from './valid';
 
 export const abs = (value: bigint | number): bigint => {
   if (typeof value === 'number') value = BigInt(value);
@@ -19,15 +18,15 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
   }
   if (typeof value === 'number') {
     const [integer, decimals] = String(value).split('.') as [string, string | undefined];
-    return String(integer).replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
+    return String(integer).replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
   }
   if (typeof value === 'string') {
     const [integer, decimals] = value.split('.');
-    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
+    return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
   }
   if (typeof value === 'bigint') {
     const [integer, decimals] = value.toString().split('.');
-    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
+    return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
   }
 };
 
@@ -94,7 +93,7 @@ export const trimLeftZero = (rawString: string) => {
     }
   }
 
-  if (isValid(decimals)) {
+  if (isNotNil(decimals)) {
     return integer.substring(firstIndex) + '.' + decimals;
   } else {
     return integer.substring(firstIndex);
