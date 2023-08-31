@@ -1,4 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { errorLog } from '~/utils/log';
+
+import { useAppDispatch } from '~/store';
+import { tradesAction } from '~/store/reducer/trades';
 
 const enum POSITION_TAB {
   'SHORT_TAB',
@@ -18,10 +23,19 @@ export function useTradePanel() {
         return setSelectedTab(POSITION_TAB.LONG_TAB);
       }
       default: {
+        errorLog('You selected wrong tab');
         return;
       }
     }
   };
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(tradesAction.clearTradeState());
+    };
+  }, []);
 
   function onClickLeftCollapseView() {
     setIsWideView(false);
