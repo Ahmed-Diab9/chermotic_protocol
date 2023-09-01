@@ -25,6 +25,7 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
     isAmountError: false,
     isExceeded: false,
     isLess: false,
+    isSubmitDisabled: false,
 
     amount: undefined,
     onAmountChange: () => {},

@@ -99,7 +99,6 @@ export function PoolPanel() {
                     value={amount}
                     maxValue={maxAmount}
                     onChange={onAmountChange}
-                    onButtonClick={onAmountChange}
                     error={isExceeded}
                   />
                   {isExceeded && (

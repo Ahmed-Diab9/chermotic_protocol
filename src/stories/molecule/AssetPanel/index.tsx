@@ -36,6 +36,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
     maxAmount,
     minimumAmount,
     isAmountError,
+    isSubmitDisabled,
     isExceeded,
     isLess,
 
@@ -217,7 +218,6 @@ export const AssetPanel = (props: AssetPanelProps) => {
                         value={amount}
                         maxValue={maxAmount}
                         onChange={onAmountChange}
-                        onButtonClick={onAmountChange}
                         className="w-full"
                         error={isAmountError}
                       />
@@ -254,6 +254,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     css="active"
                     className="w-full"
                     onClick={onClickSubmit}
+                    disabled={isSubmitDisabled}
                   />
                   <Button
                     iconOnly={<ChevronDoubleUpIcon />}

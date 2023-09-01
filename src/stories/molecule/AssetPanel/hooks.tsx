@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
@@ -101,6 +101,7 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
     return +amount < +minimumAmount && isNotZero(amount);
   }, [amount]);
   const isAmountError = isExceeded || isLess;
+  const isSubmitDisabled = isAmountError || isEmpty(amount) || +amount === 0;
 
   const onClickSubmit = () => {
     if (isDeposit) {
@@ -127,6 +128,7 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
     maxAmount,
     minimumAmount,
     isAmountError,
+    isSubmitDisabled,
     isExceeded,
     isLess,
 
