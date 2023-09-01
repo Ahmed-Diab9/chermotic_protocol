@@ -26,12 +26,12 @@ export function useTradePanel() {
 
   function onClickLeftCollapseView() {
     setIsWideView(false);
-    onSelectTab(POSITION_TAB.SHORT_TAB);
+    onSelectTab(POSITION_TAB.LONG_TAB);
   }
 
   function onClickRightCollapseView() {
     setIsWideView(false);
-    onSelectTab(POSITION_TAB.LONG_TAB);
+    onSelectTab(POSITION_TAB.SHORT_TAB);
   }
 
   function onClickExpandView() {
