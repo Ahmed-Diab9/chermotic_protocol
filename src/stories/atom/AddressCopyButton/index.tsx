@@ -1,4 +1,5 @@
 import { Square2StackIcon } from '@heroicons/react/24/outline';
+// import CopyIcon from '~/assets/icons/CopyIcon';
 import { MouseEventHandler } from 'react';
 import { Button } from '../Button';
 import { TooltipGuide } from '../TooltipGuide';
@@ -19,6 +20,7 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
         <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px]">
           {address ? <>{address}</> : <Skeleton width={60} />}
         </p>
+        <TooltipGuide tipOnly tip="Copy" label="copy-address" />
         <Button
           label="Copy Address"
           css="light"
@@ -28,7 +30,6 @@ export const AddressCopyButton = (props: AddressCopyButtonProps) => {
           onClick={onClick}
         />
       </div>
-      <TooltipGuide tipOnly tip="Copy" label="copy-address" />
     </>
   );
 };

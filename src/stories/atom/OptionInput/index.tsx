@@ -1,8 +1,10 @@
+import '~/stories/atom/Input/style.css';
+
+import { isNotNil } from 'ramda';
 import { useState } from 'react';
-import '../../atom/Input/style.css';
-import { Button } from '../Button';
-import { Input } from '../Input';
-// import { Avatar } from "../Avatar";
+
+import { Button } from '~/stories/atom/Button';
+import { Input } from '~/stories/atom/Input';
 
 interface OptionInputProps {
   label?: string;
@@ -18,7 +20,6 @@ interface OptionInputProps {
   error?: boolean;
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
-  onButtonClick?: (value: string) => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -35,18 +36,22 @@ export const OptionInput = (props: OptionInputProps) => {
     disabled = false,
     error = false,
     onChange,
-    onButtonClick,
   } = props;
-  const [ratio, setRatio] = useState<25 | 50 | 75 | 100>();
-  const onClick = (ratio: 25 | 50 | 75 | 100) => {
-    if (ratio === 100) {
-      setRatio(100);
-      onButtonClick?.(String(maxValue) ?? '');
-      return;
-    }
-    const nextValue = (Number(maxValue) * (ratio / 100)).toString();
+  const [ratio, setRatio] = useState<number>();
+
+  const onClick = (ratio: 25 | 50 | 75 | 100) => () => {
     setRatio(ratio);
-    onButtonClick?.(nextValue ?? '');
+    if (ratio === 100) {
+      onChange?.(String(maxValue || ''));
+    } else {
+      const nextValue = Number(maxValue) * (ratio / 100);
+      onChange?.(String(nextValue || ''));
+    }
+  };
+
+  const onChangeInput = (value: string) => {
+    if (isNotNil(ratio)) setRatio(undefined);
+    onChange?.(value);
   };
 
   return (
@@ -58,30 +63,28 @@ export const OptionInput = (props: OptionInputProps) => {
           label="25%"
           size="sm"
           css={ratio === 25 ? 'active' : 'default'}
-          onClick={() => {
-            onClick(25);
-          }}
+          onClick={onClick(25)}
         />
         <Button
           className="flex-auto shadow-base"
           label="50%"
           size="sm"
           css={ratio === 50 ? 'active' : 'default'}
-          onClick={() => onClick(50)}
+          onClick={onClick(50)}
         />
         <Button
           className="flex-auto shadow-base"
           label="75%"
           size="sm"
           css={ratio === 75 ? 'active' : 'default'}
-          onClick={() => onClick(75)}
+          onClick={onClick(75)}
         />
         <Button
           className="flex-auto shadow-base"
           label="Max"
           size="sm"
           css={ratio === 100 ? 'active' : 'default'}
-          onClick={() => onClick(100)}
+          onClick={onClick(100)}
         />
       </div>
       <Input
@@ -92,14 +95,11 @@ export const OptionInput = (props: OptionInputProps) => {
         css={css}
         align={align}
         value={value}
-        onChange={(event) => {
-          setRatio(undefined);
-          onChange?.(event);
-        }}
+        onChange={onChangeInput}
         className="relative border-gray-light"
         disabled={disabled}
         error={error}
-        // onBlur={onBlur}
+        debug
       />
     </div>
   );

@@ -1,52 +1,19 @@
-import { Tab } from '@headlessui/react';
-import { useState } from 'react';
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
-import { CurvedButton } from '~/stories/atom/CurvedButton';
 import '~/stories/atom/Tabs/style.css';
-import { TradeContent } from '~/stories/container/TradeContent';
-import { Liquidity } from '~/typings/chart';
-import { errorLog } from '~/utils/log';
 
-export interface TradePanelProps {
-  liquidityData?: Liquidity[];
-  longLiquidityData?: Liquidity[];
-  shortLiquidityData?: Liquidity[];
-  longTotalMaxLiquidity?: bigint;
-  longTotalUnusedLiquidity?: bigint;
-  shortTotalMaxLiquidity?: bigint;
-  shortTotalUnusedLiquidity?: bigint;
-}
+import { Tab } from '@headlessui/react';
+import { CurvedButton } from '~/stories/atom/CurvedButton';
+import { TradeContent } from '~/stories/molecule/TradeContent';
+import { useTradePanel } from './hooks';
 
-export const TradePanel = (props: TradePanelProps) => {
+export function TradePanel() {
   const {
-    liquidityData,
-    longLiquidityData,
-    shortLiquidityData,
-    longTotalMaxLiquidity,
-    longTotalUnusedLiquidity,
-    shortTotalMaxLiquidity,
-    shortTotalUnusedLiquidity,
-  } = props;
-  const [isWideView, setIsWideView] = useState(false);
-  const onToggleView = () => {
-    setIsWideView(!isWideView);
-  };
-
-  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(SHORT_TAB);
-  const onSelectTab = (tab: number) => {
-    switch (tab) {
-      case SHORT_TAB: {
-        return setSelectedTab(SHORT_TAB);
-      }
-      case LONG_TAB: {
-        return setSelectedTab(LONG_TAB);
-      }
-      default: {
-        errorLog('You selected wrong tab');
-        return;
-      }
-    }
-  };
+    selectedTab,
+    onSelectTab,
+    isWideView,
+    onClickLeftCollapseView,
+    onClickRightCollapseView,
+    onClickExpandView,
+  } = useTradePanel();
 
   return (
     <div className="flex justify-center">
@@ -55,51 +22,27 @@ export const TradePanel = (props: TradePanelProps) => {
           <div className="flex">
             <div className="w-full px-0 pt-4 pb-10 border-r">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 !border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   SHORT
                 </h2>
               </div>
-              <TradeContent
-                direction="short"
-                liquidityData={liquidityData}
-                totalMaxLiquidity={shortTotalMaxLiquidity}
-                totalUnusedLiquidity={shortTotalUnusedLiquidity}
-              />
+              <TradeContent direction="short" />
             </div>
             <div className="w-full px-0 pt-4 pb-10">
               <div className="w-full mb-7">
-                <h2 className="border-b-2 border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
+                <h2 className="border-b-2 !border-primary max-w-[240px] mx-auto text-3xl font-extrabold py-2 text-center">
                   LONG
                 </h2>
               </div>
-              <TradeContent
-                direction="long"
-                liquidityData={liquidityData}
-                totalMaxLiquidity={longTotalMaxLiquidity}
-                totalUnusedLiquidity={longTotalUnusedLiquidity}
-              />
+              <TradeContent direction="long" />
             </div>
           </div>
           <div>
             <div className="absolute left-0 top-8">
-              <CurvedButton
-                direction="right"
-                position="left"
-                onClick={() => {
-                  onToggleView();
-                  onSelectTab(LONG_TAB);
-                }}
-              />
+              <CurvedButton direction="right" position="left" onClick={onClickLeftCollapseView} />
             </div>
             <div className="absolute right-0 top-8">
-              <CurvedButton
-                direction="left"
-                position="right"
-                onClick={() => {
-                  onToggleView();
-                  onSelectTab(SHORT_TAB);
-                }}
-              />
+              <CurvedButton direction="left" position="right" onClick={onClickRightCollapseView} />
             </div>
           </div>
         </div>
@@ -123,29 +66,19 @@ export const TradePanel = (props: TradePanelProps) => {
               </Tab.List>
               <Tab.Panels className="flex flex-col items-center w-full">
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                  <TradeContent
-                    direction="short"
-                    liquidityData={shortLiquidityData}
-                    totalMaxLiquidity={shortTotalMaxLiquidity}
-                    totalUnusedLiquidity={shortTotalUnusedLiquidity}
-                  />
+                  <TradeContent direction="short" />
                 </Tab.Panel>
                 <Tab.Panel className="w-full px-0 pb-10 pt-7">
-                  <TradeContent
-                    direction="long"
-                    liquidityData={longLiquidityData}
-                    totalMaxLiquidity={longTotalMaxLiquidity}
-                    totalUnusedLiquidity={longTotalUnusedLiquidity}
-                  />
+                  <TradeContent direction="long" />
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
             <div>
               <div className="absolute left-0 top-8">
-                <CurvedButton direction="left" position="left" onClick={onToggleView} />
+                <CurvedButton direction="left" position="left" onClick={onClickExpandView} />
               </div>
               <div className="absolute right-0 top-8">
-                <CurvedButton direction="right" position="right" onClick={onToggleView} />
+                <CurvedButton direction="right" position="right" onClick={onClickExpandView} />
               </div>
             </div>
           </div>
@@ -153,4 +86,4 @@ export const TradePanel = (props: TradePanelProps) => {
       )}
     </div>
   );
-};
+}

@@ -4,12 +4,12 @@ import { Button } from '../Button';
 import { useMemo } from 'react';
 
 interface LeverageOptionProps {
-  value?: number;
+  value?: string | number;
   max?: number;
   onClick?: (nextValue: number) => unknown;
 }
 
-export const LeverageOption = ({ value, max = 10, onClick }: LeverageOptionProps) => {
+export const LeverageOption = ({ value = 0, max = 10, onClick }: LeverageOptionProps) => {
   const LEVERAGE_LIST = [1, 2, 5, 10, 15, 20];
 
   const filteredLeverage = useMemo(() => LEVERAGE_LIST.filter((v) => v <= max), [max]);
@@ -20,10 +20,10 @@ export const LeverageOption = ({ value, max = 10, onClick }: LeverageOptionProps
         return (
           <Button
             key={`${leverage}`}
-            className="w-12 shadow-base"
+            className="w-10 !px-1 shadow-base"
             label={`${leverage}x`}
             size="sm"
-            css={value === leverage ? 'active' : 'default'}
+            css={+value === leverage ? 'active' : 'default'}
             onClick={() => {
               onClick?.(leverage);
             }}

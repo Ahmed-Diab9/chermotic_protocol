@@ -1,23 +1,21 @@
 import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
-import { parseUnits } from 'viem';
+
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
+import { useMarket } from '~/hooks/useMarket';
+import { usePositions } from '~/hooks/usePositions';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
+
 import { errorLog } from '~/utils/log';
-import { mulPreserved, toBigintWithDecimals } from '~/utils/number';
-import { useChromaticAccount } from './useChromaticAccount';
-import { useChromaticClient } from './useChromaticClient';
-import { useLiquidityPool } from './useLiquidityPool';
-import { useMarket } from './useMarket';
-import { usePositions } from './usePositions';
-import { useSettlementToken } from './useSettlementToken';
+import { mulFloat } from '~/utils/number';
 
-interface Props {
-  state?: TradeInput;
-}
-
-function useOpenPosition({ state }: Props) {
+function useOpenPosition() {
   const { fetchPositions } = usePositions();
   const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
@@ -27,8 +25,8 @@ function useOpenPosition({ state }: Props) {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
 
-  const onOpenPosition = async function () {
-    if (isNil(state)) {
+  async function openPosition(input: TradeInput) {
+    if (isNil(input)) {
       toast('Input data needed');
       return;
     }
@@ -49,43 +47,31 @@ function useOpenPosition({ state }: Props) {
     if (
       isNotNil(currentToken) &&
       isNotNil(balances?.[currentToken!.address]) &&
-      balances![currentToken!.address] < parseUnits(state.collateral, currentToken.decimals)
+      balances![currentToken!.address] < input.collateral
     ) {
       toast('Not enough collateral.');
       return;
     }
 
-    const quantity = toBigintWithDecimals(state.quantity, currentToken.decimals);
-    const takerMargin = toBigintWithDecimals(state.takerMargin, currentToken.decimals);
-    const makerMargin = toBigintWithDecimals(state.makerMargin, currentToken.decimals);
-
-    // FIXME
-    // Proper decimals needed.
-    const maxFeeAllowance = toBigintWithDecimals(state.maxFeeAllowance, 10);
-
-    if (state.direction === 'long' && longTotalUnusedLiquidity <= makerMargin) {
+    if (input.direction === 'long' && longTotalUnusedLiquidity <= input.makerMargin) {
       toast('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
-    if (state.direction === 'short' && shortTotalUnusedLiquidity <= makerMargin) {
+    if (input.direction === 'short' && shortTotalUnusedLiquidity <= input.makerMargin) {
       toast('the short liquidity is too low');
       return AppError.reject('the short liquidity is too low', 'onOpenPosition');
     }
 
-    // FIXME
-    // Trading Fee
     try {
-      // max allowance fee 5 %
-      // maxallowableTradingFee = markermargin * 5%
-      // TODO apply max fee allowance
-      const maxAllowableTradingFee = mulPreserved(makerMargin, maxFeeAllowance, 10 + 2);
+      // maxAllowableTradingFee = markermargin * 5%
+      const maxAllowableTradingFee = mulFloat(input.makerMargin, input.maxFeeAllowance);
 
       const routerApi = client.router();
 
       await routerApi.openPosition(currentMarket.address, {
-        quantity: quantity * (state.direction === 'long' ? 1n : -1n),
-        takerMargin,
-        makerMargin,
+        quantity: input.quantity * (input.direction === 'long' ? 1n : -1n),
+        takerMargin: input.takerMargin,
+        makerMargin: input.makerMargin,
         maxAllowableTradingFee,
       });
       await fetchPositions();
@@ -98,10 +84,10 @@ function useOpenPosition({ state }: Props) {
     } finally {
       return;
     }
-  };
+  }
 
   return {
-    onOpenPosition,
+    openPosition,
   };
 }
 

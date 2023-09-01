@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
 import { Logger } from '../utils/log';
-import { isValid } from '../utils/valid';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useSettlementToken } from './useSettlementToken';
@@ -30,18 +29,18 @@ const useTokenTransaction = () => {
     async (onAfterDeposit?: () => unknown) => {
       try {
         logger.info('onDeposit called');
-        if (!isValid(walletAddress) || !isValid(chromaticAccountAddress)) {
+        if (isNil(walletAddress) || isNil(chromaticAccountAddress)) {
           logger.info('no addresses selected');
           toast('Addresses are not selected.');
           return;
         }
-        if (!isValid(currentToken)) {
+        if (isNil(currentToken)) {
           logger.info('token are not selected');
           toast('Settlement token is not selected.');
           return;
         }
         const expanded = parseUnits(amount, currentToken.decimals);
-        if (!isValid(expanded)) {
+        if (isNil(expanded)) {
           logger.info('invalid amount', expanded);
           toast('Amount is not valid.');
           return;
@@ -67,23 +66,23 @@ const useTokenTransaction = () => {
   const onWithdraw = useCallback(
     async (onAfterWithdraw?: () => unknown) => {
       try {
-        if (!isValid(chromaticAccountAddress)) {
+        if (isNil(chromaticAccountAddress)) {
           logger.info('contract is not ready');
           toast('Create your account.');
           return;
         }
-        if (!isValid(client)) {
+        if (isNil(client)) {
           toast('Connect your wallet first.');
           return;
         }
-        if (!isValid(currentToken)) {
+        if (isNil(currentToken)) {
           logger.info('token are not selected');
           toast('Settlement token are not selected.');
           return;
         }
         if (isNil(walletAddress)) return;
         const expanded = parseUnits(amount, currentToken.decimals);
-        if (!isValid(expanded)) {
+        if (isNil(expanded)) {
           logger.info('invalid amount', expanded);
           toast('Amount is not valid.');
           return;

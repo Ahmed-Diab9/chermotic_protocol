@@ -1,8 +1,8 @@
-import useChain from '~/hooks/useChain';
+import { useChain } from '~/hooks/useChain';
 
 import { Modal } from '~/stories/template/Modal';
 
-export const ChainModal = () => {
+export function ChainModal() {
   const { isWrongChain, switchChain } = useChain();
 
   return (
@@ -17,4 +17,4 @@ export const ChainModal = () => {
       />
     )
   );
-};
+}

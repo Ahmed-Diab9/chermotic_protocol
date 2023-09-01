@@ -1,0 +1,25 @@
+.react_range__range_container {
+  @apply z-0;
+  .react_range__bar_stack.selected {
+    @apply opacity-80 dark:opacity-90;
+  }
+  .react_range__grid_bold,
+  .react_range__track {
+    @apply box-content;
+  }
+  .react_range__label {
+    @apply text-xs text-primary-lighter;
+  }
+  .react_range__grid,
+  .react_range__grid_bold {
+    @apply !border-gray-lighter dark:!border-paper-lighter;
+  }
+  .react_range__slot_wrapper {
+    &.graph + .grid,
+    &.grid:last-child {
+      .react_range__grid_bold {
+        border: none !important;
+      }
+    }
+  }
+}

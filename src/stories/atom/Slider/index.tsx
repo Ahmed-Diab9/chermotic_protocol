@@ -8,13 +8,14 @@ import {
   TicksProps,
 } from 'react-compound-slider';
 import { SliderRail, Handle, Track, Tick } from './components'; // example render components - source below
+import { numberFormat } from '~/utils/number';
 
 interface SliderProps {
   min?: number;
   max?: number;
   step?: number;
   tick?: number | number[];
-  value?: number;
+  value?: number | string;
   onChange?: (newValue: number) => unknown;
   onUpdate?: (newValue: number) => unknown;
   readonly?: boolean;
@@ -32,29 +33,26 @@ export const Slider = ({
   max = 100,
   step = 0.01,
   tick = 1,
-  value,
+  value = 0,
   onChange,
   onUpdate,
   readonly = false,
 }: SliderProps) => {
   const domain: [number, number] = [min, max];
 
+  const format = (value: number | string) => numberFormat(value, { maxDigits: 2, type: 'number' });
+
   const handleSetter = (setter?: (newValue: number) => unknown) => (values: readonly number[]) => {
     if (!setter) return;
     if (values.length > 1) {
       console.warn('[Range]: single value only');
     }
-    setter(+values[0].toFixed(12));
+    setter(format(values[0]));
   };
 
-  const ticksProps: Omit<TicksProps, 'children'> =
-    typeof tick === 'number'
-      ? {
-          count: tick,
-        }
-      : {
-          values: tick,
-        };
+  const ticksProps: Omit<TicksProps, 'children'> = {
+    [typeof tick === 'number' ? 'count' : 'values']: tick,
+  };
 
   return (
     <div className="w-full h-auto">
@@ -65,7 +63,7 @@ export const Slider = ({
         rootStyle={sliderStyle}
         onUpdate={handleSetter(onUpdate)}
         onChange={handleSetter(onChange)}
-        values={value ? [+value.toFixed(12)] : []}
+        values={value ? [format(value)] : []}
         disabled={readonly}
       >
         <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>

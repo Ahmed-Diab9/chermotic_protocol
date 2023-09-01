@@ -1,0 +1,33 @@
+.MarketSelectV2 {
+  @apply flex items-center justify-between gap-6 pl-5 pr-0;
+  @apply h-[80px];
+  &:has([data-headlessui-state='open']) {
+    @apply dark:border-paper-lighter dark:shadow-lg rounded-s-none;
+  }
+  .popover-panel {
+    @apply flex flex-col absolute left-0 ml-[-1px];
+    @apply bg-paper min-h-[230px] rounded-b;
+    @apply border px-5 pt-3;
+    /* width: calc(100% + 2px); */
+  }
+  .inner-popover {
+    @apply flex items-start;
+    .inner-popover-button {
+      &[aria-expanded='true'] {
+        @apply bg-primary text-inverted;
+      }
+    }
+    .inner-popover-panel {
+      @apply absolute top-4 left-[156px] right-0;
+      @apply flex flex-col;
+      .inner-popover-item {
+        @apply flex justify-between cursor-pointer;
+        @apply py-3 px-4 gap-6;
+        @apply hover:bg-primary hover:text-inverted;
+        h4 {
+          @apply flex-1;
+        }
+      }
+    }
+  }
+}

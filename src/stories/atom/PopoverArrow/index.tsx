@@ -7,12 +7,19 @@ interface PopoverArrowProps {
   direction: 'top' | 'bottom' | 'left' | 'right';
   position: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
+  backgroundClass?: string;
   disabled?: boolean;
   onClick?: () => unknown;
 }
 
 export const PopoverArrow = (props: PopoverArrowProps) => {
-  const { onClick, direction = 'top', position = 'top', className = '' } = props;
+  const {
+    onClick,
+    direction = 'top',
+    position = 'top',
+    className = '',
+    backgroundClass = '',
+  } = props;
 
   return (
     <span
@@ -20,7 +27,11 @@ export const PopoverArrow = (props: PopoverArrowProps) => {
       onClick={onClick}
     >
       <span className="inline-flex items-center justify-center w-full h-full">
-        <PopoverLineBg direction={direction} position={position} />
+        <PopoverLineBg
+          direction={direction}
+          position={position}
+          backgroundClass={backgroundClass}
+        />
         {direction === 'top' ? (
           <ChevronDoubleUpIcon className={`w-4 relative `} />
         ) : direction === 'bottom' ? (
@@ -38,11 +49,11 @@ export const PopoverArrow = (props: PopoverArrowProps) => {
 interface PopoverLineBgProps {
   direction: 'right' | 'left' | 'top' | 'bottom';
   position: 'top' | 'bottom' | 'left' | 'right';
-  className?: string;
+  backgroundClass?: string;
 }
 
 const PopoverLineBg = (props: PopoverLineBgProps) => {
-  const { position } = props;
+  const { position, backgroundClass } = props;
 
   return (
     <svg
@@ -67,13 +78,13 @@ const PopoverLineBg = (props: PopoverLineBgProps) => {
         fillRule="evenodd"
         d="M17 53h1c0-3.816 3.234-6.983 7.184-8.497C32.665 41.638 38 34.92 38 27c0-7.919-5.335-14.638-12.816-17.503C21.235 7.983 18 4.817 18 1V0h-1v1c0 4.418 3.7 7.85 7.827 9.43C31.983 13.172 37 19.56 37 27c0 7.441-5.017 13.828-12.173 16.57C20.7 45.15 17 48.581 17 53Z"
         clipRule="evenodd"
-        className="translate-x-1 fill-gray-lighter"
+        className="translate-x-1 fill-gray-lighter dark:fill-[#3a3a3f]"
       />
       <path
         fillRule="evenodd"
         d="M17 0H0v53h17c0-4.418 3.7-7.85 7.827-9.43C31.983 40.828 37 34.44 37 27c0-7.441-5.017-13.828-12.173-16.57C20.7 8.85 17 5.419 17 1V0Z"
         clipRule="evenodd"
-        className="translate-x-1 fill-paper"
+        className={`translate-x-1 fill-paper ${backgroundClass}`}
       />
     </svg>
   );

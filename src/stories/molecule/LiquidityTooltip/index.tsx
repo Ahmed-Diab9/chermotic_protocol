@@ -1,10 +1,9 @@
+import { BarData } from '@chromatic-protocol/react-compound-charts';
+import { isNotNil } from 'ramda';
 import { useCallback } from 'react';
 import { ChartTooltip } from '~/stories/atom/ChartTooltip';
-
+import { CLBTokenValue } from '~/typings/chart';
 import { withComma } from '~/utils/number';
-import { isValid } from '~/utils/valid';
-
-import { BarData } from '@chromatic-protocol/react-compound-charts';
 
 export type LiquidityTooltipData = {
   available: number;
@@ -16,18 +15,21 @@ export type LiquidityTooltipData = {
 interface LiquidityTooltipProps {
   id?: string;
   data?: BarData[];
+  clbTokenValues?: CLBTokenValue[];
 }
 
-export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
-  if (!data) return null;
+export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityTooltipProps) => {
+  if (!data || !clbTokenValues) return null;
 
   function toString(num?: number) {
-    return isValid(num) ? withComma(num) : '-';
+    return isNotNil(num) ? withComma(num) : '-';
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const getLiquidity = useCallback(
     (feeRate: number) => {
       const foundData = data!.find(({ key }) => key === feeRate);
+      const clbTokenValue = clbTokenValues.find((value) => value.key === feeRate)?.value;
 
       function getValueByLabel(label: string) {
         return foundData?.value.find((found) => found.label === label)?.amount ?? 0;
@@ -35,7 +37,6 @@ export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
 
       const available = getValueByLabel('available');
       const utilized = getValueByLabel('utilized');
-      const clbTokenValue = getValueByLabel('clbTokenValue');
 
       const liquidity = utilized + available;
       const ratio = liquidity !== 0 ? +((utilized / liquidity) * 100).toFixed(2) : undefined;
@@ -47,7 +48,7 @@ export const LiquidityTooltip = ({ id = '', data }: LiquidityTooltipProps) => {
         ratio: toString(ratio),
       };
     },
-    [data]
+    [data, clbTokenValues]
   );
 
   return (

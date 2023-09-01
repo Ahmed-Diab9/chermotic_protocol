@@ -3,17 +3,16 @@ import {
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useMarket } from '~/hooks/useMarket';
 import { Market, Token } from '~/typings/market';
-import { Position } from '~/typings/position';
+import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
-import { isValid } from '~/utils/valid';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
@@ -23,15 +22,15 @@ const logger = Logger('usePosition');
 
 function determinePositionStatus(position: IChromaticPosition, currentOracleVersion: bigint) {
   if (currentOracleVersion === position.openVersion) {
-    return 'opening';
+    return POSITION_STATUS.OPENING;
   }
   if (position.closeVersion !== 0n && currentOracleVersion === position.closeVersion) {
-    return 'closing';
+    return POSITION_STATUS.CLOSING;
   }
   if (position.closeVersion !== 0n && currentOracleVersion > position.closeVersion) {
-    return 'closed';
+    return POSITION_STATUS.CLOSED;
   }
-  return 'opened';
+  return POSITION_STATUS.OPENED;
 }
 
 async function getPositions(
@@ -69,10 +68,10 @@ async function getPositions(
         pnl,
         collateral: position.takerMargin, //TODO ,
         status: determinePositionStatus(position, currentVersion),
-        toLoss: isValid(lossCutPrice)
+        toLoss: isNotNil(lossCutPrice)
           ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
           : 0n,
-        toProfit: isValid(profitStopPrice)
+        toProfit: isNotNil(profitStopPrice)
           ? divPreserved(profitStopPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
           : 0n,
       } satisfies Position;

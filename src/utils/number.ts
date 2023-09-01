@@ -1,7 +1,7 @@
+import bigDecimal from 'js-big-decimal';
+import { isNotNil } from 'ramda';
 import { formatUnits, parseUnits } from 'viem';
-import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '../configs/decimals';
-import { Price, Token } from '../typings/market';
-import { isValid } from './valid';
+import { BUFFER_DECIMALS, FEE_RATE_DECIMAL, PERCENT_DECIMALS } from '~/configs/decimals';
 
 export const abs = (value: bigint | number): bigint => {
   if (typeof value === 'number') value = BigInt(value);
@@ -17,18 +17,8 @@ export const withComma = (value?: bigint | number | string, replace?: string) =>
   if (value === undefined) {
     return replace;
   }
-  if (typeof value === 'number') {
-    const [integer, decimals] = String(value).split('.') as [string, string | undefined];
-    return String(integer).replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
-  }
-  if (typeof value === 'string') {
-    const [integer, decimals] = value.split('.');
-    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
-  }
-  if (typeof value === 'bigint') {
-    const [integer, decimals] = value.toString().split('.');
-    return integer.replace(seperator, ',') + (isValid(decimals) ? `.${decimals}` : '');
-  }
+  const [integer, decimals] = value.toString().split('.');
+  return integer.replace(seperator, ',') + (isNotNil(decimals) ? `.${decimals}` : '');
 };
 
 export const formatDecimals = (
@@ -52,12 +42,47 @@ export const formatDecimals = (
   return formatter.format(Number(valueWithTokenDecimals));
 };
 
-export const formatBalance = (balance: bigint, token: Token, price: Price) => {
-  return (
-    (balance * price.value || 0n) /
-    parseUnits('1', token.decimals) /
-    parseUnits('1', price.decimals)
-  );
+export const numberFormat = <T extends string | number | bigint, U extends 'string' | 'number'>(
+  value: T,
+  options: {
+    maxDigits?: number;
+    minDigits?: number;
+    useGrouping?: boolean;
+    roundingMode?: 'ceil' | 'floor' | 'trunc';
+    compact?: boolean;
+    type?: U;
+  } = {
+    useGrouping: false,
+    compact: false,
+  }
+): U extends 'number' ? number : string => {
+  const isRetrunTypeNumber = options.type === 'number';
+
+  const formatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: options.maxDigits,
+    minimumFractionDigits: options.minDigits,
+    useGrouping: isRetrunTypeNumber ? false : options.useGrouping,
+    notation: options.compact ? 'compact' : undefined,
+    //@ts-ignore experimental api
+    roundingMode: options.roundingMode,
+  });
+  const numberizedValue = Number(value.toString());
+  if (isNaN(numberizedValue))
+    return (isRetrunTypeNumber ? 0 : value) as U extends 'number' ? number : string;
+
+  const formattedValue = formatter.format(numberizedValue);
+  return (isRetrunTypeNumber ? Number(formattedValue) : formattedValue) as U extends 'number'
+    ? number
+    : string;
+};
+
+export const formatBalance = (
+  balance: bigint,
+  price: bigint,
+  tokenDecimals: number,
+  priceDecimals: number
+) => {
+  return (balance * price || 0n) / parseUnits('1', tokenDecimals) / parseUnits('1', priceDecimals);
 };
 
 export const formatFeeRate = (feeRate: number) => {
@@ -93,7 +118,7 @@ export const trimLeftZero = (rawString: string) => {
     }
   }
 
-  if (isValid(decimals)) {
+  if (isNotNil(decimals)) {
     return integer.substring(firstIndex) + '.' + decimals;
   } else {
     return integer.substring(firstIndex);
@@ -140,6 +165,36 @@ export const divPreserved = (numerator: bigint, denominator: bigint, decimals: n
 export const mulPreserved = (value: bigint, numerator: bigint, decimals: number) => {
   return (value * numerator) / 10n ** BigInt(decimals);
 };
+
+function lengthAfterDecimal(float: number) {
+  const [, afterDecimal] = String(float).split('.');
+  if (afterDecimal === undefined) return 0;
+  return afterDecimal.length;
+}
+
+export function floatMath(value: number) {
+  const decimal = new bigDecimal(value);
+  const methods = ['multiply', 'divide', 'add', 'subtract'] as const;
+  return methods.reduce((acc, method) => {
+    acc[method] = (secondValue: number) => {
+      const secondDecimal = new bigDecimal(secondValue);
+      return parseFloat(decimal[method](secondDecimal).getValue());
+    };
+    return acc;
+  }, {} as { [key in (typeof methods)[number]]: (value: number) => number });
+}
+
+export function mulFloat(value: bigint, numerator: number) {
+  const multiplier = 10 ** lengthAfterDecimal(numerator);
+  const multipliedDenominator = floatMath(numerator).multiply(multiplier);
+  return (value * BigInt(multipliedDenominator)) / BigInt(multiplier);
+}
+
+export function divFloat(numerator: bigint, denominator: number) {
+  const multiplier = 10 ** lengthAfterDecimal(denominator);
+  const multipliedDenominator = floatMath(denominator).multiply(multiplier);
+  return denominator === 0 ? 0n : (numerator * BigInt(multiplier)) / BigInt(multipliedDenominator);
+}
 
 export const toBigintWithDecimals = (value: number | string | bigint, decimals: number) => {
   const formatter = Intl.NumberFormat('en', {

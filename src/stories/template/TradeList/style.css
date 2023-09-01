@@ -1,0 +1,17 @@
+.TradeList {
+  .tr {
+    @apply w-full flex justify-between gap-2;
+    .td {
+      @apply text-left grow;
+      &:nth-child(1) {
+        @apply w-[80px];
+      }
+      &:nth-child(2) {
+        @apply w-[40px];
+      }
+      &:nth-child(3) {
+        @apply pl-3 text-primary-lighter w-[60px];
+      }
+    }
+  }
+}
