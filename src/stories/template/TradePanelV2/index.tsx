@@ -3,29 +3,17 @@ import './style.css';
 import { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
-import { errorLog } from '~/utils/log';
 import DecreaseIcon from '~/assets/icons/DecreaseIcon';
 import IncreaseIcon from '~/assets/icons/IncreaseIcon';
 
-export interface TradePanelV2Props {}
+const enum POSITION_TAB {
+  'SHORT_TAB',
+  'LONG_TAB',
+}
 
-export const TradePanelV2 = (props: TradePanelV2Props) => {
-  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(SHORT_TAB);
-  const onSelectTab = (tab: number) => {
-    switch (tab) {
-      case SHORT_TAB: {
-        return setSelectedTab(SHORT_TAB);
-      }
-      case LONG_TAB: {
-        return setSelectedTab(LONG_TAB);
-      }
-      default: {
-        errorLog('You selected wrong tab');
-        return;
-      }
-    }
-  };
+export const TradePanelV2 = () => {
+  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.SHORT_TAB);
+  const onSelectTab = (tab: number) => setSelectedTab(POSITION_TAB.SHORT_TAB);
 
   return (
     <div className="TradePanelV2 panel">

@@ -14,20 +14,7 @@ export function useTradePanel() {
   const [isWideView, setIsWideView] = useState(false);
 
   const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.SHORT_TAB);
-  const onSelectTab = (tab: number) => {
-    switch (tab) {
-      case POSITION_TAB.SHORT_TAB: {
-        return setSelectedTab(POSITION_TAB.SHORT_TAB);
-      }
-      case POSITION_TAB.LONG_TAB: {
-        return setSelectedTab(POSITION_TAB.LONG_TAB);
-      }
-      default: {
-        errorLog('You selected wrong tab');
-        return;
-      }
-    }
-  };
+  const onSelectTab = (tab: number) => setSelectedTab(tab);
 
   const dispatch = useAppDispatch();
 
