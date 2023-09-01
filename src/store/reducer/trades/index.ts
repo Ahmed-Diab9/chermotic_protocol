@@ -31,9 +31,15 @@ const tradesSlice = createSlice({
       const { direction, ...newValues } = action.payload;
       state[direction] = { ...state[direction], ...newValues };
     },
-    clearTradeState: (state) => {
-      state.long = emptyTrade;
-      state.short = emptyTrade;
+    clearTradeState: (state, action: PayloadAction<TradeInput['direction'] | undefined>) => {
+      if (action.payload === 'long') {
+        state.long = emptyTrade;
+      } else if (action.payload === 'short') {
+        state.short = emptyTrade;
+      } else {
+        state.long = emptyTrade;
+        state.short = emptyTrade;
+      }
     },
   },
 });

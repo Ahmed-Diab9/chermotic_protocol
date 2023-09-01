@@ -1,22 +1,21 @@
 import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
+
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
+import { useMarket } from '~/hooks/useMarket';
+import { usePositions } from '~/hooks/usePositions';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+
 import { AppError } from '~/typings/error';
 import { TradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
+
 import { errorLog } from '~/utils/log';
 import { mulFloat } from '~/utils/number';
-import { useChromaticAccount } from './useChromaticAccount';
-import { useChromaticClient } from './useChromaticClient';
-import { useLiquidityPool } from './useLiquidityPool';
-import { useMarket } from './useMarket';
-import { usePositions } from './usePositions';
-import { useSettlementToken } from './useSettlementToken';
 
-interface Props {
-  state?: TradeInput;
-}
-
-function useOpenPosition({ state }: Props) {
+function useOpenPosition() {
   const { fetchPositions } = usePositions();
   const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
@@ -26,8 +25,8 @@ function useOpenPosition({ state }: Props) {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
 
-  const onOpenPosition = async function () {
-    if (isNil(state)) {
+  async function openPosition(input: TradeInput) {
+    if (isNil(input)) {
       toast('Input data needed');
       return;
     }
@@ -48,31 +47,31 @@ function useOpenPosition({ state }: Props) {
     if (
       isNotNil(currentToken) &&
       isNotNil(balances?.[currentToken!.address]) &&
-      balances![currentToken!.address] < state.collateral
+      balances![currentToken!.address] < input.collateral
     ) {
       toast('Not enough collateral.');
       return;
     }
 
-    if (state.direction === 'long' && longTotalUnusedLiquidity <= state.makerMargin) {
+    if (input.direction === 'long' && longTotalUnusedLiquidity <= input.makerMargin) {
       toast('the long liquidity is too low');
       return AppError.reject('the long liquidity is too low', 'onOpenPosition');
     }
-    if (state.direction === 'short' && shortTotalUnusedLiquidity <= state.makerMargin) {
+    if (input.direction === 'short' && shortTotalUnusedLiquidity <= input.makerMargin) {
       toast('the short liquidity is too low');
       return AppError.reject('the short liquidity is too low', 'onOpenPosition');
     }
 
     try {
       // maxAllowableTradingFee = markermargin * 5%
-      const maxAllowableTradingFee = mulFloat(state.makerMargin, state.maxFeeAllowance);
+      const maxAllowableTradingFee = mulFloat(input.makerMargin, input.maxFeeAllowance);
 
       const routerApi = client.router();
 
       await routerApi.openPosition(currentMarket.address, {
-        quantity: state.quantity * (state.direction === 'long' ? 1n : -1n),
-        takerMargin: state.takerMargin,
-        makerMargin: state.makerMargin,
+        quantity: input.quantity * (input.direction === 'long' ? 1n : -1n),
+        takerMargin: input.takerMargin,
+        makerMargin: input.makerMargin,
         maxAllowableTradingFee,
       });
       await fetchPositions();
@@ -85,10 +84,10 @@ function useOpenPosition({ state }: Props) {
     } finally {
       return;
     }
-  };
+  }
 
   return {
-    onOpenPosition,
+    openPosition,
   };
 }
 
