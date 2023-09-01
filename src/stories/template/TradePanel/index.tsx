@@ -1,37 +1,19 @@
 import '~/stories/atom/Tabs/style.css';
-import { useState } from 'react';
 
 import { Tab } from '@headlessui/react';
 import { CurvedButton } from '~/stories/atom/CurvedButton';
 import { TradeContent } from '~/stories/molecule/TradeContent';
+import { useTradePanel } from './hooks';
 
-import { LONG_TAB, POSITION_TAB, SHORT_TAB } from '~/configs/tab';
-
-import { errorLog } from '~/utils/log';
-
-export interface TradePanelProps {}
-
-export const TradePanel = (props: TradePanelProps) => {
-  const [isWideView, setIsWideView] = useState(false);
-  const onToggleView = () => {
-    setIsWideView(!isWideView);
-  };
-
-  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(SHORT_TAB);
-  const onSelectTab = (tab: number) => {
-    switch (tab) {
-      case SHORT_TAB: {
-        return setSelectedTab(SHORT_TAB);
-      }
-      case LONG_TAB: {
-        return setSelectedTab(LONG_TAB);
-      }
-      default: {
-        errorLog('You selected wrong tab');
-        return;
-      }
-    }
-  };
+export function TradePanel() {
+  const {
+    selectedTab,
+    onSelectTab,
+    isWideView,
+    onClickLeftCollapseView,
+    onClickRightCollapseView,
+    onClickExpandView,
+  } = useTradePanel();
 
   return (
     <div className="flex justify-center">
@@ -57,24 +39,10 @@ export const TradePanel = (props: TradePanelProps) => {
           </div>
           <div>
             <div className="absolute left-0 top-8">
-              <CurvedButton
-                direction="right"
-                position="left"
-                onClick={() => {
-                  onToggleView();
-                  onSelectTab(LONG_TAB);
-                }}
-              />
+              <CurvedButton direction="right" position="left" onClick={onClickLeftCollapseView} />
             </div>
             <div className="absolute right-0 top-8">
-              <CurvedButton
-                direction="left"
-                position="right"
-                onClick={() => {
-                  onToggleView();
-                  onSelectTab(SHORT_TAB);
-                }}
-              />
+              <CurvedButton direction="left" position="right" onClick={onClickRightCollapseView} />
             </div>
           </div>
         </div>
@@ -107,10 +75,10 @@ export const TradePanel = (props: TradePanelProps) => {
             </Tab.Group>
             <div>
               <div className="absolute left-0 top-8">
-                <CurvedButton direction="left" position="left" onClick={onToggleView} />
+                <CurvedButton direction="left" position="left" onClick={onClickExpandView} />
               </div>
               <div className="absolute right-0 top-8">
-                <CurvedButton direction="right" position="right" onClick={onToggleView} />
+                <CurvedButton direction="right" position="right" onClick={onClickExpandView} />
               </div>
             </div>
           </div>
@@ -118,4 +86,4 @@ export const TradePanel = (props: TradePanelProps) => {
       )}
     </div>
   );
-};
+}

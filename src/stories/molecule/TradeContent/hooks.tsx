@@ -1,5 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { formatUnits } from 'viem';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
@@ -12,10 +13,14 @@ import { useTradeInput } from '~/hooks/useTradeInput';
 
 import { formatDecimals, numberFormat } from '~/utils/number';
 
+import { tradesAction } from '~/store/reducer/trades';
+
 import { TradeContentProps } from '.';
 
 export function useTradeContent(props: TradeContentProps) {
   const { direction = 'long' } = props;
+
+  const dispatch = useDispatch();
 
   const {
     state: input,
@@ -116,7 +121,13 @@ export function useTradeContent(props: TradeContentProps) {
   const maxFeeAllowance = input?.maxFeeAllowance;
   const minMaxFeeAllowance = +tradeFeePercent;
 
-  const { onOpenPosition } = useOpenPosition({ state: input });
+  const { openPosition } = useOpenPosition();
+
+  function onOpenPosition() {
+    openPosition({ ...input, direction }).then(() => {
+      dispatch(tradesAction.clearTradeState(direction));
+    });
+  }
 
   const executionPrice = useMemo(() => {
     if (isNil(currentMarket)) {
@@ -136,7 +147,7 @@ export function useTradeContent(props: TradeContentProps) {
 
     const { takeProfit, stopLoss } = input;
 
-    const isLong = input.direction === 'long';
+    const isLong = direction === 'long';
 
     const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
 
