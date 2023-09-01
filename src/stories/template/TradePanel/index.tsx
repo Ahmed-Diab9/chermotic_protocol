@@ -39,10 +39,10 @@ export function TradePanel() {
           </div>
           <div>
             <div className="absolute left-0 top-8">
-              <CurvedButton direction="right" position="left" onClick={onClickLeftCollapseView} />
+              <CurvedButton direction="right" position="left" onClick={onClickRightCollapseView} />
             </div>
             <div className="absolute right-0 top-8">
-              <CurvedButton direction="left" position="right" onClick={onClickRightCollapseView} />
+              <CurvedButton direction="left" position="right" onClick={onClickLeftCollapseView} />
             </div>
           </div>
         </div>
