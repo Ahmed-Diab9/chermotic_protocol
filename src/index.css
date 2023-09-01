@@ -37,8 +37,8 @@
     --color-error: 255 50 50; /* #FF3232 */
     --color-error-light: 253 212 212; /* #FDD4D4 */
 
-    --color-price-higher: 166 216 91;
-    --color-price-lower: 255 50 50;
+    --color-price-higher: 101 206 18;
+    --color-price-lower: 255 79 68;
     --color-status-standby: 255 152 32;
     --color-status-standby-light: 255 137 0;
     --color-status-completed: 27 225 83;
@@ -110,6 +110,10 @@ body {
 .sb-show-main,
 .docs-story {
   @apply text-primary bg-inverted;
+}
+
+.panel {
+  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
 }
 
 h4 {

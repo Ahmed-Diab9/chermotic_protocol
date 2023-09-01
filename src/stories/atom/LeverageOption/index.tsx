@@ -20,7 +20,7 @@ export const LeverageOption = ({ value = 0, max = 10, onClick }: LeverageOptionP
         return (
           <Button
             key={`${leverage}`}
-            className="w-12 shadow-base"
+            className="w-10 !px-1 shadow-base"
             label={`${leverage}x`}
             size="sm"
             css={+value === leverage ? 'active' : 'default'}

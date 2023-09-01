@@ -16,6 +16,41 @@
     }
   }
 }
+.tabs-default {
+  [role='tablist'] {
+    @apply justify-between;
+    button {
+      @apply text-3xl font-bold;
+      @apply px-4 py-0 flex items-center justify-center flex-auto border-b;
+    }
+    [aria-selected='true'] {
+      @apply text-primary !border-b-transparent;
+    }
+    [aria-selected='false'] {
+      @apply text-primary/20 dark:text-primary-lighter bg-paper-light border-x;
+      &:first-child,
+      + [aria-selected='false'] {
+        @apply border-l-0;
+      }
+      &:last-child {
+        @apply border-r-0;
+      }
+    }
+  }
+  &.tabs-lg {
+    [role='tablist'] {
+      button {
+        @apply h-12 font-extrabold;
+      }
+    }
+  }
+  &.tabs-base {
+    [role='tablist'] {
+      button {
+      }
+    }
+  }
+}
 .tabs-button {
   [role='tablist'] {
     button {
