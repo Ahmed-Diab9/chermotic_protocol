@@ -217,7 +217,6 @@ export const AssetPanel = (props: AssetPanelProps) => {
                         value={amount}
                         maxValue={maxAmount}
                         onChange={onAmountChange}
-                        onButtonClick={onAmountChange}
                         className="w-full"
                         error={isAmountError}
                       />

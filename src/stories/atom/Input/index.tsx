@@ -24,6 +24,7 @@ interface InputProps {
   maxDigits?: number;
   useGrouping?: boolean;
   onChange?: (value: string) => unknown;
+  debug?: boolean;
 }
 
 export const Input = (props: InputProps) => {
@@ -50,8 +51,7 @@ export const Input = (props: InputProps) => {
   const [isInternalChange, setIsInternalChange] = useState(false);
 
   const setFormattedDisplayValue = (value?: number | string) => {
-    if (isNil(value)) return setDisplayValue(value);
-    if (displayValue === placeholder) return setDisplayValue('');
+    if (isNil(value) || value === '' || displayValue === placeholder) return setDisplayValue('');
     const formatted = numberFormat(value, { minDigits, maxDigits, useGrouping });
     return setDisplayValue(formatted);
   };
