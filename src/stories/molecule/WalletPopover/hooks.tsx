@@ -14,10 +14,10 @@ import { PRICE_FEED } from '~/configs/token';
 
 import { Token } from '~/typings/market';
 
+import { formatUnits } from 'viem';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
-import { formatUnits } from 'viem';
 
 export function useWalletPopover() {
   const { connectAsync, connectors } = useConnect();
@@ -119,7 +119,7 @@ export function useWalletPopover() {
       bins: number;
     }[]
   >((acc, pool) => {
-    const key = `${pool.token}-${pool.market}`;
+    const key = `${pool.token.name}-${pool.market}`;
     const name = pool.token.name;
     const market = pool.market;
     const liquidity = formatDecimals(pool.liquidity, pool.token.decimals, 2, true);
