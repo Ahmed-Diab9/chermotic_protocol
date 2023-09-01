@@ -26,7 +26,7 @@ async function getLiquidityPool(
   tokenAddress: Address
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-  const binsResponse = bins.map(async (bin: any) => {
+  const binsResponse = bins.map(async (bin) => {
     const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
     const { name, decimals, description, image } = await marketApi.clbTokenMeta(
       marketAddress,
@@ -65,7 +65,6 @@ export const useOwnedLiquidityPools = () => {
     address: walletAddress,
     tokenAddress: currentToken?.address,
     marketAddresses: marketAddresses,
-    oracleVersion: currentMarket?.oracleValue.version,
   };
 
   const {
@@ -115,15 +114,25 @@ export const useOwnedLiquidityPools = () => {
   );
 
   const ownedPoolSummary = useMemo(() => {
-    if (isNil(currentOwnedPool) || isNil(currentToken) || isNil(markets)) return [];
+    if (isNil(ownedPools) || isNil(currentToken) || isNil(markets)) return [];
 
     const array: LiquidityPoolSummary[] = markets.map((market) => {
       const { description: marketDescription } = market;
+      const pool = ownedPools.find((pool) => pool.marketAddress === market.address);
 
-      const liquiditySum = currentOwnedPool.bins.reduce(
-        (total, bin) => total + bin.clbBalanceOfSettlement,
-        0n
-      );
+      if (isNil(pool)) {
+        return {
+          token: {
+            name: currentToken.name,
+            decimals: currentToken.decimals,
+          },
+          market: marketDescription,
+          liquidity: 0n,
+          bins: 0,
+        };
+      }
+
+      const liquiditySum = pool.bins.reduce((total, bin) => total + bin.clbBalanceOfSettlement, 0n);
 
       return {
         token: {
@@ -132,12 +141,12 @@ export const useOwnedLiquidityPools = () => {
         },
         market: marketDescription,
         liquidity: liquiditySum,
-        bins: currentOwnedPool.bins.length,
+        bins: pool.bins.length,
       };
     });
 
     return array;
-  }, [ownedPools]);
+  }, [ownedPools, currentToken, markets]);
 
   useError({ error });
 
