@@ -29,10 +29,10 @@ export function MarketSelectV2() {
   return (
     <>
       <div className="relative MarketSelectV2 panel">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center h-full gap-3">
           <BookmarkButton size="lg" />
-          <Popover>
-            <Popover.Button className="flex items-center h-20 gap-3 pr-5 border-r">
+          <Popover className="h-full">
+            <Popover.Button className="flex items-center h-full gap-3 pr-5 border-r">
               <div className="pr-3 border-r">
                 <div className="flex items-center gap-1">
                   <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
