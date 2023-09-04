@@ -52,6 +52,18 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
           container_id: 'tradingview-widget-main',
           hide_legend: true,
           toolbar_bg: config.toolbar_bg,
+
+          favorites: {
+            intervals: ['1', '3', '5', '15', '30'],
+          },
+          fullscreen: false,
+          disabled_features: ['header_compare', 'header_chart_type', 'header_indicators'],
+          enabled_features: [
+            'symbol_info',
+            'auto_enable_symbol_labels',
+            'header_fullscreen_button',
+            'header_screenshot',
+          ],
         });
       }
     };

@@ -45,7 +45,7 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         <div
           className="flex items-stretch border-b w-full h-full"
           style={{
-            borderColor: darkMode ? '#363c4e' : '#d9dadb',
+            borderColor: 'rgb(var(--color-paper))',
           }}
         >
           {/* <div className="flex items-center flex-auto px-3"><h4>Last Price</h4></div> */}
