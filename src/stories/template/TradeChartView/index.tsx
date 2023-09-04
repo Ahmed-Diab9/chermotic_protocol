@@ -1,32 +1,40 @@
-import '~/stories/atom/Tabs/style.css';
-import './style.css';
-import { useState } from 'react';
-import { Button } from '~/stories/atom/Button';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
+import { useRef, useState } from 'react';
+import useLocalStorage from '~/hooks/useLocalStorage';
+import { Button } from '~/stories/atom/Button';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import '~/stories/atom/Tabs/style.css';
+import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
+import './style.css';
 
 export interface TradeChartViewProps {}
 
 export const TradeChartView = (props: TradeChartViewProps) => {
   const [selectedButton, setSelectedButton] = useState(0);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
 
-  const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 620,
+  const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
+    initialWidth: Number(viewRef.current?.style.width ?? 720),
     initialHeight: 400,
+    minWidth: 720,
     minHeight: 200,
     maxHeight: 800,
   });
 
+  console.log(width, 'width');
+
   return (
-    <div className="TradeChartView">
+    <div className="TradeChartView" ref={viewRef}>
       <Resizable
-        size={{ width: 'auto', height }}
+        size={{ width, height: height - 32 }}
         minHeight={minHeight}
         maxHeight={maxHeight}
+        minWidth={minWidth}
         enable={{
           top: false,
-          right: false,
+          right: true,
           bottom: true,
           left: false,
           topRight: false,
@@ -37,8 +45,19 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         onResizeStop={handleResizeStop}
         className="panel"
       >
-        <div className="flex items-stretch border-b">
-          <div className="flex items-center flex-auto px-3">{/* <h4>Last Price</h4> */}</div>
+        <div
+          className="flex items-stretch border-b"
+          style={{
+            borderColor: darkMode ? '#363c4e' : '#d9dadb',
+            height: height - 32,
+          }}
+        >
+          {/* <div className="flex items-center flex-auto px-3"><h4>Last Price</h4></div> */}
+          <TradingViewWidget
+            className="flex flex-col items-center flex-auto"
+            width={width - 40}
+            height={height}
+          />
           <Button iconOnly={<ChevronRightIcon />} css="square" />
         </div>
       </Resizable>
