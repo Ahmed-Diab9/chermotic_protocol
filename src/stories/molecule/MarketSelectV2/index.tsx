@@ -2,14 +2,12 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Avatar } from '~/stories/atom/Avatar';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { Avatar } from '~/stories/atom/Avatar';
+import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { BookmarkButton } from '~/stories/atom/BookmarkButton';
-import IncreaseIcon from '~/assets/icons/IncreaseIcon';
-import DecreaseIcon from '~/assets/icons/DecreaseIcon';
 
 import { useMarketSelectV2 } from './hooks';
 
@@ -75,10 +73,9 @@ export function MarketSelectV2() {
 
                 <article className="flex flex-col flex-auto">
                   {markets.map(({ key, isSelectedMarket, onClickMarket, description, price }) => (
-                    <div className="relative flex items-center w-full">
+                    <div key={key} className="relative flex items-center w-full">
                       <BookmarkButton className="absolute left-0 ml-2" />
                       <button
-                        key={key}
                         className={`w-full flex items-center justify-between gap-12 pl-8 py-2 pr-3 ${
                           isSelectedMarket && 'border bg-paper-lighter rounded-lg'
                         }`}
