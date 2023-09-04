@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ResizeOptions {
   initialWidth: number;
@@ -10,9 +10,14 @@ interface ResizeOptions {
 
 export const useResizable = (options: ResizeOptions) => {
   const { initialWidth, initialHeight, minWidth, minHeight, maxHeight } = options;
+  const hasInitialWidth = initialWidth !== 0;
 
   const [width, setWidth] = useState<number>(initialWidth);
   const [height, setHeight] = useState<number>(initialHeight);
+
+  useEffect(() => {
+    setWidth(initialWidth);
+  }, [hasInitialWidth]);
 
   const handleResizeStop = (
     e: MouseEvent | TouchEvent,

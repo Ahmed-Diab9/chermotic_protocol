@@ -36,8 +36,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
     const onLoad = function () {
       if (document.getElementById('tradingview-widget-main') && 'TradingView' in window) {
         new window.TradingView.widget({
-          width,
-          height,
+          autosize: true,
           symbol: `${marketSymbol}`,
           interval: config.interval,
           timezone: 'Etc/UTC',
@@ -71,11 +70,11 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
       script.removeEventListener('error', onError);
       document.head.removeChild(script);
     };
-  }, [marketSymbol, config, width, height, isMarketLoading]);
+  }, [marketSymbol, config, isMarketLoading]);
 
   return (
     <div className={`tradingview-widget-container ${className}`}>
-      <div id="tradingview-widget-main" />
+      <div id="tradingview-widget-main" className="w-full h-full" />
       {!isMarketLoading && marketSymbol && (
         <div className="tradingview-widget-copyright h-0 invisible">
           <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">

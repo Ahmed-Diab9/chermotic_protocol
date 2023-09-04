@@ -14,16 +14,13 @@ export const TradeChartView = (props: TradeChartViewProps) => {
   const [selectedButton, setSelectedButton] = useState(0);
   const viewRef = useRef<HTMLDivElement>(null);
   const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
-
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: Number(viewRef.current?.style.width ?? 720),
+    initialWidth: Number(viewRef.current?.offsetWidth ?? 0),
     initialHeight: 400,
     minWidth: 720,
     minHeight: 200,
     maxHeight: 800,
   });
-
-  console.log(width, 'width');
 
   return (
     <div className="TradeChartView" ref={viewRef}>
@@ -46,10 +43,9 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         className="panel"
       >
         <div
-          className="flex items-stretch border-b"
+          className="flex items-stretch border-b w-full h-full"
           style={{
             borderColor: darkMode ? '#363c4e' : '#d9dadb',
-            height: height - 32,
           }}
         >
           {/* <div className="flex items-center flex-auto px-3"><h4>Last Price</h4></div> */}
