@@ -1,7 +1,7 @@
 {
   "rules": {
     "react-hooks/exhaustive-deps": [
-      "off",
+      "warn",
       {
         "enableDangerousAutofixThisMayCauseInfiniteLoops": true
       }
