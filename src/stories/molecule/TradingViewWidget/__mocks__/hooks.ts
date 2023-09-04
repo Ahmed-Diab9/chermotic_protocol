@@ -13,6 +13,9 @@ export function useTradingViewChart() {
     height: 610,
     interval: 5,
     theme: 'light',
+    backgroundColor: '#2e2e32',
+    gridColor: '#1f1f21',
+    toolbar_bg: '#2e2e32',
     isPublishingEnabled: false,
     isSymbolChangeAllowed: true,
     hasVolume: false,
@@ -43,6 +46,7 @@ export function useTradingViewChart() {
   };
 
   return {
+    isMarketLoading: false,
     marketSymbol,
     config,
     onSymbolChange,

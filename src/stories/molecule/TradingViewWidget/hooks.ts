@@ -1,5 +1,5 @@
 import { isNotNil } from 'ramda';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useMarket } from '~/hooks/useMarket';
 import { WidgetConfig } from '~/typings/chart';
@@ -9,16 +9,19 @@ const marketMap: Record<string, string | undefined> = {
   'BTC/USD': 'PYTH:BTCUSD',
 };
 
-export function useTradingViewChart() {
-  const { markets, currentMarket, onMarketSelect } = useMarket();
+export function useTradingViewChart({ width, height }: { width: number; height: number }) {
+  const { markets, currentMarket, onMarketSelect, isMarketLoading } = useMarket();
   const marketSymbol = isNotNil(currentMarket) ? marketMap[currentMarket.description] : undefined;
 
   const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
   const [config, setConfig] = useState<WidgetConfig>({
-    width: 980,
-    height: 610,
+    width,
+    height,
     interval: 5,
     theme: darkMode ? 'dark' : 'light',
+    backgroundColor: darkMode ? '#2e2e32' : '#fcfcfc',
+    gridColor: darkMode ? '#1f1f21' : '#fcfcfc',
+    toolbar_bg: darkMode ? '#2e2e32' : '#fcfcfc',
     isPublishingEnabled: false,
     isSymbolChangeAllowed: true,
     hasVolume: false,
@@ -41,15 +44,22 @@ export function useTradingViewChart() {
 
   const onConfigChange = <K extends keyof WidgetConfig>(
     configKey: K,
-    configValue: K extends WidgetConfig ? WidgetConfig[K] : never
+    configValue: K extends keyof WidgetConfig ? WidgetConfig[K] : never
   ) => {
-    setConfig({
-      ...config,
+    setConfig((currentConfig) => ({
+      ...currentConfig,
       [configKey]: configValue,
-    });
+    }));
   };
 
+  useEffect(() => {
+    onConfigChange('theme', darkMode ? 'dark' : 'light');
+    onConfigChange('backgroundColor', darkMode ? '#2e2e32' : '#fcfcfc');
+    onConfigChange('toolbar_bg', darkMode ? '#2e2e32' : '#fcfcfc');
+  }, [darkMode]);
+
   return {
+    isMarketLoading,
     marketSymbol,
     config,
     onSymbolChange,

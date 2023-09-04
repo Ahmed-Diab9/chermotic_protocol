@@ -12,10 +12,21 @@ declare global {
   }
 }
 
-export function TradingViewWidget() {
-  const { marketSymbol, config, onSymbolChange, onConfigChange } = useTradingViewChart();
+interface TradingViewWidgetProps {
+  width?: number;
+  height?: number;
+  className?: string;
+}
+
+export function TradingViewWidget(props: TradingViewWidgetProps) {
+  const { className = '', width = 0, height = 0 } = props;
+  const { marketSymbol, config, onSymbolChange, onConfigChange, isMarketLoading } =
+    useTradingViewChart({ width, height });
 
   useEffect(() => {
+    if (isMarketLoading || !marketSymbol) {
+      return;
+    }
     const script = document.createElement('script');
     script.id = 'tradingview-widget-loading-script';
     script.src = 'https://s3.tradingview.com/tv.js';
@@ -25,8 +36,8 @@ export function TradingViewWidget() {
     const onLoad = function () {
       if (document.getElementById('tradingview-widget-main') && 'TradingView' in window) {
         new window.TradingView.widget({
-          width: config.width,
-          height: config.height,
+          width,
+          height,
           symbol: `${marketSymbol}`,
           interval: config.interval,
           timezone: 'Etc/UTC',
@@ -34,12 +45,14 @@ export function TradingViewWidget() {
           style: '1',
           locale: 'en',
           enable_publishing: config.isPublishingEnabled,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: config.backgroundColor,
           hide_top_toolbar: config.hasToolbar,
-          withdateranges: config.hasDataRanges,
+          withdateranges: false,
           allow_symbol_change: config.isSymbolChangeAllowed,
           hide_volume: config.hasVolume,
           container_id: 'tradingview-widget-main',
+          hide_legend: true,
+          toolbar_bg: config.toolbar_bg,
         });
       }
     };
@@ -56,17 +69,20 @@ export function TradingViewWidget() {
     return () => {
       script.removeEventListener('load', onLoad);
       script.removeEventListener('error', onError);
+      document.head.removeChild(script);
     };
-  }, [marketSymbol]);
+  }, [marketSymbol, config, width, height, isMarketLoading]);
 
   return (
-    <div className="tradingview-widget-container">
+    <div className={`tradingview-widget-container ${className}`}>
       <div id="tradingview-widget-main" />
-      <div className="tradingview-widget-copyright">
-        <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
-          <span className="blue-text">Track all markets on TradingView</span>
-        </a>
-      </div>
+      {!isMarketLoading && marketSymbol && (
+        <div className="tradingview-widget-copyright h-0 invisible">
+          <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
+            <span className="blue-text">Track all markets on TradingView</span>
+          </a>
+        </div>
+      )}
     </div>
   );
 }
