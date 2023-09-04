@@ -23,7 +23,7 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
     gridColor: darkMode ? '#1f1f21' : '#fcfcfc',
     toolbar_bg: darkMode ? '#2e2e32' : '#fcfcfc',
     isPublishingEnabled: false,
-    isSymbolChangeAllowed: true,
+    isSymbolChangeAllowed: false,
     hasVolume: false,
     hasToolbar: false,
     hasDetails: true,
