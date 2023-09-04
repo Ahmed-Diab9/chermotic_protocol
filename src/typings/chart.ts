@@ -27,4 +27,9 @@ export type WidgetConfig = {
   hasHotlist: boolean;
   hasCalendar: boolean;
   hasDataRanges: boolean;
+  // TODO: check the property `overrides` working
+  // overrides: Record<string, any>;
+  backgroundColor: string;
+  gridColor: string;
+  toolbar_bg: string;
 };
