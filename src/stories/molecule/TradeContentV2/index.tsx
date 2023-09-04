@@ -83,7 +83,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
   } = useTradeContentV2(props);
 
   return (
-    <div className="px-5 w-full max-w-[480px]">
+    <div className="w-full px-5">
       <article className="pt-8 pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>

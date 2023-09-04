@@ -37,10 +37,12 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         onResizeStop={handleResizeStop}
         className="panel"
       >
-        <div className="flex items-stretch border-b">
-          <div className="flex items-center flex-auto px-3">{/* <h4>Last Price</h4> */}</div>
+        {/* <div className="flex items-stretch border-b">
+          <div className="flex items-center flex-auto px-3">
+            <h4>Last Price</h4>
+          </div>
           <Button iconOnly={<ChevronRightIcon />} css="square" />
-        </div>
+        </div> */}
       </Resizable>
     </div>
   );
