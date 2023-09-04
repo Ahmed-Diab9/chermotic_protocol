@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
-import { useState } from 'react';
 // import { Tab } from '@headlessui/react';
-import { Button } from '~/stories/atom/Button';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import ViewShortIcon from '~/assets/icons/ViewShortIcon';
-import ViewLongIcon from '~/assets/icons/ViewLongIcon';
-import ViewBothIcon from '~/assets/icons/ViewBothIcon';
 import { Resizable } from 're-resizable';
+import ViewBothIcon from '~/assets/icons/ViewBothIcon';
+import ViewLongIcon from '~/assets/icons/ViewLongIcon';
+import ViewShortIcon from '~/assets/icons/ViewShortIcon';
+import { Button } from '~/stories/atom/Button';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
 export interface TradeLiquidityProps {}
@@ -20,6 +20,7 @@ export const TradeLiquidity = (props: TradeLiquidityProps) => {
     initialHeight: 400,
     minHeight: 200,
     maxHeight: 800,
+    minWidth: 240,
   });
 
   return (
