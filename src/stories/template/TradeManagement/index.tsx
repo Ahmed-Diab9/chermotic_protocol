@@ -1,17 +1,28 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 import '~/stories/atom/Tabs/style.css';
+import '~/stories/atom/Select/style.css';
 import './style.css';
 
-import { Popover, Tab } from '@headlessui/react';
+import { useState } from 'react';
+import { Listbox } from '@headlessui/react';
+import { Tab } from '@headlessui/react';
+import { Button } from '~/stories/atom/Button';
 import { Guide } from '~/stories/atom/Guide';
 import { PopoverArrow } from '~/stories/atom/PopoverArrow';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
 import { useTradeManagement } from './hooks';
+
+const selectItem = [
+  { id: 1, title: 'USDC ETH/USD', unavailable: false },
+  { id: 2, title: 'USDC', unavailable: false },
+  { id: 3, title: 'All markets', unavailable: false },
+];
 
 export const TradeManagement = () => {
   const {
@@ -38,6 +49,8 @@ export const TradeManagement = () => {
     maxHeight: 800,
   });
 
+  const [selectedItem, setSelectedItem] = useState(selectItem[0]);
+
   return (
     <div className="TradeManagement">
       <Resizable
@@ -60,12 +73,29 @@ export const TradeManagement = () => {
         <div className="w-full h-full tabs tabs-default tabs-left">
           <Tab.Group>
             <div className="flex flex-col w-full h-full">
-              <div className="border-b">
-                <Tab.List className="tabs-list">
+              <div className="flex items-center border-b">
+                <Tab.List className="flex-none tabs-list">
                   <Tab>Position</Tab>
                   <Tab>History</Tab>
                   <Tab>Trades</Tab>
                 </Tab.List>
+                <div className="flex items-center gap-2 ml-auto">
+                  <div className="select select-simple">
+                    <Listbox value={selectedItem} onChange={setSelectedItem}>
+                      <Listbox.Button>{selectedItem.title}</Listbox.Button>
+                      <Listbox.Options>
+                        {selectItem.map((item) => (
+                          <Listbox.Option key={item.id} value={item} disabled={item.unavailable}>
+                            {item.title}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Listbox>
+                  </div>
+                  <div className="px-2 border-l text-primary-light">
+                    <Button iconOnly={<ArrowPathIcon />} css="unstyled" />
+                  </div>
+                </div>
               </div>
               {/* <div className="flex items-center gap-5 mt-4 ml-auto">
                 <p className="pr-5 text-sm border-r text-primary-lighter">

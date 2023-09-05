@@ -27,7 +27,7 @@
       }
     }
     .tbody {
-      @apply flex flex-col gap-2 px-3 overflow-y-auto;
+      @apply flex flex-col gap-2 px-3 overflow-y-auto pb-3;
       .tr {
         @apply gap-5 py-3 border-b px-2;
       }
