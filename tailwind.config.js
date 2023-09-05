@@ -69,6 +69,7 @@ export const theme = {
         light: 'rgb(var(--color-error-light))',
       },
 
+      leverage: 'rgb(var(--color-leverage))',
       price: {
         higher: 'rgb(var(--color-price-higher))',
         lower: 'rgb(var(--color-price-lower))',

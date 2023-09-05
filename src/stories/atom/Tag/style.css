@@ -12,3 +12,6 @@
   /* @apply text-primary bg-inverted; */
   @apply text-price-lower bg-price-lower/10;
 }
+.tag-leverage {
+  @apply text-leverage bg-leverage/10 normal-case;
+}

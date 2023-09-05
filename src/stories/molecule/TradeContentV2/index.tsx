@@ -126,10 +126,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <Tag
-                label={`Up to ${maxLeverage}x`}
-                className="normal-case bg-[#13DED3]/10 text-[#13DED3]"
-              />
+              <Tag label={`Up to ${maxLeverage}x`} className="normal-case tag-leverage" />
             </div>
             <Switch.Group>
               <div className="toggle-wrapper">
