@@ -1,12 +1,14 @@
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
 import { useRef, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
-import { Button } from '~/stories/atom/Button';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import '~/stories/atom/Tabs/style.css';
 import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
 import './style.css';
+
+// May be used later.
+// import { ChevronRightIcon } from '@heroicons/react/24/outline';
+// import { Button } from '~/stories/atom/Button';
 
 export interface TradeChartViewProps {}
 
@@ -51,10 +53,10 @@ export const TradeChartView = (props: TradeChartViewProps) => {
           {/* <div className="flex items-center flex-auto px-3"><h4>Last Price</h4></div> */}
           <TradingViewWidget
             className="flex flex-col items-center flex-auto"
-            width={width - 40}
+            width={width}
             height={height}
           />
-          <Button iconOnly={<ChevronRightIcon />} css="square" />
+          {/* <Button iconOnly={<ChevronRightIcon />} css="square" /> */}
         </div>
       </Resizable>
     </div>
