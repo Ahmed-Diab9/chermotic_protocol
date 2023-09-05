@@ -17,7 +17,7 @@ export type Liquidity = {
 export type WidgetConfig = {
   width: number;
   height: number;
-  interval: number | 'D' | 'W';
+  interval: string;
   theme: 'light' | 'dark';
   isPublishingEnabled: boolean;
   isSymbolChangeAllowed: boolean;

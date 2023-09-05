@@ -50,20 +50,14 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
           allow_symbol_change: config.isSymbolChangeAllowed,
           hide_volume: config.hasVolume,
           container_id: 'tradingview-widget-main',
-          hide_legend: true,
+          hide_legend: false,
           toolbar_bg: config.toolbar_bg,
-
-          favorites: {
-            intervals: ['1', '3', '5', '15', '30'],
-          },
-          fullscreen: false,
-          disabled_features: ['header_compare', 'header_chart_type', 'header_indicators'],
-          enabled_features: [
-            'symbol_info',
-            'auto_enable_symbol_labels',
-            'header_fullscreen_button',
-            'header_screenshot',
-          ],
+          show_popup_button: true,
+          popup_width: '1000',
+          popup_height: '650',
+          fullscreen: true,
+          disabled_features: ['header_compare'],
+          enabled_features: ['header_fullscreen_button'],
         });
       }
     };

@@ -11,7 +11,7 @@ export function useTradingViewChart() {
   const [config, setConfig] = useState<WidgetConfig>({
     width: 980,
     height: 610,
-    interval: 5,
+    interval: '5',
     theme: 'light',
     backgroundColor: '#2e2e32',
     gridColor: '#1f1f21',
