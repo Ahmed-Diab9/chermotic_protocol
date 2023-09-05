@@ -1,0 +1,34 @@
+.TradeManagement {
+  .list {
+    .thead {
+      @apply items-stretch border-b bg-[#29292D];
+      .td {
+        @apply py-2;
+      }
+    }
+    .tbody {
+      @apply flex flex-col gap-2;
+      .tr {
+        @apply gap-5 py-3 border-b;
+      }
+    }
+    .tr {
+      @apply flex gap-5 justify-between;
+    }
+    .td {
+      @apply w-[10%] min-w-[90px];
+      @apply flex items-center;
+      &:nth-child(1) {
+        @apply w-[16%] min-w-[180px];
+      }
+      &:nth-child(8) {
+        @apply w-[12%] min-w-[140px] text-center justify-center;
+      }
+      &:nth-child(2),
+      &:nth-child(5),
+      &:nth-child(8) {
+        @apply border-l pl-5;
+      }
+    }
+  }
+}

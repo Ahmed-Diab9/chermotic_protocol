@@ -1,12 +1,13 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 import '~/stories/atom/Tabs/style.css';
+import './style.css';
 
 import { Popover, Tab } from '@headlessui/react';
 import { Guide } from '~/stories/atom/Guide';
 import { PopoverArrow } from '~/stories/atom/PopoverArrow';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { PositionItem } from '~/stories/molecule/PositionItem';
+import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { Resizable } from 're-resizable';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
@@ -38,7 +39,7 @@ export const TradeManagement = () => {
   });
 
   return (
-    <div className="TradeManagementrelative">
+    <div className="TradeManagement">
       <Resizable
         size={{ width: 'auto', height }}
         minHeight={minHeight}
@@ -56,15 +57,13 @@ export const TradeManagement = () => {
         onResizeStop={handleResizeStop}
         className="panel"
       >
-        <div className="tabs tabs-line tabs-base tabs-left">
+        <div className="w-full h-full overflow-hidden tabs tabs-default">
           <Tab.Group>
-            <div className="flex items-center w-full px-10">
-              <Tab.List className="pt-4 text-lg">
-                <div className="flex self-start gap-10">
-                  <Tab className="">Position</Tab>
-                  <Tab className="">History</Tab>
-                  <Tab className="">Trades</Tab>
-                </div>
+            <div className="flex items-center w-full px-5">
+              <Tab.List>
+                <Tab className="">Position</Tab>
+                <Tab className="">History</Tab>
+                <Tab className="">Trades</Tab>
               </Tab.List>
               {/* <div className="flex items-center gap-5 mt-4 ml-auto">
                 <p className="pr-5 text-sm border-r text-primary-lighter">
@@ -99,10 +98,24 @@ export const TradeManagement = () => {
                     {isPositionsEmpty ? (
                       <p className="mt-10 text-center text-primary/20">You have no position yet.</p>
                     ) : (
-                      <div>
-                        {positionList.map((position) => (
-                          <PositionItem key={position.id.toString()} position={position} />
-                        ))}
+                      <div className="list position">
+                        <div className="thead">
+                          <div className="tr">
+                            <div className="td">Position</div>
+                            <div className="td">Entry Price</div>
+                            <div className="td">Contract Qty</div>
+                            <div className="td">Leverage</div>
+                            <div className="td">TP Price</div>
+                            <div className="td">SL Price</div>
+                            <div className="td">PnL</div>
+                            <div className="td">Close</div>
+                          </div>
+                        </div>
+                        <div className="tbody">
+                          {positionList.map((position) => (
+                            <PositionItemV2 key={position.id.toString()} position={position} />
+                          ))}
+                        </div>
                       </div>
                     )}
                     <div>

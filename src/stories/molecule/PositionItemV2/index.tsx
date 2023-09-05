@@ -54,158 +54,149 @@ export function PositionItemV2(props: PositionItemV2Props) {
   } = usePositionItemV2(props);
 
   return (
-    <div className="mb-3 overflow-hidden border dark:border-transparent bg-paper rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter dark:bg-paper">
-        <div className={`flex flex-auto items-center gap-6 ${isOpening ? 'opacity-30' : ''}`}>
-          <div className="flex items-center gap-6">
+    <div className="tr">
+      <div className="td">
+        <div>
+          <div className="text-sm text-primary-light">
+            <SkeletonElement isLoading={isLoading} width={60}>
+              {entryTime}
+            </SkeletonElement>
+          </div>
+          <div className="flex items-center gap-2 mt-[2px]">
             <div className="flex items-center gap-1">
-              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+                {/* <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" /> */}
+                <h6>{tokenName}</h6>
               </SkeletonElement>
             </div>
-            <div className="flex items-center gap-1">
-              <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
+            <div className="flex items-center gap-1 pl-2 border-l">
+              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                <Avatar
-                  label={marketDescription}
-                  size="xs"
-                  gap="1"
-                  fontSize="base"
-                  fontWeight="bold"
-                />{' '}
+                {/* <Avatar
+                label={marketDescription}
+                size="xs"
+                gap="1"
+                fontSize="base"
+                fontWeight="bold"
+              /> */}
+                <h6>{marketDescription}</h6>
               </SkeletonElement>
             </div>
             <SkeletonElement isLoading={isLoading} width={40}>
               <Tag label={direction} />
             </SkeletonElement>
           </div>
-          <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-primary-light">Entry Price</p>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {entryPrice}
-            </SkeletonElement>
-          </div>
-          <div className="flex items-center gap-8 pl-6 border-l">
-            <p className="text-primary-light">Entry Time</p>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {entryTime}
-            </SkeletonElement>
-          </div>
-        </div>
-        <div className="flex items-center gap-1 ml-auto">
-          {/* 상태에 따라 내용 변동 */}
-          {isOpening && (
-            <>
-              <Loading size="sm" />
-              <div className="flex text-primary">
-                {/* Opening in progress */}
-                Waiting for the next oracle round
-                <TooltipGuide iconOnly label="opening-in-progress" />
-              </div>
-            </>
-          )}
-          {isOpened && (
-            <>
-              <CheckIcon className="w-4" />
-              <div className="flex text-primary">
-                Opening completed
-                <TooltipGuide iconOnly label="opening-completed" />
-              </div>
-            </>
-          )}
-          {isClosing && (
-            <>
-              <Loading size="sm" />
-              <div className="flex text-primary">
-                Closing in progress
-                <TooltipGuide iconOnly label="closing-in-progress" />
-              </div>
-            </>
-          )}
-          {isClosed && (
-            <>
-              <CheckIcon className="w-4" />
-              <div className="flex text-primary">
-                Closing completed
-                <TooltipGuide iconOnly label="closing-completed" />
-              </div>
-            </>
-          )}
         </div>
       </div>
-      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-[#29292D]">
-        <div
-          className={`flex flex-auto items-stretch justify-between gap-6 ${
-            isOpening ? 'opacity-30' : ''
-          }`}
-        >
-          <div className="grow min-w-[12%] flex flex-col gap-2">
-            <TextRow
-              label="Contract Qty"
-              labelClass="text-primary-light"
-              value={qty}
-              isLoading={isLoading}
-            />
-            <TextRow
-              label="Collateral"
-              labelClass="text-primary-light"
-              value={collateral}
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
-            <TextRow
-              label="Take Profit"
-              labelClass="text-primary-light"
-              value={takeProfit}
-              isLoading={isLoading}
-            />
-            <TextRow
-              label="TP Price"
-              labelClass="text-primary-light"
-              value={profitPrice}
-              subValueLeft={profitPriceTo}
-              subValueClass={tpPriceClass}
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="grow min-w-[20%] flex flex-col gap-2 pl-6 border-l">
-            <TextRow
-              label="Stop Loss"
-              labelClass="text-primary-light"
-              value={stopLoss}
-              isLoading={isLoading}
-            />
-            <TextRow
-              label="SL Price"
-              labelClass="text-primary-light"
-              value={lossPrice}
-              subValueLeft={lossPriceTo}
-              subValueClass={slPriceClass}
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="grow min-w-[8%] flex flex-col gap-2 pl-6 border-l">
-            <TextRow
-              label="PnL"
-              labelClass="text-primary-light"
-              value={pnlPercentage}
-              valueClass={pnlClass}
-              isLoading={isLoading}
-            />
-            {/* todo: add PnL price (has no label, value only) */}
-            <TextRow value={pnlAmount} isLoading={isLoading} />
+      <div className="td">
+        <SkeletonElement isLoading={isLoading} width={60}>
+          {entryPrice}
+        </SkeletonElement>
+      </div>
+      <div className="td">
+        {/* Contract Qty */}
+        <SkeletonElement isLoading={isLoading} width={60}>
+          {qty}
+        </SkeletonElement>
+      </div>
+      <div className="td">
+        {/* Leverage */}
+        <SkeletonElement isLoading={isLoading} width={60}>
+          <Tag label="4.50x" className="tag-leverage" />
+        </SkeletonElement>
+      </div>
+      <div className="td">
+        {/* TP */}
+        <div>
+          <SkeletonElement isLoading={isLoading} width={60}>
+            {profitPrice}
+          </SkeletonElement>
+          <div className={`mt-[2px] ${tpPriceClass}`}>
+            <SkeletonElement isLoading={isLoading} width={60}>
+              {takeProfit}
+            </SkeletonElement>
           </div>
         </div>
-        <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
-          {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
-          {/* Close / Claim USDC */}
-          {(isOpened || isOpening) && (
-            <Button label="Close" css="light" size="sm" onClick={onClosePosition} />
-          )}
-          {isClosed && <Button label="Claim" css="active" size="sm" onClick={onClaimPosition} />}
-          {isClosing && <Button label="Claim" css="default" size="sm" disabled={true} />}
+      </div>
+      <div className="td">
+        {/* SL */}
+        <div>
+          <SkeletonElement isLoading={isLoading} width={60}>
+            {lossPrice}
+          </SkeletonElement>
+          <div className={`mt-[2px] ${slPriceClass}`}>
+            <SkeletonElement isLoading={isLoading} width={60}>
+              {stopLoss}
+            </SkeletonElement>
+          </div>
+        </div>
+      </div>
+      <div className="td">
+        {/* PnL */}
+        <div>
+          <SkeletonElement isLoading={isLoading} width={60}>
+            {pnlAmount}
+          </SkeletonElement>
+          <div className={`mt-[2px] ${pnlClass}`}>
+            <SkeletonElement isLoading={isLoading} width={60}>
+              {pnlPercentage}
+            </SkeletonElement>
+          </div>
+        </div>
+      </div>
+      <div className="td">
+        <div>
+          <div className="flex items-center gap-1">
+            {isOpening && (
+              <>
+                <Loading size="sm" />
+                <div className="flex text-sm text-primary">
+                  {/* Opening in progress */}
+                  {/* Waiting for the next oracle round */}
+                  Opening..
+                  <TooltipGuide iconOnly label="opening-in-progress" />
+                </div>
+              </>
+            )}
+            {isOpened && (
+              <>
+                {/* <CheckIcon className="w-4" />
+                  <div className="flex text-primary">
+                    Opening completed
+                    <TooltipGuide iconOnly label="opening-completed" />
+                  </div> */}
+              </>
+            )}
+            {isClosing && (
+              <>
+                <Loading size="sm" />
+                <div className="flex text-sm text-primary">
+                  {/* Closing in progress */}
+                  Closing..
+                  <TooltipGuide iconOnly label="closing-in-progress" />
+                </div>
+              </>
+            )}
+            {isClosed && (
+              <>
+                {/* <CheckIcon className="w-4" />
+                  <div className="flex text-primary">
+                    Closing completed
+                    <TooltipGuide iconOnly label="closing-completed" />
+                  </div> */}
+              </>
+            )}
+          </div>
+          <div>
+            {(isOpened || isOpening) && (
+              <Button label="Close" css="underlined" size="sm" onClick={onClosePosition} />
+            )}
+            {isClosed && (
+              <Button label="Claim" css="underlined" size="sm" onClick={onClaimPosition} />
+            )}
+            {isClosing && <Button label="Claim" css="underlined" size="sm" disabled={true} />}
+          </div>
         </div>
       </div>
     </div>
