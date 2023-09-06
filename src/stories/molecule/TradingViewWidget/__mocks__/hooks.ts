@@ -24,6 +24,8 @@ export function useTradingViewChart() {
     hasHotlist: true,
     hasCalendar: true,
     hasDataRanges: true,
+    upColor: '#A6D85B',
+    downColor: '#FF3232',
   });
 
   const onSymbolChange = (nextSymbol: string) => {
