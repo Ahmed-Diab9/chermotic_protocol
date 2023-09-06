@@ -10,6 +10,7 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
+import { useEffect } from 'react';
 import { useMarketSelectV2 } from './hooks';
 
 export function MarketSelectV2() {
@@ -21,11 +22,17 @@ export function MarketSelectV2() {
     markets,
     price,
     priceClass,
+    priceClassMap,
+    poolMap,
     interestRate,
     changeRate,
     changeRateClass,
     explorerUrl,
   } = useMarketSelectV2();
+
+  useEffect(() => {
+    console.log(poolMap, 'pool map');
+  }, [poolMap]);
 
   return (
     <>
@@ -94,7 +101,7 @@ export function MarketSelectV2() {
                         onClick={onClickMarket}
                       >
                         <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                        <span>${price}</span>
+                        <span className={priceClassMap?.[key]}>${price}</span>
                         <span className="flex pl-3 text-left border-l text-primary-light">
                           <span className="w-[80px]">23.45M</span>
                           <span className="w-[80px]">23.45M</span>

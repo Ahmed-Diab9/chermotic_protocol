@@ -9,6 +9,8 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { usePublicClient } from 'wagmi';
+import { useLiquidityPools } from '~/hooks/useLiquidityPool';
+import { usePreviousOracles } from '~/hooks/usePreviousOracles';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
@@ -27,6 +29,10 @@ export function useMarketSelectV2() {
   } = useOracleBefore24Hours({
     market: currentMarket,
   });
+  const { previousOracles, isLoading: isOraclesLoading } = usePreviousOracles({
+    markets: _markets,
+  });
+  const { liquidityPools } = useLiquidityPools();
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
@@ -81,6 +87,33 @@ export function useMarketSelectV2() {
   }, [changeRateRaw]);
   const changeRateClass = compareOracles(beforeOracle, currentMarket?.oracleValue);
 
+  const priceClassMap = useMemo(() => {
+    return previousOracles?.reduce((record, previousOracle) => {
+      if (isNil(previousOracle)) {
+        return record;
+      }
+      const currentMarket = _markets?.find(
+        (_market) => _market.address === previousOracle?.marketAddress
+      );
+      const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
+      record[previousOracle.marketAddress] = priceClass;
+      return record;
+    }, {} as Record<`0x${string}`, string>);
+  }, [previousOracles, _markets]);
+
+  const poolMap = useMemo(() => {
+    return liquidityPools?.reduce((record, pool) => {
+      const longLpSum = pool.bins
+        .filter((bin) => bin.baseFeeRate > 0)
+        .reduce((sum, bin) => sum + bin.liquidity, 0n);
+      const shortLpSum = pool.bins
+        .filter((bin) => bin.baseFeeRate < 0)
+        .reduce((sum, bin) => sum + bin.liquidity, 0n);
+      record[pool.marketAddress] = { longLpSum, shortLpSum };
+      return record;
+    }, {} as Record<`0x${string}`, { longLpSum: bigint; shortLpSum: bigint }>);
+  }, [liquidityPools]);
+
   const explorerUrl = useMemo(() => {
     try {
       const rawUrl = publicClient.chain.blockExplorers?.default?.url;
@@ -101,6 +134,8 @@ export function useMarketSelectV2() {
     markets,
     price,
     priceClass,
+    priceClassMap,
+    poolMap,
     interestRate,
     changeRate,
     changeRateClass,
