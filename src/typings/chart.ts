@@ -32,4 +32,6 @@ export type WidgetConfig = {
   backgroundColor: string;
   gridColor: string;
   toolbar_bg: string;
+  upColor: string;
+  downColor: string;
 };

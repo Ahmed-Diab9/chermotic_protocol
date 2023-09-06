@@ -55,6 +55,15 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
           fullscreen: true,
           disabled_features: ['header_compare'],
           enabled_features: ['header_fullscreen_button'],
+          overrides: {
+            'mainSeriesProperties.candleStyle.upColor': config.upColor,
+            'mainSeriesProperties.candleStyle.downColor': config.downColor,
+            'mainSeriesProperties.candleStyle.borderUpColor': config.upColor,
+            'mainSeriesProperties.candleStyle.borderDownColor': config.downColor,
+            'mainSeriesProperties.candleStyle.wickUpColor': config.upColor,
+            'mainSeriesProperties.candleStyle.wickDownColor': config.downColor,
+            'mainSeriesProperties.statusViewStyle.symbolTextSource': 'long-description',
+          },
         });
       }
     };

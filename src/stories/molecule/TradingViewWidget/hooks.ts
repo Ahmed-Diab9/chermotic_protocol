@@ -30,6 +30,8 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
     hasHotlist: true,
     hasCalendar: true,
     hasDataRanges: true,
+    upColor: darkMode ? '#A6D85B' : '#65CE12',
+    downColor: darkMode ? '#FF3232' : '#FF4F44',
   });
 
   const onSymbolChange = (nextSymbol: string) => {
@@ -56,6 +58,8 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
     onConfigChange('theme', darkMode ? 'dark' : 'light');
     onConfigChange('backgroundColor', darkMode ? '#2e2e32' : '#fcfcfc');
     onConfigChange('toolbar_bg', darkMode ? '#2e2e32' : '#fcfcfc');
+    onConfigChange('upColor', darkMode ? '#A6D85B' : '#65CE12');
+    onConfigChange('downColor', darkMode ? '#FF3232' : '#FF4F44');
   }, [darkMode]);
 
   return {
