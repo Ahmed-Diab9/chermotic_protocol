@@ -40,7 +40,7 @@ function TradeV2() {
               width: '560px',
               height: '100%',
             }}
-            maxWidth="840px"
+            maxWidth="50%"
             minWidth={480}
             minHeight={640}
             enable={{
@@ -55,6 +55,7 @@ function TradeV2() {
             }}
           >
             <TradePanelV2 />
+            <div className="w-[1200px]"></div>
           </Resizable>
         </div>
       </section>

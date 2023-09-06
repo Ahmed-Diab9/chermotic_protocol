@@ -19,7 +19,7 @@ export const TradeChartView = (props: TradeChartViewProps) => {
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: Number(viewRef.current?.offsetWidth ?? 0),
     initialHeight: 400,
-    minWidth: 720,
+    minWidth: 0,
     minHeight: 200,
     maxHeight: 800,
   });

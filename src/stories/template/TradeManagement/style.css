@@ -1,4 +1,5 @@
 .TradeManagement {
+  @apply overflow-x-auto min-w-min;
   .tabs {
     .tabs-list {
       @apply border-r;
