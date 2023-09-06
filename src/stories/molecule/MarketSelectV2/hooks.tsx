@@ -1,6 +1,7 @@
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useMarket } from '~/hooks/useMarket';
-import { usePreviousOracle } from '~/hooks/usePreviousVersion';
+import { useOracleBefore24Hours } from '~/hooks/useOracleBefore24Hours';
+import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
@@ -14,9 +15,18 @@ import { compareOracles } from '~/utils/price';
 export function useMarketSelectV2() {
   const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
-  const { previousOracle } = usePreviousOracle({ market: currentMarket });
+  const { previousOracle } = usePreviousOracle({
+    market: currentMarket,
+  });
   const { feeRate } = useFeeRate();
   const publicClient = usePublicClient();
+  const {
+    changeRate: changeRateRaw = 0n,
+    isLoading: isOracleLoading,
+    oracle: beforeOracle,
+  } = useOracleBefore24Hours({
+    market: currentMarket,
+  });
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
@@ -47,7 +57,13 @@ export function useMarketSelectV2() {
     };
     const description = market.description;
     const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
-    return { key, isSelectedMarket, onClickMarket, description, price };
+    return {
+      key,
+      isSelectedMarket,
+      onClickMarket,
+      description,
+      price,
+    };
   });
 
   const price = formatDecimals(
@@ -59,6 +75,11 @@ export function useMarketSelectV2() {
   const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
+  const changeRate = useMemo(() => {
+    const sign = changeRateRaw > 0n ? '+' : '';
+    return sign + formatDecimals(changeRateRaw * 100n, ORACLE_PROVIDER_DECIMALS, 4, true) + '%';
+  }, [changeRateRaw]);
+  const changeRateClass = compareOracles(beforeOracle, currentMarket?.oracleValue);
 
   const explorerUrl = useMemo(() => {
     try {
@@ -81,6 +102,8 @@ export function useMarketSelectV2() {
     price,
     priceClass,
     interestRate,
+    changeRate,
+    changeRateClass,
     explorerUrl,
   };
 }

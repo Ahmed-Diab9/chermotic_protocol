@@ -2,13 +2,13 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 import { useMarketSelectV2 } from './hooks';
 
@@ -22,6 +22,8 @@ export function MarketSelectV2() {
     price,
     priceClass,
     interestRate,
+    changeRate,
+    changeRateClass,
     explorerUrl,
   } = useMarketSelectV2();
 
@@ -157,7 +159,7 @@ export function MarketSelectV2() {
                 {/* span className */}
                 {/* if value > 0 : text-price-higher */}
                 {/* if value < 0 : text-price-lower */}
-                <span className={`text-price-higher`}>+0.01%</span>
+                <span className={changeRateClass}>{changeRate}</span>
               </SkeletonElement>
             </h4>
           </div>
