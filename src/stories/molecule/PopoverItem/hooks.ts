@@ -1,11 +1,13 @@
-import { usePreviousOracle } from '~/hooks/usePreviousVersion';
+import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 import { PopoverItemProps } from '.';
 
 export const usePopoverItem = (props: PopoverItemProps) => {
   const { market, selectedMarket, onMarketClick } = props;
-  const { previousOracle } = usePreviousOracle({ market });
+  const { previousOracle } = usePreviousOracle({
+    market: selectedMarket,
+  });
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
     maximumFractionDigits: 2,
