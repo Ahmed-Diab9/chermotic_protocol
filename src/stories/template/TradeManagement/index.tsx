@@ -42,9 +42,10 @@ export const TradeManagement = () => {
   // TODO: PERCENTAGE
   const PERCENTAGE = 0.05;
 
-  const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
+  const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 620,
     initialHeight: 242,
+    minWidth: 720,
     minHeight: 200,
     maxHeight: 800,
   });

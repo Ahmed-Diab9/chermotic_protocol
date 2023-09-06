@@ -27,13 +27,13 @@ export const TradeChartView = (props: TradeChartViewProps) => {
   return (
     <div className="TradeChartView" ref={viewRef}>
       <Resizable
-        size={{ width, height: height - 32 }}
+        size={{ width: 'auto', height: height - 32 }}
         minHeight={minHeight}
         maxHeight={maxHeight}
         minWidth={minWidth}
         enable={{
           top: false,
-          right: true,
+          right: false,
           bottom: true,
           left: false,
           topRight: false,

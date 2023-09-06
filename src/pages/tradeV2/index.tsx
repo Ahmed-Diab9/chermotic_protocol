@@ -26,7 +26,7 @@ function TradeV2() {
     <div className="flex flex-col min-h-[100vh] w-full">
       <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
-      <section className="flex flex-col grow w-full min-w-[1200px] max-w-[1600px] items-stretch px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full min-w-[1280px] max-w-[1600px] items-stretch px-5 mx-auto mb-20">
         <BookmarkBoard />
         <MainBarV2 accountPopover />
         <div className="flex w-full gap-1 overflow-hidden">
@@ -37,10 +37,10 @@ function TradeV2() {
           <Resizable
             // style={style}
             defaultSize={{
-              width: 480,
+              width: '560px',
               height: '100%',
             }}
-            maxWidth="60%"
+            maxWidth="840px"
             minWidth={480}
             minHeight={640}
             enable={{
@@ -54,10 +54,7 @@ function TradeV2() {
               topLeft: false,
             }}
           >
-            {' '}
-            <article className="min-w-[480px] w-full flex-none">
-              <TradePanelV2 />
-            </article>
+            <TradePanelV2 />
           </Resizable>
         </div>
       </section>
