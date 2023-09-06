@@ -19,8 +19,8 @@ import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { useTradeManagement } from './hooks';
 
 const selectItem = [
-  { id: 1, title: 'USDC ETH/USD', unavailable: false },
-  { id: 2, title: 'USDC', unavailable: false },
+  { id: 1, title: 'CHRM ETH/USD', unavailable: false },
+  { id: 2, title: 'CHRM', unavailable: false },
   { id: 3, title: 'All markets', unavailable: false },
 ];
 
