@@ -1,10 +1,10 @@
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { Resizable } from 're-resizable';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
+import { Button } from '~/stories/atom/Button';
+import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
-import { Button } from '~/stories/atom/Button';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
 const tradeListItems = [
   { direction: 'long', price: 2424.1212, amount: 0.1212, time: '10:00:30' },
@@ -24,6 +24,7 @@ export const TradeList = (props: TradeListProps) => {
     initialHeight: 242,
     minHeight: 120,
     maxHeight: 800,
+    minWidth: 240,
   });
 
   return (

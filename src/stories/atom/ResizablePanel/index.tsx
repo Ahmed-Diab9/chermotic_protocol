@@ -11,6 +11,7 @@ export const ResizablePanel = (props: ResizablePanelProps) => {
     initialHeight: 200,
     minHeight: 100,
     maxHeight: 400,
+    minWidth: 300,
   });
 
   return (

@@ -12,10 +12,21 @@ declare global {
   }
 }
 
-export function TradingViewWidget() {
-  const { marketSymbol, config, onSymbolChange, onConfigChange } = useTradingViewChart();
+interface TradingViewWidgetProps {
+  width?: number;
+  height?: number;
+  className?: string;
+}
+
+export function TradingViewWidget(props: TradingViewWidgetProps) {
+  const { className = '', width = 0, height = 0 } = props;
+  const { marketSymbol, config, onSymbolChange, onConfigChange, isMarketLoading } =
+    useTradingViewChart({ width, height });
 
   useEffect(() => {
+    if (isMarketLoading || !marketSymbol) {
+      return;
+    }
     const script = document.createElement('script');
     script.id = 'tradingview-widget-loading-script';
     script.src = 'https://s3.tradingview.com/tv.js';
@@ -25,8 +36,7 @@ export function TradingViewWidget() {
     const onLoad = function () {
       if (document.getElementById('tradingview-widget-main') && 'TradingView' in window) {
         new window.TradingView.widget({
-          width: config.width,
-          height: config.height,
+          autosize: true,
           symbol: `${marketSymbol}`,
           interval: config.interval,
           timezone: 'Etc/UTC',
@@ -34,12 +44,26 @@ export function TradingViewWidget() {
           style: '1',
           locale: 'en',
           enable_publishing: config.isPublishingEnabled,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: config.backgroundColor,
           hide_top_toolbar: config.hasToolbar,
-          withdateranges: config.hasDataRanges,
+          withdateranges: false,
           allow_symbol_change: config.isSymbolChangeAllowed,
           hide_volume: config.hasVolume,
           container_id: 'tradingview-widget-main',
+          hide_legend: false,
+          toolbar_bg: config.toolbar_bg,
+          fullscreen: true,
+          disabled_features: ['header_compare'],
+          enabled_features: ['header_fullscreen_button'],
+          overrides: {
+            'mainSeriesProperties.candleStyle.upColor': config.upColor,
+            'mainSeriesProperties.candleStyle.downColor': config.downColor,
+            'mainSeriesProperties.candleStyle.borderUpColor': config.upColor,
+            'mainSeriesProperties.candleStyle.borderDownColor': config.downColor,
+            'mainSeriesProperties.candleStyle.wickUpColor': config.upColor,
+            'mainSeriesProperties.candleStyle.wickDownColor': config.downColor,
+            'mainSeriesProperties.statusViewStyle.symbolTextSource': 'long-description',
+          },
         });
       }
     };
@@ -56,17 +80,20 @@ export function TradingViewWidget() {
     return () => {
       script.removeEventListener('load', onLoad);
       script.removeEventListener('error', onError);
+      document.head.removeChild(script);
     };
-  }, [marketSymbol]);
+  }, [marketSymbol, config, isMarketLoading]);
 
   return (
-    <div className="tradingview-widget-container">
-      <div id="tradingview-widget-main" />
-      <div className="tradingview-widget-copyright">
-        <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
-          <span className="blue-text">Track all markets on TradingView</span>
-        </a>
-      </div>
+    <div className={`tradingview-widget-container ${className}`}>
+      <div id="tradingview-widget-main" className="w-full h-full" />
+      {!isMarketLoading && marketSymbol && (
+        <div className="tradingview-widget-copyright h-0 invisible">
+          <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
+            <span className="blue-text">Track all markets on TradingView</span>
+          </a>
+        </div>
+      )}
     </div>
   );
 }

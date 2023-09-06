@@ -11,8 +11,11 @@ export function useTradingViewChart() {
   const [config, setConfig] = useState<WidgetConfig>({
     width: 980,
     height: 610,
-    interval: 5,
+    interval: '5',
     theme: 'light',
+    backgroundColor: '#2e2e32',
+    gridColor: '#1f1f21',
+    toolbar_bg: '#2e2e32',
     isPublishingEnabled: false,
     isSymbolChangeAllowed: true,
     hasVolume: false,
@@ -21,6 +24,8 @@ export function useTradingViewChart() {
     hasHotlist: true,
     hasCalendar: true,
     hasDataRanges: true,
+    upColor: '#A6D85B',
+    downColor: '#FF3232',
   });
 
   const onSymbolChange = (nextSymbol: string) => {
@@ -43,6 +48,7 @@ export function useTradingViewChart() {
   };
 
   return {
+    isMarketLoading: false,
     marketSymbol,
     config,
     onSymbolChange,

@@ -17,7 +17,7 @@ export type Liquidity = {
 export type WidgetConfig = {
   width: number;
   height: number;
-  interval: number | 'D' | 'W';
+  interval: string;
   theme: 'light' | 'dark';
   isPublishingEnabled: boolean;
   isSymbolChangeAllowed: boolean;
@@ -27,4 +27,11 @@ export type WidgetConfig = {
   hasHotlist: boolean;
   hasCalendar: boolean;
   hasDataRanges: boolean;
+  // TODO: check the property `overrides` working
+  // overrides: Record<string, any>;
+  backgroundColor: string;
+  gridColor: string;
+  toolbar_bg: string;
+  upColor: string;
+  downColor: string;
 };
