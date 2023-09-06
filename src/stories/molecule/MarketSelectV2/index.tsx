@@ -8,6 +8,7 @@ import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 import { useMarketSelectV2 } from './hooks';
 
@@ -53,13 +54,22 @@ export function MarketSelectV2() {
               />
             </Popover.Button>
             <Popover.Panel className="popover-panel">
-              <p className="text-left text-primary-lighter">Select Market</p>
-              <section className="flex flex-auto w-full py-3">
-                <article className="flex flex-col pr-3 mr-3 border-r">
+              <div className="flex justify-between px-3 py-2 text-left border-b tr text-primary-lighter bg-inverted-lighter">
+                <div className="flex">
+                  <div className="w-[128px]">Settlement token</div>
+                  <div className="pl-3 border-l">Index</div>
+                </div>
+                <div className="flex pr-3 text-left">
+                  <div className="w-[80px]">Long LP</div>
+                  <div className="w-[80px]">Short LP</div>
+                </div>
+              </div>
+              <section className="flex flex-auto w-full px-3">
+                <article className="flex flex-col py-3 pr-3 mr-3 border-r">
                   {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
                     <button
                       key={key}
-                      className={`flex items-center gap-2 px-4 py-2 ${
+                      className={`flex items-center gap-2 px-3 py-2 w-[116px] ${
                         isSelectedToken && 'border bg-paper-lighter rounded-lg' // the token selected
                       }`}
                       onClick={onClickToken}
@@ -71,7 +81,7 @@ export function MarketSelectV2() {
                   ))}
                 </article>
 
-                <article className="flex flex-col flex-auto">
+                <article className="flex flex-col flex-auto py-3">
                   {markets.map(({ key, isSelectedMarket, onClickMarket, description, price }) => (
                     <div key={key} className="relative flex items-center w-full">
                       <BookmarkButton className="absolute left-0 ml-2" />
@@ -83,11 +93,26 @@ export function MarketSelectV2() {
                       >
                         <Avatar label={description} fontSize="lg" gap="2" size="sm" />
                         <span>${price}</span>
+                        <span className="flex pl-3 text-left border-l text-primary-light">
+                          <span className="w-[80px]">23.45M</span>
+                          <span className="w-[80px]">23.45M</span>
+                        </span>
                       </button>
                     </div>
                   ))}
                 </article>
               </section>
+              {/* todo later : create new market */}
+              <div className="flex items-center justify-between px-3 py-2 border-t">
+                <Button
+                  label="Create a new market"
+                  iconLeft={<PlusCircleIcon />}
+                  css="unstyled"
+                  size="sm"
+                  className="!p-0 !inline-flex !h-auto"
+                />
+                <p className="text-sm text-primary-light">3 markets are on the process</p>
+              </div>
             </Popover.Panel>
           </Popover>
           <h2 className={`text-3xl ml-2 ${priceClass}`}>
