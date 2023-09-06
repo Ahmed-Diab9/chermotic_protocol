@@ -31,6 +31,11 @@
       .tr {
         @apply gap-5 py-3 border-b px-2;
       }
+      .td {
+        &:not(:nth-child(1)) {
+          @apply break-all;
+        }
+      }
     }
     .tr {
       @apply flex gap-5 justify-between;
@@ -41,12 +46,12 @@
 
     &.position {
       .td {
-        @apply w-[10%] min-w-[90px];
+        @apply w-[8%] min-w-[80px];
         &:nth-child(1) {
-          @apply w-[16%] min-w-[180px];
+          @apply w-[14%] min-w-[140px];
         }
         &:nth-child(8) {
-          @apply w-[12%] min-w-[120px];
+          @apply w-[6%] min-w-[60px];
         }
         &:nth-child(2),
         &:nth-child(5),

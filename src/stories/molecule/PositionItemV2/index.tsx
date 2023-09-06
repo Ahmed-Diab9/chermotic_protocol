@@ -150,13 +150,11 @@ export function PositionItemV2(props: PositionItemV2Props) {
           <div className="flex items-center gap-1">
             {isOpening && (
               <>
-                <Loading size="sm" />
+                {/* <Loading size="sm" />
                 <div className="flex text-sm text-primary">
-                  {/* Opening in progress */}
-                  {/* Waiting for the next oracle round */}
-                  Opening..
+                  Waiting for the next oracle round
                   <TooltipGuide iconOnly label="opening-in-progress" />
-                </div>
+                </div> */}
               </>
             )}
             {isOpened && (
@@ -170,12 +168,11 @@ export function PositionItemV2(props: PositionItemV2Props) {
             )}
             {isClosing && (
               <>
-                <Loading size="sm" />
+                {/* <Loading size="sm" />
                 <div className="flex text-sm text-primary">
-                  {/* Closing in progress */}
-                  Closing..
+                  Closing in progress
                   <TooltipGuide iconOnly label="closing-in-progress" />
-                </div>
+                </div> */}
               </>
             )}
             {isClosed && (
