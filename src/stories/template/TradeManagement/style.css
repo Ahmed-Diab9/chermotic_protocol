@@ -1,6 +1,12 @@
 .TradeManagement {
-  @apply overflow-x-auto min-w-min;
+  @apply min-w-[680px];
   .tabs {
+    .tabs-panels {
+      @apply h-[calc(100%-40px)] w-full;
+    }
+    .tabs-panel {
+      @apply w-full h-full;
+    }
     .tabs-list {
       @apply border-r;
       button {
@@ -16,8 +22,11 @@
       }
     }
   }
+  .wrapper-inner {
+    @apply w-full h-full overflow-x-hidden;
+  }
   .list {
-    @apply overflow-hidden;
+    @apply h-full overflow-y-hidden;
     .thead {
       @apply items-stretch border-b bg-inverted-lighter px-3;
       .tr {
@@ -43,11 +52,12 @@
     }
     .td {
       @apply flex items-center;
+      flex: 1 1 80px;
     }
 
     &.position {
       .td {
-        @apply w-[8%] min-w-[80px];
+        @apply w-[8%];
         &:nth-child(1) {
           @apply w-[14%] min-w-[140px];
         }
