@@ -44,9 +44,9 @@ export const TradeManagement = () => {
 
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 620,
-    initialHeight: 242,
+    initialHeight: 340,
     minWidth: 720,
-    minHeight: 200,
+    minHeight: 220,
     maxHeight: 800,
   });
 

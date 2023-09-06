@@ -18,9 +18,9 @@ export const TradeChartView = (props: TradeChartViewProps) => {
   const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: Number(viewRef.current?.offsetWidth ?? 0),
-    initialHeight: 400,
+    initialHeight: 570,
     minWidth: 0,
-    minHeight: 200,
+    minHeight: 280,
     maxHeight: 800,
   });
 

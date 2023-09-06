@@ -56,6 +56,14 @@ function TradeV2() {
             className="shrink-0"
           >
             <TradePanelV2 />
+            <div className="mt-5">
+              <Button
+                label="Provide Liquidity"
+                css="light"
+                iconRight={<ChevronRightIcon />}
+                to={'/pool'}
+              />
+            </div>
           </Resizable>
         </div>
       </section>

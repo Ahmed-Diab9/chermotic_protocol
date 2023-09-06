@@ -10,6 +10,10 @@ import { Tag } from '~/stories/atom/Tag';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
+import { TradeChart } from '~/stories/atom/TradeChart';
+import { Outlink } from '~/stories/atom/Outlink';
+import { Button } from '~/stories/atom/Button';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { useTradeContentV2 } from './hooks';
 
@@ -230,6 +234,24 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
         </div>
       </section>
       <section>
+        <div className="relative -mx-5 border-b">
+          <TradeChart
+            id={`trade-${direction}`}
+            positive={isLong}
+            height={140}
+            selectedAmount={makerMargin}
+          />
+          <div
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
+              isLong ? 'items-end right-0' : 'items-start left-0'
+            }`}
+          >
+            <p className="text-black3">LP Volume</p>
+            <p>
+              {totalLiquididy} / {freeLiquidity}
+            </p>
+          </div>
+        </div>
         <article className="">
           <div className="flex flex-col gap-1 mt-5 border-gray-light">
             <div className="flex justify-between">
@@ -274,48 +296,63 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             />
           </div>
 
-          <div className="flex flex-col gap-2 px-5 pt-4 mt-4 pb-5 -mx-5 border-t border-dashed border-gray-light  bg-paper-lighter dark:bg-[#29292D]">
-            <div className="flex justify-between">
-              <div className="flex">
-                <p>EST. Execution Price</p>
-                <TooltipGuide
-                  label="execution-price"
-                  tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
-                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                  outLinkAbout="Next Oracle Round"
-                />
+          <div className="px-5 pt-4 mt-4 pb-5 -mx-5 border-t border-dashed border-gray-light bg-paper-lighter dark:bg-[#29292D]">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between">
+                <div className="flex">
+                  <p>EST. Execution Price</p>
+                  <TooltipGuide
+                    label="execution-price"
+                    tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
+                    outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                    outLinkAbout="Next Oracle Round"
+                  />
+                </div>
+                <p>$ {executionPrice}</p>
               </div>
-              <p>$ {executionPrice}</p>
+              <div className="flex justify-between">
+                <div className="flex items-center gap-2">
+                  <p>EST. Take Profit Price</p>
+                </div>
+                <p>
+                  $ {takeProfitPrice}
+                  <span
+                    className={`ml-2 text-primary-lighter ${
+                      takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
+                    } ${
+                      takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''
+                    }`}
+                  >
+                    ({takeProfitRatio}%)
+                  </span>
+                </p>
+              </div>
+              <div className="flex justify-between">
+                <div className="flex items-center gap-2">
+                  <p>EST. Stop Loss Price</p>
+                </div>
+                <p>
+                  $ {stopLossPrice}
+                  <span
+                    className={`ml-2 text-primary-lighter ${
+                      stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
+                    } ${
+                      stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''
+                    }`}
+                  >
+                    ({stopLossRatio}%)
+                  </span>
+                </p>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Take Profit Price</p>
+
+            <div className="pt-4 mt-4 border-t">
+              <div className="text-left text-primary-lighter">
+                The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
+                that accept the positions. The EST. Trade Fee is calculated based on the current
+                oracle price, and the actual fee paid is determined by the next oracle price.{' '}
+                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
               </div>
-              <p>
-                $ {takeProfitPrice}
-                <span
-                  className={`ml-2 text-primary-lighter ${
-                    takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
-                  } ${takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''}`}
-                >
-                  ({takeProfitRatio}%)
-                </span>
-              </p>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Stop Loss Price</p>
-              </div>
-              <p>
-                $ {stopLossPrice}
-                <span
-                  className={`ml-2 text-primary-lighter ${
-                    stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
-                  } ${stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''}`}
-                >
-                  ({stopLossRatio}%)
-                </span>
-              </p>
             </div>
           </div>
         </article>
