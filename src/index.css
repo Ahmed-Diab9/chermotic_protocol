@@ -110,7 +110,7 @@ body {
 
 .sb-show-main,
 .docs-story {
-  @apply text-primary bg-inverted;
+  @apply text-primary bg-inverted min-w-0;
 }
 
 .panel {

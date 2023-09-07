@@ -12,8 +12,6 @@ import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 import { TradeChart } from '~/stories/atom/TradeChart';
 import { Outlink } from '~/stories/atom/Outlink';
-import { Button } from '~/stories/atom/Button';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { useTradeContentV2 } from './hooks';
 
