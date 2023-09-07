@@ -37,7 +37,7 @@ function TradeV2() {
           <Resizable
             // style={style}
             defaultSize={{
-              width: '560px',
+              width: '40%',
               height: '100%',
             }}
             maxWidth="44%"
