@@ -13,6 +13,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
+import { TradesItem } from '~/stories/molecule/TradesItem';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
@@ -207,38 +208,29 @@ export const TradeManagement = () => {
                         </div>
                       </div>
                     )}
-                    <div>
-                      <TooltipGuide
-                        tipOnly
-                        label="opening-in-progress"
-                        // TODO: PERCENTAGE
-                        tip={`Waiting for the next oracle round to open the position. The next oracle round is updated whenever the Chainlink price moves by ${PERCENTAGE}% or more, and it is updated at least once a day.`}
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="opening-completed"
-                        tip="The opening process has been completed. Now the position is in live status."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="closing-in-progress"
-                        // TODO: PERCENTAGE
-                        tip={`Waiting for the next oracle round to close the position. The next oracle round is updated whenever the Chainlink price moves by ${PERCENTAGE}% or more, and it is updated at least once a day.`}
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="closing-completed"
-                        tip="The closing process has been completed. You can claim the assets and transfer them to your account."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                    </div>
+                  </div>
+                </Tab.Panel>
+                <Tab.Panel className="tabs-panel trades">
+                  <div className="wrapper-inner">
+                    {isPositionsEmpty ? (
+                      <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
+                    ) : (
+                      <div className="list">
+                        <div className="thead">
+                          <div className="tr">
+                            <div className="td">Entry Time</div>
+                            <div className="td">Entry Price</div>
+                            <div className="td">Contract Qty</div>
+                            <div className="td">Leverage</div>
+                          </div>
+                        </div>
+                        <div className="tbody h-[calc(100%-32px)]">
+                          {positionList.map((position) => (
+                            <TradesItem key={position.id.toString()} position={position} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Tab.Panel>
               </Tab.Panels>

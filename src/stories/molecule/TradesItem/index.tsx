@@ -3,13 +3,13 @@ import { Tag } from '~/stories/atom/Tag';
 
 import { Position } from '~/typings/position';
 
-import { useHistoryItem } from './hooks';
+import { useTradesItem } from './hooks';
 
-export interface HistoryItemProps {
+export interface TradesItemProps {
   position: Position;
 }
 
-export function HistoryItem(props: HistoryItemProps) {
+export function TradesItem(props: TradesItemProps) {
   const {
     qty,
     collateral,
@@ -42,7 +42,7 @@ export function HistoryItem(props: HistoryItemProps) {
     tpPriceClass,
     slPriceClass,
     pnlClass,
-  } = useHistoryItem(props);
+  } = useTradesItem(props);
 
   return (
     <div className="tr">
@@ -51,10 +51,6 @@ export function HistoryItem(props: HistoryItemProps) {
           <div className="flex text-sm text-primary-light">
             <SkeletonElement isLoading={isLoading} width={60}>
               {entryTime}{' '}
-            </SkeletonElement>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {/* todo: close time */}| May 20 17:45:12
-              {/* | {closeTime} */}
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-2 mt-[2px]">
@@ -89,26 +85,6 @@ export function HistoryItem(props: HistoryItemProps) {
         {/* Leverage */}
         <SkeletonElement isLoading={isLoading} width={60}>
           <Tag label="4.50x" className="tag-leverage" />
-        </SkeletonElement>
-      </div>
-      <div className="td">
-        {/* PnL */}
-        <div>
-          <SkeletonElement isLoading={isLoading} width={60}>
-            {pnlAmount}
-          </SkeletonElement>
-          <div className={`mt-[2px] ${pnlClass}`}>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {/* todo: PnL difference */}
-              (-24.34ETH)
-            </SkeletonElement>
-          </div>
-        </div>
-      </div>
-      <div className="td">
-        {/* PnL percent */}
-        <SkeletonElement isLoading={isLoading} width={60}>
-          {pnlPercentage}
         </SkeletonElement>
       </div>
     </div>
