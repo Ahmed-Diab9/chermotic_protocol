@@ -49,7 +49,7 @@ export function TradesItem(props: TradesItemProps) {
       <div className="td">
         <div>
           <div className="flex text-sm text-primary-light">
-            <SkeletonElement isLoading={isLoading} width={60}>
+            <SkeletonElement isLoading={isLoading} width={40}>
               {entryTime}{' '}
             </SkeletonElement>
           </div>
@@ -71,19 +71,19 @@ export function TradesItem(props: TradesItemProps) {
         </div>
       </div>
       <div className="td">
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           {entryPrice}
         </SkeletonElement>
       </div>
       <div className="td">
         {/* Contract Qty */}
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           {qty}
         </SkeletonElement>
       </div>
       <div className="td">
         {/* Leverage */}
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           <Tag label="4.50x" className="tag-leverage" />
         </SkeletonElement>
       </div>

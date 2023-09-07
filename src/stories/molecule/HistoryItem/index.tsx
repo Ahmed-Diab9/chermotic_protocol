@@ -49,10 +49,10 @@ export function HistoryItem(props: HistoryItemProps) {
       <div className="td">
         <div>
           <div className="flex text-sm text-primary-light">
-            <SkeletonElement isLoading={isLoading} width={60}>
+            <SkeletonElement isLoading={isLoading} width={40}>
               {entryTime}{' '}
             </SkeletonElement>
-            <SkeletonElement isLoading={isLoading} width={60}>
+            <SkeletonElement isLoading={isLoading} width={40}>
               {/* todo: close time */}| May 20 17:45:12
               {/* | {closeTime} */}
             </SkeletonElement>
@@ -75,30 +75,30 @@ export function HistoryItem(props: HistoryItemProps) {
         </div>
       </div>
       <div className="td">
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           {entryPrice}
         </SkeletonElement>
       </div>
       <div className="td">
         {/* Contract Qty */}
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           {qty}
         </SkeletonElement>
       </div>
       <div className="td">
         {/* Leverage */}
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           <Tag label="4.50x" className="tag-leverage" />
         </SkeletonElement>
       </div>
       <div className="td">
         {/* PnL */}
         <div>
-          <SkeletonElement isLoading={isLoading} width={60}>
+          <SkeletonElement isLoading={isLoading} width={40}>
             {pnlAmount}
           </SkeletonElement>
           <div className={`mt-[2px] ${pnlClass}`}>
-            <SkeletonElement isLoading={isLoading} width={60}>
+            <SkeletonElement isLoading={isLoading} width={40}>
               {/* todo: PnL difference */}
               (-24.34ETH)
             </SkeletonElement>
@@ -107,7 +107,7 @@ export function HistoryItem(props: HistoryItemProps) {
       </div>
       <div className="td">
         {/* PnL percent */}
-        <SkeletonElement isLoading={isLoading} width={60}>
+        <SkeletonElement isLoading={isLoading} width={40}>
           {pnlPercentage}
         </SkeletonElement>
       </div>
