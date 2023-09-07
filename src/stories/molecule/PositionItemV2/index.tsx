@@ -64,22 +64,12 @@ export function PositionItemV2(props: PositionItemV2Props) {
           </div>
           <div className="flex items-center gap-2 mt-[2px]">
             <div className="flex items-center gap-1">
-              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                {/* <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" /> */}
                 <h6>{tokenName}</h6>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
-              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                {/* <Avatar
-                label={marketDescription}
-                size="xs"
-                gap="1"
-                fontSize="base"
-                fontWeight="bold"
-              /> */}
                 <h6>{marketDescription}</h6>
               </SkeletonElement>
             </div>
@@ -148,6 +138,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
       <div className="td">
         <div>
           <div className="flex items-center gap-1">
+            {/* todo later: status */}
             {isOpening && (
               <>
                 {/* <Loading size="sm" />
