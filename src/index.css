@@ -143,6 +143,9 @@ input[type='number']::-webkit-outer-spin-button {
 
 .backdrop {
   @apply fixed inset-0 bg-inverted/90;
+  &.backdrop-light {
+    @apply bg-inverted/50;
+  }
 }
 
 /* z-index */
@@ -153,6 +156,7 @@ input[type='number']::-webkit-outer-spin-button {
 .backdrop + div {
   @apply z-30;
 }
+
 .popover-panel {
   @apply z-20;
 }
