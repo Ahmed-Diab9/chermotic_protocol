@@ -54,7 +54,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
           toolbar_bg: config.toolbar_bg,
           fullscreen: true,
           disabled_features: ['header_compare'],
-          // enabled_features: ['header_fullscreen_button'],
+          enabled_features: ['header_fullscreen_button'],
           overrides: {
             'mainSeriesProperties.candleStyle.upColor': config.upColor,
             'mainSeriesProperties.candleStyle.downColor': config.downColor,
