@@ -6,11 +6,13 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
-import { usePublicClient } from 'wagmi';
+import { Address, usePublicClient } from 'wagmi';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
+import useLocalStorage from '~/hooks/useLocalStorage';
 import { usePreviousOracles } from '~/hooks/usePreviousOracles';
+import { Bookmark } from '~/typings/market';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
@@ -33,6 +35,10 @@ export function useMarketSelectV2() {
     markets: _markets,
   });
   const { liquidityPools } = useLiquidityPools();
+  const { state: bookmarks, setState: setBookmarks } = useLocalStorage(
+    'app:bookmarks',
+    [] as Bookmark[]
+  );
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
@@ -43,7 +49,8 @@ export function useMarketSelectV2() {
   const isLoading = isTokenLoading || isMarketLoading;
 
   const tokenName = currentToken?.name || '-';
-  const marketDescription = currentMarket?.description || '-';
+  const mainMarketDescription = currentMarket?.description || '-';
+  const mainMarketAddress = currentMarket?.address;
 
   const tokens = (_tokens ?? []).map((token) => {
     const key = token.address;
@@ -61,6 +68,7 @@ export function useMarketSelectV2() {
     const onClickMarket = () => {
       return onMarketSelect(market);
     };
+    const settlementToken = _tokens?.find((token) => token.address === market.tokenAddress)?.name;
     const description = market.description;
     const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
     return {
@@ -69,6 +77,7 @@ export function useMarketSelectV2() {
       onClickMarket,
       description,
       price,
+      settlementToken,
     };
   });
 
@@ -98,7 +107,7 @@ export function useMarketSelectV2() {
       const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
       record[previousOracle.marketAddress] = priceClass;
       return record;
-    }, {} as Record<`0x${string}`, string>);
+    }, {} as Record<Address, string>);
   }, [previousOracles, _markets]);
 
   const poolMap = useMemo(() => {
@@ -111,7 +120,7 @@ export function useMarketSelectV2() {
         .reduce((sum, bin) => sum + bin.liquidity, 0n);
       record[pool.marketAddress] = { longLpSum, shortLpSum };
       return record;
-    }, {} as Record<`0x${string}`, { longLpSum: bigint; shortLpSum: bigint }>);
+    }, {} as Record<Address, { longLpSum: bigint; shortLpSum: bigint }>);
   }, [liquidityPools]);
 
   const explorerUrl = useMemo(() => {
@@ -126,10 +135,29 @@ export function useMarketSelectV2() {
     }
   }, [publicClient, currentMarket]);
 
+  const onBookmarkClick = (newBookmark: Bookmark) => {
+    const storedAddress = bookmarks?.find(
+      (bookmark) => bookmark.marketAddress === newBookmark.marketAddress
+    );
+    if (isNotNil(storedAddress)) {
+      setBookmarks((bookmarks ?? []).filter((bookmark) => bookmark !== storedAddress));
+      return;
+    }
+    setBookmarks((bookmarks ?? []).concat(newBookmark));
+  };
+
+  const isBookmarked = useMemo(() => {
+    return bookmarks?.reduce((record, bookmark) => {
+      record[bookmark.marketAddress] = true;
+      return record;
+    }, {} as Record<Address, boolean>);
+  }, [bookmarks]);
+
   return {
     isLoading,
     tokenName,
-    marketDescription,
+    mainMarketDescription,
+    mainMarketAddress,
     tokens,
     markets,
     price,
@@ -140,5 +168,7 @@ export function useMarketSelectV2() {
     changeRate,
     changeRateClass,
     explorerUrl,
+    isBookmarked,
+    onBookmarkClick,
   };
 }

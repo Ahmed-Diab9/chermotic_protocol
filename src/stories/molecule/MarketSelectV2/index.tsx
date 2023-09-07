@@ -10,14 +10,15 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import { useEffect } from 'react';
+import { isNotNil } from 'ramda';
 import { useMarketSelectV2 } from './hooks';
 
 export function MarketSelectV2() {
   const {
     isLoading,
     tokenName,
-    marketDescription,
+    mainMarketDescription,
+    mainMarketAddress,
     tokens,
     markets,
     price,
@@ -28,17 +29,27 @@ export function MarketSelectV2() {
     changeRate,
     changeRateClass,
     explorerUrl,
+    isBookmarked,
+    onBookmarkClick,
   } = useMarketSelectV2();
-
-  useEffect(() => {
-    console.log(poolMap, 'pool map');
-  }, [poolMap]);
 
   return (
     <>
       <div className="relative MarketSelectV2 panel">
         <div className="flex items-center h-full gap-3">
-          <BookmarkButton size="lg" />
+          <BookmarkButton
+            size="lg"
+            onClick={() => {
+              if (isNotNil(mainMarketAddress) && isNotNil(onBookmarkClick)) {
+                onBookmarkClick({
+                  tokenName,
+                  marketAddress: mainMarketAddress,
+                  marketDescription: mainMarketDescription,
+                });
+              }
+            }}
+            isMarked={mainMarketAddress && isBookmarked?.[mainMarketAddress]}
+          />
           <Popover className="h-full">
             <Popover.Button className="flex items-center h-full gap-3 pr-5 border-r">
               <div className="pr-3 border-r">
@@ -53,7 +64,7 @@ export function MarketSelectV2() {
                 <div className="flex items-center gap-1">
                   <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                   <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
-                    <Avatar label={marketDescription} fontSize="2xl" gap="1" size="sm" />
+                    <Avatar label={mainMarketDescription} fontSize="2xl" gap="1" size="sm" />
                   </SkeletonElement>
                 </div>
               </div>
@@ -91,24 +102,43 @@ export function MarketSelectV2() {
                 </article>
 
                 <article className="flex flex-col flex-auto py-3">
-                  {markets.map(({ key, isSelectedMarket, onClickMarket, description, price }) => (
-                    <div key={key} className="relative flex items-center w-full">
-                      <BookmarkButton className="absolute left-0 ml-2" />
-                      <button
-                        className={`w-full flex items-center justify-between gap-12 pl-8 py-2 pr-3 ${
-                          isSelectedMarket && 'border bg-paper-lighter rounded-lg'
-                        }`}
-                        onClick={onClickMarket}
-                      >
-                        <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                        <span className={priceClassMap?.[key]}>${price}</span>
-                        <span className="flex pl-3 text-left border-l text-primary-light">
-                          <span className="w-[80px]">23.45M</span>
-                          <span className="w-[80px]">23.45M</span>
-                        </span>
-                      </button>
-                    </div>
-                  ))}
+                  {markets.map(
+                    ({
+                      key,
+                      isSelectedMarket,
+                      onClickMarket,
+                      description,
+                      price,
+                      settlementToken,
+                    }) => (
+                      <div key={key} className="relative flex items-center w-full">
+                        <BookmarkButton
+                          className="absolute left-0 ml-2"
+                          onClick={() => {
+                            onBookmarkClick?.({
+                              tokenName: settlementToken!,
+                              marketAddress: key,
+                              marketDescription: description,
+                            });
+                          }}
+                          isMarked={isBookmarked?.[key]}
+                        />
+                        <button
+                          className={`w-full flex items-center justify-between gap-12 pl-8 py-2 pr-3 ${
+                            isSelectedMarket && 'border bg-paper-lighter rounded-lg'
+                          }`}
+                          onClick={onClickMarket}
+                        >
+                          <Avatar label={description} fontSize="lg" gap="2" size="sm" />
+                          <span className={priceClassMap?.[key]}>${price}</span>
+                          <span className="flex pl-3 text-left border-l text-primary-light">
+                            <span className="w-[80px]">23.45M</span>
+                            <span className="w-[80px]">23.45M</span>
+                          </span>
+                        </button>
+                      </div>
+                    )
+                  )}
                 </article>
               </section>
               {/* todo later : create new market */}
