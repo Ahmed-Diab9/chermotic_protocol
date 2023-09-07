@@ -18,22 +18,22 @@ export const TradeChartView = (props: TradeChartViewProps) => {
   const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: Number(viewRef.current?.offsetWidth ?? 0),
-    initialHeight: 400,
-    minWidth: 720,
-    minHeight: 200,
+    initialHeight: 570,
+    minWidth: 0,
+    minHeight: 280,
     maxHeight: 800,
   });
 
   return (
     <div className="TradeChartView" ref={viewRef}>
       <Resizable
-        size={{ width, height: height - 32 }}
+        size={{ width: 'auto', height: height - 32 }}
         minHeight={minHeight}
         maxHeight={maxHeight}
         minWidth={minWidth}
         enable={{
           top: false,
-          right: true,
+          right: false,
           bottom: true,
           left: false,
           topRight: false,
@@ -45,7 +45,7 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         className="panel"
       >
         <div
-          className="flex items-stretch border-b w-full h-full"
+          className="flex items-stretch w-full h-full border-b"
           style={{
             borderColor: 'rgb(var(--color-paper))',
           }}

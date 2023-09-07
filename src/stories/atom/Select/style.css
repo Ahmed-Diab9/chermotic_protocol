@@ -1,9 +1,15 @@
 .select {
   @apply inline-block relative;
+  &.select-simple {
+    button[aria-haspopup='listbox'] {
+      @apply !border-none !bg-transparent px-2;
+    }
+  }
   button[aria-haspopup='listbox'] {
+    @apply border border-gray-light dark:border-transparent;
     @apply flex items-center text-left gap-2 justify-between px-3 py-2 mb-1;
     @apply w-full h-9;
-    @apply border border-gray-light dark:border-transparent dark:bg-paper-lighter rounded-lg;
+    @apply dark:bg-paper-lighter rounded-lg;
     &[aria-expanded='true'] {
       @apply dark:border-gray-lighter;
     }

@@ -88,7 +88,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
     <div className={`tradingview-widget-container ${className}`}>
       <div id="tradingview-widget-main" className="w-full h-full" />
       {!isMarketLoading && marketSymbol && (
-        <div className="tradingview-widget-copyright h-0 invisible">
+        <div className="invisible h-0 tradingview-widget-copyright">
           <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
             <span className="blue-text">Track all markets on TradingView</span>
           </a>

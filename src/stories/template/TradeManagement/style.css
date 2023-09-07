@@ -1,0 +1,75 @@
+.TradeManagement {
+  @apply min-w-[680px];
+  .tabs {
+    .tabs-panels {
+      @apply h-[calc(100%-40px)] w-full;
+    }
+    .tabs-panel {
+      @apply w-full h-full;
+    }
+    .tabs-list {
+      @apply border-r;
+      button {
+        @apply w-[10%] min-w-[140px];
+      }
+    }
+    [role='tablist'] {
+      [aria-selected='true'] {
+        @apply bg-inverted-lighter;
+      }
+      [aria-selected='false'] {
+        @apply bg-transparent border-b-0;
+      }
+    }
+  }
+  .wrapper-inner {
+    @apply w-full h-full overflow-x-hidden;
+  }
+  .list {
+    @apply h-full overflow-y-hidden;
+    .thead {
+      @apply items-stretch border-b bg-inverted-lighter px-3;
+      .tr {
+        @apply px-2;
+      }
+      .td {
+        @apply py-2;
+      }
+    }
+    .tbody {
+      @apply flex flex-col gap-2 px-3 overflow-y-auto pb-3;
+      .tr {
+        @apply gap-5 py-3 border-b px-2;
+      }
+      .td {
+        &:not(:nth-child(1)) {
+          @apply break-all;
+        }
+      }
+    }
+    .tr {
+      @apply flex gap-5 justify-between;
+    }
+    .td {
+      @apply flex items-center;
+      flex: 1 1 80px;
+    }
+
+    &.position {
+      .td {
+        @apply w-[8%];
+        &:nth-child(1) {
+          @apply w-[14%] min-w-[140px];
+        }
+        &:nth-child(8) {
+          @apply w-[6%] min-w-[60px];
+        }
+        &:nth-child(2),
+        &:nth-child(5),
+        &:nth-child(8) {
+          @apply border-l pl-5;
+        }
+      }
+    }
+  }
+}

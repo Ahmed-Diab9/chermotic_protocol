@@ -7,7 +7,7 @@
   .popover-panel {
     @apply flex flex-col absolute left-0 ml-[-1px];
     @apply bg-paper min-h-[230px] rounded-b;
-    @apply border px-5 pt-3;
+    @apply border;
     /* width: calc(100% + 2px); */
   }
   .inner-popover {

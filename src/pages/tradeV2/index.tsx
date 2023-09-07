@@ -7,13 +7,15 @@ import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/template/Header';
-import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
-import { TradeList } from '~/stories/template/TradeList';
-import { TradeLiquidity } from '~/stories/template/TradeLiquidity';
 import { TradeChartView } from '~/stories/template/TradeChartView';
+import { TradeManagement } from '~/stories/template/TradeManagement';
 import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
+import { Footer } from '~/stories/template/Footer';
+import { Resizable } from 're-resizable';
+import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+
 import './style.css';
 
 function TradeV2() {
@@ -24,34 +26,48 @@ function TradeV2() {
     <div className="flex flex-col min-h-[100vh] w-full">
       <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
-      <section className="flex flex-col grow w-full max-w-[1600px] items-stretch px-5 mx-auto mb-20">
+      <section className="flex flex-col grow w-full min-w-[1280px] max-w-[1600px] items-stretch px-5 mx-auto mb-20">
         <BookmarkBoard />
         <MainBarV2 accountPopover />
-        <div className="flex w-full gap-1">
-          <article className="flex-auto w-full">
+        <div className="flex w-full gap-1 overflow-hidden">
+          <article className="flex flex-col flex-auto w-full gap-1">
             <TradeChartView />
-            <div className="my-6 text-left text-primary-lighter">
-              The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
-              that accept the positions. The EST. Trade Fee is calculated based on the current
-              oracle price, and the actual fee paid is determined by the next oracle price.
-            </div>
+            <TradeManagement />
           </article>
-          <article className="w-[240px] flex-none flex flex-col gap-1">
-            <TradeLiquidity />
-            <TradeList />
-          </article>
-          <article className="w-[480px] flex-none">
+          <Resizable
+            // style={style}
+            defaultSize={{
+              width: '40%',
+              height: '100%',
+            }}
+            maxWidth="44%"
+            minWidth={480}
+            minHeight={640}
+            enable={{
+              top: false,
+              right: false,
+              bottom: false,
+              left: true,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false,
+            }}
+            className="shrink-0"
+          >
             <TradePanelV2 />
-            <div className="my-6 text-left text-primary-lighter">
-              The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
-              that accept the positions. The EST. Trade Fee is calculated based on the current
-              oracle price, and the actual fee paid is determined by the next oracle price.{' '}
-              <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
+            <div className="mt-5">
+              <Button
+                label="Provide Liquidity"
+                css="light"
+                iconRight={<ChevronRightIcon />}
+                to={'/pool'}
+              />
             </div>
-          </article>
+          </Resizable>
         </div>
       </section>
-      <TradeBar />
+      <Footer />
       <Toast />
       <ChainModal />
     </div>
