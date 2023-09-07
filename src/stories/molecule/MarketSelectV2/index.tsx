@@ -132,8 +132,8 @@ export function MarketSelectV2() {
                           <Avatar label={description} fontSize="lg" gap="2" size="sm" />
                           <span className={priceClassMap?.[key]}>${price}</span>
                           <span className="flex pl-3 text-left border-l text-primary-light">
-                            <span className="w-[80px]">23.45M</span>
-                            <span className="w-[80px]">23.45M</span>
+                            <span className="w-[80px]">{poolMap?.[key].longLpSum}</span>
+                            <span className="w-[80px]">{poolMap?.[key].shortLpSum}</span>
                           </span>
                         </button>
                       </div>

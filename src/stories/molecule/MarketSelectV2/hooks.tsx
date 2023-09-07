@@ -8,6 +8,7 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
 import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
+import { formatUnits } from 'viem';
 import { Address, usePublicClient } from 'wagmi';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -17,6 +18,13 @@ import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
 export function useMarketSelectV2() {
+  const liquidityFormatter = Intl.NumberFormat('en', {
+    useGrouping: false,
+    notation: 'compact',
+    compactDisplay: 'short',
+    maximumFractionDigits: 3,
+    minimumFractionDigits: 0,
+  });
   const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
   const { previousOracle } = usePreviousOracle({
@@ -111,6 +119,9 @@ export function useMarketSelectV2() {
   }, [previousOracles, _markets]);
 
   const poolMap = useMemo(() => {
+    if (isNil(currentToken)) {
+      return;
+    }
     return liquidityPools?.reduce((record, pool) => {
       const longLpSum = pool.bins
         .filter((bin) => bin.baseFeeRate > 0)
@@ -118,9 +129,12 @@ export function useMarketSelectV2() {
       const shortLpSum = pool.bins
         .filter((bin) => bin.baseFeeRate < 0)
         .reduce((sum, bin) => sum + bin.liquidity, 0n);
-      record[pool.marketAddress] = { longLpSum, shortLpSum };
+      record[pool.marketAddress] = {
+        longLpSum: liquidityFormatter.format(+formatUnits(longLpSum, currentToken.decimals)),
+        shortLpSum: liquidityFormatter.format(+formatUnits(shortLpSum, currentToken.decimals)),
+      };
       return record;
-    }, {} as Record<Address, { longLpSum: bigint; shortLpSum: bigint }>);
+    }, {} as Record<Address, { longLpSum: string; shortLpSum: string }>);
   }, [liquidityPools]);
 
   const explorerUrl = useMemo(() => {
