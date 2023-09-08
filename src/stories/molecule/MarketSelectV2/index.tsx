@@ -185,10 +185,10 @@ export function MarketSelectV2() {
             </SkeletonElement>
           </h2>
         </div>
-        <div className="flex items-stretch gap-5 text-right text-primary-light font-regular">
-          <div className="flex flex-col gap-1">
+        <div className="flex items-stretch gap-5 text-right font-regular">
+          <div className="flex flex-col gap-[2px]">
             <div className="flex">
-              <p>Last update</p>
+              <p className="text-sm text-primary-light">Last update</p>
             </div>
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
@@ -196,9 +196,9 @@ export function MarketSelectV2() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-[2px]">
             <div className="flex">
-              <p>24H Change</p>
+              <p className="text-sm text-primary-light">24H Change</p>
               {/* <TooltipGuide
                 label="24h-change"
                 tip=""
@@ -215,9 +215,9 @@ export function MarketSelectV2() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-[2px]">
             <div className="flex">
-              <p>Interest Rate</p>
+              <p className="text-sm text-primary-light">Interest Rate</p>
               <TooltipGuide
                 label="interest-rate"
                 tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."

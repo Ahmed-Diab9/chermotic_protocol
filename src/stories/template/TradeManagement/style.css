@@ -33,7 +33,7 @@
         @apply px-2;
       }
       .td {
-        @apply py-2;
+        @apply py-2 text-sm text-primary-light;
       }
     }
     .tbody {
