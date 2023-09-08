@@ -21,8 +21,8 @@ import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { useTradeManagement } from './hooks';
 
 const selectItem = [
-  { id: 1, title: 'CHRM ETH/USD', unavailable: false },
-  { id: 2, title: 'CHRM', unavailable: false },
+  { id: 1, title: 'CHRM-ETH/USD', unavailable: false },
+  { id: 2, title: 'CHRM based markets', unavailable: false },
   { id: 3, title: 'All markets', unavailable: false },
 ];
 
@@ -83,7 +83,7 @@ export const TradeManagement = () => {
                   <Tab>Trades</Tab>
                 </Tab.List>
                 <div className="flex items-center gap-2 ml-auto">
-                  <div className="select select-simple">
+                  <div className="select select-simple min-w-[168px]">
                     <Listbox value={selectedItem} onChange={setSelectedItem}>
                       <Listbox.Button>{selectedItem.title}</Listbox.Button>
                       <Listbox.Options>

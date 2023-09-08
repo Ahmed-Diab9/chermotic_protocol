@@ -19,7 +19,7 @@ export const Select = (props: SelectProps) => {
 
   return (
     // for example, not used yet
-    <div className="select">
+    <div className="w-20 select">
       <Listbox value={selectedItem} onChange={setSelectedItem}>
         <Listbox.Button>{selectedItem.title}</Listbox.Button>
         <Listbox.Options>

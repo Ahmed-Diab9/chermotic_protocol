@@ -2,7 +2,7 @@
   @apply inline-block relative;
   &.select-simple {
     button[aria-haspopup='listbox'] {
-      @apply !border-none !bg-transparent px-2;
+      @apply !border-none !bg-transparent px-2 justify-end;
     }
   }
   button[aria-haspopup='listbox'] {
