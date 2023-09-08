@@ -1,13 +1,51 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { Market } from '~/typings/market';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
+import { useSettlementToken } from './useSettlementToken';
+
+export const useEntireMarkets = () => {
+  const { isReady, client } = useChromaticClient();
+  const { tokens } = useSettlementToken();
+  const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
+  const fetchKey = {
+    key: 'getEntireMarkets',
+    tokenAddresses,
+  };
+  const {
+    data: markets,
+    error,
+    isLoading: isMarketsLoading,
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ tokenAddresses }) => {
+    const response = await PromiseOnlySuccess(
+      tokenAddresses.map(async (tokenAddress) => {
+        const marketFactoryApi = client.marketFactory();
+        const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
+        return markets.map(
+          (market) =>
+            ({
+              ...market,
+              description: market.description.split(/\s*\/\s*/).join('/'),
+              tokenAddress,
+            } satisfies Market)
+        );
+      })
+    );
+
+    return response.flat();
+  });
+
+  useError({ error });
+
+  return { markets, isMarketsLoading };
+};
 
 export const useMarket = (_interval?: number) => {
   const { isReady, client } = useChromaticClient();

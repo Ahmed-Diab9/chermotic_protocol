@@ -1,10 +1,10 @@
-import '~/stories/atom/Tabs/style.css';
-import './style.css';
-import { useState } from 'react';
 import { Tab } from '@headlessui/react';
-import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
+import { useState } from 'react';
 import DecreaseIcon from '~/assets/icons/DecreaseIcon';
 import IncreaseIcon from '~/assets/icons/IncreaseIcon';
+import '~/stories/atom/Tabs/style.css';
+import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
+import './style.css';
 
 const enum POSITION_TAB {
   'SHORT_TAB',
@@ -13,7 +13,7 @@ const enum POSITION_TAB {
 
 export const TradePanelV2 = () => {
   const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.SHORT_TAB);
-  const onSelectTab = (tab: number) => setSelectedTab(POSITION_TAB.SHORT_TAB);
+  const onSelectTab = (tab: number) => setSelectedTab(tab);
 
   return (
     <div className="TradePanelV2 panel">
