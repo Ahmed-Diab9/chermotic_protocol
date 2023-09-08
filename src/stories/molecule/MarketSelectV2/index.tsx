@@ -1,7 +1,7 @@
 import './style.css';
 
 import { Popover } from '@headlessui/react';
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
@@ -31,91 +31,105 @@ export function MarketSelectV2() {
         <div className="flex items-center h-full gap-3">
           <BookmarkButton size="lg" />
           <Popover className="h-full">
-            <Popover.Button className="flex items-center h-full gap-3 pr-5 border-r">
-              <div className="pr-3 border-r">
-                <div className="flex items-center gap-1">
-                  <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                  <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
-                    <Avatar label={tokenName} fontSize="2xl" gap="1" size="sm" />
-                  </SkeletonElement>
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                  <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
-                    <Avatar label={marketDescription} fontSize="2xl" gap="1" size="sm" />
-                  </SkeletonElement>
-                </div>
-              </div>
-              <ChevronDownIcon
-                className="w-5 h-5 transition duration-150 ease-in-out"
-                aria-hidden="true"
-              />
-            </Popover.Button>
-            <Popover.Panel className="popover-panel">
-              <div className="flex justify-between px-3 py-2 text-left border-b tr text-primary-lighter bg-inverted-lighter">
-                <div className="flex">
-                  <div className="w-[128px]">Settlement token</div>
-                  <div className="pl-3 border-l">Index</div>
-                </div>
-                <div className="flex pr-3 text-left">
-                  <div className="w-[80px]">Long LP</div>
-                  <div className="w-[80px]">Short LP</div>
-                </div>
-              </div>
-              <section className="flex flex-auto w-full px-3">
-                <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r">
-                  {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
-                    <button
-                      key={key}
-                      className={`flex items-center gap-2 px-3 py-2 w-[116px] ${
-                        isSelectedToken && 'border bg-paper-lighter rounded-lg' // the token selected
-                      }`}
-                      onClick={onClickToken}
-                      title={name}
-                    >
-                      <Avatar label={name} fontSize="lg" gap="2" size="sm" />
-                      {isSelectedToken && <ChevronRightIcon className="w-4" />}
-                    </button>
-                  ))}
-                </article>
-
-                <article className="flex flex-col flex-auto gap-2 py-3">
-                  {markets.map(({ key, isSelectedMarket, onClickMarket, description, price }) => (
-                    <div key={key} className="relative flex items-center w-full">
-                      <BookmarkButton className="absolute left-0 ml-2" />
-                      <button
-                        className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 ${
-                          isSelectedMarket && 'border bg-paper-lighter rounded-lg'
-                        }`}
-                        onClick={onClickMarket}
+            {({ open }) => (
+              <>
+                <Popover.Button className="flex items-center h-full gap-3 pr-5 border-r">
+                  <div className="pr-3 border-r">
+                    <div className="flex items-center gap-1">
+                      <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+                      <SkeletonElement
+                        isLoading={isLoading}
+                        width={60}
+                        containerClassName="text-2xl"
                       >
-                        <span className="flex items-center justify-between flex-auto gap-10">
-                          <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                          <span>${price}</span>
-                        </span>
-                        <span className="flex pl-3 text-left border-l text-primary-light">
-                          <span className="w-[80px]">23.45M</span>
-                          <span className="w-[80px]">23.45M</span>
-                        </span>
-                      </button>
+                        <Avatar label={tokenName} fontSize="2xl" gap="1" size="sm" />
+                      </SkeletonElement>
                     </div>
-                  ))}
-                </article>
-              </section>
-              {/* todo later : create new market */}
-              <div className="flex items-center justify-between px-3 py-2 border-t">
-                <Button
-                  label="Create a new market"
-                  iconLeft={<PlusCircleIcon />}
-                  css="unstyled"
-                  size="sm"
-                  className="!p-0 !inline-flex !h-auto"
-                />
-                <p className="text-sm text-primary-light">3 markets are on the process</p>
-              </div>
-            </Popover.Panel>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+                      <SkeletonElement
+                        isLoading={isLoading}
+                        width={80}
+                        containerClassName="text-2xl"
+                      >
+                        <Avatar label={marketDescription} fontSize="2xl" gap="1" size="sm" />
+                      </SkeletonElement>
+                    </div>
+                  </div>
+                  <ArrowTriangleIcon
+                    className={`w-4 h-4 ${open ? 'rotate-180' : ''}`}
+                    aria-hidden="true"
+                  />
+                </Popover.Button>
+                <Popover.Panel className="popover-panel">
+                  <div className="flex justify-between px-3 py-2 text-left border-b tr text-primary-lighter bg-inverted-lighter">
+                    <div className="flex">
+                      <div className="w-[128px]">Settlement token</div>
+                      <div className="pl-3 border-l">Index</div>
+                    </div>
+                    <div className="flex pr-3 text-left">
+                      <div className="w-[80px]">Long LP</div>
+                      <div className="w-[80px]">Short LP</div>
+                    </div>
+                  </div>
+                  <section className="flex flex-auto w-full px-3">
+                    <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r">
+                      {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
+                        <button
+                          key={key}
+                          className={`flex items-center gap-2 px-3 py-2 w-[116px] ${
+                            isSelectedToken && 'border bg-paper-lighter rounded-lg' // the token selected
+                          }`}
+                          onClick={onClickToken}
+                          title={name}
+                        >
+                          <Avatar label={name} fontSize="lg" gap="2" size="sm" />
+                          {isSelectedToken && <ArrowTriangleIcon className="w-4 -rotate-90" />}
+                        </button>
+                      ))}
+                    </article>
+
+                    <article className="flex flex-col flex-auto gap-2 py-3">
+                      {markets.map(
+                        ({ key, isSelectedMarket, onClickMarket, description, price }) => (
+                          <div key={key} className="relative flex items-center w-full">
+                            <BookmarkButton className="absolute left-0 ml-2" />
+                            <button
+                              className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 ${
+                                isSelectedMarket && 'border bg-paper-lighter rounded-lg'
+                              }`}
+                              onClick={onClickMarket}
+                            >
+                              <span className="flex items-center justify-between flex-auto gap-10">
+                                <Avatar label={description} fontSize="lg" gap="2" size="sm" />
+                                <span>${price}</span>
+                              </span>
+                              <span className="flex pl-3 text-left border-l text-primary-light">
+                                <span className="w-[80px]">23.45M</span>
+                                <span className="w-[80px]">23.45M</span>
+                              </span>
+                            </button>
+                          </div>
+                        )
+                      )}
+                    </article>
+                  </section>
+                  {/* todo later : create new market */}
+                  <div className="flex items-center justify-between px-3 py-2 border-t">
+                    <Button
+                      label="Create a new market"
+                      iconLeft={<PlusCircleIcon />}
+                      css="unstyled"
+                      size="sm"
+                      className="!p-0 !inline-flex !h-auto"
+                    />
+                    <p className="text-sm text-primary-light">3 markets are on the process</p>
+                  </div>
+                </Popover.Panel>
+              </>
+            )}
           </Popover>
           <h2 className={`text-3xl ml-2 ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
