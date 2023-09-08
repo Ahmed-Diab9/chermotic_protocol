@@ -10,6 +10,7 @@ import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import { formatUnits } from 'viem';
 import { Address, usePublicClient } from 'wagmi';
+import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { usePreviousOracles } from '~/hooks/usePreviousOracles';
@@ -25,6 +26,7 @@ export function useMarketSelectV2() {
     maximumFractionDigits: 3,
     minimumFractionDigits: 0,
   });
+  const { refetchBookmarks } = useBookmarkOracles();
   const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
   const { previousOracle } = usePreviousOracle({
@@ -152,9 +154,11 @@ export function useMarketSelectV2() {
   const onBookmarkClick = (newBookmark: Bookmark) => {
     const storedAddress = bookmarks?.find(
       (bookmark) => bookmark.marketAddress === newBookmark.marketAddress
-    );
+    )?.marketAddress;
     if (isNotNil(storedAddress)) {
-      setBookmarks((bookmarks ?? []).filter((bookmark) => bookmark !== storedAddress));
+      setBookmarks(
+        (bookmarks ?? []).filter((bookmark) => bookmark.marketAddress !== storedAddress)
+      );
       return;
     }
     setBookmarks((bookmarks ?? []).concat(newBookmark));
