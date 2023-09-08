@@ -65,7 +65,7 @@ export function MarketSelectV2() {
                 </div>
               </div>
               <section className="flex flex-auto w-full px-3">
-                <article className="flex flex-col py-3 pr-3 mr-3 border-r">
+                <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r">
                   {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
                     <button
                       key={key}
@@ -81,18 +81,20 @@ export function MarketSelectV2() {
                   ))}
                 </article>
 
-                <article className="flex flex-col flex-auto py-3">
+                <article className="flex flex-col flex-auto gap-2 py-3">
                   {markets.map(({ key, isSelectedMarket, onClickMarket, description, price }) => (
                     <div key={key} className="relative flex items-center w-full">
                       <BookmarkButton className="absolute left-0 ml-2" />
                       <button
-                        className={`w-full flex items-center justify-between gap-12 pl-8 py-2 pr-3 ${
+                        className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 ${
                           isSelectedMarket && 'border bg-paper-lighter rounded-lg'
                         }`}
                         onClick={onClickMarket}
                       >
-                        <Avatar label={description} fontSize="lg" gap="2" size="sm" />
-                        <span>${price}</span>
+                        <span className="flex items-center justify-between flex-auto gap-10">
+                          <Avatar label={description} fontSize="lg" gap="2" size="sm" />
+                          <span>${price}</span>
+                        </span>
                         <span className="flex pl-3 text-left border-l text-primary-light">
                           <span className="w-[80px]">23.45M</span>
                           <span className="w-[80px]">23.45M</span>
