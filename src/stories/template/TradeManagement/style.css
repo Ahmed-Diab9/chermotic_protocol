@@ -60,9 +60,9 @@
       .td {
         @apply w-[8%];
         &:nth-child(1) {
-          @apply w-[16%] min-w-[168px];
+          @apply w-[16%] min-w-[168px] grow-0;
         }
-        &:nth-child(8) {
+        &:last-child {
           flex: 0 0 40px;
         }
         &:nth-child(4),
