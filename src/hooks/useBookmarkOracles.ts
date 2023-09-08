@@ -12,13 +12,17 @@ export const useBookmarkOracles = () => {
   const { isReady, client } = useChromaticClient();
   const fetchKey = {
     key: 'getBookmarkOracles',
-    bookmarks,
+    bookmarks: bookmarks && bookmarks?.length > 0 ? bookmarks : 'NO_BOOKMARKS',
   };
   const {
     data: bookmarkOracles,
     isLoading: isBookmarkLoading,
     error,
+    mutate: refetchBookmarks,
   } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ bookmarks }) => {
+    if (typeof bookmarks === 'string') {
+      return [];
+    }
     return PromiseOnlySuccess(
       bookmarks.map(async (bookmark) => {
         const oracleProvider = await client
@@ -47,5 +51,5 @@ export const useBookmarkOracles = () => {
 
   useError({ error });
 
-  return { bookmarkOracles, isBookmarkLoading };
+  return { bookmarkOracles, isBookmarkLoading, refetchBookmarks };
 };
