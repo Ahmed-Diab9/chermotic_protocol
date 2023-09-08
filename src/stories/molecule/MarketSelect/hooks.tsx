@@ -1,6 +1,6 @@
 import { useFeeRate } from '~/hooks/useFeeRate';
 import { useMarket } from '~/hooks/useMarket';
-import { usePreviousOracle } from '~/hooks/usePreviousVersion';
+import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
@@ -14,7 +14,9 @@ import { compareOracles } from '~/utils/price';
 export function useMarketSelect() {
   const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
-  const { previousOracle } = usePreviousOracle({ market: currentMarket });
+  const { previousOracle } = usePreviousOracle({
+    market: currentMarket,
+  });
   const { feeRate } = useFeeRate();
   const publicClient = usePublicClient();
 

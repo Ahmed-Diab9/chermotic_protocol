@@ -13,7 +13,7 @@ export const compareOracles = (previousOracle?: OracleVersion, currentOracle?: O
   if (previousOracle.price < currentOracle.price) {
     return 'text-price-higher';
   }
-  if (previousOracle.price < currentOracle.price) {
+  if (previousOracle.price > currentOracle.price) {
     return 'text-price-lower';
   }
   return '';

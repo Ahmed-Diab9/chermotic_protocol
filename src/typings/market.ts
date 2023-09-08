@@ -26,3 +26,9 @@ export interface Market {
   };
   tokenAddress: Address;
 }
+
+export interface Bookmark {
+  tokenName: string;
+  marketDescription: string;
+  marketAddress: Address;
+}

@@ -1,21 +1,18 @@
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Resizable } from 're-resizable';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
-import { Button } from '~/stories/atom/Button';
-import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
+import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
+import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
-import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { TradeChartView } from '~/stories/template/TradeChartView';
 import { TradeManagement } from '~/stories/template/TradeManagement';
-import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
-import { Footer } from '~/stories/template/Footer';
-import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Button } from '~/stories/atom/Button';
 import './style.css';
 
 function TradeV2() {
