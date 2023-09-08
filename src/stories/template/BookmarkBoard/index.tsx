@@ -14,7 +14,7 @@ export const BookmarkBoard = (props: BookmarkBoardProps) => {
     onBookmarkClick,
   } = useBookmarkBoard();
   return (
-    <div className="mb-2 BookmarkBoard">
+    <div className={`mb-2 BookmarkBoard ${bookmarks.length <= 0 ? 'hidden' : ''}`}>
       <div className="flex items-stretch h-6">
         <StarIcon className="w-4 mr-3" />
         <div className="flex gap-5">
