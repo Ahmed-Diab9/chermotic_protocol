@@ -14,10 +14,9 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { TradesItem } from '~/stories/molecule/TradesItem';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
+import { usePositionFilter } from '~/hooks/usePositionFilter';
+import { FilterOption } from '~/typings/position';
 import { useTradeManagement } from './hooks';
 
 const selectItem = [
@@ -43,6 +42,7 @@ export const TradeManagement = () => {
 
   // TODO: PERCENTAGE
   const PERCENTAGE = 0.05;
+  const { filterOption, filterOptions, onOptionSelect } = usePositionFilter();
 
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 620,
@@ -84,14 +84,23 @@ export const TradeManagement = () => {
                 </Tab.List>
                 <div className="flex items-center gap-2 ml-auto">
                   <div className="select select-simple min-w-[168px]">
-                    <Listbox value={selectedItem} onChange={setSelectedItem}>
-                      <Listbox.Button>{selectedItem.title}</Listbox.Button>
+                    <Listbox
+                      value={filterOption}
+                      onChange={(nextOption) => {
+                        onOptionSelect(nextOption);
+                      }}
+                    >
+                      <Listbox.Button>
+                        {filterOptions && filterOptions[filterOption]}
+                      </Listbox.Button>
                       <Listbox.Options>
-                        {selectItem.map((item) => (
-                          <Listbox.Option key={item.id} value={item} disabled={item.unavailable}>
-                            {item.title}
-                          </Listbox.Option>
-                        ))}
+                        {(Object.keys(filterOptions ?? {}) as FilterOption[]).map(
+                          (option: FilterOption) => (
+                            <Listbox.Option key={option} value={option}>
+                              {filterOptions && filterOptions[option]}
+                            </Listbox.Option>
+                          )
+                        )}
                       </Listbox.Options>
                     </Listbox>
                   </div>
