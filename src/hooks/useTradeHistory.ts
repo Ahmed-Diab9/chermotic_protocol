@@ -9,7 +9,8 @@ import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useEntireMarkets } from './useMarket';
+import { useEntireMarkets, useMarket } from './useMarket';
+import { usePositionFilter } from './usePositionFilter';
 import { useSettlementToken } from './useSettlementToken';
 
 type History = {
@@ -34,12 +35,17 @@ export const useTradeHistory = () => {
   const { isReady, client } = useChromaticClient();
   const { accountAddress } = useChromaticAccount();
   const { tokens } = useSettlementToken();
-  const { markets } = useEntireMarkets();
+  const { markets, currentMarket } = useMarket();
+  const { markets: entireMarkets } = useEntireMarkets();
+  const { filterOption } = usePositionFilter();
   const fetchKey = {
     key: 'fetchTradeHistories',
     accountAddress,
     tokens,
     markets,
+    entireMarkets,
+    currentMarket,
+    filterOption,
   };
 
   const {
@@ -48,7 +54,13 @@ export const useTradeHistory = () => {
     isLoading,
   } = useSWR(
     isReady && chromaticAccountABI && checkAllProps(fetchKey) && fetchKey,
-    async ({ accountAddress, tokens, markets }) => {
+    async ({ accountAddress, tokens, markets, entireMarkets, currentMarket, filterOption }) => {
+      const filteredMarkets =
+        filterOption === 'ALL'
+          ? entireMarkets
+          : filterOption === 'TOKEN_BASED'
+          ? markets
+          : markets.filter((market) => market.address === currentMarket?.address);
       const logs = await client.publicClient?.getLogs({
         address: accountAddress,
         fromBlock: 0n,
@@ -78,7 +90,7 @@ export const useTradeHistory = () => {
       const resolvedLogs = await PromiseOnlySuccess(decoded);
       const map = resolvedLogs.reduce((map, log) => {
         const { positionId, marketAddress } = log.args;
-        const selectedMarket = markets?.find((market) => market.address === marketAddress);
+        const selectedMarket = filteredMarkets.find((market) => market.address === marketAddress);
         const selectedToken = tokens?.find(
           (token) => token.address === selectedMarket?.tokenAddress
         );
