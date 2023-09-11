@@ -14,12 +14,12 @@ import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 
-import { PositionItemProps } from './index';
 import { comparePrices } from '~/utils/price';
+import { PositionItemProps } from './index';
 
-interface usePositionItem extends PositionItemProps {}
+interface UsePositionItem extends PositionItemProps {}
 
-export function usePositionItem({ position }: usePositionItem) {
+export function usePositionItem({ position }: UsePositionItem) {
   const { markets } = useMarket();
   const { currentToken } = useSettlementToken();
   const { isLoading } = usePositions();
