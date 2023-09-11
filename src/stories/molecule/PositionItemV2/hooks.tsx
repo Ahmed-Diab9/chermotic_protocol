@@ -4,7 +4,7 @@ import { parseUnits } from 'viem';
 
 import { useClaimPosition } from '~/hooks/useClaimPosition';
 import { useClosePosition } from '~/hooks/useClosePosition';
-import { useMarket } from '~/hooks/useMarket';
+import { useEntireMarkets } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
@@ -17,10 +17,10 @@ import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~
 import { comparePrices } from '~/utils/price';
 import { PositionItemV2Props } from './index';
 
-interface usePositionItemV2 extends PositionItemV2Props {}
+interface UsePositionItemV2 extends PositionItemV2Props {}
 
-export function usePositionItemV2({ position }: usePositionItemV2) {
-  const { markets } = useMarket();
+export function usePositionItemV2({ position }: UsePositionItemV2) {
+  const { markets } = useEntireMarkets();
   const { currentToken } = useSettlementToken();
   const { isLoading } = usePositions();
 
