@@ -1,18 +1,16 @@
 import 'react-loading-skeleton/dist/skeleton.css';
-import '~/stories/atom/Tabs/style.css';
 import '~/stories/atom/Select/style.css';
+import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
-import { useState } from 'react';
-import { Listbox } from '@headlessui/react';
-import { Tab } from '@headlessui/react';
+import { Listbox, Tab } from '@headlessui/react';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { Resizable } from 're-resizable';
 import { Button } from '~/stories/atom/Button';
-import { Guide } from '~/stories/atom/Guide';
-import { PopoverArrow } from '~/stories/atom/PopoverArrow';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
+import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { TradesItem } from '~/stories/molecule/TradesItem';
 
 import { usePositionFilter } from '~/hooks/usePositionFilter';
@@ -38,6 +36,9 @@ export const TradeManagement = () => {
 
     isPositionsEmpty,
     positionList,
+    isHistoryLoading,
+    historyList,
+    tradeList,
   } = useTradeManagement();
 
   // TODO: PERCENTAGE
@@ -51,8 +52,6 @@ export const TradeManagement = () => {
     minHeight: 220,
     maxHeight: 800,
   });
-
-  const [selectedItem, setSelectedItem] = useState(selectItem[0]);
 
   return (
     <div className="TradeManagement">
@@ -196,7 +195,7 @@ export const TradeManagement = () => {
                 </Tab.Panel>
                 <Tab.Panel className="tabs-panel history">
                   <div className="wrapper-inner">
-                    {isPositionsEmpty ? (
+                    {!historyList ? (
                       <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
                     ) : (
                       <div className="list">
@@ -211,8 +210,12 @@ export const TradeManagement = () => {
                           </div>
                         </div>
                         <div className="tbody h-[calc(100%-32px)]">
-                          {positionList.map((position) => (
-                            <HistoryItem key={position.id.toString()} position={position} />
+                          {historyList.map((history) => (
+                            <HistoryItem
+                              key={history.positionId.toString()}
+                              history={history}
+                              isLoading={isHistoryLoading}
+                            />
                           ))}
                         </div>
                       </div>
@@ -221,7 +224,7 @@ export const TradeManagement = () => {
                 </Tab.Panel>
                 <Tab.Panel className="tabs-panel trades">
                   <div className="wrapper-inner">
-                    {isPositionsEmpty ? (
+                    {!tradeList ? (
                       <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
                     ) : (
                       <div className="list">
@@ -234,8 +237,12 @@ export const TradeManagement = () => {
                           </div>
                         </div>
                         <div className="tbody h-[calc(100%-32px)]">
-                          {positionList.map((position) => (
-                            <TradesItem key={position.id.toString()} position={position} />
+                          {tradeList.map((trade) => (
+                            <TradesItem
+                              key={trade.positionId.toString()}
+                              trade={trade}
+                              isLoading={isHistoryLoading}
+                            />
                           ))}
                         </div>
                       </div>
