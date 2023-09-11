@@ -58,28 +58,18 @@ export function PositionItemV2(props: PositionItemV2Props) {
       <div className="td">
         <div>
           <div className="text-sm text-primary-light">
-            <SkeletonElement isLoading={isLoading} width={60}>
+            <SkeletonElement isLoading={isLoading} width={40}>
               {entryTime}
             </SkeletonElement>
           </div>
           <div className="flex items-center gap-2 mt-[2px]">
             <div className="flex items-center gap-1">
-              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                {/* <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" /> */}
                 <h6>{tokenName}</h6>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
-              {/* <SkeletonElement isLoading={isLoading} circle width={16} height={16} /> */}
               <SkeletonElement isLoading={isLoading} width={40}>
-                {/* <Avatar
-                label={marketDescription}
-                size="xs"
-                gap="1"
-                fontSize="base"
-                fontWeight="bold"
-              /> */}
                 <h6>{marketDescription}</h6>
               </SkeletonElement>
             </div>
@@ -89,102 +79,87 @@ export function PositionItemV2(props: PositionItemV2Props) {
           </div>
         </div>
       </div>
-      <div className="td">
-        <SkeletonElement isLoading={isLoading} width={60}>
-          {entryPrice}
-        </SkeletonElement>
-      </div>
-      <div className="td">
-        {/* Contract Qty */}
-        <SkeletonElement isLoading={isLoading} width={60}>
-          {qty}
-        </SkeletonElement>
-      </div>
-      <div className="td">
-        {/* Leverage */}
-        <SkeletonElement isLoading={isLoading} width={60}>
-          <Tag label="4.50x" className="tag-leverage" />
-        </SkeletonElement>
-      </div>
-      <div className="td">
-        {/* TP */}
-        <div>
-          <SkeletonElement isLoading={isLoading} width={60}>
-            {profitPrice}
-          </SkeletonElement>
-          <div className={`mt-[2px] ${tpPriceClass}`}>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {takeProfit}
-            </SkeletonElement>
+      {isOpening && (
+        <div className="gap-2 border-r td">
+          <Loading size="sm" />
+          <div className="flex text-sm text-primary">
+            Waiting for the next oracle round
+            <TooltipGuide iconOnly label="opening-in-progress" />
           </div>
         </div>
-      </div>
-      <div className="td">
-        {/* SL */}
-        <div>
-          <SkeletonElement isLoading={isLoading} width={60}>
-            {lossPrice}
-          </SkeletonElement>
-          <div className={`mt-[2px] ${slPriceClass}`}>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {stopLoss}
-            </SkeletonElement>
+      )}
+      {isClosing && (
+        <div className="gap-2 border-r td">
+          <Loading size="sm" />
+          <div className="flex text-sm text-primary">
+            Closing in progress
+            <TooltipGuide iconOnly label="closing-in-progress" />
           </div>
         </div>
-      </div>
-      <div className="td">
-        {/* PnL */}
-        <div>
-          <SkeletonElement isLoading={isLoading} width={60}>
-            {pnlAmount}
-          </SkeletonElement>
-          <div className={`mt-[2px] ${pnlClass}`}>
-            <SkeletonElement isLoading={isLoading} width={60}>
-              {pnlPercentage}
+      )}
+      {(isOpened || isClosed) && (
+        <>
+          <div className="td">
+            <SkeletonElement isLoading={isLoading} width={40}>
+              {entryPrice}
             </SkeletonElement>
           </div>
-        </div>
-      </div>
+          <div className="td">
+            {/* Contract Qty */}
+            <SkeletonElement isLoading={isLoading} width={40}>
+              {qty}
+            </SkeletonElement>
+          </div>
+          <div className="td">
+            {/* Leverage */}
+            <SkeletonElement isLoading={isLoading} width={40}>
+              <Tag label="4.50x" className="tag-leverage" />
+            </SkeletonElement>
+          </div>
+          <div className="td">
+            {/* TP */}
+            <div>
+              <SkeletonElement isLoading={isLoading} width={40}>
+                {profitPrice}
+              </SkeletonElement>
+              <div className={`mt-[2px] ${tpPriceClass}`}>
+                <SkeletonElement isLoading={isLoading} width={40}>
+                  {takeProfit}
+                </SkeletonElement>
+              </div>
+            </div>
+          </div>
+          <div className="td">
+            {/* SL */}
+            <div>
+              <SkeletonElement isLoading={isLoading} width={40}>
+                {lossPrice}
+              </SkeletonElement>
+              <div className={`mt-[2px] ${slPriceClass}`}>
+                <SkeletonElement isLoading={isLoading} width={40}>
+                  {stopLoss}
+                </SkeletonElement>
+              </div>
+            </div>
+          </div>
+          <div className="td">
+            {/* PnL */}
+            <div>
+              <SkeletonElement isLoading={isLoading} width={40}>
+                {pnlAmount}
+              </SkeletonElement>
+              <div className={`mt-[2px] ${pnlClass}`}>
+                <SkeletonElement isLoading={isLoading} width={40}>
+                  {pnlPercentage}
+                </SkeletonElement>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="td">
         <div>
-          <div className="flex items-center gap-1">
-            {isOpening && (
-              <>
-                {/* <Loading size="sm" />
-                <div className="flex text-sm text-primary">
-                  Waiting for the next oracle round
-                  <TooltipGuide iconOnly label="opening-in-progress" />
-                </div> */}
-              </>
-            )}
-            {isOpened && (
-              <>
-                {/* <CheckIcon className="w-4" />
-                  <div className="flex text-primary">
-                    Opening completed
-                    <TooltipGuide iconOnly label="opening-completed" />
-                  </div> */}
-              </>
-            )}
-            {isClosing && (
-              <>
-                {/* <Loading size="sm" />
-                <div className="flex text-sm text-primary">
-                  Closing in progress
-                  <TooltipGuide iconOnly label="closing-in-progress" />
-                </div> */}
-              </>
-            )}
-            {isClosed && (
-              <>
-                {/* <CheckIcon className="w-4" />
-                  <div className="flex text-primary">
-                    Closing completed
-                    <TooltipGuide iconOnly label="closing-completed" />
-                  </div> */}
-              </>
-            )}
-          </div>
           <div>
             {(isOpened || isOpening) && (
               <Button label="Close" css="underlined" size="sm" onClick={onClosePosition} />

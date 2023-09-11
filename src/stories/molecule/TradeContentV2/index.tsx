@@ -12,8 +12,6 @@ import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 import { TradeChart } from '~/stories/atom/TradeChart';
 import { Outlink } from '~/stories/atom/Outlink';
-import { Button } from '~/stories/atom/Button';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { useTradeContentV2 } from './hooks';
 
@@ -125,7 +123,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-lighter dark:bg-[#29292D]">
+      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-lighter dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -296,7 +294,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             />
           </div>
 
-          <div className="px-5 pt-4 mt-4 pb-5 -mx-5 border-t border-dashed border-gray-light bg-paper-lighter dark:bg-[#29292D]">
+          <div className="px-5 pt-4 pb-5 mt-4 -mx-5 border-t border-dashed border-gray-light bg-paper-lighter dark:bg-inverted-lighter">
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <div className="flex">
@@ -347,7 +345,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             </div>
 
             <div className="pt-4 mt-4 border-t">
-              <div className="text-left text-primary-lighter">
+              <div className="text-sm text-left text-primary-lighter">
                 The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
                 that accept the positions. The EST. Trade Fee is calculated based on the current
                 oracle price, and the actual fee paid is determined by the next oracle price.{' '}
