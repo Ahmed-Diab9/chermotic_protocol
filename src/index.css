@@ -46,6 +46,9 @@
     --color-status-completed-light: 35 248 95;
     --color-status-inprogress: 19 210 199;
     --color-status-inprogress-light: 30 252 239;
+    --color-risk-high: 255 118 38;
+    --color-risk-mid: 60 242 232;
+    --color-risk-low: 166 216 91;
 
     --color-shadow-base: rgba(121, 121, 121, 0.08);
     --color-shadow-md: rgba(229, 229, 229, 0.16);
@@ -84,6 +87,9 @@
     --color-status-completed-light: 35 248 95;
     --color-status-inprogress: 19 210 199;
     --color-status-inprogress-light: 30 252 239;
+    --color-risk-high: 255 118 38;
+    --color-risk-mid: 60 242 232;
+    --color-risk-low: 166 216 91;
 
     /* --color-shadow-base: rgba(121, 121, 121, 0.08); */
     /* --color-shadow-md: rgba(229, 229, 229, 0.16); */

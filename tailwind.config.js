@@ -88,6 +88,11 @@ export const theme = {
           light: 'rgb(var(--color-status-inprogress-light))',
         },
       },
+      risk: {
+        high: 'rgb(var(--color-risk-high))',
+        mid: 'rgb(var(--color-risk-mid))',
+        low: 'rgb(var(--color-risk-low))',
+      },
     },
 
     boxShadow: {

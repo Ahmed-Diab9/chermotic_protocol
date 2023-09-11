@@ -1,7 +1,7 @@
 import { Progress } from '~/stories/atom/Progress';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import '~/stories/atom/Tabs/style.css';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import './style.css';
 
 export interface PoolStatProps {}
@@ -13,7 +13,10 @@ export const PoolStat = (props: PoolStatProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Thumbnail className="w-5 h-5" />
-            <h5>Assets under Management</h5>
+            <div className="flex">
+              <h5>Assets under Management</h5>
+              <TooltipGuide label="asset-under-management" tip="tooltip" />
+            </div>
           </div>
           <div className="text-right">
             <Avatar label="101.373 USDC" className="w-5 h-5" fontSize="lg" />
@@ -23,7 +26,10 @@ export const PoolStat = (props: PoolStatProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Thumbnail className="w-5 h-5" />
-            <h5>CLP supply</h5>
+            <div className="flex">
+              <h5>CLP supply</h5>
+              <TooltipGuide label="clp-supply" tip="tooltip" />
+            </div>
           </div>
           <div className="text-right">
             <Avatar label="101.373 USDC" className="w-5 h-5" fontSize="lg" />

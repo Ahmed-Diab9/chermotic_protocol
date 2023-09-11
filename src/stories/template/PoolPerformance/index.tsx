@@ -3,7 +3,6 @@ import { Listbox } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 export interface PoolPerformanceProps {}
@@ -59,7 +58,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             <div className="text-left text-primary-light">
               <div className="flex">
                 <p>Trailing APR</p>
-                <TooltipGuide label="TrailingAPR" tip="tooltip" />
+                <TooltipGuide label="Trailing-apr" tip="tooltip" />
               </div>
               {/* todo: text price color */}
               <h4 className="text-price-higher mt-[2px]">7.54%</h4>
