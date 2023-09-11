@@ -6,6 +6,7 @@ import { useLastOracle } from '~/hooks/useLastOracle';
 import { useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
+import { useTradeHistory } from '~/hooks/useTradeHistory';
 
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
@@ -15,6 +16,7 @@ import { formatDecimals } from '~/utils/number';
 export function useTradeManagement() {
   const { currentMarket } = useMarket();
   const { positions, isLoading } = usePositions();
+  const { history } = useTradeHistory();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
