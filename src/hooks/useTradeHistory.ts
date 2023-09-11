@@ -13,14 +13,21 @@ import { useEntireMarkets } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 type History = {
+  positionId: bigint;
   token: Token;
   market: Market;
   entryPrice: bigint;
   direction: 'long' | 'short';
   collateral: bigint;
+  qty: bigint;
   leverage: bigint;
   interest: bigint;
   pnl: bigint;
+  entryTimestamp: bigint;
+  closeTimestamp: bigint;
+  isOpened: boolean;
+  isClosed: boolean;
+  isClaimed: boolean;
 };
 
 export const useTradeHistory = () => {
@@ -71,7 +78,6 @@ export const useTradeHistory = () => {
       const resolvedLogs = await PromiseOnlySuccess(decoded);
       const map = resolvedLogs.reduce((map, log) => {
         const { positionId, marketAddress } = log.args;
-        const mapValue: Partial<History> = map.get(positionId) ?? {};
         const selectedMarket = markets?.find((market) => market.address === marketAddress);
         const selectedToken = tokens?.find(
           (token) => token.address === selectedMarket?.tokenAddress
@@ -79,25 +85,39 @@ export const useTradeHistory = () => {
         if (isNil(selectedMarket) || isNil(selectedToken)) {
           return map;
         }
+        const mapValue: Partial<History> = map.get(positionId) ?? {
+          positionId,
+          token: selectedToken,
+          market: selectedMarket,
+          isOpened: false,
+          isClosed: false,
+          isClaimed: false,
+        };
         switch (log.eventName) {
           case 'OpenPosition': {
-            const { takerMargin, qty, entryOracle } = log.args;
+            const { takerMargin, qty, entryOracle, positionId } = log.args;
             mapValue.collateral = takerMargin;
+            mapValue.qty = qty;
             mapValue.direction = qty >= 0n ? 'long' : 'short';
             mapValue.entryPrice = entryOracle.price;
+            mapValue.entryTimestamp = entryOracle.timestamp;
             mapValue.leverage = divPreserved(abs(qty), takerMargin, selectedToken.decimals);
-            mapValue.market = selectedMarket;
-            mapValue.token = selectedToken;
+            mapValue.isOpened = true;
             map.set(positionId, mapValue as History);
             return map;
           }
           case 'ClosePosition': {
+            const { closeTimestamp } = log.args;
+            mapValue.closeTimestamp = closeTimestamp;
+            mapValue.isClosed = true;
+            map.set(positionId, mapValue as History);
             return map;
           }
           case 'ClaimPosition': {
             const { realizedPnl, interest } = log.args;
             mapValue.interest = interest;
             mapValue.pnl = realizedPnl;
+            mapValue.isClaimed = true;
             map.set(positionId, mapValue as History);
             return map;
           }
@@ -106,7 +126,10 @@ export const useTradeHistory = () => {
           }
         }
       }, new Map<bigint, History>());
-      return map;
+
+      return Array.from(map.values()).sort((logP, logQ) =>
+        logP.positionId < logQ.positionId ? 1 : -1
+      );
     }
   );
 
