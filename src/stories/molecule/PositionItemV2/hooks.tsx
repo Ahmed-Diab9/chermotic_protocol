@@ -14,8 +14,8 @@ import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 
-import { PositionItemV2Props } from './index';
 import { comparePrices } from '~/utils/price';
+import { PositionItemV2Props } from './index';
 
 interface usePositionItemV2 extends PositionItemV2Props {}
 
@@ -43,6 +43,7 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
       return {
         qty: '-',
         collateral: '-',
+        leverage: '-',
         stopLoss: '-',
         takeProfit: '-',
         profitPriceTo: '-',
@@ -79,6 +80,13 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
       return {
         qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
         collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
+        leverage:
+          formatDecimals(
+            divPreserved(qty, collateral, currentToken.decimals),
+            currentToken.decimals,
+            2,
+            true
+          ) + 'x',
         stopLoss,
         takeProfit,
         profitPriceTo: '-',
@@ -99,6 +107,13 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
     return {
       qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
       collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
+      leverage:
+        formatDecimals(
+          divPreserved(qty, collateral, currentToken.decimals),
+          currentToken.decimals,
+          2,
+          true
+        ) + 'x',
       takeProfit: withComma(takeProfit),
       stopLoss: withComma(stopLoss),
       profitPriceTo: priceTo(position, 'toProfit'),
