@@ -20,6 +20,7 @@ import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
+import { PoolMenu } from '~/stories/template/PoolMenu';
 import './style.css';
 
 const PoolV2 = () => {
@@ -37,7 +38,7 @@ const PoolV2 = () => {
         <div className="flex items-stretch gap-1">
           <div className="flex-none w-[240px]">
             <h4 className="mt-3 mb-2 text-left">Pools</h4>
-            {/* <PoolMenu /> */}
+            <PoolMenu />
           </div>
           <div className="flex-auto overflow-hidden">
             {/* <PoolPanelV2 /> */}
