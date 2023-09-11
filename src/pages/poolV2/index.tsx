@@ -18,6 +18,7 @@ import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { PoolPanel } from '~/stories/template/PoolPanel';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
+import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import './style.css';
 
 const PoolV2 = () => {
@@ -93,7 +94,7 @@ const PoolV2 = () => {
           <div className="flex-none w-[420px]">
             {/* <PoolBalance /> */}
             {/* <PoolStat /> */}
-            {/* <PoolPerfomance /> */}
+            <PoolPerformance />
           </div>
         </div>
       </section>
