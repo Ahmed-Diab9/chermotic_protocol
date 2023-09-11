@@ -4,7 +4,7 @@ import './style.css';
 interface ProgressProps {
   value?: number;
   max?: number;
-  css?: 'default' | 'sm';
+  css?: 'default' | 'simple';
 }
 
 export const Progress = (props: ProgressProps) => {
@@ -13,7 +13,7 @@ export const Progress = (props: ProgressProps) => {
 
   return (
     <div className={`progress progress-${css} w-full overflow-hidden rounded`}>
-      {css === 'sm' ? (
+      {css === 'default' ? (
         <div className="h-full rounded bg-gray-light">
           <div
             className={`h-full bg-primary dark:bg-gray-dark rounded`}

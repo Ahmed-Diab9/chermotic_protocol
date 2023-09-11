@@ -45,7 +45,7 @@ export const LiquidityItem = ({
           <p className="font-semibold">Removable</p>
           <p className="font-semibold">Utilized</p>
         </div>
-        <Progress css="sm" value={progress} max={progressMax} />
+        <Progress value={progress} max={progressMax} />
         <div className="flex justify-between gap-2 mt-1">
           <p className="text-left">
             {removable} {tokenName}

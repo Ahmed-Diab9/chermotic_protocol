@@ -1,7 +1,7 @@
 .progress-default {
-  @apply h-1 bg-gray-lighter;
-}
-.progress-sm {
   @apply h-3 rounded-xl p-[3px] border;
   @apply bg-paper border-gray-light dark:bg-gray-light dark:border-none;
+}
+.progress-simple {
+  @apply h-1 bg-gray-lighter;
 }

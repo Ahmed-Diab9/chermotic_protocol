@@ -281,9 +281,21 @@ const ProgressItem = (props: ProgressItemProps) => {
         <h4 className="flex items-center gap-2 capitalize">
           {renderTitle}
           <span className="flex mr-1">
-            {isStandby && <Tag label="standby" className="text-status-standby bg-status-standby-light/10" />}
-            {isInprogress && <Tag label="in progress" className="text-status-inprogress bg-status-inprogress-light/10" />}
-            {isCompleted && <Tag label="completed" className="text-status-completed bg-status-completed-light/10" />}
+            {isStandby && (
+              <Tag label="standby" className="text-status-standby bg-status-standby-light/10" />
+            )}
+            {isInprogress && (
+              <Tag
+                label="in progress"
+                className="text-status-inprogress bg-status-inprogress-light/10"
+              />
+            )}
+            {isCompleted && (
+              <Tag
+                label="completed"
+                className="text-status-completed bg-status-completed-light/10"
+              />
+            )}
             <TooltipGuide
               label="status-info"
               outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
@@ -301,7 +313,11 @@ const ProgressItem = (props: ProgressItemProps) => {
           </p>
         </div>
       </div>
-      {isRemove ? <Progress value={progressPercent} max={100} /> : <div className="border-t" />}
+      {isRemove ? (
+        <Progress css="simple" value={progressPercent} max={100} />
+      ) : (
+        <div className="border-t" />
+      )}
       <div className="flex justify-between gap-3 mt-1">
         <div
           className={`flex items-center gap-3 ${
