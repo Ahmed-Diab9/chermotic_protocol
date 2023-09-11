@@ -19,6 +19,7 @@ import { PoolPanel } from '~/stories/template/PoolPanel';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
+import { PoolStat } from '~/stories/template/PoolStat';
 import './style.css';
 
 const PoolV2 = () => {
@@ -91,9 +92,9 @@ const PoolV2 = () => {
               </Link>
             </div> */}
           </div>
-          <div className="flex-none w-[420px]">
+          <div className="flex-none w-[420px] flex flex-col gap-1">
             {/* <PoolBalance /> */}
-            {/* <PoolStat /> */}
+            <PoolStat />
             <PoolPerformance />
           </div>
         </div>
