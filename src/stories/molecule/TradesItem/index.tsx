@@ -1,48 +1,18 @@
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 
-import { Position } from '~/typings/position';
-
-import { useTradesItem } from './hooks';
+import { TradeEntryOnly } from '~/typings/position';
 
 export interface TradesItemProps {
-  position: Position;
+  trade: TradeEntryOnly;
+  isLoading: boolean;
 }
 
 export function TradesItem(props: TradesItemProps) {
   const {
-    qty,
-    collateral,
-    stopLoss,
-    takeProfit,
-    profitPriceTo,
-    lossPriceTo,
-    pnlPercentage,
-    lossPrice,
-    profitPrice,
-    entryPrice,
-    entryTime,
-    pnlAmount,
-
-    direction,
-
-    onClosePosition,
-    onClaimPosition,
-
+    trade: { token, market, direction, entryPrice, entryTime, collateral, qty, leverage },
     isLoading,
-
-    isOpening,
-    isOpened,
-    isClosing,
-    isClosed,
-
-    tokenName,
-    marketDescription,
-
-    tpPriceClass,
-    slPriceClass,
-    pnlClass,
-  } = useTradesItem(props);
+  } = props;
 
   return (
     <div className="tr">
@@ -56,12 +26,12 @@ export function TradesItem(props: TradesItemProps) {
           <div className="flex items-center gap-2 mt-[2px]">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{tokenName}</h6>
+                <h6>{token.name}</h6>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{marketDescription}</h6>
+                <h6>{market.description}</h6>
               </SkeletonElement>
             </div>
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -84,7 +54,7 @@ export function TradesItem(props: TradesItemProps) {
       <div className="td">
         {/* Leverage */}
         <SkeletonElement isLoading={isLoading} width={40}>
-          <Tag label="4.50x" className="tag-leverage" />
+          <Tag label={leverage} className="tag-leverage" />
         </SkeletonElement>
       </div>
     </div>
