@@ -134,7 +134,7 @@ export function PositionItem(props: PositionItemProps) {
           )}
         </div>
       </div>
-      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-[#29292D]">
+      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-inverted-lighter">
         <div
           className={`flex flex-auto items-stretch justify-between gap-6 ${
             isOpening ? 'opacity-30' : ''

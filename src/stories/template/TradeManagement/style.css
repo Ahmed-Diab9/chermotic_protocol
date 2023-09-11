@@ -33,7 +33,7 @@
         @apply px-2;
       }
       .td {
-        @apply py-2;
+        @apply py-2 text-sm text-primary-light;
       }
     }
     .tbody {
@@ -52,22 +52,52 @@
     }
     .td {
       @apply flex items-center;
-      flex: 1 1 80px;
+      flex: 1 1 auto;
     }
-
-    &.position {
+  }
+  .tabs-panel {
+    &.position .list {
       .td {
         @apply w-[8%];
         &:nth-child(1) {
-          @apply w-[14%] min-w-[140px];
+          @apply w-[16%] min-w-[168px] grow-0;
         }
-        &:nth-child(8) {
-          @apply w-[6%] min-w-[60px];
+        &:last-child {
+          flex: 0 0 40px;
         }
-        &:nth-child(2),
+        &:nth-child(4),
         &:nth-child(5),
-        &:nth-child(8) {
-          @apply border-l pl-5;
+        &:nth-child(6) {
+          @apply w-[6%];
+        }
+        &:nth-child(1),
+        &:nth-child(4),
+        &:nth-child(7) {
+          @apply border-r pr-4;
+        }
+      }
+    }
+    &.history .list {
+      .td {
+        @apply w-[10%];
+        &:nth-child(1) {
+          @apply w-[24%] min-w-[220px];
+        }
+        &:nth-child(1),
+        &:nth-child(4) {
+          @apply border-r pr-4;
+        }
+      }
+    }
+    &.trades .list {
+      .tr {
+        @apply justify-start;
+      }
+      .td {
+        @apply w-[10%] grow-0 min-w-[96px];
+        &:nth-child(1) {
+          @apply w-[20%] min-w-[168px];
+          @apply border-r pr-4;
         }
       }
     }

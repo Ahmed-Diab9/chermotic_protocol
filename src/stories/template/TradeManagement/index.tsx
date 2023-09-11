@@ -12,6 +12,8 @@ import { PopoverArrow } from '~/stories/atom/PopoverArrow';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
+import { HistoryItem } from '~/stories/molecule/HistoryItem';
+import { TradesItem } from '~/stories/molecule/TradesItem';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
@@ -19,8 +21,8 @@ import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { useTradeManagement } from './hooks';
 
 const selectItem = [
-  { id: 1, title: 'CHRM ETH/USD', unavailable: false },
-  { id: 2, title: 'CHRM', unavailable: false },
+  { id: 1, title: 'CHRM-ETH/USD', unavailable: false },
+  { id: 2, title: 'CHRM based markets', unavailable: false },
   { id: 3, title: 'All markets', unavailable: false },
 ];
 
@@ -44,7 +46,7 @@ export const TradeManagement = () => {
 
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 620,
-    initialHeight: 340,
+    initialHeight: 321,
     minWidth: 720,
     minHeight: 220,
     maxHeight: 800,
@@ -81,7 +83,7 @@ export const TradeManagement = () => {
                   <Tab>Trades</Tab>
                 </Tab.List>
                 <div className="flex items-center gap-2 ml-auto">
-                  <div className="select select-simple">
+                  <div className="select select-simple min-w-[168px]">
                     <Listbox value={selectedItem} onChange={setSelectedItem}>
                       <Listbox.Button>{selectedItem.title}</Listbox.Button>
                       <Listbox.Options>
@@ -111,7 +113,7 @@ export const TradeManagement = () => {
                 </p>
               </div> */}
               <Tab.Panels className="tabs-panels">
-                <Tab.Panel className="tabs-panel">
+                <Tab.Panel className="tabs-panel position">
                   {/* guide next round */}
                   {isGuideVisible && (
                     <div className="">
@@ -129,7 +131,7 @@ export const TradeManagement = () => {
                     {isPositionsEmpty ? (
                       <p className="mt-10 text-center text-primary/20">You have no position yet.</p>
                     ) : (
-                      <div className="list position">
+                      <div className="list">
                         <div className="thead">
                           <div className="tr">
                             <div className="td">Position</div>
@@ -181,6 +183,54 @@ export const TradeManagement = () => {
                         outLinkAbout="Next Oracle Round"
                       />
                     </div>
+                  </div>
+                </Tab.Panel>
+                <Tab.Panel className="tabs-panel history">
+                  <div className="wrapper-inner">
+                    {isPositionsEmpty ? (
+                      <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
+                    ) : (
+                      <div className="list">
+                        <div className="thead">
+                          <div className="tr">
+                            <div className="td">Entry Time | Close Time</div>
+                            <div className="td">Entry Price</div>
+                            <div className="td">Contract Qty</div>
+                            <div className="td">Leverage</div>
+                            <div className="td">Finalized PnL</div>
+                            <div className="td">Finalized Pnl(%)</div>
+                          </div>
+                        </div>
+                        <div className="tbody h-[calc(100%-32px)]">
+                          {positionList.map((position) => (
+                            <HistoryItem key={position.id.toString()} position={position} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Tab.Panel>
+                <Tab.Panel className="tabs-panel trades">
+                  <div className="wrapper-inner">
+                    {isPositionsEmpty ? (
+                      <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
+                    ) : (
+                      <div className="list">
+                        <div className="thead">
+                          <div className="tr">
+                            <div className="td">Entry Time</div>
+                            <div className="td">Entry Price</div>
+                            <div className="td">Contract Qty</div>
+                            <div className="td">Leverage</div>
+                          </div>
+                        </div>
+                        <div className="tbody h-[calc(100%-32px)]">
+                          {positionList.map((position) => (
+                            <TradesItem key={position.id.toString()} position={position} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Tab.Panel>
               </Tab.Panels>

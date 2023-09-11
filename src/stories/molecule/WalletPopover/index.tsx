@@ -127,7 +127,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                         />
                       </div>
                     </article>
-                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-[#29292D]">
+                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-inverted-lighter">
                       <Tab.Group>
                         <Tab.List className="absolute left-0 w-full top-4">
                           <Tab className="w-[80px]">Assets</Tab>

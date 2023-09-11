@@ -13,6 +13,7 @@ interface TooltipGuideProps {
   size?: 'sm' | 'base' | 'lg';
   align?: 'center' | 'left' | 'right';
   className?: string;
+  iconClass?: string;
   iconOnly?: boolean;
   tipOnly?: boolean;
   onClick?: () => unknown;
@@ -28,6 +29,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     size = 'base',
     align = 'left',
     className = '',
+    iconClass,
     iconOnly,
     tipOnly,
   } = props;
@@ -36,7 +38,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     <div className="wrapper-tooltip">
       {tipOnly || (
         <span className={`mx-1 tooltip-${label} tooltip-icon ${className}`}>
-          <InformationCircleIcon className="w-4 text-primary-lighter" />
+          <InformationCircleIcon className={`w-4 text-primary-lighter ${iconClass}`} />
         </span>
       )}
       {iconOnly || (

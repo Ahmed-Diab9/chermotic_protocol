@@ -50,13 +50,11 @@ export const TradeChartView = (props: TradeChartViewProps) => {
             borderColor: 'rgb(var(--color-paper))',
           }}
         >
-          {/* <div className="flex items-center flex-auto px-3"><h4>Last Price</h4></div> */}
           <TradingViewWidget
             className="flex flex-col items-center flex-auto"
             width={width}
             height={height}
           />
-          {/* <Button iconOnly={<ChevronRightIcon />} css="square" /> */}
         </div>
       </Resizable>
     </div>
