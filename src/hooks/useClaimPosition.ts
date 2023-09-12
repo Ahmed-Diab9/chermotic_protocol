@@ -16,7 +16,7 @@ export function useClaimPosition(props: Props) {
   const { market, positionId } = props;
   const { client } = useChromaticClient();
   const { fetchBalances } = useChromaticAccount();
-  const { positions, fetchPositions } = usePositions();
+  const { positions, fetchPositions, fetchCurrentPositions } = usePositions();
   async function onClaimPosition() {
     try {
       if (isNil(market)) {
@@ -38,7 +38,7 @@ export function useClaimPosition(props: Props) {
       const routerApi = client.router();
       await routerApi.claimPosition(market?.address, position.id);
 
-      await fetchPositions();
+      await fetchCurrentPositions();
       await fetchBalances();
       toast('The claiming process has been completed.');
     } catch (error) {

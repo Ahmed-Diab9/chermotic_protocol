@@ -1,16 +1,10 @@
-import CheckIcon from '~/assets/icons/CheckIcon';
-
-import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
-import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { Position } from '~/typings/position';
-
-import { comparePrices } from '~/utils/price';
 
 import { usePositionItemV2 } from './hooks';
 
@@ -20,8 +14,11 @@ export interface PositionItemV2Props {
 
 export function PositionItemV2(props: PositionItemV2Props) {
   const {
+    tokenName,
+    marketDescription,
     qty,
     collateral,
+    leverage,
     stopLoss,
     takeProfit,
     profitPriceTo,
@@ -44,10 +41,6 @@ export function PositionItemV2(props: PositionItemV2Props) {
     isOpened,
     isClosing,
     isClosed,
-
-    tokenName,
-    marketDescription,
-
     tpPriceClass,
     slPriceClass,
     pnlClass,
@@ -113,7 +106,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
           <div className="td">
             {/* Leverage */}
             <SkeletonElement isLoading={isLoading} width={40}>
-              <Tag label="4.50x" className="tag-leverage" />
+              <Tag label={leverage} className="tag-leverage" />
             </SkeletonElement>
           </div>
           <div className="td">

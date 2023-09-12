@@ -24,7 +24,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
     useTradingViewChart({ width, height });
 
   useEffect(() => {
-    if (isMarketLoading || !marketSymbol) {
+    if (!marketSymbol) {
       return;
     }
     const script = document.createElement('script');
@@ -82,7 +82,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
       script.removeEventListener('error', onError);
       document.head.removeChild(script);
     };
-  }, [marketSymbol, config, isMarketLoading]);
+  }, [marketSymbol, config]);
 
   return (
     <div className={`tradingview-widget-container ${className}`}>

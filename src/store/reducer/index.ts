@@ -1,7 +1,8 @@
+import { accountReducer } from './account';
 import { marketReducer } from './market';
 import { poolsReducer } from './pools';
+import { positionReducer } from './position';
 import { tokenReducer } from './token';
-import { accountReducer } from './account';
 import { tradesReducer } from './trades';
 
 const rootReducer = {
@@ -10,6 +11,7 @@ const rootReducer = {
   token: tokenReducer,
   account: accountReducer,
   trades: tradesReducer,
+  position: positionReducer,
 };
 
 export default rootReducer;

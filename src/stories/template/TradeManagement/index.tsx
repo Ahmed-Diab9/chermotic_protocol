@@ -1,30 +1,21 @@
 import 'react-loading-skeleton/dist/skeleton.css';
-import '~/stories/atom/Tabs/style.css';
 import '~/stories/atom/Select/style.css';
+import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
-import { useState } from 'react';
-import { Listbox } from '@headlessui/react';
-import { Tab } from '@headlessui/react';
-import { Button } from '~/stories/atom/Button';
-import { Guide } from '~/stories/atom/Guide';
-import { PopoverArrow } from '~/stories/atom/PopoverArrow';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
-import { HistoryItem } from '~/stories/molecule/HistoryItem';
-import { TradesItem } from '~/stories/molecule/TradesItem';
+import { Listbox, Tab } from '@headlessui/react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
+import { Button } from '~/stories/atom/Button';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { HistoryItem } from '~/stories/molecule/HistoryItem';
+import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
+import { TradesItem } from '~/stories/molecule/TradesItem';
 
+import { usePositionFilter } from '~/hooks/usePositionFilter';
+import { FilterOption } from '~/typings/position';
 import { useTradeManagement } from './hooks';
-
-const selectItem = [
-  { id: 1, title: 'CHRM-ETH/USD', unavailable: false },
-  { id: 2, title: 'CHRM based markets', unavailable: false },
-  { id: 3, title: 'All markets', unavailable: false },
-];
 
 export const TradeManagement = () => {
   const {
@@ -39,10 +30,14 @@ export const TradeManagement = () => {
 
     isPositionsEmpty,
     positionList,
+    isHistoryLoading,
+    historyList,
+    tradeList,
   } = useTradeManagement();
 
   // TODO: PERCENTAGE
   const PERCENTAGE = 0.05;
+  const { filterOption, filterOptions, onOptionSelect } = usePositionFilter();
 
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
     initialWidth: 620,
@@ -51,8 +46,6 @@ export const TradeManagement = () => {
     minHeight: 220,
     maxHeight: 800,
   });
-
-  const [selectedItem, setSelectedItem] = useState(selectItem[0]);
 
   return (
     <div className="TradeManagement">
@@ -84,14 +77,23 @@ export const TradeManagement = () => {
                 </Tab.List>
                 <div className="flex items-center gap-2 ml-auto">
                   <div className="select select-simple min-w-[168px]">
-                    <Listbox value={selectedItem} onChange={setSelectedItem}>
-                      <Listbox.Button>{selectedItem.title}</Listbox.Button>
+                    <Listbox
+                      value={filterOption}
+                      onChange={(nextOption) => {
+                        onOptionSelect(nextOption);
+                      }}
+                    >
+                      <Listbox.Button>
+                        {filterOptions && filterOptions[filterOption]}
+                      </Listbox.Button>
                       <Listbox.Options>
-                        {selectItem.map((item) => (
-                          <Listbox.Option key={item.id} value={item} disabled={item.unavailable}>
-                            {item.title}
-                          </Listbox.Option>
-                        ))}
+                        {(Object.keys(filterOptions ?? {}) as FilterOption[]).map(
+                          (option: FilterOption) => (
+                            <Listbox.Option key={option} value={option}>
+                              {filterOptions && filterOptions[option]}
+                            </Listbox.Option>
+                          )
+                        )}
                       </Listbox.Options>
                     </Listbox>
                   </div>
@@ -187,7 +189,7 @@ export const TradeManagement = () => {
                 </Tab.Panel>
                 <Tab.Panel className="tabs-panel history">
                   <div className="wrapper-inner">
-                    {isPositionsEmpty ? (
+                    {!historyList ? (
                       <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
                     ) : (
                       <div className="list">
@@ -202,8 +204,12 @@ export const TradeManagement = () => {
                           </div>
                         </div>
                         <div className="tbody h-[calc(100%-32px)]">
-                          {positionList.map((position) => (
-                            <HistoryItem key={position.id.toString()} position={position} />
+                          {historyList.map((history) => (
+                            <HistoryItem
+                              key={history.positionId.toString()}
+                              history={history}
+                              isLoading={isHistoryLoading}
+                            />
                           ))}
                         </div>
                       </div>
@@ -212,7 +218,7 @@ export const TradeManagement = () => {
                 </Tab.Panel>
                 <Tab.Panel className="tabs-panel trades">
                   <div className="wrapper-inner">
-                    {isPositionsEmpty ? (
+                    {!tradeList ? (
                       <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
                     ) : (
                       <div className="list">
@@ -225,8 +231,12 @@ export const TradeManagement = () => {
                           </div>
                         </div>
                         <div className="tbody h-[calc(100%-32px)]">
-                          {positionList.map((position) => (
-                            <TradesItem key={position.id.toString()} position={position} />
+                          {tradeList.map((trade) => (
+                            <TradesItem
+                              key={trade.positionId.toString()}
+                              trade={trade}
+                              isLoading={isHistoryLoading}
+                            />
                           ))}
                         </div>
                       </div>

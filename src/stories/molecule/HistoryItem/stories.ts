@@ -11,34 +11,35 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    position: {
-      id: 2n,
-      tokenAddress: '0x0000000000000000',
-      openVersion: 3n,
-      closeVersion: 0n,
-      qty: -100000000n,
-      openTimestamp: 1691689413n,
-      closeTimestamp: 0n,
-      takerMargin: 10000000n,
-      owner: '0x00',
-      _binMargins: [
-        {
-          tradingFeeRate: 3,
-          amount: 100000000n,
+    history: {
+      token: {
+        name: 'USDC',
+        address: '0x8888888888888888888888888888888888888888',
+        decimals: 6,
+        minimumMargin: 10000000n,
+      },
+      market: {
+        address: '0x8888888888888888888888888888888888888888',
+        tokenAddress: '0x8888888888888888888888888888888888888888',
+        description: 'ETH/USD',
+        oracleValue: {
+          price: 10000n,
+          timestamp: 1000000n,
+          version: 10n,
         },
-      ],
-      _feeProtocol: 0,
-      makerMargin: 100000000n,
-      openPrice: 102000000000000000000n,
-      closePrice: undefined,
-      marketAddress: '0x00',
-      lossPrice: 112200000000000000000n,
-      profitPrice: 0n,
-      pnl: 980392n,
-      collateral: 10000000n,
-      status: 1,
-      toLoss: 110891089108910891n,
-      toProfit: -1000000000000000000n,
+      },
+      positionId: 1n,
+      direction: 'long',
+      collateral: '100 ETH',
+      qty: '1000 ETH',
+      entryPrice: '$10,000.00',
+      leverage: '10x',
+      entryTime: '2023-09-11',
+      pnl: '0.001 ETH',
+      pnlRate: '0.1%',
+      pnlClass: 'text-price-higher',
+      closeTime: '2023-09-12',
     },
+    isLoading: false,
   },
 };
