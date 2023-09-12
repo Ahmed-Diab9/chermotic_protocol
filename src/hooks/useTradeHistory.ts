@@ -1,5 +1,5 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
 import { Market, Token } from '~/typings/market';
@@ -88,6 +88,14 @@ export const useTradeHistory = () => {
           }
         });
       const resolvedLogs = await PromiseOnlySuccess(decoded);
+      const claimedMap = resolvedLogs
+        .map((log) => (log.eventName === 'ClaimPosition' ? log.args.positionId : undefined))
+        .reduce((positionMap, positionId) => {
+          if (isNotNil(positionId)) {
+            positionMap.set(positionId, true);
+          }
+          return positionMap;
+        }, new Map<bigint, boolean>());
       const map = resolvedLogs.reduce((map, log) => {
         const { positionId, marketAddress } = log.args;
         const selectedMarket = filteredMarkets.find((market) => market.address === marketAddress);
@@ -107,14 +115,16 @@ export const useTradeHistory = () => {
         };
         switch (log.eventName) {
           case 'OpenPosition': {
-            const { takerMargin, qty, entryOracle, positionId } = log.args;
+            const { takerMargin, qty, positionId, openTimestamp, entryOracle } = log.args;
             mapValue.collateral = takerMargin;
             mapValue.qty = qty;
             mapValue.direction = qty >= 0n ? 'long' : 'short';
-            mapValue.entryPrice = entryOracle.price;
-            mapValue.entryTimestamp = entryOracle.timestamp;
+            mapValue.entryTimestamp = openTimestamp;
             mapValue.leverage = divPreserved(qty, takerMargin, selectedToken.decimals);
             mapValue.isOpened = true;
+            if (!claimedMap.get(positionId)) {
+              mapValue.entryPrice = entryOracle.price;
+            }
             map.set(positionId, mapValue as History);
             return map;
           }
@@ -126,7 +136,8 @@ export const useTradeHistory = () => {
             return map;
           }
           case 'ClaimPosition': {
-            const { realizedPnl, interest } = log.args;
+            const { realizedPnl, interest, entryPrice } = log.args;
+            mapValue.entryPrice = entryPrice;
             mapValue.interest = interest;
             mapValue.pnl = realizedPnl;
             mapValue.isClaimed = true;
