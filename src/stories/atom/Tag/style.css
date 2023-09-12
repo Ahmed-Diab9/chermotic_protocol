@@ -15,3 +15,12 @@
 .tag-leverage {
   @apply text-leverage bg-leverage/10 normal-case;
 }
+.tag-risk-high {
+  @apply text-risk-high bg-risk-high/10 capitalize;
+}
+.tag-risk-mid {
+  @apply text-risk-mid bg-risk-mid/10 capitalize;
+}
+.tag-risk-low {
+  @apply text-risk-low bg-risk-low/10 capitalize;
+}
