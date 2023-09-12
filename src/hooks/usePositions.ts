@@ -141,7 +141,11 @@ export const usePositions = () => {
       const positionApi = client.position();
 
       const newPositions = await getPositions(accountApi, positionApi, currentMarket);
-      return [...filteredPositions, ...newPositions];
+      const mergedPositions = [...filteredPositions, ...newPositions];
+      mergedPositions.sort((previous, next) =>
+        previous.openTimestamp < next.openTimestamp ? 1 : -1
+      );
+      return mergedPositions;
     });
   }
 
