@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
 import { Market, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
-import { abs, divPreserved } from '~/utils/number';
+import { divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
@@ -113,7 +113,7 @@ export const useTradeHistory = () => {
             mapValue.direction = qty >= 0n ? 'long' : 'short';
             mapValue.entryPrice = entryOracle.price;
             mapValue.entryTimestamp = entryOracle.timestamp;
-            mapValue.leverage = divPreserved(abs(qty), takerMargin, selectedToken.decimals);
+            mapValue.leverage = divPreserved(qty, takerMargin, selectedToken.decimals);
             mapValue.isOpened = true;
             map.set(positionId, mapValue as History);
             return map;
