@@ -62,7 +62,7 @@ export function MarketSelectV2() {
                         width={60}
                         containerClassName="text-2xl"
                       >
-                        <Avatar label={tokenName} fontSize="2xl" gap="1" size="sm" />
+                        <Avatar label={tokenName} fontSize="2xl" gap="1" size="base" />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -74,7 +74,7 @@ export function MarketSelectV2() {
                         width={80}
                         containerClassName="text-2xl"
                       >
-                        <Avatar label={mainMarketDescription} fontSize="2xl" gap="1" size="sm" />
+                        <Avatar label={mainMarketDescription} fontSize="2xl" gap="1" size="base" />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -105,7 +105,7 @@ export function MarketSelectV2() {
                           onClick={onClickToken}
                           title={name}
                         >
-                          <Avatar label={name} fontSize="lg" gap="2" size="sm" />
+                          <Avatar label={name} fontSize="lg" gap="2" size="base" />
                           {isSelectedToken && <ArrowTriangleIcon className="w-4 -rotate-90" />}
                         </button>
                       ))}
@@ -141,7 +141,7 @@ export function MarketSelectV2() {
                                 onClick={onClickMarket}
                               >
                                 <span className="flex items-center justify-between flex-auto gap-10">
-                                  <Avatar label={description} fontSize="lg" gap="2" size="sm" />
+                                  <Avatar label={description} fontSize="lg" gap="2" size="base" />
                                   <span className={priceClassMap?.[key]}>${price}</span>
                                 </span>
                                 <span className="flex pl-3 text-left border-l text-primary-light">

@@ -16,7 +16,7 @@ export function AccountPopover() {
     <>
       <div className="AccountPopover">
         <div className="ml-10">
-          <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" />
+          <Avatar size="base" fontSize="lg" label="Account balance" gap="2" />
         </div>
         <div className="flex flex-col gap-1 mr-10 text-right">
           {isConnected ? (

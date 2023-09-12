@@ -174,7 +174,7 @@ export function PoolPanelV2() {
                 <article className="mt-5">
                   <div className="py-3 border-dashed border-y">
                     <PoolInfo label="EST. Receive">
-                      <Avatar label="995.34 CLP" size="xs" />
+                      <Avatar label="995.34 CLP" size="sm" />
                     </PoolInfo>
                   </div>
                   <div className="flex flex-col gap-2 pt-3">
