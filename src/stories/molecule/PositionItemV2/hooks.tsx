@@ -14,6 +14,7 @@ import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 
+import { formatTimestamp } from '~/utils/date';
 import { comparePrices } from '~/utils/price';
 import { PositionItemV2Props } from './index';
 
@@ -144,15 +145,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
       profitPrice: formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       entryPrice: '$ ' + formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
-      entryTime: new Intl.DateTimeFormat('en-US', {
-        second: '2-digit',
-        minute: '2-digit',
-        hour: '2-digit',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour12: false,
-      }).format(new Date(Number(position.openTimestamp) * 1000)),
+      entryTime: formatTimestamp(position.openTimestamp),
     };
   }, [position, tokens, markets]);
 

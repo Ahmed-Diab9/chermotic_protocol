@@ -11,18 +11,9 @@ import { useTradeHistory } from '~/hooks/useTradeHistory';
 
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
+import { formatTimestamp } from '~/utils/date';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
-
-const dateFormat = new Intl.DateTimeFormat('en-US', {
-  second: '2-digit',
-  minute: '2-digit',
-  hour: '2-digit',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-  hour12: false,
-}).format;
 
 export function useTradeManagement() {
   const { currentMarket } = useMarket();
@@ -115,8 +106,8 @@ export function useTradeManagement() {
             ) +
             '%',
           pnlClass: historyValue.pnl > 0n ? '!text-price-higher' : '!text-price-lower',
-          entryTime: dateFormat(new Date(Number(historyValue.entryTimestamp) * 1000)),
-          closeTime: dateFormat(new Date(Number(historyValue.closeTimestamp) * 1000)),
+          entryTime: formatTimestamp(historyValue.entryTimestamp),
+          closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
   }, [history]);
@@ -136,7 +127,7 @@ export function useTradeManagement() {
         entryPrice:
           '$ ' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
         leverage: formatDecimals(historyValue.leverage, historyValue.token.decimals, 2, true) + 'x',
-        entryTime: dateFormat(new Date(Number(historyValue.entryTimestamp) * 1000)),
+        entryTime: formatTimestamp(historyValue.entryTimestamp),
       };
     });
   }, [history]);

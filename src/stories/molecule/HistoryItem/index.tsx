@@ -15,6 +15,7 @@ export function HistoryItem(props: HistoryItemProps) {
       market,
       direction,
       entryTime,
+      closeTime,
       collateral,
       qty,
       entryPrice,
@@ -30,16 +31,16 @@ export function HistoryItem(props: HistoryItemProps) {
     <div className="tr">
       <div className="td">
         <div>
-          <div className="flex text-sm text-primary-light">
+          <div className="flex text-sm text-primary-light text-ellipsis">
             <SkeletonElement isLoading={isLoading} width={40}>
-              {entryTime}{' '}
+              {entryTime}
             </SkeletonElement>
+            {' | '}
             <SkeletonElement isLoading={isLoading} width={40}>
-              {/* todo: close time */}| May 20 17:45:12
-              {/* | {closeTime} */}
+              {closeTime}
             </SkeletonElement>
           </div>
-          <div className="flex items-center gap-2 mt-[2px]">
+          <div className="flex items-center gap-2 mt-[4px]">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
                 <h6>{token.name}</h6>
