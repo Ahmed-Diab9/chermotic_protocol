@@ -12,27 +12,27 @@ export const PoolStat = (props: PoolStatProps) => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Thumbnail className="w-5 h-5" />
+            <Thumbnail size="xs" />
             <div className="flex">
               <h5>Assets under Management</h5>
               <TooltipGuide label="asset-under-management" tip="tooltip" />
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" className="w-5 h-5" fontSize="lg" />
+            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Thumbnail className="w-5 h-5" />
+            <Thumbnail size="xs" />
             <div className="flex">
               <h5>CLP supply</h5>
               <TooltipGuide label="clp-supply" tip="tooltip" />
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" className="w-5 h-5" fontSize="lg" />
+            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
