@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Progress } from '~/stories/atom/Progress';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
@@ -9,11 +10,38 @@ import '~/stories/atom/Tabs/style.css';
 export interface PoolMenuProps {}
 
 export const PoolMenu = (props: PoolMenuProps) => {
+  const [selected, setSelected] = useState<string | null>('high');
+
+  const handleItemClick = (label: string) => {
+    setSelected(label);
+  };
+
   return (
     <div className="flex flex-col gap-1 PoolMenu">
-      <PoolMenuItem label="high" title="Junior Pool" price={100} aum={50} selected />
-      <PoolMenuItem label="mid" title="Mezzanine Pool" price={100} aum={50} />
-      <PoolMenuItem label="low" title="Senior Pool" price={100} aum={50} />
+      <PoolMenuItem
+        label="high"
+        title="Junior Pool"
+        price={100}
+        aum={50}
+        selected={selected === 'high'}
+        onClick={() => handleItemClick('high')}
+      />
+      <PoolMenuItem
+        label="mid"
+        title="Mezzanine Pool"
+        price={100}
+        aum={50}
+        selected={selected === 'mid'}
+        onClick={() => handleItemClick('mid')}
+      />
+      <PoolMenuItem
+        label="low"
+        title="Senior Pool"
+        price={100}
+        aum={50}
+        selected={selected === 'low'}
+        onClick={() => handleItemClick('low')}
+      />
     </div>
   );
 };
@@ -24,10 +52,11 @@ export interface PoolMenuItemProps {
   price: number;
   aum: number;
   selected?: boolean;
+  onClick?: () => void;
 }
 
 export const PoolMenuItem = (props: PoolMenuItemProps) => {
-  const { label, title, price, aum, selected } = props;
+  const { label, title, price, aum, selected, onClick } = props;
 
   return (
     <button
@@ -35,6 +64,7 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
         selected ? '' : '!bg-inverted border !border-paper-lighter'
       }`}
       title={title}
+      onClick={onClick}
     >
       <div className="text-left">
         <Tag label={`${label} risk`} className={`capitalize tag-risk-${label}`} />
