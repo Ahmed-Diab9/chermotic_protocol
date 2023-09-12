@@ -121,7 +121,9 @@ export const usePositions = () => {
         })
       );
       const flattenPositions = positionsResponse.flat(1);
-      flattenPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
+      flattenPositions.sort((previous, next) =>
+        previous.openTimestamp < next.openTimestamp ? 1 : -1
+      );
       return flattenPositions;
     }
   );

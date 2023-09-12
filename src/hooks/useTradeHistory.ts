@@ -140,7 +140,7 @@ export const useTradeHistory = () => {
       }, new Map<bigint, History>());
 
       return Array.from(map.values()).sort((logP, logQ) =>
-        logP.positionId < logQ.positionId ? 1 : -1
+        logP.entryTimestamp < logQ.entryTimestamp ? 1 : -1
       );
     }
   );
