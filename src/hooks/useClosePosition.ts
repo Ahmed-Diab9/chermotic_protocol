@@ -14,7 +14,7 @@ interface Props {
 function useClosePosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
-  const { positions, fetchPositions } = usePositions();
+  const { positions, fetchPositions, fetchCurrentPositions } = usePositions();
 
   async function onClosePosition() {
     const position = positions?.find(
@@ -29,7 +29,7 @@ function useClosePosition(props: Props) {
       const routerApi = client.router();
       await routerApi?.closePosition(position.marketAddress, position.id);
 
-      await fetchPositions();
+      await fetchCurrentPositions();
       toast('The closing process has been started.');
     } catch (error) {
       errorLog(error);

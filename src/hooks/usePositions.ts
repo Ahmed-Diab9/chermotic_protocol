@@ -8,8 +8,9 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useMarket } from '~/hooks/useMarket';
-import { Market, Token } from '~/typings/market';
+import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
+import { useAppSelector } from '~/store';
+import { Market } from '~/typings/market';
 import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
 import { divPreserved } from '~/utils/number';
@@ -36,12 +37,8 @@ function determinePositionStatus(position: IChromaticPosition, currentOracleVers
 async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
-  market: Market,
-  token: Token
+  market: Market
 ) {
-  if (market.tokenAddress !== token.address) {
-    return [];
-  }
   const positionIds = await accountApi.getPositionIds(market.address);
 
   const positions = await positionApi.getPositions(market.address, [...positionIds]);
@@ -61,7 +58,7 @@ async function getPositions(
         : 0n;
       return {
         ...position,
-        tokenAddress: token.address,
+        tokenAddress: market.tokenAddress,
         marketAddress: market.address,
         lossPrice: lossCutPrice ?? 0n,
         profitPrice: profitStopPrice ?? 0n,
@@ -86,15 +83,19 @@ async function getPositions(
 export const usePositions = () => {
   const { accountAddress } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
+  const { markets: entireMarkets } = useEntireMarkets();
   const { markets, currentMarket } = useMarket();
   const { client } = useChromaticClient();
+  const filterOption = useAppSelector((state) => state.position.filterOption);
 
   const fetchKey = {
     name: 'getPositions',
     type: 'EOA',
-    markets: markets,
+    markets,
+    entireMarkets,
     chromaticAccount: accountAddress,
     currentToken: currentToken,
+    filterOption,
   };
 
   const {
@@ -102,17 +103,30 @@ export const usePositions = () => {
     error,
     mutate: fetchPositions,
     isLoading,
-  } = useSWR(checkAllProps(fetchKey) && fetchKey, async ({ currentToken, markets }) => {
-    const accountApi = client.account();
-    const positionApi = client.position();
+  } = useSWR(
+    checkAllProps(fetchKey) && fetchKey,
+    async ({ currentToken, markets, entireMarkets, filterOption }) => {
+      const accountApi = client.account();
+      const positionApi = client.position();
 
-    const positionsResponse = await PromiseOnlySuccess(
-      markets.map(async (market) => {
-        return getPositions(accountApi, positionApi, market, currentToken);
-      })
-    );
-    return positionsResponse.flat(1);
-  });
+      const filteredMarkets =
+        filterOption === 'ALL'
+          ? entireMarkets
+          : filterOption === 'TOKEN_BASED'
+          ? markets
+          : markets.filter((market) => market.address === currentMarket?.address);
+      const positionsResponse = await PromiseOnlySuccess(
+        filteredMarkets.map(async (market) => {
+          return getPositions(accountApi, positionApi, market);
+        })
+      );
+      const flattenPositions = positionsResponse.flat(1);
+      flattenPositions.sort((previous, next) =>
+        previous.openTimestamp < next.openTimestamp ? 1 : -1
+      );
+      return flattenPositions;
+    }
+  );
 
   function fetchCurrentPositions() {
     fetchPositions(async (positions) => {
@@ -126,8 +140,12 @@ export const usePositions = () => {
       const accountApi = client.account();
       const positionApi = client.position();
 
-      const newPositions = await getPositions(accountApi, positionApi, currentMarket, currentToken);
-      return [...filteredPositions, ...newPositions];
+      const newPositions = await getPositions(accountApi, positionApi, currentMarket);
+      const mergedPositions = [...filteredPositions, ...newPositions];
+      mergedPositions.sort((previous, next) =>
+        previous.openTimestamp < next.openTimestamp ? 1 : -1
+      );
+      return mergedPositions;
     });
   }
 

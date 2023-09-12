@@ -4,7 +4,7 @@ import { parseUnits } from 'viem';
 
 import { useClaimPosition } from '~/hooks/useClaimPosition';
 import { useClosePosition } from '~/hooks/useClosePosition';
-import { useMarket } from '~/hooks/useMarket';
+import { useEntireMarkets } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
@@ -14,14 +14,34 @@ import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 
-import { PositionItemV2Props } from './index';
+import { formatTimestamp } from '~/utils/date';
 import { comparePrices } from '~/utils/price';
+import { PositionItemV2Props } from './index';
 
-interface usePositionItemV2 extends PositionItemV2Props {}
+interface UsePositionItemV2 extends PositionItemV2Props {}
 
-export function usePositionItemV2({ position }: usePositionItemV2) {
-  const { markets } = useMarket();
-  const { currentToken } = useSettlementToken();
+const emptyPosition = {
+  tokenName: '-',
+  marketDescription: '-',
+  qty: '-',
+  collateral: '-',
+  leverage: '-',
+  stopLoss: '-',
+  takeProfit: '-',
+  profitPriceTo: '-',
+  lossPriceTo: '-',
+  pnlPercentage: '-',
+  pnl: '-',
+  lossPrice: '-',
+  profitPrice: '-',
+  entryPrice: '-',
+  entryTime: '-',
+  pnlAmount: '-',
+};
+
+export function usePositionItemV2({ position }: UsePositionItemV2) {
+  const { markets } = useEntireMarkets();
+  const { tokens } = useSettlementToken();
   const { isLoading } = usePositions();
 
   function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
@@ -39,23 +59,15 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
    * Oracle Decimals을 확인해야 함
    */
   const values = useMemo(() => {
-    if (isNil(position) || isNil(currentToken)) {
-      return {
-        qty: '-',
-        collateral: '-',
-        stopLoss: '-',
-        takeProfit: '-',
-        profitPriceTo: '-',
-        lossPriceTo: '-',
-        pnl: '-',
-        lossPrice: '-',
-        profitPrice: '-',
-        entryPrice: '-',
-        entryTime: '-',
-        pnlAmount: '-',
-      };
+    if (isNil(position) || isNil(tokens)) {
+      return emptyPosition;
     }
-    const { collateral, qty, makerMargin, takerMargin } = position;
+    const { collateral, qty, makerMargin, takerMargin, tokenAddress, marketAddress } = position;
+    const currentToken = tokens.find((token) => token.address === tokenAddress);
+    const currentMarket = markets?.find((market) => market.address === marketAddress);
+    if (isNil(currentToken) || isNil(currentMarket)) {
+      return emptyPosition;
+    }
     const stopLoss =
       formatDecimals(
         (collateral * 10n ** BigInt(currentToken.decimals)) / qty,
@@ -77,12 +89,22 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
       currentOracleVersion.version <= position.openVersion
     ) {
       return {
+        tokenName: currentToken.name,
+        marketDescription: currentMarket.description,
         qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
         collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
+        leverage:
+          formatDecimals(
+            divPreserved(qty, collateral, currentToken.decimals),
+            currentToken.decimals,
+            2,
+            true
+          ) + 'x',
         stopLoss,
         takeProfit,
         profitPriceTo: '-',
         lossPriceTo: '-',
+        pnlPercentage: '-',
         pnl: '-',
         lossPrice: '-',
         profitPrice: '-',
@@ -97,8 +119,17 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
+      tokenName: currentToken.name,
+      marketDescription: currentMarket.description,
       qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
       collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
+      leverage:
+        formatDecimals(
+          divPreserved(qty, collateral, currentToken.decimals),
+          currentToken.decimals,
+          2,
+          true
+        ) + 'x',
       takeProfit: withComma(takeProfit),
       stopLoss: withComma(stopLoss),
       profitPriceTo: priceTo(position, 'toProfit'),
@@ -114,17 +145,9 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
       profitPrice: formatDecimals(abs(position.profitPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       lossPrice: formatDecimals(abs(position.lossPrice), ORACLE_PROVIDER_DECIMALS, 2, true),
       entryPrice: '$ ' + formatDecimals(position.openPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
-      entryTime: new Intl.DateTimeFormat('en-US', {
-        second: '2-digit',
-        minute: '2-digit',
-        hour: '2-digit',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour12: false,
-      }).format(new Date(Number(position.openTimestamp) * 1000)),
+      entryTime: formatTimestamp(position.openTimestamp),
     };
-  }, [position, currentToken, markets]);
+  }, [position, tokens, markets]);
 
   const key = position.id.toString();
 
@@ -143,11 +166,6 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
   const isOpened = position.status === POSITION_STATUS.OPENED;
   const isClosing = position.status === POSITION_STATUS.CLOSING;
   const isClosed = position.status === POSITION_STATUS.CLOSED;
-
-  const tokenName = currentToken?.name;
-  const marketDescription = markets?.find(
-    (market) => market.address === position.marketAddress
-  )?.description;
 
   const tpPriceClass = comparePrices(position, 'toProfit');
   const slPriceClass = comparePrices(position, 'toLoss');
@@ -170,9 +188,6 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
     isOpened,
     isClosing,
     isClosed,
-
-    tokenName,
-    marketDescription,
 
     tpPriceClass,
     slPriceClass,
