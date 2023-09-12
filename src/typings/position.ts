@@ -55,6 +55,7 @@ export interface TradeHistory {
   leverage: string;
   pnl: string;
   pnlRate: string;
+  pnlClass: string;
   entryTime: string;
   closeTime: string;
 }

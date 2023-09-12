@@ -14,6 +14,8 @@ export interface PositionItemV2Props {
 
 export function PositionItemV2(props: PositionItemV2Props) {
   const {
+    tokenName,
+    marketDescription,
     qty,
     collateral,
     leverage,
@@ -39,10 +41,6 @@ export function PositionItemV2(props: PositionItemV2Props) {
     isOpened,
     isClosing,
     isClosed,
-
-    tokenName,
-    marketDescription,
-
     tpPriceClass,
     slPriceClass,
     pnlClass,

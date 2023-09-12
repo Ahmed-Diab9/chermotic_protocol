@@ -37,6 +37,7 @@ export const Default: Story = {
       entryTime: '2023-09-11',
       pnl: '0.001 ETH',
       pnlRate: '0.1%',
+      pnlClass: 'text-price-higher',
       closeTime: '2023-09-12',
     },
     isLoading: false,

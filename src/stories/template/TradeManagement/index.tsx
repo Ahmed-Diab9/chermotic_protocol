@@ -17,12 +17,6 @@ import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { FilterOption } from '~/typings/position';
 import { useTradeManagement } from './hooks';
 
-const selectItem = [
-  { id: 1, title: 'CHRM-ETH/USD', unavailable: false },
-  { id: 2, title: 'CHRM based markets', unavailable: false },
-  { id: 3, title: 'All markets', unavailable: false },
-];
-
 export const TradeManagement = () => {
   const {
     popoverRef,

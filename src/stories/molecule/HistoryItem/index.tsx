@@ -21,6 +21,7 @@ export function HistoryItem(props: HistoryItemProps) {
       leverage,
       pnl,
       pnlRate,
+      pnlClass,
     },
     isLoading,
   } = props;
@@ -76,7 +77,7 @@ export function HistoryItem(props: HistoryItemProps) {
         {/* PnL */}
         <div>
           <SkeletonElement isLoading={isLoading} width={40}>
-            {pnl}
+            <span className={pnlClass}>{pnl}</span>
           </SkeletonElement>
           {/* <div className={`mt-[2px] ${pnlClass}`}>
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -88,7 +89,7 @@ export function HistoryItem(props: HistoryItemProps) {
       <div className="td">
         {/* PnL percent */}
         <SkeletonElement isLoading={isLoading} width={40}>
-          {pnlRate}
+          <span className={pnlClass}>{pnlRate}</span>
         </SkeletonElement>
       </div>
     </div>

@@ -92,19 +92,17 @@ export function useTradeManagement() {
             formatDecimals(historyValue.collateral, historyValue.token.decimals) +
             ' ' +
             historyValue.token.name,
-          qty:
-            formatDecimals(abs(historyValue.qty), historyValue.token.decimals) +
-            ' ' +
-            historyValue.token.name,
+          qty: formatDecimals(abs(historyValue.qty), historyValue.token.decimals, 2),
           entryPrice:
-            '$' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
+            '$ ' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
           leverage:
             formatDecimals(historyValue.leverage, historyValue.token.decimals, 2, true) + 'x',
           pnl:
-            formatDecimals(historyValue.pnl, historyValue.token.decimals) +
+            formatDecimals(historyValue.pnl, historyValue.token.decimals, 2) +
             ' ' +
             historyValue.token.name,
           pnlRate:
+            (historyValue.pnl > 0n ? '+' : '') +
             formatDecimals(
               divPreserved(
                 historyValue.pnl,
@@ -114,7 +112,9 @@ export function useTradeManagement() {
               PNL_RATE_DECIMALS,
               2,
               true
-            ) + '%',
+            ) +
+            '%',
+          pnlClass: historyValue.pnl > 0n ? '!text-price-higher' : '!text-price-lower',
           entryTime: dateFormat(new Date(Number(historyValue.entryTimestamp) * 1000)),
           closeTime: dateFormat(new Date(Number(historyValue.closeTimestamp) * 1000)),
         };
@@ -132,12 +132,9 @@ export function useTradeManagement() {
           formatDecimals(historyValue.collateral, historyValue.token.decimals) +
           ' ' +
           historyValue.token.name,
-        qty:
-          formatDecimals(abs(historyValue.qty), historyValue.token.decimals) +
-          ' ' +
-          historyValue.token.name,
+        qty: formatDecimals(abs(historyValue.qty), historyValue.token.decimals, 2),
         entryPrice:
-          '$' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
+          '$ ' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
         leverage: formatDecimals(historyValue.leverage, historyValue.token.decimals, 2, true) + 'x',
         entryTime: dateFormat(new Date(Number(historyValue.entryTimestamp) * 1000)),
       };
