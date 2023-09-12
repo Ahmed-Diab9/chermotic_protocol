@@ -120,7 +120,9 @@ export const usePositions = () => {
           return getPositions(accountApi, positionApi, market);
         })
       );
-      return positionsResponse.flat(1);
+      const flattenPositions = positionsResponse.flat(1);
+      flattenPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
+      return flattenPositions;
     }
   );
 
