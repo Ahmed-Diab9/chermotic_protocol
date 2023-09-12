@@ -123,14 +123,24 @@ body {
   @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
 }
 
+h1,
+h2,
+h3 {
+  @apply font-bold;
+}
+h4,
+h5,
+h6 {
+  @apply font-semibold;
+}
 h4 {
-  @apply text-lg font-semibold;
+  @apply text-lg;
 }
 h5 {
-  @apply text-base font-semibold;
+  @apply text-base;
 }
 h6 {
-  @apply text-sm font-semibold;
+  @apply text-sm;
 }
 
 *:focus {

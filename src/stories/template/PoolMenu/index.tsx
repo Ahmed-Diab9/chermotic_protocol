@@ -17,7 +17,7 @@ export const PoolMenu = (props: PoolMenuProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-1 PoolMenu">
+    <div className="flex flex-col gap-3 PoolMenu">
       <PoolMenuItem
         label="high"
         title="Junior Pool"
@@ -67,7 +67,7 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
       onClick={onClick}
     >
       <div className="text-left">
-        <Tag label={`${label} risk`} className={`capitalize tag-risk-${label}`} />
+        <Tag label={`${label} risk`} className={`tag-risk-${label}`} />
         <h3 className="mt-2 mb-3 text-xl">{title}</h3>
         <div className="flex">
           <p>
