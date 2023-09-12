@@ -19,9 +19,28 @@ import { PositionItemV2Props } from './index';
 
 interface UsePositionItemV2 extends PositionItemV2Props {}
 
+const emptyPosition = {
+  tokenName: '-',
+  marketDescription: '-',
+  qty: '-',
+  collateral: '-',
+  leverage: '-',
+  stopLoss: '-',
+  takeProfit: '-',
+  profitPriceTo: '-',
+  lossPriceTo: '-',
+  pnlPercentage: '-',
+  pnl: '-',
+  lossPrice: '-',
+  profitPrice: '-',
+  entryPrice: '-',
+  entryTime: '-',
+  pnlAmount: '-',
+};
+
 export function usePositionItemV2({ position }: UsePositionItemV2) {
   const { markets } = useEntireMarkets();
-  const { currentToken } = useSettlementToken();
+  const { tokens } = useSettlementToken();
   const { isLoading } = usePositions();
 
   function priceTo(position: Position, type: 'toProfit' | 'toLoss') {
@@ -39,24 +58,15 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
    * Oracle Decimals을 확인해야 함
    */
   const values = useMemo(() => {
-    if (isNil(position) || isNil(currentToken)) {
-      return {
-        qty: '-',
-        collateral: '-',
-        leverage: '-',
-        stopLoss: '-',
-        takeProfit: '-',
-        profitPriceTo: '-',
-        lossPriceTo: '-',
-        pnl: '-',
-        lossPrice: '-',
-        profitPrice: '-',
-        entryPrice: '-',
-        entryTime: '-',
-        pnlAmount: '-',
-      };
+    if (isNil(position) || isNil(tokens)) {
+      return emptyPosition;
     }
-    const { collateral, qty, makerMargin, takerMargin } = position;
+    const { collateral, qty, makerMargin, takerMargin, tokenAddress, marketAddress } = position;
+    const currentToken = tokens.find((token) => token.address === tokenAddress);
+    const currentMarket = markets?.find((market) => market.address === marketAddress);
+    if (isNil(currentToken) || isNil(currentMarket)) {
+      return emptyPosition;
+    }
     const stopLoss =
       formatDecimals(
         (collateral * 10n ** BigInt(currentToken.decimals)) / qty,
@@ -78,6 +88,8 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
       currentOracleVersion.version <= position.openVersion
     ) {
       return {
+        tokenName: currentToken.name,
+        marketDescription: currentMarket.description,
         qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
         collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
         leverage:
@@ -91,6 +103,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         takeProfit,
         profitPriceTo: '-',
         lossPriceTo: '-',
+        pnlPercentage: '-',
         pnl: '-',
         lossPrice: '-',
         profitPrice: '-',
@@ -105,6 +118,8 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
       PNL_RATE_DECIMALS + PERCENT_DECIMALS
     );
     return {
+      tokenName: currentToken.name,
+      marketDescription: currentMarket.description,
       qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
       collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
       leverage:
@@ -139,7 +154,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         hour12: false,
       }).format(new Date(Number(position.openTimestamp) * 1000)),
     };
-  }, [position, currentToken, markets]);
+  }, [position, tokens, markets]);
 
   const key = position.id.toString();
 
@@ -158,11 +173,6 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
   const isOpened = position.status === POSITION_STATUS.OPENED;
   const isClosing = position.status === POSITION_STATUS.CLOSING;
   const isClosed = position.status === POSITION_STATUS.CLOSED;
-
-  const tokenName = currentToken?.name;
-  const marketDescription = markets?.find(
-    (market) => market.address === position.marketAddress
-  )?.description;
 
   const tpPriceClass = comparePrices(position, 'toProfit');
   const slPriceClass = comparePrices(position, 'toLoss');
@@ -185,9 +195,6 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
     isOpened,
     isClosing,
     isClosed,
-
-    tokenName,
-    marketDescription,
 
     tpPriceClass,
     slPriceClass,
