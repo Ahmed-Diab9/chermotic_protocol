@@ -129,14 +129,19 @@ export function PoolPanelV2() {
 
               <section className="pt-3 mt-3 border-t border-dashed">
                 <article>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xl">Wallet Balance</h4>
-                      <p className="text-lg text-primary-light">
-                        <SkeletonElement isLoading={isLoading} width={40}>
-                          {walletBalance} {tokenName}
-                        </SkeletonElement>
-                      </p>
+                  <div className="flex justify-between place-items-stretch">
+                    <div className="flex flex-col items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xl">Wallet Balance</h4>
+                        <p className="text-lg text-primary-light">
+                          <SkeletonElement isLoading={isLoading} width={40}>
+                            {walletBalance} {tokenName}
+                          </SkeletonElement>
+                        </p>
+                      </div>
+                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
+                        <Avatar label="USDC" size="xs" />
+                      </span>
                     </div>
                     {/* todo: input error */}
                     {/* - Input : error prop is true when has error */}
@@ -168,7 +173,7 @@ export function PoolPanelV2() {
 
                 <article className="mt-5">
                   <div className="py-3 border-dashed border-y">
-                    <PoolInfo label="EST. Receive" tooltipLabel="est-receieve" tooltipTip="">
+                    <PoolInfo label="EST. Receive">
                       <Avatar label="995.34 CLP" size="xs" />
                     </PoolInfo>
                   </div>
