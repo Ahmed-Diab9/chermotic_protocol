@@ -14,6 +14,7 @@ import { PoolStat } from '~/stories/template/PoolStat';
 import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolDetail } from '~/stories/template/PoolDetail';
+import { PoolBalance } from '~/stories/template/PoolBalance';
 import './style.css';
 
 const PoolV2 = () => {
@@ -61,7 +62,8 @@ const PoolV2 = () => {
                 {/* <PoolAnalytics /> */}
               </div>
               <div className="flex-none w-[420px] flex flex-col gap-3">
-                {/* <PoolBalance /> */}
+                {/* PoolBalance: To be added later */}
+                <PoolBalance />
                 <PoolStat />
                 <PoolPerformance />
                 <PoolDetail />

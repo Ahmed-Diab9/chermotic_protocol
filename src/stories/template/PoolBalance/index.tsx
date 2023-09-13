@@ -2,6 +2,8 @@ import { Progress } from '~/stories/atom/Progress';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { WalletIcon, ArchiveBoxIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
+import { Button } from '~/stories/atom/Button';
 import './style.css';
 
 export interface PoolBalanceProps {}
@@ -9,48 +11,36 @@ export interface PoolBalanceProps {}
 export const PoolBalance = (props: PoolBalanceProps) => {
   return (
     <div className="p-5 PoolBalance panel">
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
-            <div className="flex">
-              <h5>Assets under Management</h5>
-              <TooltipGuide label="asset-under-management" tip="tooltip" />
-            </div>
-          </div>
-          <div className="text-right">
-            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
-            <p className="text-sm text-primary-lighter">$101.373</p>
-          </div>
+      <h3 className="text-left">CLP Balance</h3>
+      <div className="flex justify-between mt-2 text-primary-light">
+        <div className="flex gap-1">
+          <WalletIcon className="w-4" />
+          <h5>Wallet</h5>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
-            <div className="flex">
-              <h5>CLP supply</h5>
-              <TooltipGuide label="clp-supply" tip="tooltip" />
-            </div>
-          </div>
-          <div className="text-right">
-            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
-            <p className="text-sm text-primary-lighter">$101.373</p>
-          </div>
+        <div className="flex gap-1">
+          <ArchiveBoxIcon className="w-4" />
+          <h5>Staking</h5>
         </div>
       </div>
-      <div className="flex flex-col gap-3 pt-3 mt-3 border-t">
-        <div className="flex items-center justify-between">
-          <h5>Asset value</h5>
-          <h5>$2,101.37</h5>
+      <div className="relative flex justify-between mt-3 min-h-[120px] items-stretch">
+        <div className="flex flex-col items-start justify-center w-1/2 text-left">
+          <h3 className="mb-4">321.25 CLP</h3>
+          <Button
+            label="Stake"
+            className="!text-lg !w-auto absolute bottom-0 !min-w-[100px]"
+            css="active"
+          />
         </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h5>Utilization</h5>
-            <div className="text-right">
-              <h5>35.73%</h5>
-              <p className="text-sm text-primary-lighter">7,234.23 ETH</p>
-            </div>
-          </div>
-          <Progress value={50} max={100} />
+        <div className="flex flex-col items-end justify-center w-1/2 text-right border-l">
+          <h3 className="mb-4">0 CLP</h3>
+          <Button
+            label="Withdraw"
+            className="!text-lg !w-auto absolute bottom-0 !min-w-[100px]"
+            css="active"
+          />
+        </div>
+        <div className="absolute top-[50%] left-[50%] -translate-x-7 -translate-y-7 bg-paper p-2 rounded-full">
+          <Button iconOnly={<ArrowsRightLeftIcon />} className="!text-lg !w-auto" size="xl" />
         </div>
       </div>
     </div>
