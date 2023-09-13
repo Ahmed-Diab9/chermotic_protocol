@@ -19,6 +19,7 @@ import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { Tag } from '~/stories/atom/Tag';
+import { Avatar } from '~/stories/atom/Avatar';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
 import { PoolMenu } from '~/stories/template/PoolMenu';
@@ -53,13 +54,19 @@ const PoolV2 = () => {
                   className="!bg-paper-lighter ml-4 !pt-[2px] !h-[26px]"
                   size="sm"
                 />
-                <p className="ml-auto text-primary-light">esChroma Rewards: 500 esChroma/day</p>
               </div>
               <p className="text-lg text-primary-light">
                 Highest rist and highest APR for the risk tolerant Level LPs. In case of unexpected
                 shortfalls resulting from adverse market conditions or other incidents, the Junior
                 Tranche bears the highest risk but also earns the largest share of platform profits
               </p>
+            </div>
+            <div className="flex items-center justify-between mb-3 text-lg text-primary">
+              <div>esChroma Rewards: 500 esChroma/day</div>
+              <div className="flex gap-2">
+                CLP Price: 0.984
+                <Avatar label="ETH" size="xs" gap="1" fontSize="lg" />
+              </div>
             </div>
             <div className="flex gap-3">
               <div className="flex-auto overflow-hidden">
