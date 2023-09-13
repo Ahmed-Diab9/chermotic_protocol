@@ -4,6 +4,7 @@ import LogoSimple from '~/assets/icons/LogoSimple';
 
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { WalletPopover } from '~/stories/molecule/WalletPopover';
+import './style.css';
 
 import { useHeader } from './hooks';
 
@@ -19,19 +20,31 @@ export function Header() {
           </Link>
           <Link
             to="/trade"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
-              isActiveLink('trade') ? '!border-primary' : '!border-transparent'
-            }`}
+            className={`link ${isActiveLink('trade') ? '!border-primary' : '!border-transparent'}`}
           >
             Trade
           </Link>
           <Link
             to="/pool"
-            className={`border-b-2 leading-none pb-2 px-[2px] mt-2 text-primary font-semibold ${
-              isActiveLink('pool') ? '!border-primary' : '!border-transparent'
-            }`}
+            className={`link ${isActiveLink('pool') ? '!border-primary' : '!border-transparent'}`}
           >
             Pools
+          </Link>
+          <Link
+            to="/trade2"
+            className={`link text-primary-light ${
+              isActiveLink('trade2') ? '!border-primary-light' : '!border-transparent'
+            }`}
+          >
+            Trade2
+          </Link>
+          <Link
+            to="/pool2"
+            className={`link text-primary-light ${
+              isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
+            }`}
+          >
+            Pools2
           </Link>
         </div>
         <div className="flex">

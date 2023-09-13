@@ -21,7 +21,6 @@ function TradeV2() {
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
-      <div className="absolute top-0 h-[70px] opacity-80 p-1">[v2]</div>
       <Header />
       <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
         <BookmarkBoard />
