@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Switch, Tab } from '@headlessui/react';
+import { Switch, Tab, Disclosure } from '@headlessui/react';
 import { createPortal } from 'react-dom';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -16,6 +16,8 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
+import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
+
 import { formatFeeRate } from '~/utils/number';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -78,10 +80,10 @@ export function PoolPanelV2() {
       <div className="tabs tabs-default tabs-lg">
         <Tab.Group>
           <Tab.List className="">
-            <Tab className="text-3xl">ADD</Tab>
-            <Tab className="text-3xl">REMOVE</Tab>
+            <Tab className="w-1/2 text-3xl">ADD</Tab>
+            <Tab className="w-1/2 text-3xl">REMOVE</Tab>
           </Tab.List>
-          <Tab.Panels className="flex flex-col items-center w-full px-5 pt-5 pb-10">
+          <Tab.Panels className="flex flex-col items-center w-full px-5 pt-5 pb-0">
             {/* tab - add */}
             <Tab.Panel className="w-full">
               <section>
@@ -140,7 +142,7 @@ export function PoolPanelV2() {
                         </p>
                       </div>
                       <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
-                        <Avatar label="USDC" size="xs" />
+                        <Avatar label="USDC" size="xs" gap="1" />
                       </span>
                     </div>
                     {/* todo: input error */}
@@ -174,7 +176,7 @@ export function PoolPanelV2() {
                 <article className="mt-5">
                   <div className="py-3 border-dashed border-y">
                     <PoolInfo label="EST. Receive">
-                      <Avatar label="995.34 CLP" size="sm" />
+                      <Avatar label="995.34 CLP" size="sm" gap="1" />
                     </PoolInfo>
                   </div>
                   <div className="flex flex-col gap-2 pt-3">
@@ -219,6 +221,10 @@ export function PoolPanelV2() {
                     />
                   </div>
                 </article>
+              </section>
+
+              <section className="mt-10 -mx-5 border-t ">
+                <PoolProgressV2 />
               </section>
             </Tab.Panel>
 
