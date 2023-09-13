@@ -23,7 +23,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
     <div className="p-5 PoolPerformance panel">
       <div className="flex justify-between">
         <div className="text-left">
-          <h4 className="mb-1">CLP Performance</h4>
+          <h3 className="mb-1">CLP Performance</h3>
           <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-lighter">
             <Avatar size="xs" label="ETH" gap="1" />
           </span>
@@ -41,7 +41,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
           </Listbox>
         </div>
       </div>
-      <div className="pt-4 mt-3 border-t">
+      <div className="pt-4 mt-2 border-t">
         <div className="flex">
           <div className="flex w-1/2 gap-3 pr-5">
             <Thumbnail className="w-12 h-12" />

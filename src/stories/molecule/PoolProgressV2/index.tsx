@@ -54,7 +54,7 @@ export function PoolProgressV2() {
                 <div className="px-5 text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="ml-[2px] mr-1">({poolReceiptsCount})</span>
+                    <span className="mx-1">({poolReceiptsCount})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -62,7 +62,7 @@ export function PoolProgressV2() {
                       outLinkAbout="Next Oracle Round"
                     />
                   </div>
-                  <p className="mt-2 ml-auto text-primary-lighter">
+                  <p className="mt-2 ml-auto text-primary-light">
                     Last oracle update: {lastOracle.hours}h {lastOracle.minutes}m{' '}
                     {lastOracle.seconds}s ago
                   </p>
@@ -81,7 +81,7 @@ export function PoolProgressV2() {
                       <Tab id="burning">Burning ({burningsCount})</Tab>
                     </Tab.List>
                   </div>
-                  <Tab.Panels className="flex-auto border-t">
+                  <Tab.Panels className="flex-auto">
                     <div className="mb-1">
                       {isGuideOpen && (
                         <Guide
@@ -90,12 +90,14 @@ export function PoolProgressV2() {
                           paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
-                          className="rounded-none"
+                          className="!rounded-none"
                         />
                       )}
                     </div>
                     {/* tab1 - minting */}
-                    <Tab.Panel className="flex flex-col mb-5">
+                    <Tab.Panel
+                      className={`flex flex-col mb-5 ${isMintingsEmpty ? '' : 'border-t'}`}
+                    >
                       {isMintingsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
@@ -112,7 +114,9 @@ export function PoolProgressV2() {
                       )}
                     </Tab.Panel>
                     {/* tab1 - burning */}
-                    <Tab.Panel className="flex flex-col mb-5">
+                    <Tab.Panel
+                      className={`flex flex-col mb-5 ${isBurningsEmpty ? '' : 'border-t'}`}
+                    >
                       {isBurningsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.

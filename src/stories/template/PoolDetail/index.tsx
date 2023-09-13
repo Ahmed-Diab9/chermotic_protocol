@@ -20,9 +20,9 @@ export const PoolDetail = (props: PoolDetailProps) => {
     <div className="p-5 PoolDetail panel">
       <div className="flex items-center justify-between w-full gap-3">
         <div className="text-xl text-left">
-          <h4>CLP-ETH-BTC/USD</h4>
+          <h3>CLP-ETH-BTC/USD</h3>
           {/* todo: change text-color for each risk - high / mid / low */}
-          <h4 className={`text-risk-high`}>Junior Pool</h4>
+          <h3 className={`text-risk-high`}>Junior Pool</h3>
         </div>
         <div className="flex gap-2">
           <AddressCopyButton

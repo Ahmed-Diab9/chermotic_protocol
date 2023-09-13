@@ -223,7 +223,7 @@ export function PoolPanelV2() {
                 </article>
               </section>
 
-              <section className="mt-10 -mx-5 border-t ">
+              <section className="mt-10 -mx-5 border-t border-dashed">
                 <PoolProgressV2 />
               </section>
             </Tab.Panel>
