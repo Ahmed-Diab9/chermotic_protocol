@@ -4,11 +4,11 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import './style.css';
 
-export interface PoolStatProps {}
+export interface PoolBalanceProps {}
 
-export const PoolStat = (props: PoolStatProps) => {
+export const PoolBalance = (props: PoolBalanceProps) => {
   return (
-    <div className="p-5 PoolStat panel">
+    <div className="p-5 PoolBalance panel">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -19,7 +19,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" size="sm" fontSize="lg" gap="1" />
+            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
@@ -32,7 +32,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" size="sm" fontSize="lg" gap="1" />
+            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>

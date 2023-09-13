@@ -8,11 +8,11 @@ import './style.css';
 export interface PoolPerformanceProps {}
 
 const selectItem = [
-  { id: 1, title: 'a week', unavailable: false },
-  { id: 2, title: 'a month', unavailable: false },
+  { id: 1, title: 'A week', unavailable: false },
+  { id: 2, title: 'A month', unavailable: false },
   { id: 3, title: '3 monthes', unavailable: false },
   { id: 4, title: '6 monthes', unavailable: false },
-  { id: 5, title: 'a year', unavailable: false },
+  { id: 5, title: 'A year', unavailable: false },
   { id: 6, title: 'All time', unavailable: false },
 ];
 
@@ -23,11 +23,10 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
     <div className="p-5 PoolPerformance panel">
       <div className="flex justify-between">
         <div className="text-left">
-          <h4>CLP Performance</h4>
-          <div className="flex gap-1 mt-1">
-            <p className="text-primary-light">Unit:</p>
+          <h4 className="mb-1">CLP Performance</h4>
+          <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-lighter">
             <Avatar size="xs" label="ETH" gap="1" />
-          </div>
+          </span>
         </div>
         <div className="w-[140px] select">
           <Listbox value={selectedItem} onChange={setSelectedItem}>
@@ -99,7 +98,7 @@ export const PoolPerformanceItem = (props: PoolPerformanceItemProps) => {
 
   return (
     <div className="text-center text-primary">
-      <p className="text-sm">{title}</p>
+      <p className="text-sm text-primary-light">{title}</p>
       <p className="mt-[6px] mb-[2px]">{value} USDC</p>
       <p className="text-sm text-primary-lighter">${price}</p>
     </div>
