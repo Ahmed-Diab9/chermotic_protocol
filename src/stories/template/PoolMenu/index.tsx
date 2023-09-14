@@ -73,11 +73,13 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
           <p>
             Price
             <span className="ml-1 mr-0">{price}</span>
+            {/* unit: settlement token */}
             ETH
           </p>
           <p className="pl-2 ml-2 border-l !border-primary-lighter">
             AUM
             <span className="ml-1 mr-0">{aum}</span>
+            {/* unit: settlement token */}
             ETH
           </p>
         </div>
