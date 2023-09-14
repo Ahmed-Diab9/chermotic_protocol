@@ -75,7 +75,7 @@ export function PoolProgressV2() {
               </Disclosure.Button>
               <Disclosure.Panel className="relative px-5 -mx-5" ref={ref}>
                 <Tab.Group>
-                  <div className="flex px-5 mt-2">
+                  <div className="flex px-5 mt-2 border-b">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
                       <Tab id="minting">Minting ({mintingsCount})</Tab>
