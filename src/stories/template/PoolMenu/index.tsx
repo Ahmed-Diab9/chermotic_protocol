@@ -71,12 +71,14 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
         <h3 className="mt-2 mb-3 text-xl">{title}</h3>
         <div className="flex text-primary-light">
           <p>
-            <span>Price </span>
-            {price}
+            Price
+            <span className="ml-1 mr-0">{price}</span>
+            ETH
           </p>
-          <p className="pl-2 ml-2 border-l">
-            <span>AUM </span>
-            {aum}
+          <p className="pl-2 ml-2 border-l !border-primary-lighter">
+            AUM
+            <span className="ml-1 mr-0">{aum}</span>
+            ETH
           </p>
         </div>
       </div>
