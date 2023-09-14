@@ -15,6 +15,7 @@ import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolBalance } from '~/stories/template/PoolBalance';
+import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
 import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import './style.css';
 
@@ -64,7 +65,7 @@ const PoolV2 = () => {
             <div className="flex gap-3">
               <div className="flex-auto overflow-hidden">
                 <PoolPanelV2 />
-                {/* <PoolAnalytics /> */}
+                <PoolAnalytics />
               </div>
               <div className="flex-none w-[420px] flex flex-col gap-3">
                 {/* PoolBalance: To be added later */}
