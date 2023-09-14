@@ -55,7 +55,7 @@ a {
   }
   &.btn-light {
     @apply border border-gray-lighter text-primary bg-paper hover:bg-paper-lighter;
-    @apply dark:border-transparent dark:bg-gray-light dark:hover:bg-gray;
+    @apply dark:border-transparent dark:bg-paper-lighter dark:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;

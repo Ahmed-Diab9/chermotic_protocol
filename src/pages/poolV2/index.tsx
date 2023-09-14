@@ -43,7 +43,8 @@ const PoolV2 = () => {
                 <Button
                   label="Metamask"
                   iconLeft={<PlusIcon className="w-3 h-3" />}
-                  className="!bg-paper-lighter ml-4 !pt-[2px] !h-[26px]"
+                  className="ml-4 !pl-2 !pt-[2px] !h-[26px]"
+                  gap="1"
                   size="sm"
                 />
               </div>
