@@ -77,6 +77,7 @@ export function PoolProgressV2() {
                 <Tab.Group>
                   <div className="flex px-5 mt-2">
                     <Tab.List className="!justify-start !gap-7">
+                      <Tab id="all">All</Tab>
                       <Tab id="minting">Minting ({mintingsCount})</Tab>
                       <Tab id="burning">Burning ({burningsCount})</Tab>
                     </Tab.List>
@@ -94,7 +95,26 @@ export function PoolProgressV2() {
                         />
                       )}
                     </div>
-                    {/* tab1 - minting */}
+                    {/* tab - all */}
+                    <Tab.Panel className="flex flex-col mb-5">
+                      {isReceiptsEmpty ? (
+                        <p className="my-6 text-center text-primary/20">
+                          You have no order in progress.
+                        </p>
+                      ) : (
+                        <>
+                          {poolReceipts.map((props) => (
+                            <ProgressItem {...props} />
+                          ))}
+                          {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
+                          {/* default: show up to 2 lists */}
+                          <div className="flex justify-center mt-5">
+                            <Button label="More" css="underlined" size="sm" />
+                          </div>
+                        </>
+                      )}
+                    </Tab.Panel>
+                    {/* tab - minting */}
                     <Tab.Panel className="flex flex-col mb-5">
                       {isMintingsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
@@ -107,13 +127,13 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          <div className="flex justify-center mt-5">
+                          {/* <div className="flex justify-center mt-5">
                             <Button label="More" css="underlined" size="sm" />
-                          </div>
+                          </div> */}
                         </>
                       )}
                     </Tab.Panel>
-                    {/* tab1 - burning */}
+                    {/* tab - burning */}
                     <Tab.Panel className="flex flex-col mb-5">
                       {isBurningsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
@@ -126,9 +146,9 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          <div className="flex justify-center mt-5">
+                          {/* <div className="flex justify-center mt-5">
                             <Button label="More" css="underlined" size="sm" />
-                          </div>
+                          </div> */}
                         </>
                       )}
                     </Tab.Panel>
