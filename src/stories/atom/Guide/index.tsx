@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Outlink } from '../Outlink';
 import { Button } from '~/stories/atom/Button';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, BellIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import {} from '@heroicons/react/24/outline';
 
 interface GuideProps {
   title: string;
@@ -31,7 +31,8 @@ export const Guide = (props: GuideProps) => {
           } ${className}`}
         >
           <div>
-            <BellIcon className="w-4" />
+            {/* <BellIcon className="w-4" /> */}
+            <ExclamationTriangleIcon className="w-4" />
           </div>
           <div className={`flex ${flex ? 'gap-4 !pr-12' : 'gap-2 flex-col'}`}>
             <div className="flex items-center gap-1">
