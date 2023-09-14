@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Switch, Tab } from '@headlessui/react';
+import { Switch, Tab, Disclosure } from '@headlessui/react';
 import { createPortal } from 'react-dom';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -16,6 +16,8 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
+import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
+
 import { formatFeeRate } from '~/utils/number';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -78,10 +80,10 @@ export function PoolPanelV2() {
       <div className="tabs tabs-default tabs-lg">
         <Tab.Group>
           <Tab.List className="">
-            <Tab className="text-3xl">ADD</Tab>
-            <Tab className="text-3xl">REMOVE</Tab>
+            <Tab className="w-1/2 text-3xl">ADD</Tab>
+            <Tab className="w-1/2 text-3xl">REMOVE</Tab>
           </Tab.List>
-          <Tab.Panels className="flex flex-col items-center w-full px-5 pt-5 pb-10">
+          <Tab.Panels className="flex flex-col items-center w-full px-5 pt-5 pb-0">
             {/* tab - add */}
             <Tab.Panel className="w-full">
               <section>
@@ -129,14 +131,19 @@ export function PoolPanelV2() {
 
               <section className="pt-3 mt-3 border-t border-dashed">
                 <article>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xl">Wallet Balance</h4>
-                      <p className="text-lg text-primary-light">
-                        <SkeletonElement isLoading={isLoading} width={40}>
-                          {walletBalance} {tokenName}
-                        </SkeletonElement>
-                      </p>
+                  <div className="flex justify-between place-items-stretch">
+                    <div className="flex flex-col items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xl">Wallet Balance</h4>
+                        <p className="text-lg text-primary-light">
+                          <SkeletonElement isLoading={isLoading} width={40}>
+                            {walletBalance} {tokenName}
+                          </SkeletonElement>
+                        </p>
+                      </div>
+                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
+                        <Avatar label="USDC" size="xs" gap="1" />
+                      </span>
                     </div>
                     {/* todo: input error */}
                     {/* - Input : error prop is true when has error */}
@@ -168,8 +175,8 @@ export function PoolPanelV2() {
 
                 <article className="mt-5">
                   <div className="py-3 border-dashed border-y">
-                    <PoolInfo label="EST. Receive" tooltipLabel="est-receieve" tooltipTip="">
-                      <Avatar label="995.34 CLP" size="xs" />
+                    <PoolInfo label="EST. Receive">
+                      <Avatar label="995.34 CLP" size="sm" gap="1" />
                     </PoolInfo>
                   </div>
                   <div className="flex flex-col gap-2 pt-3">
@@ -214,6 +221,10 @@ export function PoolPanelV2() {
                     />
                   </div>
                 </article>
+              </section>
+
+              <section className="mt-10 -mx-5 border-t border-dashed">
+                <PoolProgressV2 />
               </section>
             </Tab.Panel>
 

@@ -33,7 +33,7 @@ export function MarketSelect() {
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                     <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
-                      <Avatar label={tokenName} fontSize="2xl" gap="1" size="sm" />
+                      <Avatar label={tokenName} fontSize="2xl" gap="1" size="base" />
                     </SkeletonElement>
                   </div>
                 </div>
@@ -41,7 +41,7 @@ export function MarketSelect() {
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                     <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
-                      <Avatar label={marketDescription} fontSize="2xl" gap="1" size="sm" />
+                      <Avatar label={marketDescription} fontSize="2xl" gap="1" size="base" />
                     </SkeletonElement>
                   </div>
                 </div>
@@ -62,7 +62,7 @@ export function MarketSelect() {
                         onClick={onClickToken}
                         title={name}
                       >
-                        <Avatar label={name} fontSize="lg" gap="2" size="sm" />
+                        <Avatar label={name} fontSize="lg" gap="2" size="base" />
                         {isSelectedToken && <ArrowTriangleIcon className="w-4 -rotate-90" />}
                       </button>
                     ))}
@@ -77,7 +77,7 @@ export function MarketSelect() {
                         }`}
                         onClick={onClickMarket}
                       >
-                        <Avatar label={description} fontSize="lg" gap="2" size="sm" />
+                        <Avatar label={description} fontSize="lg" gap="2" size="base" />
                         <p>${price}</p>
                       </button>
                     ))}

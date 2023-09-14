@@ -133,6 +133,9 @@ h5,
 h6 {
   @apply font-semibold;
 }
+h3 {
+  @apply text-xl;
+}
 h4 {
   @apply text-lg;
 }
@@ -170,11 +173,15 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* z-index */
+
 .modal {
   @apply z-40;
 }
 .backdrop,
 .backdrop + div {
+  @apply z-30;
+}
+.sticky.top-0 {
   @apply z-30;
 }
 

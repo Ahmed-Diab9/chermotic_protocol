@@ -69,14 +69,18 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
       <div className="text-left">
         <Tag label={`${label} risk`} className={`tag-risk-${label}`} />
         <h3 className="mt-2 mb-3 text-xl">{title}</h3>
-        <div className="flex">
+        <div className="flex text-primary-light">
           <p>
-            <span className="text-primary-light">Price </span>
-            {price}
+            Price
+            <span className="ml-1 mr-0">{price}</span>
+            {/* unit: settlement token */}
+            ETH
           </p>
-          <p className="pl-2 ml-2 border-l">
-            <span className="text-primary-light">AUM </span>
-            {aum}
+          <p className="pl-2 ml-2 border-l !border-primary-lighter">
+            AUM
+            <span className="ml-1 mr-0">{aum}</span>
+            {/* unit: settlement token */}
+            ETH
           </p>
         </div>
       </div>

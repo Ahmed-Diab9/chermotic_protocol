@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Outlink } from '../Outlink';
 import { Button } from '~/stories/atom/Button';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, BellIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import {} from '@heroicons/react/24/outline';
 
 interface GuideProps {
   title: string;
@@ -10,11 +10,12 @@ interface GuideProps {
   outLink?: string;
   outLinkAbout?: string;
   flex?: boolean;
+  className?: string;
   onClick?: () => unknown;
 }
 
 export const Guide = (props: GuideProps) => {
-  const { title, paragraph, outLink, outLinkAbout, flex } = props;
+  const { title, paragraph, outLink, outLinkAbout, flex, className } = props;
 
   const [guideVisible, setGuideVisible] = useState(true);
   const closeGuide = () => {
@@ -25,24 +26,32 @@ export const Guide = (props: GuideProps) => {
     <>
       {guideVisible && (
         <div
-          className={`relative px-5 text-left rounded-xl bg-paper-light ${
-            flex ? 'flex gap-4 py-2 !pr-12' : 'py-4'
-          }`}
+          className={`relative px-5 text-left rounded-xl bg-paper-light flex gap-3 ${
+            flex ? 'py-2 items-center' : 'py-4'
+          } ${className}`}
         >
-          <div className="flex items-center gap-1">
-            <BellIcon className="w-4" />
-            {/* <InformationCircleIcon className="w-4" /> */}
-            <p className="whitespace-nowrap">{title}</p>
+          <div>
+            {/* <BellIcon className="w-4" /> */}
+            <ExclamationTriangleIcon className="w-4" />
           </div>
-          <p className="my-2 text-sm text-primary-lighter">{paragraph}</p>
-          {outLink && <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />}
-          {/* todo: 버튼 누르면 닫힘 */}
-          <Button
-            iconOnly={<XMarkIcon />}
-            css="unstyled"
-            className="absolute top-1 right-1 text-primary-lighter"
-            onClick={closeGuide}
-          />
+          <div className={`flex ${flex ? 'gap-4 !pr-12' : 'gap-2 flex-col'}`}>
+            <div className="flex items-center gap-1">
+              <p className="whitespace-nowrap">{title}</p>
+            </div>
+            <p className="text-sm text-primary-lighter">{paragraph}</p>
+            {outLink && (
+              <div className="mt-2">
+                <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />
+              </div>
+            )}
+
+            <Button
+              iconOnly={<XMarkIcon />}
+              css="unstyled"
+              className={`absolute right-1 text-primary-lighter  ${flex ? '' : 'top-1'}`}
+              onClick={closeGuide}
+            />
+          </div>
         </div>
       )}
     </>

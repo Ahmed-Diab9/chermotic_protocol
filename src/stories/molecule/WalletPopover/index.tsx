@@ -53,7 +53,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
   if (isDisconnected) {
     return (
       <button onClick={onConnect} title="connect" className={`btn btn-wallet min-w-[148px]`}>
-        <Avatar src={arbitrumIcon} className="avatar" />
+        <Avatar src={arbitrumIcon} className="avatar" size="lg" />
         <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
       </button>
     );
@@ -71,6 +71,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
           fontWeight="normal"
           gap="3"
           label={walletAddress}
+          size="lg"
         />
         <TooltipAlert
           label="change-network"
@@ -93,6 +94,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                 label={walletAddress}
                 src={arbitrumIcon}
                 className="!w-[36px] !h-[36px]"
+                size="lg"
                 fontSize="sm"
                 fontWeight="normal"
                 gap="3"
@@ -110,7 +112,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
             >
               <Popover.Panel className="transform border-l shadow-xl popover-panel">
                 <div className="relative flex flex-col h-full ">
-                  <Avatar src={arbitrumIcon} label={chainName} size="lg" fontSize="sm" gap="3" />
+                  <Avatar src={arbitrumIcon} label={chainName} size="xl" fontSize="sm" gap="3" />
                   <section className="flex flex-col flex-grow mt-6 box-inner">
                     <article className="px-4 py-3 border-b bg-paper-lighter dark:bg-paper">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
@@ -150,7 +152,12 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                           height={24}
                                         />
                                         <SkeletonElement isLoading={isLoading} width={40}>
-                                          <Avatar label={name} size="sm" fontSize="base" gap="2" />
+                                          <Avatar
+                                            label={name}
+                                            size="base"
+                                            fontSize="base"
+                                            gap="2"
+                                          />
                                         </SkeletonElement>
                                         <Button
                                           href={explorerUrl}
@@ -196,7 +203,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                           width={40}
                                           height={40}
                                         >
-                                          <Avatar size="lg" src={undefined} />
+                                          <Avatar size="xl" src={undefined} />
                                         </SkeletonElement>
                                         <div className="flex-1">
                                           <div className="flex gap-2 leading-none">

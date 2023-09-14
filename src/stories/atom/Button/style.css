@@ -65,7 +65,7 @@ a {
     @apply bg-transparent;
   }
   &.btn-underlined {
-    @apply bg-transparent !px-0;
+    @apply bg-transparent !px-0 !h-auto;
     span {
       @apply underline;
     }

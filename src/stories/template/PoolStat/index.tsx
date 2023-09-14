@@ -19,7 +19,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
+            <Avatar label="101.373 USDC" size="sm" fontSize="lg" gap="1" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
@@ -32,7 +32,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" size="xs" fontSize="lg" />
+            <Avatar label="101.373 CLP" size="sm" fontSize="lg" gap="1" />
             <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
