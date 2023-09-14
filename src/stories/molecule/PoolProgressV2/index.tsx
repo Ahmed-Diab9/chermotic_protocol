@@ -95,9 +95,7 @@ export function PoolProgressV2() {
                       )}
                     </div>
                     {/* tab1 - minting */}
-                    <Tab.Panel
-                      className={`flex flex-col mb-5 ${isMintingsEmpty ? '' : 'border-t'}`}
-                    >
+                    <Tab.Panel className="flex flex-col mb-5">
                       {isMintingsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
@@ -107,6 +105,8 @@ export function PoolProgressV2() {
                           {mintingReceipts.map((props) => (
                             <ProgressItem {...props} />
                           ))}
+                          {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
+                          {/* default: show up to 2 lists */}
                           <div className="flex justify-center mt-5">
                             <Button label="More" css="underlined" size="sm" />
                           </div>
@@ -114,9 +114,7 @@ export function PoolProgressV2() {
                       )}
                     </Tab.Panel>
                     {/* tab1 - burning */}
-                    <Tab.Panel
-                      className={`flex flex-col mb-5 ${isBurningsEmpty ? '' : 'border-t'}`}
-                    >
+                    <Tab.Panel className="flex flex-col mb-5">
                       {isBurningsEmpty ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
@@ -126,6 +124,8 @@ export function PoolProgressV2() {
                           {burningReceipts.map((props) => (
                             <ProgressItem {...props} />
                           ))}
+                          {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
+                          {/* default: show up to 2 lists */}
                           <div className="flex justify-center mt-5">
                             <Button label="More" css="underlined" size="sm" />
                           </div>

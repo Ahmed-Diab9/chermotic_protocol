@@ -20,13 +20,15 @@ function TradeV2() {
   useMarketLocal();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full">
+    <div className="flex flex-col min-h-[100vh] w-full relative">
       <Header />
-      <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
-        <BookmarkBoard />
+      <BookmarkBoard />
+      <section className="sticky top-0">
         <MainBarV2 accountPopover />
-        <div className="flex w-full gap-1 overflow-hidden">
-          <article className="flex flex-col flex-auto w-full gap-1">
+      </section>
+      <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
+        <div className="flex w-full gap-3 overflow-hidden">
+          <article className="flex flex-col flex-auto w-full gap-3">
             <TradeChartView />
             <TradeManagement />
           </article>

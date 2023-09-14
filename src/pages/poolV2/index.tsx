@@ -15,6 +15,7 @@ import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolBalance } from '~/stories/template/PoolBalance';
+import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import './style.css';
 
 const PoolV2 = () => {
@@ -22,10 +23,13 @@ const PoolV2 = () => {
   useMarketLocal();
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full">
+    <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">
       <Header />
-      <section className="flex flex-col grow w-full min-w-[1280px] max-w-[1400px] px-5 mx-auto mb-20">
+      <BookmarkBoard />
+      <section className="sticky top-0">
         <MainBarV2 />
+      </section>
+      <section className="flex flex-col w-full px-5 mx-auto mb-20 grow max-w-[1400px]">
         <div className="flex items-stretch gap-5">
           <div className="flex-none w-[240px]">
             <h4 className="mt-3 mb-2 text-left">Pools</h4>
