@@ -22,11 +22,9 @@ function TradeV2() {
   return (
     <div className="flex flex-col min-h-[100vh] w-full relative">
       <Header />
-      <BookmarkBoard />
-      <section className="sticky top-0">
-        <MainBarV2 accountPopover />
-      </section>
       <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
+        <BookmarkBoard />
+        <MainBarV2 accountPopover />
         <div className="flex w-full gap-3 overflow-hidden">
           <article className="flex flex-col flex-auto w-full gap-3">
             <TradeChartView />
