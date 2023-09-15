@@ -108,12 +108,18 @@ export const useTradeHistory = () => {
           throw new Error('Invalid block number bounds');
         }
       }
+      const filteredMarkets =
+        filterOption === 'ALL'
+          ? entireMarkets
+          : filterOption === 'TOKEN_BASED'
+          ? markets
+          : markets.filter((market) => market.address === currentMarket?.address);
       let historyResult = [] as History[];
       while (true) {
         await new Promise((resolve) =>
           setTimeout(() => {
             resolve(undefined!);
-          }, 500)
+          }, 1000)
         );
         const fromBlockNumber: bigint =
           toBlockNumber - BLOCK_CHUNK > initialBlockNumber
@@ -142,7 +148,7 @@ export const useTradeHistory = () => {
             (history, decoded) => {
               const { positionId, marketAddress } = decoded.args;
               const { eventName, blockNumber } = decoded;
-              const selectedMarket = entireMarkets.find(
+              const selectedMarket = filteredMarkets.find(
                 (market) => market.address === marketAddress
               );
               const selectedToken = tokens?.find(

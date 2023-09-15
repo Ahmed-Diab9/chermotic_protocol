@@ -29,6 +29,12 @@ type Trade = {
   blockNumber: bigint;
 };
 
+const eventSignature = getEventSelector({
+  name: 'OpenPosition',
+  type: 'event',
+  inputs: chromaticAccountABI.find((abiItem) => abiItem.name === 'OpenPosition')!.inputs,
+});
+
 export const useTradeLogs = () => {
   const { isReady, client } = useChromaticClient();
   const { accountAddress } = useChromaticAccount();
@@ -97,23 +103,25 @@ export const useTradeLogs = () => {
       initialBlockNumber,
       toBlockNumber,
     }) => {
-      const eventSignature = getEventSelector({
-        name: 'OpenPosition',
-        type: 'event',
-        inputs: chromaticAccountABI.find((abiItem) => abiItem.name === 'OpenPosition')!.inputs,
-      });
       if (isNil(toBlockNumber)) {
         toBlockNumber = await client.publicClient?.getBlockNumber();
         if (isNil(toBlockNumber)) {
           throw new Error('Invalid block number bounds');
         }
       }
-      let logs = [] as ResponseLog[];
+      const filteredMarkets =
+        filterOption === 'ALL'
+          ? entireMarkets
+          : filterOption === 'TOKEN_BASED'
+          ? markets
+          : markets.filter((market) => market.address === currentMarket?.address);
+      let tradeLogs = [] as Trade[];
+
       while (true) {
         await new Promise((resolve) =>
           setTimeout(() => {
             resolve(undefined!);
-          }, 500)
+          }, 1000)
         );
         const fromBlockNumber: bigint =
           toBlockNumber - BLOCK_CHUNK > initialBlockNumber
@@ -126,75 +134,64 @@ export const useTradeLogs = () => {
         const responseData = await response.json();
         const responseLogs =
           typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
-        responseLogs.sort((previous, next) => (previous.blockNumber < next.blockNumber ? 1 : -1));
-        const totalLength = logs.length + responseLogs.length;
+
+        const decodedLogsPromise = responseLogs.map(async (log) => {
+          const decoded = decodeEventLog({
+            abi: chromaticAccountABI,
+            data: log.data,
+            topics: log.topics,
+            eventName: 'OpenPosition',
+          });
+          const { positionId, qty, takerMargin, marketAddress, openTimestamp, openVersion } =
+            decoded.args;
+          const selectedMarket = filteredMarkets.find((market) => market.address === marketAddress);
+          const selectedToken = tokens.find(
+            (token) => token.address === selectedMarket?.tokenAddress
+          );
+          if (isNil(selectedMarket) || isNil(selectedToken)) {
+            throw new Error('Invalid logs');
+          }
+          const oracleProvider = await client
+            .market()
+            .contracts()
+            .oracleProvider(selectedMarket.address);
+          const entryOracle = await oracleProvider.read.atVersion([openVersion + 1n]);
+          return {
+            positionId,
+            token: selectedToken,
+            market: selectedMarket,
+            qty: abs(qty),
+            collateral: takerMargin,
+            leverage: divPreserved(qty, takerMargin, selectedToken.decimals),
+            direction: qty > 0n ? 'long' : 'short',
+            entryTimestamp: openTimestamp,
+            entryPrice: entryOracle.price,
+            blockNumber: BigInt(log.blockNumber),
+          } satisfies Trade;
+        });
+
+        const decodedLogs = await PromiseOnlySuccess(decodedLogsPromise);
+        decodedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
+        const totalLength = tradeLogs.length + decodedLogs.length;
+
         if (totalLength > PAGE_SIZE) {
-          const slicedLogs = responseLogs.slice(0, PAGE_SIZE - responseLogs.length);
-          const newToBlockNumber = slicedLogs[slicedLogs.length - 1].blockNumber;
-          logs = logs.concat(slicedLogs);
-          toBlockNumber = BigInt(newToBlockNumber) - 1n;
+          tradeLogs = tradeLogs.concat(decodedLogs).slice(0, PAGE_SIZE);
+          toBlockNumber = tradeLogs[tradeLogs.length - 1].blockNumber - 1n;
           break;
         } else if (totalLength === PAGE_SIZE) {
-          logs = logs.concat(responseLogs);
+          tradeLogs = tradeLogs.concat(decodedLogs);
           toBlockNumber = fromBlockNumber - 1n;
           break;
         } else {
-          logs = logs.concat(responseLogs);
+          tradeLogs = tradeLogs.concat(decodedLogs);
           toBlockNumber = fromBlockNumber - 1n;
           if (fromBlockNumber === initialBlockNumber) {
             break;
           }
         }
       }
-      const decodedLogs = logs.map((log) => {
-        return {
-          ...decodeEventLog({
-            abi: chromaticAccountABI,
-            data: log.data,
-            topics: log.topics,
-            eventName: 'OpenPosition',
-          }).args,
-          blockNumber: BigInt(log.blockNumber),
-        };
-      });
-      const tradeLogsPromise = decodedLogs.map(async (decodedArg) => {
-        const {
-          positionId,
-          qty,
-          takerMargin,
-          marketAddress,
-          openTimestamp,
-          openVersion,
-          blockNumber,
-        } = decodedArg;
-        const selectedMarket = entireMarkets.find((market) => market.address === marketAddress);
-        const selectedToken = tokens.find(
-          (token) => token.address === selectedMarket?.tokenAddress
-        );
-        if (isNil(selectedMarket) || isNil(selectedToken)) {
-          throw new Error('Invalid logs');
-        }
-        const oracleProvider = await client
-          .market()
-          .contracts()
-          .oracleProvider(selectedMarket.address);
-        const entryOracle = await oracleProvider.read.atVersion([openVersion + 1n]);
-        return {
-          positionId,
-          token: selectedToken,
-          market: selectedMarket,
-          qty: abs(qty),
-          collateral: takerMargin,
-          leverage: divPreserved(qty, takerMargin, selectedToken.decimals),
-          direction: qty > 0n ? 'long' : 'short',
-          entryTimestamp: openTimestamp,
-          entryPrice: entryOracle.price,
-          blockNumber,
-        } satisfies Trade;
-      });
-      const resolvedLogs = await PromiseOnlySuccess(tradeLogsPromise);
       return {
-        tradeLogs: resolvedLogs,
+        tradeLogs,
         toBlockNumber,
       };
     },
