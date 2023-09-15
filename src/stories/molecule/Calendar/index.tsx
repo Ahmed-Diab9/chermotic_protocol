@@ -2,10 +2,10 @@ import { useState, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { registerLocale } from 'react-datepicker';
+// import { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getYear, getMonth } from 'date-fns';
-import enGB from 'date-fns/locale/en-GB';
+// import enGB from 'date-fns/locale/en-GB';
 
 import { Button } from '~/stories/atom/Button';
 import { Listbox } from '@headlessui/react';
@@ -13,7 +13,7 @@ import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 import '~/stories/atom/Select/style.css';
 import './style.css';
 
-registerLocale('en-GB', enGB);
+// registerLocale('en-GB', enGB);
 
 export interface CalendarProps {}
 
@@ -38,7 +38,6 @@ export function Calendar(props: CalendarProps) {
       popperPlacement="bottom-end"
       customInput={<DatePickerInput />}
       renderCustomHeader={CustomDatePickerHeader}
-      // className="Calendar"
       calendarClassName="Calendar"
     />
   );
@@ -80,20 +79,20 @@ const CustomDatePickerHeader: React.FC<{
     years.push(year);
   }
 
-  const months: string[] = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
+  // const months: string[] = [
+  //   'January',
+  //   'February',
+  //   'March',
+  //   'April',
+  //   'May',
+  //   'June',
+  //   'July',
+  //   'August',
+  //   'September',
+  //   'October',
+  //   'November',
+  //   'December',
+  // ];
 
   return (
     <div>
@@ -109,7 +108,7 @@ const CustomDatePickerHeader: React.FC<{
           <button className="btn-inner">All time</button>
         </div>
       </div>
-      <div className="flex items-center gap-5 px-4 pt-5 pb-3">
+      <div className="flex items-center gap-5 px-5 pt-5 pb-4">
         <div>
           {/* <div className="w-20 select select-simple">
         <Listbox
