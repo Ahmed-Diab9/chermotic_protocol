@@ -33,6 +33,8 @@ export const TradeManagement = () => {
     isHistoryLoading,
     historyList,
     tradeList,
+    onFetchNextTrade,
+    onFetchNextHistory,
   } = useTradeManagement();
 
   // TODO: PERCENTAGE

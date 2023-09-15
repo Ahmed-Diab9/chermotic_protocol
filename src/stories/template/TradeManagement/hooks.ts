@@ -8,6 +8,7 @@ import { useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
+import { useTradeLogs } from '~/hooks/useTradeLogs';
 
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
@@ -18,7 +19,8 @@ import { abs, divPreserved, formatDecimals } from '~/utils/number';
 export function useTradeManagement() {
   const { currentMarket } = useMarket();
   const { positions, isLoading } = usePositions();
-  const { history, isLoading: isHistoryLoading } = useTradeHistory();
+  const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
+  const { tradesData, onFetchNextTrade } = useTradeLogs();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
@@ -68,10 +70,12 @@ export function useTradeManagement() {
   const positionList = positions || [];
 
   const historyList = useMemo(() => {
-    if (isNil(history)) {
+    if (isNil(historyData)) {
       return;
     }
-    return history
+    return historyData
+      .map((historyItem) => historyItem.history)
+      .flat(1)
       .filter((historyValue) => historyValue.isClaimed)
       .map((historyValue) => {
         return {
@@ -110,27 +114,26 @@ export function useTradeManagement() {
           closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
-  }, [history]);
+  }, [historyData]);
 
   const tradeList = useMemo(() => {
-    return history?.map((historyValue) => {
-      return {
-        token: historyValue.token,
-        market: historyValue.market,
-        positionId: historyValue.positionId,
-        direction: historyValue.direction,
+    return tradesData
+      ?.map((tradesItem) => tradesItem.tradeLogs)
+      .flat(1)
+      .map((tradeLog) => ({
+        token: tradeLog.token,
+        market: tradeLog.market,
+        positionId: tradeLog.positionId,
+        direction: tradeLog.direction,
         collateral:
-          formatDecimals(historyValue.collateral, historyValue.token.decimals) +
-          ' ' +
-          historyValue.token.name,
-        qty: formatDecimals(abs(historyValue.qty), historyValue.token.decimals, 2),
-        entryPrice:
-          '$ ' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
-        leverage: formatDecimals(historyValue.leverage, historyValue.token.decimals, 2, true) + 'x',
-        entryTime: formatTimestamp(historyValue.entryTimestamp),
-      };
-    });
-  }, [history]);
+          formatDecimals(tradeLog.collateral, tradeLog.token.decimals) + ' ' + tradeLog.token.name,
+        qty: formatDecimals(abs(tradeLog.qty), tradeLog.token.decimals, 2),
+        entryPrice: '$ ' + formatDecimals(tradeLog.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
+        leverage: formatDecimals(tradeLog.leverage, tradeLog.token.decimals, 2, true) + 'x',
+        entryTime: formatTimestamp(tradeLog.entryTimestamp),
+        blockNumber: tradeLog.blockNumber,
+      }));
+  }, [tradesData]);
 
   return {
     openButtonRef,
@@ -149,5 +152,7 @@ export function useTradeManagement() {
     isHistoryLoading,
     historyList,
     tradeList,
+    onFetchNextTrade,
+    onFetchNextHistory,
   };
 }
