@@ -1,8 +1,10 @@
+import { Client } from '@chromatic-protocol/sdk-viem';
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { isNil, isNotNil } from 'ramda';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog, getEventSelector } from 'viem';
+import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
 import { Market, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
@@ -29,11 +31,68 @@ type Trade = {
   blockNumber: bigint;
 };
 
+type GetTradeLogsParams = {
+  toBlockNumber: bigint;
+  initialBlockNumber: bigint;
+  accountAddress: Address;
+  markets: Market[];
+  tokens: Token[];
+  client: Client;
+};
+
 const eventSignature = getEventSelector({
   name: 'OpenPosition',
   type: 'event',
   inputs: chromaticAccountABI.find((abiItem) => abiItem.name === 'OpenPosition')!.inputs,
 });
+
+const getTradeLogs = async (params: GetTradeLogsParams) => {
+  const { toBlockNumber, initialBlockNumber, accountAddress, markets, tokens, client } = params;
+  const fromBlockNumber: bigint =
+    toBlockNumber - BLOCK_CHUNK > initialBlockNumber
+      ? toBlockNumber - BLOCK_CHUNK
+      : initialBlockNumber;
+  const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&fromBlock=${fromBlockNumber}&toBlock=${Number(
+    toBlockNumber
+  )}&apikey=${ARBISCAN_API_KEY}`;
+  const response = await fetch(apiUrl);
+  const responseData = await response.json();
+  const responseLogs =
+    typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+
+  const decodedLogsPromise = responseLogs.map(async (log) => {
+    const decoded = decodeEventLog({
+      abi: chromaticAccountABI,
+      data: log.data,
+      topics: log.topics,
+      eventName: 'OpenPosition',
+    });
+    const { positionId, qty, takerMargin, marketAddress, openTimestamp, openVersion } =
+      decoded.args;
+    const selectedMarket = markets.find((market) => market.address === marketAddress);
+    const selectedToken = tokens.find((token) => token.address === selectedMarket?.tokenAddress);
+    if (isNil(selectedMarket) || isNil(selectedToken)) {
+      throw new Error('Invalid logs');
+    }
+    const oracleProvider = await client.market().contracts().oracleProvider(selectedMarket.address);
+    const entryOracle = await oracleProvider.read.atVersion([openVersion + 1n]);
+    return {
+      positionId,
+      token: selectedToken,
+      market: selectedMarket,
+      qty: abs(qty),
+      collateral: takerMargin,
+      leverage: divPreserved(qty, takerMargin, selectedToken.decimals),
+      direction: qty > 0n ? 'long' : 'short',
+      entryTimestamp: openTimestamp,
+      entryPrice: entryOracle.price,
+      blockNumber: BigInt(log.blockNumber),
+    } satisfies Trade;
+  });
+
+  const decodedLogs = await PromiseOnlySuccess(decodedLogsPromise);
+  return { decodedLogs, fromBlockNumber };
+};
 
 export const useTradeLogs = () => {
   const { isReady, client } = useChromaticClient();
@@ -123,54 +182,14 @@ export const useTradeLogs = () => {
             resolve(undefined!);
           }, 1000)
         );
-        const fromBlockNumber: bigint =
-          toBlockNumber - BLOCK_CHUNK > initialBlockNumber
-            ? toBlockNumber - BLOCK_CHUNK
-            : initialBlockNumber;
-        const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&fromBlock=${fromBlockNumber}&toBlock=${Number(
-          toBlockNumber
-        )}&apikey=${ARBISCAN_API_KEY}`;
-        const response = await fetch(apiUrl);
-        const responseData = await response.json();
-        const responseLogs =
-          typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
-
-        const decodedLogsPromise = responseLogs.map(async (log) => {
-          const decoded = decodeEventLog({
-            abi: chromaticAccountABI,
-            data: log.data,
-            topics: log.topics,
-            eventName: 'OpenPosition',
-          });
-          const { positionId, qty, takerMargin, marketAddress, openTimestamp, openVersion } =
-            decoded.args;
-          const selectedMarket = filteredMarkets.find((market) => market.address === marketAddress);
-          const selectedToken = tokens.find(
-            (token) => token.address === selectedMarket?.tokenAddress
-          );
-          if (isNil(selectedMarket) || isNil(selectedToken)) {
-            throw new Error('Invalid logs');
-          }
-          const oracleProvider = await client
-            .market()
-            .contracts()
-            .oracleProvider(selectedMarket.address);
-          const entryOracle = await oracleProvider.read.atVersion([openVersion + 1n]);
-          return {
-            positionId,
-            token: selectedToken,
-            market: selectedMarket,
-            qty: abs(qty),
-            collateral: takerMargin,
-            leverage: divPreserved(qty, takerMargin, selectedToken.decimals),
-            direction: qty > 0n ? 'long' : 'short',
-            entryTimestamp: openTimestamp,
-            entryPrice: entryOracle.price,
-            blockNumber: BigInt(log.blockNumber),
-          } satisfies Trade;
+        const { decodedLogs, fromBlockNumber } = await getTradeLogs({
+          toBlockNumber,
+          initialBlockNumber,
+          accountAddress,
+          markets,
+          tokens,
+          client,
         });
-
-        const decodedLogs = await PromiseOnlySuccess(decodedLogsPromise);
         decodedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
         const totalLength = tradeLogs.length + decodedLogs.length;
 
