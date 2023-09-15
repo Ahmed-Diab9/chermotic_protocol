@@ -44,6 +44,20 @@ export interface Position extends IChromaticPosition {
   pnl: bigint;
 }
 
+export interface ResponseLog {
+  address: `0x${string}`;
+  topics: [`0x${string}`, `0x${string}`, `0x${string}`];
+  data: `0x${string}`;
+  blockNumber: `0x${string}`;
+  blockHash: `0x${string}`;
+  timeStamp: `0x${string}`;
+  gasPrice: `0x${string}`;
+  gasUsed: `0x${string}`;
+  logIndex: `0x${string}`;
+  transactionHash: `0x${string}`;
+  transactionIndex: `0x${string}`;
+}
+
 export interface TradeHistory {
   token: Token;
   market: Market;
