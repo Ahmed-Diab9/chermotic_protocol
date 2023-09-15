@@ -1,9 +1,5 @@
-import { Progress } from '~/stories/atom/Progress';
-import { Avatar } from '~/stories/atom/Avatar';
-import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { WalletIcon, ArchiveBoxIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
-import { Button } from '~/stories/atom/Button';
+import { Calendar } from '~/stories/molecule/Calendar';
+
 import './style.css';
 
 export interface PoolAnalyticsProps {}
@@ -13,6 +9,9 @@ export const PoolAnalytics = (props: PoolAnalyticsProps) => {
     <div className="PoolAnalytics">
       <div className="flex items-baseline justify-between mt-10">
         <h2 className="text-4xl">CLP Analytics</h2>
+        <div className="ml-auto">
+          <Calendar />
+        </div>
       </div>
       <div className="panel">
         <div className="p-5 text-left">
