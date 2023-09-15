@@ -1,5 +1,5 @@
 .Calendar {
-  @apply bg-paper text-primary font-mono min-w-[280px] border-gray-lighter pb-2;
+  @apply bg-paper text-primary font-mono w-[280px] border-gray-lighter pb-2;
   .react-datepicker__month-container {
     @apply w-full;
   }
@@ -12,9 +12,12 @@
       @apply text-primary-light text-base;
     }
     .btn-quick {
-      @apply border-b h-8 text-left px-5 text-primary-lighter;
+      @apply border-b h-8 text-left px-5 text-primary-lighter w-1/2;
       &.selected {
         @apply bg-paper-light text-primary;
+      }
+      &:nth-child(2n) {
+        @apply border-l;
       }
     }
   }

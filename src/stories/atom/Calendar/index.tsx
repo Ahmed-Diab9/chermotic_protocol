@@ -96,7 +96,7 @@ const CustomDatePickerHeader: React.FC<{
 
   return (
     <div>
-      <div className="flex text-left">
+      {/* <div className="flex text-left">
         <div className="flex flex-col w-1/2">
           <button className="btn-quick">A Week ago</button>
           <button className="btn-quick selected">A Month ago</button>
@@ -107,7 +107,8 @@ const CustomDatePickerHeader: React.FC<{
           <button className="btn-quick">1 Year ago</button>
           <button className="btn-quick">All time</button>
         </div>
-      </div>
+      </div> */}
+      <QuickButtons />
       <div className="flex items-center gap-5 px-5 pt-5 pb-4">
         <div>
           {/* <div className="w-20 select select-simple">
@@ -163,6 +164,37 @@ const CustomDatePickerHeader: React.FC<{
           />
         </div>
       </div>
+    </div>
+  );
+};
+
+const QuickButtons = () => {
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState(-1);
+
+  const buttons = [
+    'A Week ago',
+    'A Month ago',
+    '3 Month ago',
+    '6 Month ago',
+    '1 Year ago',
+    'All time',
+  ];
+
+  const handleButtonClick = (index: number) => {
+    setSelectedButtonIndex(index);
+  };
+
+  return (
+    <div className="flex flex-wrap">
+      {buttons.map((text, index) => (
+        <button
+          key={index}
+          className={`btn-quick ${selectedButtonIndex === index ? 'selected' : ''}`}
+          onClick={() => handleButtonClick(index)}
+        >
+          {text}
+        </button>
+      ))}
     </div>
   );
 };
