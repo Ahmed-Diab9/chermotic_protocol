@@ -143,7 +143,7 @@ export function PoolPanelV2() {
                           </SkeletonElement>
                         </p>
                       </div>
-                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
+                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
                         <Avatar label="USDC" size="xs" gap="1" />
                       </span>
                     </div>
@@ -266,7 +266,7 @@ export function PoolPanelV2() {
                                     </SkeletonElement>
                                   </p>
                                 </div>
-                                <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
+                                <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
                                   <Avatar label="CLP" size="xs" gap="1" />
                                 </span>
                               </div>
@@ -413,8 +413,8 @@ const BinItem = (props: BinItemProps) => {
   } = props;
 
   return (
-    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
+    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-light rounded-xl">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-light">
         <Checkbox label={label} isChecked={isSelected} onClick={onSelectBin} />
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">

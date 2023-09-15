@@ -28,7 +28,7 @@ export const LiquidityItem = ({
   utilizedRate,
 }: LiquidityItemProps) => {
   return (
-    <div className="w-full px-4 py-3 bg-paper-lighter [&:not(:last-child)]:border-b border-gray-light">
+    <div className="w-full px-4 py-3 bg-paper-light [&:not(:last-child)]:border-b border-gray-light">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-dashed">
         <Thumbnail size="lg" className="rounded" src={image} />
         <div>

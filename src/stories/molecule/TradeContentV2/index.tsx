@@ -123,7 +123,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-lighter dark:bg-inverted-lighter">
+      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-light dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             />
           </div>
 
-          <div className="px-5 pt-4 pb-5 mt-4 -mx-5 border-t border-dashed border-gray-light bg-paper-lighter dark:bg-inverted-lighter">
+          <div className="px-5 pt-4 pb-5 mt-4 -mx-5 border-t border-dashed bg-paper-light dark:bg-inverted-lighter">
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <div className="flex">

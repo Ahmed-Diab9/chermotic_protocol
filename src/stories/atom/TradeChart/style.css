@@ -12,7 +12,7 @@
   }
   .react_range__grid,
   .react_range__grid_bold {
-    @apply !border-gray-lighter dark:!border-paper-lighter;
+    @apply !border-gray-lighter dark:!border-gray-lighter;
   }
   .react_range__slot_wrapper {
     &.graph + .grid,

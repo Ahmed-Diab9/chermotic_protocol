@@ -23,8 +23,8 @@
     --color-gray-darker: 51 51 51; /* #333333 */
 
     --color-paper: 255 255 255; /* #ffffff */
-    --color-paper-light: 252 252 252; /* #fcfcfc */
-    --color-paper-dark: 21 21 21; /* #151515 */
+    --color-paper-lightest: 252 252 252; /* #fcfcfc */
+    --color-paper-darkest: 21 21 21; /* #151515 */
     --alpha-paper-light: 0.2;
     --alpha-paper-dark: 0.2;
 
@@ -68,14 +68,14 @@
     --alpha-inverted-lighter: 0.3;
 
     --color-gray: 93 93 105; /* #616161 */
-    --color-gray-light: 74 74 82;
-    --color-gray-lighter: 74 74 88;
+    --color-gray-light: 74 74 84;
+    --color-gray-lighter: 51 51 58;
     --color-gray-dark: 115 115 125;
     --color-gray-darker: 238 238 242; /* #eeeeee */
 
     --color-paper: 35 35 39;
-    --color-paper-light: 25 25 27;
-    --color-paper-dark: 252 252 254; /* #fcfcfc */
+    --color-paper-lightest: 25 25 27;
+    --color-paper-darkest: 252 252 254; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
 
@@ -105,7 +105,7 @@
 *,
 ::before,
 ::after {
-  @apply border-gray-lighter dark:border-paper-lighter;
+  @apply border-gray-lighter;
 }
 
 body {

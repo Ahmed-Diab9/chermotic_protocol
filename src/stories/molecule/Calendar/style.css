@@ -11,7 +11,7 @@
     .btn-inner {
       @apply border-b h-8 text-left px-5 text-primary-lighter;
       &.selected {
-        @apply bg-paper-lighter text-primary;
+        @apply bg-paper-light text-primary;
       }
     }
   }

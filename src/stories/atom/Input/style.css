@@ -1,6 +1,6 @@
 .input {
   @apply max-w-full bg-paper;
-  @apply dark:bg-paper-lighter dark:border-transparent;
+  @apply dark:bg-paper-light dark:border-transparent;
   @apply focus:outline-none;
   &.error {
     @apply border-error;
@@ -12,7 +12,7 @@
     }
   }
   &.disabled {
-    @apply bg-paper-lighter border-gray-light/30;
+    @apply bg-paper-light border-gray-light/30;
     input {
       @apply bg-transparent;
     }

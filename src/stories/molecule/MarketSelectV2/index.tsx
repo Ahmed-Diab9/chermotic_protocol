@@ -100,7 +100,7 @@ export function MarketSelectV2() {
                         <button
                           key={key}
                           className={`flex items-center gap-2 px-3 py-2 w-[116px] ${
-                            isSelectedToken && 'border bg-paper-lighter rounded-lg' // the token selected
+                            isSelectedToken && 'border bg-paper-light rounded-lg' // the token selected
                           }`}
                           onClick={onClickToken}
                           title={name}
@@ -136,7 +136,7 @@ export function MarketSelectV2() {
                               />
                               <button
                                 className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 ${
-                                  isSelectedMarket && 'border bg-paper-lighter rounded-lg'
+                                  isSelectedMarket && 'border bg-paper-light rounded-lg'
                                 }`}
                                 onClick={onClickMarket}
                               >

@@ -24,7 +24,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
       <div className="flex justify-between">
         <div className="text-left">
           <h3 className="mb-1">CLP Performance</h3>
-          <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-lighter">
+          <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-light">
             <Avatar size="xs" label="ETH" gap="1" />
           </span>
         </div>
@@ -64,7 +64,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             </div>
           </div>
         </div>
-        <div className="p-3 mt-4 rounded bg-paper-lighter">
+        <div className="p-3 mt-4 rounded bg-paper-light">
           <div className="flex border-b">
             <div className="w-1/2 pb-3 pr-3">
               <PoolPerformanceItem title="Trade Fees" value={101.373} price={101.373} />

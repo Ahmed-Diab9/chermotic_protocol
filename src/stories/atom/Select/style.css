@@ -13,7 +13,7 @@
     @apply border border-gray-light dark:border-transparent;
     @apply flex items-center text-left gap-2 justify-between px-3 py-2 mb-1;
     @apply w-full h-9;
-    @apply dark:bg-paper-lighter rounded-lg;
+    @apply dark:bg-paper-light rounded-lg;
     &[aria-expanded='true'] {
       @apply dark:border-gray-lighter;
       &::after {
@@ -36,7 +36,7 @@
     @apply p-1 bg-paper border border-gray-light dark:border-gray-lighter rounded-lg shadow-base dark:shadow-none;
   }
   li[role='option'] {
-    @apply flex items-center px-2 py-[6px] hover:bg-paper-lighter;
+    @apply flex items-center px-2 py-[6px] hover:bg-paper-light;
     @apply rounded-lg;
     @apply cursor-pointer;
     &[aria-selected='true'] {

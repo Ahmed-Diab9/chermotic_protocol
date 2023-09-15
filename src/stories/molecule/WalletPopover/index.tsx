@@ -114,7 +114,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                 <div className="relative flex flex-col h-full ">
                   <Avatar src={arbitrumIcon} label={chainName} size="xl" fontSize="sm" gap="3" />
                   <section className="flex flex-col flex-grow mt-6 box-inner">
-                    <article className="px-4 py-3 border-b bg-paper-lighter dark:bg-paper">
+                    <article className="px-4 py-3 border-b bg-paper-light dark:bg-paper">
                       <h4 className="mb-3 text-base text-center text-primary-lighter">
                         Connected Wallet
                       </h4>
@@ -240,7 +240,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                     </div>
                   </section>
                   <section className="mt-10 mb-5 box-inner">
-                    <article className="px-4 py-3 bg-paper-lighter dark:bg-paper">
+                    <article className="px-4 py-3 bg-paper-light dark:bg-paper">
                       {isChromaticAccountExist ? (
                         <>
                           <h4 className="mb-3 text-base text-center text-primary-lighter">

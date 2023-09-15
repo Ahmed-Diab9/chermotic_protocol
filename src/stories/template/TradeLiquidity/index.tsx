@@ -49,19 +49,19 @@ export const TradeLiquidity = (props: TradeLiquidityProps) => {
           <Button
             iconOnly={<ViewShortIcon />}
             css="square"
-            className={selectedButton === 0 ? 'bg-paper-lighter' : ''}
+            className={selectedButton === 0 ? 'bg-paper-light' : ''}
             onClick={() => setSelectedButton(0)}
           />
           <Button
             iconOnly={<ViewLongIcon />}
             css="square"
-            className={selectedButton === 1 ? 'bg-paper-lighter' : ''}
+            className={selectedButton === 1 ? 'bg-paper-light' : ''}
             onClick={() => setSelectedButton(1)}
           />
           <Button
             iconOnly={<ViewBothIcon />}
             css="square"
-            className={selectedButton === 2 ? 'bg-paper-lighter' : ''}
+            className={selectedButton === 2 ? 'bg-paper-light' : ''}
             onClick={() => setSelectedButton(2)}
           />
         </div>
