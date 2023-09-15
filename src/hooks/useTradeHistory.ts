@@ -1,8 +1,7 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
-import { isNil, isNotNil } from 'ramda';
-import useSWR from 'swr';
+import { isNil } from 'ramda';
 import useSWRInfinite from 'swr/infinite';
-import { decodeEventLog, getEventSelector } from 'viem';
+import { decodeEventLog } from 'viem';
 import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
 import { Market, Token } from '~/typings/market';
@@ -12,6 +11,7 @@ import { divPreserved } from '~/utils/number';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
+import { useInitialBlockNumber } from './useInitialBlockNumber';
 import { useEntireMarkets, useMarket } from './useMarket';
 import { usePositionFilter } from './usePositionFilter';
 import { useSettlementToken } from './useSettlementToken';
@@ -139,25 +139,7 @@ export const useTradeHistory = () => {
   const { markets, currentMarket } = useMarket();
   const { markets: entireMarkets } = useEntireMarkets();
   const { filterOption } = usePositionFilter();
-
-  const { data: initialBlockNumber } = useSWR(
-    isNotNil(accountAddress) ? { accountAddress, key: 'fetchInitialLogBlockNumber' } : undefined,
-    async ({ accountAddress }) => {
-      const eventSignature = getEventSelector({
-        name: 'OpenPosition',
-        type: 'event',
-        inputs: chromaticAccountABI.find((abiItem) => abiItem.name === 'OpenPosition')!.inputs,
-      });
-      const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=1&offset=1&apikey=${ARBISCAN_API_KEY}`;
-      const apiResponse = await fetch(apiUrl);
-      const apiData = await apiResponse.json();
-      const initialLog: { blockNumber: `0x${string}` }[] = apiData.result;
-      if (initialLog.length <= 0) {
-        return undefined;
-      }
-      return BigInt(initialLog[0].blockNumber);
-    }
-  );
+  const { initialBlockNumber } = useInitialBlockNumber();
 
   const {
     data: historyData,
