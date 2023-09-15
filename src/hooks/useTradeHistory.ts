@@ -1,11 +1,13 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
 import { isNil, isNotNil } from 'ramda';
 import useSWR from 'swr';
-import { decodeEventLog } from 'viem';
+import useSWRInfinite from 'swr/infinite';
+import { decodeEventLog, getEventSelector } from 'viem';
+import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
 import { Market, Token } from '~/typings/market';
+import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
 import { divPreserved } from '~/utils/number';
-import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -29,6 +31,7 @@ type History = {
   isOpened: boolean;
   isClosed: boolean;
   isClaimed: boolean;
+  blockNumber: bigint;
 };
 
 export const useTradeHistory = () => {
@@ -38,128 +41,216 @@ export const useTradeHistory = () => {
   const { markets, currentMarket } = useMarket();
   const { markets: entireMarkets } = useEntireMarkets();
   const { filterOption } = usePositionFilter();
-  const fetchKey = {
-    key: 'fetchTradeHistories',
-    accountAddress,
-    tokens,
-    markets,
-    entireMarkets,
-    currentMarket,
-    filterOption,
-  };
 
-  const {
-    data: history,
-    error,
-    isLoading,
-  } = useSWR(
-    isReady && chromaticAccountABI && checkAllProps(fetchKey) && fetchKey,
-    async ({ accountAddress, tokens, markets, entireMarkets, currentMarket, filterOption }) => {
-      const filteredMarkets =
-        filterOption === 'ALL'
-          ? entireMarkets
-          : filterOption === 'TOKEN_BASED'
-          ? markets
-          : markets.filter((market) => market.address === currentMarket?.address);
-      const logs = await client.publicClient?.getLogs({
-        address: accountAddress,
-        fromBlock: 0n,
+  const { data: initialBlockNumber } = useSWR(
+    isNotNil(accountAddress) ? { accountAddress, key: 'fetchInitialLogBlockNumber' } : undefined,
+    async ({ accountAddress }) => {
+      const eventSignature = getEventSelector({
+        name: 'OpenPosition',
+        type: 'event',
+        inputs: chromaticAccountABI.find((abiItem) => abiItem.name === 'OpenPosition')!.inputs,
       });
-      const decoded = (logs ?? [])
-        .map((log) => {
-          return decodeEventLog({ abi: chromaticAccountABI, data: log.data, topics: log.topics });
-        })
-        .map(async (log) => {
-          if (log.eventName === 'OpenPosition') {
-            const {
-              args: { openVersion, marketAddress },
-            } = log;
-            const oracleProvider = await client.market().contracts().oracleProvider(marketAddress);
-            const entryOracle = await oracleProvider.read.atVersion([openVersion]);
-            return {
-              eventName: log.eventName,
-              args: {
-                ...log.args,
-                entryOracle,
-              },
-            };
-          } else {
-            return log;
-          }
-        });
-      const resolvedLogs = await PromiseOnlySuccess(decoded);
-      const claimedMap = resolvedLogs
-        .map((log) => (log.eventName === 'ClaimPosition' ? log.args.positionId : undefined))
-        .reduce((positionMap, positionId) => {
-          if (isNotNil(positionId)) {
-            positionMap.set(positionId, true);
-          }
-          return positionMap;
-        }, new Map<bigint, boolean>());
-      const map = resolvedLogs.reduce((map, log) => {
-        const { positionId, marketAddress } = log.args;
-        const selectedMarket = filteredMarkets.find((market) => market.address === marketAddress);
-        const selectedToken = tokens?.find(
-          (token) => token.address === selectedMarket?.tokenAddress
-        );
-        if (isNil(selectedMarket) || isNil(selectedToken)) {
-          return map;
-        }
-        const mapValue: Partial<History> = map.get(positionId) ?? {
-          positionId,
-          token: selectedToken,
-          market: selectedMarket,
-          isOpened: false,
-          isClosed: false,
-          isClaimed: false,
-        };
-        switch (log.eventName) {
-          case 'OpenPosition': {
-            const { takerMargin, qty, positionId, openTimestamp, entryOracle } = log.args;
-            mapValue.collateral = takerMargin;
-            mapValue.qty = qty;
-            mapValue.direction = qty >= 0n ? 'long' : 'short';
-            mapValue.entryTimestamp = openTimestamp;
-            mapValue.leverage = divPreserved(qty, takerMargin, selectedToken.decimals);
-            mapValue.isOpened = true;
-            if (!claimedMap.get(positionId)) {
-              mapValue.entryPrice = entryOracle.price;
-            }
-            map.set(positionId, mapValue as History);
-            return map;
-          }
-          case 'ClosePosition': {
-            const { closeTimestamp } = log.args;
-            mapValue.closeTimestamp = closeTimestamp;
-            mapValue.isClosed = true;
-            map.set(positionId, mapValue as History);
-            return map;
-          }
-          case 'ClaimPosition': {
-            const { realizedPnl, interest, entryPrice } = log.args;
-            mapValue.entryPrice = entryPrice;
-            mapValue.interest = interest;
-            mapValue.pnl = realizedPnl;
-            mapValue.isClaimed = true;
-            map.set(positionId, mapValue as History);
-            return map;
-          }
-          default: {
-            return map;
-          }
-        }
-      }, new Map<bigint, History>());
-
-      return Array.from(map.values()).sort((logP, logQ) =>
-        logP.entryTimestamp < logQ.entryTimestamp ? 1 : -1
-      );
+      const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=1&offset=1&apikey=${ARBISCAN_API_KEY}`;
+      const apiResponse = await fetch(apiUrl);
+      const apiData = await apiResponse.json();
+      const initialLog: { blockNumber: `0x${string}` }[] = apiData.result;
+      if (initialLog.length <= 0) {
+        return undefined;
+      }
+      return BigInt(initialLog[0].blockNumber);
     }
   );
+
+  const {
+    data: historyData,
+    isLoading,
+    error,
+    size,
+    setSize,
+  } = useSWRInfinite(
+    (pageIndex, previousData) => {
+      if (!isReady || isNil(initialBlockNumber)) {
+        return null;
+      }
+      const fetchKey = {
+        key: 'fetchHistory',
+        accountAddress,
+        tokens,
+        markets,
+        entireMarkets,
+        currentMarket,
+        filterOption,
+        initialBlockNumber,
+      };
+      if (!checkAllProps(fetchKey)) {
+        return;
+      }
+      if (previousData?.toBlockNumber < initialBlockNumber) {
+        return null;
+      }
+      return checkAllProps(fetchKey)
+        ? { ...fetchKey, toBlockNumber: previousData?.toBlockNumber as bigint | undefined }
+        : null;
+    },
+    async ({
+      accountAddress,
+      tokens,
+      markets,
+      entireMarkets,
+      currentMarket,
+      filterOption,
+      initialBlockNumber,
+      toBlockNumber,
+    }) => {
+      if (isNil(toBlockNumber)) {
+        toBlockNumber = await client.publicClient?.getBlockNumber();
+        if (isNil(toBlockNumber)) {
+          throw new Error('Invalid block number bounds');
+        }
+      }
+      let historyResult = [] as History[];
+      while (true) {
+        await new Promise((resolve) =>
+          setTimeout(() => {
+            resolve(undefined!);
+          }, 500)
+        );
+        const fromBlockNumber: bigint =
+          toBlockNumber - BLOCK_CHUNK > initialBlockNumber
+            ? toBlockNumber - BLOCK_CHUNK
+            : initialBlockNumber;
+        const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&fromBlock=${Number(
+          fromBlockNumber
+        )}&toBlock=${Number(toBlockNumber)}&apikey=${ARBISCAN_API_KEY}`;
+        const response = await fetch(apiUrl);
+        const responseData = await response.json();
+        const responseLogs =
+          typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+        const decodedLogMap = responseLogs
+          .map((log) => {
+            const decoded = decodeEventLog({
+              abi: chromaticAccountABI,
+              data: log.data,
+              topics: log.topics,
+            });
+            return {
+              ...decoded,
+              blockNumber: BigInt(log.blockNumber),
+            };
+          })
+          .reduce(
+            (history, decoded) => {
+              const { positionId, marketAddress } = decoded.args;
+              const { eventName, blockNumber } = decoded;
+              const selectedMarket = entireMarkets.find(
+                (market) => market.address === marketAddress
+              );
+              const selectedToken = tokens?.find(
+                (token) => token.address === selectedMarket?.tokenAddress
+              );
+              if (isNil(selectedMarket) || isNil(selectedToken)) {
+                return history;
+              }
+              const historyValue =
+                history.get(positionId) ??
+                ({
+                  positionId,
+                  token: selectedToken,
+                  market: selectedMarket,
+                  blockNumber,
+                  isOpened: false,
+                  isClosed: false,
+                  isClaimed: false,
+                } as History);
+              switch (eventName) {
+                case 'OpenPosition': {
+                  const { takerMargin, qty, openTimestamp } = decoded.args;
+                  historyValue.collateral = takerMargin;
+                  historyValue.qty = qty;
+                  historyValue.direction = qty >= 0n ? 'long' : 'short';
+                  historyValue.entryTimestamp = openTimestamp;
+                  historyValue.leverage = divPreserved(qty, takerMargin, selectedToken.decimals);
+                  historyValue.isOpened = true;
+                  history.set(positionId, historyValue as History);
+                  break;
+                }
+                case 'ClosePosition': {
+                  const { closeTimestamp, positionId } = decoded.args;
+                  historyValue.closeTimestamp = closeTimestamp;
+                  historyValue.isClosed = true;
+                  history.set(positionId, historyValue as History);
+                  break;
+                }
+                case 'ClaimPosition': {
+                  const { realizedPnl, interest, entryPrice } = decoded.args;
+                  historyValue.entryPrice = entryPrice;
+                  historyValue.interest = interest;
+                  historyValue.pnl = realizedPnl;
+                  historyValue.isClaimed = true;
+                  history.set(positionId, historyValue as History);
+                  break;
+                }
+              }
+              return history;
+            },
+            historyResult.reduce((newMap, log) => {
+              newMap.set(log.positionId, log);
+              return newMap;
+            }, new Map<bigint, History>())
+          );
+        const historyArray = Array.from(decodedLogMap.values());
+        historyArray.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
+        const filteredHistory = historyArray.filter((history) => history.isClaimed);
+        const totalLength = filteredHistory.length;
+
+        const slicedHistory = filteredHistory.slice(0, PAGE_SIZE);
+        const hasPartialHistory =
+          slicedHistory.filter((history) => !history.isClosed || !history.isOpened).length > 0;
+        if (!hasPartialHistory) {
+          if (totalLength > PAGE_SIZE) {
+            const newToBlockNumber = slicedHistory[slicedHistory.length - 1].blockNumber;
+            historyResult = slicedHistory;
+            toBlockNumber = newToBlockNumber - 1n;
+            break;
+          } else if (totalLength === PAGE_SIZE) {
+            historyResult = filteredHistory;
+            toBlockNumber = fromBlockNumber - 1n;
+            break;
+          } else {
+            historyResult = filteredHistory;
+            toBlockNumber = fromBlockNumber - 1n;
+            if (fromBlockNumber === initialBlockNumber) {
+              break;
+            }
+          }
+        } else {
+          historyResult = filteredHistory;
+          toBlockNumber = fromBlockNumber - 1n;
+        }
+      }
+      return {
+        history: historyResult,
+        toBlockNumber,
+      };
+    },
+    {
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateFirstPage: false,
+    }
+  );
+
+  const onFetchNextHistory = () => {
+    setSize(size + 1);
+  };
 
   useError({ error });
 
   return {
-    history,
+    historyData,
     isLoading,
+    onFetchNextHistory,
   };
 };
