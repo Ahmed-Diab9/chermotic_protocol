@@ -1,0 +1,25 @@
+.Calendar {
+  @apply bg-paper text-primary font-mono min-w-[280px];
+  .react-datepicker__month-container {
+    @apply w-full;
+  }
+  .react-datepicker__header--custom {
+    @apply bg-transparent border-none p-0;
+    .react-datepicker__day-name {
+      @apply text-primary-light text-base;
+    }
+    .btn-inner {
+      @apply border-b h-8 text-left px-5 text-primary-lighter;
+      &.selected {
+        @apply bg-paper-lighter text-primary;
+      }
+    }
+  }
+}
+.react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::before {
+  @apply border-b-paper-lighter;
+}
+.react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::before,
+.react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::after {
+  @apply border-b-paper;
+}

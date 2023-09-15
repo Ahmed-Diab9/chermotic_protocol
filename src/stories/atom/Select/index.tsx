@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Listbox } from '@headlessui/react';
-import './style.css';
+import '~/stories/atom/Select/style.css';
 
 interface SelectProps {
   onClick?: () => void;
