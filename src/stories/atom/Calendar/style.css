@@ -29,7 +29,7 @@
     }
     &.react-datepicker__day--selected,
     &.react-datepicker__day--in-range {
-      @apply bg-gray-light/60;
+      @apply bg-gray-light/80;
     }
   }
 }

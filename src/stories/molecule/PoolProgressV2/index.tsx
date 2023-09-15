@@ -9,10 +9,6 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
-import { Progress } from '~/stories/atom/Progress';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { Tag } from '~/stories/atom/Tag';
-import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { usePoolProgressV2 } from './hooks';
@@ -240,13 +236,17 @@ const ProgressItem = (props: ProgressItemProps) => {
 
   return (
     <div className="flex items-center gap-5 px-5 py-2 border-b">
-      <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r">
+      <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
         {renderTitle}
         <br />
         CLP Tokens
       </h4>
       <div className="">
+        {/* Avatar label unit: */}
+        {/* minting: CLP / burning: settle token */}
         <Avatar label="101.383 CLP" size="sm" fontSize="lg" gap="1" />
+        {/* todo: show only if some parts cannot be withdrawn */}
+        {/* <p className="text-sm mt-[2px]">205.25 CLP Returned</p> */}
       </div>
       <div className="ml-auto text-right">
         {isCompleted && <p className="text-sm text-primary-light mb-[2px]">May 20 17:45:12</p>}
@@ -254,9 +254,9 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="">
             {isCompleted ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
-          <p className="">
-            {detail} {isCompleted && isAdd && 'Completed'}
-          </p>
+          {isCompleted && isAdd ? 'Completed' : detail}
+          {/* todo: if some parts cannot be withdrawn */}
+          {/* 00% withdrawn <TooltipGuide label="withdraw-returned" tip="" /> */}
         </div>
       </div>
     </div>
