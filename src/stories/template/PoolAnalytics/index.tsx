@@ -1,4 +1,4 @@
-import { Calendar } from '~/stories/molecule/Calendar';
+import { Calendar } from '~/stories/atom/Calendar';
 
 import './style.css';
 
