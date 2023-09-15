@@ -11,7 +11,7 @@
     .react-datepicker__day-name {
       @apply text-primary-light text-base;
     }
-    .btn-inner {
+    .btn-quick {
       @apply border-b h-8 text-left px-5 text-primary-lighter;
       &.selected {
         @apply bg-paper-light text-primary;

@@ -98,14 +98,14 @@ const CustomDatePickerHeader: React.FC<{
     <div>
       <div className="flex text-left">
         <div className="flex flex-col w-1/2">
-          <button className="btn-inner">A Week ago</button>
-          <button className="btn-inner selected">A Month ago</button>
-          <button className="btn-inner">3 Month ago</button>
+          <button className="btn-quick">A Week ago</button>
+          <button className="btn-quick selected">A Month ago</button>
+          <button className="btn-quick">3 Month ago</button>
         </div>
         <div className="flex flex-col w-1/2 border-l">
-          <button className="btn-inner">6 Month ago</button>
-          <button className="btn-inner">1 Year ago</button>
-          <button className="btn-inner">All time</button>
+          <button className="btn-quick">6 Month ago</button>
+          <button className="btn-quick">1 Year ago</button>
+          <button className="btn-quick">All time</button>
         </div>
       </div>
       <div className="flex items-center gap-5 px-5 pt-5 pb-4">
