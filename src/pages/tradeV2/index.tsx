@@ -1,4 +1,3 @@
-import { Resizable } from 're-resizable';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Toast } from '~/stories/atom/Toast';
@@ -11,8 +10,6 @@ import { TradeChartView } from '~/stories/template/TradeChartView';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { Button } from '~/stories/atom/Button';
 import './style.css';
 
 function TradeV2() {
@@ -30,29 +27,7 @@ function TradeV2() {
             <TradeChartView />
             <TradeManagement />
           </article>
-          <Resizable
-            // style={style}
-            defaultSize={{
-              width: '40%',
-              height: '100%',
-            }}
-            maxWidth="44%"
-            minWidth={480}
-            minHeight={640}
-            enable={{
-              top: false,
-              right: false,
-              bottom: false,
-              left: true,
-              topRight: false,
-              bottomRight: false,
-              bottomLeft: false,
-              topLeft: false,
-            }}
-            className="shrink-0"
-          >
-            <TradePanelV2 />
-          </Resizable>
+          <TradePanelV2 />
         </div>
       </section>
       <Footer />
