@@ -118,7 +118,7 @@ export const TradeContent = (props: TradeContentProps) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter dark:bg-inverted-lighter">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-light dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">

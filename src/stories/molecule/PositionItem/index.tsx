@@ -55,7 +55,7 @@ export function PositionItem(props: PositionItemProps) {
 
   return (
     <div className="mb-3 overflow-hidden border dark:border-transparent bg-paper rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter dark:bg-paper">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-light dark:bg-paper">
         <div className={`flex flex-auto items-center gap-6 ${isOpening ? 'opacity-30' : ''}`}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1">

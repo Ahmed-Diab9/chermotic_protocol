@@ -40,7 +40,12 @@ export const PoolBalance = (props: PoolBalanceProps) => {
           />
         </div>
         <div className="absolute top-[50%] left-[50%] -translate-x-7 -translate-y-7 bg-paper p-2 rounded-full">
-          <Button iconOnly={<ArrowsRightLeftIcon />} className="!text-lg !w-auto" size="xl" />
+          <Button
+            iconOnly={<ArrowsRightLeftIcon />}
+            className="!text-lg !w-auto"
+            css="light"
+            size="xl"
+          />
         </div>
       </div>
     </div>

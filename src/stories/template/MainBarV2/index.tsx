@@ -8,7 +8,7 @@ interface MainBarV2Props {
 
 export function MainBarV2({ accountPopover = false }: MainBarV2Props) {
   return (
-    <div className="relative px-5 py-3 MainBarV2 bg-paper-lightest">
+    <div className="relative py-3 MainBarV2 bg-paper-lightest">
       <div className="backdrop backdrop-light" />
       <div className="flex gap-3 justify-stretch">
         <div className="flex-auto w-full">

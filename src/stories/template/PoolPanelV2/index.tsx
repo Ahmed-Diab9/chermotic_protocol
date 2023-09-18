@@ -10,13 +10,15 @@ import { Counter } from '~/stories/atom/Counter';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { Guide } from '~/stories/atom/Guide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import '~/stories/atom/Tabs/style.css';
 
 import { formatFeeRate } from '~/utils/number';
 import { usePoolPanelV2 } from './hooks';
@@ -141,7 +143,7 @@ export function PoolPanelV2() {
                           </SkeletonElement>
                         </p>
                       </div>
-                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-lighter">
+                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
                         <Avatar label="USDC" size="xs" gap="1" />
                       </span>
                     </div>
@@ -230,140 +232,119 @@ export function PoolPanelV2() {
 
             {/* tab - remove */}
             <Tab.Panel className="w-full">
-              {/* <section className="flex items-stretch gap-5">
-                <article className="flex-col items-start justify-around box-top lg:flex-row lg:items-center lg:justify-between py-7">
-                  <div>
-                    <div className="flex font-semibold text-left text-primary-lighter">
-                      Total Liquidity Value
-                      <TooltipGuide
-                        label="total-liquidity-value"
-                        tip="The value of my CLB tokens converted into the current token value."
-                      />
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
-                      <SkeletonElement isLoading={isLoading} width={40}>
-                        <Avatar label={tokenName} size="xs" gap="1" />
-                      </SkeletonElement>
-                    </div>
-                  </div>
-                  <h4 className="text-xl text-left xl:text-right">
-                    <SkeletonElement isLoading={isLoading} width={100}>
-                      {totalLiquidityValue}
-                    </SkeletonElement>
-                  </h4>
-                </article>
-                <article className="flex-col justify-between gap-3 py-4 text-left box-top xl:gap-2 xl:py-7">
-                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex items-center font-medium text-left text-primary-lighter">
-                      LP Bins
-                    </div>
-                    <p className="">
-                      <SkeletonElement isLoading={isLoading} width={100}>
-                        {binLength} Bins
-                      </SkeletonElement>
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex items-center font-medium text-left text-primary-lighter">
-                      My Liquidity Value
-                      <TooltipGuide
-                        label="my-liquidity-value"
-                        tip="The value of my CLB tokens converted into the current token value."
-                        className="inline"
-                      />
-                    </div>
-                    <p className="">
-                      <SkeletonElement isLoading={isLoading} width={100}>
-                        {totalLiquidityValue} {tokenName}
-                      </SkeletonElement>
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-between gap-1 xl:text-right xl:flex-row">
-                    <div className="flex font-medium text-left text-primary-lighter">
-                      Removable Liquidity
-                      <TooltipGuide
-                        label="removable-liquidity"
-                        tip="The amount of liquidity that is currently removable due to not being utilized."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/liquidity/withdraw-liquidity"
-                      />
-                    </div>
-                    <p className="">
-                      <SkeletonElement isLoading={isLoading} width={100}>
-                        {totalFreeLiquidity} {tokenName} ({averageRemovableRate}%)
-                      </SkeletonElement>
-                    </p>
-                  </div>
-                </article>
-              </section> */}
+              <div className="flex items-start gap-3 text-left mb-7">
+                <ExclamationTriangleIcon className="flex-none w-4" />
+                <p className="text-primary-light">
+                  Removing Liquidity (Burning CLP Tokens) are conducting from both wallet and
+                  Staking vault. Please choose where your CLPs should be removed from between your
+                  wallet and staking vault.
+                </p>
+              </div>
 
               {/* inner tab */}
-              {/* <section className="tabs-line tabs-base">
+              <section className="tabs-line tabs-base">
                 <Tab.Group onChange={onTabChange}>
                   {({ selectedIndex }) => (
                     <>
-                      <div className="flex flex-wrap items-baseline">
-                        <Tab.List className="pt-[36px] !justify-start !gap-10">
-                          <Tab>Short LP</Tab>
-                          <Tab>Long LP</Tab>
+                      {/* tab02: required for the next version */}
+                      {/* <div className="flex flex-wrap items-baseline border-b">
+                        <Tab.List className="!justify-start !gap-6">
+                          <Tab>Remove from Wallet</Tab>
+                          <Tab>Remove from Staking vault</Tab>
                         </Tab.List>
-
-                        <div className="ml-auto">
-                          <Button
-                            label="Select All"
-                            css="unstyled"
-                            className="text-primary-light"
-                            onClick={onSelectAllClick(selectedIndex)}
-                          />
-
-                          <Button
-                            label="Remove Selected"
-                            css="default"
-                            className="ml-2"
-                            disabled={isRemoveSelectedDisabled}
-                            onClick={onRemoveSelectedClick}
-                          />
-                        </div>
-                      </div>
-                      <Tab.Panels className="mt-12">
+                      </div> */}
+                      <Tab.Panels className="mt-5">
                         <Tab.Panel>
                           <article>
-                            {isShortLiquidityBinsEmpty ? (
-                              <p className="my-10 text-center text-primary/20">
-                                You have no liquidity yet.
-                              </p>
-                            ) : (
-                              <div className="flex flex-col gap-3">
-                                {shortLiquidityBins.map((props) => (
-                                  <BinItem {...props} />
-                                ))}
+                            <div className="flex justify-between mb-5 place-items-stretch">
+                              <div className="flex flex-col items-start justify-between">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="text-xl">CLP Balance (Wallet)</h4>
+                                  <p className="text-lg text-primary-light">
+                                    <SkeletonElement isLoading={isLoading} width={40}>
+                                      {walletBalance} CLP
+                                    </SkeletonElement>
+                                  </p>
+                                </div>
+                                <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
+                                  <Avatar label="CLP" size="xs" gap="1" />
+                                </span>
                               </div>
-                            )}
-                          </article>
-                        </Tab.Panel>
-                        <Tab.Panel>
-                          <article>
-                            {isOwnedLongLiquidityBinsEmpty ? (
-                              <p className="my-10 text-center text-primary/20">
-                                You have no liquidity yet.
-                              </p>
-                            ) : (
-                              <div className="flex flex-col gap-3">
-                                {longLiquidityBins.map((props) => (
-                                  <BinItem
-                                    {...props}
-                                    baseFeeRate={formatFeeRate(props.baseFeeRate)}
+                              {/* todo: input error */}
+                              {/* - Input : error prop is true when has error */}
+                              {/* - TooltipAlert : is shown when has error */}
+                              <div className="tooltip-wallet-balance">
+                                <OptionInput
+                                  value={amount}
+                                  maxValue={maxAmount}
+                                  onChange={onAmountChange}
+                                  error={isExceeded}
+                                />
+                                {isExceeded && (
+                                  <TooltipAlert
+                                    label="wallet-balance"
+                                    tip="Exceeded your wallet balance."
                                   />
-                                ))}
+                                )}
                               </div>
-                            )}
+                            </div>
+                            <div className="py-3 border-dashed border-y">
+                              <PoolInfo label="EST. Receive">
+                                <Avatar label="995.34 ETH" size="sm" gap="1" />
+                              </PoolInfo>
+                            </div>
+                            <div className="flex flex-col gap-2 pt-3">
+                              <PoolInfo
+                                label="Allowance"
+                                tooltipLabel="allowance"
+                                tooltipTip=""
+                                valueClass="w-20"
+                              >
+                                <Input
+                                  size="xs"
+                                  unit="%"
+                                  value={0.5}
+                                  min={1}
+                                  className="Allowance"
+                                  // onChange={}
+                                  autoCorrect
+                                />
+                              </PoolInfo>
+                              <PoolInfo
+                                label="Minimum Received"
+                                tooltipLabel="minimum-received"
+                                tooltipTip=""
+                                valueClass="w-20"
+                              >
+                                931.94 ETH
+                              </PoolInfo>
+                              <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
+                                0.35%
+                              </PoolInfo>
+                            </div>
+                          </article>
+                          <article>
+                            <div className="mb-5 mt-7">
+                              <Button
+                                label="Remove Liquidity"
+                                className="w-full"
+                                css="active"
+                                size="2xl"
+                                onClick={onAddLiquidity}
+                                disabled={isLoading}
+                              />
+                            </div>
                           </article>
                         </Tab.Panel>
+                        {/* tab02: required for the next version */}
+                        {/* <Tab.Panel>
+                          <article></article>
+                        </Tab.Panel> */}
                       </Tab.Panels>
                     </>
                   )}
                 </Tab.Group>
-              </section> */}
+              </section>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
@@ -432,8 +413,8 @@ const BinItem = (props: BinItemProps) => {
   } = props;
 
   return (
-    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
+    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-light rounded-xl">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-light">
         <Checkbox label={label} isChecked={isSelected} onClick={onSelectBin} />
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">

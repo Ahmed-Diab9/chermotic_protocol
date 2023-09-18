@@ -152,7 +152,7 @@ export function PoolPanel() {
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-light">
                       <p>Min trade Fee</p>
                       <Counter
                         value={minRateValue}
@@ -162,7 +162,7 @@ export function PoolPanel() {
                       />
                     </div>
                     <p>~</p>
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-light">
                       <p>Max trade Fee</p>
                       <Counter
                         value={maxRateValue}
@@ -439,8 +439,8 @@ const BinItem = (props: BinItemProps) => {
   } = props;
 
   return (
-    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
+    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-light rounded-xl">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-light">
         <Checkbox label={label} isChecked={isSelected} onClick={onSelectBin} />
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">

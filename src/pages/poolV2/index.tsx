@@ -15,6 +15,7 @@ import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolBalance } from '~/stories/template/PoolBalance';
+import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
 import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import './style.css';
 
@@ -25,11 +26,9 @@ const PoolV2 = () => {
   return (
     <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">
       <Header />
-      <BookmarkBoard />
-      <section className="sticky top-0">
-        <MainBarV2 />
-      </section>
       <section className="flex flex-col w-full px-5 mx-auto mb-20 grow max-w-[1400px]">
+        <BookmarkBoard />
+        <MainBarV2 />
         <div className="flex items-stretch gap-5">
           <div className="flex-none w-[240px]">
             <h4 className="mt-3 mb-2 text-left">Pools</h4>
@@ -43,7 +42,8 @@ const PoolV2 = () => {
                 <Button
                   label="Metamask"
                   iconLeft={<PlusIcon className="w-3 h-3" />}
-                  className="!bg-paper-lighter ml-4 !pt-[2px] !h-[26px]"
+                  className="ml-4 !pl-2 !pt-[2px] !h-[26px]"
+                  gap="1"
                   size="sm"
                 />
               </div>
@@ -63,7 +63,7 @@ const PoolV2 = () => {
             <div className="flex gap-3">
               <div className="flex-auto overflow-hidden">
                 <PoolPanelV2 />
-                {/* <PoolAnalytics /> */}
+                <PoolAnalytics />
               </div>
               <div className="flex-none w-[420px] flex flex-col gap-3">
                 {/* PoolBalance: To be added later */}

@@ -46,10 +46,10 @@ export const theme = {
         DEFAULT: 'rgb(var(--color-paper))',
         light: 'rgb(var(--color-gray-light) / var(--alpha-paper-light))',
         lighter: 'rgb(var(--color-gray-lighter) / var(--alpha-paper-light))',
-        lightest: 'rgb(var(--color-paper-light))',
+        lightest: 'rgb(var(--color-paper-lightest))',
         dark: 'rgb(var(--color-gray-dark) / var(--alpha-paper-dark))',
         darker: 'rgb(var(--color-gray-darker) / var(--alpha-paper-dark))',
-        darkest: 'rgb(var(--color-paper-dark))',
+        darkest: 'rgb(var(--color-paper-darkest))',
       },
 
       info: {
