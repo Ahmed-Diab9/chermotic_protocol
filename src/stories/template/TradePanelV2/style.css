@@ -1,6 +1,4 @@
 .TradePanelV2 {
-  /* @apply flex justify-center; */
-  /* @apply w-full max-w-[480px] min-w-[440px]; */
   @apply relative;
   .tabs {
     .btn-tabs {

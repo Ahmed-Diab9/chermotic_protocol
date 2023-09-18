@@ -11,7 +11,6 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 import { TradeChart } from '~/stories/atom/TradeChart';
-import { Outlink } from '~/stories/atom/Outlink';
 
 import { useTradeContentV2 } from './hooks';
 
@@ -176,7 +175,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <article className="flex-auto pr-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <h4>Take Profit</h4>
+                <h4 className="text-left">Take Profit</h4>
               </div>
               <div className="w-20">
                 <Input
@@ -204,7 +203,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <article className="flex-auto h-20 pl-5 border-l">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <h4>Stop Loss</h4>
+                <h4 className="text-left">Stop Loss</h4>
               </div>
               <div className="w-20">
                 <Input
@@ -341,15 +340,6 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
                     ({stopLossRatio}%)
                   </span>
                 </p>
-              </div>
-            </div>
-
-            <div className="pt-4 mt-4 border-t">
-              <div className="text-sm text-left text-primary-lighter">
-                The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
-                that accept the positions. The EST. Trade Fee is calculated based on the current
-                oracle price, and the actual fee paid is determined by the next oracle price.{' '}
-                <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
               </div>
             </div>
           </div>
