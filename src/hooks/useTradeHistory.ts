@@ -1,12 +1,13 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog } from 'viem';
 import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
-import { Market, Token } from '~/typings/market';
+import { MarketLike, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
+import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
@@ -19,7 +20,7 @@ import { useSettlementToken } from './useSettlementToken';
 type History = {
   positionId: bigint;
   token: Token;
-  market: Market;
+  market: MarketLike;
   entryPrice: bigint;
   direction: 'long' | 'short';
   collateral: bigint;
@@ -38,19 +39,15 @@ type History = {
 type GetTradeHistoryParams = {
   currentHistory: History[];
   toBlockNumber: bigint;
-  initialBlockNumber: bigint;
+  fromBlockNumber: bigint;
   accountAddress: Address;
-  markets: Market[];
+  markets: MarketLike[];
   tokens: Token[];
 };
 
 const getTradeHistory = async (params: GetTradeHistoryParams) => {
-  const { currentHistory, toBlockNumber, initialBlockNumber, accountAddress, markets, tokens } =
+  const { currentHistory, toBlockNumber, fromBlockNumber, accountAddress, markets, tokens } =
     params;
-  const fromBlockNumber: bigint =
-    toBlockNumber - BLOCK_CHUNK > initialBlockNumber
-      ? toBlockNumber - BLOCK_CHUNK
-      : initialBlockNumber;
   const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&fromBlock=${Number(
     fromBlockNumber
   )}&toBlock=${Number(toBlockNumber)}&apikey=${ARBISCAN_API_KEY}`;
@@ -87,7 +84,6 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
             positionId,
             token: selectedToken,
             market: selectedMarket,
-            blockNumber,
             isOpened: false,
             isClosed: false,
             isClaimed: false,
@@ -117,6 +113,7 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
             historyValue.interest = interest;
             historyValue.pnl = realizedPnl;
             historyValue.isClaimed = true;
+            historyValue.blockNumber = blockNumber;
             history.set(positionId, historyValue as History);
             break;
           }
@@ -156,11 +153,12 @@ export const useTradeHistory = () => {
         key: 'fetchHistory',
         accountAddress,
         tokens,
-        markets,
-        entireMarkets,
-        currentMarket,
+        markets: trimMarkets(markets),
+        entireMarkets: trimMarkets(entireMarkets),
+        currentMarket: trimMarket(currentMarket),
         filterOption,
         initialBlockNumber,
+        pageIndex,
       };
       if (!checkAllProps(fetchKey)) {
         return;
@@ -195,53 +193,69 @@ export const useTradeHistory = () => {
           ? markets
           : markets.filter((market) => market.address === currentMarket?.address);
       let historyResult = [] as History[];
+      let fromBlockNumber: bigint =
+        toBlockNumber - BLOCK_CHUNK > initialBlockNumber
+          ? toBlockNumber - BLOCK_CHUNK
+          : initialBlockNumber;
       while (true) {
         await new Promise((resolve) =>
           setTimeout(() => {
             resolve(undefined!);
           }, 1000)
         );
-        const { historyArray, fromBlockNumber } = await getTradeHistory({
+        const { historyArray } = await getTradeHistory({
           currentHistory: historyResult,
           toBlockNumber,
-          initialBlockNumber,
+          fromBlockNumber,
           accountAddress,
           markets: filteredMarkets,
           tokens,
         });
-
-        historyArray.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
-        const filteredHistory = historyArray.filter((history) => history.isClaimed);
-        const totalLength = filteredHistory.length;
-
-        const slicedHistory = filteredHistory.slice(0, PAGE_SIZE);
-        const hasPartialHistory =
-          slicedHistory.filter((history) => !history.isClosed || !history.isOpened).length > 0;
-        if (!hasPartialHistory) {
-          if (totalLength > PAGE_SIZE) {
-            const newToBlockNumber = slicedHistory[slicedHistory.length - 1].blockNumber;
-            historyResult = slicedHistory;
-            toBlockNumber = newToBlockNumber - 1n;
-            break;
-          } else if (totalLength === PAGE_SIZE) {
-            historyResult = filteredHistory;
-            toBlockNumber = fromBlockNumber - 1n;
-            break;
-          } else {
-            historyResult = filteredHistory;
-            toBlockNumber = fromBlockNumber - 1n;
-            if (fromBlockNumber === initialBlockNumber) {
-              break;
-            }
+        historyArray.sort((previous, next) => {
+          if (isNil(previous.blockNumber) && isNil(next.blockNumber)) {
+            return 0;
           }
-        } else {
+          if (isNil(previous.blockNumber) && isNotNil(next.blockNumber)) {
+            return 1;
+          }
+          if (isNil(previous.blockNumber) && isNil(next.blockNumber)) {
+            return -1;
+          }
+          return previous.blockNumber < next.blockNumber ? 1 : -1;
+        });
+        const slicedHistory = historyArray
+          .filter((history) => history.isClaimed)
+          .slice(0, PAGE_SIZE);
+        const filteredHistory = slicedHistory.filter(
+          (history) => history.isOpened && history.isClosed
+        );
+        if (filteredHistory.length <= 0) {
+          historyResult = historyArray;
+          fromBlockNumber =
+            fromBlockNumber - BLOCK_CHUNK > initialBlockNumber
+              ? fromBlockNumber - BLOCK_CHUNK
+              : initialBlockNumber;
+          continue;
+        }
+        if (filteredHistory.length === PAGE_SIZE) {
           historyResult = filteredHistory;
-          toBlockNumber = fromBlockNumber - 1n;
+          fromBlockNumber = filteredHistory[filteredHistory.length - 1].blockNumber;
+          break;
+        } else {
+          if (fromBlockNumber === initialBlockNumber) {
+            historyResult = historyArray.filter((history) => history.isClaimed);
+            break;
+          }
+          historyResult = historyArray;
+          fromBlockNumber =
+            fromBlockNumber - BLOCK_CHUNK > initialBlockNumber
+              ? fromBlockNumber - BLOCK_CHUNK
+              : initialBlockNumber;
         }
       }
       return {
         history: historyResult,
-        toBlockNumber,
+        toBlockNumber: fromBlockNumber - 1n,
       };
     },
     {
@@ -254,7 +268,7 @@ export const useTradeHistory = () => {
   );
 
   const onFetchNextHistory = () => {
-    setSize(size + 1);
+    setSize((size) => size + 1);
   };
 
   useError({ error });

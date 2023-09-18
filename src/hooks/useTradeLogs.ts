@@ -5,9 +5,10 @@ import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog, getEventSelector } from 'viem';
 import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
-import { Market, Token } from '~/typings/market';
+import { MarketLike, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
+import { trimMarket, trimMarkets } from '~/utils/market';
 import { abs, divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
@@ -21,7 +22,7 @@ import { useSettlementToken } from './useSettlementToken';
 type Trade = {
   positionId: bigint;
   token: Token;
-  market: Market;
+  market: MarketLike;
   entryPrice: bigint;
   direction: 'long' | 'short';
   collateral: bigint;
@@ -35,7 +36,7 @@ type GetTradeLogsParams = {
   toBlockNumber: bigint;
   initialBlockNumber: bigint;
   accountAddress: Address;
-  markets: Market[];
+  markets: MarketLike[];
   tokens: Token[];
   client: Client;
 };
@@ -118,9 +119,9 @@ export const useTradeLogs = () => {
         key: 'fetchTradeLogs',
         accountAddress,
         tokens,
-        markets,
-        entireMarkets,
-        currentMarket,
+        markets: trimMarkets(markets),
+        entireMarkets: trimMarkets(entireMarkets),
+        currentMarket: trimMarket(currentMarket),
         filterOption,
         initialBlockNumber,
       };
@@ -168,7 +169,7 @@ export const useTradeLogs = () => {
           toBlockNumber,
           initialBlockNumber,
           accountAddress,
-          markets,
+          markets: filteredMarkets,
           tokens,
           client,
         });
@@ -205,7 +206,7 @@ export const useTradeLogs = () => {
   );
 
   const onFetchNextTrade = () => {
-    setSize(size + 1);
+    setSize((size) => size + 1);
   };
 
   useError({ error });
