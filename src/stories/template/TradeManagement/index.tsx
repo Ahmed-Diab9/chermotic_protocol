@@ -32,7 +32,9 @@ export const TradeManagement = () => {
     positionList,
     isHistoryLoading,
     historyList,
+    historyBottomRef,
     tradeList,
+    tradeBottomRef,
     onFetchNextTrade,
     onFetchNextHistory,
   } = useTradeManagement();
@@ -213,6 +215,7 @@ export const TradeManagement = () => {
                               isLoading={isHistoryLoading}
                             />
                           ))}
+                          <div className="h-[32px] w-full" ref={historyBottomRef} />
                         </div>
                       </div>
                     )}
@@ -240,6 +243,7 @@ export const TradeManagement = () => {
                               isLoading={isHistoryLoading}
                             />
                           ))}
+                          <div className="h-[32px] w-full" ref={tradeBottomRef} />
                         </div>
                       </div>
                     )}

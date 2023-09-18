@@ -20,7 +20,7 @@ export function useTradeManagement() {
   const { currentMarket } = useMarket();
   const { positions, isLoading } = usePositions();
   const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
-  const { tradesData, onFetchNextTrade } = useTradeLogs();
+  const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
@@ -46,6 +46,48 @@ export function useTradeManagement() {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isGuideVisible, setGuideVisible] = useState(false);
+
+  const historyBottomRef = useRef<HTMLDivElement | null>(null);
+  const isHistoryRendered = isNotNil(historyBottomRef.current);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isHistoryLoading) {
+            onFetchNextHistory();
+          }
+        });
+      },
+      { root: null, threshold: 0 }
+    );
+    if (isHistoryRendered) {
+      observer.observe(historyBottomRef.current as HTMLDivElement);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, [isHistoryRendered, isHistoryLoading]);
+
+  const tradeBottomRef = useRef<HTMLDivElement | null>(null);
+  const isTradeLogsRendered = isNotNil(tradeBottomRef.current);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isTradeLogsLoading) {
+            onFetchNextTrade();
+          }
+        });
+      },
+      { root: null, threshold: 0 }
+    );
+    if (isTradeLogsRendered) {
+      observer.observe(tradeBottomRef.current as HTMLDivElement);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, [isTradeLogsRendered, isTradeLogsLoading]);
 
   useEffect(() => {
     function onTrade() {
@@ -76,7 +118,7 @@ export function useTradeManagement() {
     return historyData
       .map((historyItem) => historyItem.history)
       .flat(1)
-      .filter((historyValue) => historyValue.isClaimed)
+      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((historyValue) => {
         return {
           token: historyValue.token,
@@ -120,6 +162,7 @@ export function useTradeManagement() {
     return tradesData
       ?.map((tradesItem) => tradesItem.tradeLogs)
       .flat(1)
+      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((tradeLog) => ({
         token: tradeLog.token,
         market: tradeLog.market,
@@ -149,6 +192,8 @@ export function useTradeManagement() {
     isPositionsEmpty,
     positionList,
 
+    historyBottomRef,
+    tradeBottomRef,
     isHistoryLoading,
     historyList,
     tradeList,
