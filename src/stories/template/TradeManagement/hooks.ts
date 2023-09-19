@@ -1,7 +1,8 @@
 import { isNil, isNotNil } from 'ramda';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
+import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { useMarket } from '~/hooks/useMarket';
@@ -21,6 +22,7 @@ export function useTradeManagement() {
   const { positions, isLoading } = usePositions();
   const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
   const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
+  const { initialBlockNumber } = useInitialBlockNumber();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
@@ -178,6 +180,28 @@ export function useTradeManagement() {
       }));
   }, [tradesData]);
 
+  const hasMoreHistory = useMemo(() => {
+    const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;
+    if (!toBlockNumber || !initialBlockNumber) {
+      return true;
+    }
+    return toBlockNumber > initialBlockNumber;
+  }, [historyData, initialBlockNumber]);
+  const hasMoreTrades = useMemo(() => {
+    const toBlockNumber = tradesData?.[tradesData.length - 1].toBlockNumber;
+    if (!toBlockNumber || !initialBlockNumber) {
+      return true;
+    }
+    return toBlockNumber > initialBlockNumber;
+  }, [tradesData, initialBlockNumber]);
+
+  const onLoadHistoryRef = useCallback((element: HTMLDivElement | null) => {
+    historyBottomRef.current = element;
+  }, []);
+  const onLoadTradesRef = useCallback((element: HTMLDivElement | null) => {
+    tradeBottomRef.current = element;
+  }, []);
+
   return {
     openButtonRef,
     popoverRef,
@@ -197,7 +221,11 @@ export function useTradeManagement() {
     isHistoryLoading,
     historyList,
     tradeList,
+    hasMoreHistory,
+    hasMoreTrades,
     onFetchNextTrade,
     onFetchNextHistory,
+    onLoadHistoryRef,
+    onLoadTradesRef,
   };
 }
