@@ -345,6 +345,10 @@ export function PoolPanelV2() {
                   )}
                 </Tab.Group>
               </section>
+
+              <section className="mt-10 -mx-5 border-t border-dashed">
+                <PoolProgressV2 />
+              </section>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
