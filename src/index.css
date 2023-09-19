@@ -117,6 +117,16 @@ body {
   letter-spacing: 0.04em !important;
 }
 
+::-webkit-scrollbar {
+  @apply w-2;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-paper-lighter rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-paper-light;
+}
+
 .sb-show-main,
 .docs-story {
   @apply text-primary bg-inverted min-w-0;
