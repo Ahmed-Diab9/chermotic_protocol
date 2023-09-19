@@ -1,7 +1,7 @@
 import './style.css';
 
 interface TagProps {
-  label: string;
+  label?: string;
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
   className?: string;
   onClick?: () => unknown;

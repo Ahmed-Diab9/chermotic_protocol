@@ -5,7 +5,8 @@ import { TradeHistory } from '~/typings/position';
 
 export interface HistoryItemProps {
   isLoading: boolean;
-  history: TradeHistory;
+  history?: TradeHistory;
+  onLoadRef?: (element: HTMLDivElement | null) => unknown;
 }
 
 export function HistoryItem(props: HistoryItemProps) {
@@ -23,12 +24,13 @@ export function HistoryItem(props: HistoryItemProps) {
       pnl,
       pnlRate,
       pnlClass,
-    },
+    } = {},
     isLoading,
+    onLoadRef,
   } = props;
 
   return (
-    <div className="tr">
+    <div className="tr" ref={(element) => onLoadRef?.(element)}>
       <div className="td">
         <div>
           <div className="flex text-sm text-primary-light text-ellipsis">
@@ -43,12 +45,12 @@ export function HistoryItem(props: HistoryItemProps) {
           <div className="flex items-center gap-2 mt-[4px]">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{token.name}</h6>
+                <h6>{token && token.name}</h6>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{market.description}</h6>
+                <h6>{market && market.description}</h6>
               </SkeletonElement>
             </div>
             <SkeletonElement isLoading={isLoading} width={40}>
