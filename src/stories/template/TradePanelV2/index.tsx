@@ -59,16 +59,16 @@ export const TradePanelV2 = () => {
       <div className="TradePanelV2 panel">
         {isWide ? (
           <div className="relative w-full">
-            <div className="flex font-extrabold">
+            <div className="flex">
               <div className="flex-grow border-r">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl text-price-lower">
+                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-lower">
                   <DecreaseIcon />
                   SHORT
                 </div>
                 <TradeContentV2 direction="short" />
               </div>
               <div className="flex-grow">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl text-price-higher">
+                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-higher">
                   <IncreaseIcon />
                   LONG
                 </div>
