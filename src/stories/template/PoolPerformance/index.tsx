@@ -65,11 +65,11 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
           </div>
         </div>
         <div className="p-3 mt-4 rounded bg-paper-light">
-          <div className="flex border-b">
+          <div className="flex border-b border-paper-light">
             <div className="w-1/2 pb-3 pr-3">
               <PoolPerformanceItem title="Trade Fees" value={101.373} price={101.373} />
             </div>
-            <div className="w-1/2 pb-3 pl-3 border-l">
+            <div className="w-1/2 pb-3 pl-3 border-l border-paper-light">
               <PoolPerformanceItem title="Maker PnL" value={101.373} price={101.373} />
             </div>
           </div>
@@ -77,7 +77,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             <div className="w-1/2 pt-3 pr-3">
               <PoolPerformanceItem title="Liquidity Fees" value={101.373} price={101.373} />
             </div>
-            <div className="w-1/2 pt-3 pl-3 border-l">
+            <div className="w-1/2 pt-3 pl-3 border-l border-paper-light">
               <PoolPerformanceItem title="esChroma Rewards" value={101.373} price={101.373} />
             </div>
           </div>
