@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
+import { logos } from '~/constants/logo';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { Token } from '~/typings/market';
@@ -39,6 +40,7 @@ export const useSettlementToken = () => {
         return {
           ...token,
           minimumMargin,
+          image: logos[token.name],
         };
       })
     );
