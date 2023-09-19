@@ -30,6 +30,7 @@ export function MarketSelectV2() {
     changeRateClass,
     explorerUrl,
     isBookmarked,
+    formattedElapsed,
     onBookmarkClick,
   } = useMarketSelectV2();
 
@@ -192,7 +193,7 @@ export function MarketSelectV2() {
             </div>
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
-                00:00:00
+                {formattedElapsed}
               </SkeletonElement>
             </h4>
           </div>

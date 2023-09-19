@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import { formatUnits } from 'viem';
 import { Address, usePublicClient } from 'wagmi';
 import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
+import { useLastOracle } from '~/hooks/useLastOracle';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { usePreviousOracles } from '~/hooks/usePreviousOracles';
@@ -34,6 +35,29 @@ export function useMarketSelectV2() {
   });
   const { feeRate } = useFeeRate();
   const publicClient = usePublicClient();
+  const { formattedElapsed } = useLastOracle({
+    format: ({ type, value }) => {
+      switch (type) {
+        case 'hour': {
+          return `${value}`;
+        }
+        case 'minute': {
+          return `${value}`;
+        }
+        case 'second': {
+          return `${value}`;
+        }
+        case 'literal': {
+          return ':';
+        }
+        case 'dayPeriod': {
+          return '';
+        }
+        default:
+          return value;
+      }
+    },
+  });
   const {
     changeRate: changeRateRaw = 0n,
     isLoading: isOracleLoading,
@@ -187,6 +211,7 @@ export function useMarketSelectV2() {
     changeRateClass,
     explorerUrl,
     isBookmarked,
+    formattedElapsed,
     onBookmarkClick,
   };
 }
