@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { Tab } from '@headlessui/react';
+import { Resizable } from 're-resizable';
+import { useEffect, useState } from 'react';
 import DecreaseIcon from '~/assets/icons/DecreaseIcon';
 import IncreaseIcon from '~/assets/icons/IncreaseIcon';
-import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
 import { Outlink } from '~/stories/atom/Outlink';
 import '~/stories/atom/Tabs/style.css';
+import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
 import './style.css';
 
 const enum POSITION_TAB {
@@ -20,6 +19,7 @@ export const TradePanelV2 = () => {
 
   const [isWide, setIsWide] = useState(false);
 
+  // FIXME: Need throttle actions
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
@@ -59,16 +59,16 @@ export const TradePanelV2 = () => {
       <div className="TradePanelV2 panel">
         {isWide ? (
           <div className="relative w-full">
-            <div className="flex font-extrabold">
+            <div className="flex">
               <div className="flex-grow border-r">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl text-price-lower">
+                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-lower">
                   <DecreaseIcon />
                   SHORT
                 </div>
                 <TradeContentV2 direction="short" />
               </div>
               <div className="flex-grow">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl text-price-higher">
+                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-higher">
                   <IncreaseIcon />
                   LONG
                 </div>
