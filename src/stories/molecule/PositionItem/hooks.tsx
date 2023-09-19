@@ -145,9 +145,10 @@ export function usePositionItem({ position }: UsePositionItem) {
   const isClosed = position.status === POSITION_STATUS.CLOSED;
 
   const tokenName = currentToken?.name;
-  const marketDescription = markets?.find(
-    (market) => market.address === position.marketAddress
-  )?.description;
+  const tokenImage = currentToken?.image;
+  const selectedMarket = markets?.find((market) => market.address === position.marketAddress);
+  const marketDescription = selectedMarket?.description;
+  const marketImage = selectedMarket?.image;
 
   const tpPriceClass = comparePrices(position, 'toProfit');
   const slPriceClass = comparePrices(position, 'toLoss');
@@ -172,7 +173,9 @@ export function usePositionItem({ position }: UsePositionItem) {
     isClosed,
 
     tokenName,
+    tokenImage,
     marketDescription,
+    marketImage,
 
     tpPriceClass,
     slPriceClass,

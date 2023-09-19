@@ -89,11 +89,13 @@ export function useWalletPopover() {
       usdPrice: string;
       balance: string;
       explorerUrl?: string;
+      image: string;
     }[]
   >((acc, token) => {
     // if (isNil(tokenBalances[token.address])) return acc;
     const key = token.address;
     const name = token.name;
+    const image = token.image;
     const usdPrice = getTokenPrice(token);
     const balance = numberFormat(
       formatUnits(tokenBalances?.[token.address] || 0n, token.decimals),
@@ -105,7 +107,7 @@ export function useWalletPopover() {
       }
     );
     const explorerUrl = getExplorerUrl('token', token.address);
-    acc.push({ key, name, usdPrice, balance, explorerUrl });
+    acc.push({ key, name, usdPrice, balance, explorerUrl, image });
     return acc;
   }, []);
   const isAssetEmpty = assets.length === 0;
@@ -114,6 +116,7 @@ export function useWalletPopover() {
     {
       key: string;
       name: string;
+      image: string;
       market: string;
       liquidity: string;
       bins: number;
@@ -121,10 +124,12 @@ export function useWalletPopover() {
   >((acc, pool) => {
     const key = `${pool.token.name}-${pool.market}`;
     const name = pool.token.name;
+    const image = pool.image;
+
     const market = pool.market;
     const liquidity = formatDecimals(pool.liquidity, pool.token.decimals, 2, true);
     const bins = pool.bins;
-    acc.push({ key, name, market, liquidity, bins });
+    acc.push({ key, name, market, liquidity, bins, image });
     return acc;
   }, []);
   const isLiquidityTokenEmpty = liquidityTokens.length === 0;

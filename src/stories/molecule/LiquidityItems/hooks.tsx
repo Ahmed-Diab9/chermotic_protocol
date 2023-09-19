@@ -90,6 +90,7 @@ export function useLiquidityItems() {
       key: selectedBin.clbTokenDescription,
       image: selectedBin.clbTokenImage,
       tokenName: currentToken?.name || '-',
+      tokenImage: currentToken?.image,
       clbTokenName: selectedBin.clbTokenDescription,
       qty: formatDecimals(selectedBin.clbTokenBalance, currentToken?.decimals, 2),
       progress: +formatUnits(clbRemovable, currentToken?.decimals || 0),

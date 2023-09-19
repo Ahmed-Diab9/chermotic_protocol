@@ -1,13 +1,13 @@
-import { isNotNil, isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useAccount, useConnect } from 'wagmi';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useMargins } from '~/hooks/useMargins';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useTokenBalances } from '~/hooks/useTokenBalance';
 
-import { formatDecimals } from '~/utils/number';
 import { ACCOUNT_STATUS } from '~/typings/account';
+import { formatDecimals } from '~/utils/number';
 
 export function useAccountPopoverV2() {
   const { isConnected } = useAccount();
@@ -23,6 +23,7 @@ export function useAccountPopoverV2() {
   const isAccountExist = status === ACCOUNT_STATUS.COMPLETED;
 
   const tokenName = currentToken?.name || '-';
+  const tokenImage = currentToken?.image;
 
   const balance =
     isNotNil(totalBalance) && isNotNil(currentToken)
@@ -37,6 +38,7 @@ export function useAccountPopoverV2() {
     isLoading,
     balance,
     tokenName,
+    tokenImage,
     onClickConnect,
   };
 }

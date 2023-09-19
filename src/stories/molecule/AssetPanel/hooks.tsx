@@ -74,6 +74,7 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
   const isAccountExist = status === ACCOUNT_STATUS.COMPLETED;
 
   const tokenName = currentToken?.name || '-';
+  const tokenImage = currentToken?.image;
 
   const availableMargin = numberFormat(formatUnits(totalMargin, currentToken?.decimals || 0), {
     maxDigits: 5,
@@ -123,6 +124,7 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
     chromaticAddress,
     addressExplorer,
     tokenName,
+    tokenImage,
     availableMargin,
 
     maxAmount,

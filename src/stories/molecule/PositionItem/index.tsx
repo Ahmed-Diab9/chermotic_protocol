@@ -10,8 +10,6 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { Position } from '~/typings/position';
 
-import { comparePrices } from '~/utils/price';
-
 import { usePositionItem } from './hooks';
 
 export interface PositionItemProps {
@@ -46,8 +44,9 @@ export function PositionItem(props: PositionItemProps) {
     isClosed,
 
     tokenName,
+    tokenImage,
     marketDescription,
-
+    marketImage,
     tpPriceClass,
     slPriceClass,
     pnlClass,
@@ -61,7 +60,14 @@ export function PositionItem(props: PositionItemProps) {
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
               <SkeletonElement isLoading={isLoading} width={40}>
-                <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+                <Avatar
+                  label={tokenName}
+                  src={tokenImage}
+                  size="xs"
+                  gap="1"
+                  fontSize="base"
+                  fontWeight="bold"
+                />
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1">
@@ -69,6 +75,7 @@ export function PositionItem(props: PositionItemProps) {
               <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar
                   label={marketDescription}
+                  src={marketImage}
                   size="xs"
                   gap="1"
                   fontSize="base"

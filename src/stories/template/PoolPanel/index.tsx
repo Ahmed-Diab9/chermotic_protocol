@@ -48,6 +48,7 @@ export function PoolPanel() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,
@@ -261,7 +262,7 @@ export function PoolPanel() {
                     <div className="flex items-center gap-1 mt-2">
                       <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
                       <SkeletonElement isLoading={isLoading} width={40}>
-                        <Avatar label={tokenName} size="xs" gap="1" />
+                        <Avatar label={tokenName} src={tokenImage} size="xs" gap="1" />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -409,11 +410,12 @@ interface BinItemProps {
   isSelected: boolean;
   onSelectBin: () => unknown;
   label: string;
+  image: string;
   marketDescription: string;
   baseFeeRate: number | string;
   onClickRemove: (e: React.MouseEvent<HTMLButtonElement>) => unknown;
   explorerUrl?: string;
-  tokenImage: string;
+  tokenImage?: string;
   tokenBalance: string;
   freeLiquidity: string;
   tokenValue: string;
@@ -427,6 +429,7 @@ const BinItem = (props: BinItemProps) => {
     isSelected,
     onSelectBin,
     label,
+    image,
     marketDescription,
     baseFeeRate,
     onClickRemove,
@@ -446,7 +449,14 @@ const BinItem = (props: BinItemProps) => {
           <div className="flex items-center gap-1">
             <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
             <SkeletonElement isLoading={isLoading} width={40}>
-              <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+              <Avatar
+                label={tokenName}
+                src={tokenImage}
+                size="xs"
+                gap="1"
+                fontSize="base"
+                fontWeight="bold"
+              />
             </SkeletonElement>
           </div>
           <p className="font-semibold text-primary">
@@ -463,7 +473,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           <SkeletonElement isLoading={isLoading} width={60} height={60}>
-            <Thumbnail src={tokenImage} size="lg" className="rounded" />
+            <Thumbnail src={image} size="lg" className="rounded" />
           </SkeletonElement>
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">
