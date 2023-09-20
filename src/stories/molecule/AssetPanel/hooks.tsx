@@ -20,9 +20,9 @@ import { formatDecimals, isNotZero, numberFormat } from '~/utils/number';
 
 import { AssetPanelProps } from '.';
 
-interface useAssetPanelProps extends AssetPanelProps {}
+interface UseAssetPanelProps extends AssetPanelProps {}
 
-export const useAssetPanel = ({ type }: useAssetPanelProps) => {
+export const useAssetPanel = ({ type }: UseAssetPanelProps) => {
   const {
     accountAddress: chromaticAddress,
     status,
@@ -104,11 +104,11 @@ export const useAssetPanel = ({ type }: useAssetPanelProps) => {
   const isAmountError = isExceeded || isLess;
   const isSubmitDisabled = isAmountError || isEmpty(amount) || +amount === 0;
 
-  const onClickSubmit = () => {
+  const onClickSubmit = (onPopoverClose?: () => unknown) => {
     if (isDeposit) {
-      onDeposit && onDeposit(close);
+      onDeposit && onDeposit(onPopoverClose);
     } else {
-      onWithdraw && onWithdraw(close);
+      onWithdraw && onWithdraw(onPopoverClose);
     }
   };
   return {

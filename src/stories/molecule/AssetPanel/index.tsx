@@ -254,7 +254,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     size="xl"
                     css="active"
                     className="w-full"
-                    onClick={onClickSubmit}
+                    onClick={() => onClickSubmit(close)}
                     disabled={isSubmitDisabled}
                   />
                   <Button
