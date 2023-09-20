@@ -84,10 +84,10 @@ export function MarketSelectV2() {
                   />
                 </Popover.Button>
                 <Popover.Panel className="popover-panel">
-                  <div className="flex justify-between px-3 py-2 text-left border-b tr text-primary-lighter bg-inverted-lighter">
+                  <div className="flex justify-between gap-20 px-3 py-2 text-left border-b tr text-primary-lighter bg-inverted-lighter">
                     <div className="flex">
-                      <div className="w-[128px]">Settlement token</div>
-                      <div className="pl-3 border-l">Index</div>
+                      <div className="min-w-[128px] border-r">Settlement token</div>
+                      <div className="pl-3">Index</div>
                     </div>
                     <div className="flex pr-3 text-left">
                       <div className="w-[80px]">Long LP</div>
@@ -95,7 +95,7 @@ export function MarketSelectV2() {
                     </div>
                   </div>
                   <section className="flex flex-auto w-full px-3">
-                    <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r">
+                    <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r min-w-[128px]">
                       {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
                         <button
                           key={key}
