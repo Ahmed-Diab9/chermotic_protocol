@@ -166,7 +166,7 @@ export function useMarketSelectV2() {
       };
       return record;
     }, {} as Record<Address, { longLpSum: string; shortLpSum: string }>);
-  }, [liquidityPools]);
+  }, [liquidityPools, currentToken, liquidityFormatter]);
 
   const explorerUrl = useMemo(() => {
     try {
