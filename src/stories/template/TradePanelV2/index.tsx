@@ -36,12 +36,11 @@ export const TradePanelV2 = () => {
 
   return (
     <Resizable
-      // style={style}
       defaultSize={{
-        width: '40%',
+        width: 'auto',
         height: '100%',
       }}
-      maxWidth={isWide ? '50%' : '44%'}
+      maxWidth={isWide ? '50%' : '40%'}
       minWidth={isWide ? 960 : 480}
       minHeight={640}
       enable={{
