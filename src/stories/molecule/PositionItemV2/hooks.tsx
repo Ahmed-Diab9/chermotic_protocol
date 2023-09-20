@@ -109,7 +109,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         lossPrice: '-',
         profitPrice: '-',
         entryPrice: '-',
-        entryTime: '-',
+        entryTime: formatTimestamp(position.openTimestamp),
         pnlAmount: '-',
       };
     }

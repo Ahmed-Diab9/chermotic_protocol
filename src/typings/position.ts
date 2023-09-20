@@ -1,6 +1,6 @@
 import { IPosition as IChromaticPosition } from '@chromatic-protocol/sdk-viem';
 import { Address } from 'wagmi';
-import { Market, Token } from './market';
+import { MarketLike, Token } from './market';
 
 export const enum POSITION_STATUS {
   'OPENING',
@@ -44,9 +44,23 @@ export interface Position extends IChromaticPosition {
   pnl: bigint;
 }
 
+export interface ResponseLog {
+  address: `0x${string}`;
+  topics: [`0x${string}`, `0x${string}`, `0x${string}`];
+  data: `0x${string}`;
+  blockNumber: `0x${string}`;
+  blockHash: `0x${string}`;
+  timeStamp: `0x${string}`;
+  gasPrice: `0x${string}`;
+  gasUsed: `0x${string}`;
+  logIndex: `0x${string}`;
+  transactionHash: `0x${string}`;
+  transactionIndex: `0x${string}`;
+}
+
 export interface TradeHistory {
   token: Token;
-  market: Market;
+  market: MarketLike;
   positionId: bigint;
   direction: 'short' | 'long';
   collateral: string;
@@ -62,7 +76,7 @@ export interface TradeHistory {
 
 export interface TradeEntryOnly {
   token: Token;
-  market: Market;
+  market: MarketLike;
   positionId: bigint;
   direction: 'short' | 'long';
   collateral: string;

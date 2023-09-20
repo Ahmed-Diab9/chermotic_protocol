@@ -11,7 +11,7 @@ export function useMargins() {
 
   const [totalBalance, totalAsset] = useMemo(() => {
     if (isNil(balances) || isNil(currentToken) || Object.keys(balances).length <= 0) {
-      return [undefined, undefined];
+      return [0n, 0n];
     }
     const balance = balances[currentToken.address];
     if (isNil(currentPositions)) {
@@ -30,7 +30,7 @@ export function useMargins() {
     if (isNil(balances) || isNil(currentToken)) {
       return 0n;
     }
-    return balances[currentToken.address];
+    return balances[currentToken.address] ?? 0n;
   }, [balances, currentToken]);
 
   return {

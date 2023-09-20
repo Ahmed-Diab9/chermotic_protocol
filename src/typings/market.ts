@@ -27,6 +27,8 @@ export interface Market {
   tokenAddress: Address;
 }
 
+export type MarketLike = Omit<Market, 'oracleValue'>;
+
 export interface Bookmark {
   tokenName: string;
   marketDescription: string;
