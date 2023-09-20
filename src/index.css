@@ -113,8 +113,8 @@ body {
   @apply font-mono text-base tracking-tight min-w-[1080px];
   @apply text-primary bg-paper-lightest;
   /* word-spacing: -0.1em; */
-  /* word-spacing: -0.1em; */
   letter-spacing: 0.04em !important;
+  transition: backdrop-color 2s ease-in-out;
 }
 
 ::-webkit-scrollbar {
