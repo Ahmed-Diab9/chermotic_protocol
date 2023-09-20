@@ -33,6 +33,10 @@ export const TradeManagement = () => {
     isHistoryLoading,
     historyList,
     tradeList,
+    hasMoreHistory,
+    hasMoreTrades,
+    onLoadHistoryRef,
+    onLoadTradesRef,
   } = useTradeManagement();
 
   // TODO: PERCENTAGE
@@ -211,6 +215,13 @@ export const TradeManagement = () => {
                               isLoading={isHistoryLoading}
                             />
                           ))}
+                          {hasMoreHistory && (
+                            <HistoryItem
+                              key={'history-next'}
+                              isLoading={true}
+                              onLoadRef={onLoadHistoryRef}
+                            />
+                          )}
                         </div>
                       </div>
                     )}
@@ -238,6 +249,13 @@ export const TradeManagement = () => {
                               isLoading={isHistoryLoading}
                             />
                           ))}
+                          {hasMoreTrades && (
+                            <TradesItem
+                              key="trades-next"
+                              isLoading={true}
+                              onLoadRef={onLoadTradesRef}
+                            />
+                          )}
                         </div>
                       </div>
                     )}

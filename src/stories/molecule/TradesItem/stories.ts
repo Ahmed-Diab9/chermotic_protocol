@@ -22,11 +22,6 @@ export const Default: Story = {
         address: '0x8888888888888888888888888888888888888888',
         tokenAddress: '0x8888888888888888888888888888888888888888',
         description: 'ETH/USD',
-        oracleValue: {
-          price: 10000n,
-          timestamp: 1000000n,
-          version: 10n,
-        },
       },
       positionId: 1n,
       direction: 'long',

@@ -4,18 +4,20 @@ import { Tag } from '~/stories/atom/Tag';
 import { TradeEntryOnly } from '~/typings/position';
 
 export interface TradesItemProps {
-  trade: TradeEntryOnly;
+  trade?: TradeEntryOnly;
   isLoading: boolean;
+  onLoadRef?: (element: HTMLDivElement | null) => unknown;
 }
 
 export function TradesItem(props: TradesItemProps) {
   const {
-    trade: { token, market, direction, entryPrice, entryTime, collateral, qty, leverage },
+    trade: { token, market, direction, entryPrice, entryTime, collateral, qty, leverage } = {},
     isLoading,
+    onLoadRef,
   } = props;
 
   return (
-    <div className="tr">
+    <div className="tr" ref={(element) => onLoadRef?.(element)}>
       <div className="td">
         <div>
           <div className="flex text-sm text-primary-light">
@@ -26,12 +28,12 @@ export function TradesItem(props: TradesItemProps) {
           <div className="flex items-center gap-2 mt-[2px]">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{token.name}</h6>
+                <h6>{token && token.name}</h6>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{market.description}</h6>
+                <h6>{market && market.description}</h6>
               </SkeletonElement>
             </div>
             <SkeletonElement isLoading={isLoading} width={40}>
