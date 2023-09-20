@@ -5,8 +5,8 @@ export const trimMarket = (market?: Market): MarketLike | undefined => {
   if (isNil(market)) {
     return;
   }
-  const { address, tokenAddress, description } = market;
-  return { address, tokenAddress, description };
+  const { address, tokenAddress, description, image } = market;
+  return { address, tokenAddress, description, image };
 };
 export const trimMarkets = (markets: Market[] = []): MarketLike[] => {
   return markets.map(trimMarket).filter((market): market is MarketLike => isNotNil(market));
