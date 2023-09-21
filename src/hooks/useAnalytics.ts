@@ -4,6 +4,8 @@ import useSWR from 'swr';
 import { useError } from '~/hooks/useError';
 import { useMarket } from '~/hooks/useMarket';
 
+import { DUNE_API } from '~/constants/dune';
+
 import { checkAllProps } from '~/utils';
 
 export function useAnalytics(id: string) {
@@ -23,7 +25,7 @@ export function useAnalytics(id: string) {
     async () => {
       const { data } = await axios({
         method: 'GET',
-        url: `https://chromatic.jay-46.workers.dev/dune/${id}`,
+        url: `${DUNE_API}/${id}`,
       });
       return data;
     },
