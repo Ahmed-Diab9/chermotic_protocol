@@ -1,29 +1,36 @@
-import { useEffect, useState } from 'react';
+import { isNil } from 'ramda';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useThrottledResize } from '~/hooks/useThrottledResize';
 
 export function useLiquidityItems() {
   const [arrowState, setArrowState] = useState({
     isScrolled: false,
     hasSameHeight: false,
   });
-  useEffect(() => {
-    const bins = document.querySelector('#bins');
-    if (bins === undefined || bins === null) return;
-    if (bins.clientHeight === bins.scrollHeight) {
-      setArrowState(() => ({ isScrolled: false, hasSameHeight: true }));
-    }
-    const onWindowResize = () => {
-      if (bins.scrollTop !== 0) {
+  const binsRef = useRef<HTMLDivElement | null>(null);
+  const onLoadBinsRef = useCallback((element: HTMLDivElement | null) => {
+    binsRef.current = element;
+  }, []);
+  useThrottledResize({
+    interval: 200,
+    onResize(size) {
+      if (isNil(binsRef.current)) {
+        return;
+      }
+      if (binsRef.current.scrollTop !== 0) {
         setArrowState((state) => ({ ...state, isScrolled: true }));
-      } else if (bins.clientHeight === bins.scrollHeight) {
+      } else if (binsRef.current.clientHeight === binsRef.current.scrollHeight) {
         setArrowState({ isScrolled: false, hasSameHeight: true });
       } else {
         setArrowState({ isScrolled: false, hasSameHeight: false });
       }
-    };
-    window.addEventListener('resize', onWindowResize);
-    return () => {
-      window.removeEventListener('resize', onWindowResize);
-    };
+    },
+  });
+  useEffect(() => {
+    if (isNil(binsRef.current)) return;
+    if (binsRef.current.clientHeight === binsRef.current.scrollHeight) {
+      setArrowState(() => ({ isScrolled: false, hasSameHeight: true }));
+    }
   }, []);
 
   const isScrollTriggerVisible = !arrowState.hasSameHeight;
@@ -74,6 +81,7 @@ export function useLiquidityItems() {
   ];
 
   return {
+    onLoadBinsRef,
     isScrollTriggerVisible,
     isScrollTriggerHasOpacity,
     onScrollLiquidityWrapper,

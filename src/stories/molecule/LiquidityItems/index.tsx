@@ -8,7 +8,7 @@ export function LiquidityItems() {
     isScrollTriggerVisible,
     isScrollTriggerHasOpacity,
     onScrollLiquidityWrapper,
-
+    onLoadBinsRef,
     liquidityItems,
   } = useLiquidityItems();
 
@@ -18,6 +18,9 @@ export function LiquidityItems() {
         id="bins"
         className="max-h-[calc(100vh-600px)] min-h-[180px] overflow-auto"
         onScroll={onScrollLiquidityWrapper}
+        ref={(element) => {
+          onLoadBinsRef(element);
+        }}
       >
         {liquidityItems.map(({ key, ...props }) => (
           <LiquidityItem key={key} {...props} />
