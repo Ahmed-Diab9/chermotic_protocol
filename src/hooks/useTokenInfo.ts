@@ -1,19 +1,18 @@
 import axios from 'axios';
-import { isNotNil } from 'ramda';
 import useSWR from 'swr';
 
 import { useError } from '~/hooks/useError';
 
 import { CMC_API } from '~/constants/coinmarketcap';
 
-import { CMCInfoReturn } from '~/typings/api';
+import { CMCTokenInfo } from '~/typings/api';
 
 import { checkAllProps } from '~/utils';
 
-export function useTokenInfo(symbol: string) {
+export function useTokenInfo(symbols: string | string[]) {
   const fetchKey = {
     key: 'getTokenInfo',
-    symbol,
+    symbols,
   };
 
   const {
@@ -23,16 +22,15 @@ export function useTokenInfo(symbol: string) {
   } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
     async () => {
+      const symbolString = typeof symbols === 'string' ? symbols : symbols.toString();
       const { data } = await axios({
         method: 'GET',
-        url: `${CMC_API}/${symbol}`,
+        url: `${CMC_API}/${symbolString}`,
       });
-
-      if (isNotNil(data.data)) {
-        return (Object.values(data.data)[0] as [CMCInfoReturn])[0];
-      } else {
-        return undefined;
+      if (!data.data) {
+        throw new Error(data.status.error_message, data.status);
       }
+      return data.data as { [symbol: string]: CMCTokenInfo[] };
     },
     {
       refreshWhenHidden: false,

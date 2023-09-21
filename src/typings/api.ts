@@ -1,4 +1,4 @@
-export type CMCInfoReturn = {
+export type CMCTokenInfo = {
   id: number;
   name: string;
   symbol: string;
