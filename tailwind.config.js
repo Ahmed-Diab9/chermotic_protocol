@@ -72,8 +72,14 @@ export const theme = {
 
       leverage: 'rgb(var(--color-leverage))',
       price: {
-        higher: 'rgb(var(--color-price-higher))',
-        lower: 'rgb(var(--color-price-lower))',
+        higher: {
+          DEFAULT: 'rgb(var(--color-price-higher))',
+          light: 'rgb(var(--color-price-higher-light))',
+        },
+        lower: {
+          DEFAULT: 'rgb(var(--color-price-lower))',
+          light: 'rgb(var(--color-price-lower-light))',
+        },
       },
       status: {
         standby: {
