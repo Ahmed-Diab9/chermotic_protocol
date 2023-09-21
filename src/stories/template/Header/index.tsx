@@ -13,7 +13,7 @@ export function Header() {
 
   return (
     <header className="Header">
-      <div className="h-[70px] bg-paper-lightest px-10 py-5 flex items-center justify-between">
+      <div className="h-[70px] px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
             <LogoSimple className="text-primary h-9" />

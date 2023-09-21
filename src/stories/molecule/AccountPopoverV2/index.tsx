@@ -15,10 +15,10 @@ export function AccountPopoverV2() {
   return (
     <>
       <div className="AccountPopoverV2 panel">
-        <div className="ml-10">
+        <div className="ml-5">
           <Avatar size="base" fontSize="lg" label="Account balance" gap="2" src={tokenImage} />
         </div>
-        <div className="flex flex-col gap-1 mr-10 text-right">
+        <div className="flex flex-col gap-1 mr-5 text-right">
           {isConnected ? (
             <>
               {isAccountExist && (
