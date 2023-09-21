@@ -10,17 +10,12 @@ import { TradeChartView } from '~/stories/template/TradeChartView';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 
-import { useAnalytics } from '~/hooks/useAnalytics';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
-
-import { GLP_DATA } from '~/constants/dune';
 
 function TradeV2() {
   useTokenLocal();
   useMarketLocal();
-
-  useAnalytics(GLP_DATA);
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full relative">
