@@ -31,6 +31,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
     chromaticAddress,
     addressExplorer,
     tokenName,
+    tokenImage,
     availableMargin,
 
     maxAmount,
@@ -176,7 +177,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                   <article className="flex flex-col items-start w-2/5 min-w-[140px] gap-3">
                     <h4 className="text-lg font-semibold">{type}</h4>
                     <div className="py-2 pl-2 pr-3 border rounded-full">
-                      <Avatar size="xs" label={tokenName} gap="1" />
+                      <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
                     </div>
                     <div>
                       <div className="flex mb-1 text-primary-lighter">
@@ -253,7 +254,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     size="xl"
                     css="active"
                     className="w-full"
-                    onClick={onClickSubmit}
+                    onClick={() => onClickSubmit(close)}
                     disabled={isSubmitDisabled}
                   />
                   <Button

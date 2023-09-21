@@ -17,11 +17,13 @@ export const Default: Story = {
         address: '0x8888888888888888888888888888888888888888',
         decimals: 6,
         minimumMargin: 10000000n,
+        image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
       },
       market: {
         address: '0x8888888888888888888888888888888888888888',
         tokenAddress: '0x8888888888888888888888888888888888888888',
         description: 'ETH/USD',
+        image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
       },
       positionId: 1n,
       direction: 'long',

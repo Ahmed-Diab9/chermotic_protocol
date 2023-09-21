@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
+import { logos } from '~/constants/logo';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { Market } from '~/typings/market';
@@ -28,14 +29,16 @@ export const useEntireMarkets = () => {
       tokenAddresses.map(async (tokenAddress) => {
         const marketFactoryApi = client.marketFactory();
         const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
-        return markets.map(
-          (market) =>
-            ({
-              ...market,
-              description: market.description.split(/\s*\/\s*/).join('/'),
-              tokenAddress,
-            } satisfies Market)
-        );
+        return markets.map((market) => {
+          const description = market.description.split(/\s*\/\s*/).join('/');
+          const image = logos[description.split('/')[0]];
+          return {
+            ...market,
+            description,
+            tokenAddress,
+            image,
+          } satisfies Market;
+        });
       })
     );
 
@@ -71,14 +74,16 @@ export const useMarket = (_interval?: number) => {
     isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
     async ({ selectedTokenAddress }) => {
       const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
-      return markets.map(
-        (market) =>
-          ({
-            ...market,
-            description: market.description.split(/\s*\/\s*/).join('/'),
-            tokenAddress: selectedTokenAddress,
-          } satisfies Market)
-      );
+      return markets.map((market) => {
+        const description = market.description.split(/\s*\/\s*/).join('/');
+        const image = logos[description.split('/')[0]];
+        return {
+          ...market,
+          description,
+          tokenAddress: selectedTokenAddress,
+          image,
+        } satisfies Market;
+      });
     },
     {
       refreshInterval: 1000 * 30,

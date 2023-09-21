@@ -24,9 +24,15 @@ export const usePreviousOracle = ({ market }: Props) => {
       if (currentVersion <= 0n) {
         return undefined;
       }
-      const previousOracle = await oracleProvider.read.atVersion([currentVersion - 1n]);
-
-      return previousOracle;
+      const oracleBefore1Day = await oracleProvider.read.atVersion([currentVersion - 1n]);
+      if (currentVersion <= 1n) {
+        return { oracleBefore1Day };
+      }
+      const oracleBefore2Days = await oracleProvider.read.atVersion([currentVersion - 2n]);
+      return {
+        oracleBefore1Day,
+        oracleBefore2Days,
+      };
     }
   );
 

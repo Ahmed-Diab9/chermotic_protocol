@@ -1,8 +1,8 @@
 import './style.css';
 
 import { Popover } from '@headlessui/react';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
@@ -17,8 +17,10 @@ export function MarketSelectV2() {
   const {
     isLoading,
     tokenName,
-    mainMarketDescription,
-    mainMarketAddress,
+    tokenImage,
+    marketDescription,
+    marketAddress,
+    marketImage,
     tokens,
     markets,
     price,
@@ -30,6 +32,7 @@ export function MarketSelectV2() {
     changeRateClass,
     explorerUrl,
     isBookmarked,
+    formattedElapsed,
     onBookmarkClick,
   } = useMarketSelectV2();
 
@@ -40,15 +43,15 @@ export function MarketSelectV2() {
           <BookmarkButton
             size="lg"
             onClick={() => {
-              if (isNotNil(mainMarketAddress) && isNotNil(onBookmarkClick)) {
+              if (isNotNil(marketAddress) && isNotNil(onBookmarkClick)) {
                 onBookmarkClick({
                   tokenName,
-                  marketAddress: mainMarketAddress,
-                  marketDescription: mainMarketDescription,
+                  marketAddress,
+                  marketDescription,
                 });
               }
             }}
-            isMarked={mainMarketAddress && isBookmarked?.[mainMarketAddress]}
+            isMarked={isNotNil(marketAddress) && isBookmarked?.[marketAddress]}
           />
           <Popover className="h-full">
             {({ open }) => (
@@ -62,7 +65,13 @@ export function MarketSelectV2() {
                         width={60}
                         containerClassName="text-2xl"
                       >
-                        <Avatar label={tokenName} fontSize="2xl" gap="1" size="base" />
+                        <Avatar
+                          label={tokenName}
+                          src={tokenImage}
+                          fontSize="2xl"
+                          gap="1"
+                          size="base"
+                        />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -74,7 +83,13 @@ export function MarketSelectV2() {
                         width={80}
                         containerClassName="text-2xl"
                       >
-                        <Avatar label={mainMarketDescription} fontSize="2xl" gap="1" size="base" />
+                        <Avatar
+                          label={marketDescription}
+                          src={marketImage}
+                          fontSize="2xl"
+                          gap="1"
+                          size="base"
+                        />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -96,7 +111,7 @@ export function MarketSelectV2() {
                   </div>
                   <section className="flex flex-auto w-full px-3">
                     <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r">
-                      {tokens.map(({ key, isSelectedToken, onClickToken, name }) => (
+                      {tokens.map(({ key, isSelectedToken, onClickToken, name, image }) => (
                         <button
                           key={key}
                           className={`flex items-center gap-2 px-3 py-2 w-[116px] ${
@@ -105,7 +120,7 @@ export function MarketSelectV2() {
                           onClick={onClickToken}
                           title={name}
                         >
-                          <Avatar label={name} fontSize="lg" gap="2" size="base" />
+                          <Avatar label={name} src={image} fontSize="lg" gap="2" size="base" />
                           {isSelectedToken && <ArrowTriangleIcon className="w-4 -rotate-90" />}
                         </button>
                       ))}
@@ -121,6 +136,7 @@ export function MarketSelectV2() {
                             description,
                             price,
                             settlementToken,
+                            image,
                           }) => (
                             <div key={key} className="relative flex items-center w-full">
                               <BookmarkButton
@@ -141,7 +157,13 @@ export function MarketSelectV2() {
                                 onClick={onClickMarket}
                               >
                                 <span className="flex items-center justify-between flex-auto gap-10">
-                                  <Avatar label={description} fontSize="lg" gap="2" size="base" />
+                                  <Avatar
+                                    label={description}
+                                    src={image}
+                                    fontSize="lg"
+                                    gap="2"
+                                    size="base"
+                                  />
                                   <span className={priceClassMap?.[key]}>${price}</span>
                                 </span>
                                 <span className="flex pl-3 text-left border-l text-primary-light">
@@ -192,7 +214,7 @@ export function MarketSelectV2() {
             </div>
             <h4>
               <SkeletonElement isLoading={isLoading} width={80}>
-                00:00:00
+                {formattedElapsed}
               </SkeletonElement>
             </h4>
           </div>

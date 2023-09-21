@@ -104,7 +104,7 @@ export function useTradeManagement() {
     };
   }, []);
 
-  const lastOracle = useLastOracle();
+  const { formattedElapsed } = useLastOracle();
 
   const currentPrice = isNotNil(currentMarket)
     ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
@@ -207,7 +207,7 @@ export function useTradeManagement() {
     popoverRef,
     isGuideVisible,
 
-    lastOracle,
+    formattedElapsed,
 
     isLoading,
 

@@ -6,8 +6,8 @@ import './style.css';
 import { Listbox, Tab } from '@headlessui/react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { Button } from '~/stories/atom/Button';
+import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
@@ -21,8 +21,6 @@ export const TradeManagement = () => {
   const {
     popoverRef,
     isGuideVisible,
-
-    lastOracle,
 
     isLoading,
 

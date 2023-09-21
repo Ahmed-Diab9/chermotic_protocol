@@ -156,7 +156,7 @@ export const useTradeInput = (props: Props) => {
     );
 
     onFeeAllowanceChange(maxFeeAllowance);
-  }, [feePercent]);
+  }, [feePercent, currentToken]);
 
   const onMethodChange = (value: 'collateral' | 'quantity') => {
     dispatch(tradesAction.updateTradesState({ direction, method: value }));
@@ -259,7 +259,14 @@ export const useTradeInput = (props: Props) => {
     }
 
     return { status: false };
-  }, [state, longTotalUnusedLiquidity, shortTotalUnusedLiquidity, currentToken, balance]);
+  }, [
+    state,
+    longTotalUnusedLiquidity,
+    shortTotalUnusedLiquidity,
+    currentToken,
+    balance,
+    direction,
+  ]);
 
   return {
     state,

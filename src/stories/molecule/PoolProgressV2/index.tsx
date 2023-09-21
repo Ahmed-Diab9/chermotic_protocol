@@ -19,7 +19,7 @@ export function PoolProgressV2() {
     ref,
     isGuideOpen,
 
-    lastOracle,
+    formattedElapsed,
 
     poolReceipts,
     poolReceiptsCount,
@@ -59,8 +59,7 @@ export function PoolProgressV2() {
                     />
                   </div>
                   <p className="mt-2 ml-auto text-primary-light">
-                    Last oracle update: {lastOracle.hours}h {lastOracle.minutes}m{' '}
-                    {lastOracle.seconds}s ago
+                    Last oracle update: {formattedElapsed} ago
                   </p>
                 </div>
                 <ChevronDownIcon
