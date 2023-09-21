@@ -54,7 +54,7 @@ export function useTradeBar() {
     };
   }, []);
 
-  const lastOracle = useLastOracle();
+  const { formattedElapsed } = useLastOracle();
 
   const currentPrice = isNotNil(currentMarket)
     ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
@@ -68,7 +68,7 @@ export function useTradeBar() {
     popoverRef,
     isGuideVisible,
 
-    lastOracle,
+    formattedElapsed,
 
     isLoading,
 

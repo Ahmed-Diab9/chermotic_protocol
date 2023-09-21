@@ -142,46 +142,49 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                 <p className="text-center text-primary/20">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
-                                  {assets.map(({ key, name, usdPrice, balance, explorerUrl }) => (
-                                    <div key={key} className="flex items-center">
-                                      <div className="flex items-center gap-1">
-                                        <SkeletonElement
-                                          isLoading={isLoading}
-                                          circle
-                                          width={24}
-                                          height={24}
-                                        />
-                                        <SkeletonElement isLoading={isLoading} width={40}>
-                                          <Avatar
-                                            label={name}
-                                            size="base"
-                                            fontSize="base"
-                                            gap="2"
+                                  {assets.map(
+                                    ({ key, name, image, usdPrice, balance, explorerUrl }) => (
+                                      <div key={key} className="flex items-center">
+                                        <div className="flex items-center gap-1">
+                                          <SkeletonElement
+                                            isLoading={isLoading}
+                                            circle
+                                            width={24}
+                                            height={24}
                                           />
-                                        </SkeletonElement>
-                                        <Button
-                                          href={explorerUrl}
-                                          iconOnly={<OutlinkIcon />}
-                                          css="unstyled"
-                                          size="sm"
-                                          className="text-primary-light"
-                                        />
-                                      </div>
+                                          <SkeletonElement isLoading={isLoading} width={40}>
+                                            <Avatar
+                                              label={name}
+                                              src={image}
+                                              size="base"
+                                              fontSize="base"
+                                              gap="2"
+                                            />
+                                          </SkeletonElement>
+                                          <Button
+                                            href={explorerUrl}
+                                            iconOnly={<OutlinkIcon />}
+                                            css="unstyled"
+                                            size="sm"
+                                            className="text-primary-light"
+                                          />
+                                        </div>
 
-                                      <div className="ml-auto text-right">
-                                        <p className="text-sm text-primary-lighter">
-                                          <SkeletonElement isLoading={isLoading} width={40}>
-                                            ${usdPrice}
-                                          </SkeletonElement>
-                                        </p>
-                                        <p className="mt-1 text-base font-medium text-primary">
-                                          <SkeletonElement isLoading={isLoading} width={40}>
-                                            {balance} {name}
-                                          </SkeletonElement>
-                                        </p>
+                                        <div className="ml-auto text-right">
+                                          <p className="text-sm text-primary-lighter">
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              ${usdPrice}
+                                            </SkeletonElement>
+                                          </p>
+                                          <p className="mt-1 text-base font-medium text-primary">
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              {balance} {name}
+                                            </SkeletonElement>
+                                          </p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               )}
                             </article>
@@ -194,43 +197,45 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                                 </p>
                               ) : (
                                 <div className="flex flex-col gap-3">
-                                  {liquidityTokens.map(({ key, name, market, liquidity, bins }) => (
-                                    <Link to="#" key={key}>
-                                      <div className="flex gap-3 pb-3 border-b last:border-b-0">
-                                        <SkeletonElement
-                                          isLoading={isLoading}
-                                          circle
-                                          width={40}
-                                          height={40}
-                                        >
-                                          <Avatar size="xl" src={undefined} />
-                                        </SkeletonElement>
-                                        <div className="flex-1">
-                                          <div className="flex gap-2 leading-none">
-                                            <SkeletonElement isLoading={isLoading} width={100}>
-                                              <p>{name}</p>
-                                              <span className="px-1 text-gray-lighter">|</span>
-                                              <p>{market}</p>
-                                            </SkeletonElement>
-                                          </div>
-                                          <div className="flex mt-3">
-                                            <div className="mr-auto">
-                                              <p className="text-base font-medium text-primary-lighter">
-                                                <SkeletonElement isLoading={isLoading} width={80}>
-                                                  {liquidity} {name}
-                                                </SkeletonElement>
-                                              </p>
-                                              <p className="mt-2 text-base text-primary">
-                                                <SkeletonElement isLoading={isLoading} width={80}>
-                                                  {bins} Bins
-                                                </SkeletonElement>
-                                              </p>
+                                  {liquidityTokens.map(
+                                    ({ key, name, market, image, liquidity, bins }) => (
+                                      <Link to="#" key={key}>
+                                        <div className="flex gap-3 pb-3 border-b last:border-b-0">
+                                          <SkeletonElement
+                                            isLoading={isLoading}
+                                            circle
+                                            width={40}
+                                            height={40}
+                                          >
+                                            <Avatar size="xl" src={image} />
+                                          </SkeletonElement>
+                                          <div className="flex-1">
+                                            <div className="flex gap-2 leading-none">
+                                              <SkeletonElement isLoading={isLoading} width={100}>
+                                                <p>{name}</p>
+                                                <span className="px-1 text-gray-lighter">|</span>
+                                                <p>{market}</p>
+                                              </SkeletonElement>
+                                            </div>
+                                            <div className="flex mt-3">
+                                              <div className="mr-auto">
+                                                <p className="text-base font-medium text-primary-lighter">
+                                                  <SkeletonElement isLoading={isLoading} width={80}>
+                                                    {liquidity} {name}
+                                                  </SkeletonElement>
+                                                </p>
+                                                <p className="mt-2 text-base text-primary">
+                                                  <SkeletonElement isLoading={isLoading} width={80}>
+                                                    {bins} Bins
+                                                  </SkeletonElement>
+                                                </p>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </Link>
-                                  ))}
+                                      </Link>
+                                    )
+                                  )}
                                 </div>
                               )}
                             </article>

@@ -19,7 +19,7 @@ export const PopoverItem = (props: PopoverItemProps) => {
       }`}
       onClick={() => onMarketClick?.(market)}
     >
-      <Avatar label={market.description} fontSize="lg" gap="2" size="base" />
+      <Avatar label={market.description} src={market.image} fontSize="lg" gap="2" size="base" />
       <p className={`${priceClass}`}>{formattedPrice}</p>
     </button>
   );

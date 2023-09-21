@@ -23,7 +23,7 @@ export function PoolProgress() {
     ref,
     isGuideOpen,
 
-    lastOracle,
+    formattedElapsed,
 
     poolReceipts,
     poolReceiptsCount,
@@ -64,8 +64,7 @@ export function PoolProgress() {
                   </div>
                   {open && (
                     <p className="mt-1 ml-auto text-sm text-primary-lighter">
-                      Last oracle update: {lastOracle.hours}h {lastOracle.minutes}m{' '}
-                      {lastOracle.seconds}s ago
+                      Last oracle update: {formattedElapsed} ago
                     </p>
                   )}
                 </div>

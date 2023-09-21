@@ -117,7 +117,7 @@ export const useOwnedLiquidityPools = () => {
     if (isNil(ownedPools) || isNil(currentToken) || isNil(markets)) return [];
 
     const array: LiquidityPoolSummary[] = markets.map((market) => {
-      const { description: marketDescription } = market;
+      const { description: marketDescription, image: marketImage } = market;
       const pool = ownedPools.find((pool) => pool.marketAddress === market.address);
 
       if (isNil(pool)) {
@@ -127,6 +127,7 @@ export const useOwnedLiquidityPools = () => {
             decimals: currentToken.decimals,
           },
           market: marketDescription,
+          image: marketImage,
           liquidity: 0n,
           bins: 0,
         };
@@ -140,6 +141,7 @@ export const useOwnedLiquidityPools = () => {
           decimals: currentToken.decimals,
         },
         market: marketDescription,
+        image: marketImage,
         liquidity: liquiditySum,
         bins: pool.bins.length,
       };

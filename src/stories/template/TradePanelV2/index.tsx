@@ -1,8 +1,9 @@
 import { Tab } from '@headlessui/react';
 import { Resizable } from 're-resizable';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import DecreaseIcon from '~/assets/icons/DecreaseIcon';
 import IncreaseIcon from '~/assets/icons/IncreaseIcon';
+import { useThrottledResize } from '~/hooks/useThrottledResize';
 import { Outlink } from '~/stories/atom/Outlink';
 import '~/stories/atom/Tabs/style.css';
 import { TradeContentV2 } from '~/stories/molecule/TradeContentV2';
@@ -16,23 +17,13 @@ const enum POSITION_TAB {
 export const TradePanelV2 = () => {
   const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.SHORT_TAB);
   const onSelectTab = (tab: number) => setSelectedTab(tab);
+  const { sizeData } = useThrottledResize({
+    interval: 200,
+  });
 
-  const [isWide, setIsWide] = useState(false);
-
-  // FIXME: Need throttle actions
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-      setIsWide(screenWidth > 2000);
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const isWide = useMemo(() => {
+    return (sizeData?.width ?? 0) > 2000;
+  }, [sizeData]);
 
   return (
     <Resizable

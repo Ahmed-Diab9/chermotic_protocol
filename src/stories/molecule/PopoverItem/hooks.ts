@@ -13,7 +13,7 @@ export const usePopoverItem = (props: PopoverItemProps) => {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
   });
-  const priceClass = compareOracles(previousOracle, market.oracleValue);
+  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, market.oracleValue);
   const formattedPrice =
     '$' + priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
 

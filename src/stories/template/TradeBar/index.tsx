@@ -16,7 +16,7 @@ export const TradeBar = () => {
     popoverRef,
     isGuideVisible,
 
-    lastOracle,
+    formattedElapsed,
 
     isLoading,
 
@@ -56,8 +56,7 @@ export const TradeBar = () => {
                         </Tab.List>
                         <div className="flex items-center gap-5 mt-4 ml-auto">
                           <p className="pr-5 text-sm border-r text-primary-lighter">
-                            Last Oracle Update: {lastOracle.hours}h {lastOracle.minutes}m{' '}
-                            {lastOracle.seconds}s ago
+                            Last oracle update: {formattedElapsed} ago
                           </p>
                           <p className="text-sm text-primary-lighter">
                             Current Price:

@@ -18,7 +18,7 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
       : isNotNil(storedMarketSymbol)
       ? marketMap[storedMarketSymbol]
       : undefined;
-  }, [currentMarket, storedMarketSymbol, marketMap]);
+  }, [currentMarket, storedMarketSymbol]);
 
   const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
   const [config, setConfig] = useState<WidgetConfig>({

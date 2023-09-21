@@ -1,22 +1,23 @@
 import PlusIcon from '~/assets/icons/PlusIcon';
+import { logos } from '~/constants/logo';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { Tag } from '~/stories/atom/Tag';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
+import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
-import { Tag } from '~/stories/atom/Tag';
-import { Avatar } from '~/stories/atom/Avatar';
-import { PoolPerformance } from '~/stories/template/PoolPerformance';
-import { PoolStat } from '~/stories/template/PoolStat';
+import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
+import { PoolBalance } from '~/stories/template/PoolBalance';
+import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
-import { PoolDetail } from '~/stories/template/PoolDetail';
-import { PoolBalance } from '~/stories/template/PoolBalance';
-import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
-import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
+import { PoolPerformance } from '~/stories/template/PoolPerformance';
+import { PoolStat } from '~/stories/template/PoolStat';
 import './style.css';
 
 const PoolV2 = () => {
@@ -57,7 +58,7 @@ const PoolV2 = () => {
               <div>esChroma Rewards: 500 esChroma/day</div>
               <div className="flex gap-2">
                 CLP Price: 0.984
-                <Avatar label="ETH" size="xs" gap="1" fontSize="lg" />
+                <Avatar label="ETH" size="xs" gap="1" fontSize="lg" src={logos['ETH']} />
               </div>
             </div>
             <div className="flex gap-3">

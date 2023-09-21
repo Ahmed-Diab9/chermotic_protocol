@@ -60,7 +60,7 @@ export const usePoolProgress = () => {
 
   const receipts = _receipts || [];
 
-  const lastOracle = useLastOracle();
+  const { formattedElapsed } = useLastOracle();
 
   const tokenName = currentToken?.name || '-';
 
@@ -70,6 +70,7 @@ export const usePoolProgress = () => {
         const status = receipt.status;
         const detail = receiptDetail(receipt, currentToken);
         const name = receipt.name;
+        const image = receipt.image;
         const remainedCLBAmount = formatDecimals(
           receipt.remainedCLBAmount,
           currentToken.decimals,
@@ -94,6 +95,7 @@ export const usePoolProgress = () => {
           status,
           detail,
           name,
+          image,
           remainedCLBAmount,
           tokenName,
           progressPercent,
@@ -134,7 +136,7 @@ export const usePoolProgress = () => {
     ref,
     isGuideOpen,
 
-    lastOracle,
+    formattedElapsed,
 
     poolReceipts,
     poolReceiptsCount,

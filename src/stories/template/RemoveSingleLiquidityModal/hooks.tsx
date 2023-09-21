@@ -50,7 +50,7 @@ export function useRemoveSingleLiquidityModal() {
 
   const isExceeded = useMemo(() => {
     return isNotNil(amount) && amount > 0n && amount > totalClbBalance;
-  }, [amount, currentToken]);
+  }, [amount, totalClbBalance]);
 
   const onClose = () => {
     onAmountChange();

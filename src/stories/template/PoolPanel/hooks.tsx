@@ -125,6 +125,7 @@ export function usePoolPanel() {
   const onFullRange = move.full;
 
   const tokenName = currentToken?.name || '-';
+  const tokenImage = currentToken?.image;
 
   // ----------------------------------------------------------------
 
@@ -248,7 +249,8 @@ export function usePoolPanel() {
 
       const explorerUrl = getTokenExplorer(`${clbTokenAddress}?a=${bin?.tokenId}`);
 
-      const tokenImage = bin.clbTokenImage;
+      const image = bin.clbTokenImage;
+      const tokenImage = currentToken?.image;
       const tokenBalance = formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, 2, true);
       const freeLiquidity = formatDecimals(
         bin?.freeLiquidity ?? 0n,
@@ -263,7 +265,7 @@ export function usePoolPanel() {
       return {
         key,
         isLoading,
-        tokenName,
+        image,
         isSelected,
         onSelectBin: () => {
           onSelectBin(bin);
@@ -273,6 +275,7 @@ export function usePoolPanel() {
         baseFeeRate,
         onClickRemove,
         explorerUrl,
+        tokenName,
         tokenImage,
         tokenBalance,
         freeLiquidity,
@@ -318,6 +321,7 @@ export function usePoolPanel() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,

@@ -29,6 +29,7 @@ export interface LpReceipt {
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
+  image: string;
   burningAmount: bigint;
   action: LpReceiptAction;
   progressPercent: number;
@@ -171,6 +172,7 @@ const usePoolReceipt = () => {
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
+            image: bin.clbTokenImage,
             burningAmount: action === 0 ? 0n : burnedSettlementAmount,
             progressPercent: Number(
               formatDecimals(

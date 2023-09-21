@@ -60,7 +60,7 @@ export const usePoolProgressV2 = () => {
 
   const receipts = _receipts || [];
 
-  const lastOracle = useLastOracle();
+  const { formattedElapsed } = useLastOracle();
 
   const tokenName = currentToken?.name || '-';
 
@@ -134,7 +134,7 @@ export const usePoolProgressV2 = () => {
     ref,
     isGuideOpen,
 
-    lastOracle,
+    formattedElapsed,
 
     poolReceipts,
     poolReceiptsCount,

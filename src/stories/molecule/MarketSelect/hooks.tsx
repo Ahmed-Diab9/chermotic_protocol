@@ -29,7 +29,9 @@ export function useMarketSelect() {
   const isLoading = isTokenLoading || isMarketLoading;
 
   const tokenName = currentToken?.name || '-';
+  const tokenImage = currentToken?.image;
   const marketDescription = currentMarket?.description || '-';
+  const marketImage = currentMarket?.image;
 
   const tokens = (_tokens ?? []).map((token) => {
     const key = token.address;
@@ -38,7 +40,8 @@ export function useMarketSelect() {
       return onTokenSelect(token);
     };
     const name = token.name;
-    return { key, isSelectedToken, onClickToken, name };
+    const image = token.image;
+    return { key, isSelectedToken, onClickToken, name, image };
   });
 
   const markets = (_markets ?? []).map((market) => {
@@ -49,7 +52,8 @@ export function useMarketSelect() {
     };
     const description = market.description;
     const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
-    return { key, isSelectedMarket, onClickMarket, description, price };
+    const image = market.image;
+    return { key, isSelectedMarket, onClickMarket, description, price, image };
   });
 
   const price = formatDecimals(
@@ -58,7 +62,7 @@ export function useMarketSelect() {
     2,
     true
   );
-  const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
+  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
 
@@ -77,7 +81,9 @@ export function useMarketSelect() {
   return {
     isLoading,
     tokenName,
+    tokenImage,
     marketDescription,
+    marketImage,
     tokens,
     markets,
     price,

@@ -9,14 +9,14 @@ import { AssetPanel } from '~/stories/molecule/AssetPanel';
 import { useAccountPopoverV2 } from './hooks';
 
 export function AccountPopoverV2() {
-  const { isConnected, isLoading, isAccountExist, balance, tokenName, onClickConnect } =
+  const { isConnected, isLoading, isAccountExist, balance, tokenName, tokenImage, onClickConnect } =
     useAccountPopoverV2();
 
   return (
     <>
       <div className="AccountPopoverV2 panel">
         <div className="ml-10">
-          <Avatar size="base" fontSize="lg" label="Account balance" gap="2" />
+          <Avatar size="base" fontSize="lg" label="Account balance" gap="2" src={tokenImage} />
         </div>
         <div className="flex flex-col gap-1 mr-10 text-right">
           {isConnected ? (
