@@ -40,14 +40,14 @@ export const ResizablePanel = (props: ResizablePanelProps) => {
       minHeight={minHeight}
       maxHeight={maxHeight}
       enable={{
-        top: props.top,
-        right: props.right,
-        bottom: props.bottom,
-        left: props.left,
-        topRight: props.topRight,
-        bottomRight: props.bottomRight,
-        bottomLeft: props.bottomLeft,
-        topLeft: props.topLeft,
+        top: props.top || false,
+        right: props.right || false,
+        bottom: props.bottom || false,
+        left: props.left || false,
+        topRight: props.topRight || false,
+        bottomRight: props.bottomRight || false,
+        bottomLeft: props.bottomLeft || false,
+        topLeft: props.topLeft || false,
       }}
       onResizeStop={handleResizeStop}
       className={props.className}
