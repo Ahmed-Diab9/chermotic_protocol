@@ -2,8 +2,8 @@ import { Resizable } from 're-resizable';
 import { useRef, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
-import '~/stories/atom/Tabs/style.css';
 import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
+import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 // May be used later.
@@ -44,6 +44,11 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         onResizeStop={handleResizeStop}
         className="panel"
       >
+        {/* loading */}
+        <div className="flex items-center justify-center h-full">
+          <img src="/src/assets/icons/loadingLg.png" className="w-10 animate-spin" alt="" />
+        </div>
+
         <div
           className="flex items-stretch w-full h-full border-b"
           style={{
