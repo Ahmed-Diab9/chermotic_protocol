@@ -24,3 +24,4 @@ export const PRICE_FEED: Record<string, Address | undefined> =
         DAI: '0x103b53E977DA6E4Fa92f76369c8b7e20E7fb7fe1',
         CHRM: '0x1692Bdd32F31b831caAc1b0c9fAF68613682813b',
       };
+export const CHRM = 'CHRM';
