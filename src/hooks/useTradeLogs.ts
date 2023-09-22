@@ -1,5 +1,6 @@
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
+import axios from 'axios';
 import { isNil } from 'ramda';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog, getEventSelector } from 'viem';
@@ -56,8 +57,8 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
   const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&fromBlock=${fromBlockNumber}&toBlock=${Number(
     toBlockNumber
   )}&apikey=${ARBISCAN_API_KEY}`;
-  const response = await fetch(apiUrl);
-  const responseData = await response.json();
+  const response = await axios(apiUrl);
+  const responseData = await response.data;
   const responseLogs =
     typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
 

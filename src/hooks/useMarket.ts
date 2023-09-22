@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
-import { logos } from '~/constants/logo';
+import { fetchTokenImages } from '~/apis/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { Market } from '~/typings/market';
@@ -29,14 +29,18 @@ export const useEntireMarkets = () => {
       tokenAddresses.map(async (tokenAddress) => {
         const marketFactoryApi = client.marketFactory();
         const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
-        return markets.map((market) => {
-          const description = market.description.split(/\s*\/\s*/).join('/');
-          const image = logos[description.split('/')[0]];
+        const marketNames = markets.map(
+          (market) => market.description.split(/\s*\/\s*/) as [string, string]
+        );
+        const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
+        return markets.map((market, marketIndex) => {
+          const description = marketNames[marketIndex].join('/');
+
           return {
             ...market,
             description,
             tokenAddress,
-            image,
+            image: marketImageMap[marketNames[marketIndex][0]],
           } satisfies Market;
         });
       })
@@ -74,15 +78,18 @@ export const useMarket = (_interval?: number) => {
     isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
     async ({ selectedTokenAddress }) => {
       const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
-      return markets.map((market) => {
-        const description = market.description.split(/\s*\/\s*/).join('/');
-        const image = logos[description.split('/')[0]];
+      const marketNames = markets.map(
+        (market) => market.description.split(/\s*\/\s*/) as [string, string]
+      );
+      const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
+      return markets.map((market, marketIndex) => {
+        const description = marketNames[marketIndex].join('/');
         return {
           ...market,
           description,
           tokenAddress: selectedTokenAddress,
-          image,
-        } satisfies Market;
+          image: marketImageMap[marketNames[marketIndex][0]],
+        } as Market;
       });
     },
     {
