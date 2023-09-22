@@ -9,7 +9,7 @@ export interface PoolStatProps {}
 export const PoolStat = (props: PoolStatProps) => {
   return (
     <div className="p-5 PoolStat panel">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Thumbnail size="xs" />
@@ -20,7 +20,6 @@ export const PoolStat = (props: PoolStatProps) => {
           </div>
           <div className="text-right">
             <Avatar label="101.373 USDC" size="sm" fontSize="lg" gap="1" />
-            <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -33,15 +32,10 @@ export const PoolStat = (props: PoolStatProps) => {
           </div>
           <div className="text-right">
             <Avatar label="101.373 CLP" size="sm" fontSize="lg" gap="1" />
-            <p className="text-sm text-primary-lighter">$101.373</p>
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-3 pt-3 mt-3 border-t">
-        <div className="flex items-center justify-between">
-          <h5>Asset value</h5>
-          <h5>$2,101.37</h5>
-        </div>
+      <div className="flex flex-col gap-3 pt-3 mt-5 border-t">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h5>Utilization</h5>

@@ -41,7 +41,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
           </Listbox>
         </div>
       </div>
-      <div className="pt-4 mt-2 border-t">
+      <div className="pt-5 mt-3 border-t">
         <div className="flex">
           <div className="flex w-1/2 gap-3 pr-5">
             <Thumbnail className="w-12 h-12" />
@@ -64,24 +64,25 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             </div>
           </div>
         </div>
-        <div className="p-3 mt-4 rounded bg-paper-light">
+
+        {/* <div className="p-3 mt-4 rounded bg-paper-light">
           <div className="flex border-b border-paper-light">
             <div className="w-1/2 pb-3 pr-3">
-              <PoolPerformanceItem title="Trade Fees" value={101.373} price={101.373} />
+              <PoolPerformanceItem title="Trade Fees" value={12526.02} price={101.373} />
             </div>
             <div className="w-1/2 pb-3 pl-3 border-l border-paper-light">
-              <PoolPerformanceItem title="Maker PnL" value={101.373} price={101.373} />
+              <PoolPerformanceItem title="Maker PnL" value={-2061.99} price={-45555.55} />
             </div>
           </div>
           <div className="flex">
             <div className="w-1/2 pt-3 pr-3">
-              <PoolPerformanceItem title="Liquidity Fees" value={101.373} price={101.373} />
+              <PoolPerformanceItem title="Liquidity Fees" value={58.12} price={71.373} />
             </div>
             <div className="w-1/2 pt-3 pl-3 border-l border-paper-light">
-              <PoolPerformanceItem title="esChroma Rewards" value={101.373} price={101.373} />
+              <PoolPerformanceItem title="esChroma Rewards" value={16405.373} price={401.373} />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -100,6 +101,7 @@ export const PoolPerformanceItem = (props: PoolPerformanceItemProps) => {
     <div className="text-center text-primary">
       <p className="text-sm text-primary-light">{title}</p>
       <p className="mt-[6px] mb-[2px]">{value} USDC</p>
+      {/* when price < 0 : "-" should be in front of "$" */}
       <p className="text-sm text-primary-lighter">${price}</p>
     </div>
   );
