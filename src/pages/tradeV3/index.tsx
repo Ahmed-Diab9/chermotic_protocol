@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
+import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Toast } from '~/stories/atom/Toast';
@@ -10,16 +11,33 @@ import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { TradeChartView } from '~/stories/template/TradeChartView';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
-import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 
+import { isNil } from 'ramda';
+import { useMarket } from '~/hooks/useMarket';
+import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import './style.css';
 
 function TradeV3() {
   useTokenLocal();
   useMarketLocal();
+  const { currentMarket } = useMarket();
+  const { previousOracle } = usePreviousOracle({ market: currentMarket });
+  const isIncreased: [boolean, boolean] = useMemo(() => {
+    if (isNil(currentMarket) || isNil(previousOracle)) {
+      return [false, false];
+    }
+    const currentPrice = currentMarket?.oracleValue.price;
+    const isIncreasedNow = currentPrice - previousOracle.oracleBefore1Day.price > 0n;
+    if (isNil(previousOracle.oracleBefore2Days)) {
+      return [true, isIncreasedNow];
+    }
+    const isIncreasedBefore1Day =
+      previousOracle.oracleBefore1Day.price - previousOracle.oracleBefore2Days.price > 0n;
+    return [isIncreasedBefore1Day, isIncreasedNow];
+  }, [currentMarket, previousOracle]);
 
   const { beforeCondition, toggleBeforeCondition, afterCondition, toggleAfterCondition } =
-    useBackgroundGradient(false, false);
+    useBackgroundGradient(...isIncreased);
 
   const handleToggle = (condition: string) => {
     if (condition === 'before') {
