@@ -15,13 +15,16 @@ declare global {
 interface TradingViewWidgetProps {
   width?: number;
   height?: number;
+  marketSymbol?: string;
   className?: string;
 }
 
 export function TradingViewWidget(props: TradingViewWidgetProps) {
-  const { className = '', width = 0, height = 0 } = props;
-  const { marketSymbol, config, onSymbolChange, onConfigChange, isMarketLoading } =
-    useTradingViewChart({ width, height });
+  const { className = '', width = 0, height = 0, marketSymbol } = props;
+  const { config, onSymbolChange, onConfigChange } = useTradingViewChart({
+    width,
+    height,
+  });
 
   useEffect(() => {
     if (!marketSymbol) {
@@ -65,6 +68,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
             'mainSeriesProperties.statusViewStyle.symbolTextSource': 'long-description',
           },
         });
+        console.log('View Loaded');
       }
     };
 
@@ -87,7 +91,7 @@ export function TradingViewWidget(props: TradingViewWidgetProps) {
   return (
     <div className={`tradingview-widget-container ${className}`}>
       <div id="tradingview-widget-main" className="w-full h-full" />
-      {!isMarketLoading && marketSymbol && (
+      {marketSymbol && (
         <div className="invisible h-0 tradingview-widget-copyright">
           <a href="https://www.tradingview.com/" rel="noopener nofollow noreferrer" target="_blank">
             <span className="blue-text">Track all markets on TradingView</span>
