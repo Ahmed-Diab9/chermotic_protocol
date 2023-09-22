@@ -74,11 +74,11 @@ export const theme = {
       price: {
         higher: {
           DEFAULT: 'rgb(var(--color-price-higher))',
-          light: 'rgb(var(--color-price-higher-light))',
+          light: 'rgb(var(--color-price-higher-light)) / 0.19',
         },
         lower: {
           DEFAULT: 'rgb(var(--color-price-lower))',
-          light: 'rgb(var(--color-price-lower-light))',
+          light: 'rgb(var(--color-price-lower-light)) / 0.19',
         },
       },
       status: {

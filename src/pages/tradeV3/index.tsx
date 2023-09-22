@@ -18,27 +18,46 @@ function TradeV3() {
   useTokenLocal();
   useMarketLocal();
 
-  const { condition, toggleCondition } = useBackgroundGradient(false);
+  const { beforeCondition, toggleBeforeCondition, afterCondition, toggleAfterCondition } =
+    useBackgroundGradient(false, false);
+
+  const handleToggle = (condition: string) => {
+    if (condition === 'before') {
+      toggleBeforeCondition();
+    } else if (condition === 'after') {
+      toggleAfterCondition();
+    }
+  };
 
   return (
-    <div className="flex flex-col min-h-[100vh] w-full relative">
-      <Header />
-      <button onClick={toggleCondition}>Toggle Background</button>
-      <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
-        <BookmarkBoard />
-        <MainBarV2 accountPopover />
-        <div className="flex w-full gap-3 overflow-hidden">
-          <article className="flex flex-col flex-auto w-full gap-3">
-            <TradeChartView />
-            <TradeManagement />
-          </article>
-          <TradePanelV2 />
+    <>
+      <div id="gradient" />
+      <div className="flex flex-col min-h-[100vh] w-full relative">
+        <Header />
+        <div className="flex justify-center gap-10">
+          <button onClick={() => handleToggle('before')}>
+            Before {beforeCondition ? 'High' : 'Low'}
+          </button>
+          <button onClick={() => handleToggle('after')}>
+            After {afterCondition ? 'High' : 'Low'}
+          </button>
         </div>
-      </section>
-      <Footer />
-      <Toast />
-      <ChainModal />
-    </div>
+        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
+          <BookmarkBoard />
+          <MainBarV2 accountPopover />
+          <div className="flex w-full gap-3 overflow-hidden">
+            <article className="flex flex-col flex-auto w-full gap-3">
+              <TradeChartView />
+              <TradeManagement />
+            </article>
+            <TradePanelV2 />
+          </div>
+        </section>
+        <Footer />
+        <Toast />
+        <ChainModal />
+      </div>
+    </>
   );
 }
 
