@@ -87,33 +87,26 @@ export const useOwnedLiquidityPools = () => {
   );
 
   function fetchCurrentOwnedPool() {
-    fetchOwnedPools<{ tokenAddress: string; marketAddress: string; bins: OwnedBin[] }[]>(
-      async (ownedPools) => {
-        if (
-          isNil(ownedPools) ||
-          isNil(walletAddress) ||
-          isNil(currentMarket) ||
-          isNil(currentToken)
-        )
-          return ownedPools;
+    fetchOwnedPools(async (ownedPools) => {
+      if (isNil(ownedPools) || isNil(walletAddress) || isNil(currentMarket) || isNil(currentToken))
+        return ownedPools;
 
-        const filteredPoolData = ownedPools?.filter(
-          (pool) => pool.marketAddress !== currentMarket?.address
-        );
+      const filteredPoolData = ownedPools?.filter(
+        (pool) => pool.marketAddress !== currentMarket?.address
+      );
 
-        const lensApi = client.lens();
-        const marketApi = client.market();
+      const lensApi = client.lens();
+      const marketApi = client.market();
 
-        const newPoolData = await getLiquidityPool(
-          lensApi,
-          marketApi,
-          walletAddress,
-          currentMarket.address,
-          currentToken.address
-        );
-        return [...filteredPoolData, newPoolData];
-      }
-    );
+      const newPoolData = await getLiquidityPool(
+        lensApi,
+        marketApi,
+        walletAddress,
+        currentMarket.address,
+        currentToken.address
+      );
+      return [...filteredPoolData, newPoolData];
+    });
   }
 
   const currentOwnedPool = ownedPools?.find(

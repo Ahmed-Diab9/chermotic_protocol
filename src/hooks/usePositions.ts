@@ -129,7 +129,7 @@ export const usePositions = () => {
   );
 
   function fetchCurrentPositions() {
-    fetchPositions<Position[]>(async (positions) => {
+    fetchPositions(async (positions) => {
       if (isNil(positions) || isNil(accountAddress) || isNil(currentMarket) || isNil(currentToken))
         return positions;
 
