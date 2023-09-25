@@ -169,8 +169,8 @@ export function MarketSelectV2() {
                                   <span className={priceClassMap?.[key]}>${price}</span>
                                 </span>
                                 <span className="flex pl-3 text-left border-l text-primary-light">
-                                  <span className="w-[80px]">{poolMap?.[key].longLpSum}</span>
-                                  <span className="w-[80px]">{poolMap?.[key].shortLpSum}</span>
+                                  <span className="w-[80px]">{poolMap?.[key]?.longLpSum}</span>
+                                  <span className="w-[80px]">{poolMap?.[key]?.shortLpSum}</span>
                                 </span>
                               </button>
                             </div>

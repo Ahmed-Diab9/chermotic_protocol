@@ -1,4 +1,5 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
+import axios from 'axios';
 import useSWR from 'swr';
 import { getEventSelector } from 'viem';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
@@ -21,8 +22,8 @@ export const useInitialBlockNumber = () => {
     checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ accountAddress }) => {
       const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=1&offset=1&apikey=${ARBISCAN_API_KEY}`;
-      const apiResponse = await fetch(apiUrl);
-      const apiData = await apiResponse.json();
+      const apiResponse = await axios(apiUrl);
+      const apiData = await apiResponse.data;
       const initialLog: ResponseLog[] = apiData.result;
       if (initialLog.length <= 0) {
         return undefined;
