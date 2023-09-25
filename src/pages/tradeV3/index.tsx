@@ -27,14 +27,14 @@ function TradeV3() {
       </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
         <Header />
-        <div className="flex justify-center gap-10">
+        {/* <div className="flex justify-center gap-10">
           <button onClick={() => toggleConditions('before')}>
             Before {beforeCondition ? 'High' : 'Low'}
           </button>
           <button onClick={() => toggleConditions('after')}>
             After {afterCondition ? 'High' : 'Low'}
           </button>
-        </div>
+        </div> */}
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
           <BookmarkBoard />
           <MainBarV2 accountPopover />
