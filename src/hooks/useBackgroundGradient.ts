@@ -60,7 +60,7 @@ function useBackgroundGradient() {
         currentBackground.className = `bg-${state}`;
         prevBackground.style.opacity = '0';
         currentBackground.style.opacity = '1';
-      }, 1000);
+      }, 0);
     }
   }
 
