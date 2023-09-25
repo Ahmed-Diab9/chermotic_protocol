@@ -1,4 +1,5 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
+import axios from 'axios';
 import { isNil, isNotNil } from 'ramda';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog } from 'viem';
@@ -51,8 +52,8 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
   const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&fromBlock=${Number(
     fromBlockNumber
   )}&toBlock=${Number(toBlockNumber)}&apikey=${ARBISCAN_API_KEY}`;
-  const response = await fetch(apiUrl);
-  const responseData = await response.json();
+  const response = await axios(apiUrl);
+  const responseData = await response.data;
   const responseLogs =
     typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
   const decodedLogMap = responseLogs
