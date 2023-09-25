@@ -137,7 +137,7 @@ body {
 
 #gradient #prev,
 #gradient #current {
-  transition: opacity 3s;
+  transition: opacity 2s;
 }
 .bg-higher-higher,
 .bg-higher-lower,
