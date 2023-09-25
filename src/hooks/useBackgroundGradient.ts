@@ -47,21 +47,26 @@ function useBackgroundGradient() {
     setAfterCondition(isIncreased[1]);
   }, [checkCondition]);
 
+  function changeBackground(state: any) {
+    const element = document.getElementById('gradient');
+    if (element) {
+      element.className = `bg-${state}`;
+    }
+  }
+
   useEffect(() => {
     if (!backgroundRef.current) {
       return;
     }
 
     if (beforeCondition && afterCondition) {
-      backgroundRef.current.style.background = 'rgb(var(--color-price-higher-light) / 0.19)';
+      changeBackground('higher-higher');
     } else if (beforeCondition) {
-      backgroundRef.current.style.background =
-        'linear-gradient(90deg, rgb(var(--color-price-higher-light) / 0.19) 0%, rgb(var(--color-price-lower-light) / 0.19) 100%)';
+      changeBackground('higher-lower');
     } else if (afterCondition) {
-      backgroundRef.current.style.background =
-        'linear-gradient(90deg, rgb(var(--color-price-lower-light) / 0.19) 0%, rgb(var(--color-price-higher-light) / 0.19) 100%)';
+      changeBackground('lower-higher');
     } else {
-      backgroundRef.current.style.background = 'rgb(var(--color-price-lower-light) / 0.19)';
+      changeBackground('lower-lower');
     }
   }, [beforeCondition, afterCondition]);
 

@@ -120,7 +120,7 @@ body {
 
 #gradient {
   @apply w-full h-full absolute top-0 left-0;
-  transition: background-color 1s linear;
+  /* transition: background-color 1s linear; */
   &::after {
     @apply w-full h-full absolute top-0 left-0;
     content: '';
@@ -131,6 +131,75 @@ body {
     );
   }
 }
+
+.bg-higher-higher {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+}
+.bg-higher-lower {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+}
+.bg-lower-higher {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+}
+.bg-lower-lower {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+}
+/* .bg-higher-higher::after {
+  @apply absolute left-0 top-0;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+  transition: opacity 2s ease-in-out;
+}
+.bg-higher-lower::after {
+  @apply absolute left-0 top-0;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+  transition: opacity 2s ease-in-out;
+}
+.bg-lower-higher::after {
+  @apply absolute left-0 top-0;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+  transition: opacity 2s ease-in-out;
+}
+.bg-lower-lower::after {
+  @apply absolute left-0 top-0;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+  transition: opacity 2s ease-in-out;
+} */
 
 ::-webkit-scrollbar {
   @apply w-2;
