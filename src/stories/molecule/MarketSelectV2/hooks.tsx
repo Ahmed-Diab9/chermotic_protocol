@@ -165,7 +165,7 @@ export function useMarketSelectV2() {
         shortLpSum: liquidityFormatter.format(+formatUnits(shortLpSum, currentToken.decimals)),
       };
       return record;
-    }, {} as Record<Address, { longLpSum: string; shortLpSum: string }>);
+    }, {} as Record<Address, { longLpSum: string; shortLpSum: string } | undefined>);
   }, [liquidityPools, currentToken, liquidityFormatter]);
 
   const explorerUrl = useMemo(() => {
