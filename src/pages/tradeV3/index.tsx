@@ -21,7 +21,10 @@ function TradeV3() {
 
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)} />
+      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
+        <div id="prev"></div>
+        <div id="current"></div>
+      </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
         <Header />
         <div className="flex justify-center gap-10">

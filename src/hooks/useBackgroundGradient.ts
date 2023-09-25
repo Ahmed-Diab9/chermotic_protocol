@@ -48,9 +48,19 @@ function useBackgroundGradient() {
   }, [checkCondition]);
 
   function changeBackground(state: any) {
-    const element = document.getElementById('gradient');
-    if (element) {
-      element.className = `bg-${state}`;
+    const prevBackground = document.querySelector('#gradient #prev') as HTMLElement;
+    const currentBackground = document.querySelector('#gradient #current') as HTMLElement;
+
+    if (currentBackground && prevBackground) {
+      prevBackground.className = currentBackground.className;
+      prevBackground.style.opacity = '1';
+      currentBackground.style.opacity = '0';
+
+      setTimeout(() => {
+        currentBackground.className = `bg-${state}`;
+        prevBackground.style.opacity = '0';
+        currentBackground.style.opacity = '1';
+      }, 1000);
     }
   }
 
