@@ -1,7 +1,10 @@
 import PlusIcon from '~/assets/icons/PlusIcon';
 import { logos } from '~/constants/logo';
+import { useLpLocal } from '~/hooks/useLpLocal';
+import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { useAppSelector } from '~/store';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Tag } from '~/stories/atom/Tag';
@@ -12,17 +15,22 @@ import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
-import { PoolBalance } from '~/stories/template/PoolBalance';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenu } from '~/stories/template/PoolMenu';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
+import { formatDecimals } from '~/utils/number';
 import './style.css';
 
 const PoolV2 = () => {
   useTokenLocal();
   useMarketLocal();
+  useLpLocal();
+  useLpReceipts();
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const lpTitle = `${selectedLp?.settlementToken.name}-${selectedLp?.market.description}`;
+  const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
 
   return (
     <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">
@@ -38,7 +46,7 @@ const PoolV2 = () => {
           <div className="mt-10">
             <div className="mb-10 text-left">
               <div className="flex items-center mb-5">
-                <h2 className="mr-3 text-4xl">ETH-BTC/USD Junior Pool</h2>
+                <h2 className="mr-3 text-4xl">{lpTitle} Junior Pool</h2>
                 <Tag label={`high risk`} className="tag-risk-high" />
                 <Button
                   label="Metamask"
@@ -58,7 +66,7 @@ const PoolV2 = () => {
               {/* To be added later */}
               {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
               <div className="flex gap-2 ml-auto text-xl">
-                CLP Price: 0.984
+                CLP Price: {price}
                 <Avatar label="ETH" size="xs" gap="1" fontSize="xl" src={logos['ETH']} />
               </div>
             </div>
