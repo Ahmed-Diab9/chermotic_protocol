@@ -51,14 +51,14 @@ export const TradePanelV3 = () => {
           <div className="relative w-full">
             <div className="flex">
               <div className="flex-grow border-r">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-lower">
+                <div className="flex items-center justify-center h-12 gap-2 text-2xl font-extrabold text-price-lower">
                   <DecreaseIcon />
                   SHORT
                 </div>
                 <TradeContentV3 direction="short" />
               </div>
               <div className="flex-grow">
-                <div className="flex items-center justify-center h-12 gap-2 text-3xl font-extrabold text-price-higher">
+                <div className="flex items-center justify-center h-12 gap-2 text-2xl font-extrabold text-price-higher">
                   <IncreaseIcon />
                   LONG
                 </div>

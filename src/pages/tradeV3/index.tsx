@@ -8,7 +8,7 @@ import { Header } from '~/stories/template/Header';
 import { MainBarV3 } from '~/stories/template/MainBarV3';
 import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
 import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
-import { TradePanelV2 } from '~/stories/template/TradePanelV2';
+import { TradePanelV3 } from '~/stories/template/TradePanelV3';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 
 import './style.css';
@@ -30,12 +30,12 @@ function TradeV3() {
         <Header />
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mx-auto mb-20">
           <MainBarV3 accountPopover />
-          <div className="flex w-full gap-3 overflow-hidden">
+          <div className="flex w-full gap-10 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-3">
               <TradeChartViewV3 />
               <TradeManagementV3 />
             </article>
-            <TradePanelV2 />
+            <TradePanelV3 />
           </div>
         </section>
         <Footer />

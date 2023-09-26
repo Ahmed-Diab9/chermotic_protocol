@@ -43,7 +43,7 @@
   &.tabs-lg {
     [role='tablist'] {
       button {
-        @apply h-12 font-extrabold text-3xl;
+        @apply h-12 font-extrabold text-2xl;
       }
     }
   }

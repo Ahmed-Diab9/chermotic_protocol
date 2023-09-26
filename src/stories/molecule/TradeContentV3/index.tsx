@@ -85,17 +85,15 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
 
   return (
     <div className="w-full px-5">
-      <article className="pt-8 pb-5 border-gray-lighter">
-        <div className="flex items-center gap-2">
-          <h4>Available Balance</h4>
-          <p className="text-lg text-primary-light">
+      <article className="py-5 border-gray-lighter">
+        <div className="flex items-baseline gap-2">
+          <h4>Amount</h4>
+          {/* <p className="text-base text-primary-light">
             <SkeletonElement isLoading={isBalanceLoading} width={40}>
               {balance} {tokenName}
             </SkeletonElement>
-          </p>
-        </div>
-        <div className="flex justify-between gap-5 mt-3">
-          <div className="select w-full max-w-[160px]">
+          </p> */}
+          <div className="select select-sm w-full max-w-[120px] ml-auto">
             <Listbox value={method} onChange={onMethodChange}>
               <Listbox.Button>{methodLabel}</Listbox.Button>
               <Listbox.Options>
@@ -107,7 +105,9 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               </Listbox.Options>
             </Listbox>
           </div>
-          <div className="flex flex-col items-end">
+        </div>
+        <div className="flex justify-between gap-5 mt-2">
+          <div className="flex flex-col items-end ml-auto">
             <AmountSwitch
               collateral={collateral}
               quantity={quantity}
@@ -232,22 +232,22 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
       </section>
       <section>
         <div className="relative -mx-5 border-b">
-          <TradeChart
-            id={`trade-${direction}`}
-            positive={isLong}
-            height={140}
-            selectedAmount={makerMargin}
-          />
           <div
-            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
-              isLong ? 'items-end right-0' : 'items-start left-0'
+            className={`flex gap-3 px-3 pb-1 pt-3 text-sm ${
+              isLong ? 'justify-end right-0' : 'justify-start left-0'
             }`}
           >
-            <p className="text-black3">LP Volume</p>
+            <p className="text-primary-lighter">LP Volume</p>
             <p>
               {totalLiquididy} / {freeLiquidity}
             </p>
           </div>
+          <TradeChart
+            id={`trade-${direction}`}
+            positive={isLong}
+            height={100}
+            selectedAmount={makerMargin}
+          />
         </div>
         <article className="">
           <div className="flex flex-col gap-1 mt-5 border-gray-light">
@@ -293,7 +293,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             />
           </div>
 
-          <div className="px-5 pt-4 pb-5 mt-4 -mx-5 border-t border-dashed bg-paper-light dark:bg-inverted-lighter">
+          <div className="px-5 pt-5 pb-5 mt-5 -mx-5 border-t border-dashed border-primary-light bg-paper-light dark:bg-inverted-lighter">
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <div className="flex">

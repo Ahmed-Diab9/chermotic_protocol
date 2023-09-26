@@ -54,7 +54,7 @@ export const TradeManagementV3 = () => {
       <div className="w-full h-full tabs tabs-line tabs-left">
         <Tab.Group>
           <div className="flex flex-col w-full h-full">
-            <div className="flex items-end border-b">
+            <div className="flex items-end border-b border-primary/10">
               <Tab.List className="flex-none tabs-list">
                 <Tab>Position</Tab>
                 <Tab>History</Tab>
