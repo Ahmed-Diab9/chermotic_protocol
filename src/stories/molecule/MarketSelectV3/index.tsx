@@ -192,7 +192,7 @@ export function MarketSelectV3() {
             </SkeletonElement>
           </h2>
         </div>
-        <div className="flex items-stretch gap-5 text-right font-regular">
+        <div className="flex items-stretch gap-5 text-left font-regular">
           <div className="flex flex-col gap-[2px]">
             <div className="flex">
               <p className="text-sm text-primary-light">Last update</p>
@@ -239,7 +239,7 @@ export function MarketSelectV3() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex pl-2 mr-3">
+          <div className="flex mr-3">
             <Button
               css="unstyled"
               iconOnly={<OutlinkIcon />}

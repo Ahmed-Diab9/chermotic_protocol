@@ -3,13 +3,13 @@ import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV3 } from '~/stories/template/MainBarV3';
 import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
+import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 
 import './style.css';
 
@@ -26,7 +26,7 @@ function TradeV3() {
         <div id="current"></div>
       </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
-        <BookmarkBoard />
+        <BookmarkBoardV3 />
         <Header />
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mx-auto mb-20">
           <MainBarV3 accountPopover />

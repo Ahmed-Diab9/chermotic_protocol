@@ -1,0 +1,9 @@
+.BookmarkBoardV3 {
+  @apply h-6 bg-inverted px-2;
+  .item-bookmark {
+    @apply h-full flex items-center gap-2 text-sm;
+    &:not(:first-child) {
+      @apply border-l pl-5;
+    }
+  }
+}
