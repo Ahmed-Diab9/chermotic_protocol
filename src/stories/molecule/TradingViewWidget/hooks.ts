@@ -1,5 +1,5 @@
 import { isNotNil } from 'ramda';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useMarket } from '~/hooks/useMarket';
 import { WidgetConfig } from '~/typings/chart';
@@ -10,16 +10,7 @@ const marketMap: Record<string, string | undefined> = {
 };
 
 export function useTradingViewChart({ width, height }: { width: number; height: number }) {
-  const { markets, currentMarket, onMarketSelect, isMarketLoading } = useMarket();
-  const { state: storedMarketSymbol } = useLocalStorage<string>('app:market');
-  const marketSymbol = useMemo(() => {
-    return isNotNil(currentMarket)
-      ? marketMap[currentMarket.description]
-      : isNotNil(storedMarketSymbol)
-      ? marketMap[storedMarketSymbol]
-      : undefined;
-  }, [currentMarket, storedMarketSymbol]);
-
+  const { markets, onMarketSelect } = useMarket();
   const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
   const [config, setConfig] = useState<WidgetConfig>({
     width,
@@ -70,8 +61,6 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
   }, [darkMode]);
 
   return {
-    isMarketLoading,
-    marketSymbol,
     config,
     onSymbolChange,
     onConfigChange,

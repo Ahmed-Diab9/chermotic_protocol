@@ -15,7 +15,8 @@ export const darkMode = 'class';
 export const theme = {
   extend: {
     fontFamily: {
-      mono: ['Source Code Pro', monospace],
+      // mono: ['Source Code Pro', monospace],
+      mono: ['Roboto Slab', monospace],
       // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
       // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
@@ -71,8 +72,14 @@ export const theme = {
 
       leverage: 'rgb(var(--color-leverage))',
       price: {
-        higher: 'rgb(var(--color-price-higher))',
-        lower: 'rgb(var(--color-price-lower))',
+        higher: {
+          DEFAULT: 'rgb(var(--color-price-higher))',
+          light: 'rgb(var(--color-price-higher-light)) / 0.19',
+        },
+        lower: {
+          DEFAULT: 'rgb(var(--color-price-lower))',
+          light: 'rgb(var(--color-price-lower-light)) / 0.19',
+        },
       },
       status: {
         standby: {

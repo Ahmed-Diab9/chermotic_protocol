@@ -234,7 +234,7 @@ const ProgressItem = (props: ProgressItemProps) => {
   const renderTitle = isAdd ? 'minting' : isRemove ? 'burning' : '';
 
   return (
-    <div className="flex items-center gap-5 px-5 py-2 border-b">
+    <div className="flex items-center gap-5 px-5 py-3 border-b">
       <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
         {renderTitle}
         <br />

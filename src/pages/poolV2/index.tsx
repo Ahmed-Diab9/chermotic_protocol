@@ -55,10 +55,11 @@ const PoolV2 = () => {
               </p>
             </div>
             <div className="flex items-center justify-between mb-3 text-lg text-primary">
-              <div>esChroma Rewards: 500 esChroma/day</div>
-              <div className="flex gap-2">
+              {/* To be added later */}
+              {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
+              <div className="flex gap-2 ml-auto text-xl">
                 CLP Price: 0.984
-                <Avatar label="ETH" size="xs" gap="1" fontSize="lg" src={logos['ETH']} />
+                <Avatar label="ETH" size="xs" gap="1" fontSize="xl" src={logos['ETH']} />
               </div>
             </div>
             <div className="flex gap-3">
@@ -67,8 +68,8 @@ const PoolV2 = () => {
                 <PoolAnalytics />
               </div>
               <div className="flex-none w-[420px] flex flex-col gap-3">
-                {/* PoolBalance: To be added later */}
-                <PoolBalance />
+                {/* To be added later */}
+                {/* <PoolBalance /> */}
                 <PoolStat />
                 <PoolPerformance />
                 <PoolDetail />

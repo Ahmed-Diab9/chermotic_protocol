@@ -162,27 +162,27 @@ export function PoolPanelV2() {
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-end mt-7">
+                  {/* To be added later */}
+                  {/* <div className="flex justify-end mt-7">
                     <Switch.Group>
                       <div className="toggle-wrapper">
                         <Switch.Label className="">
                           Stake CLP to earn esChroma automatically after minting
                         </Switch.Label>
-                        {/* todo: onChange value */}
                         <Switch onChange={setIsBinValueVisible} className="toggle toggle-xs" />
                       </div>
                     </Switch.Group>
-                  </div>
+                  </div> */}
                 </article>
 
                 <article className="mt-5">
-                  <div className="py-3 border-dashed border-y">
+                  <div className="py-3 border-t border-dashed">
                     <PoolInfo label="EST. Receive">
-                      <Avatar label="995.34 CLP" size="sm" gap="1" />
+                      <Avatar label="995.34 CLP" size="sm" fontSize="lg" gap="1" />
                     </PoolInfo>
                   </div>
-                  <div className="flex flex-col gap-2 pt-3">
-                    <PoolInfo
+                  <div className="flex flex-col gap-2">
+                    {/* <PoolInfo
                       label="Allowance"
                       tooltipLabel="allowance"
                       tooltipTip=""
@@ -197,15 +197,7 @@ export function PoolPanelV2() {
                         // onChange={}
                         autoCorrect
                       />
-                    </PoolInfo>
-                    <PoolInfo
-                      label="Minimum Received"
-                      tooltipLabel="minimum-received"
-                      tooltipTip=""
-                      valueClass="w-20"
-                    >
-                      931.94 CLP
-                    </PoolInfo>
+                    </PoolInfo> */}
                     <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
                       0.35%
                     </PoolInfo>
@@ -288,36 +280,12 @@ export function PoolPanelV2() {
                                 )}
                               </div>
                             </div>
-                            <div className="py-3 border-dashed border-y">
+                            <div className="py-3 border-t border-dashed">
                               <PoolInfo label="EST. Receive">
-                                <Avatar label="995.34 ETH" size="sm" gap="1" />
+                                <Avatar label="995.34 ETH" size="sm" fontSize="lg" gap="1" />
                               </PoolInfo>
                             </div>
-                            <div className="flex flex-col gap-2 pt-3">
-                              <PoolInfo
-                                label="Allowance"
-                                tooltipLabel="allowance"
-                                tooltipTip=""
-                                valueClass="w-20"
-                              >
-                                <Input
-                                  size="xs"
-                                  unit="%"
-                                  value={0.5}
-                                  min={1}
-                                  className="Allowance"
-                                  // onChange={}
-                                  autoCorrect
-                                />
-                              </PoolInfo>
-                              <PoolInfo
-                                label="Minimum Received"
-                                tooltipLabel="minimum-received"
-                                tooltipTip=""
-                                valueClass="w-20"
-                              >
-                                931.94 ETH
-                              </PoolInfo>
+                            <div className="flex flex-col gap-2">
                               <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
                                 0.35%
                               </PoolInfo>
@@ -344,6 +312,10 @@ export function PoolPanelV2() {
                     </>
                   )}
                 </Tab.Group>
+              </section>
+
+              <section className="mt-10 -mx-5 border-t border-dashed">
+                <PoolProgressV2 />
               </section>
             </Tab.Panel>
           </Tab.Panels>

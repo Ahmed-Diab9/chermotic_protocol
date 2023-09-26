@@ -1,6 +1,8 @@
+import { isNil, isNotNil } from 'ramda';
 import { Resizable } from 're-resizable';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
+import { useMarket } from '~/hooks/useMarket';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import '~/stories/atom/Tabs/style.css';
 import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
@@ -10,10 +12,24 @@ import './style.css';
 // import { ChevronRightIcon } from '@heroicons/react/24/outline';
 // import { Button } from '~/stories/atom/Button';
 
+const marketMap: Record<string, string | undefined> = {
+  'ETH/USD': 'PYTH:ETHUSD',
+  'BTC/USD': 'PYTH:BTCUSD',
+};
+
 export interface TradeChartViewProps {}
 
 export const TradeChartView = (props: TradeChartViewProps) => {
   const [selectedButton, setSelectedButton] = useState(0);
+  const { currentMarket } = useMarket();
+  const { state: storedMarketSymbol } = useLocalStorage<string>('app:market');
+  const marketSymbol = useMemo(() => {
+    return isNotNil(currentMarket)
+      ? marketMap[currentMarket.description]
+      : isNotNil(storedMarketSymbol)
+      ? marketMap[storedMarketSymbol]
+      : undefined;
+  }, [currentMarket, storedMarketSymbol]);
   const viewRef = useRef<HTMLDivElement>(null);
   const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
@@ -44,18 +60,26 @@ export const TradeChartView = (props: TradeChartViewProps) => {
         onResizeStop={handleResizeStop}
         className="panel"
       >
-        <div
-          className="flex items-stretch w-full h-full border-b"
-          style={{
-            borderColor: 'rgb(var(--color-paper))',
-          }}
-        >
-          <TradingViewWidget
-            className="flex flex-col items-center flex-auto"
-            width={width}
-            height={height}
-          />
-        </div>
+        {/* loading */}
+        {isNil(marketSymbol) ? (
+          <div className="flex items-center justify-center h-full">
+            <img src="/src/assets/icons/loadingLg.png" className="w-10 animate-spin" alt="" />
+          </div>
+        ) : (
+          <div
+            className="flex items-stretch w-full h-full border-b"
+            style={{
+              borderColor: 'rgb(var(--color-paper))',
+            }}
+          >
+            <TradingViewWidget
+              className="flex flex-col items-center flex-auto"
+              width={width}
+              height={height}
+              marketSymbol={marketSymbol}
+            />
+          </div>
+        )}
       </Resizable>
     </div>
   );
