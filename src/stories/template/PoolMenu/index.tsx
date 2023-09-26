@@ -1,47 +1,31 @@
-import { useState } from 'react';
-import { Progress } from '~/stories/atom/Progress';
-import { Avatar } from '~/stories/atom/Avatar';
-import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import { Tag } from '~/stories/atom/Tag';
 import '~/stories/atom/Tabs/style.css';
+import { Tag } from '~/stories/atom/Tag';
+import { usePoolMenu } from './hooks';
 
 export interface PoolMenuProps {}
 
 export const PoolMenu = (props: PoolMenuProps) => {
-  const [selected, setSelected] = useState<string | null>('high');
-
-  const handleItemClick = (label: string) => {
-    setSelected(label);
-  };
+  const { formattedLp, selectedLp, onMenuClick } = usePoolMenu();
 
   return (
     <div className="flex flex-col gap-3 PoolMenu">
-      <PoolMenuItem
-        label="high"
-        title="Junior Pool"
-        price={100}
-        aum={50}
-        selected={selected === 'high'}
-        onClick={() => handleItemClick('high')}
-      />
-      <PoolMenuItem
-        label="mid"
-        title="Mezzanine Pool"
-        price={100}
-        aum={50}
-        selected={selected === 'mid'}
-        onClick={() => handleItemClick('mid')}
-      />
-      <PoolMenuItem
-        label="low"
-        title="Senior Pool"
-        price={100}
-        aum={50}
-        selected={selected === 'low'}
-        onClick={() => handleItemClick('low')}
-      />
+      {formattedLp?.map((lp, lpIndex) => {
+        return (
+          <PoolMenuItem
+            key={`${lp.name}-${lpIndex}`}
+            title={lp.name}
+            price={lp.price}
+            aum={lp.assets}
+            label={lp.label ?? 'No labels'}
+            tokenSymbol={lp.tokenSymbol}
+            selected={lp.name === selectedLp?.name}
+            onClick={() => {
+              onMenuClick(lp.name);
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -49,14 +33,15 @@ export const PoolMenu = (props: PoolMenuProps) => {
 export interface PoolMenuItemProps {
   label: string;
   title: string;
-  price: number;
-  aum: number;
+  price: number | string;
+  aum: number | string;
+  tokenSymbol: string;
   selected?: boolean;
   onClick?: () => void;
 }
 
 export const PoolMenuItem = (props: PoolMenuItemProps) => {
-  const { label, title, price, aum, selected, onClick } = props;
+  const { label, title, price, aum, tokenSymbol, selected, onClick } = props;
 
   return (
     <button
@@ -74,13 +59,13 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
             Price
             <span className="ml-1 mr-0">{price}</span>
             {/* unit: settlement token */}
-            ETH
+            {' ' + tokenSymbol}
           </p>
           <p className="pl-2 ml-2 border-l !border-primary-lighter">
             AUM
             <span className="ml-1 mr-0">{aum}</span>
             {/* unit: settlement token */}
-            ETH
+            {' ' + tokenSymbol}
           </p>
         </div>
       </div>
