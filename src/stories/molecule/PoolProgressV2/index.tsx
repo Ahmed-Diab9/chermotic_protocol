@@ -11,6 +11,8 @@ import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
+import { LpReceipt } from '~/hooks/useLpReceipts';
+import { formatTimestamp } from '~/utils/date';
 import { usePoolProgressV2 } from './hooks';
 
 export function PoolProgressV2() {
@@ -20,24 +22,9 @@ export function PoolProgressV2() {
     isGuideOpen,
 
     formattedElapsed,
-
-    poolReceipts,
-    poolReceiptsCount,
-    isReceiptsEmpty,
-    isClaimDisabled,
-    onAllClaimClicked,
-
-    mintingReceipts,
-    mintingsCount,
-    isMintingsEmpty,
-    isMintingClaimDisabled,
-    onAddClaimClicked,
-
-    burningReceipts,
-    burningsCount,
-    isBurningsEmpty,
-    isBurningClaimDisabled,
-    onRemoveClaimClicked,
+    receipts = [],
+    mintingReceipts = [],
+    burningReceipts = [],
   } = usePoolProgressV2();
 
   return (
@@ -50,7 +37,7 @@ export function PoolProgressV2() {
                 <div className="px-5 text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="mx-1">({poolReceiptsCount})</span>
+                    <span className="mx-1">({receipts.length})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -73,8 +60,8 @@ export function PoolProgressV2() {
                   <div className="flex px-5 mt-2 border-b">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintingsCount})</Tab>
-                      <Tab id="burning">Burning ({burningsCount})</Tab>
+                      <Tab id="minting">Minting ({mintingReceipts.length})</Tab>
+                      <Tab id="burning">Burning ({burningReceipts.length})</Tab>
                     </Tab.List>
                   </div>
                   <Tab.Panels className="flex-auto">
@@ -92,14 +79,14 @@ export function PoolProgressV2() {
                     </div>
                     {/* tab - all */}
                     <Tab.Panel className="flex flex-col mb-5">
-                      {isReceiptsEmpty ? (
+                      {receipts.length === 0 ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
                         <>
-                          {poolReceipts.map((props) => (
-                            <ProgressItem {...props} />
+                          {receipts.map((receipt) => (
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -111,14 +98,14 @@ export function PoolProgressV2() {
                     </Tab.Panel>
                     {/* tab - minting */}
                     <Tab.Panel className="flex flex-col mb-5">
-                      {isMintingsEmpty ? (
+                      {mintingReceipts.length === 0 ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
                         <>
-                          {mintingReceipts.map((props) => (
-                            <ProgressItem {...props} />
+                          {mintingReceipts.map((receipt) => (
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -130,14 +117,14 @@ export function PoolProgressV2() {
                     </Tab.Panel>
                     {/* tab - burning */}
                     <Tab.Panel className="flex flex-col mb-5">
-                      {isBurningsEmpty ? (
+                      {burningReceipts.length === 0 ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
                       ) : (
                         <>
-                          {burningReceipts.map((props) => (
-                            <ProgressItem {...props} />
+                          {burningReceipts.map((receipt) => (
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -197,63 +184,36 @@ export function PoolProgressV2() {
   );
 }
 
-interface ProgressItemProps {
+interface ProgressItemProps extends LpReceipt {
   key: string;
-  detail: string;
-  name: string;
-  image?: string;
-  remainedCLBAmount?: string;
-  tokenName: string;
-  progressPercent: number;
-  onClick: () => unknown;
-  isLoading: boolean;
-  isStandby: boolean;
-  isInprogress: boolean;
-  isCompleted: boolean;
-  isAdd: boolean;
-  isRemove: boolean;
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const {
-    detail,
-    name,
-    image,
-    remainedCLBAmount,
-    tokenName,
-    progressPercent,
-    onClick,
-    isLoading,
-    isStandby,
-    isInprogress,
-    isCompleted,
-    isAdd,
-    isRemove,
-  } = props;
-
-  const renderTitle = isAdd ? 'minting' : isRemove ? 'burning' : '';
+  const { detail, status, action, timestamp } = props;
 
   return (
     <div className="flex items-center gap-5 px-5 py-3 border-b">
       <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
-        {renderTitle}
+        {action}
         <br />
         CLP Tokens
       </h4>
       <div className="">
         {/* Avatar label unit: */}
         {/* minting: CLP / burning: settle token */}
-        <Avatar label="101.383 CLP" size="sm" fontSize="lg" gap="1" />
+        <Avatar label={detail} size="sm" fontSize="lg" gap="1" />
         {/* todo: show only if some parts cannot be withdrawn */}
         {/* <p className="text-sm mt-[2px]">205.25 CLP Returned</p> */}
       </div>
       <div className="ml-auto text-right">
-        {isCompleted && <p className="text-sm text-primary-light mb-[2px]">May 20 17:45:12</p>}
+        {status === 'completed' && (
+          <p className="text-sm text-primary-light mb-[2px]">{formatTimestamp(timestamp)}</p>
+        )}
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-primary">
           <span className="">
-            {isCompleted ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
+            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
-          {isCompleted && isAdd ? 'Completed' : detail}
+          {status === 'completed' && action === 'minting' ? 'Completed' : detail}
           {/* todo: if some parts cannot be withdrawn */}
           {/* 00% withdrawn <TooltipGuide label="withdraw-returned" tip="" /> */}
         </div>
