@@ -7,7 +7,7 @@ import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV3 } from '~/stories/template/MainBarV3';
-import { TradeChartView } from '~/stories/template/TradeChartView';
+import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 
@@ -26,21 +26,13 @@ function TradeV3() {
         <div id="current"></div>
       </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
+        <BookmarkBoard />
         <Header />
-        {/* <div className="flex justify-center gap-10">
-          <button onClick={() => toggleConditions('before')}>
-            Before {beforeCondition ? 'High' : 'Low'}
-          </button>
-          <button onClick={() => toggleConditions('after')}>
-            After {afterCondition ? 'High' : 'Low'}
-          </button>
-        </div> */}
-        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-5 mx-auto mb-20">
-          <BookmarkBoard />
+        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mx-auto mb-20">
           <MainBarV3 accountPopover />
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-3">
-              <TradeChartView />
+              <TradeChartViewV3 />
               <TradeManagement />
             </article>
             <TradePanelV2 />

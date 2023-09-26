@@ -1,12 +1,12 @@
 .AccountPopoverV3 {
   @apply relative flex items-center justify-between;
-  @apply min-h-[80px] gap-6;
+  @apply h-[42px] gap-6;
   @apply text-primary;
   &:has([data-headlessui-state='open']) {
     @apply dark:border-gray-lighter dark:shadow-lg;
   }
   .popover-panel {
-    @apply absolute left-0 ml-[-1px] rounded-b;
+    @apply absolute left-0 rounded mt-2;
     @apply top-[64px] border-x border-b px-10 pt-4;
     @apply bg-paper text-primary;
     width: calc(100% + 2px);

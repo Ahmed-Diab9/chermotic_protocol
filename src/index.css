@@ -234,7 +234,12 @@ body {
 }
 
 .panel {
-  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
+  &:not(.panel-transparent) {
+    @apply rounded shadow-lg dark:shadow-none bg-paper/50 border dark:border-transparent;
+  }
+  &.panel-transparent {
+    @apply bg-transparent;
+  }
 }
 
 h1,

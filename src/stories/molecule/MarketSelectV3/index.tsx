@@ -38,7 +38,7 @@ export function MarketSelectV3() {
 
   return (
     <>
-      <div className="relative MarketSelectV3 panel">
+      <div className="relative MarketSelectV3 panel panel-transparent">
         <div className="flex items-center h-full gap-3">
           <BookmarkButton
             size="lg"
@@ -56,43 +56,26 @@ export function MarketSelectV3() {
           <Popover className="h-full">
             {({ open }) => (
               <>
-                <Popover.Button className="flex items-center h-full gap-3 pr-5 border-r">
-                  <div className="pr-3 border-r">
-                    <div className="flex items-center gap-1">
-                      <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                      <SkeletonElement
-                        isLoading={isLoading}
-                        width={60}
-                        containerClassName="text-2xl"
-                      >
-                        <Avatar
-                          label={tokenName}
-                          src={tokenImage}
-                          fontSize="2xl"
-                          gap="1"
-                          size="base"
-                        />
-                      </SkeletonElement>
-                    </div>
+                <Popover.Button className="flex items-center h-full gap-3">
+                  <div className="flex items-center gap-1">
+                    <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+                    <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
+                      <Avatar label={tokenName} src={tokenImage} fontSize="xl" gap="1" size="sm" />
+                    </SkeletonElement>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                      <SkeletonElement
-                        isLoading={isLoading}
-                        width={80}
-                        containerClassName="text-2xl"
-                      >
-                        <Avatar
-                          label={marketDescription}
-                          src={marketImage}
-                          fontSize="2xl"
-                          gap="1"
-                          size="base"
-                        />
-                      </SkeletonElement>
-                    </div>
+                  <div className="flex items-center gap-1">
+                    <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
+                    <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
+                      <Avatar
+                        label={marketDescription}
+                        src={marketImage}
+                        fontSize="xl"
+                        gap="1"
+                        size="sm"
+                      />
+                    </SkeletonElement>
                   </div>
+
                   <ArrowTriangleIcon
                     className={`w-4 h-4 ${open ? 'rotate-180' : ''}`}
                     aria-hidden="true"
@@ -256,7 +239,7 @@ export function MarketSelectV3() {
               </SkeletonElement>
             </h4>
           </div>
-          <div className="flex pl-3 mr-3 border-l">
+          <div className="flex pl-2 mr-3">
             <Button
               css="unstyled"
               iconOnly={<OutlinkIcon />}

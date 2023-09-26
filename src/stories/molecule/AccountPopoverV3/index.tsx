@@ -14,20 +14,30 @@ export function AccountPopoverV3() {
 
   return (
     <>
-      <div className="AccountPopoverV3 panel">
-        <div className="ml-5">
-          <Avatar size="base" fontSize="lg" label="Account balance" gap="2" src={tokenImage} />
+      <div className="border-l AccountPopoverV3 border-primary/10 panel panel-transparent">
+        <div className="tex8-left pl-7">
+          {isAccountExist ? (
+            <div className="flex flex-col gap-[2px]">
+              <h6 className="text-primary-light">Account balance</h6>
+              <h2 className="text-xl">
+                <SkeletonElement isLoading={isLoading} width={80}>
+                  <Avatar
+                    size="xs"
+                    fontSize="lg"
+                    label={`${balance} ${tokenName}`}
+                    gap="1"
+                    src={tokenImage}
+                  />
+                </SkeletonElement>
+              </h2>
+            </div>
+          ) : (
+            <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" src={tokenImage} />
+          )}
         </div>
-        <div className="flex flex-col gap-1 mr-5 text-right">
+        <div className="flex flex-col gap-1 mr-0 text-right">
           {isConnected ? (
             <>
-              {isAccountExist && (
-                <h2 className="text-xl">
-                  <SkeletonElement isLoading={isLoading} width={120}>
-                    {balance} {tokenName}
-                  </SkeletonElement>
-                </h2>
-              )}
               <Popover.Group className="flex gap-2">
                 <AssetPanel type="Deposit" />
                 <AssetPanel type="Withdraw" />

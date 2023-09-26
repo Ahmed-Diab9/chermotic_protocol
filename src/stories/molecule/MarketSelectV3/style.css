@@ -1,14 +1,13 @@
 .MarketSelectV3 {
-  @apply flex items-center justify-between gap-6 pl-5 pr-0;
-  @apply h-[80px];
+  @apply flex items-center justify-between gap-6 pr-0;
+  @apply h-[42px];
   &:has([data-headlessui-state='open']) {
-    @apply dark:border-gray-lighter dark:shadow-lg rounded-bl-none;
+    /* @apply dark:border-gray-lighter dark:shadow-lg rounded-bl-none; */
   }
   .popover-panel {
-    @apply flex flex-col absolute left-0 ml-[-1px];
-    @apply bg-paper min-h-[230px] rounded-b;
+    @apply flex flex-col absolute left-0 mt-2;
+    @apply bg-paper min-h-[230px] rounded;
     @apply border;
-    /* width: calc(100% + 2px); */
   }
   .inner-popover {
     @apply flex items-start;

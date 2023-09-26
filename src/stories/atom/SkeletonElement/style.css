@@ -5,4 +5,5 @@
 .dark .react-loading-skeleton {
   --base-color: #444449;
   --highlight-color: #292933;
+  opacity: 0.5;
 }
