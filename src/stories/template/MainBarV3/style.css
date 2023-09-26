@@ -1,0 +1,14 @@
+.MainBarV3 {
+  .backdrop {
+    @apply hidden;
+  }
+  &:has(.popover-panel) {
+    .backdrop {
+      @apply block;
+    }
+    .MarketSelectV2,
+    .AccountPopoverV2 {
+      @apply z-30;
+    }
+  }
+}
