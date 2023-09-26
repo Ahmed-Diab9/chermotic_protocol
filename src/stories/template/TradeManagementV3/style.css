@@ -1,0 +1,104 @@
+.TradeManagementV3 {
+  @apply min-w-[680px];
+  .tabs {
+    .tabs-panels {
+      @apply h-[calc(100%-40px)] w-full;
+    }
+    .tabs-panel {
+      @apply w-full h-full;
+    }
+    .tabs-list {
+      button {
+        @apply w-[10%] h-8 min-w-[120px];
+      }
+    }
+    [role='tablist'] {
+      [aria-selected='true'] {
+        @apply bg-inverted-lighter;
+      }
+      [aria-selected='false'] {
+        @apply bg-transparent border-b-0;
+      }
+    }
+  }
+  .wrapper-inner {
+    @apply w-full h-full overflow-x-hidden;
+  }
+  .list {
+    @apply h-full overflow-y-hidden;
+    .thead {
+      @apply items-stretch border-b bg-inverted-lighter px-3;
+      .tr {
+        @apply px-2;
+      }
+      .td {
+        @apply py-2 text-sm text-primary-light;
+      }
+    }
+    .tbody {
+      @apply flex flex-col gap-2 px-3 overflow-y-auto pb-3;
+      .tr {
+        @apply gap-5 py-3 border-b px-2;
+      }
+      .td {
+        &:not(:nth-child(1)) {
+          @apply break-all;
+        }
+      }
+    }
+    .tr {
+      @apply flex gap-5 justify-between;
+    }
+    .td {
+      @apply flex items-center;
+      flex: 1 1 auto;
+    }
+  }
+  .tabs-panel {
+    &.position .list {
+      .td {
+        @apply w-[8%];
+        &:nth-child(1) {
+          @apply w-[16%] min-w-[168px] grow-0;
+        }
+        &:last-child {
+          flex: 0 0 40px;
+        }
+        &:nth-child(4),
+        &:nth-child(5),
+        &:nth-child(6) {
+          @apply w-[6%];
+        }
+        &:nth-child(1),
+        &:nth-child(4),
+        &:nth-child(7) {
+          @apply border-r pr-4;
+        }
+      }
+    }
+    &.history .list {
+      .td {
+        @apply w-[10%];
+        &:nth-child(1) {
+          @apply w-[24%] min-w-[220px];
+        }
+        &:nth-child(1),
+        &:nth-child(4) {
+          @apply border-r pr-4;
+        }
+      }
+    }
+    &.trades .list {
+      .tr {
+        @apply justify-start;
+      }
+      .td {
+        @apply w-[10%] grow-0 min-w-[96px];
+        &:nth-child(1) {
+          @apply w-[20%] min-w-[168px];
+          @apply border-r pr-4;
+        }
+      }
+    }
+  }
+}

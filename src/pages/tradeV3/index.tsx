@@ -7,7 +7,7 @@ import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV3 } from '~/stories/template/MainBarV3';
 import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
-import { TradeManagement } from '~/stories/template/TradeManagement';
+import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 
@@ -33,7 +33,7 @@ function TradeV3() {
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-3">
               <TradeChartViewV3 />
-              <TradeManagement />
+              <TradeManagementV3 />
             </article>
             <TradePanelV2 />
           </div>
