@@ -17,9 +17,9 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
     height,
     interval: '5',
     theme: darkMode ? 'dark' : 'light',
-    backgroundColor: darkMode ? 'rgba(35, 35, 39, 0)' : '#fcfcfc',
-    gridColor: darkMode ? 'rgba(51, 51, 58, 0)' : '#fcfcfc',
-    toolbar_bg: darkMode ? 'rgba(35, 35, 39, 0)' : '#fcfcfc',
+    backgroundColor: darkMode ? '#2e2e32' : '#fcfcfc',
+    gridColor: darkMode ? '#1f1f21' : '#fcfcfc',
+    toolbar_bg: darkMode ? '#2e2e32' : '#fcfcfc',
     isPublishingEnabled: false,
     isSymbolChangeAllowed: false,
     hasVolume: false,
@@ -54,8 +54,8 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
 
   useEffect(() => {
     onConfigChange('theme', darkMode ? 'dark' : 'light');
-    onConfigChange('backgroundColor', darkMode ? 'rgba(35, 35, 39, 0)' : '#fcfcfc');
-    onConfigChange('toolbar_bg', darkMode ? 'rgba(35, 35, 39, 0)' : '#fcfcfc');
+    onConfigChange('backgroundColor', darkMode ? '#2e2e32' : '#fcfcfc');
+    onConfigChange('toolbar_bg', darkMode ? '#2e2e32' : '#fcfcfc');
     onConfigChange('upColor', darkMode ? '#A6D85B' : '#65CE12');
     onConfigChange('downColor', darkMode ? '#FF3232' : '#FF4F44');
   }, [darkMode]);
