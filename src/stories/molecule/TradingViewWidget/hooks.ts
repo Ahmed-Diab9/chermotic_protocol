@@ -17,7 +17,7 @@ export function useTradingViewChart({ width, height }: { width: number; height: 
     height,
     interval: '5',
     theme: darkMode ? 'dark' : 'light',
-    backgroundColor: darkMode ? '#2e2e32' : '#fcfcfc',
+    backgroundColor: darkMode ? 'rgba(35, 35, 39, 0)' : '#fcfcfc',
     gridColor: darkMode ? '#1f1f21' : '#fcfcfc',
     toolbar_bg: darkMode ? '#2e2e32' : '#fcfcfc',
     isPublishingEnabled: false,
