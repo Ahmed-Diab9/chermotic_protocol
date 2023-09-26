@@ -61,6 +61,9 @@ a {
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
     }
   }
+  &.btn-line {
+    @apply border border-primary-lighter;
+  }
   &.btn-unstyled {
     @apply bg-transparent;
   }

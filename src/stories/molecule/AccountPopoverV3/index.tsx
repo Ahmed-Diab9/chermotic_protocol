@@ -46,7 +46,8 @@ export function AccountPopoverV3() {
           ) : (
             <>
               {/* FIXME: separate by states */}
-              <Button label="Connect Wallet" css="light" size="sm" onClick={onClickConnect} />
+              {/* <Button label="Connect Wallet" css="light" size="sm" onClick={onClickConnect} /> */}
+              <Button label="Connect Wallet" css="line" size="sm" onClick={onClickConnect} />
             </>
           )}
         </div>
