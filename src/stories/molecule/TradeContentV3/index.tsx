@@ -85,7 +85,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
 
   return (
     <div className="w-full px-5">
-      <article className="py-5 border-gray-lighter">
+      <article className="py-4 border-gray-lighter">
         <div className="flex items-baseline gap-2">
           <h4>Amount</h4>
           {/* <p className="text-base text-primary-light">
@@ -122,7 +122,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-light dark:bg-inverted-lighter">
+      <section className="mx-[-20px] px-5 pt-4 pb-4 border-y bg-paper-light dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -233,7 +233,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
       <section>
         <div className="relative -mx-5 border-b">
           <div
-            className={`flex gap-3 px-3 pb-1 pt-3 text-sm ${
+            className={`flex gap-3 px-3 pb-2 pt-4 text-sm ${
               isLong ? 'justify-end right-0' : 'justify-start left-0'
             }`}
           >
@@ -293,7 +293,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             />
           </div>
 
-          <div className="px-5 pt-5 pb-5 mt-5 -mx-5 border-t border-dashed border-primary-light bg-paper-light dark:bg-inverted-lighter">
+          <div className="px-5 pt-5 pb-5 mt-5 -mx-5 border-t border-dashed border-primary-lighter bg-paper-light dark:bg-inverted-lighter">
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <div className="flex">
