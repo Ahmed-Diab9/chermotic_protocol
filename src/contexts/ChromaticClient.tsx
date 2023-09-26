@@ -1,4 +1,5 @@
-import { Client } from '@chromatic-protocol/sdk-viem';
+import { Client as LPClient } from '@chromatic-protocol/liquidity-provider-sdk';
+import { Client as ChromaticClient } from '@chromatic-protocol/sdk-viem';
 import { isNotNil } from 'ramda';
 import React, { useCallback, useState, type ReactNode } from 'react';
 import { Address, PublicClient, WalletClient } from 'wagmi';
@@ -6,14 +7,16 @@ import { Address, PublicClient, WalletClient } from 'wagmi';
 type ContextValue = {
   readonly isReady: boolean;
   readonly walletAddress?: Address;
-  readonly client: Client;
+  readonly client: ChromaticClient;
+  readonly lpClient: LPClient;
   readonly setPublicClient: (publicClient: PublicClient) => void;
   readonly setWalletClient: (walletClient: WalletClient) => void;
 };
 
 const initialValue = {
   isReady: false,
-  client: new Client(),
+  client: new ChromaticClient(),
+  lpClient: new LPClient(),
   setPublicClient: () => {},
   setWalletClient: () => {},
 };
@@ -21,7 +24,8 @@ const initialValue = {
 export const ChromaticContext = React.createContext<ContextValue>(initialValue);
 
 function useContextValue(): ContextValue {
-  const [client, setClient] = useState<Client>(initialValue.client);
+  const [client, setClient] = useState<ChromaticClient>(initialValue.client);
+  const [lpClient, setLpClient] = useState(initialValue.lpClient);
   const [isReady, setIsReady] = useState<boolean>(initialValue.isReady);
   const [walletAddress, setWalletAddress] = useState<Partial<Address>>();
 
@@ -32,6 +36,11 @@ function useContextValue(): ContextValue {
         currentClient.publicClient = publicClient;
         return currentClient;
       });
+      setLpClient((currentLpClient) => {
+        currentLpClient.publicClient = publicClient;
+        return currentLpClient;
+      });
+
       setIsReady(true);
       setIsReady(isNotNil(publicClient));
     },
@@ -45,6 +54,10 @@ function useContextValue(): ContextValue {
         currentClient.walletClient = walletClient;
         return currentClient;
       });
+      setLpClient((currentLpClient) => {
+        currentLpClient.walletClient = walletClient;
+        return currentLpClient;
+      });
       setWalletAddress(walletClient?.account.address);
     },
     [client, walletAddress]
@@ -54,6 +67,7 @@ function useContextValue(): ContextValue {
     isReady,
     walletAddress,
     client,
+    lpClient,
     setWalletClient,
     setPublicClient,
   };
