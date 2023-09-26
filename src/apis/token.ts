@@ -6,7 +6,6 @@ import CHRM_LOGO from '../assets/tokens/CHRM.png';
 
 export const fetchTokenInfo = async (symbols: string | string[]) => {
   const symbolString = typeof symbols === 'string' ? symbols : symbols.toString();
-  console.log(symbolString, 'symbol string');
   const { data } = await axios({
     method: 'GET',
     url: `${CMC_API}/${symbolString}`,
