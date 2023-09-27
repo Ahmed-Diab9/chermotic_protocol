@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { checkAllProps } from '~/utils';
@@ -74,7 +73,6 @@ export const useLpReceipts = () => {
         const settlementToken = tokens.find((token) => token.address === market.tokenAddress);
         const clpToken = await lp.lpTokenMeta(lpAddress);
         const receiptIds = await lp.getReceiptIdsOf(lpAddress, address);
-        console.log(receiptIds, 'receipt ids');
         const receipts = receiptIds.map(async (receiptId) => {
           const receipt = await lp.getReceipt(lpAddress, receiptId);
           const action = receipt.action === 0 ? 'minting' : 'burning';
@@ -83,18 +81,20 @@ export const useLpReceipts = () => {
             receipt.oracleVersion,
             market.oracleValue.version
           );
-          const token = action === 'minting' ? clpToken : settlementToken;
+          let detail: string;
+          const tokenName = action === 'minting' ? settlementToken?.name : clpToken.symbol;
+          const tokenDecimals =
+            action === 'minting' ? settlementToken?.decimals : clpToken.decimals;
           if (status === 'standby' && action === 'minting') {
-            return 'Waiting for the next oracle round';
+            detail = 'Waiting for the next oracle round';
           }
-          const detail =
-            formatDecimals(receipt.amount, token?.decimals, 2, true) + ' ' + token?.name;
+          detail = formatDecimals(receipt.amount, tokenDecimals, 2, true) + ' ' + tokenName;
           const key = `receipt-${receipt.id}-${action}-${status}`;
           const oracleProvider = await client.market().contracts().oracleProvider(market.address);
           const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
           const { timestamp } = oracleValue;
 
-          return { ...receipt, key, action, status, token, detail, timestamp } as LpReceipt;
+          return { ...receipt, key, action, status, detail, timestamp } as LpReceipt;
         });
         return PromiseOnlySuccess(receipts);
       });
@@ -107,9 +107,6 @@ export const useLpReceipts = () => {
   );
 
   useError({ error });
-  useEffect(() => {
-    console.log(receipts, 'receipts');
-  }, [receipts]);
 
   return { receipts };
 };
