@@ -15,7 +15,7 @@ export function AccountPopoverV3() {
   return (
     <>
       <div className="border-l AccountPopoverV3 border-primary/10 panel panel-transparent">
-        <div className="tex8-left pl-7">
+        <div className="text-left pl-7">
           {isAccountExist ? (
             <div className="flex flex-col gap-[2px]">
               <h6 className="text-primary-light">Account balance</h6>

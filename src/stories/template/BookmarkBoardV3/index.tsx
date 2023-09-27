@@ -17,7 +17,7 @@ export const BookmarkBoardV3 = (props: BookmarkBoardV3Props) => {
     <div className={`BookmarkBoardV3 ${bookmarks.length <= 0 ? 'hidden' : ''}`}>
       <div className="flex items-stretch h-6">
         <StarIcon className="w-4 mr-2" />
-        <div className="flex items-center gap-5 overflow-x-auto flex-nowrap scrollbar-hide">
+        <div className="flex items-center gap-2 overflow-x-auto flex-nowrap scrollbar-hide">
           {bookmarks.map((bookmark, index) => (
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <a

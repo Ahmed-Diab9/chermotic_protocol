@@ -64,7 +64,7 @@ export function Header() {
           </Link> */}
         </div>
         <div className="flex">
-          <div className="mr-4">
+          <div className="hidden mr-4">
             <ThemeToggle />
           </div>
           <WalletPopover {...walletPopoverProps} />
