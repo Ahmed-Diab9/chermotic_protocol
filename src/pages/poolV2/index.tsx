@@ -1,5 +1,5 @@
+import { isNil, isNotNil } from 'ramda';
 import PlusIcon from '~/assets/icons/PlusIcon';
-import { logos } from '~/constants/logo';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
@@ -7,6 +7,7 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
@@ -29,7 +30,9 @@ const PoolV2 = () => {
   useLpLocal();
   useLpReceipts();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
-  const lpTitle = `${selectedLp?.settlementToken.name}-${selectedLp?.market.description}`;
+  const lpTitle = isNotNil(selectedLp)
+    ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
+    : undefined;
   const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
 
   return (
@@ -46,7 +49,11 @@ const PoolV2 = () => {
           <div className="mt-10">
             <div className="mb-10 text-left">
               <div className="flex items-center mb-5">
-                <h2 className="mr-3 text-4xl">{lpTitle} Junior Pool</h2>
+                <SkeletonElement isLoading={isNil(lpTitle)} className="w-full">
+                  <h2 className="mr-3 text-4xl">
+                    {lpTitle} {selectedLp?.name} Pool
+                  </h2>
+                </SkeletonElement>
                 <Tag label={`high risk`} className="tag-risk-high" />
                 <Button
                   label="Metamask"
@@ -67,7 +74,13 @@ const PoolV2 = () => {
               {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
               <div className="flex gap-2 ml-auto text-xl">
                 CLP Price: {price}
-                <Avatar label="ETH" size="xs" gap="1" fontSize="xl" src={logos['ETH']} />
+                <Avatar
+                  label={selectedLp?.settlementToken.name}
+                  size="xs"
+                  gap="1"
+                  fontSize="xl"
+                  src={selectedLp?.settlementToken.image}
+                />
               </div>
             </div>
             <div className="flex gap-3">

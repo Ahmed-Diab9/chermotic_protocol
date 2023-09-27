@@ -2,8 +2,9 @@ import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
 import { Button } from '~/stories/atom/Button';
 
-import { isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { trimAddress } from '~/utils/address';
 import { usePoolDetail } from './hooks';
 
@@ -11,15 +12,17 @@ export interface PoolDetailProps {}
 
 export const PoolDetail = (props: PoolDetailProps) => {
   const blockExplorer = useBlockExplorer();
-  const { lpTitle, lpAddress, marketDescription, onCopyAddress } = usePoolDetail();
+  const { lpTitle, lpName, lpAddress, marketDescription, onCopyAddress } = usePoolDetail();
 
   return (
     <div className="p-5 PoolDetail">
       <div className="flex items-center justify-between w-full gap-3">
         <div className="text-xl text-left">
-          <h3>{lpTitle}</h3>
+          <SkeletonElement isLoading={isNil(lpTitle)}>
+            <h3>{lpTitle}</h3>
+          </SkeletonElement>
           {/* todo: change text-color for each risk - high / mid / low */}
-          <h3 className={`text-risk-high`}>Junior Pool</h3>
+          <h3 className={`text-risk-high`}>{lpName} Pool</h3>
         </div>
         <div className="flex gap-2">
           <AddressCopyButton

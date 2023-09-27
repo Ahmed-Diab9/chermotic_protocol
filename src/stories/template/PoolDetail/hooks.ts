@@ -1,3 +1,4 @@
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useAppSelector } from '~/store';
@@ -6,7 +7,10 @@ import { copyText } from '~/utils/clipboard';
 export const usePoolDetail = () => {
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const lpTitle = useMemo(() => {
-    return `CLP-${selectedLp?.settlementToken.name}-${selectedLp?.market.description}`;
+    if (isNil(selectedLp)) {
+      return;
+    }
+    return `CLP-${selectedLp.settlementToken.name}-${selectedLp.market.description}`;
   }, [selectedLp]);
 
   const onCopyAddress = () => {
@@ -19,6 +23,7 @@ export const usePoolDetail = () => {
 
   return {
     lpTitle,
+    lpName: selectedLp?.name,
     lpAddress: selectedLp?.address,
     marketDescription: selectedLp?.market.description,
     onCopyAddress,
