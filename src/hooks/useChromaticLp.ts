@@ -1,5 +1,4 @@
 import { isNil } from 'ramda';
-import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
@@ -7,7 +6,7 @@ import { useAppDispatch } from '~/store';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
 import { checkAllProps } from '~/utils';
-import { divPreserved, mulPreserved } from '~/utils/number';
+import { divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -112,7 +111,7 @@ export const useChromaticLp = () => {
           return provider;
         }, {} as ChromaticLp);
       });
-      const awaitedLpArray = await PromiseOnlySuccess(lpInfoArray);
+      const awaitedLpArray = (await PromiseOnlySuccess(lpInfoArray)) ?? [];
       return awaitedLpArray.map((lpValue) => {
         const { totalValue, totalSupply, decimals } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);
@@ -124,12 +123,7 @@ export const useChromaticLp = () => {
         if (totalSupply === 0n) {
           return { ...lpValue, settlementToken, market: currentMarket };
         }
-        const tokenFeed = priceFeed?.[market.tokenAddress];
-        const lpPrice = mulPreserved(
-          divPreserved(totalValue, totalSupply, decimals),
-          tokenFeed.value,
-          tokenFeed.decimals
-        );
+        const lpPrice = divPreserved(totalValue, totalSupply, decimals);
         return {
           ...lpValue,
           price: lpPrice,
@@ -150,9 +144,6 @@ export const useChromaticLp = () => {
   };
 
   useError({ error });
-  useEffect(() => {
-    console.log(lpList, 'lp list');
-  }, [lpList]);
 
   return { lpList, isLpLoading, onLpSelect };
 };
