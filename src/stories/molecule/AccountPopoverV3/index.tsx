@@ -4,7 +4,8 @@ import { Popover } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { AssetPanel } from '~/stories/molecule/AssetPanel';
+import { AccountPanelV3 } from '../AccountPanelV3';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 
 import { useAccountPopoverV3 } from './hooks';
 
@@ -14,40 +15,63 @@ export function AccountPopoverV3() {
 
   return (
     <>
-      <div className="border-l AccountPopoverV3 border-primary/10 panel panel-transparent">
-        <div className="text-left pl-7">
-          {isAccountExist ? (
-            <div className="flex flex-col gap-[2px]">
-              <h6 className="text-primary-light">Account balance</h6>
-              <h2 className="text-xl">
-                <SkeletonElement isLoading={isLoading} width={80}>
-                  <Avatar
-                    size="xs"
-                    fontSize="lg"
-                    label={`${balance} ${tokenName}`}
-                    gap="1"
-                    src={tokenImage}
-                  />
-                </SkeletonElement>
-              </h2>
-            </div>
-          ) : (
-            <Avatar size="sm" fontSize="lg" label="Account balance" gap="2" src={tokenImage} />
-          )}
-        </div>
-        <div className="flex flex-col gap-1 mr-0 text-right">
+      {/* <div className="border-l AccountPopoverV3 border-primary/10 panel panel-transparent"> */}
+      <div className="AccountPopoverV3">
+        <div className="flex flex-col gap-1 text-right">
           {isConnected ? (
             <>
               <Popover.Group className="flex gap-2">
-                <AssetPanel type="Deposit" />
-                <AssetPanel type="Withdraw" />
+                <Popover>
+                  {({ open, close }) => (
+                    <>
+                      <Popover.Button className="btn btn-unstyled btn-sm">
+                        <span className="flex items-center gap-2">
+                          {isAccountExist ? (
+                            <span className="flex flex-col gap-[2px]">
+                              <span className="text-primary-light">Account balance</span>
+                              <span className="text-xl">
+                                <SkeletonElement isLoading={isLoading} width={80}>
+                                  <Avatar
+                                    size="xs"
+                                    fontSize="lg"
+                                    label={`${balance} ${tokenName}`}
+                                    gap="1"
+                                    src={tokenImage}
+                                  />
+                                </SkeletonElement>
+                              </span>
+                            </span>
+                          ) : (
+                            <>
+                              <Avatar
+                                size="sm"
+                                // fontSize="lg"
+                                // label="Account balance"
+                                label="My Account"
+                                gap="2"
+                                src={tokenImage}
+                              />
+                            </>
+                          )}
+                          <ArrowTriangleIcon
+                            className={`w-4 h-4 ${open ? 'rotate-180' : ''}`}
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </Popover.Button>
+                      <Popover.Panel className="popover-panel w-[600px]">
+                        <AccountPanelV3 />
+                      </Popover.Panel>
+                    </>
+                  )}
+                </Popover>
               </Popover.Group>
             </>
           ) : (
             <>
               {/* FIXME: separate by states */}
               {/* <Button label="Connect Wallet" css="light" size="sm" onClick={onClickConnect} /> */}
-              <Button label="Connect Wallet" css="line" size="sm" onClick={onClickConnect} />
+              {/* <Button label="Connect Wallet" css="line" size="sm" onClick={onClickConnect} /> */}
             </>
           )}
         </div>

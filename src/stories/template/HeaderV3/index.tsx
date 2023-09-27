@@ -7,6 +7,7 @@ import { WalletPopover } from '~/stories/molecule/WalletPopover';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
+import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 
 export function HeaderV3() {
   const { isActiveLink, walletPopoverProps } = useHeaderV3();
@@ -63,8 +64,11 @@ export function HeaderV3() {
             P3
           </Link> */}
         </div>
-        <div className="flex">
-          {/* <ThemeToggle /> */}
+        <div className="flex gap-2">
+          <AccountPopoverV3 />
+          <div className="hidden">
+            <ThemeToggle />
+          </div>
           <WalletPopover {...walletPopoverProps} />
         </div>
       </div>
