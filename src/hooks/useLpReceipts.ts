@@ -99,8 +99,10 @@ export const useLpReceipts = () => {
         return PromiseOnlySuccess(receipts);
       });
       const awaitedReceipts = await PromiseOnlySuccess(receiptsResponse);
-      console.log(awaitedReceipts, 'returned receipts');
       return awaitedReceipts.flat(1) as LpReceipt[];
+    },
+    {
+      dedupingInterval: 5000,
     }
   );
 
