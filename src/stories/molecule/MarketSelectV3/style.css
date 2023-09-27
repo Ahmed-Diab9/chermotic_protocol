@@ -1,5 +1,5 @@
 .MarketSelectV3 {
-  @apply flex items-center justify-between gap-6 pr-0;
+  /* @apply flex items-center justify-between gap-6 pr-0; */
   @apply h-[42px];
   &:has([data-headlessui-state='open']) {
     /* @apply dark:border-gray-lighter dark:shadow-lg rounded-bl-none; */

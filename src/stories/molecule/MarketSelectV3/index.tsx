@@ -60,7 +60,13 @@ export function MarketSelectV3() {
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                     <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
-                      <Avatar label={tokenName} src={tokenImage} fontSize="xl" gap="1" size="sm" />
+                      <Avatar
+                        label={tokenName}
+                        src={tokenImage}
+                        fontSize="xl"
+                        gap="1"
+                        size="base"
+                      />
                     </SkeletonElement>
                   </div>
                   <div className="flex items-center gap-1">
@@ -71,7 +77,7 @@ export function MarketSelectV3() {
                         src={marketImage}
                         fontSize="xl"
                         gap="1"
-                        size="sm"
+                        size="base"
                       />
                     </SkeletonElement>
                   </div>
@@ -176,7 +182,9 @@ export function MarketSelectV3() {
               </>
             )}
           </Popover>
-          <h2 className={`text-3xl ml-2 ${priceClass}`}>
+        </div>
+        <div className="flex justify-between mt-3">
+          <h2 className={`text-[40px] ml-2 ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
               <span className="flex items-center gap-1">
                 ${price}
@@ -191,61 +199,64 @@ export function MarketSelectV3() {
               </span>
             </SkeletonElement>
           </h2>
-        </div>
-        <div className="flex items-stretch gap-5 text-left font-regular">
-          <div className="flex flex-col gap-[2px]">
-            <div className="flex">
-              <p className="text-sm text-primary-light">Last update</p>
-            </div>
-            <h4>
-              <SkeletonElement isLoading={isLoading} width={80}>
-                {formattedElapsed}
-              </SkeletonElement>
-            </h4>
-          </div>
-          <div className="flex flex-col gap-[2px]">
-            <div className="flex">
-              <p className="text-sm text-primary-light">24H Change</p>
-              {/* <TooltipGuide
+          <div className="flex items-center gap-5">
+            <div className="flex gap-5 text-left font-regular">
+              <div className="flex flex-col gap-[2px]">
+                <div className="flex">
+                  <p className="text-sm text-primary-light">Last update</p>
+                </div>
+                <h4>
+                  <SkeletonElement isLoading={isLoading} width={80}>
+                    {formattedElapsed}
+                  </SkeletonElement>
+                </h4>
+              </div>
+              <div className="flex flex-col gap-[2px]">
+                <div className="flex">
+                  <p className="text-sm text-primary-light">24H Change</p>
+                  {/* <TooltipGuide
                 label="24h-change"
                 tip=""
                 outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
                 className="mr-0"
               /> */}
+                </div>
+                <h4>
+                  <SkeletonElement isLoading={isLoading} width={80}>
+                    {/* span className */}
+                    {/* if value > 0 : text-price-higher */}
+                    {/* if value < 0 : text-price-lower */}
+                    <span className={changeRateClass}>{changeRate}</span>
+                  </SkeletonElement>
+                </h4>
+              </div>
+              <div className="flex flex-col gap-[2px]">
+                <div className="flex">
+                  <p className="text-sm text-primary-light">Interest Rate</p>
+                  <TooltipGuide
+                    label="interest-rate"
+                    tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."
+                    outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
+                    className="mr-0"
+                    iconClass="!w-3"
+                  />
+                </div>
+                <h4>
+                  <SkeletonElement isLoading={isLoading} width={80}>
+                    {interestRate}%/h
+                  </SkeletonElement>
+                </h4>
+              </div>
             </div>
-            <h4>
-              <SkeletonElement isLoading={isLoading} width={80}>
-                {/* span className */}
-                {/* if value > 0 : text-price-higher */}
-                {/* if value < 0 : text-price-lower */}
-                <span className={changeRateClass}>{changeRate}</span>
-              </SkeletonElement>
-            </h4>
-          </div>
-          <div className="flex flex-col gap-[2px]">
-            <div className="flex">
-              <p className="text-sm text-primary-light">Interest Rate</p>
-              <TooltipGuide
-                label="interest-rate"
-                tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."
-                outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
-                className="mr-0"
-                iconClass="!w-3"
+            {/* <div className="flex pl-3"> */}
+            <div className="flex pl-3 mr-0 border-l border-primary/10">
+              <Button
+                css="unstyled"
+                iconOnly={<OutlinkIcon />}
+                className="self-center opacity-50"
+                href={explorerUrl}
               />
             </div>
-            <h4>
-              <SkeletonElement isLoading={isLoading} width={80}>
-                {interestRate}%/h
-              </SkeletonElement>
-            </h4>
-          </div>
-          <div className="flex mr-3">
-            <Button
-              css="unstyled"
-              iconOnly={<OutlinkIcon />}
-              className="self-center"
-              href={explorerUrl}
-            />
           </div>
         </div>
       </div>
