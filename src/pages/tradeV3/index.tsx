@@ -29,7 +29,7 @@ function TradeV3() {
       <div className="flex flex-col min-h-[100vh] w-full relative">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-10 mx-auto mb-20">
+        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-8 mx-auto mb-20">
           {/* <MainBarV3 accountPopover /> */}
           <div className="flex w-full gap-10 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-3">

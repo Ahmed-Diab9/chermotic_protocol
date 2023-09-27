@@ -39,7 +39,7 @@ export function MarketSelectV3() {
   return (
     <>
       <div className="relative MarketSelectV3 panel panel-transparent">
-        <div className="flex items-center h-full gap-3">
+        <div className="flex items-center gap-3">
           <BookmarkButton
             size="lg"
             onClick={() => {
