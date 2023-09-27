@@ -182,6 +182,11 @@ export function MarketSelectV3() {
               </>
             )}
           </Popover>
+          {/* <h2 className={`text-3xl ml-2 ${priceClass}`}>
+            <SkeletonElement isLoading={isLoading} width={80}>
+              <span className="flex items-center gap-1">${price}</span>
+            </SkeletonElement>
+          </h2> */}
         </div>
         <div className="flex justify-between mt-3">
           <h2 className={`text-[40px] ml-2 ${priceClass}`}>
