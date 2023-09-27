@@ -6,13 +6,13 @@ import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { WalletPopover } from '~/stories/molecule/WalletPopover';
 import './style.css';
 
-import { useHeader } from './hooks';
+import { useHeaderV3 } from './hooks';
 
-export function Header() {
-  const { isActiveLink, walletPopoverProps } = useHeader();
+export function HeaderV3() {
+  const { isActiveLink, walletPopoverProps } = useHeaderV3();
 
   return (
-    <header className="Header">
+    <header className="HeaderV3">
       <div className="h-[70px] px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
           <Link to="/" className="mr-4 font-bold" title="Chromatic">
@@ -36,7 +36,7 @@ export function Header() {
               isActiveLink('trade2') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            Trade2
+            T2
           </Link>
           <Link
             to="/pool2"
@@ -44,7 +44,7 @@ export function Header() {
               isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            Pools2
+            P2
           </Link>
           <Link
             to="/trade3"
@@ -64,9 +64,7 @@ export function Header() {
           </Link> */}
         </div>
         <div className="flex">
-          <div className="hidden mr-4">
-            <ThemeToggle />
-          </div>
+          {/* <ThemeToggle /> */}
           <WalletPopover {...walletPopoverProps} />
         </div>
       </div>

@@ -4,8 +4,8 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Footer } from '~/stories/template/Footer';
-import { Header } from '~/stories/template/Header';
 import { MainBarV3 } from '~/stories/template/MainBarV3';
+import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
 import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
 import { TradePanelV3 } from '~/stories/template/TradePanelV3';
@@ -28,7 +28,7 @@ function TradeV3() {
       </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
         <BookmarkBoardV3 />
-        <Header />
+        <HeaderV3 />
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-10 mx-auto mb-20">
           {/* <MainBarV3 accountPopover /> */}
           <div className="flex w-full gap-10 overflow-hidden">
