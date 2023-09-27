@@ -28,12 +28,12 @@ export function AccountPopoverV3() {
                         <span className="flex items-center gap-2">
                           {isAccountExist ? (
                             <span className="flex flex-col gap-[2px]">
-                              <span className="text-primary-light">Account balance</span>
+                              {/* <span className="text-primary-light">Account balance</span> */}
                               <span className="text-xl">
                                 <SkeletonElement isLoading={isLoading} width={80}>
                                   <Avatar
-                                    size="xs"
-                                    fontSize="lg"
+                                    // size="xs"
+                                    fontSize="xl"
                                     label={`${balance} ${tokenName}`}
                                     gap="1"
                                     src={tokenImage}

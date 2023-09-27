@@ -123,7 +123,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
 
       {isAccountExist && (
         <>
-          <div className="w-full tabs tabs-button">
+          <div className="w-full tabs">
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
               <Tab.List className="flex w-full mb-5">

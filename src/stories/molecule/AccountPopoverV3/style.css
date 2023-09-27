@@ -1,6 +1,6 @@
 .AccountPopoverV3 {
   @apply relative flex items-center justify-between;
-  @apply h-[42px] gap-6;
+  /* @apply h-[42px] gap-6; */
   @apply text-primary;
   .popover-panel {
     @apply absolute right-0 rounded top-10 mt-3 w-[480px];
