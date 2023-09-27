@@ -5,6 +5,9 @@ import { CMCTokenInfo } from '~/typings/api';
 import CHRM_LOGO from '../assets/tokens/CHRM.png';
 
 export const fetchTokenInfo = async (symbols: string | string[]) => {
+  if (symbols instanceof Array && symbols.length === 0) {
+    return {};
+  }
   const symbolString = typeof symbols === 'string' ? symbols : symbols.toString();
   const { data } = await axios({
     method: 'GET',
