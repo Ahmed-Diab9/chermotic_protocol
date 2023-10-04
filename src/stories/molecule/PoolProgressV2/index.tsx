@@ -20,17 +20,11 @@ export function PoolProgressV2() {
     openButtonRef,
     ref,
     isGuideOpen,
-    isFullLoaded,
 
     formattedElapsed,
     receipts = [],
     mintingReceipts = [],
     burningReceipts = [],
-    inProgressLength,
-    mintingReceiptsLength,
-    burningReceiptsLength,
-    onReceiptResolve,
-    onFullReceiptsLoad,
   } = usePoolProgressV2();
 
   return (
@@ -43,7 +37,7 @@ export function PoolProgressV2() {
                 <div className="px-5 text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="mx-1">({inProgressLength})</span>
+                    <span className="mx-1">({receipts.length})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -66,8 +60,8 @@ export function PoolProgressV2() {
                   <div className="flex px-5 mt-2 border-b">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintingReceiptsLength})</Tab>
-                      <Tab id="burning">Burning ({burningReceiptsLength})</Tab>
+                      <Tab id="minting">Minting ({mintingReceipts.length})</Tab>
+                      <Tab id="burning">Burning ({burningReceipts.length})</Tab>
                     </Tab.List>
                   </div>
                   <Tab.Panels className="flex-auto">
@@ -92,26 +86,13 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {receipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['all'] && (
-                            <div className="flex justify-center mt-5">
-                              <Button
-                                label="More"
-                                css="underlined"
-                                size="sm"
-                                onClick={() => {
-                                  onFullReceiptsLoad('all');
-                                }}
-                              />
-                            </div>
-                          )}
+                          <div className="flex justify-center mt-5">
+                            <Button label="More" css="underlined" size="sm" />
+                          </div>
                         </>
                       )}
                     </Tab.Panel>
@@ -124,24 +105,13 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {mintingReceipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['minting'] && (
-                            <div
-                              className="flex justify-center mt-5"
-                              onClick={() => {
-                                onFullReceiptsLoad('minting');
-                              }}
-                            >
-                              <Button label="More" css="underlined" size="sm" />
-                            </div>
-                          )}
+                          {/* <div className="flex justify-center mt-5">
+                            <Button label="More" css="underlined" size="sm" />
+                          </div> */}
                         </>
                       )}
                     </Tab.Panel>
@@ -154,24 +124,13 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {burningReceipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['burning'] && (
-                            <div
-                              className="flex justify-center mt-5"
-                              onClick={() => {
-                                onFullReceiptsLoad('burning');
-                              }}
-                            >
-                              <Button label="More" css="underlined" size="sm" />
-                            </div>
-                          )}
+                          {/* <div className="flex justify-center mt-5">
+                            <Button label="More" css="underlined" size="sm" />
+                          </div> */}
                         </>
                       )}
                     </Tab.Panel>
