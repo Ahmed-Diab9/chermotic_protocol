@@ -16,7 +16,7 @@ export const theme = {
   extend: {
     fontFamily: {
       // mono: ['Source Code Pro', monospace],
-      mono: ['Roboto Slab', monospace],
+      mono: ['Work Sans', ...defaultTheme.fontFamily.sans],
       // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
       // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
