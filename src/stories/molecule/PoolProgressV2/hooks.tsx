@@ -4,9 +4,7 @@ import { useLastOracle } from '~/hooks/useLastOracle';
 
 import { POOL_EVENT } from '~/typings/events';
 
-import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
-import { useAppSelector } from '~/store';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -19,8 +17,6 @@ export const usePoolProgressV2 = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [isGuideOpen, setGuideOpen] = useState(false);
-  const { lpClient } = useChromaticClient();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const [isFullLoaded, setIsFullLoaded] = useState({
     all: false,
     minting: false,
@@ -48,18 +44,7 @@ export const usePoolProgressV2 = () => {
   const { receipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
-  const onReceiptResolve = async (receiptId: bigint) => {
-    if (!selectedLp) {
-      return;
-    }
-    const lp = lpClient.lp();
-    const isExecutable = await lp.resolveSettle(selectedLp.address, receiptId);
-    if (!isExecutable) {
-      return;
-    }
-    const settleResponse = await lp.settle(selectedLp.address, receiptId);
-  };
-  const receiptsInProgress = receipts?.filter((receipt) => receipt);
+  const receiptsInProgress = receipts?.filter((receipt) => !receipt.isClosed);
 
   return {
     openButtonRef,
