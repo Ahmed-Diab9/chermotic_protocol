@@ -9,7 +9,12 @@ import './style.css';
 import { useHeaderV3 } from './hooks';
 import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 
-export function HeaderV3() {
+interface HeaderV3Props {
+  hasAccount?: boolean;
+}
+
+export const HeaderV3 = (props: HeaderV3Props) => {
+  const { hasAccount } = props;
   const { isActiveLink, walletPopoverProps } = useHeaderV3();
 
   return (
@@ -65,7 +70,7 @@ export function HeaderV3() {
           </Link> */}
         </div>
         <div className="flex gap-2">
-          <AccountPopoverV3 />
+          {hasAccount && <AccountPopoverV3 />}
           <div className="hidden">
             <ThemeToggle />
           </div>
@@ -74,4 +79,4 @@ export function HeaderV3() {
       </div>
     </header>
   );
-}
+};
