@@ -5,6 +5,8 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { AccountPanelV3 } from '../AccountPanelV3';
+// import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 
 import { useAccountPopoverV3 } from './hooks';
@@ -17,7 +19,7 @@ export function AccountPopoverV3() {
     <>
       {/* <div className="border-l AccountPopoverV3 border-primary/10 panel panel-transparent"> */}
       <div className="AccountPopoverV3">
-        <div className="flex flex-col gap-1 text-right">
+        <div className="flex flex-col gap-[6px] text-right">
           {isConnected ? (
             <>
               <Popover.Group className="flex gap-2">
@@ -45,12 +47,17 @@ export function AccountPopoverV3() {
                             <>
                               <Avatar
                                 size="sm"
-                                // fontSize="lg"
-                                // label="Account balance"
-                                label="My Account"
+                                // label="My Account"
+                                fontSize="lg"
+                                label="0"
                                 gap="2"
                                 src={tokenImage}
+                                // className="tooltip-account-empty"
                               />
+                              {/* <TooltipAlert
+                                label="account-empty"
+                                tip="To make a deposit, you need to create account first."
+                              /> */}
                             </>
                           )}
                           <ArrowTriangleIcon
