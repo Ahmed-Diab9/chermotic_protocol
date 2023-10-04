@@ -1,7 +1,12 @@
+import { chromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
+import axios from 'axios';
 import useSWR from 'swr';
+import { decodeEventLog } from 'viem';
 import { Address, useAccount } from 'wagmi';
+import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
+import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
-import { formatDecimals } from '~/utils/number';
+import { divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -14,41 +19,95 @@ export interface LpReceipt {
   oracleVersion: bigint;
   timestamp: bigint;
   amount: bigint;
-  pendingLiquidity: bigint;
+  mintedAmount: bigint;
+  burnedAmount: bigint;
+  remainedAmount: bigint;
+  hasReturnedValue: boolean;
+  isClosed: boolean;
   recipient: Address;
   action: 'minting' | 'burning';
   status: 'standby' | 'completed';
+  message: string;
   detail: string;
-  token: {
-    name: string;
-    address: Address;
-    decimals: number;
-  };
 }
 
-const receiptStatus = (
-  action: number,
-  receiptOracleVersion: bigint,
-  currentOracleVersion: bigint
-) => {
-  switch (action) {
-    case 0: {
-      if (receiptOracleVersion < currentOracleVersion) {
-        return 'completed';
+const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) => {
+  const url = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${lpAddress}&page=1&offset=1000&apikey=${ARBISCAN_API_KEY}`;
+  const response = await axios.get(url);
+  const responseData = response.data;
+  const responseLogs =
+    typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+  const reducedReceipts = responseLogs
+    .map((value) =>
+      decodeEventLog({
+        abi: chromaticLpABI,
+        data: value.data,
+        topics: value.topics,
+      })
+    )
+    .reduce((newMap, decoded) => {
+      const { eventName } = decoded;
+      if (
+        eventName !== 'AddLiquidity' &&
+        eventName !== 'AddLiquiditySettled' &&
+        eventName !== 'RemoveLiquidity' &&
+        eventName !== 'RemoveLiquiditySettled'
+      ) {
+        return newMap;
       }
-      return 'standby';
-    }
-    case 1: {
-      if (receiptOracleVersion >= currentOracleVersion) {
-        return 'standby';
+      const { receiptId } = decoded.args;
+      const mapValue =
+        newMap.get(receiptId) ??
+        ({
+          isClosed: false,
+        } as Partial<LpReceipt>);
+      switch (eventName) {
+        case 'AddLiquidity': {
+          const { receiptId, recipient, amount, oracleVersion } = decoded.args;
+          mapValue.action = 'minting';
+          mapValue.id = receiptId;
+          mapValue.recipient = recipient;
+          mapValue.amount = amount;
+          mapValue.oracleVersion = oracleVersion;
+          break;
+        }
+        case 'AddLiquiditySettled': {
+          const { lpTokenAmount, receiptId } = decoded.args;
+          mapValue.id = receiptId;
+          mapValue.mintedAmount = lpTokenAmount;
+          mapValue.isClosed = true;
+          break;
+        }
+        case 'RemoveLiquidity': {
+          const { receiptId, recipient, lpTokenAmount, oracleVersion } = decoded.args;
+          mapValue.action = 'burning';
+          mapValue.id = receiptId;
+          mapValue.recipient = recipient;
+          mapValue.amount = lpTokenAmount;
+          mapValue.oracleVersion = oracleVersion;
+          break;
+        }
+        case 'RemoveLiquiditySettled': {
+          const { receiptId, burningAmount, remainingAmount } = decoded.args;
+          mapValue.id = receiptId;
+          mapValue.burnedAmount = burningAmount;
+          mapValue.remainedAmount = remainingAmount;
+          mapValue.isClosed = true;
+          mapValue.hasReturnedValue = remainingAmount !== 0n;
+          break;
+        }
       }
-      return 'completed';
-    }
-    default: {
-      break;
-    }
-  }
+      newMap.set(receiptId, mapValue as LpReceipt);
+      return newMap;
+    }, new Map<bigint, LpReceipt>());
+
+  const filteredReceipts = Array.from(reducedReceipts.values()).filter(
+    (receipt) => receipt.recipient === walletAddress
+  );
+  return filteredReceipts;
 };
+
+(window as any).receipts = getLpReceiptsByLog;
 
 export const useLpReceipts = () => {
   const { isReady, lpClient, client } = useChromaticClient();
@@ -72,31 +131,55 @@ export const useLpReceipts = () => {
 
         const settlementToken = tokens.find((token) => token.address === market.tokenAddress);
         const clpToken = await lp.lpTokenMeta(lpAddress);
-        const receiptIds = await lp.getReceiptIdsOf(lpAddress, address);
-        const receipts = receiptIds.map(async (receiptId) => {
-          const receipt = await lp.getReceipt(lpAddress, receiptId);
-          const action = receipt.action === 0 ? 'minting' : 'burning';
-          const status = receiptStatus(
-            receipt.action,
-            receipt.oracleVersion,
-            market.oracleValue.version
-          );
-          let detail: string;
-          const tokenName = action === 'minting' ? settlementToken?.name : clpToken.symbol;
+        const rawReceipts = await getLpReceiptsByLog(lpAddress, address);
+        const detailedReceipts = rawReceipts.map(async (receipt) => {
+          const status =
+            receipt.oracleVersion < market.oracleValue.version ? 'completed' : 'standby';
+          let detail: string = '';
+
+          const tokenName = receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name;
           const tokenDecimals =
-            action === 'minting' ? settlementToken?.decimals : clpToken.decimals;
-          if (status === 'standby' && action === 'minting') {
-            detail = 'Waiting for the next oracle round';
+            receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals;
+          if (status === 'completed' && receipt.action === 'minting' && receipt.isClosed) {
+            detail = formatDecimals(receipt.mintedAmount, tokenDecimals, 2, true) + ' ' + tokenName;
           }
-          detail = formatDecimals(receipt.amount, tokenDecimals, 2, true) + ' ' + tokenName;
-          const key = `receipt-${receipt.id}-${action}-${status}`;
+
+          // FIXME: The burned amount should be settlement token
+          if (status === 'completed' && receipt.action === 'burning' && receipt.isClosed) {
+            detail = formatDecimals(receipt.burnedAmount, tokenDecimals, 2, true) + ' ' + tokenName;
+          }
+          let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
+          const key = `receipt-${receipt.id}-${receipt.action}-${status}`;
+
+          if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
+            const dividedByAmount = divPreserved(
+              receipt.remainedAmount,
+              receipt.amount,
+              clpToken.decimals
+            );
+            const returnedRatio = formatDecimals(
+              dividedByAmount * 100n,
+              clpToken.decimals,
+              2,
+              true
+            );
+            message = `${returnedRatio}% withdrawn`;
+          }
+
           const oracleProvider = await client.market().contracts().oracleProvider(market.address);
           const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
           const { timestamp } = oracleValue;
 
-          return { ...receipt, key, action, status, detail, timestamp } as LpReceipt;
+          return {
+            ...receipt,
+            key,
+            status,
+            message,
+            detail,
+            timestamp,
+          } satisfies LpReceipt;
         });
-        return PromiseOnlySuccess(receipts);
+        return PromiseOnlySuccess(detailedReceipts);
       });
       const awaitedReceipts = await PromiseOnlySuccess(receiptsResponse);
       return awaitedReceipts.flat(1) as LpReceipt[];
