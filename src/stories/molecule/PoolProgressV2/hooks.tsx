@@ -17,6 +17,17 @@ export const usePoolProgressV2 = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [isGuideOpen, setGuideOpen] = useState(false);
+  const [isFullLoaded, setIsFullLoaded] = useState({
+    all: false,
+    minting: false,
+    burning: false,
+  });
+  const onFullReceiptsLoad = (type: 'all' | 'minting' | 'burning') => {
+    setIsFullLoaded((currentState) => ({
+      ...currentState,
+      [type]: true,
+    }));
+  };
   useEffect(() => {
     function onPool() {
       if (isNotNil(openButtonRef.current) && isNil(ref.current)) {
@@ -33,15 +44,22 @@ export const usePoolProgressV2 = () => {
   const { receipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
+  const receiptsInProgress = receipts?.filter((receipt) => !receipt.isClosed);
 
   return {
     openButtonRef,
     ref,
     isGuideOpen,
+    isFullLoaded,
 
     formattedElapsed,
-    receipts,
-    mintingReceipts,
-    burningReceipts,
+    receipts: isFullLoaded['all'] ? receipts : receipts?.slice(0, 2),
+    mintingReceipts: isFullLoaded['minting'] ? mintingReceipts : mintingReceipts?.slice(0, 2),
+    burningReceipts: isFullLoaded['burning'] ? burningReceipts : burningReceipts?.slice(0, 2),
+    inProgressLength: receiptsInProgress?.length ?? 0,
+    mintingReceiptsLength: mintingReceipts?.length ?? 0,
+    burningReceiptsLength: burningReceipts?.length ?? 0,
+
+    onFullReceiptsLoad,
   };
 };
