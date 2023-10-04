@@ -112,8 +112,6 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
   return filteredReceipts;
 };
 
-(window as any).receipts = getLpReceiptsByLog;
-
 export const useLpReceipts = () => {
   const { isReady, lpClient, client } = useChromaticClient();
   const { address } = useAccount();
