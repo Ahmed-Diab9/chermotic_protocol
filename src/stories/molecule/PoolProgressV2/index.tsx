@@ -29,6 +29,7 @@ export function PoolProgressV2() {
     inProgressLength,
     mintingReceiptsLength,
     burningReceiptsLength,
+    onReceiptResolve,
     onFullReceiptsLoad,
   } = usePoolProgressV2();
 
@@ -91,7 +92,11 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {receipts.map((receipt) => (
-                            <ProgressItem {...receipt} key={receipt.key} />
+                            <ProgressItem
+                              {...receipt}
+                              key={receipt.key}
+                              onClick={() => onReceiptResolve(receipt.id)}
+                            />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -119,7 +124,11 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {mintingReceipts.map((receipt) => (
-                            <ProgressItem {...receipt} key={receipt.key} />
+                            <ProgressItem
+                              {...receipt}
+                              key={receipt.key}
+                              onClick={() => onReceiptResolve(receipt.id)}
+                            />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -145,7 +154,11 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {burningReceipts.map((receipt) => (
-                            <ProgressItem {...receipt} key={receipt.key} />
+                            <ProgressItem
+                              {...receipt}
+                              key={receipt.key}
+                              onClick={() => onReceiptResolve(receipt.id)}
+                            />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
