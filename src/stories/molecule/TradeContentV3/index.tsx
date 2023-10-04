@@ -11,6 +11,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 import { TradeChart } from '~/stories/atom/TradeChart';
+import { OptionInput } from '~/stories/atom/OptionInput';
 
 import { useTradeContentV3 } from './hooks';
 
@@ -106,20 +107,18 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             </Listbox>
           </div>
         </div>
-        <div className="flex justify-between gap-5 mt-2">
-          <div className="flex flex-col items-end ml-auto">
-            <AmountSwitch
-              collateral={collateral}
-              quantity={quantity}
-              method={method}
-              direction={direction}
-              disabled={disabled}
-              disableDetail={disableDetail}
-              tokenName={tokenName}
-              minAmount={minAmount}
-              onAmountChange={onAmountChange}
-            />
-          </div>
+        <div className="flex flex-col mt-2">
+          <AmountSwitch
+            collateral={collateral}
+            quantity={quantity}
+            method={method}
+            direction={direction}
+            disabled={disabled}
+            disableDetail={disableDetail}
+            tokenName={tokenName}
+            minAmount={minAmount}
+            onAmountChange={onAmountChange}
+          />
         </div>
       </article>
       <section className="p-5 pb-4 border-y border-gray-light">

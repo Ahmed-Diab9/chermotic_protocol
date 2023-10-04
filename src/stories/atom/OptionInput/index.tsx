@@ -15,6 +15,7 @@ interface OptionInputProps {
   size?: 'sm' | 'base' | 'lg';
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
+  flex?: boolean;
   className?: string;
   disabled?: boolean;
   error?: boolean;
@@ -32,6 +33,7 @@ export const OptionInput = (props: OptionInputProps) => {
     size = 'base',
     css = 'default',
     align = 'right',
+    flex,
     className = '',
     disabled = false,
     error = false,
@@ -55,8 +57,12 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`inline-flex flex-col-reverse ${className}`}>
-      <div className="flex gap-1 mt-2">
+    <div
+      className={`flex gap-2 ${className} ${
+        flex ? 'items-center justify-between w-full' : 'flex-col-reverse items-stretch'
+      }`}
+    >
+      <div className="flex gap-1">
         {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
         <Button
           className="flex-auto shadow-base"
