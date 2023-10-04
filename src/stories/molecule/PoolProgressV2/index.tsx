@@ -186,13 +186,14 @@ export function PoolProgressV2() {
 
 interface ProgressItemProps extends LpReceipt {
   key: string;
+  onClick?: () => unknown;
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { detail, status, action, timestamp } = props;
+  const { detail, status, action, message, timestamp, onClick, hasReturnedValue } = props;
 
   return (
-    <div className="flex items-center gap-5 px-5 py-3 border-b">
+    <div className="flex items-center gap-5 px-5 py-3 border-b" onClick={onClick}>
       <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
         {action}
         <br />
@@ -213,7 +214,8 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="">
             {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
-          {status === 'completed' && action === 'minting' ? 'Completed' : detail}
+          {message}
+          {hasReturnedValue && <TooltipGuide label="withdraw-returned" tip="" />}
           {/* todo: if some parts cannot be withdrawn */}
           {/* 00% withdrawn <TooltipGuide label="withdraw-returned" tip="" /> */}
         </div>
