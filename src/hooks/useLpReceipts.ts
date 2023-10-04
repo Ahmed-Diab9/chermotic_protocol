@@ -29,6 +29,11 @@ export interface LpReceipt {
   status: 'standby' | 'completed';
   message: string;
   detail: string;
+  token: {
+    name?: string;
+    decimals?: number;
+    logo?: string;
+  };
 }
 
 const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) => {
@@ -137,16 +142,21 @@ export const useLpReceipts = () => {
             receipt.oracleVersion < market.oracleValue.version ? 'completed' : 'standby';
           let detail: string = '';
 
-          const tokenName = receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name;
-          const tokenDecimals =
-            receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals;
+          const token = {
+            name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
+            decimals: receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
+            logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
+          };
+
           if (status === 'completed' && receipt.action === 'minting' && receipt.isClosed) {
-            detail = formatDecimals(receipt.mintedAmount, tokenDecimals, 2, true) + ' ' + tokenName;
+            detail =
+              formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' ' + token.name;
           }
 
           // FIXME: The burned amount should be settlement token
           if (status === 'completed' && receipt.action === 'burning' && receipt.isClosed) {
-            detail = formatDecimals(receipt.burnedAmount, tokenDecimals, 2, true) + ' ' + tokenName;
+            detail =
+              formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
           }
           let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
           const key = `receipt-${receipt.id}-${receipt.action}-${status}`;
@@ -177,6 +187,7 @@ export const useLpReceipts = () => {
             message,
             detail,
             timestamp,
+            token,
           } satisfies LpReceipt;
         });
         return PromiseOnlySuccess(detailedReceipts);

@@ -190,7 +190,7 @@ interface ProgressItemProps extends LpReceipt {
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { detail, status, action, message, timestamp, onClick, hasReturnedValue } = props;
+  const { detail, status, action, message, timestamp, onClick, hasReturnedValue, token } = props;
 
   return (
     <div className="flex items-center gap-5 px-5 py-3 border-b" onClick={onClick}>
@@ -202,7 +202,7 @@ const ProgressItem = (props: ProgressItemProps) => {
       <div className="">
         {/* Avatar label unit: */}
         {/* minting: CLP / burning: settle token */}
-        <Avatar label={detail} size="sm" fontSize="lg" gap="1" />
+        <Avatar label={detail} size="sm" fontSize="lg" gap="1" src={token.logo} />
         {/* todo: show only if some parts cannot be withdrawn */}
         {/* <p className="text-sm mt-[2px]">205.25 CLP Returned</p> */}
       </div>
