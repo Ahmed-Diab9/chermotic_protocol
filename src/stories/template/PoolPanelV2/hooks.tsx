@@ -125,6 +125,7 @@ export function usePoolPanelV2() {
   const onFullRange = move.full;
 
   const tokenName = currentToken?.name || '-';
+  const tokenImage = currentToken?.image;
 
   // ----------------------------------------------------------------
 
@@ -318,6 +319,7 @@ export function usePoolPanelV2() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,

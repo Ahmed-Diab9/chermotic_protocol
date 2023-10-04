@@ -54,6 +54,7 @@ export function PoolPanelV2() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,
@@ -156,6 +157,7 @@ export function PoolPanelV2() {
                         maxValue={maxAmount}
                         onChange={onAmountChange}
                         error={isExceeded}
+                        assetSrc={tokenImage}
                       />
                       {isExceeded && (
                         <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />

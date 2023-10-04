@@ -211,7 +211,7 @@ export function MarketSelectV3() {
                   <p className="text-sm text-primary-light">Last update</p>
                 </div>
                 <h4>
-                  <SkeletonElement isLoading={isLoading} width={80}>
+                  <SkeletonElement isLoading={isLoading} width={60}>
                     {formattedElapsed}
                   </SkeletonElement>
                 </h4>
@@ -227,7 +227,7 @@ export function MarketSelectV3() {
               /> */}
                 </div>
                 <h4>
-                  <SkeletonElement isLoading={isLoading} width={80}>
+                  <SkeletonElement isLoading={isLoading} width={60}>
                     {/* span className */}
                     {/* if value > 0 : text-price-higher */}
                     {/* if value < 0 : text-price-lower */}
@@ -248,7 +248,7 @@ export function MarketSelectV3() {
                   />
                 </div>
                 <h4>
-                  <SkeletonElement isLoading={isLoading} width={80}>
+                  <SkeletonElement isLoading={isLoading} width={60}>
                     {interestRate}%/h
                   </SkeletonElement>
                 </h4>

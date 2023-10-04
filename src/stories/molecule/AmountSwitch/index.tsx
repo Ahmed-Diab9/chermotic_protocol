@@ -12,6 +12,7 @@ interface AmountSwitchProps {
   disabled: boolean;
   disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
   tokenName?: string;
+  tokenImage?: string;
   minAmount: string;
   onAmountChange: (value: string) => unknown;
 }
@@ -25,6 +26,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     disabled,
     disableDetail,
     tokenName,
+    tokenImage,
     onAmountChange,
     minAmount,
   } = props;
@@ -69,6 +71,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}
+            assetSrc={tokenImage}
             flex
           />
           {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}

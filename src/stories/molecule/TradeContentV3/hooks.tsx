@@ -49,6 +49,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
 
   const tokenAddress = currentToken?.address;
   const tokenName = currentToken?.name;
+  const tokenImage = currentToken?.image;
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
 
@@ -175,6 +176,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     disableDetail,
 
     tokenName,
+    tokenImage,
 
     isBalanceLoading,
     balance,

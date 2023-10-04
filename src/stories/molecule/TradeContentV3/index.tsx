@@ -25,6 +25,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
     disableDetail,
 
     tokenName,
+    tokenImage,
 
     isBalanceLoading,
     balance,
@@ -116,6 +117,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             disabled={disabled}
             disableDetail={disableDetail}
             tokenName={tokenName}
+            tokenImage={tokenImage}
             minAmount={minAmount}
             onAmountChange={onAmountChange}
           />
