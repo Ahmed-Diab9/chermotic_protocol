@@ -113,7 +113,7 @@ export const theme = {
       xs: ['10px', 'normal'],
       sm: ['11px', 'normal'],
       base: ['12px', 'normal'],
-      lg: ['14px', 'normal'],
+      lg: ['13px', 'normal'],
       xl: ['16px', 'normal'],
       '2xl': ['18px', 'normal'],
       '3xl': ['20px', 'normal'],

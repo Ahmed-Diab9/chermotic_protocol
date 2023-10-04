@@ -205,7 +205,7 @@ export function MarketSelectV3() {
             </SkeletonElement>
           </h2>
           <div className="flex items-center gap-5">
-            <div className="flex gap-5 text-left font-regular">
+            <div className="flex gap-5 text-right font-regular">
               <div className="flex flex-col gap-[2px]">
                 <div className="flex">
                   <p className="text-sm text-primary-light">Last update</p>
@@ -244,6 +244,7 @@ export function MarketSelectV3() {
                     outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
                     className="mr-0"
                     iconClass="!w-3"
+                    position="top"
                   />
                 </div>
                 <h4>

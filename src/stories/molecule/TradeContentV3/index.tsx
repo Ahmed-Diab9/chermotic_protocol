@@ -84,8 +84,8 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
   } = useTradeContentV3(props);
 
   return (
-    <div className="w-full px-5">
-      <article className="py-4 border-gray-lighter">
+    <div className="w-full">
+      <article className="p-5">
         <div className="flex items-baseline gap-2">
           <h4>Amount</h4>
           {/* <p className="text-base text-primary-light">
@@ -122,7 +122,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-4 pb-4 border-y bg-paper-light dark:bg-inverted-lighter">
+      <section className="p-5 pb-4 border-y border-gray-light">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -158,7 +158,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             </div>
             <div>
               <Input
-                size="sm"
+                // size="sm"
                 unit="x"
                 className="w-20 ml-auto"
                 value={leverage}
@@ -200,7 +200,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               />
             </div>
           </article>
-          <article className="flex-auto h-20 pl-5 border-l">
+          <article className="flex-auto h-20 pl-5 border-l border-gray-dark">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <h4 className="text-left">Stop Loss</h4>
@@ -231,9 +231,9 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
         </div>
       </section>
       <section>
-        <div className="relative -mx-5 border-b">
+        <div className="relative border-b border-gray-light">
           <div
-            className={`flex gap-3 px-3 pb-2 pt-4 text-sm ${
+            className={`flex gap-3 px-3 pb-3 pt-5 border-b text-sm ${
               isLong ? 'justify-end right-0' : 'justify-start left-0'
             }`}
           >
@@ -245,12 +245,12 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           <TradeChart
             id={`trade-${direction}`}
             positive={isLong}
-            height={100}
+            height={80}
             selectedAmount={makerMargin}
           />
         </div>
-        <article className="">
-          <div className="flex flex-col gap-1 mt-5 border-gray-light">
+        <article className="px-5">
+          <div className="flex flex-col gap-1 mt-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <p>EST. Trade Fees</p>
@@ -292,55 +292,50 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               onClick={onOpenPosition}
             />
           </div>
-
-          <div className="px-5 pt-5 pb-5 mt-5 -mx-5 border-t border-dashed border-primary-lighter bg-paper-light dark:bg-inverted-lighter">
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between">
-                <div className="flex">
-                  <p>EST. Execution Price</p>
-                  <TooltipGuide
-                    label="execution-price"
-                    tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
-                    outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                    outLinkAbout="Next Oracle Round"
-                  />
-                </div>
-                <p>$ {executionPrice}</p>
+        </article>
+        <article className="p-5 px-5 mt-5 border-t border-dashed border-gray-dark">
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between">
+              <div className="flex">
+                <p>EST. Execution Price</p>
+                <TooltipGuide
+                  label="execution-price"
+                  tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
+                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                  outLinkAbout="Next Oracle Round"
+                />
               </div>
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2">
-                  <p>EST. Take Profit Price</p>
-                </div>
-                <p>
-                  $ {takeProfitPrice}
-                  <span
-                    className={`ml-2 text-primary-lighter ${
-                      takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
-                    } ${
-                      takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''
-                    }`}
-                  >
-                    ({takeProfitRatio}%)
-                  </span>
-                </p>
+              <p>$ {executionPrice}</p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Take Profit Price</p>
               </div>
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2">
-                  <p>EST. Stop Loss Price</p>
-                </div>
-                <p>
-                  $ {stopLossPrice}
-                  <span
-                    className={`ml-2 text-primary-lighter ${
-                      stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
-                    } ${
-                      stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''
-                    }`}
-                  >
-                    ({stopLossRatio}%)
-                  </span>
-                </p>
+              <p>
+                $ {takeProfitPrice}
+                <span
+                  className={`ml-2 text-primary-lighter ${
+                    takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
+                  } ${takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''}`}
+                >
+                  ({takeProfitRatio}%)
+                </span>
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <p>EST. Stop Loss Price</p>
               </div>
+              <p>
+                $ {stopLossPrice}
+                <span
+                  className={`ml-2 text-primary-lighter ${
+                    stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
+                  } ${stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''}`}
+                >
+                  ({stopLossRatio}%)
+                </span>
+              </p>
             </div>
           </div>
         </article>

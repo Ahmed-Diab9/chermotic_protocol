@@ -50,15 +50,15 @@ export const TradePanelV3 = () => {
         {isWide ? (
           <div className="relative w-full">
             <div className="flex">
-              <div className="flex-grow border-r">
-                <div className="flex items-center justify-center h-12 gap-2 text-2xl font-extrabold text-price-lower">
+              <div className="flex-grow border-r border-gray-light">
+                <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-lower border-b border-gray-light">
                   <DecreaseIcon />
                   SHORT
                 </div>
                 <TradeContentV3 direction="short" />
               </div>
               <div className="flex-grow">
-                <div className="flex items-center justify-center h-12 gap-2 text-2xl font-extrabold text-price-higher">
+                <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-higher border-b border-gray-light">
                   <IncreaseIcon />
                   LONG
                 </div>
@@ -91,7 +91,7 @@ export const TradePanelV3 = () => {
           </div>
         )}
 
-        <div className="px-5 pt-4 pb-5 border-t bg-paper-light dark:bg-inverted-lighter">
+        <div className="px-5 pt-4 pb-5 border-t border-gray-light bg-paper-light dark:bg-inverted-lighter">
           <div className="text-sm text-left text-primary-lighter">
             The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
             that accept the positions. The EST. Trade Fee is calculated based on the current oracle
