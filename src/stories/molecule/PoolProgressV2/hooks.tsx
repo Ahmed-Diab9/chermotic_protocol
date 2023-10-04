@@ -44,6 +44,7 @@ export const usePoolProgressV2 = () => {
   const { receipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
+  const receiptsInProgress = receipts?.filter((receipt) => !receipt.isClosed);
 
   return {
     openButtonRef,
