@@ -235,7 +235,7 @@ body {
 
 .panel {
   &:not(.panel-transparent) {
-    @apply rounded shadow-lg dark:shadow-none bg-paper/50 border dark:border-transparent;
+    @apply rounded shadow-lg dark:shadow-none bg-paper/50;
   }
   &.panel-transparent {
     @apply bg-transparent;

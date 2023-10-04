@@ -51,8 +51,23 @@
 .tabs-button {
   [role='tablist'] {
     button {
-      @apply px-4 py-1 mb-1;
-      @apply border rounded;
+      @apply px-4 py-1 mb-1 grow border;
+      @apply flex items-center justify-center;
+      &:not(:first-child) {
+        @apply border-l-0;
+      }
+    }
+    [aria-selected='true'] {
+    }
+    [aria-selected='false'] {
+      @apply text-primary-lighter;
+    }
+  }
+  &.tabs-lg {
+    [role='tablist'] {
+      button {
+        @apply h-[60px] font-extrabold text-4xl;
+      }
     }
   }
   [role='menu'] {
