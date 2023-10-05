@@ -2,15 +2,15 @@ import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
 import { useMarket } from './useMarket';
 
-const initialDate = new Date(2000, 0, 1, 0, 0, 0, 0);
 const formatter = Intl.DateTimeFormat('en-US', {
   second: '2-digit',
   minute: '2-digit',
   hour: '2-digit',
   hourCycle: 'h23',
+  timeZone: 'UTC',
 });
 const preformat = (elapsed: number) => {
-  return formatter.formatToParts(initialDate.getTime() + elapsed);
+  return formatter.formatToParts(elapsed);
 };
 
 interface Props {
@@ -24,14 +24,12 @@ export function useLastOracle(props?: Props) {
   useEffect(() => {
     const timestamp = currentMarket?.oracleValue?.timestamp;
     if (isNil(timestamp)) return;
-
-    let timerId = setTimeout(function onTimeout() {
+    let timerId: NodeJS.Timeout;
+    timerId = setInterval(() => {
       const timeDiff = Date.now() - Number(timestamp) * 1000;
-
       setElapsed(timeDiff);
-
-      timerId = setTimeout(onTimeout, 1000);
     }, 1000);
+
     return () => {
       clearTimeout(timerId);
     };
