@@ -5,7 +5,7 @@ import useLocalStorage from '~/hooks/useLocalStorage';
 import { useMarket } from '~/hooks/useMarket';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import '~/stories/atom/Tabs/style.css';
-import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
+// import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
 import './style.css';
 
 // May be used later.
@@ -71,12 +71,12 @@ export const TradeChartViewV3 = (props: TradeChartViewV3Props) => {
               borderColor: 'rgb(var(--color-paper))',
             }}
           >
-            <TradingViewWidget
+            {/* <TradingViewWidget
               className="flex flex-col items-center flex-auto"
               width={width}
               height={height}
               marketSymbol={marketSymbol}
-            />
+            /> */}
           </div>
         )}
       </Resizable>
