@@ -95,7 +95,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               {balance} {tokenName}
             </SkeletonElement>
           </p> */}
-          <div className="select select-sm w-full max-w-[120px] ml-auto">
+          <div className="select select-sm w-full max-w-[136px] ml-auto">
             <Listbox value={method} onChange={onMethodChange}>
               <Listbox.Button>{methodLabel}</Listbox.Button>
               <Listbox.Options>
@@ -123,7 +123,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           />
         </div>
       </article>
-      <section className="p-5 pb-4 border-y border-gray-light">
+      <section className="p-5 pb-4 border-y">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
         </div>
       </section>
       <section>
-        <div className="relative border-b border-gray-light">
+        <div className="relative border-b">
           <div
             className={`flex gap-3 px-3 pb-3 pt-5 border-b text-sm ${
               isLong ? 'justify-end right-0' : 'justify-start left-0'

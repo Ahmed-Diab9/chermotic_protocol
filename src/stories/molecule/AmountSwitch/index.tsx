@@ -60,12 +60,6 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     <>
       <div className="">
         <div className={`tooltip-input-balance-${direction}`}>
-          {/* <Input
-            value={preset.value.toString()}
-            onChange={onAmountChange}
-            placeholder="0"
-            error={disabled && !!errorMessage}
-          /> */}
           <OptionInput
             value={preset.value.toString()}
             onChange={onAmountChange}

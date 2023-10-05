@@ -6,7 +6,7 @@
     @apply border-error;
   }
   &:has(input:focus) {
-    @apply dark:border-paper-light;
+    @apply dark:border-gray-light;
     &.error {
       @apply border-error;
     }

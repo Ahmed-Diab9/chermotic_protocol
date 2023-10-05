@@ -60,7 +60,7 @@
     [aria-selected='true'] {
     }
     [aria-selected='false'] {
-      @apply text-primary-lighter border-gray-light;
+      @apply text-primary-lighter;
     }
   }
   &.tabs-lg {
