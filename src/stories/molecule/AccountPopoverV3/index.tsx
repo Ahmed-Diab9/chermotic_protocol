@@ -35,7 +35,8 @@ export function AccountPopoverV3() {
                                 <Avatar
                                   size="xs"
                                   fontSize="lg"
-                                  label={`${balance} ${tokenName}`}
+                                  // label={`${balance} ${tokenName}`}
+                                  label={`${balance}`}
                                   gap="1"
                                   src={tokenImage}
                                 />
