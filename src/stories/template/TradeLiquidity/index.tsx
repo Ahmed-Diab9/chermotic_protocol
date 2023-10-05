@@ -1,46 +1,31 @@
-import { useState } from 'react';
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
-// import { Tab } from '@headlessui/react';
+
+import { useState } from 'react';
+
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { Resizable } from 're-resizable';
 import ViewBothIcon from '~/assets/icons/ViewBothIcon';
 import ViewLongIcon from '~/assets/icons/ViewLongIcon';
 import ViewShortIcon from '~/assets/icons/ViewShortIcon';
+
 import { Button } from '~/stories/atom/Button';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import { ResizablePanel } from '~/stories/atom/ResizablePanel';
 
 export interface TradeLiquidityProps {}
 
 export const TradeLiquidity = (props: TradeLiquidityProps) => {
   const [selectedButton, setSelectedButton] = useState(0);
 
-  const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 240,
-    initialHeight: 400,
-    minHeight: 200,
-    maxHeight: 800,
-    minWidth: 240,
-  });
-
   return (
     <div className="TradeLiquidity">
-      <Resizable
-        size={{ width, height }}
-        minHeight={minHeight}
-        maxHeight={maxHeight}
-        enable={{
-          top: false,
-          right: false,
-          bottom: true,
-          left: false,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
-        }}
-        onResizeStop={handleResizeStop}
+      <ResizablePanel
+        initialWidth={240}
+        initialHeight={400}
+        minHeight={200}
+        maxHeight={800}
+        minWidth={240}
         className="flex flex-col panel"
+        bottom
       >
         <div className="flex items-stretch">
           <div className="flex items-center flex-auto px-3">
@@ -74,7 +59,7 @@ export const TradeLiquidity = (props: TradeLiquidityProps) => {
             to={'/pool'}
           />
         </div>
-      </Resizable>
+      </ResizablePanel>
     </div>
   );
 };

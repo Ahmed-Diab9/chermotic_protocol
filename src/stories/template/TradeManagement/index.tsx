@@ -5,9 +5,8 @@ import './style.css';
 
 import { Listbox, Tab } from '@headlessui/react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { Resizable } from 're-resizable';
 import { Button } from '~/stories/atom/Button';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import { ResizablePanel } from '~/stories/atom/ResizablePanel';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
@@ -41,32 +40,17 @@ export const TradeManagement = () => {
   const PERCENTAGE = 0.05;
   const { filterOption, filterOptions, onOptionSelect } = usePositionFilter();
 
-  const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 620,
-    initialHeight: 321,
-    minWidth: 720,
-    minHeight: 220,
-    maxHeight: 800,
-  });
-
   return (
     <div className="TradeManagement">
-      <Resizable
-        size={{ width: 'auto', height }}
-        minHeight={minHeight}
-        maxHeight={maxHeight}
-        enable={{
-          top: false,
-          right: false,
-          bottom: true,
-          left: false,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
-        }}
-        onResizeStop={handleResizeStop}
+      <ResizablePanel
+        initialWidth={620}
+        initialHeight={321}
+        minWidth={720}
+        minHeight={220}
+        maxHeight={800}
+        autoWidth
         className="panel"
+        bottom
       >
         <div className="w-full h-full tabs tabs-default tabs-left">
           <Tab.Group>
@@ -263,7 +247,7 @@ export const TradeManagement = () => {
             </div>
           </Tab.Group>
         </div>
-      </Resizable>
+      </ResizablePanel>
     </div>
   );
 };

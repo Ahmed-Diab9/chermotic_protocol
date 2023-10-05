@@ -6,7 +6,7 @@ import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
 import { Footer } from '~/stories/template/Footer';
 import { Header } from '~/stories/template/Header';
 import { MainBarV2 } from '~/stories/template/MainBarV2';
-import { TradeChartView } from '~/stories/template/TradeChartView';
+import { TradeChartPanel } from '~/stories/template/TradeChartPanel';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
 
@@ -25,7 +25,7 @@ function TradeV2() {
         <MainBarV2 accountPopover />
         <div className="flex w-full gap-3 overflow-hidden">
           <article className="flex flex-col flex-auto w-full gap-3">
-            <TradeChartView />
+            <TradeChartPanel />
             <TradeManagement />
           </article>
           <TradePanelV2 />
