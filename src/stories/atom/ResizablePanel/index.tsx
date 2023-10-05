@@ -1,38 +1,58 @@
 import { Resizable } from 're-resizable';
+import { PropsWithChildren } from 'react';
+
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 
-interface ResizablePanelProps {
-  // className?: string;
+interface ResizablePanelProps extends PropsWithChildren {
+  className?: string;
+  initialWidth: number;
+  initialHeight: number;
+  minHeight: number;
+  maxHeight: number;
+  minWidth: number;
+  top?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+  topRight?: boolean;
+  bottomRight?: boolean;
+  bottomLeft?: boolean;
+  topLeft?: boolean;
+  autoWidth?: boolean;
+  autoHeight?: boolean;
 }
 
 export const ResizablePanel = (props: ResizablePanelProps) => {
   const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 300,
-    initialHeight: 200,
-    minHeight: 100,
-    maxHeight: 400,
-    minWidth: 300,
+    initialWidth: props.initialWidth,
+    initialHeight: props.initialHeight,
+    minHeight: props.minHeight,
+    maxHeight: props.maxHeight,
+    minWidth: props.minWidth,
   });
 
   return (
     <Resizable
-      size={{ width, height }}
+      size={{
+        width: props.autoWidth ? 'auto' : width,
+        height: props.autoHeight ? 'auto' : height,
+      }}
       minHeight={minHeight}
       maxHeight={maxHeight}
       enable={{
-        top: true,
-        right: false,
-        bottom: true,
-        left: false,
-        topRight: false,
-        bottomRight: false,
-        bottomLeft: false,
-        topLeft: false,
+        top: props.top || false,
+        right: props.right || false,
+        bottom: props.bottom || false,
+        left: props.left || false,
+        topRight: props.topRight || false,
+        bottomRight: props.bottomRight || false,
+        bottomLeft: props.bottomLeft || false,
+        topLeft: props.topLeft || false,
       }}
       onResizeStop={handleResizeStop}
-      className="border !border-primary"
+      className={props.className}
     >
-      Sample with resizable vertical height
+      {props.children}
     </Resizable>
   );
 };

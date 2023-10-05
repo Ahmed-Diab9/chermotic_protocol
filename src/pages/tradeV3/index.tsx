@@ -4,7 +4,6 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Footer } from '~/stories/template/Footer';
-import { MainBarV3 } from '~/stories/template/MainBarV3';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { TradeChartViewV3 } from '~/stories/template/TradeChartViewV3';
 import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
@@ -36,6 +35,7 @@ function TradeV3() {
               <MarketSelectV3 />
               <TradeChartViewV3 />
               <TradeManagementV3 />
+              {/* <TradeChartPanel /> */}
             </article>
             <TradePanelV3 />
           </div>
