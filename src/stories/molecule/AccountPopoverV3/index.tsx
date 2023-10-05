@@ -8,6 +8,7 @@ import { AccountPanelV3 } from '../AccountPanelV3';
 // import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 import { useAccountPopoverV3 } from './hooks';
 
@@ -26,44 +27,36 @@ export function AccountPopoverV3() {
                 <Popover>
                   {({ open, close }) => (
                     <>
-                      <Popover.Button className="btn btn-unstyled btn-sm">
-                        <span className="flex items-center gap-2">
+                      <Popover.Button className="btn btn-line !h-10 !min-w-[180px] px-3 hover:bg-primary/10">
+                        <span className="flex items-center justify-between w-full gap-4">
                           {isAccountExist ? (
-                            <span className="flex flex-col gap-[2px]">
-                              {/* <span className="text-primary-light">Account balance</span> */}
-                              <span className="text-xl">
-                                <SkeletonElement isLoading={isLoading} width={80}>
-                                  <Avatar
-                                    // size="xs"
-                                    fontSize="xl"
-                                    label={`${balance} ${tokenName}`}
-                                    gap="1"
-                                    src={tokenImage}
-                                  />
-                                </SkeletonElement>
-                              </span>
-                            </span>
+                            <>
+                              <SkeletonElement isLoading={isLoading} width={80}>
+                                <Avatar
+                                  size="xs"
+                                  fontSize="lg"
+                                  label={`${balance} ${tokenName}`}
+                                  gap="1"
+                                  src={tokenImage}
+                                />
+                              </SkeletonElement>
+                              <ArrowTriangleIcon
+                                className={`w-4 h-4 ${open ? 'rotate-180' : ''}`}
+                                aria-hidden="true"
+                              />
+                            </>
                           ) : (
                             <>
                               <Avatar
-                                size="sm"
-                                // label="My Account"
+                                size="xs"
                                 fontSize="lg"
-                                label="0"
-                                gap="2"
+                                label="Create Account"
+                                gap="1"
                                 src={tokenImage}
-                                // className="tooltip-account-empty"
                               />
-                              {/* <TooltipAlert
-                                label="account-empty"
-                                tip="To make a deposit, you need to create account first."
-                              /> */}
+                              <PlusCircleIcon className="w-4 h-4" aria-hidden="true" />
                             </>
                           )}
-                          <ArrowTriangleIcon
-                            className={`w-4 h-4 ${open ? 'rotate-180' : ''}`}
-                            aria-hidden="true"
-                          />
                         </span>
                       </Popover.Button>
                       <Popover.Panel className="popover-panel w-[600px]">

@@ -3,7 +3,7 @@
   /* @apply h-[42px] gap-6; */
   @apply text-primary;
   .popover-panel {
-    @apply absolute right-0 rounded top-7 mt-3 w-[480px];
+    @apply absolute right-0 rounded top-8 mt-3 w-[480px];
     /* @apply border px-10 pt-4; */
     @apply border p-5;
     @apply bg-paper text-primary;
