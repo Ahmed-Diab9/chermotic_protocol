@@ -82,7 +82,7 @@ export const TradeBar = () => {
                                   paragraph={`Waiting for the next oracle round. The next oracle round is updated whenever the Chainlink price moves by ${PERCENTAGE}% or more, and it is updated at least once a day.`}
                                   outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                                   outLinkAbout="Next Oracle Round"
-                                  flex
+                                  direction="row"
                                 />
                               </div>
                             )}
