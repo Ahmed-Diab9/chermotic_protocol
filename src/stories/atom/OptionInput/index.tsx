@@ -58,8 +58,8 @@ export const OptionInput = (props: OptionInputProps) => {
 
   return (
     <div
-      className={`flex gap-2 ${className} ${
-        flex ? 'items-center justify-between w-full' : 'flex-col-reverse items-stretch'
+      className={`flex ${className} ${
+        flex ? 'items-center justify-between w-full gap-3' : 'flex-col-reverse items-stretch gap-2'
       }`}
     >
       <div className="flex gap-1">
