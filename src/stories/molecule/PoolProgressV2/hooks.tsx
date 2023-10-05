@@ -7,6 +7,7 @@ import { POOL_EVENT } from '~/typings/events';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useAppSelector } from '~/store';
+import { LP_EVENT } from '~/typings/events';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,

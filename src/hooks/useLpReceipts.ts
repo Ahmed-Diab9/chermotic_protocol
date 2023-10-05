@@ -124,7 +124,11 @@ export const useLpReceipts = () => {
     tokens,
   };
 
-  const { data: receipts, error } = useSWR(
+  const {
+    data: receipts,
+    error,
+    mutate: fetchReceipts,
+  } = useSWR(
     isReady && checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ address, market, tokens }) => {
       const registry = lpClient.registry();
@@ -200,5 +204,5 @@ export const useLpReceipts = () => {
 
   useError({ error });
 
-  return { receipts };
+  return { receipts, fetchReceipts };
 };
