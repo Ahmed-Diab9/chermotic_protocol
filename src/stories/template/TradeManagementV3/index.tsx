@@ -80,7 +80,7 @@ export const TradeManagementV3 = () => {
                     </Listbox.Options>
                   </Listbox>
                 </div>
-                <div className="px-2 text-primary-light">
+                <div className="pl-2 ml-1 border-l text-primary-light">
                   <Button iconOnly={<ArrowPathIcon />} css="unstyled" />
                 </div>
               </div>

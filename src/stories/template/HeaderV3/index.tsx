@@ -69,7 +69,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             P3
           </Link> */}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-5">
           {hasAccount && <AccountPopoverV3 />}
           <div className="hidden">
             <ThemeToggle />
