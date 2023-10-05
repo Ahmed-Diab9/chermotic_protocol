@@ -53,11 +53,12 @@ export const AssetPanel = (props: AssetPanelProps) => {
     <Popover>
       {({ open, close }) => (
         <>
-          <Popover.Button
+          {/* <Popover.Button
             className={`btn btn-light btn-sm ${
               open ? '!border-primary dark:!border-transparent dark:!bg-gray-dark' : ''
             }`}
-          >
+          > */}
+          <Popover.Button className={`btn btn-line btn-sm ${open ? '!border-primary-light' : ''}`}>
             {type}
           </Popover.Button>
 

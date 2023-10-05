@@ -15,7 +15,7 @@
     @apply w-full h-9;
     @apply dark:bg-paper-light rounded-lg;
     &[aria-expanded='true'] {
-      @apply dark:border-paper-light;
+      @apply dark:border-gray-light;
       &::after {
         @apply rotate-180;
       }
@@ -30,10 +30,18 @@
       background-size: 100%;
     }
   }
+  &.select-sm {
+    button[aria-haspopup='listbox'] {
+      @apply h-6;
+      &::after {
+        @apply w-3 h-3;
+      }
+    }
+  }
   /* Select(listbox) panel */
   ul[role='listbox'] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
-    @apply p-1 bg-paper border border-gray-light dark:border-gray-lighter rounded-lg shadow-base dark:shadow-none;
+    @apply p-1 bg-paper border border-gray-light rounded-lg shadow-base dark:shadow-none;
   }
   li[role='option'] {
     @apply flex items-center px-2 py-[6px] hover:bg-paper-light;

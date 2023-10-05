@@ -6,7 +6,7 @@
     @apply border-error;
   }
   &:has(input:focus) {
-    @apply dark:border-paper-light;
+    @apply dark:border-gray-light;
     &.error {
       @apply border-error;
     }
@@ -29,7 +29,7 @@
   @apply h-[22px] px-2 text-lg;
 }
 .input-sm {
-  @apply h-[26px] px-3 text-lg;
+  @apply h-[28px] px-3 text-lg;
 }
 .input-base {
   @apply h-9 px-3 text-xl;

@@ -52,9 +52,13 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
 
   if (isDisconnected) {
     return (
-      <button onClick={onConnect} title="connect" className={`btn btn-wallet min-w-[148px]`}>
+      <button
+        onClick={onConnect}
+        title="connect"
+        className={`btn btn-wallet min-w-[148px] !bg-primary`}
+      >
         <Avatar src={arbitrumIcon} className="avatar" size="lg" />
-        <p className="w-full pr-4 text-lg font-semibold text-center">Connect</p>
+        <p className="w-full pr-4 text-lg font-semibold text-center text-inverted">Connect</p>
       </button>
     );
   } else if (isWrongChain) {

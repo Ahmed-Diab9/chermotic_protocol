@@ -9,13 +9,13 @@ interface GuideProps {
   paragraph: string;
   outLink?: string;
   outLinkAbout?: string;
-  flex?: boolean;
+  direction?: 'row' | 'column';
   className?: string;
   onClick?: () => unknown;
 }
 
 export const Guide = (props: GuideProps) => {
-  const { title, paragraph, outLink, outLinkAbout, flex, className } = props;
+  const { title, paragraph, outLink, outLinkAbout, direction = 'column', className } = props;
 
   const [guideVisible, setGuideVisible] = useState(true);
   const closeGuide = () => {
@@ -27,14 +27,14 @@ export const Guide = (props: GuideProps) => {
       {guideVisible && (
         <div
           className={`relative px-5 text-left rounded-xl bg-paper-light flex gap-3 ${
-            flex ? 'py-2 items-center' : 'py-4'
+            direction === 'row' ? 'py-2 items-center' : 'py-4'
           } ${className}`}
         >
           <div>
             {/* <BellIcon className="w-4" /> */}
             <ExclamationTriangleIcon className="w-4" />
           </div>
-          <div className={`flex ${flex ? 'gap-4 !pr-12' : 'gap-2 flex-col'}`}>
+          <div className={`flex ${direction === 'row' ? 'gap-4 !pr-12' : 'gap-2 flex-col'}`}>
             <div className="flex items-center gap-1">
               <p className="whitespace-nowrap">{title}</p>
             </div>
@@ -48,7 +48,9 @@ export const Guide = (props: GuideProps) => {
             <Button
               iconOnly={<XMarkIcon />}
               css="unstyled"
-              className={`absolute right-1 text-primary-lighter  ${flex ? '' : 'top-1'}`}
+              className={`absolute right-1 text-primary-lighter  ${
+                direction === 'row' ? '' : 'top-1'
+              }`}
               onClick={closeGuide}
             />
           </div>

@@ -54,6 +54,7 @@ export function PoolPanelV2() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,
@@ -131,8 +132,8 @@ export function PoolPanelV2() {
                 </div>
               </section>
 
-              <section className="pt-3 mt-3 border-t border-dashed">
-                <article>
+              <section className="pt-5 mt-3 border-t border-dashed">
+                <article className="mb-5">
                   <div className="flex justify-between place-items-stretch">
                     <div className="flex flex-col items-start justify-between">
                       <div className="flex items-center gap-2">
@@ -156,6 +157,7 @@ export function PoolPanelV2() {
                         maxValue={maxAmount}
                         onChange={onAmountChange}
                         error={isExceeded}
+                        assetSrc={tokenImage}
                       />
                       {isExceeded && (
                         <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
@@ -175,7 +177,7 @@ export function PoolPanelV2() {
                   </div> */}
                 </article>
 
-                <article className="mt-5">
+                <article className="">
                   <div className="py-3 border-t border-dashed">
                     <PoolInfo label="EST. Receive">
                       <Avatar label="995.34 CLP" size="sm" fontSize="lg" gap="1" />

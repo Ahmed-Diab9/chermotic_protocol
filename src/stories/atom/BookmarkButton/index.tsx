@@ -14,7 +14,7 @@ export const BookmarkButton = (props: BookmarkButtonProps) => {
     <button className={`btn-bookmark ${className}`} onClick={onClick} title="bookmark toggle">
       <StarIcon
         className={`stroke-primary-lighter ${isMarked ? 'fill-primary stroke-primary' : ''}    
-        ${size === 'base' ? 'w-4 h-4' : size === 'lg' ? 'w-6 h-6' : size === 'sm' ? '' : ''}
+        ${size === 'base' ? 'w-4 h-4' : size === 'lg' ? 'w-5 h-5' : size === 'sm' ? '' : ''}
           `}
       />
     </button>

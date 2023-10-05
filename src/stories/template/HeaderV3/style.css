@@ -1,0 +1,5 @@
+.HeaderV3 {
+  .link {
+    @apply border-b-2 leading-none pb-2 px-[2px] mt-2 font-semibold;
+  }
+}

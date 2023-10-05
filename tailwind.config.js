@@ -16,7 +16,7 @@ export const theme = {
   extend: {
     fontFamily: {
       // mono: ['Source Code Pro', monospace],
-      mono: ['Roboto Slab', monospace],
+      mono: ['Work Sans', ...defaultTheme.fontFamily.sans],
       // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
       // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
@@ -113,7 +113,7 @@ export const theme = {
       xs: ['10px', 'normal'],
       sm: ['11px', 'normal'],
       base: ['12px', 'normal'],
-      lg: ['14px', 'normal'],
+      lg: ['13px', 'normal'],
       xl: ['16px', 'normal'],
       '2xl': ['18px', 'normal'],
       '3xl': ['20px', 'normal'],
@@ -132,4 +132,4 @@ export const theme = {
     },
   },
 };
-export const plugins = [];
+export const plugins = [require('tailwind-scrollbar-hide')];

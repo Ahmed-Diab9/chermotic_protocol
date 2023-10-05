@@ -1,5 +1,6 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;600;700;800;900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;600;700;800;900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import url('react-loading-skeleton/dist/skeleton.css');
 @import-normalize;
 
@@ -112,10 +113,10 @@
 }
 
 body {
-  @apply font-mono text-base tracking-tight min-w-[1080px] relative;
+  @apply font-mono text-base tracking-normal min-w-[1080px] relative;
   @apply text-primary bg-paper-lightest;
-  /* word-spacing: -0.1em; */
-  letter-spacing: 0.04em !important;
+  word-spacing: -0.04em;
+  /* letter-spacing: 0.04em !important; */
 }
 
 #gradient {
@@ -234,7 +235,12 @@ body {
 }
 
 .panel {
-  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
+  &:not(.panel-transparent) {
+    @apply rounded shadow-lg dark:shadow-none bg-paper;
+  }
+  &.panel-transparent {
+    @apply bg-transparent;
+  }
 }
 
 h1,

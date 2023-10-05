@@ -1,7 +1,9 @@
-import { Input } from '~/stories/atom/Input';
+// import { Input } from '~/stories/atom/Input';
+import { OptionInput } from '~/stories/atom/OptionInput';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { numberFormat } from '~/utils/number';
+
 interface AmountSwitchProps {
   collateral: string;
   quantity: string;
@@ -10,6 +12,7 @@ interface AmountSwitchProps {
   disabled: boolean;
   disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
   tokenName?: string;
+  tokenImage?: string;
   minAmount: string;
   onAmountChange: (value: string) => unknown;
 }
@@ -23,6 +26,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     disabled,
     disableDetail,
     tokenName,
+    tokenImage,
     onAmountChange,
     minAmount,
   } = props;
@@ -54,13 +58,15 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
 
   return (
     <>
-      <div className="max-w-[220px]">
+      <div className="">
         <div className={`tooltip-input-balance-${direction}`}>
-          <Input
+          <OptionInput
             value={preset.value.toString()}
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}
+            assetSrc={tokenImage}
+            direction="row"
           />
           {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}
         </div>

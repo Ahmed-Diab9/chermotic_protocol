@@ -15,6 +15,7 @@ interface OptionInputProps {
   size?: 'sm' | 'base' | 'lg';
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
+  direction?: 'row' | 'column';
   className?: string;
   disabled?: boolean;
   error?: boolean;
@@ -32,6 +33,7 @@ export const OptionInput = (props: OptionInputProps) => {
     size = 'base',
     css = 'default',
     align = 'right',
+    direction = 'column',
     className = '',
     disabled = false,
     error = false,
@@ -55,32 +57,38 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`inline-flex flex-col-reverse ${className}`}>
-      <div className="flex gap-1 mt-2">
+    <div
+      className={`flex ${className} ${
+        direction === 'row'
+          ? 'items-center justify-between w-full gap-3'
+          : 'flex-col-reverse items-stretch gap-2'
+      }`}
+    >
+      <div className="flex gap-1">
         {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
         <Button
-          className="flex-auto shadow-base"
+          className="flex-auto shadow-base !text-lg"
           label="25%"
           size="sm"
           css={ratio === 25 ? 'active' : 'default'}
           onClick={onClick(25)}
         />
         <Button
-          className="flex-auto shadow-base"
+          className="flex-auto shadow-base !text-lg"
           label="50%"
           size="sm"
           css={ratio === 50 ? 'active' : 'default'}
           onClick={onClick(50)}
         />
         <Button
-          className="flex-auto shadow-base"
+          className="flex-auto shadow-base !text-lg"
           label="75%"
           size="sm"
           css={ratio === 75 ? 'active' : 'default'}
           onClick={onClick(75)}
         />
         <Button
-          className="flex-auto shadow-base"
+          className="flex-auto shadow-base !text-lg"
           label="Max"
           size="sm"
           css={ratio === 100 ? 'active' : 'default'}
