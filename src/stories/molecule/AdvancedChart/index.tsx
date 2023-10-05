@@ -1,8 +1,5 @@
-import { isNil, isNotNil } from 'ramda';
-import { useEffect, useMemo, useRef, useState } from 'react';
-
-import useLocalStorage from '~/hooks/useLocalStorage';
-import { useMarket } from '~/hooks/useMarket';
+import { isNil } from 'ramda';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   ChartTypeFavorites,
@@ -12,25 +9,23 @@ import {
   TradingTerminalFeatureset,
   widget,
 } from '~/charting_library';
-import { PYTH_TV_PRICEFEED } from '~/constants/apis';
+
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
 
-const marketMap: Record<string, string | undefined> = {
-  'ETH/USD': 'ETHUSD',
-  'BTC/USD': 'BTCUSD',
-};
+import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 
-export function AdvancedChart({ className }: { className?: string }) {
-  const { currentMarket } = useMarket();
+import LOADING_LG from '~/assets/icons/loadingLg.png';
 
-  const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
-
-  const marketSymbol = useMemo(
-    () => (isNotNil(currentMarket) ? marketMap[currentMarket.description] : undefined),
-    [currentMarket]
-  );
-
+export function AdvancedChart({
+  className,
+  darkMode = false,
+  symbol,
+}: {
+  className?: string;
+  darkMode?: boolean;
+  symbol?: string;
+}) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
 
@@ -68,7 +63,7 @@ export function AdvancedChart({ className }: { className?: string }) {
   useEffect(() => {
     const tvWidget = new widget({
       ...defaultProps,
-      symbol: marketSymbol || ' ',
+      symbol: symbol || ' ',
       container: chartContainerRef.current,
       // @ts-ignore
       custom_formatters: {
@@ -101,11 +96,11 @@ export function AdvancedChart({ className }: { className?: string }) {
   }, []);
 
   useEffect(() => {
-    if (isNil(tvWidgetRef.current) || isNil(marketSymbol)) return;
-    tvWidgetRef.current.setSymbol(marketSymbol, defaultProps.interval, () => {
+    if (isNil(tvWidgetRef.current) || isNil(symbol)) return;
+    tvWidgetRef.current.setSymbol(symbol, defaultProps.interval, () => {
       if (isLoading) setIsLoading(false);
     });
-  }, [marketSymbol, isChartReady]);
+  }, [symbol, isChartReady]);
 
   useEffect(() => {
     if (isNil(tvWidgetRef.current)) return;
@@ -114,7 +109,12 @@ export function AdvancedChart({ className }: { className?: string }) {
 
   return (
     <>
-      <div style={{ display: isLoading ? undefined : 'none' }}>Loading</div>
+      <div
+        style={{ display: isLoading ? undefined : 'none' }}
+        className="flex items-center justify-center w-full h-full"
+      >
+        <img src={LOADING_LG} className="w-10 animate-spin" alt="" />
+      </div>
       <div
         style={{ display: isLoading ? 'none' : undefined }}
         ref={chartContainerRef}

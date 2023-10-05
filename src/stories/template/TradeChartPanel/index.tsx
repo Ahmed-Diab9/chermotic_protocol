@@ -1,10 +1,8 @@
 import '~/stories/atom/Tabs/style.css';
-// import './style.css';
-
-import useLocalStorage from '~/hooks/useLocalStorage';
 
 import { AdvancedChart } from '~/stories/molecule/AdvancedChart';
 import { ResizablePanel } from '~/stories/atom/ResizablePanel';
+import { useTradeChartPanel } from './hooks';
 
 // May be used later.
 // import { ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -13,7 +11,7 @@ import { ResizablePanel } from '~/stories/atom/ResizablePanel';
 export interface TradeChartViewProps {}
 
 export function TradeChartPanel(props: TradeChartViewProps) {
-  const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
+  const { darkMode, symbol } = useTradeChartPanel();
 
   return (
     <ResizablePanel
@@ -32,7 +30,11 @@ export function TradeChartPanel(props: TradeChartViewProps) {
           borderColor: 'rgb(var(--color-paper))',
         }}
       >
-        <AdvancedChart className="flex flex-col items-center flex-auto" />
+        <AdvancedChart
+          className="flex flex-col items-center flex-auto"
+          darkMode={darkMode}
+          symbol={symbol}
+        />
       </div>
     </ResizablePanel>
   );
