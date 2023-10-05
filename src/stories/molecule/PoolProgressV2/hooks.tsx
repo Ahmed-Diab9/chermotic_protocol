@@ -49,7 +49,10 @@ export const usePoolProgressV2 = () => {
   const { receipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
-  const onReceiptResolve = async (receiptId: bigint) => {
+  const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
+    'app:isLpGuideClicked',
+    true
+  );
     if (!selectedLp) {
       return;
     }
@@ -60,7 +63,17 @@ export const usePoolProgressV2 = () => {
     }
     const settleResponse = await lp.settle(selectedLp.address, receiptId);
   };
-  const receiptsInProgress = receipts?.filter((receipt) => !receipt.isClosed);
+  const onGuideClose = useCallback(() => setIsGuideOpen(false), [setIsGuideOpen]);
+
+  useEffect(() => {
+    function onLp() {
+      setIsGuideOpen(true);
+    }
+    window.addEventListener(LP_EVENT, onLp);
+    return () => {
+      window.removeEventListener(LP_EVENT, onLp);
+    };
+  }, [setIsGuideOpen]);
 
   return {
     openButtonRef,
@@ -69,14 +82,6 @@ export const usePoolProgressV2 = () => {
     isFullLoaded,
 
     formattedElapsed,
-    receipts: isFullLoaded['all'] ? receipts : receipts?.slice(0, 2),
-    mintingReceipts: isFullLoaded['minting'] ? mintingReceipts : mintingReceipts?.slice(0, 2),
-    burningReceipts: isFullLoaded['burning'] ? burningReceipts : burningReceipts?.slice(0, 2),
-    inProgressLength: receiptsInProgress?.length ?? 0,
-    mintingReceiptsLength: mintingReceipts?.length ?? 0,
-    burningReceiptsLength: burningReceipts?.length ?? 0,
-
-    onReceiptResolve,
-    onFullReceiptsLoad,
+    onGuideClose,
   };
 };

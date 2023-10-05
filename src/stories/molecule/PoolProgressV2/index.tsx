@@ -26,11 +26,8 @@ export function PoolProgressV2() {
     receipts = [],
     mintingReceipts = [],
     burningReceipts = [],
-    inProgressLength,
-    mintingReceiptsLength,
-    burningReceiptsLength,
-    onReceiptResolve,
-    onFullReceiptsLoad,
+    isGuideOpen,
+    onGuideClose,
   } = usePoolProgressV2();
 
   return (
@@ -80,6 +77,7 @@ export function PoolProgressV2() {
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
                           className="!rounded-none"
+                          onClick={onGuideClose}
                         />
                       )}
                     </div>
