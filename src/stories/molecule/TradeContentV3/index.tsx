@@ -11,7 +11,6 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 import { TradeChart } from '~/stories/atom/TradeChart';
-import { OptionInput } from '~/stories/atom/OptionInput';
 
 import { useTradeContentV3 } from './hooks';
 

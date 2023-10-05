@@ -66,7 +66,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             placeholder="0"
             error={disabled && !!errorMessage}
             assetSrc={tokenImage}
-            flex
+            direction="row"
           />
           {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}
         </div>

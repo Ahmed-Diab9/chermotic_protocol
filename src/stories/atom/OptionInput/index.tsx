@@ -15,7 +15,7 @@ interface OptionInputProps {
   size?: 'sm' | 'base' | 'lg';
   css?: 'default' | 'active';
   align?: 'center' | 'left' | 'right';
-  flex?: boolean;
+  direction?: 'row' | 'column';
   className?: string;
   disabled?: boolean;
   error?: boolean;
@@ -33,7 +33,7 @@ export const OptionInput = (props: OptionInputProps) => {
     size = 'base',
     css = 'default',
     align = 'right',
-    flex,
+    direction = 'column',
     className = '',
     disabled = false,
     error = false,
@@ -59,7 +59,9 @@ export const OptionInput = (props: OptionInputProps) => {
   return (
     <div
       className={`flex ${className} ${
-        flex ? 'items-center justify-between w-full gap-3' : 'flex-col-reverse items-stretch gap-2'
+        direction === 'row'
+          ? 'items-center justify-between w-full gap-3'
+          : 'flex-col-reverse items-stretch gap-2'
       }`}
     >
       <div className="flex gap-1">
