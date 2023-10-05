@@ -1,5 +1,5 @@
 .TradePanelV3 {
-  @apply relative !bg-paper/50;
+  @apply relative;
   .tabs {
     .btn-tabs {
       @apply gap-1 pl-1 pr-4;

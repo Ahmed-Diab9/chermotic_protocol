@@ -46,7 +46,7 @@ export const TradePanelV3 = () => {
       }}
       className="shrink-0"
     >
-      <div className="TradePanelV3 panel">
+      <div className="TradePanelV3 panel panel-translucent">
         {isWide ? (
           <div className="relative w-full">
             <div className="flex">
