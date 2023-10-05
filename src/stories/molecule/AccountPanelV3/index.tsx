@@ -126,8 +126,11 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
           <div className="w-full tabs">
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
-              <Tab.List className="flex w-full mb-5">
-                <Avatar label="0.00" fontSize="3xl" />
+              <Tab.List className="flex items-center w-full mb-5">
+                <div>
+                  <p className="mb-1 text-primary-lighter">Account Balance</p>
+                  <Avatar label="0.00" fontSize="3xl" />
+                </div>
                 <div className="flex gap-3 ml-auto">
                   <Tab value="short" className="btn-tabs btn-sm btn btn-line">
                     Deposit
