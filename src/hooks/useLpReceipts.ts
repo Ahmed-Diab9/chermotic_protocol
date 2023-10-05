@@ -24,6 +24,7 @@ export interface LpReceipt {
   burnedAmount: bigint;
   remainedAmount: bigint;
   hasReturnedValue: boolean;
+  isIssued: boolean;
   isSettled: boolean;
   recipient: Address;
   action: 'minting' | 'burning';
@@ -65,7 +66,9 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
       const mapValue =
         newMap.get(receiptId) ??
         ({
-          isClosed: false,
+          id: receiptId,
+          isSettled: false,
+          isIssued: false,
         } as Partial<LpReceipt>);
       switch (eventName) {
         case 'AddLiquidity': {
@@ -75,6 +78,7 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
           mapValue.recipient = recipient;
           mapValue.amount = amount;
           mapValue.oracleVersion = oracleVersion;
+          mapValue.isIssued = true;
           break;
         }
         case 'AddLiquiditySettled': {
@@ -91,6 +95,7 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
           mapValue.recipient = recipient;
           mapValue.amount = lpTokenAmount;
           mapValue.oracleVersion = oracleVersion;
+          mapValue.isIssued = true;
           break;
         }
         case 'RemoveLiquiditySettled': {
