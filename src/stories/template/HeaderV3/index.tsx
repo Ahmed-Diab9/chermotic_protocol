@@ -60,14 +60,14 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           >
             T3
           </Link>
-          {/* <Link
-            to="/pool2"
+          <Link
+            to="/pool3"
             className={`link text-primary-light ${
               isActiveLink('pool3') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
             P3
-          </Link> */}
+          </Link>
         </div>
         <div className="flex gap-5">
           {hasAccount && <AccountPopoverV3 />}

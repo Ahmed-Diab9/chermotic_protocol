@@ -4,6 +4,7 @@ import Pool from './pages/pool';
 import Trade from './pages/trade';
 import PoolV2 from './pages/poolV2';
 import TradeV2 from './pages/tradeV2';
+import PoolV3 from './pages/poolV3';
 import TradeV3 from './pages/tradeV3';
 
 const router = createBrowserRouter([
@@ -16,12 +17,17 @@ const router = createBrowserRouter([
     element: <Pool />,
   },
   {
-    path: '/trade',
-    element: <Trade />,
-  },
-  {
     path: '/pool2',
     element: <PoolV2 />,
+  },
+  {
+    path: '/pool3',
+    element: <PoolV3 />,
+  },
+
+  {
+    path: '/trade',
+    element: <Trade />,
   },
   {
     path: '/trade2',
