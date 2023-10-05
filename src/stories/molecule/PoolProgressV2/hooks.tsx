@@ -1,10 +1,8 @@
-import { isNil, isNotNil } from 'ramda';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
 
-import { POOL_EVENT } from '~/typings/events';
-
 import { useChromaticClient } from '~/hooks/useChromaticClient';
+import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useAppSelector } from '~/store';
 import { LP_EVENT } from '~/typings/events';
@@ -19,40 +17,18 @@ export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  const [isGuideOpen, setGuideOpen] = useState(false);
   const { lpClient } = useChromaticClient();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
-  const [isFullLoaded, setIsFullLoaded] = useState({
-    all: false,
-    minting: false,
-    burning: false,
-  });
-  const onFullReceiptsLoad = (type: 'all' | 'minting' | 'burning') => {
-    setIsFullLoaded((currentState) => ({
-      ...currentState,
-      [type]: true,
-    }));
-  };
-  useEffect(() => {
-    function onPool() {
-      if (isNotNil(openButtonRef.current) && isNil(ref.current)) {
-        setGuideOpen(true);
-        openButtonRef.current.click();
-      }
-    }
-    window.addEventListener(POOL_EVENT, onPool);
-    return () => {
-      window.removeEventListener(POOL_EVENT, onPool);
-    };
-  }, []);
   const { formattedElapsed } = useLastOracle();
-  const { receipts } = useLpReceipts();
+  const { receipts, fetchReceipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
+  const inProgressReceipts = receipts?.filter((receipt) => !receipt.isClosed);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideClicked',
     true
   );
+  const onReceiptSettle = async (receiptId: bigint) => {
     if (!selectedLp) {
       return;
     }
@@ -62,6 +38,7 @@ export const usePoolProgressV2 = () => {
       return;
     }
     const settleResponse = await lp.settle(selectedLp.address, receiptId);
+    await fetchReceipts();
   };
   const onGuideClose = useCallback(() => setIsGuideOpen(false), [setIsGuideOpen]);
 
@@ -79,9 +56,13 @@ export const usePoolProgressV2 = () => {
     openButtonRef,
     ref,
     isGuideOpen,
-    isFullLoaded,
-
     formattedElapsed,
+    receipts,
+    mintingReceipts,
+    burningReceipts,
+    inProgressReceipts,
+
+    onReceiptSettle,
     onGuideClose,
   };
 };

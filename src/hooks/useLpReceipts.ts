@@ -1,5 +1,6 @@
 import { chromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
 import axios from 'axios';
+import { isNotNil } from 'ramda';
 import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
 import { Address, useAccount } from 'wagmi';
@@ -28,7 +29,7 @@ export interface LpReceipt {
   action: 'minting' | 'burning';
   status: 'standby' | 'completed';
   message: string;
-  detail: string;
+  detail: [string, string | undefined];
   token: {
     name?: string;
     decimals?: number;
@@ -177,6 +178,9 @@ export const useLpReceipts = () => {
             );
             message = `${returnedRatio}% withdrawn`;
           }
+          const remainedDetail = isNotNil(receipt.remainedAmount)
+            ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
+            : undefined;
 
           const oracleProvider = await client.market().contracts().oracleProvider(market.address);
           const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
@@ -187,7 +191,8 @@ export const useLpReceipts = () => {
             key,
             status,
             message,
-            detail,
+            detail: [detail, remainedDetail],
+
             timestamp,
             token,
           } satisfies LpReceipt;

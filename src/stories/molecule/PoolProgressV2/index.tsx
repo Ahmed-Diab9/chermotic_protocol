@@ -12,6 +12,7 @@ import { Loading } from '~/stories/atom/Loading';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { LpReceipt } from '~/hooks/useLpReceipts';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { formatTimestamp } from '~/utils/date';
 import { usePoolProgressV2 } from './hooks';
 
@@ -19,14 +20,13 @@ export function PoolProgressV2() {
   const {
     openButtonRef,
     ref,
-    isGuideOpen,
-    isFullLoaded,
-
     formattedElapsed,
     receipts = [],
     mintingReceipts = [],
     burningReceipts = [],
+    inProgressReceipts = [],
     isGuideOpen,
+    onReceiptSettle,
     onGuideClose,
   } = usePoolProgressV2();
 
@@ -40,7 +40,7 @@ export function PoolProgressV2() {
                 <div className="px-5 text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="mx-1">({inProgressLength})</span>
+                    <span className="mx-1">({inProgressReceipts.length})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -63,8 +63,8 @@ export function PoolProgressV2() {
                   <div className="flex px-5 mt-2 border-b">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintingReceiptsLength})</Tab>
-                      <Tab id="burning">Burning ({burningReceiptsLength})</Tab>
+                      <Tab id="minting">Minting ({mintingReceipts.length})</Tab>
+                      <Tab id="burning">Burning ({burningReceipts.length})</Tab>
                     </Tab.List>
                   </div>
                   <Tab.Panels className="flex-auto">
@@ -93,23 +93,16 @@ export function PoolProgressV2() {
                             <ProgressItem
                               {...receipt}
                               key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
+                              onClick={() => onReceiptSettle(receipt.id)}
                             />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['all'] && (
+                          {
                             <div className="flex justify-center mt-5">
-                              <Button
-                                label="More"
-                                css="underlined"
-                                size="sm"
-                                onClick={() => {
-                                  onFullReceiptsLoad('all');
-                                }}
-                              />
+                              <Button label="More" css="underlined" size="sm" onClick={() => {}} />
                             </div>
-                          )}
+                          }
                         </>
                       )}
                     </Tab.Panel>
@@ -125,21 +118,16 @@ export function PoolProgressV2() {
                             <ProgressItem
                               {...receipt}
                               key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
+                              onClick={() => onReceiptSettle(receipt.id)}
                             />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['minting'] && (
-                            <div
-                              className="flex justify-center mt-5"
-                              onClick={() => {
-                                onFullReceiptsLoad('minting');
-                              }}
-                            >
+                          {
+                            <div className="flex justify-center mt-5" onClick={() => {}}>
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          )}
+                          }
                         </>
                       )}
                     </Tab.Panel>
@@ -155,21 +143,16 @@ export function PoolProgressV2() {
                             <ProgressItem
                               {...receipt}
                               key={receipt.key}
-                              onClick={() => onReceiptResolve(receipt.id)}
+                              onClick={() => onReceiptSettle(receipt.id)}
                             />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {!isFullLoaded['burning'] && (
-                            <div
-                              className="flex justify-center mt-5"
-                              onClick={() => {
-                                onFullReceiptsLoad('burning');
-                              }}
-                            >
+                          {
+                            <div className="flex justify-center mt-5" onClick={() => {}}>
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          )}
+                          }
                         </>
                       )}
                     </Tab.Panel>
@@ -229,31 +212,37 @@ interface ProgressItemProps extends LpReceipt {
 }
 
 const ProgressItem = (props: ProgressItemProps) => {
-  const { detail, status, action, message, timestamp, onClick, hasReturnedValue, token } = props;
+  const { onClick, token, hasReturnedValue, ...receipt } = props;
 
   return (
     <div className="flex items-center gap-5 px-5 py-3 border-b" onClick={onClick}>
       <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
-        {action}
+        {receipt.action}
         <br />
         CLP Tokens
       </h4>
       <div className="">
         {/* Avatar label unit: */}
         {/* minting: CLP / burning: settle token */}
-        <Avatar label={detail} size="sm" fontSize="lg" gap="1" src={token.logo} />
-        {/* todo: show only if some parts cannot be withdrawn */}
-        {/* <p className="text-sm mt-[2px]">205.25 CLP Returned</p> */}
+        <SkeletonElement isLoading={receipt.status === 'standby' || !receipt.isClosed} width={120}>
+          <Avatar label={receipt.detail[0]} size="sm" fontSize="lg" gap="1" src={token.logo} />
+          {/* todo: show only if some parts cannot be withdrawn */}
+          {receipt.detail[1] && (
+            <p className="text-sm mt-[2px]">{receipt.detail[1]} CLP Returned</p>
+          )}
+        </SkeletonElement>
       </div>
       <div className="ml-auto text-right">
-        {status === 'completed' && (
-          <p className="text-sm text-primary-light mb-[2px]">{formatTimestamp(timestamp)}</p>
+        {receipt.status === 'completed' && (
+          <p className="text-sm text-primary-light mb-[2px]">
+            {formatTimestamp(receipt.timestamp)}
+          </p>
         )}
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-primary">
           <span className="">
-            {status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
+            {receipt.status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
-          {message}
+          {receipt.message}
           {hasReturnedValue && <TooltipGuide label="withdraw-returned" tip="" />}
           {/* todo: if some parts cannot be withdrawn */}
           {/* 00% withdrawn <TooltipGuide label="withdraw-returned" tip="" /> */}
