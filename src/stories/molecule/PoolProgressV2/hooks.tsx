@@ -23,7 +23,7 @@ export const usePoolProgressV2 = () => {
   const { receipts, fetchReceipts } = useLpReceipts();
   const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
   const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
-  const inProgressReceipts = receipts?.filter((receipt) => !receipt.isClosed);
+  const inProgressReceipts = receipts?.filter((receipt) => !receipt.isSettled);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideClicked',
     true

@@ -24,7 +24,7 @@ export interface LpReceipt {
   burnedAmount: bigint;
   remainedAmount: bigint;
   hasReturnedValue: boolean;
-  isClosed: boolean;
+  isSettled: boolean;
   recipient: Address;
   action: 'minting' | 'burning';
   status: 'standby' | 'completed';
@@ -81,7 +81,7 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
           const { lpTokenAmount, receiptId } = decoded.args;
           mapValue.id = receiptId;
           mapValue.mintedAmount = lpTokenAmount;
-          mapValue.isClosed = true;
+          mapValue.isSettled = true;
           break;
         }
         case 'RemoveLiquidity': {
@@ -98,7 +98,7 @@ const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) =>
           mapValue.id = receiptId;
           mapValue.burnedAmount = burningAmount;
           mapValue.remainedAmount = remainingAmount;
-          mapValue.isClosed = true;
+          mapValue.isSettled = true;
           mapValue.hasReturnedValue = remainingAmount !== 0n;
           break;
         }
@@ -151,13 +151,13 @@ export const useLpReceipts = () => {
             logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
           };
 
-          if (status === 'completed' && receipt.action === 'minting' && receipt.isClosed) {
+          if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
             detail =
               formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' ' + token.name;
           }
 
           // FIXME: The burned amount should be settlement token
-          if (status === 'completed' && receipt.action === 'burning' && receipt.isClosed) {
+          if (status === 'completed' && receipt.action === 'burning' && receipt.isSettled) {
             detail =
               formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
           }
