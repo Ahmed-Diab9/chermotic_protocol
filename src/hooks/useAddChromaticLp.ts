@@ -6,11 +6,9 @@ import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { dispatchLpEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
-import { useLpReceipts } from './useLpReceipts';
 import { useMarket } from './useMarket';
 
 export const useAddChromaticLp = () => {
-  const { fetchReceipts } = useLpReceipts();
   const { client, lpClient, isReady } = useChromaticClient();
   const { currentMarket } = useMarket();
   const { address } = useAccount();
@@ -38,7 +36,6 @@ export const useAddChromaticLp = () => {
       }
       const receipt = await lp.addLiquidity(selectedLp.address, parsedAmount, address);
 
-      await fetchReceipts();
       dispatchLpEvent();
 
       toast('Add completed.');
