@@ -17,7 +17,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
   const blockExplorer = useBlockExplorer();
 
   return (
-    <div className="p-5 PoolDetail panel">
+    <div className="p-5 PoolDetail">
       <div className="flex items-center justify-between w-full gap-3">
         <div className="text-xl text-left">
           <h3>CLP-ETH-BTC/USD</h3>

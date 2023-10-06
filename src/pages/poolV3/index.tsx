@@ -12,7 +12,8 @@ import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { Footer } from '~/stories/template/Footer';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
-import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
+// import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
+import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
 import { PoolBalance } from '~/stories/template/PoolBalance';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
@@ -73,15 +74,25 @@ const PoolV3 = () => {
               </div>
               <div className="flex gap-3">
                 <div className="flex-auto overflow-hidden">
-                  <PoolPanelV2 />
-                  <PoolAnalytics />
+                  <div className="panel panel-translucent">
+                    <PoolPanelV2 />
+                  </div>
+                  <div className="mt-10">
+                    <PoolAnalyticsV3 />
+                  </div>
                 </div>
                 <div className="flex-none w-[420px] flex flex-col gap-3">
                   {/* To be added later */}
                   {/* <PoolBalance /> */}
-                  <PoolStat />
-                  <PoolPerformance />
-                  <PoolDetail />
+                  <div className="panel panel-translucent">
+                    <PoolStat />
+                  </div>
+                  <div className="panel panel-translucent">
+                    <PoolPerformance />
+                  </div>
+                  <div className="panel panel-translucent">
+                    <PoolDetail />
+                  </div>
                 </div>
               </div>
             </div>

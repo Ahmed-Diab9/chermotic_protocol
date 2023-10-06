@@ -64,15 +64,23 @@ const PoolV2 = () => {
             </div>
             <div className="flex gap-3">
               <div className="flex-auto overflow-hidden">
-                <PoolPanelV2 />
+                <div className="panel">
+                  <PoolPanelV2 />
+                </div>
                 <PoolAnalytics />
               </div>
               <div className="flex-none w-[420px] flex flex-col gap-3">
                 {/* To be added later */}
                 {/* <PoolBalance /> */}
-                <PoolStat />
-                <PoolPerformance />
-                <PoolDetail />
+                <div className="panel">
+                  <PoolStat />
+                </div>
+                <div className="panel">
+                  <PoolPerformance />
+                </div>
+                <div className="panel">
+                  <PoolDetail />
+                </div>
               </div>
             </div>
           </div>

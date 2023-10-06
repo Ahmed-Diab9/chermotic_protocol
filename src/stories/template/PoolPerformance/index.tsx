@@ -20,7 +20,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
   const [selectedItem, setSelectedItem] = useState(selectItem[0]);
 
   return (
-    <div className="p-5 PoolPerformance panel">
+    <div className="p-5 PoolPerformance">
       <div className="flex justify-between">
         <div className="text-left">
           <h3 className="mb-1">CLP Performance</h3>
