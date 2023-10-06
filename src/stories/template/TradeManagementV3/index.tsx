@@ -104,7 +104,7 @@ export const TradeManagementV3 = () => {
                   <div className="">
                     {/* <Guide
                         title="Next Oracle Round"
-                        // paragraph 내 퍼센트 값은 마켓마다 다르게 불러오는 값입니다.
+                        // The percentage value in the paragraph is a value that is different for each market.
                         paragraph={`Waiting for the next oracle round. The next oracle round is updated whenever the Chainlink price moves by ${PERCENTAGE}% or more, and it is updated at least once a day.`}
                         outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
