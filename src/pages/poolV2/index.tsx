@@ -1,7 +1,6 @@
 import { isNil, isNotNil } from 'ramda';
 import PlusIcon from '~/assets/icons/PlusIcon';
 import { useLpLocal } from '~/hooks/useLpLocal';
-import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
@@ -28,7 +27,7 @@ const PoolV2 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
-  useLpReceipts();
+
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`

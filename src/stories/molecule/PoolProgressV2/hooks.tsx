@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
 
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import useLocalStorage from '~/hooks/useLocalStorage';
+import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useAppSelector } from '~/store';
 import { LP_EVENT } from '~/typings/events';
@@ -20,10 +21,14 @@ export const usePoolProgressV2 = () => {
   const { lpClient } = useChromaticClient();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const { formattedElapsed } = useLastOracle();
-  const { receipts, fetchReceipts } = useLpReceipts();
-  const mintingReceipts = receipts?.filter((receipt) => receipt.action === 'minting');
-  const burningReceipts = receipts?.filter((receipt) => receipt.action === 'burning');
-  const inProgressReceipts = receipts?.filter((receipt) => !receipt.isSettled);
+  const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
+  const { receiptsData = [], onFetchNextLpReceipts } = useLpReceipts({ action: receiptAction });
+  const { count, isCountLoading } = useLpReceiptCount();
+  const receipts = useMemo(() => {
+    const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
+
+    return receipts;
+  }, [receiptsData]);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideClicked',
     true
@@ -33,11 +38,9 @@ export const usePoolProgressV2 = () => {
       return;
     }
     const lp = lpClient.lp();
-    const isExecutable = await lp.resolveSettle(selectedLp.address, receiptId);
-    if (!isExecutable) {
-      return;
-    }
+
     const settleResponse = await lp.settle(selectedLp.address, receiptId);
+  };
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
@@ -72,12 +75,12 @@ export const usePoolProgressV2 = () => {
     isGuideOpen,
     formattedElapsed,
     receipts,
-    mintingReceipts,
-    burningReceipts,
-    inProgressReceipts,
+    receiptAction,
+    count,
 
     onActionChange,
     onReceiptSettle,
     onGuideClose,
+    onFetchNextLpReceipts,
   };
 };

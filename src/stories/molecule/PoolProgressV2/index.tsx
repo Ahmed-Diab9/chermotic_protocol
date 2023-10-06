@@ -11,8 +11,8 @@ import { Guide } from '~/stories/atom/Guide';
 import { Loading } from '~/stories/atom/Loading';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import { LpReceipt } from '~/hooks/useLpReceipts';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import { LpReceipt } from '~/typings/lp';
 import { formatTimestamp } from '~/utils/date';
 import { usePoolProgressV2 } from './hooks';
 
@@ -22,12 +22,13 @@ export function PoolProgressV2() {
     ref,
     formattedElapsed,
     receipts = [],
-    mintingReceipts = [],
-    burningReceipts = [],
-    inProgressReceipts = [],
     isGuideOpen,
+    count,
+    receiptAction,
+    onActionChange,
     onReceiptSettle,
     onGuideClose,
+    onFetchNextLpReceipts,
   } = usePoolProgressV2();
 
   return (
@@ -40,7 +41,7 @@ export function PoolProgressV2() {
                 <div className="px-5 text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="mx-1">({inProgressReceipts.length})</span>
+                    <span className="mx-1">({count?.inProgresses})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -59,12 +60,16 @@ export function PoolProgressV2() {
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="relative px-5 -mx-5" ref={ref}>
-                <Tab.Group>
+                <Tab.Group
+                  onChange={(index) => {
+                    onActionChange(index);
+                  }}
+                >
                   <div className="flex px-5 mt-2 border-b">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintingReceipts.length})</Tab>
-                      <Tab id="burning">Burning ({burningReceipts.length})</Tab>
+                      <Tab id="minting">Minting ({count?.mintings})</Tab>
+                      <Tab id="burning">Burning ({count?.burnings})</Tab>
                     </Tab.List>
                   </div>
                   <Tab.Panels className="flex-auto">
@@ -100,7 +105,14 @@ export function PoolProgressV2() {
                           {/* default: show up to 2 lists */}
                           {
                             <div className="flex justify-center mt-5">
-                              <Button label="More" css="underlined" size="sm" onClick={() => {}} />
+                              <Button
+                                label="More"
+                                css="underlined"
+                                size="sm"
+                                onClick={() => {
+                                  onFetchNextLpReceipts();
+                                }}
+                              />
                             </div>
                           }
                         </>
@@ -108,13 +120,14 @@ export function PoolProgressV2() {
                     </Tab.Panel>
                     {/* tab - minting */}
                     <Tab.Panel className="flex flex-col mb-5">
-                      {mintingReceipts.length === 0 ? (
+                      {/* {mintingSize === 0 ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
-                      ) : (
+                      ) : ( */}
+                      {
                         <>
-                          {mintingReceipts.map((receipt) => (
+                          {receipts.map((receipt) => (
                             <ProgressItem
                               {...receipt}
                               key={receipt.key}
@@ -124,22 +137,28 @@ export function PoolProgressV2() {
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
                           {
-                            <div className="flex justify-center mt-5" onClick={() => {}}>
+                            <div
+                              className="flex justify-center mt-5"
+                              onClick={() => {
+                                onFetchNextLpReceipts();
+                              }}
+                            >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
                           }
                         </>
-                      )}
+                      }
                     </Tab.Panel>
                     {/* tab - burning */}
                     <Tab.Panel className="flex flex-col mb-5">
-                      {burningReceipts.length === 0 ? (
+                      {/* {burningSize === 0 ? (
                         <p className="my-6 text-center text-primary/20">
                           You have no order in progress.
                         </p>
-                      ) : (
+                      ) : ( */}
+                      {
                         <>
-                          {burningReceipts.map((receipt) => (
+                          {receipts.map((receipt) => (
                             <ProgressItem
                               {...receipt}
                               key={receipt.key}
@@ -149,12 +168,17 @@ export function PoolProgressV2() {
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
                           {
-                            <div className="flex justify-center mt-5" onClick={() => {}}>
+                            <div
+                              className="flex justify-center mt-5"
+                              onClick={() => {
+                                onFetchNextLpReceipts();
+                              }}
+                            >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
                           }
                         </>
-                      )}
+                      }
                     </Tab.Panel>
                     <div>
                       <TooltipGuide
