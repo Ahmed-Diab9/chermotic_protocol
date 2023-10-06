@@ -1,10 +1,11 @@
-import { chromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
+import { iChromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
 import axios from 'axios';
-import { isNotNil } from 'ramda';
-import useSWR from 'swr';
+import { isNil, isNotNil } from 'ramda';
+import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog } from 'viem';
 import { Address, useAccount } from 'wagmi';
-import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
+import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
+import { LpReceipt } from '~/typings/lp';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
 import { divPreserved, formatDecimals } from '~/utils/number';
@@ -14,205 +15,321 @@ import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
-export interface LpReceipt {
-  key: string;
-  id: bigint;
-  oracleVersion: bigint;
-  timestamp: bigint;
-  amount: bigint;
-  mintedAmount: bigint;
-  burnedAmount: bigint;
-  remainedAmount: bigint;
-  hasReturnedValue: boolean;
-  isIssued: boolean;
-  isSettled: boolean;
-  recipient: Address;
-  action: 'minting' | 'burning';
-  status: 'standby' | 'completed';
-  message: string;
-  detail: [string, string | undefined];
-  token: {
-    name?: string;
-    decimals?: number;
-    logo?: string;
-  };
-}
+type GetLpReceiptByLogParams = {
+  currentReceipts: LpReceipt[];
+  toBlockNumber: bigint;
+  fromBlockNumber: bigint;
+  lpAddress: Address;
+  walletAddress: Address;
+  action: 'all' | 'minting' | 'burning';
+};
 
-const getLpReceiptsByLog = async (lpAddress: Address, walletAddress: Address) => {
-  const url = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${lpAddress}&page=1&offset=1000&apikey=${ARBISCAN_API_KEY}`;
-  const response = await axios.get(url);
+const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
+  const { currentReceipts, toBlockNumber, fromBlockNumber, lpAddress, walletAddress } = params;
+  const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${lpAddress}&fromBlock=${Number(
+    fromBlockNumber
+  )}&toBlock=${Number(toBlockNumber)}&apikey=${ARBISCAN_API_KEY}`;
+  const response = await axios.get(apiUrl);
   const responseData = response.data;
   const responseLogs =
     typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
-  const reducedReceipts = responseLogs
-    .map((value) =>
-      decodeEventLog({
-        abi: chromaticLpABI,
-        data: value.data,
-        topics: value.topics,
-      })
-    )
-    .reduce((newMap, decoded) => {
-      const { eventName } = decoded;
-      if (
-        eventName !== 'AddLiquidity' &&
-        eventName !== 'AddLiquiditySettled' &&
-        eventName !== 'RemoveLiquidity' &&
-        eventName !== 'RemoveLiquiditySettled'
-      ) {
-        return newMap;
-      }
-      const { receiptId } = decoded.args;
-      const mapValue =
-        newMap.get(receiptId) ??
-        ({
-          id: receiptId,
-          isSettled: false,
-          isIssued: false,
-        } as Partial<LpReceipt>);
-      switch (eventName) {
-        case 'AddLiquidity': {
-          const { receiptId, recipient, amount, oracleVersion } = decoded.args;
-          mapValue.action = 'minting';
-          mapValue.id = receiptId;
-          mapValue.recipient = recipient;
-          mapValue.amount = amount;
-          mapValue.oracleVersion = oracleVersion;
-          mapValue.isIssued = true;
-          break;
+  const decodedLogMap = responseLogs
+    .map((log) => {
+      const decoded = decodeEventLog({
+        abi: iChromaticLpABI.filter(
+          ({ type, name }) =>
+            type === 'event' &&
+            (name === 'AddLiquidity' ||
+              name === 'AddLiquiditySettled' ||
+              name === 'RemoveLiquidity' ||
+              name === 'RemoveLiquiditySettled')
+        ),
+        data: log.data,
+        topics: log.topics,
+      });
+      return {
+        ...decoded,
+        blockNumber: BigInt(log.blockNumber),
+      };
+    })
+    .reduce(
+      (newMap, decoded) => {
+        const {
+          eventName,
+          args: { receiptId },
+        } = decoded;
+        if (isNil(receiptId)) {
+          return newMap;
         }
-        case 'AddLiquiditySettled': {
-          const { lpTokenAmount, receiptId } = decoded.args;
-          mapValue.id = receiptId;
-          mapValue.mintedAmount = lpTokenAmount;
-          mapValue.isSettled = true;
-          break;
-        }
-        case 'RemoveLiquidity': {
-          const { receiptId, recipient, lpTokenAmount, oracleVersion } = decoded.args;
-          mapValue.action = 'burning';
-          mapValue.id = receiptId;
-          mapValue.recipient = recipient;
-          mapValue.amount = lpTokenAmount;
-          mapValue.oracleVersion = oracleVersion;
-          mapValue.isIssued = true;
-          break;
-        }
-        case 'RemoveLiquiditySettled': {
-          const { receiptId, burningAmount, remainingAmount } = decoded.args;
-          mapValue.id = receiptId;
-          mapValue.burnedAmount = burningAmount;
-          mapValue.remainedAmount = remainingAmount;
-          mapValue.isSettled = true;
-          mapValue.hasReturnedValue = remainingAmount !== 0n;
-          break;
-        }
-      }
-      newMap.set(receiptId, mapValue as LpReceipt);
-      return newMap;
-    }, new Map<bigint, LpReceipt>());
+        const mapValue =
+          newMap.get(receiptId) ??
+          ({
+            id: receiptId,
+            isSettled: false,
+            isIssued: false,
+          } as Partial<LpReceipt>);
+        switch (eventName) {
+          case 'AddLiquidity': {
+            const { receiptId, recipient, amount, oracleVersion } = decoded.args;
+            mapValue.action = 'minting';
+            mapValue.id = receiptId;
+            mapValue.recipient = recipient;
+            mapValue.amount = amount;
+            mapValue.oracleVersion = oracleVersion;
+            mapValue.isIssued = true;
 
-  const filteredReceipts = Array.from(reducedReceipts.values()).filter(
-    (receipt) => receipt.recipient === walletAddress
-  );
-  return filteredReceipts;
+            break;
+          }
+          case 'AddLiquiditySettled': {
+            const { lpTokenAmount, receiptId } = decoded.args;
+            mapValue.id = receiptId;
+            mapValue.mintedAmount = lpTokenAmount;
+            mapValue.isSettled = true;
+            mapValue.blockNumber = decoded.blockNumber;
+            break;
+          }
+          case 'RemoveLiquidity': {
+            const { receiptId, recipient, lpTokenAmount, oracleVersion } = decoded.args;
+            mapValue.action = 'burning';
+            mapValue.id = receiptId;
+            mapValue.recipient = recipient;
+            mapValue.amount = lpTokenAmount;
+            mapValue.oracleVersion = oracleVersion;
+            mapValue.isIssued = true;
+            break;
+          }
+          case 'RemoveLiquiditySettled': {
+            const { receiptId, witdrawnSettlementAmount, refundedAmount } = decoded.args;
+            mapValue.id = receiptId;
+            mapValue.burnedAmount = witdrawnSettlementAmount;
+            mapValue.remainedAmount = refundedAmount;
+            mapValue.isSettled = true;
+            mapValue.hasReturnedValue = refundedAmount !== 0n;
+            mapValue.blockNumber = decoded.blockNumber;
+            break;
+          }
+        }
+        newMap.set(receiptId, mapValue as LpReceipt);
+        return newMap;
+      },
+      currentReceipts.reduce((nextMap, currentReceipt) => {
+        nextMap.set(currentReceipt.id, currentReceipt);
+        return nextMap;
+      }, new Map<bigint, LpReceipt>())
+    );
+
+  const receiptArray = Array.from(decodedLogMap.values());
+  return { receiptArray, fromBlockNumber };
 };
 
-export const useLpReceipts = () => {
+type UseLpReceiptsNext = {
+  action: 'all' | 'minting' | 'burning';
+};
+
+export const useLpReceipts = (props: UseLpReceiptsNext) => {
   const { isReady, lpClient, client } = useChromaticClient();
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const fetchKey = {
-    key: 'getProviderReceipts',
-    address,
-    market: currentMarket,
-    tokens,
-  };
+  const initialBlockNumber = 1n;
+  const { action } = props;
 
   const {
-    data: receipts,
+    data: receiptsData,
     error,
-    mutate: fetchReceipts,
-  } = useSWR(
-    isReady && checkAllProps(fetchKey) ? fetchKey : undefined,
-    async ({ address, market, tokens }) => {
+    size,
+    setSize,
+  } = useSWRInfinite(
+    (pageIndex, previousData) => {
+      if (!isReady || isNil(initialBlockNumber)) {
+        return null;
+      }
+      if (previousData && !previousData.receipts) {
+        return null;
+      }
+      if (previousData && previousData.toBlockNumber < initialBlockNumber) {
+        return null;
+      }
+      const fetchKey = {
+        key: 'getChromaticLpReceipts',
+        walletAddress: address,
+        currentMarket,
+        tokens,
+        action,
+        initialBlockNumber,
+        pageIndex,
+      };
+      if (!checkAllProps(fetchKey)) {
+        return null;
+      }
+      if (previousData?.toBlockNumber < initialBlockNumber) {
+        return null;
+      }
+      return {
+        ...fetchKey,
+        toBlockNumber: previousData?.toBlockNumber as bigint | undefined,
+      };
+    },
+    async ({ walletAddress, tokens, currentMarket, action, initialBlockNumber, toBlockNumber }) => {
+      if (isNil(toBlockNumber)) {
+        toBlockNumber = await client.publicClient?.getBlockNumber();
+        if (isNil(toBlockNumber)) {
+          throw new Error('Invalid block number bounds');
+        }
+      }
+      let totalReceipts = [] as LpReceipt[];
+      let fromBlockNumber: bigint =
+        toBlockNumber - BLOCK_CHUNK > initialBlockNumber
+          ? toBlockNumber - BLOCK_CHUNK
+          : initialBlockNumber;
       const registry = lpClient.registry();
-      const lpAddresses = await registry.lpListByMarket(market.address);
-      const receiptsResponse = lpAddresses.map(async (lpAddress) => {
-        const lp = lpClient.lp();
+      const lpAddresses = await registry.lpListByMarket(currentMarket.address);
+      while (true) {
+        let currentReceipts = totalReceipts.slice();
+        for (let index = 0; index < lpAddresses.length; index++) {
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(undefined!);
+            }, 1000);
+          });
+          const lpAddress = lpAddresses[index];
+          const lp = lpClient.lp();
+          const settlementToken = tokens.find(
+            (token) => token.address === currentMarket.tokenAddress
+          );
+          const clpToken = await lp.lpTokenMeta(lpAddress);
+          const { receiptArray } = await getLpReceiptsByLog({
+            currentReceipts,
+            toBlockNumber,
+            fromBlockNumber,
+            lpAddress,
+            walletAddress,
+            action,
+          });
+          const detailedReceipts = receiptArray.map(async (receipt) => {
+            const status =
+              receipt.oracleVersion < currentMarket.oracleValue.version ? 'completed' : 'standby';
+            let detail = '';
+            const token = {
+              name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
+              decimals:
+                receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
+              logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
+            };
 
-        const settlementToken = tokens.find((token) => token.address === market.tokenAddress);
-        const clpToken = await lp.lpTokenMeta(lpAddress);
-        const rawReceipts = await getLpReceiptsByLog(lpAddress, address);
-        const detailedReceipts = rawReceipts.map(async (receipt) => {
-          const status =
-            receipt.oracleVersion < market.oracleValue.version ? 'completed' : 'standby';
-          let detail: string = '';
+            if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
+              detail =
+                formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' ' + token.name;
+            }
 
-          const token = {
-            name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
-            decimals: receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
-            logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
-          };
+            if (status === 'completed' && receipt.action === 'burning' && receipt.isSettled) {
+              detail =
+                formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
+            }
+            let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
+            const key = `${action}-receipt-${receipt.id}-${receipt.action}-${status}`;
 
-          if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
-            detail =
-              formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' ' + token.name;
+            if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
+              const dividedByAmount = divPreserved(
+                receipt.remainedAmount,
+                receipt.amount,
+                clpToken.decimals
+              );
+              const returnedRatio = formatDecimals(
+                dividedByAmount * 100n,
+                clpToken.decimals,
+                2,
+                true
+              );
+              message = `${returnedRatio}% withdrawn`;
+            }
+            const remainedDetail = isNotNil(receipt.remainedAmount)
+              ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
+              : undefined;
+
+            const oracleProvider = await client
+              .market()
+              .contracts()
+              .oracleProvider(currentMarket.address);
+            const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
+            const { timestamp } = oracleValue;
+
+            return {
+              ...receipt,
+              key,
+              status,
+              message,
+              detail: [detail, remainedDetail],
+
+              timestamp,
+              token,
+            } satisfies LpReceipt;
+          });
+          currentReceipts = await PromiseOnlySuccess(detailedReceipts);
+        }
+        currentReceipts.sort((previous, next) => {
+          if (isNil(previous.blockNumber) && isNil(next.blockNumber)) {
+            return 0;
           }
-
-          // FIXME: The burned amount should be settlement token
-          if (status === 'completed' && receipt.action === 'burning' && receipt.isSettled) {
-            detail =
-              formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
+          if (isNil(previous.blockNumber) && isNotNil(next.blockNumber)) {
+            return 1;
           }
-          let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
-          const key = `receipt-${receipt.id}-${receipt.action}-${status}`;
-
-          if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
-            const dividedByAmount = divPreserved(
-              receipt.remainedAmount,
-              receipt.amount,
-              clpToken.decimals
-            );
-            const returnedRatio = formatDecimals(
-              dividedByAmount * 100n,
-              clpToken.decimals,
-              2,
-              true
-            );
-            message = `${returnedRatio}% withdrawn`;
+          if (isNil(previous.blockNumber) && isNil(next.blockNumber)) {
+            return -1;
           }
-          const remainedDetail = isNotNil(receipt.remainedAmount)
-            ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
-            : undefined;
-
-          const oracleProvider = await client.market().contracts().oracleProvider(market.address);
-          const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
-          const { timestamp } = oracleValue;
-
-          return {
-            ...receipt,
-            key,
-            status,
-            message,
-            detail: [detail, remainedDetail],
-
-            timestamp,
-            token,
-          } satisfies LpReceipt;
+          return previous.blockNumber < next.blockNumber ? 1 : -1;
         });
-        return PromiseOnlySuccess(detailedReceipts);
-      });
-      const awaitedReceipts = await PromiseOnlySuccess(receiptsResponse);
-      return awaitedReceipts.flat(1) as LpReceipt[];
+        const filteredReceipts = currentReceipts.filter(
+          (receipt) =>
+            receipt.isIssued &&
+            (receipt.action === action || action === 'all') &&
+            walletAddress === receipt.recipient
+        );
+        if (filteredReceipts.length < PAGE_SIZE) {
+          totalReceipts = currentReceipts;
+          if (fromBlockNumber === initialBlockNumber) {
+            break;
+          }
+          fromBlockNumber =
+            fromBlockNumber - BLOCK_CHUNK > initialBlockNumber
+              ? fromBlockNumber - BLOCK_CHUNK
+              : initialBlockNumber;
+          continue;
+        }
+        if (filteredReceipts.length >= PAGE_SIZE) {
+          const slicedReceipts = filteredReceipts.slice(0, PAGE_SIZE);
+          totalReceipts = slicedReceipts;
+          const lastSettled = slicedReceipts.findLast((receipt) => isNotNil(receipt.blockNumber));
+          if (isNotNil(lastSettled)) {
+            fromBlockNumber = lastSettled.blockNumber;
+          } else {
+            fromBlockNumber = slicedReceipts[slicedReceipts.length - 1].blockNumber;
+          }
+          break;
+        }
+      }
+      return {
+        receipts: totalReceipts,
+        toBlockNumber: fromBlockNumber - 1n,
+      };
     },
     {
-      dedupingInterval: 5000,
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateFirstPage: false,
     }
   );
 
+  const onFetchNextLpReceipts = () => {
+    setSize((size) => size + 1);
+  };
+
   useError({ error });
 
-  return { receipts, fetchReceipts };
+  return {
+    receiptsData,
+    onFetchNextLpReceipts,
+  };
 };
