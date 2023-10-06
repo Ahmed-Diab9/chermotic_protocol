@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
@@ -23,7 +23,6 @@ export const useChromaticLp = () => {
   const { priceFeed } = usePriceFeed();
   const fetchKey = {
     key: 'getChromaticLp',
-    address,
     market: currentMarket,
     priceFeed,
   };
@@ -34,14 +33,17 @@ export const useChromaticLp = () => {
     error,
     isLoading: isLpLoading,
   } = useSWR(
-    isReady && checkAllProps(fetchKey) ? fetchKey : undefined,
+    isReady && checkAllProps(fetchKey) ? { ...fetchKey, address } : undefined,
     async ({ address, market, priceFeed }) => {
       const registry = lpClient?.registry();
       const lpAddresses = await registry?.lpListByMarket(market.address);
       const lpInfoArray = lpAddresses.map(async (lpAddress) => {
         const lp = lpClient.lp();
         const lpName = lp.getLpName(lpAddress);
-        const balance = lp.balanceOf(lpAddress, address);
+        let balance = undefined as Promise<bigint> | undefined;
+        if (isNotNil(address)) {
+          balance = lp.balanceOf(lpAddress, address);
+        }
         const decimals = (await lp.lpTokenMeta(lpAddress)).decimals;
         const totalSupply = lp.totalSupply(lpAddress);
         const valueInfo = lp.valueInfo(lpAddress);
@@ -72,7 +74,7 @@ export const useChromaticLp = () => {
               break;
             }
             case 2: {
-              provider.balance = value as Awaited<typeof balance>;
+              provider.balance = value as bigint;
               break;
             }
             case 3: {
