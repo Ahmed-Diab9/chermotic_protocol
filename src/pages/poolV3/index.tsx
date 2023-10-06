@@ -15,7 +15,7 @@ import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
 import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
 import { PoolBalance } from '~/stories/template/PoolBalance';
 import { PoolDetail } from '~/stories/template/PoolDetail';
-import { PoolMenu } from '~/stories/template/PoolMenu';
+import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
@@ -41,7 +41,7 @@ const PoolV3 = () => {
           <div className="flex items-stretch gap-5 mt-8">
             <div className="flex-none w-[240px]">
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
-              <PoolMenu />
+              <PoolMenuV3 />
             </div>
             <div className="mt-10">
               <div className="mb-10 text-left">
