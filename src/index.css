@@ -240,7 +240,7 @@ body {
     @apply bg-transparent;
   }
   &.panel-translucent {
-    @apply bg-paper/50;
+    @apply bg-paper/60;
   }
 }
 

@@ -52,14 +52,14 @@ export const TradePanelV3 = () => {
             <div className="flex">
               <div className="flex-grow border-r">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-lower border-b">
-                  <DecreaseIcon />
+                  {/* <DecreaseIcon /> */}
                   SHORT
                 </div>
                 <TradeContentV3 direction="short" />
               </div>
               <div className="flex-grow">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-higher border-b">
-                  <IncreaseIcon />
+                  {/* <IncreaseIcon /> */}
                   LONG
                 </div>
                 <TradeContentV3 direction="long" />
@@ -71,11 +71,11 @@ export const TradePanelV3 = () => {
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
               <Tab.List className="flex w-full">
                 <Tab value="short" className="btn-tabs short">
-                  <DecreaseIcon />
+                  {/* <DecreaseIcon /> */}
                   SHORT
                 </Tab>
                 <Tab value="long" className="btn-tabs long">
-                  <IncreaseIcon />
+                  {/* <IncreaseIcon /> */}
                   LONG
                 </Tab>
               </Tab.List>
