@@ -38,7 +38,21 @@ export const usePoolProgressV2 = () => {
       return;
     }
     const settleResponse = await lp.settle(selectedLp.address, receiptId);
-    await fetchReceipts();
+  const onActionChange = (tabIndex: number) => {
+    switch (tabIndex) {
+      case 0: {
+        setReceiptAction('all');
+        break;
+      }
+      case 1: {
+        setReceiptAction('minting');
+        break;
+      }
+      case 2: {
+        setReceiptAction('burning');
+        break;
+      }
+    }
   };
   const onGuideClose = useCallback(() => setIsGuideOpen(false), [setIsGuideOpen]);
 
@@ -62,6 +76,7 @@ export const usePoolProgressV2 = () => {
     burningReceipts,
     inProgressReceipts,
 
+    onActionChange,
     onReceiptSettle,
     onGuideClose,
   };
