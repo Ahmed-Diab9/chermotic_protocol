@@ -2,11 +2,8 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
-import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { AccountPanelV3 } from '../AccountPanelV3';
-// import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
@@ -69,11 +66,7 @@ export function AccountPopoverV3() {
               </Popover.Group>
             </>
           ) : (
-            <>
-              {/* FIXME: separate by states */}
-              {/* <Button label="Connect Wallet" css="light" size="sm" onClick={onClickConnect} /> */}
-              {/* <Button label="Connect Wallet" css="line" size="sm" onClick={onClickConnect} /> */}
-            </>
+            <></>
           )}
         </div>
       </div>
