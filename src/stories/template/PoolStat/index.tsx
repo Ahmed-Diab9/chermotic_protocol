@@ -1,12 +1,14 @@
-import { Progress } from '~/stories/atom/Progress';
 import { Avatar } from '~/stories/atom/Avatar';
+import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { usePoolStat } from './hooks';
 import './style.css';
 
 export interface PoolStatProps {}
 
 export const PoolStat = (props: PoolStatProps) => {
+  const { aum, clpSupply, utilization, utilizedValue, progressRate } = usePoolStat();
   return (
     <div className="p-5 PoolStat">
       <div className="flex flex-col gap-4">
@@ -19,7 +21,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 USDC" size="sm" fontSize="lg" gap="1" />
+            <Avatar label={aum} size="sm" fontSize="lg" gap="1" />
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -31,7 +33,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label="101.373 CLP" size="sm" fontSize="lg" gap="1" />
+            <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" />
           </div>
         </div>
       </div>
@@ -40,11 +42,11 @@ export const PoolStat = (props: PoolStatProps) => {
           <div className="flex items-center justify-between">
             <h5>Utilization</h5>
             <div className="text-right">
-              <h5>35.73%</h5>
-              <p className="text-sm text-primary-lighter">7,234.23 ETH</p>
+              <h5>{utilization}</h5>
+              <p className="text-sm text-primary-lighter">{utilizedValue}</p>
             </div>
           </div>
-          <Progress value={50} max={100} />
+          <Progress value={progressRate} max={100} />
         </div>
       </div>
     </div>

@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Outlink } from '../Outlink';
+import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Button } from '~/stories/atom/Button';
-import { XMarkIcon, BellIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import {} from '@heroicons/react/24/outline';
+import { Outlink } from '../Outlink';
 
 interface GuideProps {
   title: string;
@@ -11,20 +9,25 @@ interface GuideProps {
   outLinkAbout?: string;
   direction?: 'row' | 'column';
   className?: string;
+  isVisible?: boolean;
   onClick?: () => unknown;
 }
 
 export const Guide = (props: GuideProps) => {
-  const { title, paragraph, outLink, outLinkAbout, direction = 'column', className } = props;
-
-  const [guideVisible, setGuideVisible] = useState(true);
-  const closeGuide = () => {
-    setGuideVisible(false);
-  };
+  const {
+    title,
+    paragraph,
+    outLink,
+    outLinkAbout,
+    direction = 'column',
+    className,
+    onClick,
+    isVisible,
+  } = props;
 
   return (
     <>
-      {guideVisible && (
+      {isVisible && (
         <div
           className={`relative px-5 text-left rounded-xl bg-paper-light flex gap-3 ${
             direction === 'row' ? 'py-2 items-center' : 'py-4'
@@ -51,7 +54,7 @@ export const Guide = (props: GuideProps) => {
               className={`absolute right-1 text-primary-lighter  ${
                 direction === 'row' ? '' : 'top-1'
               }`}
-              onClick={closeGuide}
+              onClick={onClick}
             />
           </div>
         </div>

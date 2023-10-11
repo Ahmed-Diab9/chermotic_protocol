@@ -1,15 +1,15 @@
-import { useState, forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 // import { registerLocale } from 'react-datepicker';
+import { getYear } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getYear, getMonth } from 'date-fns';
 // import enGB from 'date-fns/locale/en-GB';
 
-import { Button } from '~/stories/atom/Button';
 import { Listbox } from '@headlessui/react';
-import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Button } from '~/stories/atom/Button';
 import '~/stories/atom/Select/style.css';
 import './style.css';
 
@@ -43,17 +43,16 @@ export function Calendar(props: CalendarProps) {
   );
 }
 
-const DatePickerInput: React.FC<{
-  value?: string;
-  ref?: string;
-  onClick?: () => void;
-}> = ({ value, onClick, ref }) => {
-  return (
-    <button className="example-custom-input" onClick={onClick} ref={ref}>
-      {value}
-    </button>
-  );
-};
+const DatePickerInput = forwardRef<HTMLButtonElement, { value?: string; onClick?: () => unknown }>(
+  (props, ref) => {
+    const { value, onClick } = props;
+    return (
+      <button className="example-custom-input" onClick={onClick} ref={ref}>
+        {value}
+      </button>
+    );
+  }
+);
 
 const CustomDatePickerHeader: React.FC<{
   date: Date;

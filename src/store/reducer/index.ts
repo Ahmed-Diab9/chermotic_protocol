@@ -1,4 +1,5 @@
 import { accountReducer } from './account';
+import { lpReducer } from './lp';
 import { marketReducer } from './market';
 import { poolsReducer } from './pools';
 import { positionReducer } from './position';
@@ -12,6 +13,7 @@ const rootReducer = {
   account: accountReducer,
   trades: tradesReducer,
   position: positionReducer,
+  lp: lpReducer,
 };
 
 export default rootReducer;

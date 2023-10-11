@@ -9,7 +9,7 @@ import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { AppError } from '~/typings/error';
-import { TradeEvent } from '~/typings/events';
+import { dispatchTradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
 
 import { errorLog } from '~/utils/log';
@@ -77,7 +77,7 @@ function useOpenPosition() {
       await fetchPositions();
       await fetchBalances();
 
-      window.dispatchEvent(TradeEvent);
+      dispatchTradeEvent();
       toast('The opening process has been started.');
     } catch (error) {
       toast.error('Transaction rejected.');

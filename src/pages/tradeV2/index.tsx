@@ -1,5 +1,3 @@
-import './style.css';
-
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { BookmarkBoard } from '~/stories/template/BookmarkBoard';
@@ -9,13 +7,16 @@ import { MainBarV2 } from '~/stories/template/MainBarV2';
 import { TradeChartPanel } from '~/stories/template/TradeChartPanel';
 import { TradeManagement } from '~/stories/template/TradeManagement';
 import { TradePanelV2 } from '~/stories/template/TradePanelV2';
+import './style.css';
 
+import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
 function TradeV2() {
   useTokenLocal();
   useMarketLocal();
+  useChromaticLp();
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full relative">

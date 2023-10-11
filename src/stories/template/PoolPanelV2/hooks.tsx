@@ -1,36 +1,24 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
-import { useAddLiquidity } from '~/hooks/useAddLiquidity';
+import { useAddChromaticLp } from '~/hooks/useAddChromaticLp';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { useMarket } from '~/hooks/useMarket';
 import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 import usePoolInput from '~/hooks/usePoolInput';
+import { useRemoveChromaticLp } from '~/hooks/useRemoveChromaticLp';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-import { OwnedBin } from '~/typings/pools';
-import { divPreserved, formatDecimals, isNotZero, withComma } from '~/utils/number';
+import { divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 export function usePoolPanelV2() {
-  const { currentToken } = useSettlementToken();
-  const { currentMarket, clbTokenAddress } = useMarket();
-  const { tokenBalances } = useTokenBalances();
+  const { currentToken, isTokenLoading } = useSettlementToken();
+  const { rangeChartRef } = usePoolInput();
+  const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const { currentOwnedPool } = useOwnedLiquidityPools();
-  const {
-    amount,
-    rates,
-    binCount,
-    binAverage,
-    binFeeRates,
-    move,
-    rangeChartRef,
-    onAmountChange,
-    onRangeChange,
-  } = usePoolInput();
   const {
     liquidity: {
       longTotalMaxLiquidity,
@@ -41,12 +29,10 @@ export function usePoolPanelV2() {
   } = useLiquidityPool();
   const selectedBins = useAppSelector((state) => state.pools.selectedBins);
   const isRemoveModalOpen = useAppSelector((state) => state.pools.isModalOpen);
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
 
   const direction = useAppSelector((state) => state.pools.selectedDirection);
   const dispatch = useAppDispatch();
-  const { onAddLiquidity, isLoading } = useAddLiquidity({ amount, binFeeRates });
-
-  const [minRate, maxRate] = rates;
   const binDecimals =
     isNotNil(currentOwnedPool) && currentOwnedPool.bins.length > 0
       ? currentOwnedPool.bins[0].clbTokenDecimals
@@ -79,8 +65,9 @@ export function usePoolPanelV2() {
     maximumFractionDigits: 3,
     minimumFractionDigits: 0,
   });
-  const onSelectAllClick = (selectedIndex: number) =>
-    useCallback(() => {
+  const isAssetsLoading = isTokenLoading || isTokenBalanceLoading;
+  const onSelectAllClick = useCallback(
+    (selectedIndex: number) => {
       switch (selectedIndex) {
         case 1: {
           if (
@@ -110,19 +97,11 @@ export function usePoolPanelV2() {
           toast('Invalid access');
         }
       }
-    }, [ownedLongLiquidityBins, ownedShortLiquidityBins, selectedBins, direction]);
+    },
+    [ownedLongLiquidityBins, ownedShortLiquidityBins, selectedBins, direction]
+  );
 
   const binLength = currentOwnedPool?.bins.length || 0;
-
-  const isExceeded = useMemo(() => {
-    return isNotZero(amount) && Number(amount) > Number(settlementTokenBalance);
-  }, [amount, settlementTokenBalance]);
-
-  const onMinIncrease = move.left.next;
-  const onMinDecrease = move.left.prev;
-  const onMaxIncrease = move.right.next;
-  const onMaxDecrease = move.right.prev;
-  const onFullRange = move.full;
 
   const tokenName = currentToken?.name || '-';
   const tokenImage = currentToken?.image;
@@ -145,13 +124,6 @@ export function usePoolPanelV2() {
   const longMaxLp = liquidityFormatter.format(
     +formatDecimals(longTotalMaxLiquidity, currentToken?.decimals)
   );
-
-  const [minRateValue, maxRateValue] = rates;
-
-  const feeRange = minRate !== maxRate ? `${minRate}% ~ ${maxRate}%` : `${minRate}%`;
-
-  const binValueAverage = formatUnits(binAverage ?? 0n, currentToken?.decimals ?? 0);
-
   const bigTotalLiquidityValue =
     currentOwnedPool?.bins.reduce((sum, current) => {
       sum = sum + current.clbBalanceOfSettlement;
@@ -199,21 +171,6 @@ export function usePoolPanelV2() {
   };
   const isRemoveSelectedDisabled = selectedBins.length === 0;
 
-  const formatter = Intl.NumberFormat('en', {
-    maximumFractionDigits: 4,
-    //@ts-ignore experimental api
-    roundingMode: 'trunc',
-  }).format;
-
-  const onSelectBin = (bin: OwnedBin) => {
-    const found = selectedBins.find((selectedBin) => selectedBin.baseFeeRate === bin.baseFeeRate);
-    if (isNotNil(found)) {
-      dispatch(poolsAction.onBinsUnselect(bin));
-    } else {
-      dispatch(poolsAction.onBinsSelect(bin));
-    }
-  };
-
   const publicClient = usePublicClient();
   const getTokenExplorer = useCallback(
     (address: string) => {
@@ -230,101 +187,67 @@ export function usePoolPanelV2() {
     [publicClient]
   );
 
-  const getLiquidityBins = (bins: OwnedBin[]) =>
-    bins.map((bin, index) => {
-      const key = bin.baseFeeRate;
-      const isSelected =
-        selectedBins.findIndex((selected) => selected.baseFeeRate === bin.baseFeeRate) !== -1;
-
-      const label = String(index + 1);
-      const marketDescription = currentMarket?.description || '-';
-      const baseFeeRate = bin.baseFeeRate;
-
-      const onClickRemove = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        if (bin && (bin.clbTokenBalance || 0n) > 0n) {
-          dispatch(poolsAction.onBinSelect(bin));
-        }
-      };
-
-      const explorerUrl = getTokenExplorer(`${clbTokenAddress}?a=${bin?.tokenId}`);
-
-      const tokenImage = bin.clbTokenImage;
-      const tokenBalance = formatDecimals(bin.clbTokenBalance, bin.clbTokenDecimals, 2, true);
-      const freeLiquidity = formatDecimals(
-        bin?.freeLiquidity ?? 0n,
-        currentToken?.decimals ?? 0,
-        2,
-        true
-      );
-      const tokenValue = formatDecimals(bin.clbTokenValue, bin.clbTokenDecimals, 2, true);
-      const liquidityValue = formatter(
-        +formatUnits(bin.clbBalanceOfSettlement, bin.clbTokenDecimals)
-      );
-      return {
-        key,
-        isLoading,
-        tokenName,
-        isSelected,
-        onSelectBin: () => {
-          onSelectBin(bin);
-        },
-        label,
-        marketDescription,
-        baseFeeRate,
-        onClickRemove,
-        explorerUrl,
-        tokenImage,
-        tokenBalance,
-        freeLiquidity,
-        tokenValue,
-        liquidityValue,
-      };
-    });
-
   const isShortLiquidityBinsEmpty = ownedShortLiquidityBins.length === 0;
-  const shortLiquidityBins = getLiquidityBins(ownedShortLiquidityBins);
   const isOwnedLongLiquidityBinsEmpty = ownedLongLiquidityBins?.length === 0;
-  const longLiquidityBins = getLiquidityBins(ownedLongLiquidityBins);
-
   const isSingleRemoveModalOpen = selectedBins.length === 1 && isRemoveModalOpen;
   const isMultipleRemoveModalOpen = selectedBins.length > 1 && isRemoveModalOpen;
 
-  return {
-    amount,
-    onAmountChange,
-    maxAmount,
-    isExceeded,
+  const [amount, setAmount] = useState('');
+  const isExceeded = useMemo(() => {
+    if (isNil(tokenBalances) || isNil(currentToken)) {
+      return;
+    }
+    const balance = tokenBalances?.[currentToken.address];
+    if (parseUnits(amount.toString(), currentToken.decimals) >= balance) {
+      return true;
+    }
+    return false;
+  }, [amount, tokenBalances, currentToken]);
+  const { onAddChromaticLp, isAddPending } = useAddChromaticLp();
+  const { onRemoveChromaticLp, isRemovalPending } = useRemoveChromaticLp();
+  const onAmountChange = (value: string) => {
+    if (value.length === 0) {
+      setAmount('');
+      return;
+    }
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) {
+      return;
+    }
+    setAmount(value);
+  };
+  const formattedClp = useMemo(() => {
+    if (isNil(selectedLp)) {
+      return;
+    }
+    return formatDecimals(selectedLp.balance, selectedLp.decimals, 2, true);
+  }, [selectedLp]);
 
+  return {
+    maxAmount,
     setIsBinValueVisible,
+    rangeChartRef,
 
     shortUsedLp,
     shortMaxLp,
     longUsedLp,
     longMaxLp,
 
-    rangeChartRef,
-    onRangeChange,
     isBinValueVisible,
 
-    minRateValue,
-    onMinIncrease,
-    onMinDecrease,
-    maxRateValue,
-    onMaxIncrease,
-    onMaxDecrease,
-    onFullRange,
-
-    onAddLiquidity,
-    isLoading,
+    isAssetsLoading,
+    amount,
+    isExceeded,
+    formattedClp,
+    isAddPending,
+    isRemovalPending,
+    onAmountChange,
+    onAddChromaticLp,
+    onRemoveChromaticLp,
 
     tokenName,
     tokenImage,
     walletBalance,
-
-    binCount,
-    feeRange,
-    binValueAverage,
     totalLiquidityValue,
     binLength,
     totalFreeLiquidity,
@@ -335,9 +258,7 @@ export function usePoolPanelV2() {
     onRemoveSelectedClick,
     isRemoveSelectedDisabled,
     isShortLiquidityBinsEmpty,
-    shortLiquidityBins,
     isOwnedLongLiquidityBinsEmpty,
-    longLiquidityBins,
 
     isSingleRemoveModalOpen,
     isMultipleRemoveModalOpen,

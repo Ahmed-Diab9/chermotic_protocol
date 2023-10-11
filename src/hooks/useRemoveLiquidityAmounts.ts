@@ -1,10 +1,9 @@
 import { isNil } from 'ramda';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { parseUnits } from 'viem';
 import { useAppDispatch } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-import { PoolEvent } from '~/typings/events';
+import { dispatchPoolEvent } from '~/typings/events';
 import { Logger } from '~/utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
@@ -58,7 +57,7 @@ export function useRemoveLiquidityAmounts() {
 
         await fetchReceipts();
         await fetchWalletBalances();
-        window.dispatchEvent(PoolEvent);
+        dispatchPoolEvent();
 
         toast('The liquidity removing process has been started.');
       } catch (error) {

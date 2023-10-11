@@ -2,7 +2,7 @@ import { isNil } from 'ramda';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
-import { PoolEvent } from '~/typings/events';
+import { dispatchPoolEvent } from '~/typings/events';
 import { Logger, errorLog } from '../utils/log';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
@@ -79,7 +79,8 @@ function useAddLiquidity(props: Props) {
 
       await fetchReceipts();
       await fetchWalletBalances();
-      window.dispatchEvent(PoolEvent);
+
+      dispatchPoolEvent();
       toast('New liquidity is added. Claim your CLB.');
     } catch (error) {
       toast.error('Transaction rejected.');

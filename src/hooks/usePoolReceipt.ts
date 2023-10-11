@@ -20,8 +20,8 @@ import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 
-export type LpReceiptAction = 'add' | 'remove';
-export interface LpReceipt {
+export type PoolReceiptAction = 'add' | 'remove';
+export interface PoolReceipt {
   id: bigint;
   version: bigint;
   amount: bigint;
@@ -31,7 +31,7 @@ export interface LpReceipt {
   name: string;
   image: string;
   burningAmount: bigint;
-  action: LpReceiptAction;
+  action: PoolReceiptAction;
   progressPercent: number;
   totalCLBAmount: bigint;
   remainedCLBAmount: bigint;
@@ -154,7 +154,7 @@ const usePoolReceipt = () => {
             burnedSettlementAmount +
             mulPreserved(remainedCLBAmount, bin.clbTokenValue, bin.clbTokenDecimals);
 
-          let status: LpReceipt['status'] = 'standby';
+          let status: PoolReceipt['status'] = 'standby';
           status = receiptDetail(
             action,
             receiptOracleVersion,
@@ -186,15 +186,15 @@ const usePoolReceipt = () => {
             ),
             totalCLBAmount: amount,
             remainedCLBAmount: remainedCLBAmount,
-          } satisfies LpReceipt;
+          } satisfies PoolReceipt;
           return result;
         })
-        .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);
+        .filter((receipt): receipt is NonNullable<PoolReceipt> => !!receipt);
     }
   );
 
   const onClaimCLBTokens = useCallback(
-    async (receiptId: bigint, action?: LpReceipt['action']) => {
+    async (receiptId: bigint, action?: PoolReceipt['action']) => {
       const routerApi = client.router();
       if (isNil(currentMarket)) {
         errorLog('no selected markets');

@@ -3,14 +3,14 @@ import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { poolsAction } from '~/store/reducer/pools';
-import { PoolEvent } from '~/typings/events';
+import { dispatchPoolEvent } from '~/typings/events';
+import { REMOVE_LIQUIDITY_TYPE } from '~/typings/pools';
 import { mulPreserved } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
-import { REMOVE_LIQUIDITY_TYPE } from '~/typings/pools';
 
 function useRemoveLiquidityBins() {
   const dispatch = useAppDispatch();
@@ -61,7 +61,7 @@ function useRemoveLiquidityBins() {
 
         await fetchReceipts();
         await fetchWalletBalances();
-        window.dispatchEvent(PoolEvent);
+        dispatchPoolEvent();
 
         toast('The liquidities removing process has been started.');
       } catch (error) {
