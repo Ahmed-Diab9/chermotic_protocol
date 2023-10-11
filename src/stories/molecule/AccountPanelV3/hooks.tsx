@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
@@ -33,6 +33,7 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
   const { tokenBalances: walletBalances } = useTokenBalances();
   const { amount, onAmountChange, onDeposit, onWithdraw } = useTokenTransaction();
   const { totalMargin } = useMargins();
+  const { totalBalance } = useMargins();
   const { currentToken, isTokenLoading } = useSettlementToken();
   const { isFeedLoading } = usePriceFeed();
 
@@ -75,6 +76,11 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
 
   const tokenName = currentToken?.name || '-';
   const tokenImage = currentToken?.image;
+
+  const balance =
+    isNotNil(totalBalance) && isNotNil(currentToken)
+      ? formatDecimals(totalBalance, currentToken.decimals, 2, true)
+      : '-';
 
   const availableMargin = numberFormat(formatUnits(totalMargin, currentToken?.decimals || 0), {
     maxDigits: 5,
@@ -126,6 +132,7 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
     tokenName,
     tokenImage,
     availableMargin,
+    balance,
 
     maxAmount,
     minimumAmount,

@@ -36,6 +36,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     tokenName,
     tokenImage,
     availableMargin,
+    balance,
 
     maxAmount,
     minimumAmount,
@@ -129,7 +130,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
               <Tab.List className="flex items-center w-full mb-5">
                 <div>
                   <p className="mb-1 text-primary-lighter">Account Balance</p>
-                  <Avatar label="0.00" fontSize="3xl" />
+                  <Avatar label={balance} fontSize="3xl" src={tokenImage} />
                 </div>
                 <div className="flex gap-3 ml-auto">
                   <Tab value="short" className="btn-tabs btn-sm btn btn-line">
