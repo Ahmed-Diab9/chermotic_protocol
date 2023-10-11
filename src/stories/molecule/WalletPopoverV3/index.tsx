@@ -216,7 +216,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                           <div className="flex-1 gap-3">
                                             <div className="flex flex-col gap-1 leading-none">
                                               <SkeletonElement isLoading={isLoading} width={100}>
-                                                <p>
+                                                <p className="font-semibold">
                                                   {/* {name} */}
                                                   CHRM
                                                   <span className="px-1 font-light text-primary-lighter">
@@ -233,7 +233,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={60}>
-                                                <p className="text-lg font-medium break-all text-primary">
+                                                <p className="font-medium break-all text-primary">
                                                   {/* {liquidity} {name} */}
                                                   10 CLP
                                                 </p>
