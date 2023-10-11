@@ -214,26 +214,32 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                             <Avatar size="xl" src={image} />
                                           </SkeletonElement>
                                           <div className="flex-1">
-                                            <div className="flex gap-2 leading-none">
+                                            <div className="flex flex-col gap-1 leading-none">
                                               <SkeletonElement isLoading={isLoading} width={100}>
-                                                <p>{name}</p>
-                                                <span className="px-1 text-gray-lighter">|</span>
-                                                <p>{market}</p>
+                                                <p>
+                                                  {/* {name} */}
+                                                  CHRM
+                                                  <span className="px-1 font-light text-primary-lighter">
+                                                    |
+                                                  </span>
+                                                  {/* {market} */}
+                                                  ETH/USD
+                                                </p>
+                                              </SkeletonElement>
+                                              <SkeletonElement isLoading={isLoading} width={100}>
+                                                <p className="text-primary-lighter">
+                                                  {/* pool name */}
+                                                  Mezzanine Pool
+                                                </p>
                                               </SkeletonElement>
                                             </div>
-                                            <div className="flex mt-3">
-                                              <div className="mr-auto">
-                                                <p className="text-base font-medium text-primary-lighter">
-                                                  <SkeletonElement isLoading={isLoading} width={80}>
-                                                    {liquidity} {name}
-                                                  </SkeletonElement>
-                                                </p>
-                                                <p className="mt-2 text-base text-primary">
-                                                  <SkeletonElement isLoading={isLoading} width={80}>
-                                                    {bins} Bins
-                                                  </SkeletonElement>
-                                                </p>
-                                              </div>
+                                            <div className="mr-auto">
+                                              <p className="text-lg font-medium text-primary">
+                                                <SkeletonElement isLoading={isLoading} width={80}>
+                                                  {/* {liquidity} {name} */}
+                                                  10 CLP
+                                                </SkeletonElement>
+                                              </p>
                                             </div>
                                           </div>
                                         </div>
