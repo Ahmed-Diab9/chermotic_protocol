@@ -1,11 +1,11 @@
 import './style.css';
 
 import { Popover } from '@headlessui/react';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { AccountPanelV3 } from '../AccountPanelV3';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 import { useAccountPopoverV3 } from './hooks';
 
@@ -58,7 +58,7 @@ export function AccountPopoverV3() {
                         </span>
                       </Popover.Button>
                       <Popover.Panel className="popover-panel w-[600px]">
-                        <AccountPanelV3 />
+                        <AccountPanelV3 onPanelClose={close} />
                       </Popover.Panel>
                     </>
                   )}

@@ -1,7 +1,5 @@
 import './style.css';
 
-import { Popover } from '@headlessui/react';
-import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
 import { Tab } from '@headlessui/react';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -19,6 +17,7 @@ import { useAccountPanelV3 } from './hooks';
 export interface AccountPanelV3Props {
   // FIXME: `type` is not needed here
   type?: 'Deposit' | 'Withdraw';
+  onPanelClose?: () => unknown;
 }
 
 export const AccountPanelV3 = (props: AccountPanelV3Props) => {
@@ -51,6 +50,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     onClickCreateAccount,
     onClickSubmit,
   } = useAccountPanelV3(props);
+  const { onPanelClose } = props;
 
   return (
     <div className="AccountPanelV3">
@@ -142,10 +142,10 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
               </Tab.List>
               <Tab.Panels className="flex flex-col items-center w-full">
                 <Tab.Panel className="w-full">
-                  <AccountManagementV3 type="Deposit" />
+                  <AccountManagementV3 type="Deposit" onClose={onPanelClose} />
                 </Tab.Panel>
                 <Tab.Panel className="w-full">
-                  <AccountManagementV3 type="Withdraw" />
+                  <AccountManagementV3 type="Withdraw" onClose={onPanelClose} />
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
@@ -158,6 +158,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
 
 export interface AccountManagementV3Props {
   type: 'Deposit' | 'Withdraw';
+  onClose?: () => unknown;
 }
 
 export const AccountManagementV3 = (props: AccountManagementV3Props) => {
@@ -184,7 +185,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
 
     onClickSubmit,
   } = useAccountPanelV3(props);
-  const { type } = props;
+  const { type, onClose } = props;
 
   return (
     <div className="w-full gap-2">
@@ -279,8 +280,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
           css="active"
           className="w-full"
           // FIXME: may need to add close in the onclick event.
-          // onClick={() => onClickSubmit(close)}
-          onClick={() => onClickSubmit()}
+          onClick={() => onClickSubmit(onClose)}
           disabled={isSubmitDisabled}
         />
         {/* <Button
