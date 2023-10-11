@@ -117,6 +117,9 @@ const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
             mapValue.blockNumber = decoded.blockNumber;
             break;
           }
+          default: {
+            break;
+          }
         }
         newMap.set(receiptId, mapValue as LpReceipt);
         return newMap;
@@ -127,7 +130,9 @@ const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
       }, new Map<bigint, LpReceipt>())
     );
 
-  const receiptArray = Array.from(decodedLogMap.values());
+  const receiptArray = Array.from(decodedLogMap.values()).filter(
+    (receipt) => receipt.recipient === walletAddress
+  );
   return { receiptArray, fromBlockNumber };
 };
 

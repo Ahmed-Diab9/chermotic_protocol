@@ -4,6 +4,7 @@ import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
+import { useAccount } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
 import { LpReceiptPartial } from '~/typings/lp';
 import { ResponseLog } from '~/typings/position';
@@ -12,6 +13,7 @@ import { useChromaticLp } from './useChromaticLp';
 import { useError } from './useError';
 
 export const useLpReceiptCount = () => {
+  const { address: walletAddress } = useAccount();
   const { lpList, isLpLoading } = useChromaticLp();
   const lpAddresses = useMemo(() => {
     return lpList?.map((lp) => lp.address);
@@ -20,12 +22,13 @@ export const useLpReceiptCount = () => {
   const fetchKey = {
     key: 'getLpReceiptCount',
     lpAddresses,
+    walletAddress,
   };
   const {
     data: count,
     error,
     isLoading: isCountLoading,
-  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ lpAddresses }) => {
+  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ lpAddresses, walletAddress }) => {
     let mintings = 0;
     let burnings = 0;
     let inProgresses = 0;
@@ -100,7 +103,9 @@ export const useLpReceiptCount = () => {
           newMap.set(receiptId, mapValue as LpReceiptPartial);
           return newMap;
         }, new Map<bigint, LpReceiptPartial>());
-      const filtered = Array.from(reducedReceipts.values());
+      const filtered = Array.from(reducedReceipts.values()).filter(
+        (receipt) => receipt.recipient === walletAddress
+      );
       mintings += filtered.filter((receipt) => receipt.action === 'minting').length;
       burnings += filtered.filter((receipt) => receipt.action === 'burning').length;
       inProgresses += filtered.filter((receipt) => !receipt.isSettled).length;
