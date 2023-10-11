@@ -213,7 +213,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                           >
                                             <Avatar size="xl" src={image} />
                                           </SkeletonElement>
-                                          <div className="flex-1">
+                                          <div className="flex-1 gap-3">
                                             <div className="flex flex-col gap-1 leading-none">
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p>
@@ -232,14 +232,12 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                                   Mezzanine Pool
                                                 </p>
                                               </SkeletonElement>
-                                            </div>
-                                            <div className="mr-auto">
-                                              <p className="text-lg font-medium text-primary">
-                                                <SkeletonElement isLoading={isLoading} width={80}>
+                                              <SkeletonElement isLoading={isLoading} width={60}>
+                                                <p className="text-lg font-medium break-all text-primary">
                                                   {/* {liquidity} {name} */}
                                                   10 CLP
-                                                </SkeletonElement>
-                                              </p>
+                                                </p>
+                                              </SkeletonElement>
                                             </div>
                                           </div>
                                         </div>
