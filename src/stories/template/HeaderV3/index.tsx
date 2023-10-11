@@ -37,14 +37,6 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             Pools
           </Link>
           <Link
-            to="/pool2"
-            className={`link text-primary-light ${
-              isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
-            }`}
-          >
-            P2
-          </Link>
-          <Link
             to="/trade3"
             className={`link text-primary-light ${
               isActiveLink('trade3') ? '!border-primary-light' : '!border-transparent'
@@ -58,7 +50,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
               isActiveLink('pool3') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            P3
+            Pools3
           </Link>
         </div>
         <div className="flex gap-5">
