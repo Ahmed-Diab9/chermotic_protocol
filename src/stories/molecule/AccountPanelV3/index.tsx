@@ -278,6 +278,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
           size="xl"
           css="active"
           className="w-full"
+          // FIXME: may need to add close in the onclick event.
           // onClick={() => onClickSubmit(close)}
           onClick={() => onClickSubmit()}
           disabled={isSubmitDisabled}
