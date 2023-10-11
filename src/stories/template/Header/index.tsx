@@ -36,7 +36,7 @@ export function Header() {
               isActiveLink('trade2') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            Trade2
+            T2
           </Link>
           <Link
             to="/pool2"
@@ -44,7 +44,7 @@ export function Header() {
               isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            Pools2
+            P2
           </Link>
           <Link
             to="/trade3"
@@ -54,14 +54,14 @@ export function Header() {
           >
             T3
           </Link>
-          {/* <Link
-            to="/pool2"
+          <Link
+            to="/pool3"
             className={`link text-primary-light ${
               isActiveLink('pool3') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
             P3
-          </Link> */}
+          </Link>
         </div>
         <div className="flex">
           <div className="hidden mr-4">

@@ -124,7 +124,7 @@ export const Input = (props: InputProps) => {
           error ? 'error' : ''
         } ${disabled ? 'disabled' : ''}`}
       >
-        {assetSrc ? <Avatar src={assetSrc} size="base" /> : null}
+        {assetSrc ? <Avatar src={assetSrc} size="sm" /> : null}
 
         <input
           type="text"

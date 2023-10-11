@@ -1,8 +1,8 @@
 .TradePanelV3 {
-  @apply relative !bg-paper/50;
+  @apply relative;
   .tabs {
     .btn-tabs {
-      @apply gap-1 pl-1 pr-4;
+      /* @apply gap-1 pl-1 pr-4; */
       button {
         @apply w-1/2;
       }

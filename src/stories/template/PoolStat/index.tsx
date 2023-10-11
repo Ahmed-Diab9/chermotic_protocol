@@ -8,7 +8,7 @@ export interface PoolStatProps {}
 
 export const PoolStat = (props: PoolStatProps) => {
   return (
-    <div className="p-5 PoolStat panel">
+    <div className="p-5 PoolStat">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
