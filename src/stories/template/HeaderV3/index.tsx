@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import LogoSimple from '~/assets/icons/LogoSimple';
 
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
-import { WalletPopover } from '~/stories/molecule/WalletPopover';
+import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
@@ -74,7 +74,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           <div className="hidden">
             <ThemeToggle />
           </div>
-          <WalletPopover {...walletPopoverProps} />
+          <WalletPopoverV3 {...walletPopoverProps} />
         </div>
       </div>
     </header>
