@@ -33,27 +33,36 @@ const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
   const responseData = response.data;
   const responseLogs =
     typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+  const filteredAbi = iChromaticLpABI.filter(
+    ({ type, name }) =>
+      type === 'event' &&
+      (name === 'AddLiquidity' ||
+        name === 'AddLiquiditySettled' ||
+        name === 'RemoveLiquidity' ||
+        name === 'RemoveLiquiditySettled')
+  );
   const decodedLogMap = responseLogs
     .map((log) => {
-      const decoded = decodeEventLog({
-        abi: iChromaticLpABI.filter(
-          ({ type, name }) =>
-            type === 'event' &&
-            (name === 'AddLiquidity' ||
-              name === 'AddLiquiditySettled' ||
-              name === 'RemoveLiquidity' ||
-              name === 'RemoveLiquiditySettled')
-        ),
-        data: log.data,
-        topics: log.topics,
-      });
-      return {
-        ...decoded,
-        blockNumber: BigInt(log.blockNumber),
-      };
+      try {
+        const decoded = decodeEventLog({
+          abi: filteredAbi,
+          data: log.data,
+          topics: log.topics,
+          strict: false,
+        });
+        return {
+          ...decoded,
+          blockNumber: BigInt(log.blockNumber),
+        };
+      } catch (error) {
+        return undefined;
+      }
     })
     .reduce(
       (newMap, decoded) => {
+        if (isNil(decoded)) {
+          return newMap;
+        }
         const {
           eventName,
           args: { receiptId },

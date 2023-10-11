@@ -1,5 +1,6 @@
 import { iChromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
 import axios from 'axios';
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
@@ -37,21 +38,28 @@ export const useLpReceiptCount = () => {
       const responseLogs =
         typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
       const reducedReceipts = responseLogs
-        .map((log) =>
-          decodeEventLog({
-            abi: iChromaticLpABI.filter(
-              ({ type, name }) =>
-                type === 'event' &&
-                (name === 'AddLiquidity' ||
-                  name === 'AddLiquiditySettled' ||
-                  name === 'RemoveLiquidity' ||
-                  name === 'RemoveLiquiditySettled')
-            ),
-            data: log.data,
-            topics: log.topics,
-          })
-        )
+        .map((log) => {
+          try {
+            return decodeEventLog({
+              abi: iChromaticLpABI.filter(
+                ({ type, name }) =>
+                  type === 'event' &&
+                  (name === 'AddLiquidity' ||
+                    name === 'AddLiquiditySettled' ||
+                    name === 'RemoveLiquidity' ||
+                    name === 'RemoveLiquiditySettled')
+              ),
+              data: log.data,
+              topics: log.topics,
+            });
+          } catch (error) {
+            return undefined;
+          }
+        })
         .reduce((newMap, decoded) => {
+          if (isNil(decoded)) {
+            return newMap;
+          }
           const {
             eventName,
             args: { receiptId },
