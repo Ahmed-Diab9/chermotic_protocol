@@ -5,9 +5,7 @@ import './style.css';
 
 import { Listbox, Tab } from '@headlessui/react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { Resizable } from 're-resizable';
 import { Button } from '~/stories/atom/Button';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
@@ -40,14 +38,6 @@ export const TradeManagementV3 = () => {
   // TODO: PERCENTAGE
   const PERCENTAGE = 0.05;
   const { filterOption, filterOptions, onOptionSelect } = usePositionFilter();
-
-  const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 620,
-    initialHeight: 321,
-    minWidth: 720,
-    minHeight: 220,
-    maxHeight: 800,
-  });
 
   return (
     <div className="TradeManagementV3">
