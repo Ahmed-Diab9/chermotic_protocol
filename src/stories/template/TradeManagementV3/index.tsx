@@ -39,14 +39,6 @@ export const TradeManagementV3 = () => {
   const PERCENTAGE = 0.05;
   const { filterOption, filterOptions, onOptionSelect } = usePositionFilter();
 
-  const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 620,
-    initialHeight: 321,
-    minWidth: 720,
-    minHeight: 220,
-    maxHeight: 800,
-  });
-
   return (
     <div className="TradeManagementV3">
       <div className="w-full h-full tabs tabs-line tabs-left">
