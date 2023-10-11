@@ -7,6 +7,7 @@ import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useAppSelector } from '~/store';
 import { LP_EVENT } from '~/typings/events';
+import { LpReceipt } from '~/typings/lp';
 
 const formatter = Intl.NumberFormat('en', {
   useGrouping: true,
@@ -24,23 +25,14 @@ export const usePoolProgressV2 = () => {
   const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
   const { receiptsData = [], onFetchNextLpReceipts } = useLpReceipts({ action: receiptAction });
   const { count, isCountLoading } = useLpReceiptCount();
-  const receipts = useMemo(() => {
+  const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
-
     return receipts;
   }, [receiptsData]);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideClicked',
     true
   );
-  const onReceiptSettle = async (receiptId: bigint) => {
-    if (!selectedLp) {
-      return;
-    }
-    const lp = lpClient.lp();
-
-    const settleResponse = await lp.settle(selectedLp.address, receiptId);
-  };
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
@@ -79,7 +71,6 @@ export const usePoolProgressV2 = () => {
     count,
 
     onActionChange,
-    onReceiptSettle,
     onGuideClose,
     onFetchNextLpReceipts,
   };

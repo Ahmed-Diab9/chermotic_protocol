@@ -26,7 +26,6 @@ export function PoolProgressV2() {
     count,
     receiptAction,
     onActionChange,
-    onReceiptSettle,
     onGuideClose,
     onFetchNextLpReceipts,
   } = usePoolProgressV2();
@@ -95,11 +94,7 @@ export function PoolProgressV2() {
                       ) : (
                         <>
                           {receipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptSettle(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -128,11 +123,7 @@ export function PoolProgressV2() {
                       {
                         <>
                           {receipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptSettle(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
@@ -159,11 +150,7 @@ export function PoolProgressV2() {
                       {
                         <>
                           {receipts.map((receipt) => (
-                            <ProgressItem
-                              {...receipt}
-                              key={receipt.key}
-                              onClick={() => onReceiptSettle(receipt.id)}
-                            />
+                            <ProgressItem {...receipt} key={receipt.key} />
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
