@@ -221,8 +221,7 @@ export const useLpReceipts = (props: UseLpReceiptsNext) => {
             action,
           });
           const detailedReceipts = receiptArray.map(async (receipt) => {
-            const status =
-              receipt.oracleVersion < currentMarket.oracleValue.version ? 'completed' : 'standby';
+            const status = receipt.isIssued && receipt.isSettled ? 'completed' : 'standby';
             let detail = '';
             const token = {
               name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
