@@ -1175,10 +1175,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.14":
-  version "1.0.1-rc.14"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.14.tgz#2fbca6f7053bd21f855590057577ba1e8f627a52"
-  integrity sha512-RJAV8ghFWumiVyHzpfoAhotJtufzUUOvDRX2aUQ7ilBg9rG6WZziw2A/JD++RO4ZTFYfP3vcnWkT+8eQPFXKGQ==
+"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.15":
+  version "1.0.1-rc.15"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.15.tgz#d798e6c320b6ac693a737aa39d0d141153adc4f4"
+  integrity sha512-aApVxKuwviyQJX/ib98H7D3WJ1rZanPUNXmaILgBKt04VmAhV8UyTCV0w56EgSyDCbEsRR93WfnhJniXXLCE3Q==
   dependencies:
     viem "^1.5.0"
 
