@@ -31,14 +31,6 @@ export function Header() {
             Pools
           </Link>
           <Link
-            to="/trade2"
-            className={`link text-primary-light ${
-              isActiveLink('trade2') ? '!border-primary-light' : '!border-transparent'
-            }`}
-          >
-            T2
-          </Link>
-          <Link
             to="/pool2"
             className={`link text-primary-light ${
               isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
@@ -52,7 +44,7 @@ export function Header() {
               isActiveLink('trade3') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            T3
+            Trade3
           </Link>
           <Link
             to="/pool3"
