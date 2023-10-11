@@ -31,31 +31,37 @@ export const useLiquidityPools = () => {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
-  } = useSWR(checkAllProps(fetchKeyData) && fetchKeyData, async ({ tokenAddresses }) => {
-    const lensApi = client.lens();
-    const marketFactoryApi = client.marketFactory();
-    const marketApi = client.market();
+  } = useSWR(
+    checkAllProps(fetchKeyData) && fetchKeyData,
+    async ({ tokenAddresses }) => {
+      const lensApi = client.lens();
+      const marketFactoryApi = client.marketFactory();
+      const marketApi = client.market();
 
-    const marketAddresses = (
-      await PromiseOnlySuccess(
-        tokenAddresses.map(async (tokenAddress) => ({
-          tokenAddress,
-          marketAddresses: await marketFactoryApi
-            .contracts()
-            .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
-        }))
-      )
-    ).reduce((map, row) => {
-      row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
-      return map;
-    }, {} as Record<Address, Address>);
+      const marketAddresses = (
+        await PromiseOnlySuccess(
+          tokenAddresses.map(async (tokenAddress) => ({
+            tokenAddress,
+            marketAddresses: await marketFactoryApi
+              .contracts()
+              .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
+          }))
+        )
+      ).reduce((map, row) => {
+        row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
+        return map;
+      }, {} as Record<Address, Address>);
 
-    const promise = Object.keys(marketAddresses).map(async (address) => {
-      return getLiquidityPool(marketApi, lensApi, address as Address);
-    });
+      const promise = Object.keys(marketAddresses).map(async (address) => {
+        return getLiquidityPool(marketApi, lensApi, address as Address);
+      });
 
-    return PromiseOnlySuccess(promise);
-  });
+      return PromiseOnlySuccess(promise);
+    },
+    {
+      dedupingInterval: 8000,
+    }
+  );
 
   useError({ error });
 
@@ -84,7 +90,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 
       return getLiquidityPool(marketApi, lensApi, marketAddress);
     },
-    { keepPreviousData: false }
+    { keepPreviousData: false, dedupingInterval: 8000 }
   );
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {

@@ -23,6 +23,7 @@ function App() {
     <SWRConfig
       value={{
         keepPreviousData: true,
+        shouldRetryOnError: false,
       }}
     >
       <Provider store={store}>

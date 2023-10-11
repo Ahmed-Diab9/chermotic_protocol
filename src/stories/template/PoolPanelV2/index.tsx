@@ -1,81 +1,55 @@
+import { Switch, Tab } from '@headlessui/react';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React, { PropsWithChildren } from 'react';
-import { Switch, Tab, Disclosure } from '@headlessui/react';
 import { createPortal } from 'react-dom';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';
-import { Input } from '~/stories/atom/Input';
-import { Counter } from '~/stories/atom/Counter';
 import { OptionInput } from '~/stories/atom/OptionInput';
-import { PoolChart } from '~/stories/atom/PoolChart';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { Guide } from '~/stories/atom/Guide';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
-import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import '~/stories/atom/Tabs/style.css';
 
-import { formatFeeRate } from '~/utils/number';
+import { isNil } from 'ramda';
+import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
 
 export function PoolPanelV2() {
   const {
-    amount,
-    onAmountChange,
-    maxAmount,
-    isExceeded,
-
+    rangeChartRef,
     setIsBinValueVisible,
 
     shortUsedLp,
     shortMaxLp,
     longUsedLp,
     longMaxLp,
-
-    rangeChartRef,
-    onRangeChange,
     isBinValueVisible,
-
-    minRateValue,
-    onMinIncrease,
-    onMinDecrease,
-    maxRateValue,
-    onMaxIncrease,
-    onMaxDecrease,
-    onFullRange,
-
-    onAddLiquidity,
-    isLoading,
 
     tokenName,
     tokenImage,
     walletBalance,
 
-    binCount,
-    feeRange,
-    binValueAverage,
-    totalLiquidityValue,
-    binLength,
-    totalFreeLiquidity,
-    averageRemovableRate,
-
     onTabChange,
-    onSelectAllClick,
-    onRemoveSelectedClick,
-    isRemoveSelectedDisabled,
-    isShortLiquidityBinsEmpty,
-    shortLiquidityBins,
-    isOwnedLongLiquidityBinsEmpty,
-    longLiquidityBins,
-
     isSingleRemoveModalOpen,
     isMultipleRemoveModalOpen,
+
+    isAssetsLoading,
+    isExceeded,
+    amount,
+    maxAmount,
+    formattedClp,
+    isAddPending,
+    isRemovalPending,
+    onAmountChange,
+    onAddChromaticLp,
+    onRemoveChromaticLp,
   } = usePoolPanelV2();
 
   return (
@@ -117,8 +91,10 @@ export function PoolPanelV2() {
                   <PoolChart
                     id="pool"
                     chartRef={rangeChartRef}
+                    onChange={() => {
+                      // FIXME
+                    }}
                     height={180}
-                    onChange={onRangeChange}
                     isDotVisible={isBinValueVisible}
                   />
                 </article>
@@ -139,13 +115,13 @@ export function PoolPanelV2() {
                       <div className="flex items-center gap-2">
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
-                          <SkeletonElement isLoading={isLoading} width={40}>
+                          <SkeletonElement isLoading={isAssetsLoading} width={40}>
                             {walletBalance} {tokenName}
                           </SkeletonElement>
                         </p>
                       </div>
                       <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
-                        <Avatar label="USDC" size="xs" gap="1" />
+                        <Avatar label={tokenName} size="xs" gap="1" src={tokenImage} />
                       </span>
                     </div>
                     {/* todo: input error */}
@@ -201,7 +177,8 @@ export function PoolPanelV2() {
                       />
                     </PoolInfo> */}
                     <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
-                      0.35%
+                      {/* 0.35% */}
+                      0%
                     </PoolInfo>
                   </div>
                 </article>
@@ -212,8 +189,13 @@ export function PoolPanelV2() {
                       className="w-full"
                       css="active"
                       size="2xl"
-                      onClick={onAddLiquidity}
-                      disabled={isLoading}
+                      onClick={() => {
+                        if (amount === '') {
+                          return;
+                        }
+                        onAddChromaticLp(amount);
+                      }}
+                      disabled={isAddPending}
                     />
                   </div>
                 </article>
@@ -255,8 +237,8 @@ export function PoolPanelV2() {
                                 <div className="flex items-center gap-2">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
-                                    <SkeletonElement isLoading={isLoading} width={40}>
-                                      {walletBalance} CLP
+                                    <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
+                                      {formattedClp} CLP
                                     </SkeletonElement>
                                   </p>
                                 </div>
@@ -289,7 +271,8 @@ export function PoolPanelV2() {
                             </div>
                             <div className="flex flex-col gap-2">
                               <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
-                                0.35%
+                                {/* 0.35% */}
+                                0%
                               </PoolInfo>
                             </div>
                           </article>
@@ -300,8 +283,13 @@ export function PoolPanelV2() {
                                 className="w-full"
                                 css="active"
                                 size="2xl"
-                                onClick={onAddLiquidity}
-                                disabled={isLoading}
+                                onClick={() => {
+                                  if (amount === '') {
+                                    return;
+                                  }
+                                  onRemoveChromaticLp(amount);
+                                }}
+                                disabled={isRemovalPending}
                               />
                             </div>
                           </article>
