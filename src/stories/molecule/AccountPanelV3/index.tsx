@@ -128,9 +128,14 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
               <Tab.List className="flex items-center w-full mb-5">
-                <div>
+                <div className="text-left">
                   <p className="mb-1 text-primary-lighter">Account Balance</p>
-                  <Avatar label={balance} fontSize="3xl" src={tokenImage} />
+                  <Avatar
+                    // label={balance}
+                    label={`${balance} ${tokenName}`}
+                    fontSize="3xl"
+                    src={tokenImage}
+                  />
                 </div>
                 <div className="flex gap-3 ml-auto">
                   <Tab value="short" className="btn-tabs btn-sm btn btn-line">
@@ -276,7 +281,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
       </section>
       <div className="mt-6 text-center">
         <Button
-          label={type}
+          label={`${type} now`}
           size="xl"
           css="active"
           className="w-full"

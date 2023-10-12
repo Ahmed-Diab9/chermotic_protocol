@@ -33,7 +33,7 @@ export function AccountPopoverV3() {
                                   size="xs"
                                   fontSize="lg"
                                   // label={`${balance} ${tokenName}`}
-                                  label={`${balance}`}
+                                  label={balance}
                                   gap="1"
                                   src={tokenImage}
                                 />
