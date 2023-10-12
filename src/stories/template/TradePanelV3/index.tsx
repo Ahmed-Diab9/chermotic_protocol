@@ -91,7 +91,7 @@ export const TradePanelV3 = () => {
           </div>
         )}
 
-        <div className="px-5 pt-4 pb-5 border-t bg-paper-light dark:bg-inverted-lighter">
+        <div className="pt-4 pb-5 border-t px-7 bg-paper-light dark:bg-inverted-lighter">
           <div className="text-sm text-left text-primary-lighter">
             The Trade Fee is calculated by summing up the different fees from the Liquidity Bins
             that accept the positions. The EST. Trade Fee is calculated based on the current oracle
