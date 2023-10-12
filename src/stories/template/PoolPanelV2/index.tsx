@@ -86,7 +86,7 @@ export function PoolPanelV2() {
                     </p>
                   </div>
                 </div>
-                <article className="-mx-5">
+                <article className="-mx-7">
                   {/* todo: remove range handle for V2 pool chart */}
                   <PoolChart
                     id="pool"
@@ -304,7 +304,7 @@ export function PoolPanelV2() {
                 </Tab.Group>
               </section>
 
-              <section className="mt-10 -mx-5 border-t border-dashed">
+              <section className="mt-10 border-t border-dashed -mx-7">
                 <PoolProgressV2 />
               </section>
             </Tab.Panel>
