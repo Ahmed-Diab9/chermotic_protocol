@@ -10,8 +10,7 @@ import { AccountPanelV3 } from '../AccountPanelV3';
 import { useAccountPopoverV3 } from './hooks';
 
 export function AccountPopoverV3() {
-  const { isConnected, isLoading, isAccountExist, balance, tokenName, tokenImage, onClickConnect } =
-    useAccountPopoverV3();
+  const { isConnected, isLoading, isAccountExist, balance, tokenImage } = useAccountPopoverV3();
 
   return (
     <>

@@ -127,7 +127,7 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
       }, new Map<bigint, History>())
     );
   const historyArray = Array.from(decodedLogMap.values());
-  return { historyArray, fromBlockNumber };
+  return { historyArray };
 };
 
 export const useTradeHistory = () => {

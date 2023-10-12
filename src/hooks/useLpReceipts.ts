@@ -133,7 +133,7 @@ const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
   const receiptArray = Array.from(decodedLogMap.values()).filter(
     (receipt) => receipt.recipient === walletAddress
   );
-  return { receiptArray, fromBlockNumber };
+  return { receiptArray };
 };
 
 type UseLpReceiptsNext = {
