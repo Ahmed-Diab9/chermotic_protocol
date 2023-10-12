@@ -10,11 +10,12 @@ import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 
-import { PRICE_FEED } from '~/configs/token';
+import { PRICE_FEEDS } from '~/configs/token';
 
 import { Token } from '~/typings/market';
 
 import { formatUnits } from 'viem';
+import { CHAIN } from '~/constants';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
@@ -49,7 +50,7 @@ export function useWalletPopover() {
   const getTokenPrice = useCallback(
     (token: Token) => {
       if (!tokenBalances || !priceFeed) return '';
-      const priceFeedAddress = PRICE_FEED[token.name] || '0x';
+      const priceFeedAddress = PRICE_FEEDS[CHAIN]?.[token.name] || '0x';
       if (isNotNil(tokenBalances[token.address]) && isNotNil(priceFeed[priceFeedAddress])) {
         const balance = tokenBalances[token.address];
         const tokenDecimals = token.decimals;
