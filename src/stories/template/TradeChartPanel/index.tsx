@@ -23,12 +23,11 @@ export function TradeChartPanel(props: TradeChartViewProps) {
       autoWidth
       bottom
       className="panel"
+      transparent
     >
       <div
         className="flex items-stretch w-full h-full border-b"
-        style={{
-          borderColor: 'rgb(var(--color-paper))',
-        }}
+        style={{ borderColor: 'rgb(var(--color-paper))' }}
       >
         <AdvancedChart
           className="flex flex-col items-center flex-auto"

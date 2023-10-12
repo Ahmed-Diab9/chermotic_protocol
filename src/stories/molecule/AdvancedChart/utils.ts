@@ -1,13 +1,15 @@
 import { IChartingLibraryWidget } from '~/charting_library/charting_library';
 
 async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'light') {
+  const transparent = 'rgba(255,255,255,0)';
+
   const presets = {
     dark: {
-      background: '#232327',
+      background: transparent,
       text: 'rgba(232, 232, 232, 0.5)',
       border: '#33333a',
       chart: {
-        grid: '#33333a',
+        grid: 'rgba(255,255,255,0)',
         down: '#FF3232',
         downArea: 'rgba(255, 50, 50, 0.2)',
         up: '#A6D85B',
@@ -27,7 +29,7 @@ async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'ligh
       },
     },
     light: {
-      background: 'rgb(255, 255, 255)',
+      background: transparent,
       text: 'rgba(3, 3, 3, 0.5)',
       border: 'rgb(238, 238, 238)',
       chart: {
@@ -53,6 +55,8 @@ async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'ligh
   }[theme];
 
   widget.applyOverrides({
+    // legend visibility
+    'paneProperties.legendProperties.showBackground': false,
     // background
     'paneProperties.background': presets.background,
     // bottom border
@@ -119,7 +123,7 @@ async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'ligh
 
   /* -- Toolbar -- */
   // border
-  widget.setCSSCustomProperty('--tv-color-platform-background', presets.border);
+  widget.setCSSCustomProperty('--tv-color-platform-background', presets.background);
   // background
   widget.setCSSCustomProperty('--tv-color-pane-background', presets.background);
   // divider
@@ -137,19 +141,28 @@ async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'ligh
   widget.setCSSCustomProperty('--tv-color-toolbar-button-text-hover', presets.text);
   // text:active
   widget.setCSSCustomProperty('--tv-color-toolbar-button-text-active', presets.toolbar.active);
-  widget.setCSSCustomProperty('--tv-color-toolbar-button-text-active-hover', presets.toolbar.active);
+  widget.setCSSCustomProperty(
+    '--tv-color-toolbar-button-text-active-hover',
+    presets.toolbar.active
+  );
 
   /* -- Dropdown -- */
   // background
   widget.setCSSCustomProperty('--tv-color-popup-background', presets.dropdown.backgound);
   // divider
-  widget.setCSSCustomProperty('--tv-color-popup-element-divider-background', presets.dropdown.hover);
+  widget.setCSSCustomProperty(
+    '--tv-color-popup-element-divider-background',
+    presets.dropdown.hover
+  );
   // text
   widget.setCSSCustomProperty('--tv-color-popup-element-text', presets.text);
   // text:hover
   widget.setCSSCustomProperty('--tv-color-popup-element-text-hover', presets.text);
   // background:active
-  widget.setCSSCustomProperty('--tv-color-popup-element-background-active', presets.dropdown.active);
+  widget.setCSSCustomProperty(
+    '--tv-color-popup-element-background-active',
+    presets.dropdown.active
+  );
   // background:hover
   widget.setCSSCustomProperty('--tv-color-popup-element-background-hover', presets.dropdown.hover);
   // favorite (hidden)
@@ -162,11 +175,19 @@ async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'ligh
     presets.dropdown.active
   );
   widget.setCSSCustomProperty('--tv-color-popup-element-toolbox-text', presets.dropdown.hover);
-  widget.setCSSCustomProperty('--tv-color-popup-element-toolbox-text-hover', presets.dropdown.hover);
+  widget.setCSSCustomProperty(
+    '--tv-color-popup-element-toolbox-text-hover',
+    presets.dropdown.hover
+  );
   widget.setCSSCustomProperty(
     '--tv-color-popup-element-toolbox-text-active-hover',
     presets.dropdown.active
   );
+
+  // Transparent background
+  (widget as any)._iFrame.contentDocument.getElementsByClassName(
+    'chart-container-border'
+  )[0].style.background = 'transparent';
 }
 
 export { changeTheme };

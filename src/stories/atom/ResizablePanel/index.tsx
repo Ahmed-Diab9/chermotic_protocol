@@ -20,6 +20,7 @@ interface ResizablePanelProps extends PropsWithChildren {
   topLeft?: boolean;
   autoWidth?: boolean;
   autoHeight?: boolean;
+  transparent?: boolean;
 }
 
 export const ResizablePanel = (props: ResizablePanelProps) => {
@@ -51,6 +52,9 @@ export const ResizablePanel = (props: ResizablePanelProps) => {
       }}
       onResizeStop={handleResizeStop}
       className={props.className}
+      style={{
+        background: props.transparent ? 'transparent' : undefined,
+      }}
     >
       {props.children}
     </Resizable>
