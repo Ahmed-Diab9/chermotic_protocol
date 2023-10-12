@@ -36,6 +36,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           >
             Pools
           </Link>
+
           <Link
             to="/trade3"
             className={`link text-primary-light ${

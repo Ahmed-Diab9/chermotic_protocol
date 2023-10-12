@@ -1,10 +1,13 @@
+import { isNil, isNotNil } from 'ramda';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import PlusIcon from '~/assets/icons/PlusIcon';
-import { logos } from '~/constants/logo';
+import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { useAppSelector } from '~/store';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
@@ -12,21 +15,26 @@ import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { Footer } from '~/stories/template/Footer';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
-// import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
 import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
-import { PoolBalance } from '~/stories/template/PoolBalance';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
+import { formatDecimals } from '~/utils/number';
 import './style.css';
 
 const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
-  const { beforeCondition, afterCondition, toggleConditions, onLoadBackgroundRef } =
-    useBackgroundGradient();
+  useLpLocal();
+  const { onLoadBackgroundRef } = useBackgroundGradient();
+
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const lpTitle = isNotNil(selectedLp)
+    ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
+    : undefined;
+  const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
 
   return (
     <>
@@ -47,7 +55,11 @@ const PoolV3 = () => {
             <div className="mt-10">
               <div className="mb-10 text-left">
                 <div className="flex items-center mb-5">
-                  <h2 className="mr-3 text-4xl">ETH-BTC/USD Junior Pool</h2>
+                  <SkeletonElement isLoading={isNil(lpTitle)} className="w-full">
+                    <h2 className="mr-3 text-4xl">
+                      {lpTitle} {selectedLp?.name} Pool
+                    </h2>
+                  </SkeletonElement>
                   <Tag label={`high risk`} className="tag-risk-high" />
                   <Button
                     label="Metamask"
@@ -68,8 +80,14 @@ const PoolV3 = () => {
                 {/* To be added later */}
                 {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
                 <div className="flex gap-2 ml-auto text-xl">
-                  CLP Price: 0.984
-                  <Avatar label="ETH" size="xs" gap="1" fontSize="xl" src={logos['ETH']} />
+                  CLP Price: {price}
+                  <Avatar
+                    label={selectedLp?.settlementToken.name}
+                    size="xs"
+                    gap="1"
+                    fontSize="xl"
+                    src={selectedLp?.settlementToken.image}
+                  />
                 </div>
               </div>
               <div className="flex gap-3">

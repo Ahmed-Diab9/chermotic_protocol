@@ -30,6 +30,7 @@ export function Header() {
           >
             Pools
           </Link>
+
           <Link
             to="/trade3"
             className={`link text-primary-light ${
