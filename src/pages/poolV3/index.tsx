@@ -15,9 +15,7 @@ import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { Footer } from '~/stories/template/Footer';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
-// import { PoolAnalytics } from '~/stories/template/PoolAnalytics';
 import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
-import { PoolBalance } from '~/stories/template/PoolBalance';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
@@ -30,8 +28,8 @@ const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
-  const { beforeCondition, afterCondition, toggleConditions, onLoadBackgroundRef } =
-    useBackgroundGradient();
+  const { onLoadBackgroundRef } = useBackgroundGradient();
+
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
