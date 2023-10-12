@@ -54,7 +54,7 @@ export function MarketSelectV3() {
             isMarked={isNotNil(marketAddress) && isBookmarked?.[marketAddress]}
           />
           <Popover className="h-full">
-            {({ open }) => (
+            {({ open, close }) => (
               <>
                 <Popover.Button className="flex items-center h-full gap-3">
                   <div className="flex items-center gap-1">
@@ -87,7 +87,7 @@ export function MarketSelectV3() {
                     aria-hidden="true"
                   />
                 </Popover.Button>
-                <Popover.Panel className="popover-panel">
+                <Popover.Panel className="popover-panel" onMouseLeave={close}>
                   <div className="flex items-stretch justify-between h-8 gap-20 px-3 text-left border-b tr text-primary-lighter bg-inverted-lighter">
                     <div className="flex items-stretch">
                       <div className="min-w-[136px] border-r flex items-center">
