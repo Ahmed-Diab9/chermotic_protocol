@@ -30,14 +30,7 @@ export function Header() {
           >
             Pools
           </Link>
-          <Link
-            to="/pool2"
-            className={`link text-primary-light ${
-              isActiveLink('pool2') ? '!border-primary-light' : '!border-transparent'
-            }`}
-          >
-            P2
-          </Link>
+
           <Link
             to="/trade3"
             className={`link text-primary-light ${
@@ -52,7 +45,7 @@ export function Header() {
               isActiveLink('pool3') ? '!border-primary-light' : '!border-transparent'
             }`}
           >
-            P3
+            Pools3
           </Link>
         </div>
         <div className="flex">
