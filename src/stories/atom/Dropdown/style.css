@@ -8,6 +8,7 @@
   [role='menu'] {
     @apply flex flex-col;
     @apply p-2 border rounded border-gray-light;
+    @apply bg-paper/60 backdrop-blur-md;
   }
   [role='menuitem'] {
     @apply px-2;
