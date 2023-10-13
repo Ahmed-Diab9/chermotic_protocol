@@ -3,9 +3,18 @@ import './style.css';
 
 export interface ButtonProps {
   label?: string;
-  css?: 'default' | 'light' | 'active' | 'line' | 'circle' | 'square' | 'unstyled' | 'underlined';
+  css?:
+    | 'default'
+    | 'light'
+    | 'active'
+    | 'line'
+    | 'circle'
+    | 'square'
+    | 'unstyled'
+    | 'underlined'
+    | string;
   disabled?: boolean;
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl';
+  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
   align?: 'center' | 'left' | 'right';
   to?: string;
   href?: string;
