@@ -15,7 +15,7 @@ const enum POSITION_TAB {
 }
 
 export const TradePanelV3 = () => {
-  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.SHORT_TAB);
+  const [selectedTab, setSelectedTab] = useState<POSITION_TAB>(POSITION_TAB.LONG_TAB);
   const onSelectTab = (tab: number) => setSelectedTab(tab);
   const { sizeData } = useThrottledResize({
     interval: 200,
