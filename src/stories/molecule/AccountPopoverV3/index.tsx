@@ -23,7 +23,11 @@ export function AccountPopoverV3() {
                 <Popover>
                   {({ open, close }) => (
                     <>
-                      <Popover.Button className="btn btn-line !h-10 !min-w-[180px] px-3 hover:bg-primary/10">
+                      <Popover.Button
+                        className={`btn btn-line !h-10 !min-w-[180px] px-3 hover:bg-primary/10 ${
+                          open ? 'bg-primary/10' : ''
+                        }`}
+                      >
                         <span className="flex items-center justify-between w-full gap-4">
                           {isAccountExist ? (
                             <>
