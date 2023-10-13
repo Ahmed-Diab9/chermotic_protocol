@@ -29,6 +29,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     isAccountCreated,
     isAccountExist,
 
+    tokenName,
     tokenImage,
     balance,
     onClickCreateAccount,
