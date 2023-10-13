@@ -22,8 +22,6 @@ export interface AccountPanelV3Props {
 
 export const AccountPanelV3 = (props: AccountPanelV3Props) => {
   const {
-    isLoading,
-
     isDeposit,
 
     isAccountNotExist,
@@ -31,25 +29,9 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     isAccountCreated,
     isAccountExist,
 
-    chromaticAddress,
-    addressExplorer,
-    tokenName,
     tokenImage,
-    availableMargin,
     balance,
-
-    maxAmount,
-    minimumAmount,
-    isAmountError,
-    isSubmitDisabled,
-    isExceeded,
-    isLess,
-
-    amount,
-    onAmountChange,
-
     onClickCreateAccount,
-    onClickSubmit,
   } = useAccountPanelV3(props);
   const { onPanelClose } = props;
 

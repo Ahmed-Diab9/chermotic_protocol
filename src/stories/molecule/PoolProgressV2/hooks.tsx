@@ -1,26 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
-
-import { useChromaticClient } from '~/hooks/useChromaticClient';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
-import { useAppSelector } from '~/store';
 import { LP_EVENT } from '~/typings/events';
 import { LpReceipt } from '~/typings/lp';
-
-const formatter = Intl.NumberFormat('en', {
-  useGrouping: true,
-  maximumFractionDigits: 2,
-  minimumFractionDigits: 2,
-});
 
 export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  const { lpClient } = useChromaticClient();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const { formattedElapsed } = useLastOracle();
   const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
   const { receiptsData = [], onFetchNextLpReceipts } = useLpReceipts({ action: receiptAction });
