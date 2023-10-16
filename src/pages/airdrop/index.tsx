@@ -1,25 +1,21 @@
+import { Tab } from '@headlessui/react';
+import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { OutlinkIcon } from '~/assets/icons/Icon';
+import RandomboxImage from '~/assets/images/airdrop_randombox.png';
+import GalxeIcon from '~/assets/images/galxe.png';
+import ZealyIcon from '~/assets/images/zealy.png';
+import { BlurText } from '~/stories/atom/BlurText';
+import { Button } from '~/stories/atom/Button';
+import '~/stories/atom/Tabs/style.css';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { Tab } from '@headlessui/react';
-import '~/stories/atom/Tabs/style.css';
+import { AirdropActivity } from '~/stories/template/AirdropActivity';
+import { AirdropBoard } from '~/stories/template/AirdropBoard';
+import { AirdropHistory } from '~/stories/template/AirdropHistory';
+import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
-import { BlurText } from '~/stories/atom/BlurText';
-import { AirdropStamp } from '~/stories/template/AirdropStamp';
-import { AirdropHistory } from '~/stories/template/AirdropHistory';
-import { AirdropBoard } from '~/stories/template/AirdropBoard';
-import { AirdropActivity } from '~/stories/template/AirdropActivity';
-import { Button } from '~/stories/atom/Button';
-import { OutlinkIcon } from '~/assets/icons/Icon';
-import RandomboxImage from '~/assets/images/airdrop_randombox.png';
-import ZealyIcon from '~/assets/images/zealy.png';
-import GalxeIcon from '~/assets/images/galxe.png';
-import {
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-  ArrowUpTrayIcon,
-} from '@heroicons/react/24/outline';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';

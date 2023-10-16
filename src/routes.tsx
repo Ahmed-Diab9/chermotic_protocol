@@ -1,4 +1,5 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom';
+import Airdrop from './pages/airdrop';
 import { Faucet } from './pages/faucet';
 import Pool from './pages/pool';
 import PoolV2 from './pages/poolV2';
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: '/faucet',
     element: <Faucet />,
+  },
+  {
+    path: '/airdrop',
+    element: <Airdrop />,
   },
 ]);
 
