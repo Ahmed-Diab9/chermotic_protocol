@@ -65,7 +65,6 @@ const getLpReceiptsByLog = async (params: GetLpReceiptByLogParams) => {
           topics: log.topics,
           strict: false,
         });
-        console.log(decoded, 'decoded');
         return {
           ...decoded,
           blockNumber: BigInt(log.blockNumber),
