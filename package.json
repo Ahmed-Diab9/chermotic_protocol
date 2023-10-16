@@ -15,7 +15,9 @@
     "build-storybook": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes",
     "automigrate": "storybook automigrate",
-    "codegen": "graphql-codegen --config codegen/index.ts"
+    "codegen": "graphql-codegen --config codegen/index.ts",
+    "predev": "yarn codegen",
+    "prebuild": "yarn codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.8.5",
