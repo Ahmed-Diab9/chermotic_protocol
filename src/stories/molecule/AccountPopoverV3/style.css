@@ -6,7 +6,7 @@
     @apply absolute right-0 rounded top-10 mt-2 w-[480px];
     /* @apply border px-10 pt-4; */
     @apply border p-5;
-    @apply bg-paper/60 text-primary backdrop-blur-lg;
+    @apply bg-paper/60 text-primary backdrop-blur-xl;
     .inner-box {
       @apply relative flex flex-col items-center gap-4 px-5 pt-6 pb-8 overflow-hidden border dark:border-transparent rounded-xl;
       @apply bg-paper-light;

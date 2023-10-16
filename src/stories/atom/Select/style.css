@@ -42,7 +42,7 @@
   ul[role='listbox'] {
     @apply flex flex-col gap-1 absolute left-0 w-full;
     @apply p-1 border border-gray-light rounded-lg shadow-base dark:shadow-none;
-    @apply bg-paper/60 backdrop-blur-lg;
+    @apply bg-paper/60 backdrop-blur-xl;
   }
   li[role='option'] {
     @apply flex items-center px-2 py-[6px] hover:bg-paper-light;
