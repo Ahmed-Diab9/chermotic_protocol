@@ -89,7 +89,7 @@ a {
   &.btn-wallet {
     @apply !h-[42px] p-[2px] flex items-center border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
-    @apply dark:bg-gray-lighter dark:text-primary;
+    @apply dark:bg-paper/60 dark:text-primary;
     .avatar {
       @apply !w-[36px] !h-[36px];
     }
