@@ -7,6 +7,7 @@ import '~/App.css';
 import { router } from '~/routes';
 import { store } from '~/store/index';
 import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
+import { ApolloClientProvider } from './contexts/ApolloClient';
 import { ChromaticProvider } from './contexts/ChromaticClient';
 import './typings/bigint';
 
@@ -29,9 +30,11 @@ function App() {
       <Provider store={store}>
         <WagmiConfig config={config}>
           <ChromaticProvider>
-            <div className="App">
-              <RouterProvider router={router} />
-            </div>
+            <ApolloClientProvider>
+              <div className="App">
+                <RouterProvider router={router} />
+              </div>
+            </ApolloClientProvider>
           </ChromaticProvider>
         </WagmiConfig>
       </Provider>
