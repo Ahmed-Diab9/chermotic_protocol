@@ -89,10 +89,16 @@ a {
   &.btn-wallet {
     @apply !h-[42px] p-[2px] flex items-center border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
-    @apply dark:bg-gray-lighter dark:text-primary;
+    @apply dark:bg-paper/60 dark:text-primary;
     .avatar {
       @apply !w-[36px] !h-[36px];
     }
+  }
+  &.btn-long {
+    @apply bg-price-higher/10 border border-price-higher text-price-higher;
+  }
+  &.btn-short {
+    @apply bg-price-lower/10 border border-price-lower text-price-lower;
   }
   &.btn-xs {
     @apply min-w-[20px] h-5 px-2 py-0 text-xs;
@@ -167,6 +173,18 @@ a {
     }
     &.btn-icon-only {
       @apply min-h-[48px] p-0 items-center justify-center;
+    }
+  }
+  &.btn-3xl {
+    @apply min-w-[60px] h-[60px] px-5 py-0 text-3xl;
+    > div {
+      gap: 12px;
+    }
+    svg {
+      width: 24px;
+    }
+    &.btn-icon-only {
+      @apply min-h-[60px] p-0 items-center justify-center;
     }
   }
 }

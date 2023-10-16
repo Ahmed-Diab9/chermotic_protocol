@@ -60,7 +60,7 @@ export function PoolPanelV2() {
             <Tab className="w-1/2 text-3xl">ADD</Tab>
             <Tab className="w-1/2 text-3xl">REMOVE</Tab>
           </Tab.List>
-          <Tab.Panels className="flex flex-col items-center w-full px-5 pt-5 pb-0">
+          <Tab.Panels className="flex flex-col items-center w-full pt-5 pb-0 px-7">
             {/* tab - add */}
             <Tab.Panel className="w-full">
               <section>
@@ -86,7 +86,7 @@ export function PoolPanelV2() {
                     </p>
                   </div>
                 </div>
-                <article className="-mx-5">
+                <article className="-mx-7">
                   {/* todo: remove range handle for V2 pool chart */}
                   <PoolChart
                     id="pool"
@@ -201,7 +201,7 @@ export function PoolPanelV2() {
                 </article>
               </section>
 
-              <section className="mt-10 -mx-5 border-t border-dashed">
+              <section className="mt-10 border-t border-dashed -mx-7">
                 <PoolProgressV2 />
               </section>
             </Tab.Panel>
@@ -304,7 +304,7 @@ export function PoolPanelV2() {
                 </Tab.Group>
               </section>
 
-              <section className="mt-10 -mx-5 border-t border-dashed">
+              <section className="mt-10 border-t border-dashed -mx-7">
                 <PoolProgressV2 />
               </section>
             </Tab.Panel>

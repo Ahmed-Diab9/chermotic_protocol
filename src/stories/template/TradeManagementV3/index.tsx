@@ -41,9 +41,9 @@ export const TradeManagementV3 = () => {
 
   return (
     <div className="TradeManagementV3">
-      <div className="w-full h-full tabs tabs-line tabs-left">
+      <div className="w-full tabs tabs-line tabs-left">
         <Tab.Group>
-          <div className="flex flex-col w-full h-full">
+          <div className="flex flex-col w-full">
             <div className="flex items-end border-b border-gray-light">
               <Tab.List className="flex-none tabs-list">
                 <Tab>Position</Tab>
@@ -119,7 +119,7 @@ export const TradeManagementV3 = () => {
                           <div className="td">Close</div>
                         </div>
                       </div>
-                      <div className="tbody h-[calc(100%-32px)]">
+                      <div className="tbody">
                         {positionList.map((position) => (
                           <PositionItemV2 key={position.id.toString()} position={position} />
                         ))}
@@ -176,7 +176,7 @@ export const TradeManagementV3 = () => {
                           <div className="td">Finalized Pnl(%)</div>
                         </div>
                       </div>
-                      <div className="tbody h-[calc(100%-32px)]">
+                      <div className="tbody">
                         {historyList.map((history) => (
                           <HistoryItem
                             key={history.positionId.toString()}
@@ -210,7 +210,7 @@ export const TradeManagementV3 = () => {
                           <div className="td">Leverage</div>
                         </div>
                       </div>
-                      <div className="tbody h-[calc(100%-32px)]">
+                      <div className="tbody">
                         {tradeList.map((trade) => (
                           <TradesItem
                             key={trade.positionId.toString()}

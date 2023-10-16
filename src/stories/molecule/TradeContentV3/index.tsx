@@ -86,7 +86,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
 
   return (
     <div className="w-full">
-      <article className="p-5">
+      <article className="py-5 px-7">
         <div className="flex items-baseline gap-2">
           <h4>Amount</h4>
           {/* <p className="text-base text-primary-light">
@@ -122,7 +122,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           />
         </div>
       </article>
-      <section className="p-5 pb-4 border-y">
+      <section className="py-5 pb-4 px-7 border-y">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -249,7 +249,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             selectedAmount={makerMargin}
           />
         </div>
-        <article className="px-5">
+        <article className="px-7">
           <div className="flex flex-col gap-1 mt-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
@@ -286,14 +286,15 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           <div className="my-4">
             <TransactionButton
               label={isLong ? 'Buy' : 'Sell'}
-              size="2xl"
+              size="3xl"
               className="w-full"
+              css={isLong ? 'long' : 'short'}
               disabled={disabled}
               onClick={onOpenPosition}
             />
           </div>
         </article>
-        <article className="p-5 px-5 mt-5 border-t border-dashed border-gray-dark">
+        <article className="py-5 mt-5 border-t border-dashed px-7 border-gray-dark">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between">
               <div className="flex">

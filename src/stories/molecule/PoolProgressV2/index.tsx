@@ -36,8 +36,11 @@ export function PoolProgressV2() {
         {({ open }) => {
           return (
             <>
-              <Disclosure.Button className="relative flex items-start py-5" ref={openButtonRef}>
-                <div className="px-5 text-left">
+              <Disclosure.Button
+                className="relative flex items-start py-5 px-7"
+                ref={openButtonRef}
+              >
+                <div className="text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
                     <span className="mx-1">({count?.inProgresses})</span>
@@ -53,18 +56,16 @@ export function PoolProgressV2() {
                   </p>
                 </div>
                 <ChevronDownIcon
-                  className={`${
-                    open ? 'rotate-180 transform' : ''
-                  } w-4 text-primary absolute right-3`}
+                  className={`${open ? 'rotate-180 transform' : ''} w-4 text-primary ml-auto`}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="relative px-5 -mx-5" ref={ref}>
+              <Disclosure.Panel className="relative px-7 -mx-7" ref={ref}>
                 <Tab.Group
                   onChange={(index) => {
                     onActionChange(index);
                   }}
                 >
-                  <div className="flex px-5 mt-2 border-b">
+                  <div className="flex mt-2 border-b px-7">
                     <Tab.List className="!justify-start !gap-7">
                       <Tab id="all">All</Tab>
                       <Tab id="minting">Minting ({count?.mintings})</Tab>
@@ -226,7 +227,7 @@ const ProgressItem = (props: ProgressItemProps) => {
   const { onClick, token, hasReturnedValue, ...receipt } = props;
 
   return (
-    <div className="flex items-center gap-5 px-5 py-3 border-b" onClick={onClick}>
+    <div className="flex items-center gap-5 py-3 border-b px-7" onClick={onClick}>
       <h4 className="flex capitalize text-primary-light min-w-[128px] pr-5 border-r text-left">
         {receipt.action}
         <br />
