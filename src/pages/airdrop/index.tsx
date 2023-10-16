@@ -1,7 +1,7 @@
-import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-
+import { Tab } from '@headlessui/react';
+import '~/stories/atom/Tabs/style.css';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
@@ -15,20 +15,30 @@ function Airdrop() {
   useTokenLocal();
   useMarketLocal();
 
-  const { beforeCondition, afterCondition, toggleConditions, onLoadBackgroundRef } =
-    useBackgroundGradient();
-
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
-        <div id="prev"></div>
-        <div id="current"></div>
-      </div>
       <div className="flex flex-col min-h-[100vh] w-full relative">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-8 mx-auto mb-20">
-          <div className="flex w-full gap-10 overflow-hidden"></div>
+        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-16 mx-auto mb-20">
+          <div className="tabs tabs-flex-column">
+            <Tab.Group>
+              <div className="flex gap-10">
+                <Tab.List className="tabs-list min-w-[200px]">
+                  <Tab>Airdrop 1</Tab>
+                  <Tab>My History</Tab>
+                  <Tab>How to Participate</Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>
+                    <h2 className="title-chrm">Chromatic Airdrop Program</h2>
+                  </Tab.Panel>
+                  <Tab.Panel>Content 2</Tab.Panel>
+                  <Tab.Panel>Content 3</Tab.Panel>
+                </Tab.Panels>
+              </div>
+            </Tab.Group>
+          </div>
         </section>
         <Footer />
         <Toast />
