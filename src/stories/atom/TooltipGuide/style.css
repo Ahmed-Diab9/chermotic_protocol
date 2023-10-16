@@ -17,30 +17,31 @@
   }
   .tooltip-outline {
     @apply border;
-    @apply bg-paper/60 text-primary border-gray-light;
+    @apply bg-gray-lighter backdrop-blur-xl text-primary border-gray-light;
+
     &.react-tooltip__place-top .react-tooltip-arrow,
     &.react-tooltip__place-top-start .react-tooltip-arrow,
     &.react-tooltip__place-top-end .react-tooltip-arrow {
-      @apply border-l border-t mb-[-.5px];
-      @apply border-gray-light;
+      @apply border-r border-b mb-[-.5px];
+      @apply border-gray-light backdrop-blur-xl;
     }
     &.react-tooltip__place-right .react-tooltip-arrow,
     &.react-tooltip__place-right-start .react-tooltip-arrow,
     &.react-tooltip__place-right-end .react-tooltip-arrow {
-      @apply border-t border-l ml-[-.5px];
-      @apply border-gray-light;
+      @apply border-b border-r ml-[-.5px];
+      @apply border-gray-light backdrop-blur-xl;
     }
     &.react-tooltip__place-bottom .react-tooltip-arrow,
     &.react-tooltip__place-bottom-start .react-tooltip-arrow,
     &.react-tooltip__place-bottom-end .react-tooltip-arrow {
       @apply border-r border-b mt-[-.5px];
-      @apply border-gray-light;
+      @apply border-gray-light backdrop-blur-xl;
     }
     &.react-tooltip__place-left .react-tooltip-arrow,
     &.react-tooltip__place-left-start .react-tooltip-arrow,
     &.react-tooltip__place-left-end .react-tooltip-arrow {
       @apply border-b border-r mr-[-.5px];
-      @apply border-gray-light;
+      @apply border-gray-light backdrop-blur-xl;
     }
   }
 }
