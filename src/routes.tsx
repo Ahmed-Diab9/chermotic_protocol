@@ -6,6 +6,7 @@ import PoolV2 from './pages/poolV2';
 import TradeV2 from './pages/tradeV2';
 import PoolV3 from './pages/poolV3';
 import TradeV3 from './pages/tradeV3';
+import Airdrop from './pages/airdrop';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,11 @@ const router = createBrowserRouter([
   {
     path: '/trade3',
     element: <TradeV3 />,
+  },
+
+  {
+    path: '/airdrop',
+    element: <Airdrop />,
   },
 ]);
 
