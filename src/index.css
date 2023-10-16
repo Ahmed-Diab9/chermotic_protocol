@@ -267,6 +267,19 @@ h6 {
   @apply text-sm;
 }
 
+.text-chrm {
+  background: linear-gradient(
+    91deg,
+    #ff4f44 -4.01%,
+    #fe8b63 36.14%,
+    #95ed60 77.44%,
+    #a6d85b 106.11%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 *:focus {
   outline: none;
 }

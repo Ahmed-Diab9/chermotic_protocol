@@ -5,6 +5,7 @@ import '~/stories/atom/Tabs/style.css';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
+import { BlurText } from '~/stories/atom/BlurText';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -29,9 +30,15 @@ function Airdrop() {
                   <Tab>My History</Tab>
                   <Tab>How to Participate</Tab>
                 </Tab.List>
-                <Tab.Panels>
+                <Tab.Panels className="flex-auto">
                   <Tab.Panel>
-                    <h2 className="title-chrm">Chromatic Airdrop Program</h2>
+                    <div className="w-[560px]">
+                      <BlurText
+                        label="Chromatic Airdrop Program"
+                        className="text-[60px]"
+                        color="chrm"
+                      />
+                    </div>
                   </Tab.Panel>
                   <Tab.Panel>Content 2</Tab.Panel>
                   <Tab.Panel>Content 3</Tab.Panel>
