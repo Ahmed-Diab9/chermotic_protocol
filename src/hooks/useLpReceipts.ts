@@ -365,35 +365,32 @@ export const useLpReceipts = (props: UseLpReceipts) => {
 type GetReceiptsArgs = {
   walletAddress: Address;
   lpAddress: Address;
-  toBlockTimestamp?: bigint;
+  toBlockTimestamp: bigint;
 };
 
-const getAddReceipts = async (client: ApolloClient<object>, args: GetReceiptsArgs) => {
+const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
   const { walletAddress, lpAddress, toBlockTimestamp } = args;
-  const {
-    data: { addLiquidities },
-  } = await client.query({
-    query: AddLiquiditiesDocument,
-    variables: {
-      count: 1,
-      orderBy: AddLiquidity_OrderBy.BlockTimestamp,
-      orderDirection: OrderDirection.Desc,
-      walletAddress,
-      lpAddress,
-      toBlockTimestamp,
-    },
+  const { addLiquidities } = await graphSdk.AddLiquidities({
+    count: PAGE_SIZE,
+    orderBy: AddLiquidity_OrderBy.BlockTimestamp,
+    orderDirection: OrderDirection.Desc,
+    walletAddress,
+    lpAddress,
+    toBlockTimestamp: toBlockTimestamp.toString(),
   });
-  const fromId = addLiquidities[0].receiptId;
-  const endId = addLiquidities[addLiquidities.length - 1].receiptId;
-  const {
-    data: { addLiquiditySettleds },
-  } = await client.query({
-    query: AddLiquiditySettledsDocument,
-    variables: { fromId, endId, lpAddress },
+  if (addLiquidities.length <= 0) {
+    return new Map<bigint, LpReceipt>();
+  }
+  const endId = addLiquidities[0].receiptId;
+  const fromId = addLiquidities[addLiquidities.length - 1].receiptId;
+  const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettleds({
+    fromId,
+    endId,
+    lpAddress,
   });
 
   const addSettledMap = addLiquiditySettleds.reduce((map, current) => {
-    const { lpTokenAmount, receiptId } = current;
+    const { lpTokenAmount, receiptId } = bigintify(current, 'lpTokenAmount', 'receiptId');
     map.set(receiptId, {
       id: receiptId,
       mintedAmount: lpTokenAmount,
@@ -402,7 +399,14 @@ const getAddReceipts = async (client: ApolloClient<object>, args: GetReceiptsArg
     return map;
   }, new Map<bigint, LpReceipt>());
   const addMap = addLiquidities.reduce((map, current) => {
-    const { receiptId, recipient, amount, oracleVersion, blockNumber, blockTimestamp } = current;
+    const { receiptId, recipient, amount, oracleVersion, blockNumber, blockTimestamp } = bigintify(
+      current,
+      'receiptId',
+      'amount',
+      'oracleVersion',
+      'blockNumber',
+      'blockTimestamp'
+    );
     const settled = addSettledMap.get(receiptId) ?? { isSettled: false };
     map.set(receiptId, {
       action: 'minting',
@@ -421,35 +425,33 @@ const getAddReceipts = async (client: ApolloClient<object>, args: GetReceiptsArg
   return addMap;
 };
 
-const getRemoveReceipts = async (client: ApolloClient<object>, args: GetReceiptsArgs) => {
+const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
   const { walletAddress, lpAddress, toBlockTimestamp } = args;
-  const {
-    data: { removeLiquidities },
-  } = await client.query({
-    query: RemoveLiquiditiesDocument,
-    variables: {
-      count: 1,
-      orderBy: RemoveLiquidity_OrderBy.BlockTimestamp,
-      orderDirection: OrderDirection.Desc,
-      walletAddress,
-      lpAddress,
-      toBlockTimestamp,
-    },
+  const { removeLiquidities } = await graphSdk.RemoveLiquidities({
+    count: PAGE_SIZE,
+    orderBy: RemoveLiquidity_OrderBy.BlockTimestamp,
+    orderDirection: OrderDirection.Desc,
+    walletAddress,
+    lpAddress,
+    toBlockTimestamp: toBlockTimestamp.toString(),
   });
-  const fromId = removeLiquidities[0].receiptId;
-  const endId = removeLiquidities[removeLiquidities.length - 1].receiptId;
-  const {
-    data: { removeLiquiditySettleds },
-  } = await client.query({
-    query: RemoveLiquiditySettledsDocument,
-    variables: {
-      fromId,
-      endId,
-      lpAddress,
-    },
+  if (removeLiquidities.length <= 0) {
+    return new Map<bigint, LpReceipt>();
+  }
+  const endId = removeLiquidities[0].receiptId;
+  const fromId = removeLiquidities[removeLiquidities.length - 1].receiptId;
+  const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettleds({
+    fromId,
+    endId,
+    lpAddress,
   });
   const removeSettledMap = removeLiquiditySettleds.reduce((map, current) => {
-    const { receiptId, witdrawnSettlementAmount, refundedAmount } = current;
+    const { receiptId, witdrawnSettlementAmount, refundedAmount } = bigintify(
+      current,
+      'receiptId',
+      'witdrawnSettlementAmount',
+      'refundedAmount'
+    );
     map.set(receiptId, {
       id: receiptId,
       burnedAmount: witdrawnSettlementAmount,
@@ -461,7 +463,14 @@ const getRemoveReceipts = async (client: ApolloClient<object>, args: GetReceipts
   }, new Map<bigint, LpReceipt>());
   const removeMap = removeLiquidities.reduce((map, current) => {
     const { receiptId, recipient, lpTokenAmount, oracleVersion, blockNumber, blockTimestamp } =
-      current;
+      bigintify(
+        current,
+        'receiptId',
+        'lpTokenAmount',
+        'oracleVersion',
+        'blockNumber',
+        'blockTimestamp'
+      );
     const settled = removeSettledMap.get(receiptId) ?? { isSettled: false };
     map.set(receiptId, {
       action: 'burning',
@@ -469,7 +478,7 @@ const getRemoveReceipts = async (client: ApolloClient<object>, args: GetReceipts
       lpAddress,
       recipient,
       amount: lpTokenAmount,
-      oracleVersion,
+      oracleVersion: oracleVersion,
       blockNumber,
       blockTimestamp,
       isIssued: true,
