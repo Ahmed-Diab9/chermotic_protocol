@@ -17,6 +17,9 @@
     "automigrate": "storybook automigrate",
     "codegen": "graphql-codegen --config codegen/index.ts",
     "predev": "yarn codegen",
+    "prebuild:dev": "yarn codegen",
+    "prebuild:testnet": "yarn codegen",
+    "prebuild:mainnet": "yarn codegen",
     "prebuild": "yarn codegen"
   },
   "resolutions": {
