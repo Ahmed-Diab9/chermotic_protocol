@@ -3,27 +3,26 @@
  * @austin-builds
  */
 
-import { ApolloClient, useApolloClient } from '@apollo/client';
 import { iChromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
 import axios from 'axios';
+import { GraphQLClient } from 'graphql-request';
 import { isNil, isNotNil } from 'ramda';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog } from 'viem';
 import { Address, useAccount } from 'wagmi';
 import {
-  AddLiquiditiesDocument,
-  AddLiquiditySettledsDocument,
   AddLiquidity_OrderBy,
   OrderDirection,
-  RemoveLiquiditiesDocument,
-  RemoveLiquiditySettledsDocument,
   RemoveLiquidity_OrderBy,
-} from '~/__generated__/graphql';
+  Sdk,
+  getSdk,
+} from '~/__generated__/request';
+import { SUBGRAPH_API_URL } from '~/configs/lp';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
 import { LpReceipt, LpToken } from '~/typings/lp';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
-import { divPreserved, formatDecimals } from '~/utils/number';
+import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -155,7 +154,7 @@ type UseLpReceipts = {
   action: 'all' | 'minting' | 'burning';
 };
 
-export const useLpReceipts = (props: UseLpReceipts) => {
+export const useLpReceiptsLegacy = (props: UseLpReceipts) => {
   const { isReady, lpClient, client } = useChromaticClient();
   const { address } = useAccount();
   const { currentMarket } = useMarket();
@@ -489,24 +488,34 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
   return removeMap;
 };
 
-export const useLpReceiptsNext = (props: UseLpReceipts) => {
+export const useLpReceipts = (props: UseLpReceipts) => {
   const { isReady, lpClient, client } = useChromaticClient();
-  const apolloClient = useApolloClient();
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
   const { action } = props;
+  const graphClient = new GraphQLClient(SUBGRAPH_API_URL);
+  const graphSdk = getSdk(graphClient);
 
-  useSWRInfinite(
-    (pageIndex, previousData) => {
-      if (!isReady || isNil(apolloClient)) {
+  const {
+    data: receiptsData,
+    error,
+    isLoading,
+    size,
+    setSize,
+  } = useSWRInfinite(
+    (pageIndex, previousData?: { receipts: LpReceipt[]; toBlockTimestamp: bigint }) => {
+      if (!isReady) {
         return null;
       }
-      if (previousData && !previousData.receipts) {
+      if (previousData && !previousData?.receipts) {
+        return null;
+      }
+      if (previousData?.receipts && previousData?.receipts?.length <= 0) {
         return null;
       }
       const fetchKey = {
-        key: 'getChromaticLpReceipts',
+        key: 'getChromaticLpReceiptsNext',
         walletAddress: address,
         currentMarket,
         tokens,
@@ -516,12 +525,10 @@ export const useLpReceiptsNext = (props: UseLpReceipts) => {
       if (!checkAllProps(fetchKey)) {
         return null;
       }
-      return {
-        ...fetchKey,
-        toBlockTimestamp: previousData?.toBlockTimestamp as bigint | undefined,
-      };
+      return { ...fetchKey, toBlockTimestamp: previousData?.toBlockTimestamp };
     },
     async ({ walletAddress, currentMarket, tokens, action, toBlockTimestamp }) => {
+      const defaultToBlockTimestamp = BigInt(Math.round(Date.now() / 1000));
       const registry = lpClient.registry();
       const lp = lpClient.lp();
       const lpAddresses = await registry.lpListByMarket(currentMarket.address);
@@ -542,18 +549,23 @@ export const useLpReceiptsNext = (props: UseLpReceipts) => {
       let receipts: LpReceipt[] = [];
       for (let index = 0; index < lpAddresses.length; index++) {
         const lpAddress = lpAddresses[index];
-
-        const addMap = await getAddReceipts(apolloClient, {
-          walletAddress,
-          lpAddress,
-          toBlockTimestamp,
-        });
-        const removeMap = await getRemoveReceipts(apolloClient, {
-          walletAddress,
-          lpAddress,
-          toBlockTimestamp,
-        });
-        const currentReceipts = Array.from(addMap.values()).concat(...removeMap.values());
+        let currentReceipts = [] as LpReceipt[];
+        if (action !== 'burning') {
+          const addMap = await getAddReceipts(graphSdk, {
+            walletAddress,
+            lpAddress,
+            toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
+          });
+          currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
+        }
+        if (action !== 'minting') {
+          const removeMap = await getRemoveReceipts(graphSdk, {
+            walletAddress,
+            lpAddress,
+            toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
+          });
+          currentReceipts = currentReceipts.concat(Array.from(removeMap.values()));
+        }
         receipts = receipts.concat(currentReceipts);
       }
       receipts.sort((previous, next) => {
@@ -568,7 +580,7 @@ export const useLpReceiptsNext = (props: UseLpReceipts) => {
         }
         return previous.blockTimestamp < next.blockTimestamp ? 1 : -1;
       });
-      receipts = receipts.slice(0, 1);
+      receipts = receipts.slice(0, PAGE_SIZE);
       const detailedReceipts = receipts.map(async (receipt) => {
         const clpToken = clpTokens[receipt.lpAddress];
         const status = receipt.isIssued && receipt.isSettled ? 'completed' : 'standby';
@@ -620,11 +632,30 @@ export const useLpReceiptsNext = (props: UseLpReceipts) => {
           token,
         } satisfies LpReceipt;
       });
-
-      return {
-        receipts: PromiseOnlySuccess(detailedReceipts),
-        toBlockTimestamp: receipts[receipts.length - 1].blockTimestamp,
+      const finalReceipts = await PromiseOnlySuccess(detailedReceipts);
+      const receiptsData = {
+        receipts: finalReceipts as LpReceipt[],
+        toBlockTimestamp: finalReceipts[finalReceipts.length - 1]?.blockTimestamp,
       };
+      return receiptsData;
+    },
+    {
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateFirstPage: false,
     }
   );
+
+  useError({ error });
+
+  const onFetchNextLpReceipts = () => {
+    setSize((size) => size + 1);
+  };
+
+  return {
+    receiptsData,
+    onFetchNextLpReceipts,
+  };
 };
