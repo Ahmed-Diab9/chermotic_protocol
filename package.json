@@ -19,11 +19,13 @@
     "predev": "yarn codegen",
     "prebuild": "yarn codegen"
   },
+  "resolutions": {
+    "@chromatic-protocol/sdk-viem/viem": "1.12.1"
+  },
   "dependencies": {
-    "@apollo/client": "^3.8.5",
-    "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.17",
+    "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.21",
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.9",
-    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.141",
+    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.156",
     "@floating-ui/dom": "^1.4.2",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
@@ -33,6 +35,7 @@
     "axios": "^1.5.0",
     "debug": "^4.3.4",
     "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
     "js-big-decimal": "^2.0.4",
     "memoize-one": "^6.0.0",
     "normalize.css": "^8.0.1",
@@ -47,7 +50,7 @@
     "react-router-dom": "^6.10.0",
     "react-toastify": "^9.1.3",
     "react-tooltip": "^5.15.0",
-    "swr": "^2.2.0",
+    "swr": "^2.2.4",
     "tailwind-scrollbar-hide": "^1.1.7",
     "wagmi": "^1.3.8"
   },
@@ -56,6 +59,7 @@
     "@graphql-codegen/client-preset": "4.1.0",
     "@graphql-codegen/introspection": "4.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-graphql-request": "^6.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@sentry/vite-plugin": "^2.5.0",
