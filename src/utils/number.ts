@@ -214,3 +214,31 @@ export const isNotZero = (value: number | string | undefined) => {
   }
   return Number(value) !== 0;
 };
+
+type BigIntified<
+  R extends Record<string, unknown>,
+  K extends keyof R,
+  Ks extends [K, ...K[]]
+> = Ks extends []
+  ? never
+  : {
+      [Key in keyof R]: Key extends Ks[number] ? bigint : R[Key];
+    };
+
+export const bigintify = <
+  R extends Record<string, unknown>,
+  K extends keyof R,
+  Ks extends [K, ...K[]]
+>(
+  obj: R,
+  ...keys: Ks
+): BigIntified<R, K, Ks> => {
+  for (let index = 0; index < keys.length; index++) {
+    const key = keys[index];
+    const value = obj[key];
+    if (typeof value === 'string') {
+      (obj[key] as bigint) = BigInt(value);
+    }
+  }
+  return obj as BigIntified<R, K, Ks>;
+};
