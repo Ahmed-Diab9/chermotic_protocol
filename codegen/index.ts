@@ -3,11 +3,11 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   overwrite: true,
   schema: 'https://graph-arbitrum-goerli.api.chromatic.finance/subgraphs/name/chromatic-lp',
-  documents: 'codegen/**/*.{ts,tsx}',
+  noSilentErrors: true,
+  documents: 'codegen/**/*.ts',
   generates: {
-    'src/__generated__/': {
-      preset: 'client',
-      plugins: ['typescript', 'typescript-operations'],
+    'src/__generated__/request.ts': {
+      plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
       presetConfig: {
         gqlTagName: 'gql',
       },
@@ -18,8 +18,8 @@ const config: CodegenConfig = {
             output: '`0x${string}`',
           },
           BigInt: {
-            input: 'bigint',
-            output: 'bigint',
+            input: 'string',
+            output: 'string',
           },
         },
       },
