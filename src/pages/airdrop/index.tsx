@@ -6,7 +6,7 @@ import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { BlurText } from '~/stories/atom/BlurText';
-
+import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
@@ -50,9 +50,11 @@ function Airdrop() {
                       </div>
                     </section>
                     <section className="flex flex-col gap-24 mt-16">
-                      <article>{/* <AirdropStamp> */}</article>
-                      <article>{/* <AirdropActivity> */}</article>
-                      <article>{/* <AirderopRandombox> */}</article>
+                      <article>
+                        <AirdropStamp />
+                      </article>
+                      <article>{/* <AirdropActivity/> */}</article>
+                      <article>{/* <AirderopRandombox/> */}</article>
                       <article>{/* <AirdropBoard /> */}</article>
                     </section>
                   </Tab.Panel>
