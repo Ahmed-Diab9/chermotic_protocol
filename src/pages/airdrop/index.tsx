@@ -30,15 +30,31 @@ function Airdrop() {
                   <Tab>My History</Tab>
                   <Tab>How to Participate</Tab>
                 </Tab.List>
-                <Tab.Panels className="flex-auto">
+                <Tab.Panels className="flex-auto block">
                   <Tab.Panel>
-                    <div className="w-[560px]">
-                      <BlurText
-                        label="Chromatic Airdrop Program"
-                        className="text-[60px]"
-                        color="chrm"
-                      />
-                    </div>
+                    <section>
+                      <div className="w-[560px]">
+                        <BlurText
+                          label="Chromatic Airdrop Program"
+                          className="text-[60px]"
+                          color="chrm"
+                        />
+                      </div>
+                      <div className="flex items-baseline justify-between mt-10">
+                        <p className="text-xl text-primary-light">
+                          Airdrop season 1 for Testnet has just begun!
+                        </p>
+                        <p className="text-xl text-primary-light">
+                          Airdrop 1 period: Oct 20 2023 ~ Jan 20 2024
+                        </p>
+                      </div>
+                    </section>
+                    <section className="flex flex-col gap-24 mt-16">
+                      <article>{/* <AirdropStamp> */}</article>
+                      <article>{/* <AirdropActivity> */}</article>
+                      <article>{/* <AirderopRandombox> */}</article>
+                      <article>{/* <AirdropBoard /> */}</article>
+                    </section>
                   </Tab.Panel>
                   <Tab.Panel>Content 2</Tab.Panel>
                   <Tab.Panel>Content 3</Tab.Panel>
