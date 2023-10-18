@@ -22,7 +22,7 @@ export const BlurText = (props: BlurTextProps) => {
   } = props;
 
   return (
-    <div className={`relative text-${align}`}>
+    <div className={`relative text-${align} flex`}>
       <p
         className={`text-${fontSize} text-${color} font-${fontWeight} ${className} blur-${blurSize}`}
       >
