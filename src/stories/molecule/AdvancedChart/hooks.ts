@@ -8,7 +8,7 @@ import {
   ResolutionString,
   TradingTerminalFeatureset,
   widget,
-} from '~/charting_library';
+} from '~/lib/charting_library';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
@@ -17,6 +17,7 @@ import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { AdvancedChartProps } from '.';
+import datafeed from '~/apis/datafeed';
 
 export const useAdvancedChart = (props: AdvancedChartProps) => {
   const { symbol } = props;
@@ -34,7 +35,7 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
 
   const defaultProps = {
     interval: '1h' as ResolutionString,
-    datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed(PYTH_TV_PRICEFEED),
+    datafeed: datafeed,
     library_path: '/charting_library/',
     fullscreen: false,
     autosize: true,
@@ -54,7 +55,7 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       'popup_hints',
     ] as TradingTerminalFeatureset[],
     favorites: {
-      intervals: ['30', '60', 'd'] as ResolutionString[],
+      intervals: ['1', '5', '30', '60', '1D', '1W'] as ResolutionString[],
       chartTypes: ['Candles', 'Baseline'] as ChartTypeFavorites[],
     },
   };
@@ -66,17 +67,17 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       container: chartContainerRef.current,
       // @ts-ignore
       custom_formatters: {
-        priceFormatterFactory: () => ({
-          format: (price) =>
-            numberFormat(price, {
-              compact: false,
-              maxDigits: 4,
-              minDigits: 4,
-              roundingMode: 'trunc',
-              type: 'string',
-              useGrouping: false,
-            }),
-        }),
+        // priceFormatterFactory: () => ({
+        //   format: (price) =>
+        //     numberFormat(price, {
+        //       compact: false,
+        //       maxDigits: 4,
+        //       minDigits: 4,
+        //       roundingMode: 'trunc',
+        //       type: 'string',
+        //       useGrouping: false,
+        //     }),
+        // }),
       },
     });
 
