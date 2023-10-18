@@ -4,12 +4,14 @@ import { Outlink } from '../Outlink';
 
 interface GuideProps {
   title: string;
-  paragraph: string;
+  paragraph?: string;
   outLink?: string;
   outLinkAbout?: string;
   direction?: 'row' | 'column';
+  css?: 'default' | 'alert';
   className?: string;
   isVisible?: boolean;
+  isClosable?: boolean;
   onClick?: () => unknown;
 }
 
@@ -20,18 +22,22 @@ export const Guide = (props: GuideProps) => {
     outLink,
     outLinkAbout,
     direction = 'column',
+    css = 'default',
     className,
     onClick,
     isVisible,
+    isClosable = true,
   } = props;
 
   return (
     <>
       {isVisible && (
         <div
-          className={`relative px-5 text-left rounded-xl bg-paper-light flex gap-3 ${
+          className={`relative px-5 text-left rounded flex gap-3 ${
             direction === 'row' ? 'py-2 items-center' : 'py-4'
-          } ${className}`}
+          } ${className} ${
+            css === 'alert' ? 'bg-price-lower/10 text-price-lower' : 'bg-paper-light'
+          }`}
         >
           <div>
             {/* <BellIcon className="w-4" /> */}
@@ -48,14 +54,16 @@ export const Guide = (props: GuideProps) => {
               </div>
             )}
 
-            <Button
-              iconOnly={<XMarkIcon />}
-              css="unstyled"
-              className={`absolute right-1 text-primary-lighter  ${
-                direction === 'row' ? '' : 'top-1'
-              }`}
-              onClick={onClick}
-            />
+            {isClosable && (
+              <Button
+                iconOnly={<XMarkIcon />}
+                css="unstyled"
+                className={`absolute right-1 text-primary-lighter  ${
+                  direction === 'row' ? 'top-0' : 'top-1'
+                }`}
+                onClick={onClick}
+              />
+            )}
           </div>
         </div>
       )}
