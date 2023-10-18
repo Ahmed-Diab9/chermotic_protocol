@@ -1,12 +1,16 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+import { SUBGRAPH_API_URL } from '../src/configs/subgraph';
+
+const GENERATED_PATH = 'src/lib/graphql/sdk';
+
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'https://graph-arbitrum-goerli.api.chromatic.finance/subgraphs/name/chromatic-lp',
   noSilentErrors: true,
-  documents: 'codegen/**/*.ts',
   generates: {
-    'src/__generated__/request.ts': {
+    [`${GENERATED_PATH}/lp.ts`]: {
+      documents: 'codegen/lp.ts',
+      schema: `${SUBGRAPH_API_URL}/chromatic-lp`,
       plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
       presetConfig: {
         gqlTagName: 'gql',
@@ -24,8 +28,21 @@ const config: CodegenConfig = {
         },
       },
     },
-    './graphql.schema.json': {
-      plugins: ['introspection'],
+    [`${GENERATED_PATH}/pricefeed.ts`]: {
+      documents: 'codegen/pricefeed.ts',
+      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
+      presetConfig: {
+        gqlTagName: 'gql',
+      },
+      config: {
+        scalars: {
+          BigInt: {
+            input: 'string',
+            output: 'string',
+          },
+        },
+      },
     },
   },
 };
