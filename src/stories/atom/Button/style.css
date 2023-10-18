@@ -34,7 +34,7 @@ button,
 a {
   &.btn-active {
     @apply border border-transparent bg-primary text-inverted;
-    &:not(.shadow-base):not(:disabled) {
+    &:not(.shadow-base):not(:disabled):not(.btn-has-tag) {
       @apply hover:opacity-70;
     }
     &:disabled {
@@ -43,6 +43,9 @@ a {
     }
     &.shadow-base {
       @apply dark:bg-gray-dark dark:text-primary;
+    }
+    .tag {
+      @apply bg-inverted/10;
     }
   }
   &.btn-default {
@@ -59,6 +62,13 @@ a {
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
+    }
+  }
+  &.btn-lighter {
+    @apply bg-paper border;
+    @apply hover:bg-paper-light;
+    .tag {
+      @apply bg-primary/10;
     }
   }
   &.btn-line {
@@ -187,4 +197,8 @@ a {
       @apply min-h-[60px] p-0 items-center justify-center;
     }
   }
+}
+
+.btn-has-tag {
+  @apply inline-flex items-center gap-2;
 }
