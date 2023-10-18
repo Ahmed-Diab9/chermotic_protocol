@@ -8,6 +8,7 @@ import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { BlurText } from '~/stories/atom/BlurText';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -30,7 +31,15 @@ function Airdrop() {
                 <Tab.List className="tabs-list min-w-[200px]">
                   <Tab>Airdrop 1</Tab>
                   <Tab>My History</Tab>
-                  <Tab>How to Participate</Tab>
+                  <button
+                    onClick={() => {
+                      window.open('https://chromatic.finance/', '_blank');
+                    }}
+                    className="flex gap-2 text-primary-light"
+                  >
+                    How to Participate
+                    <OutlinkIcon />
+                  </button>
                 </Tab.List>
                 <Tab.Panels className="flex-auto block">
                   <Tab.Panel>
@@ -90,7 +99,6 @@ function Airdrop() {
                       <AirdropHistory />
                     </section>
                   </Tab.Panel>
-                  <Tab.Panel>Content 3</Tab.Panel>
                 </Tab.Panels>
               </div>
             </Tab.Group>

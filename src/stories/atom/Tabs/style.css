@@ -124,6 +124,8 @@
     button {
       @apply rounded text-left relative items-center flex;
       @apply py-[10px] px-5 text-xl font-semibold;
+      /* @apply hover:bg-paper; */
+      @apply hover:!text-primary;
       &[aria-selected='true'] {
         @apply bg-paper text-primary;
         &::after {
