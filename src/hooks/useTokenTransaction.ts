@@ -3,7 +3,7 @@ import { isNil } from 'ramda';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
-import { useAccount, useContractWrite, useWalletClient } from 'wagmi';
+import { useAccount, useContractWrite } from 'wagmi';
 import { Logger } from '../utils/log';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
@@ -18,7 +18,6 @@ const useTokenTransaction = () => {
   const { currentToken } = useSettlementToken();
   const { client } = useChromaticClient();
   const [amount, setAmount] = useState('');
-  const { data: walletClient } = useWalletClient();
   const { writeAsync: transferToken } = useContractWrite({
     abi: ierc20ABI,
     address: currentToken?.address,
@@ -90,13 +89,15 @@ const useTokenTransaction = () => {
 
         setAmount('');
         const accountApi = client.account();
-        const result = await accountApi
+        const { request } = await accountApi
           ?.contracts()
           .account(chromaticAccountAddress)
-          .simulate.withdraw([currentToken.address, expanded], { account: walletClient?.account });
-        if (!result) return;
+          .simulate.withdraw([currentToken.address, expanded], {
+            account: client.walletClient?.account?.address,
+          });
+        if (!request) return;
 
-        const hash = await walletClient?.writeContract(result.request);
+        const hash = await client.walletClient?.writeContract(request);
         if (isNil(hash)) {
           throw new Error('withdrawal failed');
         }

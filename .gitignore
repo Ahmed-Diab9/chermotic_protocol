@@ -28,3 +28,7 @@ storybook-static
 # Local Netlify folder
 .netlify
 .env
+
+# GraphQL Codegen
+graphql.schema.json
+src/__generated__/*
