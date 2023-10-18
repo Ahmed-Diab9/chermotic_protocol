@@ -10,6 +10,7 @@ import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { Guide } from '~/stories/atom/Guide';
+import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
@@ -66,8 +67,19 @@ function Airdrop() {
                       <article>
                         <AirdropStamp />
                       </article>
+
                       <article>{/* <AirdropActivity/> */}</article>
-                      <article>{/* <AirderopRandombox/> */}</article>
+
+                      <article>
+                        {/* <AirderopRandombox/> */}
+                        <Button
+                          label="Open Enthusiast Box"
+                          css="chrm"
+                          size="3xl"
+                          className="!text-xl !min-w-[280px]"
+                        />
+                      </article>
+
                       <article>
                         <div className="text-left">
                           <h2 className="text-4xl">Leader board</h2>

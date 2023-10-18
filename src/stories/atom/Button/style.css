@@ -110,6 +110,33 @@ a {
   &.btn-short {
     @apply bg-price-lower/10 border border-price-lower text-price-lower;
   }
+  &.btn-chrm {
+    @apply relative border border-primary transition-all;
+    &:before,
+    &:after {
+      @apply absolute top-0 left-0 inline-block border w-full h-full rounded-full opacity-0 -z-10 transition-all;
+      content: '';
+    }
+    &:before {
+      @apply border-price-lower;
+    }
+    &:after {
+      @apply border-price-higher;
+    }
+    &:hover {
+      &:before,
+      &:after {
+        @apply opacity-100;
+      }
+      &:before {
+        @apply -rotate-2;
+      }
+      &:after {
+        @apply rotate-2;
+      }
+    }
+  }
+
   &.btn-xs {
     @apply min-w-[20px] h-5 px-2 py-0 text-xs;
     > div {
