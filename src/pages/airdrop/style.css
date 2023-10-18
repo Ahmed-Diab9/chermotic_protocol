@@ -2,3 +2,8 @@
   max-width: none;
   padding: 0;
 }
+.bg-gradient {
+  @apply overflow-visible bg-no-repeat bg-cover;
+  background-image: url('/src/assets/images/bg_airdrop_gradient.png');
+  background-position: bottom;
+}

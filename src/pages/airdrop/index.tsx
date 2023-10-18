@@ -7,6 +7,8 @@ import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { BlurText } from '~/stories/atom/BlurText';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
+import { AirdropHistory } from '~/stories/template/AirdropHistory';
+
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
@@ -18,7 +20,7 @@ function Airdrop() {
 
   return (
     <>
-      <div className="flex flex-col min-h-[100vh] w-full relative">
+      <div className="flex flex-col min-h-[100vh] w-full relative bg-gradient">
         <BookmarkBoardV3 />
         <HeaderV3 />
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-16 mx-auto mb-20">
@@ -58,7 +60,36 @@ function Airdrop() {
                       <article>{/* <AirdropBoard /> */}</article>
                     </section>
                   </Tab.Panel>
-                  <Tab.Panel>Content 2</Tab.Panel>
+                  <Tab.Panel>
+                    <section>
+                      <BlurText label="My History" className="text-[60px]" color="chrm" />
+                      <div className="mt-5 text-left">
+                        <p className="text-xl text-primary-light">
+                          Get to the top of the leaderboard to boost your points. <br />
+                          The top 100 on a rolling 24H basis get a boost!
+                        </p>
+                      </div>
+                      <div className="p-5 mt-10 panel">
+                        <div className="flex justify-between">
+                          <div className="w-1/3">
+                            <h2 className="text-4xl">10</h2>
+                            <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
+                          </div>
+                          <div className="w-1/3 border-l">
+                            <h2 className="text-4xl">3,445</h2>
+                            <h4 className="mt-3 text-xl text-primary-light">2 Key Holders</h4>
+                          </div>
+                          <div className="w-1/3 border-l">
+                            <h2 className="text-4xl">13</h2>
+                            <h4 className="mt-3 text-xl text-primary-light">Total Credits</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    <section className="mt-16">
+                      <AirdropHistory />
+                    </section>
+                  </Tab.Panel>
                   <Tab.Panel>Content 3</Tab.Panel>
                 </Tab.Panels>
               </div>
