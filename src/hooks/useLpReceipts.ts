@@ -4,7 +4,6 @@
  */
 
 import { Client } from '@chromatic-protocol/sdk-viem';
-import { GraphQLClient } from 'graphql-request';
 import { isNil, isNotNil } from 'ramda';
 import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
@@ -14,9 +13,7 @@ import {
   OrderDirection,
   RemoveLiquidity_OrderBy,
   Sdk,
-  getSdk,
-} from '~/__generated__/request';
-import { SUBGRAPH_API_URL } from '~/configs/lp';
+} from '~/lib/graphql/sdk/lp';
 import { PAGE_SIZE } from '~/constants/arbiscan';
 import { useAppSelector } from '~/store';
 import { LpReceipt, LpToken } from '~/typings/lp';
@@ -30,6 +27,7 @@ import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
+import { lpGraphSdk } from '~/lib/graphql';
 
 type GetReceiptsArgs = {
   count: number;
@@ -223,8 +221,6 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { tokens } = useSettlementToken();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const { currentAction } = props;
-  const graphClient = new GraphQLClient(SUBGRAPH_API_URL);
-  const graphSdk = getSdk(graphClient);
 
   const {
     data: receiptsData,
@@ -294,7 +290,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         const lpAddress = lpAddresses[index];
         let currentReceipts = [] as LpReceipt[];
         if (currentAction !== 'burning') {
-          const addMap = await getAddReceipts(graphSdk, {
+          const addMap = await getAddReceipts(lpGraphSdk, {
             count,
             walletAddress,
             lpAddress,
@@ -303,7 +299,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
           currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
         }
         if (currentAction !== 'minting') {
-          const removeMap = await getRemoveReceipts(graphSdk, {
+          const removeMap = await getRemoveReceipts(lpGraphSdk, {
             count,
             walletAddress,
             lpAddress,
