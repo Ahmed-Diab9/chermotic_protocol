@@ -6,11 +6,9 @@ import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { dispatchLpEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
 
 export const useRemoveChromaticLp = () => {
   const { client, lpClient } = useChromaticClient();
-  const { currentMarket } = useMarket();
   const { address } = useAccount();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const [isRemovalPending, setIsRemovalPending] = useState(false);
@@ -23,6 +21,10 @@ export const useRemoveChromaticLp = () => {
       if (isNil(selectedLp)) {
         return;
       }
+      if (isNil(client) || isNil(client.publicClient) || isNil(client.walletClient)) {
+        toast.error('Connect the wallet.');
+        return;
+      }
       setIsRemovalPending(true);
       const parsedAmount = parseUnits(amount, selectedLp.decimals);
       const lp = lpClient.lp();
@@ -30,7 +32,7 @@ export const useRemoveChromaticLp = () => {
       if (!isClpApproved) {
         throw new Error('CLP approval failed.');
       }
-      const removalResponse = await lp.removeLiquidity(selectedLp.address, parsedAmount);
+      const receipt = await lp.removeLiquidity(selectedLp.address, parsedAmount);
 
       dispatchLpEvent();
       toast('Removal completed.');
