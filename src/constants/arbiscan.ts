@@ -8,5 +8,5 @@ export const ARBISCAN_API_URLS = {
 
 export const ARBISCAN_API_URL = ARBISCAN_API_URLS[CHAIN];
 export const ARBISCAN_API_KEY = import.meta.env.VITE_ARBISCAN_KEY;
-export const BLOCK_CHUNK = 2500000n;
+export const BLOCK_CHUNK = 10000000n;
 export const PAGE_SIZE = 5;
