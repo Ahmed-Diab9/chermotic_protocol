@@ -247,7 +247,7 @@ const ProgressItem = (props: ProgressItemProps) => {
       <div className="ml-auto text-right">
         {receipt.status === 'completed' && (
           <p className="text-sm text-primary-light mb-[2px]">
-            {formatTimestamp(receipt.timestamp)}
+            {formatTimestamp(receipt.blockTimestamp)}
           </p>
         )}
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-primary">

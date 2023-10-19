@@ -24,8 +24,6 @@ export interface LpReceipt {
   key: string;
   id: bigint;
   lpAddress: Address;
-  oracleVersion: bigint;
-  timestamp: bigint;
   amount: bigint;
   mintedAmount: bigint;
   burnedAmount: bigint;

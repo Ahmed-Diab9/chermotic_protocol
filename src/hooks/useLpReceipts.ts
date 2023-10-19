@@ -79,7 +79,6 @@ const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
       lpAddress,
       recipient,
       amount,
-      oracleVersion,
       blockNumber,
       blockTimestamp,
       isIssued: true,
@@ -127,15 +126,14 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
     return map;
   }, new Map<bigint, LpReceipt>());
   const removeMap = removeLiquidities.reduce((map, current) => {
-    const { receiptId, recipient, lpTokenAmount, oracleVersion, blockNumber, blockTimestamp } =
-      bigintify(
-        current,
-        'receiptId',
-        'lpTokenAmount',
-        'oracleVersion',
-        'blockNumber',
-        'blockTimestamp'
-      );
+    const { receiptId, recipient, lpTokenAmount, blockNumber, blockTimestamp } = bigintify(
+      current,
+      'receiptId',
+      'lpTokenAmount',
+      'oracleVersion',
+      'blockNumber',
+      'blockTimestamp'
+    );
     const settled = removeSettledMap.get(receiptId) ?? { isSettled: false };
     map.set(receiptId, {
       action: 'burning',
@@ -143,7 +141,6 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
       lpAddress,
       recipient,
       amount: lpTokenAmount,
-      oracleVersion: oracleVersion,
       blockNumber,
       blockTimestamp,
       isIssued: true,
@@ -198,10 +195,6 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
       : undefined;
 
-    const oracleProvider = await client.market().contracts().oracleProvider(currentMarket.address);
-    const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
-    const { timestamp } = oracleValue;
-
     return {
       ...receipt,
       key,
@@ -209,7 +202,6 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       message,
       detail: [detail, remainedDetail],
 
-      timestamp,
       token,
     } satisfies LpReceipt;
   });
