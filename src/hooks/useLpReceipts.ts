@@ -340,11 +340,19 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   useError({ error });
 
   const onFetchNextLpReceipts = () => {
-    setSize((size) => size + 1);
+    if (isLoading) {
+      return;
+    }
+    setSize(size + 1);
+  };
+
+  const onRefreshLpReceipts = () => {
+    mutate();
   };
 
   return {
     receiptsData,
     onFetchNextLpReceipts,
+    onRefreshLpReceipts,
   };
 };
