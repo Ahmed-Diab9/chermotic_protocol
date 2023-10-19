@@ -23,3 +23,21 @@ export const dispatchLpEvent = () =>
       cancelable: true,
     })
   );
+declare global {
+  interface CustomEventMap {
+    [TRADE_EVENT]: CustomEvent<unknown>;
+    [POOL_EVENT]: CustomEvent<unknown>;
+    [LP_EVENT]: CustomEvent<unknown>;
+  }
+  interface Window {
+    addEventListener<K extends keyof CustomEventMap>(
+      type: K,
+      listener: (this: Window, event: CustomEventMap[K]) => void
+    ): void;
+    removeEventListener<K extends keyof CustomEventMap>(
+      type: K,
+      listener: (this: Window, event: CustomEventMap[K]) => void
+    ): void;
+    dispatchEvent<K extends keyof CustomEventMap>(event: CustomEventMap[K]): void;
+  }
+}
