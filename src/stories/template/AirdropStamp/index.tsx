@@ -3,6 +3,8 @@ import CoinStackIcon from '~/assets/icons/CoinStackIcon';
 import BoosterIcon from '~/assets/icons/BoosterIcon';
 import { Button } from '~/stories/atom/Button';
 import { Avatar } from '~/stories/atom/Avatar';
+import StampSuccess from '/src/assets/images/stamp_success.png';
+import StampFail from '/src/assets/images/stamp_fail.png';
 import './style.css';
 
 export interface AirdropStampProps {}
@@ -33,9 +35,9 @@ export const AirdropStamp = (props: AirdropStampProps) => {
           </div>
         </div>
         <div className="flex flex-col justify-between w-1/2 pl-10 pr-5 border-l">
-          <div className="flex">
+          <div className="flex items-center">
             <h4 className="mb-5 text-3xl text-primary-light">Currently Claimable</h4>
-            <Button label="Claim Now" size="sm" css="active" className="!text-base ml-auto" />
+            <Button label="Claim Now" css="active" className="!text-lg ml-auto" />
           </div>
           <div className="flex items-center gap-10">
             <div className="flex flex-col items-center gap-2">
@@ -57,11 +59,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
             <Avatar
               className="w-20 h-20 mt-3"
               src={
-                item.status === 'success'
-                  ? '/src/assets/images/stamp_success.png'
-                  : item.status === 'fail'
-                  ? '/src/assets/images/stamp_fail.png'
-                  : ''
+                item.status === 'success' ? StampSuccess : item.status === 'fail' ? StampFail : ''
               }
             />
 
