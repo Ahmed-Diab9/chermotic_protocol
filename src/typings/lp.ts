@@ -22,6 +22,7 @@ export interface ChromaticLp {
 export interface LpReceipt {
   key: string;
   id: bigint;
+  lpAddress: Address;
   oracleVersion: bigint;
   timestamp: bigint;
   amount: bigint;
@@ -42,6 +43,14 @@ export interface LpReceipt {
     logo?: string;
   };
   blockNumber: bigint;
+  blockTimestamp: bigint;
+}
+
+export interface LpToken {
+  name: string;
+  symbol: string;
+  decimals: number;
+  address: Address;
 }
 
 export type LpReceiptPartial = Pick<
