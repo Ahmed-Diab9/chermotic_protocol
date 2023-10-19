@@ -5,7 +5,6 @@ interface BlurTextProps {
   color?: string;
   fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   fontWeight?: 'lighter' | 'normal' | 'medium' | 'semibold' | 'bold';
-  blurSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   align?: 'left' | 'right' | 'center';
   className?: string;
 }
@@ -17,15 +16,12 @@ export const BlurText = (props: BlurTextProps) => {
     color = '',
     fontSize = '2xl',
     fontWeight = 'semibold',
-    blurSize = 'sm',
     align = 'left',
   } = props;
 
   return (
     <div className={`relative text-${align} flex`}>
-      <p
-        className={`text-${fontSize} text-${color} font-${fontWeight} ${className} blur-${blurSize}`}
-      >
+      <p className={`text-${fontSize} text-${color} font-${fontWeight} ${className} blur-sm`}>
         {label}
       </p>
       <p
