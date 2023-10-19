@@ -17,9 +17,11 @@ import {
 } from '~/__generated__/request';
 import { SUBGRAPH_API_URL } from '~/configs/lp';
 import { PAGE_SIZE } from '~/constants/arbiscan';
+import { useAppSelector } from '~/store';
 import { LpReceipt, LpToken } from '~/typings/lp';
-import { Market, Token } from '~/typings/market';
+import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
+import { trimMarket } from '~/utils/market';
 import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
@@ -154,7 +156,7 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
 type MapToDetailedReceiptsArgs = {
   client: Client;
   receipts: LpReceipt[];
-  currentMarket: Market;
+  currentMarket: MarketLike;
   currentAction: 'all' | 'minting' | 'burning';
   settlementToken: Token;
   clpTokens: Record<`0x${string}`, LpToken>;
@@ -209,7 +211,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
 };
 
 type UseLpReceipts = {
-  action: 'all' | 'minting' | 'burning';
+  currentAction: 'all' | 'minting' | 'burning';
 };
 
 export const useLpReceipts = (props: UseLpReceipts) => {
@@ -217,7 +219,8 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const { action } = props;
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const { currentAction } = props;
   const graphClient = new GraphQLClient(SUBGRAPH_API_URL);
   const graphSdk = getSdk(graphClient);
 
@@ -227,6 +230,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
     isLoading,
     size,
     setSize,
+    mutate,
   } = useSWRInfinite(
     (pageIndex, previousData?: { receipts: LpReceipt[]; toBlockTimestamp: bigint }) => {
       if (!isReady) {
@@ -241,9 +245,9 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       const fetchKey = {
         key: 'getChromaticLpReceiptsNext',
         walletAddress: address,
-        currentMarket,
+        currentMarket: trimMarket(currentMarket),
+        currentAction,
         tokens,
-        action,
         pageIndex,
       };
       if (!checkAllProps(fetchKey)) {
@@ -251,7 +255,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       }
       return { ...fetchKey, toBlockTimestamp: previousData?.toBlockTimestamp };
     },
-    async ({ walletAddress, currentMarket, tokens, action, toBlockTimestamp }) => {
+    async ({ walletAddress, currentMarket, tokens, currentAction, toBlockTimestamp }) => {
       const defaultToBlockTimestamp = BigInt(Math.round(Date.now() / 1000));
       const registry = lpClient.registry();
       const lp = lpClient.lp();
@@ -278,7 +282,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       for (let index = 0; index < lpAddresses.length; index++) {
         const lpAddress = lpAddresses[index];
         let currentReceipts = [] as LpReceipt[];
-        if (action !== 'burning') {
+        if (currentAction !== 'burning') {
           const addMap = await getAddReceipts(graphSdk, {
             walletAddress,
             lpAddress,
@@ -286,7 +290,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
           });
           currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
         }
-        if (action !== 'minting') {
+        if (currentAction !== 'minting') {
           const removeMap = await getRemoveReceipts(graphSdk, {
             walletAddress,
             lpAddress,
@@ -313,7 +317,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         client,
         receipts,
         currentMarket,
-        currentAction: action,
+        currentAction,
         settlementToken,
         clpTokens,
       });
@@ -329,7 +333,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
-      revalidateAll: true,
+      revalidateFirstPage: true,
     }
   );
 
