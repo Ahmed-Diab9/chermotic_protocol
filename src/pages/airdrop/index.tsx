@@ -9,10 +9,11 @@ import { BlurText } from '~/stories/atom/BlurText';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
+import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { Guide } from '~/stories/atom/Guide';
 import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
-import Randombox from '~/assets/images/airdrop_randombox.png';
+import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -32,7 +33,7 @@ function Airdrop() {
           <div className="tabs tabs-flex-column">
             <Tab.Group>
               <div className="flex gap-10">
-                <Tab.List className="tabs-list min-w-[200px]">
+                <Tab.List className="tabs-list min-w-[210px]">
                   <Tab>Airdrop 1</Tab>
                   <Tab>My History</Tab>
                   <button
@@ -69,7 +70,21 @@ function Airdrop() {
                         <AirdropStamp />
                       </article>
 
-                      <article>{/* <AirdropActivity/> */}</article>
+                      <article>
+                        <div className="flex justify-between mb-5 text-left">
+                          <h2 className="text-4xl">My Activities</h2>
+                          <div className="flex items-center gap-3">
+                            <p className="text-primary-light">Get to the top of the leaderboard</p>
+                            <Button
+                              label="Update Now"
+                              css="active"
+                              size="sm"
+                              className="!text-base"
+                            />
+                          </div>
+                        </div>
+                        <AirdropActivity />
+                      </article>
 
                       <article>
                         <div className="text-left">
@@ -82,7 +97,7 @@ function Airdrop() {
                         </div>
                         <div className="flex justify-around mt-16">
                           <div>
-                            <img src={Randombox} alt="ramdom box" className="w-[400px] mb-7" />
+                            <img src={RandomboxImage} alt="ramdom box" className="w-[400px] mb-7" />
                             <Button
                               label="Open Enthusiast Box"
                               css="chrm"
@@ -94,7 +109,7 @@ function Airdrop() {
                             </p>
                           </div>
                           <div>
-                            <img src={Randombox} alt="ramdom box" className="w-[400px] mb-7" />
+                            <img src={RandomboxImage} alt="ramdom box" className="w-[400px] mb-7" />
                             <Button
                               label="Open Ambassador Box"
                               css="chrm"
