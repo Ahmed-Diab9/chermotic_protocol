@@ -41,9 +41,11 @@ export const useOracleBefore24Hours = ({ market }: { market?: Market }) => {
       const averageOracle = await oracleProvider.read.atVersion([averageVersion]);
       const oracleDiff = Number(market.oracleValue.timestamp - averageOracle.timestamp);
       if (oracleDiff < 60 * 60 * 24) {
+        await new Promise((resolve) => setTimeout(resolve, 400));
         return searchVersion(minVersion, averageVersion);
       }
       if (oracleDiff > 60 * 60 * 24 + 60 * 10) {
+        await new Promise((resolve) => setTimeout(resolve, 400));
         return searchVersion(averageVersion, maxVersion);
       }
       return { ...averageOracle, marketAddress: market.address };
