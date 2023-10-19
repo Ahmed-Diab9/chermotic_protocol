@@ -1,29 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Avatar } from ".";
+import type { Meta, StoryObj } from '@storybook/react';
+import { BlurText } from '.';
 
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Atom/Avatar",
-  component: Avatar,
-  tags: ["autodocs"],
+  title: 'Atom/BlurText',
+  component: BlurText,
+  tags: ['autodocs'],
   argTypes: {
-    backgroundColor: { control: "color" },
+    // backgroundColor: { control: "color" },
   },
-} satisfies Meta<typeof Avatar>;
+} satisfies Meta<typeof BlurText>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const WithLabel: Story = {
-  args: {
-    label: "Avatar",
-    src: "https://assets.nick.com/uri/mgid:arc:srcassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
-  },
-};
-
-export const OnlyImage: Story = {
-  args: {
-    label: undefined,
-    size: "lg",
-    src: "https://assets.nick.com/uri/mgid:arc:srcassetref:shared.nick.us:a625d441-bbbf-42c8-9927-6a0157aac911?quality=0.7&gen=ntrn&legacyStatusCode=true",
-  },
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Default: Story = {
+  args: {},
 };
