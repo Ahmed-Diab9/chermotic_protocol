@@ -26,6 +26,7 @@ export const useLpReceiptCount = () => {
     data: count,
     error,
     isLoading: isCountLoading,
+    mutate,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ lpAddresses, walletAddress }) => {
     let mintings = 0;
     let burnings = 0;
@@ -57,8 +58,13 @@ export const useLpReceiptCount = () => {
 
   useError({ error });
 
+  const onRefreshLpReceiptCount = () => {
+    mutate();
+  };
+
   return {
     count,
     isCountLoading,
+    onRefreshLpReceiptCount,
   };
 };
