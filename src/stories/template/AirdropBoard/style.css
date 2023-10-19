@@ -30,9 +30,9 @@
     }
   }
   .td {
-    @apply w-[20%];
+    @apply w-[12%];
     &:nth-child(4) {
-      @apply w-[40%];
+      /* @apply w-[28%]; */
     }
   }
 }

@@ -15,8 +15,8 @@ const boardList = [
 ];
 
 export const AirdropBoard = () => {
-  const [activeButton, setActiveButton] = useState('This Week');
-  const categories = ['This Week', 'All Time'];
+  const [activeButton, setActiveButton] = useState('Today');
+  const categories = ['Today', 'Yesterday', 'All Time'];
 
   return (
     <div className="AirdropBoard">
@@ -42,7 +42,7 @@ export const AirdropBoard = () => {
               <div className="tr">
                 <div className="td">Rank</div>
                 <div className="td">Name</div>
-                <div className="td">Credits (1W)</div>
+                <div className="td">Credits (1D)</div>
                 <div className="td">Credits (All Time)</div>
                 <div className="td">Boosters</div>
               </div>
