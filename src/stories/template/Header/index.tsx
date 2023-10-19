@@ -23,9 +23,15 @@ export function Header() {
     <header className="Header">
       <div className="h-[70px] px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6 text-lg">
-          <Link to="/" className="mr-4 font-bold" title="Chromatic">
+          <a
+            href="https://chromatic.finance/"
+            className="mr-4"
+            title="Chromatic"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <LogoSimple className="text-primary h-9" />
-          </Link>
+          </a>
           {links.map((link) => (
             <Link
               key={link.to}
