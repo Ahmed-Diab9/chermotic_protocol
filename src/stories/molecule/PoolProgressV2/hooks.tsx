@@ -1,7 +1,9 @@
+import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
+import { useLpReceiptEvents } from '~/hooks/useLpReceiptEvents';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { LP_EVENT } from '~/typings/events';
 import { LpReceipt } from '~/typings/lp';
@@ -12,7 +14,13 @@ export const usePoolProgressV2 = () => {
 
   const { formattedElapsed } = useLastOracle();
   const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
-  const { receiptsData = [], onFetchNextLpReceipts } = useLpReceipts({ action: receiptAction });
+  const {
+    receiptsData = [],
+    onFetchNextLpReceipts,
+    onRefreshLpReceipts,
+  } = useLpReceipts({
+    currentAction: receiptAction,
+  });
   const {
     count = {
       mintings: 0,
@@ -20,7 +28,10 @@ export const usePoolProgressV2 = () => {
       inProgresses: 0,
     },
     isCountLoading,
+    onRefreshLpReceiptCount,
   } = useLpReceiptCount();
+  useLpReceiptEvents({ callbacks: [onRefreshLpReceipts, onRefreshLpReceiptCount] });
+
   const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
     return receipts;
@@ -49,7 +60,10 @@ export const usePoolProgressV2 = () => {
 
   useEffect(() => {
     function onLp() {
-      setIsGuideOpen(true);
+      if (isNotNil(openButtonRef.current) && isNil(ref.current)) {
+        setIsGuideOpen(true);
+        openButtonRef.current.click();
+      }
     }
     window.addEventListener(LP_EVENT, onLp);
     return () => {
