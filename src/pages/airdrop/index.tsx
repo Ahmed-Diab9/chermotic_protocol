@@ -12,6 +12,7 @@ import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { Guide } from '~/stories/atom/Guide';
 import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import Randombox from '~/assets/images/airdrop_randombox.png';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -71,13 +72,38 @@ function Airdrop() {
                       <article>{/* <AirdropActivity/> */}</article>
 
                       <article>
-                        {/* <AirderopRandombox/> */}
-                        <Button
-                          label="Open Enthusiast Box"
-                          css="chrm"
-                          size="3xl"
-                          className="!text-xl !min-w-[280px]"
-                        />
+                        <div className="text-left">
+                          <h2 className="text-4xl">rCHR Random Box</h2>
+                          <p className="mt-4 text-xl text-primary-light">
+                            Get to the top of the leaderboard to boost your points. The top 100 on a
+                            rolling 24H basis get a boost! The top 100 on a rolling 24H basis get a
+                            boost!
+                          </p>
+                        </div>
+                        <div className="flex justify-around mt-16">
+                          <div>
+                            <img src={Randombox} alt="ramdom box" className="w-[400px] mb-7" />
+                            <Button
+                              label="Open Enthusiast Box"
+                              css="chrm"
+                              size="3xl"
+                              className="!text-xl !min-w-[280px]"
+                            />
+                            <p className="mt-5 text-primary-light">
+                              1M rCHR for all Whitelist Holders
+                            </p>
+                          </div>
+                          <div>
+                            <img src={Randombox} alt="ramdom box" className="w-[400px] mb-7" />
+                            <Button
+                              label="Open Ambassador Box"
+                              css="chrm"
+                              size="3xl"
+                              className="!text-xl !min-w-[280px]"
+                            />
+                            <p className="mt-5 text-primary-light">1M rCHR for Ambassadors</p>
+                          </div>
+                        </div>
                       </article>
 
                       <article>
