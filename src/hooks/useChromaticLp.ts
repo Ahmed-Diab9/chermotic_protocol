@@ -8,6 +8,7 @@ import { ChromaticLp } from '~/typings/lp';
 import { checkAllProps } from '~/utils';
 import { divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
+import CLP from '../assets/tokens/CLP.png';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
@@ -59,59 +60,64 @@ export const useChromaticLp = () => {
           utilization,
         ] as const;
         const response = await Promise.allSettled(requests);
-        return response.reduce((provider, responseItem, itemIndex) => {
-          if (responseItem.status === 'rejected') {
+        return response.reduce(
+          (provider, responseItem, itemIndex) => {
+            if (responseItem.status === 'rejected') {
+              return provider;
+            }
+            const { value } = responseItem;
+            switch (itemIndex) {
+              case 0: {
+                provider.address = value as Awaited<typeof lpAddress>;
+                break;
+              }
+              case 1: {
+                provider.name = value as Awaited<typeof lpName>;
+                break;
+              }
+              case 2: {
+                provider.balance = value as bigint;
+                break;
+              }
+              case 3: {
+                provider.decimals = value as Awaited<typeof decimals>;
+                break;
+              }
+              case 4: {
+                provider.totalSupply = value as Awaited<typeof totalSupply>;
+                break;
+              }
+              case 5: {
+                const { total, holding, holdingClb, pending, pendingClb } = value as Awaited<
+                  typeof valueInfo
+                >;
+                provider = {
+                  ...provider,
+                  totalValue: total,
+                  holdingValue: holding,
+                  holdingClbValue: holdingClb,
+                  pendingValue: pending,
+                  pendingClbValue: pendingClb,
+                };
+                break;
+              }
+              case 6: {
+                provider = {
+                  ...provider,
+                  utilization: value as number,
+                };
+                break;
+              }
+              default: {
+                break;
+              }
+            }
             return provider;
-          }
-          const { value } = responseItem;
-          switch (itemIndex) {
-            case 0: {
-              provider.address = value as Awaited<typeof lpAddress>;
-              break;
-            }
-            case 1: {
-              provider.name = value as Awaited<typeof lpName>;
-              break;
-            }
-            case 2: {
-              provider.balance = value as bigint;
-              break;
-            }
-            case 3: {
-              provider.decimals = value as Awaited<typeof decimals>;
-              break;
-            }
-            case 4: {
-              provider.totalSupply = value as Awaited<typeof totalSupply>;
-              break;
-            }
-            case 5: {
-              const { total, holding, holdingClb, pending, pendingClb } = value as Awaited<
-                typeof valueInfo
-              >;
-              provider = {
-                ...provider,
-                totalValue: total,
-                holdingValue: holding,
-                holdingClbValue: holdingClb,
-                pendingValue: pending,
-                pendingClbValue: pendingClb,
-              };
-              break;
-            }
-            case 6: {
-              provider = {
-                ...provider,
-                utilization: value as number,
-              };
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-          return provider;
-        }, {} as ChromaticLp);
+          },
+          {
+            image: CLP,
+          } as ChromaticLp
+        );
       });
       const awaitedLpArray = (await PromiseOnlySuccess(lpInfoArray)) ?? [];
       return awaitedLpArray.map((lpValue) => {

@@ -117,7 +117,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </SkeletonElement>
               <div className={`mt-[2px] ${tpPriceClass}`}>
                 <SkeletonElement isLoading={isLoading} width={40}>
-                  {takeProfit}
+                  {profitPriceTo}
                 </SkeletonElement>
               </div>
             </div>
@@ -130,7 +130,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </SkeletonElement>
               <div className={`mt-[2px] ${slPriceClass}`}>
                 <SkeletonElement isLoading={isLoading} width={40}>
-                  {stopLoss}
+                  {lossPriceTo}
                 </SkeletonElement>
               </div>
             </div>

@@ -8,7 +8,8 @@ import './style.css';
 export interface PoolStatProps {}
 
 export const PoolStat = (props: PoolStatProps) => {
-  const { aum, clpSupply, utilization, utilizedValue, progressRate } = usePoolStat();
+  const { aum, clpSupply, utilization, utilizedValue, progressRate, tokenImage, clpImage } =
+    usePoolStat();
   return (
     <div className="p-5 PoolStat">
       <div className="flex flex-col gap-4">
@@ -21,7 +22,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label={aum} size="sm" fontSize="lg" gap="1" />
+            <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -33,7 +34,7 @@ export const PoolStat = (props: PoolStatProps) => {
             </div>
           </div>
           <div className="text-right">
-            <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" />
+            <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" src={clpImage} />
           </div>
         </div>
       </div>

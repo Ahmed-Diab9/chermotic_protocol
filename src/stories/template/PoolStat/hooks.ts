@@ -21,11 +21,15 @@ export const usePoolStat = () => {
       selectedLp.settlementToken.name
     : undefined;
   const progressRate = selectedLp ? selectedLp.utilization / 100 : 0;
+  const tokenImage = selectedLp?.settlementToken.image;
+  const clpImage = selectedLp?.image;
   return {
     aum,
     clpSupply,
     utilization,
     utilizedValue,
     progressRate,
+    tokenImage,
+    clpImage,
   };
 };

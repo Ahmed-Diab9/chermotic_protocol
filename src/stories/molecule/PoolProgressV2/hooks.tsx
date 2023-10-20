@@ -13,7 +13,14 @@ export const usePoolProgressV2 = () => {
   const { formattedElapsed } = useLastOracle();
   const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
   const { receiptsData = [], onFetchNextLpReceipts } = useLpReceipts({ action: receiptAction });
-  const { count, isCountLoading } = useLpReceiptCount();
+  const {
+    count = {
+      mintings: 0,
+      burnings: 0,
+      inProgresses: 0,
+    },
+    isCountLoading,
+  } = useLpReceiptCount();
   const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
     return receipts;
