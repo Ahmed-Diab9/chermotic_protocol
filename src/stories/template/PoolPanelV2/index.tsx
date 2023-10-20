@@ -34,6 +34,7 @@ export function PoolPanelV2() {
 
     tokenName,
     tokenImage,
+    clpImage,
     walletBalance,
 
     onTabChange,
@@ -243,7 +244,7 @@ export function PoolPanelV2() {
                                   </p>
                                 </div>
                                 <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
-                                  <Avatar label="CLP" size="xs" gap="1" />
+                                  <Avatar label="CLP" size="xs" gap="1" src={clpImage} />
                                 </span>
                               </div>
                               {/* todo: input error */}

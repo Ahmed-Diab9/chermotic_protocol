@@ -6,6 +6,7 @@ export interface ChromaticLp {
   name: string;
   balance: bigint;
   decimals: number;
+  image: string;
   totalSupply: bigint;
   totalValue: bigint;
   holdingValue: bigint;

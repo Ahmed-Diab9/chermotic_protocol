@@ -105,6 +105,7 @@ export function usePoolPanelV2() {
 
   const tokenName = currentToken?.name || '-';
   const tokenImage = currentToken?.image;
+  const clpImage = selectedLp?.image;
 
   // ----------------------------------------------------------------
 
@@ -247,6 +248,7 @@ export function usePoolPanelV2() {
 
     tokenName,
     tokenImage,
+    clpImage,
     walletBalance,
     totalLiquidityValue,
     binLength,
