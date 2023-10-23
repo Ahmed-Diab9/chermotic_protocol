@@ -3,6 +3,8 @@ import { Progress } from '~/stories/atom/Progress';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { usePoolStat } from './hooks';
+import AssetManagementIcon from '~/assets/icons/AssetManagementIcon';
+import ClpSupplyIcon from '~/assets/icons/ClpSupplyIcon';
 import './style.css';
 
 export interface PoolStatProps {}
@@ -14,8 +16,8 @@ export const PoolStat = (props: PoolStatProps) => {
     <div className="p-5 PoolStat">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
+          <div className="flex items-center gap-2">
+            <AssetManagementIcon className="w-6" />
             <div className="flex">
               <h5>Assets under Management</h5>
               <TooltipGuide label="asset-under-management" tip="tooltip" />
@@ -26,8 +28,8 @@ export const PoolStat = (props: PoolStatProps) => {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
+          <div className="flex items-center gap-2">
+            <ClpSupplyIcon className="w-6" />
             <div className="flex">
               <h5>CLP supply</h5>
               <TooltipGuide label="clp-supply" tip="tooltip" />
