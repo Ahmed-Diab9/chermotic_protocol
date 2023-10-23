@@ -109,8 +109,8 @@ export function PoolPanelV2() {
                 <div className="flex justify-between mt-10">
                   <div className="flex items-center gap-4">
                     {/* TODO: market name */}
-                    <ChartLabel label={`${lpTitle} Market Liquidity`} />
-                    <ChartLabel label={`${selectedLp?.name} Liquidity`} translucent />
+                    <ChartLabel label={`${lpTitle} Market Liquidity`} translucent />
+                    <ChartLabel label={`${selectedLp?.name} Liquidity`} />
                   </div>
                   <Switch.Group>
                     <div className="toggle-wrapper">
