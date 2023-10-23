@@ -13,6 +13,7 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
+import { ChartLabel } from '~/stories/atom/ChartLabel';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 
@@ -99,7 +100,12 @@ export function PoolPanelV2() {
                     isDotVisible={isBinValueVisible}
                   />
                 </article>
-                <div className="flex justify-end mt-10">
+                <div className="flex justify-between mt-10">
+                  <div className="flex items-center gap-4">
+                    {/* TODO: market name */}
+                    <ChartLabel label={`ETH-BTC/USD Market Liquidity`} />
+                    <ChartLabel label={`Junior Pool Liquidity`} translucent />
+                  </div>
                   <Switch.Group>
                     <div className="toggle-wrapper">
                       <Switch.Label className="">CLB Price</Switch.Label>
