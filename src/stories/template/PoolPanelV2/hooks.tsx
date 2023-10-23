@@ -44,13 +44,21 @@ export function usePoolPanelV2() {
 
   // ----------------------------------------------------------------
   const selectedBalance = useMemo(() => {
-    if (tokenBalances && currentToken && tokenBalances[currentToken.address]) {
-      return tokenBalances[currentToken.address];
+    switch (selectedTab) {
+      case 0: {
+        if (tokenBalances && currentToken && tokenBalances[currentToken.address]) {
+          return tokenBalances[currentToken.address];
+        }
+        break;
+      }
+      case 1: {
+        if (isNotNil(selectedLp)) {
+          return selectedLp.balance;
+        }
+        break;
+      }
     }
-    if (isNotNil(selectedLp)) {
-      return selectedLp.balance;
-    }
-  }, [tokenBalances, currentToken, selectedLp]);
+  }, [tokenBalances, currentToken, selectedLp, selectedTab]);
   const selectedDecimals = selectedTab === 0 ? currentToken?.decimals : selectedLp?.decimals;
   const maxAmount = formatDecimals(selectedBalance, selectedDecimals, selectedDecimals);
   const formattedBalance = withComma(formatDecimals(selectedBalance, selectedDecimals, 2));
