@@ -13,15 +13,11 @@ import {
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
 
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
-
-import useLocalStorage from '~/hooks/useLocalStorage';
 import { AdvancedChartProps } from '.';
 import datafeed from '~/apis/datafeed';
 
 export const useAdvancedChart = (props: AdvancedChartProps) => {
-  const { symbol } = props;
-  const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', true);
+  const { symbol, darkMode } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
 
@@ -34,7 +30,7 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
   };
 
   const defaultProps = {
-    interval: '1h' as ResolutionString,
+    interval: '60' as ResolutionString,
     datafeed: datafeed,
     library_path: '/charting_library/',
     fullscreen: false,
@@ -55,8 +51,8 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       'popup_hints',
     ] as TradingTerminalFeatureset[],
     favorites: {
-      intervals: ['1', '5', '30', '60', '1D', '1W'] as ResolutionString[],
-      chartTypes: ['Candles', 'Baseline'] as ChartTypeFavorites[],
+      intervals: ['5', '60', '240', '1D'] as ResolutionString[],
+      chartTypes: ['Bars', 'Candles'] as ChartTypeFavorites[],
     },
   };
 
