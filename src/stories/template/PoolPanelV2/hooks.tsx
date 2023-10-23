@@ -79,7 +79,7 @@ export function usePoolPanelV2() {
   const [amount, setAmount] = useState('');
   const isExceeded = useMemo(() => {
     if (isNil(selectedBalance) || isNil(selectedDecimals)) {
-      return true;
+      return false;
     }
     if (parseUnits(amount.toString(), selectedDecimals) >= selectedBalance) {
       return true;
