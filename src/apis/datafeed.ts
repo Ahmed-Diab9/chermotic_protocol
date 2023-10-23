@@ -1,7 +1,10 @@
 import { IDatafeedChartApi, LibrarySymbolInfo, ResolutionString } from '~/lib/charting_library';
-
 import { hasuraGraphSdk } from '~/lib/graphql';
+
 import { isEmpty } from 'ramda';
+import { formatDecimals } from '~/utils/number';
+
+import { CAHINLINK_DECIMALS } from '~/configs/decimals';
 
 const lastBarsCache = new Map();
 
@@ -41,6 +44,10 @@ function parseResolutionString(resolutionString: ResolutionString) {
   return digits * resolutionMap[resolution as 'S' | 'M' | 'H' | 'D' | 'W'];
 }
 
+function parseAmount(amount: number) {
+  return +formatDecimals(amount, CAHINLINK_DECIMALS);
+}
+
 export default {
   getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
     const { from, to, firstDataRequest } = periodParams;
@@ -62,10 +69,10 @@ export default {
       const bars = response.chainlink_pricefeed.map(
         ({ closing_price, high_price, low_price, opening_price, opening_block_timestamp }) => ({
           time: opening_block_timestamp * 1000,
-          open: opening_price,
-          close: closing_price,
-          high: high_price,
-          low: low_price,
+          open: parseAmount(opening_price),
+          close: parseAmount(closing_price),
+          high: parseAmount(high_price),
+          low: parseAmount(low_price),
         })
       );
 

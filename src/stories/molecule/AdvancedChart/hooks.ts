@@ -59,17 +59,17 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       container: chartContainerRef.current,
       // @ts-ignore
       custom_formatters: {
-        // priceFormatterFactory: () => ({
-        //   format: (price) =>
-        //     numberFormat(price, {
-        //       compact: false,
-        //       maxDigits: 4,
-        //       minDigits: 4,
-        //       roundingMode: 'trunc',
-        //       type: 'string',
-        //       useGrouping: false,
-        //     }),
-        // }),
+        priceFormatterFactory: () => ({
+          format: (price) =>
+            numberFormat(price, {
+              compact: false,
+              maxDigits: 2,
+              minDigits: 2,
+              roundingMode: 'trunc',
+              type: 'string',
+              useGrouping: false,
+            }),
+        }),
       },
     });
 
