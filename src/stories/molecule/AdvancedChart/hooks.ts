@@ -25,10 +25,6 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
 
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
 
-  const onLoadChartRef = (element: HTMLDivElement | null) => {
-    chartContainerRef.current = element as HTMLInputElement;
-  };
-
   const defaultProps = {
     interval: '60' as ResolutionString,
     datafeed: datafeed,
@@ -103,5 +99,5 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
     changeTheme(tvWidgetRef.current, darkMode ? 'dark' : 'light');
   }, [darkMode, isChartReady]);
 
-  return { isLoading, onLoadChartRef };
+  return { isLoading, chartContainerRef };
 };
