@@ -1,12 +1,13 @@
 import { GraphQLClient, RequestMiddleware, Variables } from 'graphql-request';
-import { SUBGRAPH_API_URL } from '~/configs/subgraph';
+import { HASURA_API_URL, SUBGRAPH_API_URL } from '~/configs/subgraph';
 
 import * as Lp from '~/lib/graphql/sdk/lp';
 import * as Pricefeed from '~/lib/graphql/sdk/pricefeed';
+import * as Hasura from '~/lib/graphql/sdk/hasura';
 
-type PathMap = {
+type UrlMap = {
   operations: string[];
-  path: string;
+  url: string;
 }[];
 
 function getOperations(object: Object) {
@@ -15,35 +16,40 @@ function getOperations(object: Object) {
     .map((k) => k.slice(0, -'Docuemnt'.length));
 }
 
-const pathMap: PathMap = [
+const urlMap: UrlMap = [
   {
     operations: getOperations(Lp),
-    path: 'chromatic-lp',
+    url: `${SUBGRAPH_API_URL}/chromatic-lp`,
   },
   {
     operations: getOperations(Pricefeed),
-    path: 'chainlink-pricefeed',
+    url: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+  },
+  {
+    operations: getOperations(Hasura),
+    url: `${HASURA_API_URL}`,
   },
 ];
 
 const getRequestMiddleware =
-  (pathMap: PathMap): RequestMiddleware<Variables> =>
+  (urlMap: UrlMap): RequestMiddleware<Variables> =>
   (request) => {
-    const path = pathMap.find((url) => url.operations.includes(request.operationName!))?.path;
-    if (!path) {
+    const url = urlMap.find((url) => url.operations.includes(request.operationName!))?.url;
+    if (!url) {
       throw new Error('invalid operation');
     }
     return {
       ...request,
-      url: `${request.url}/${path}`,
+      url,
     };
   };
 
-const graphClient = new GraphQLClient(SUBGRAPH_API_URL, {
-  requestMiddleware: getRequestMiddleware(pathMap),
+const graphClient = new GraphQLClient('', {
+  requestMiddleware: getRequestMiddleware(urlMap),
 });
 
+const hasuraGraphSdk = Hasura.getSdk(graphClient);
 const lpGraphSdk = Lp.getSdk(graphClient);
 const pricefeedGraphSdk = Pricefeed.getSdk(graphClient);
 
-export { lpGraphSdk, pricefeedGraphSdk };
+export { hasuraGraphSdk, lpGraphSdk, pricefeedGraphSdk };
