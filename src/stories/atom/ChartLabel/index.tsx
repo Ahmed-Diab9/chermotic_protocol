@@ -14,7 +14,7 @@ export const ChartLabel = (props: ChartLabelProps) => {
   return (
     <div className={`flex items-center gap-[6px] ChartLabel ${className}`}>
       <span
-        className={`thumb thumb-${color} bg-gradient-to-b from-${color} to-${color}/10 ${
+        className={`inline-block w-3 h-3 bg-gradient-to-b from-${color} to-${color}/10 ${
           translucent ? 'opacity-30' : 0
         }`}
       />
