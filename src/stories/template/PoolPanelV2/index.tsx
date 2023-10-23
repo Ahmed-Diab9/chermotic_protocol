@@ -17,7 +17,8 @@ import { ChartLabel } from '~/stories/atom/ChartLabel';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
+import { useAppSelector } from '~/store';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -53,6 +54,11 @@ export function PoolPanelV2() {
     onAddChromaticLp,
     onRemoveChromaticLp,
   } = usePoolPanelV2();
+
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const lpTitle = isNotNil(selectedLp)
+    ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
+    : undefined;
 
   return (
     <div className="PoolPanelV2">
@@ -103,8 +109,8 @@ export function PoolPanelV2() {
                 <div className="flex justify-between mt-10">
                   <div className="flex items-center gap-4">
                     {/* TODO: market name */}
-                    <ChartLabel label={`ETH-BTC/USD Market Liquidity`} />
-                    <ChartLabel label={`Junior Pool Liquidity`} translucent />
+                    <ChartLabel label={`${lpTitle} Market Liquidity`} />
+                    <ChartLabel label={`${selectedLp?.name} Liquidity`} translucent />
                   </div>
                   <Switch.Group>
                     <div className="toggle-wrapper">
