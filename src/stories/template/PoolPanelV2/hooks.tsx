@@ -81,7 +81,7 @@ export function usePoolPanelV2() {
     if (isNil(selectedBalance) || isNil(selectedDecimals)) {
       return false;
     }
-    if (parseUnits(amount.toString(), selectedDecimals) >= selectedBalance) {
+    if (parseUnits(amount.toString(), selectedDecimals) > selectedBalance) {
       return true;
     }
     return false;
