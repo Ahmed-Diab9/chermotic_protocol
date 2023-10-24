@@ -1,0 +1,9 @@
+.TradeChartView {
+  @apply pb-5;
+  .wrapper-handle {
+    @apply !h-5;
+    > div {
+      @apply !h-5;
+    }
+  }
+}

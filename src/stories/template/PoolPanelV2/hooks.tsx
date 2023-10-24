@@ -125,6 +125,7 @@ export function usePoolPanelV2() {
     isBinValueVisible,
 
     isAssetsLoading,
+    isLpLoading: isNil(selectedLp),
     isExceeded,
     amount,
     maxAmount,

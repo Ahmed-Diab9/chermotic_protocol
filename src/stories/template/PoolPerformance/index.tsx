@@ -3,6 +3,9 @@ import { Listbox } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import ProfitIcon from '~/assets/images/pool_profit.svg';
+import AprIcon from '~/assets/images/pool_apr.svg';
+
 import './style.css';
 
 export interface PoolPerformanceProps {}
@@ -44,7 +47,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
       <div className="pt-5 mt-3 border-t">
         <div className="flex">
           <div className="flex w-1/2 gap-3 pr-5">
-            <Thumbnail className="w-12 h-12" />
+            <Thumbnail className="w-12 h-12 !bg-transparent" src={ProfitIcon} />
             <div className="text-left text-primary-light">
               <p>Profit</p>
               {/* todo: text price color */}
@@ -53,7 +56,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             </div>
           </div>
           <div className="flex w-1/2 gap-3 pl-5 border-l">
-            <Thumbnail className="w-12 h-12" />
+            <Thumbnail className="w-12 h-12 !bg-transparent" src={AprIcon} />
             <div className="text-left text-primary-light">
               <div className="flex">
                 <p>Trailing APR</p>

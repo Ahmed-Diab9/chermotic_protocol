@@ -119,6 +119,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             tokenImage={tokenImage}
             minAmount={minAmount}
             onAmountChange={onAmountChange}
+            optionInputDirection="row"
           />
         </div>
       </article>

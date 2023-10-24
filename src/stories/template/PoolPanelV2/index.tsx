@@ -4,6 +4,7 @@ import React, { PropsWithChildren } from 'react';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { ChartLabel } from '~/stories/atom/ChartLabel';
 import { Checkbox } from '~/stories/atom/Checkbox';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -13,7 +14,8 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
+import { useAppSelector } from '~/store';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -35,6 +37,7 @@ export function PoolPanelV2() {
     clpImage,
 
     isAssetsLoading,
+    isLpLoading,
     isExceeded,
     amount,
     maxAmount,
@@ -46,6 +49,11 @@ export function PoolPanelV2() {
     onAddChromaticLp,
     onRemoveChromaticLp,
   } = usePoolPanelV2();
+
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const lpTitle = isNotNil(selectedLp)
+    ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
+    : undefined;
 
   return (
     <div className="PoolPanelV2">
@@ -93,7 +101,18 @@ export function PoolPanelV2() {
                     isDotVisible={isBinValueVisible}
                   />
                 </article>
-                <div className="flex justify-end mt-10">
+                <div className="flex justify-between mt-10">
+                  <div className="flex items-center gap-4">
+                    <ChartLabel
+                      label={`${lpTitle} Market Liquidity`}
+                      translucent
+                      isLoading={isAssetsLoading || isLpLoading}
+                    />
+                    <ChartLabel
+                      label={`${selectedLp?.name} Liquidity`}
+                      isLoading={isAssetsLoading || isLpLoading}
+                    />
+                  </div>
                   <Switch.Group>
                     <div className="toggle-wrapper">
                       <Switch.Label className="">CLB Price</Switch.Label>
@@ -250,6 +269,7 @@ export function PoolPanelV2() {
                                   maxValue={maxAmount}
                                   onChange={onAmountChange}
                                   error={isExceeded}
+                                  assetSrc={clpImage}
                                 />
                                 {isExceeded && (
                                   <TooltipAlert

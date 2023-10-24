@@ -14,6 +14,7 @@ interface AmountSwitchProps {
   tokenName?: string;
   tokenImage?: string;
   minAmount: string;
+  optionInputDirection?: 'row' | 'column';
   onAmountChange: (value: string) => unknown;
 }
 
@@ -29,6 +30,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     tokenImage,
     onAmountChange,
     minAmount,
+    optionInputDirection,
   } = props;
 
   const errors = {
@@ -66,7 +68,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             placeholder="0"
             error={disabled && !!errorMessage}
             assetSrc={tokenImage}
-            direction="row"
+            direction={optionInputDirection}
           />
           {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}
         </div>

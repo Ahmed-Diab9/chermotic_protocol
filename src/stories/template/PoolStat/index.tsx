@@ -1,6 +1,9 @@
+import { isNil } from 'ramda';
+import AssetManagementIcon from '~/assets/icons/AssetManagementIcon';
+import ClpSupplyIcon from '~/assets/icons/ClpSupplyIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Progress } from '~/stories/atom/Progress';
-import { Thumbnail } from '~/stories/atom/Thumbnail';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { usePoolStat } from './hooks';
 import './style.css';
@@ -14,20 +17,22 @@ export const PoolStat = (props: PoolStatProps) => {
     <div className="p-5 PoolStat">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
+          <div className="flex items-center gap-2">
+            <AssetManagementIcon className="w-6" />
             <div className="flex">
               <h5>Assets under Management</h5>
               <TooltipGuide label="asset-under-management" tip="tooltip" />
             </div>
           </div>
-          <div className="text-right">
-            <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
-          </div>
+          <SkeletonElement isLoading={isNil(aum)} width={60}>
+            <div className="text-right">
+              <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
+            </div>
+          </SkeletonElement>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Thumbnail size="xs" />
+          <div className="flex items-center gap-2">
+            <ClpSupplyIcon className="w-6" />
             <div className="flex">
               <h5>CLP supply</h5>
               <TooltipGuide label="clp-supply" tip="tooltip" />
