@@ -1,7 +1,6 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React, { PropsWithChildren } from 'react';
-import { createPortal } from 'react-dom';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -14,8 +13,6 @@ import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 import { ChartLabel } from '~/stories/atom/ChartLabel';
-import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
-import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
 
 import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
@@ -25,6 +22,7 @@ import './style.css';
 
 export function PoolPanelV2() {
   const {
+    onTabChange,
     rangeChartRef,
     setIsBinValueVisible,
 
@@ -37,16 +35,12 @@ export function PoolPanelV2() {
     tokenName,
     tokenImage,
     clpImage,
-    walletBalance,
-
-    onTabChange,
-    isSingleRemoveModalOpen,
-    isMultipleRemoveModalOpen,
 
     isAssetsLoading,
     isExceeded,
     amount,
     maxAmount,
+    formattedBalance,
     formattedClp,
     isAddPending,
     isRemovalPending,
@@ -63,7 +57,7 @@ export function PoolPanelV2() {
   return (
     <div className="PoolPanelV2">
       <div className="tabs tabs-default tabs-lg">
-        <Tab.Group>
+        <Tab.Group onChange={onTabChange}>
           <Tab.List className="">
             <Tab className="w-1/2 text-3xl">ADD</Tab>
             <Tab className="w-1/2 text-3xl">REMOVE</Tab>
@@ -129,7 +123,7 @@ export function PoolPanelV2() {
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
-                            {walletBalance} {tokenName}
+                            {formattedBalance} {tokenName}
                           </SkeletonElement>
                         </p>
                       </div>
@@ -232,7 +226,7 @@ export function PoolPanelV2() {
 
               {/* inner tab */}
               <section className="tabs-line tabs-base">
-                <Tab.Group onChange={onTabChange}>
+                <Tab.Group>
                   {({ selectedIndex }) => (
                     <>
                       {/* tab02: required for the next version */}
@@ -325,10 +319,6 @@ export function PoolPanelV2() {
           </Tab.Panels>
         </Tab.Group>
       </div>
-      {isSingleRemoveModalOpen &&
-        createPortal(<RemoveSingleLiquidityModal />, document.getElementById('modal')!)}
-      {isMultipleRemoveModalOpen &&
-        createPortal(<RemoveMultiLiquidityModal />, document.getElementById('modal')!)}
     </div>
   );
 }
