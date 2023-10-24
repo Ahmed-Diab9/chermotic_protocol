@@ -268,6 +268,7 @@ export function PoolPanelV2() {
                                   maxValue={maxAmount}
                                   onChange={onAmountChange}
                                   error={isExceeded}
+                                  assetSrc={clpImage}
                                 />
                                 {isExceeded && (
                                   <TooltipAlert
