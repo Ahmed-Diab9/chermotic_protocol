@@ -55,6 +55,7 @@ export const ResizablePanel = (props: ResizablePanelProps) => {
       style={{
         background: props.transparent ? 'transparent' : undefined,
       }}
+      handleWrapperClass="wrapper-handle"
     >
       {props.children}
     </Resizable>
