@@ -44,9 +44,10 @@ export const TradePanelV3 = () => {
         bottomLeft: false,
         topLeft: false,
       }}
-      className="shrink-0"
+      className="pl-5 shrink-0 TradePanelV3"
+      handleWrapperClass="wrapper-handle"
     >
-      <div className="TradePanelV3 panel panel-translucent">
+      <div className="relative panel panel-translucent">
         {isWide ? (
           <div className="relative w-full">
             <div className="flex">
@@ -67,7 +68,7 @@ export const TradePanelV3 = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full tabs tabs-button tabs-price tabs-lg">
+          <div className="w-full tabs tabs-default tabs-lg">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
               <Tab.List className="flex w-full">
                 <Tab value="short" className="btn-tabs short">

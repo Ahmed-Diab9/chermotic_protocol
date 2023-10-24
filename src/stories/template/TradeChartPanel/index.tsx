@@ -1,4 +1,5 @@
 import '~/stories/atom/Tabs/style.css';
+import './style.css';
 
 import { AdvancedChart } from '~/stories/molecule/AdvancedChart';
 import { ResizablePanel } from '~/stories/atom/ResizablePanel';
@@ -22,7 +23,7 @@ export function TradeChartPanel(props: TradeChartViewProps) {
       maxHeight={800}
       autoWidth
       bottom
-      className="panel"
+      className="TradeChartView panel"
       transparent
     >
       <div

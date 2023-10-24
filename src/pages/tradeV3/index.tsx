@@ -30,10 +30,11 @@ function TradeV3() {
         <BookmarkBoardV3 />
         <HeaderV3 hasAccount />
         <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-8 mx-auto mb-20">
-          <div className="flex w-full gap-10 overflow-hidden">
-            <article className="flex flex-col flex-auto w-full gap-10">
-              <MarketSelectV3 />
-              {/* <TradeChartViewV3 /> */}
+          <div className="flex w-full gap-3 overflow-hidden">
+            <article className="flex flex-col flex-auto w-full gap-5">
+              <div className="mb-5">
+                <MarketSelectV3 />
+              </div>
               <TradeChartPanel />
               <TradeManagementV3 />
             </article>

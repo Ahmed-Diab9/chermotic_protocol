@@ -27,18 +27,15 @@
   .list {
     /* @apply h-full overflow-y-hidden; */
     .thead {
-      @apply items-stretch border-b bg-inverted-lighter px-3;
-      .tr {
-        @apply px-2;
-      }
+      @apply items-stretch border-b bg-inverted-lighter;
       .td {
         @apply py-2 text-sm text-primary-light;
       }
     }
     .tbody {
-      @apply flex flex-col gap-0 px-3 pb-3;
+      @apply flex flex-col gap-0 pb-3;
       .tr {
-        @apply gap-5 py-3 border-b px-2;
+        @apply gap-5 py-3 border-b;
       }
       .td {
         &:not(:nth-child(1)) {
@@ -47,7 +44,7 @@
       }
     }
     .tr {
-      @apply flex gap-5 justify-between;
+      @apply flex gap-5 justify-between px-5;
     }
     .td {
       @apply flex items-center;
