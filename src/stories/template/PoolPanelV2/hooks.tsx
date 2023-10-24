@@ -8,7 +8,7 @@ import { useRemoveChromaticLp } from '~/hooks/useRemoveChromaticLp';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useAppSelector } from '~/store';
-import { formatDecimals, withComma } from '~/utils/number';
+import { formatDecimals } from '~/utils/number';
 
 export function usePoolPanelV2() {
   const { currentToken, isTokenLoading } = useSettlementToken();
@@ -60,8 +60,14 @@ export function usePoolPanelV2() {
     }
   }, [tokenBalances, currentToken, selectedLp, selectedTab]);
   const selectedDecimals = selectedTab === 0 ? currentToken?.decimals : selectedLp?.decimals;
-  const maxAmount = formatDecimals(selectedBalance, selectedDecimals, selectedDecimals);
-  const formattedBalance = withComma(formatDecimals(selectedBalance, selectedDecimals, 2));
+  const maxAmount = formatDecimals(
+    selectedBalance,
+    selectedDecimals,
+    selectedDecimals,
+    false,
+    'trunc'
+  );
+  const formattedBalance = formatDecimals(selectedBalance, selectedDecimals, 2, true);
 
   const shortUsedLp = liquidityFormatter.format(
     +formatDecimals(shortTotalMaxLiquidity - shortTotalUnusedLiquidity, currentToken?.decimals)

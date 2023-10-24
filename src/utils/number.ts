@@ -25,12 +25,15 @@ export const formatDecimals = (
   value?: bigint | number | string,
   tokenDecimals?: number,
   decimalLimit?: number,
-  useGrouping?: boolean
+  useGrouping?: boolean,
+  roundingMode?: 'ceil' | 'floor' | 'trunc'
 ) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
     minimumFractionDigits: decimalLimit,
     useGrouping: useGrouping || false,
+    // @ts-ignore experimental api
+    roundingMode,
   });
   let numberValue = Number(value);
   if (isNaN(numberValue)) return '0';
