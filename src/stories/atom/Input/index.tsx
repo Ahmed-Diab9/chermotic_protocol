@@ -50,9 +50,17 @@ export const Input = (props: InputProps) => {
   const [displayValue, setDisplayValue] = useState(value);
   const [isInternalChange, setIsInternalChange] = useState(false);
 
-  const setFormattedDisplayValue = (value?: number | string) => {
+  const setFormattedDisplayValue = (
+    value?: number | string,
+    roundingMode?: 'ceil' | 'floor' | 'trunc'
+  ) => {
     if (isNil(value) || value === '' || displayValue === placeholder) return setDisplayValue('');
-    const formatted = numberFormat(value, { minDigits, maxDigits, useGrouping });
+    const formatted = numberFormat(value, {
+      minDigits,
+      maxDigits,
+      useGrouping,
+      roundingMode,
+    });
     return setDisplayValue(formatted);
   };
 
@@ -62,7 +70,7 @@ export const Input = (props: InputProps) => {
       .replace(/[^0-9.]/g, '');
 
   useEffect(() => {
-    if (!isInternalChange) setFormattedDisplayValue(value);
+    if (!isInternalChange) setFormattedDisplayValue(value, 'trunc');
     return setIsInternalChange(false);
   }, [value]);
 
@@ -113,7 +121,7 @@ export const Input = (props: InputProps) => {
 
   function handleBlur() {
     if (autoCorrect && isNotNil(min) && isUnderMin(displayValue)) {
-      return setFormattedDisplayValue(value);
+      return setFormattedDisplayValue(value, 'trunc');
     }
   }
 
