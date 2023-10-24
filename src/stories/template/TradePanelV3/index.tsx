@@ -68,7 +68,7 @@ export const TradePanelV3 = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full tabs tabs-button tabs-price tabs-lg">
+          <div className="w-full tabs tabs-default tabs-lg">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
               <Tab.List className="flex w-full">
                 <Tab value="short" className="btn-tabs short">

@@ -13,18 +13,10 @@
       }
       &[aria-selected='true'] {
         &.short {
-          @apply !text-price-lower border-price-lower border-r bg-price-lower/10;
+          @apply !text-price-lower border-price-lower border-t;
         }
         &.long {
-          @apply !text-price-higher border-price-higher border-l bg-price-higher/10;
-        }
-      }
-      &[aria-selected='false'] {
-        &.short {
-          @apply border-r-0;
-        }
-        &.long {
-          @apply border-l-0;
+          @apply !text-price-higher border-price-higher border-t;
         }
       }
     }
