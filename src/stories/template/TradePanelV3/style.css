@@ -1,5 +1,10 @@
 .TradePanelV3 {
-  @apply relative;
+  .wrapper-handle {
+    @apply !w-5;
+    > div {
+      @apply !w-5;
+    }
+  }
   .tabs {
     .btn-tabs {
       /* @apply gap-1 pl-1 pr-4; */
