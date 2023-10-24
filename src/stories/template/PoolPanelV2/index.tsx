@@ -4,6 +4,7 @@ import React, { PropsWithChildren } from 'react';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { ChartLabel } from '~/stories/atom/ChartLabel';
 import { Checkbox } from '~/stories/atom/Checkbox';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -12,7 +13,6 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
-import { ChartLabel } from '~/stories/atom/ChartLabel';
 
 import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
@@ -37,6 +37,7 @@ export function PoolPanelV2() {
     clpImage,
 
     isAssetsLoading,
+    isLpLoading,
     isExceeded,
     amount,
     maxAmount,
@@ -103,8 +104,15 @@ export function PoolPanelV2() {
                 <div className="flex justify-between mt-10">
                   <div className="flex items-center gap-4">
                     {/* TODO: market name */}
-                    <ChartLabel label={`${lpTitle} Market Liquidity`} translucent />
-                    <ChartLabel label={`${selectedLp?.name} Liquidity`} />
+                    <ChartLabel
+                      label={`${lpTitle} Market Liquidity`}
+                      translucent
+                      isLoading={isAssetsLoading || isLpLoading}
+                    />
+                    <ChartLabel
+                      label={`${selectedLp?.name} Liquidity`}
+                      isLoading={isAssetsLoading || isLpLoading}
+                    />
                   </div>
                   <Switch.Group>
                     <div className="toggle-wrapper">

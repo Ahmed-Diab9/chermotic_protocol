@@ -1,10 +1,11 @@
-import { Avatar } from '~/stories/atom/Avatar';
-import { Progress } from '~/stories/atom/Progress';
-import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { usePoolStat } from './hooks';
+import { isNil } from 'ramda';
 import AssetManagementIcon from '~/assets/icons/AssetManagementIcon';
 import ClpSupplyIcon from '~/assets/icons/ClpSupplyIcon';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Progress } from '~/stories/atom/Progress';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { usePoolStat } from './hooks';
 import './style.css';
 
 export interface PoolStatProps {}
@@ -23,9 +24,11 @@ export const PoolStat = (props: PoolStatProps) => {
               <TooltipGuide label="asset-under-management" tip="tooltip" />
             </div>
           </div>
-          <div className="text-right">
-            <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
-          </div>
+          <SkeletonElement isLoading={isNil(aum)} containerClassName="min-w-[60px]">
+            <div className="text-right">
+              <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
+            </div>
+          </SkeletonElement>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

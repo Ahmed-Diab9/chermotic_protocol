@@ -1,6 +1,6 @@
 import { isNil, isNotNil } from 'ramda';
-import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import PlusIcon from '~/assets/icons/PlusIcon';
+import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -11,10 +11,10 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
-import { HeaderV3 } from '~/stories/template/HeaderV3';
-import { Footer } from '~/stories/template/Footer';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
+import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
+import { Footer } from '~/stories/template/Footer';
+import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
@@ -55,7 +55,11 @@ const PoolV3 = () => {
             <div className="mt-10">
               <div className="mb-10 text-left">
                 <div className="flex items-center mb-5">
-                  <SkeletonElement isLoading={isNil(lpTitle)} className="w-full">
+                  <SkeletonElement
+                    isLoading={isNil(lpTitle)}
+                    className="w-full"
+                    containerClassName="min-w-[120px] mr-3"
+                  >
                     <h2 className="mr-3 text-4xl">
                       {lpTitle} {selectedLp?.name} Pool
                     </h2>
