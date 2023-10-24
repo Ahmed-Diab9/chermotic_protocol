@@ -32,17 +32,27 @@ export const formatDecimals = (
     maximumFractionDigits: decimalLimit,
     minimumFractionDigits: decimalLimit,
     useGrouping: useGrouping || false,
-    // @ts-ignore experimental api
     roundingMode,
   });
-  let numberValue = Number(value);
-  if (isNaN(numberValue)) return '0';
-  if (!Number.isInteger(numberValue)) {
-    console.warn('The value is not Integer', value);
-    numberValue = Math.floor(numberValue);
+  switch (typeof value) {
+    case 'number': {
+      const numeric = formatUnits(BigInt(value), tokenDecimals ?? 0);
+      return formatter.format(Number(numeric));
+    }
+    case 'string': {
+      const numeric = formatUnits(BigInt(value), tokenDecimals ?? 0);
+      return formatter.format(Number(numeric));
+    }
+    case 'bigint': {
+      const formatted = formatUnits(value, tokenDecimals ?? 0);
+      const [numeric, decimals = ''] = formatted.split('.');
+      const trimmedDecimals = decimals.slice(0, decimalLimit);
+      return `${numeric}.${trimmedDecimals}`;
+    }
+    case 'undefined': {
+      return '0';
+    }
   }
-  const valueWithTokenDecimals = formatUnits(BigInt(numberValue), tokenDecimals ?? 0);
-  return formatter.format(Number(valueWithTokenDecimals));
 };
 
 export const numberFormat = <T extends string | number | bigint, U extends 'string' | 'number'>(
