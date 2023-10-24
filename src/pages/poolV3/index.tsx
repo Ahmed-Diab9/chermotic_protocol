@@ -55,11 +55,7 @@ const PoolV3 = () => {
             <div className="mt-10">
               <div className="mb-10 text-left">
                 <div className="flex items-center mb-5">
-                  <SkeletonElement
-                    isLoading={isNil(lpTitle)}
-                    className="w-full"
-                    containerClassName="min-w-[120px] mr-3"
-                  >
+                  <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
                     <h2 className="mr-3 text-4xl">
                       {lpTitle} {selectedLp?.name} Pool
                     </h2>

@@ -24,7 +24,7 @@ export const PoolStat = (props: PoolStatProps) => {
               <TooltipGuide label="asset-under-management" tip="tooltip" />
             </div>
           </div>
-          <SkeletonElement isLoading={isNil(aum)} containerClassName="min-w-[60px]">
+          <SkeletonElement isLoading={isNil(aum)} width={60}>
             <div className="text-right">
               <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
             </div>
