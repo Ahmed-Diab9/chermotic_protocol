@@ -34,6 +34,9 @@ export const AirdropStamp = (props: AirdropStampProps) => {
             <p className="text-xl">Sign-In 5 days in a week & get 50 extra credits</p>
           </div>
         </div>
+        <div className="ml-auto text-primary-light">
+          The date changes at 9am local time (UTC+09:00).
+        </div>
       </div>
       <div className="flex justify-between px-10 mt-6">
         {week.map((item) => (

@@ -24,8 +24,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
           </div>
           <div className="flex flex-col justify-center w-1/2 pl-10 border-l">
             <p className="mb-2">
-              Key들은 Airdrop에 참여하기 위해 꼭 필요한 Whitelist 증표이자 입장권입니다. 키가 있어야
-              Airdrop의 Random Box를 열 수 있습니다.
+              Keys are whitelist tokens and admission tickets required to participate in Airdrop.
+              You must have the key to open Airdrop's Random Box.
             </p>
             <ArrowLink label="How to get Whitelist NFT" href="" />
           </div>
@@ -41,8 +41,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <h4 className="text-[28px]">2,345</h4>
           </div>
           <p className="pt-5">
-            Key들은 Airdrop에 참여하기 위해 꼭 필요한 Whitelist 증표이자 입장권입니다. 키가 있어야
-            Airdrop의 Random Box를 열 수 있습니다.
+            Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
+            open one random box.
           </p>
           <div className="flex items-end justify-between pt-12 mr-5">
             <div className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col gap-2">
               <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
               <ArrowLink label="Galaxe Quest" href="" />
-              <ArrowLink label="Trade Competition" href="" />
+              <ArrowLink label="Trade Competition (Testnet)" href="" />
               <ArrowLink label="Gleam Events" href="" />
             </div>
           </div>
@@ -69,8 +69,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
           </div>
           <p className="pt-5">
-            Key들은 Airdrop에 참여하기 위해 꼭 필요한 Whitelist 증표이자 입장권입니다. 키가 있어야
-            Airdrop의 Random Box를 열 수 있습니다.
+            Boosters increase the probability of getting a lot of CHR from the Random Box. By using
+            Booster, you can earn approximately twice as much rCHR as without using Booster.
           </p>
           <div className="flex items-end justify-between pt-12 mr-5">
             <div className="flex flex-col gap-2">
@@ -80,7 +80,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col gap-2">
               <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
               <ArrowLink label="Galaxe Quest" href="" />
-              <ArrowLink label="Trade Competition" href="" />
+              <ArrowLink label="Trade Competition (Testnet)" href="" />
               <ArrowLink label="Gleam Events" href="" />
             </div>
           </div>
