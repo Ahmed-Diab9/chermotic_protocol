@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import '~/stories/atom/Button/style.css';
-import { Tag } from '~/stories/atom/Tag';
+import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import './style.css';
@@ -90,6 +90,10 @@ export const AirdropHistory = () => {
                   </div>
                 </div>
               ))}
+            </div>
+            {/* 'more' button should be visible only when there are more lists. */}
+            <div className="mt-6 text-center">
+              <Button label="More" css="underlined" size="lg" />
             </div>
           </div>
         )}
