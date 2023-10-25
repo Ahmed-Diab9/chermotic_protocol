@@ -35,12 +35,18 @@ export const useLpReceiptCount = () => {
       const lpAddress = lpAddresses[index];
 
       const { addLiquidities } = await graphSdk.AddLiquidityCount({ walletAddress, lpAddress });
-      const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettledCount({ lpAddress });
+      const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettledCount({
+        lpAddress,
+        walletAddress,
+      });
       const { removeLiquidities } = await graphSdk.RemoveLiquidityCount({
         walletAddress,
         lpAddress,
       });
-      const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettledCount({ lpAddress });
+      const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettledCount({
+        lpAddress,
+        walletAddress,
+      });
 
       mintings += addLiquidities.length;
       burnings += removeLiquidities.length;
