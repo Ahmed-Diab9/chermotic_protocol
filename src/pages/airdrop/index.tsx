@@ -108,16 +108,6 @@ function Airdrop() {
                               1M rCHR for all Whitelist Holders
                             </p>
                           </div>
-                          <div>
-                            <img src={RandomboxImage} alt="ramdom box" className="w-[400px] mb-7" />
-                            <Button
-                              label="Open Ambassador Box"
-                              css="chrm"
-                              size="3xl"
-                              className="!text-xl !min-w-[280px]"
-                            />
-                            <p className="mt-5 text-primary-light">1M rCHR for Ambassadors</p>
-                          </div>
                         </div>
                       </article>
 
@@ -135,9 +125,10 @@ function Airdrop() {
                               <h2 className="text-4xl">10</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
                             </div>
+                            {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
                             <div className="w-1/4 border-l">
                               <h2 className="text-4xl">3,445</h2>
-                              <h4 className="mt-3 text-xl text-primary-light">2 Key Holders</h4>
+                              <h4 className="mt-3 text-xl text-primary-light">Key Holders</h4>
                             </div>
                             <div className="w-1/4 border-l">
                               <h2 className="text-4xl">13</h2>

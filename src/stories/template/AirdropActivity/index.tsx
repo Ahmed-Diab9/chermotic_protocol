@@ -10,6 +10,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
   return (
     <div className="text-left AirdropActivity">
       <div className="panel">
+        {/* "Whitelist NFT(key) can be excluded */}
         <div className="flex">
           <div className="flex items-center justify-between w-1/2 pr-10">
             <div className="flex items-center gap-4">
