@@ -1,23 +1,25 @@
-// import { BoltIcon, CircleStackIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import CoinStackIcon from '~/assets/icons/CoinStackIcon';
 import BoosterIcon from '~/assets/icons/BoosterIcon';
 import { Button } from '~/stories/atom/Button';
 import { Avatar } from '~/stories/atom/Avatar';
 import StampSuccess from '/src/assets/images/stamp_success.png';
 import StampFail from '/src/assets/images/stamp_fail.png';
+import StampActive from '/src/assets/images/stamp_active.png';
+import StampEmpty from '/src/assets/images/stamp_empty.png';
 import './style.css';
 
 export interface AirdropStampProps {}
 
 export const AirdropStamp = (props: AirdropStampProps) => {
   const week = [
-    { name: 'mon', status: 'success', point: '10' },
-    { name: 'tue', status: 'fail', point: '10' },
-    { name: 'wed', status: 'success', point: '10' },
-    { name: 'thu', status: 'active', point: '10' },
-    { name: 'fri', status: 'empty', point: '10' },
-    { name: 'sat', status: 'empty', point: '10' },
-    { name: 'sun', status: 'empty', point: '10' },
+    { name: 'mon', status: 'success' },
+    { name: 'tue', status: 'fail' },
+    { name: 'wed', status: 'success' },
+    { name: 'thu', status: 'active' },
+    { name: 'fri', status: 'empty' },
+    { name: 'sat', status: 'empty' },
+    { name: 'sun', status: 'empty' },
   ];
 
   return (
@@ -42,23 +44,31 @@ export const AirdropStamp = (props: AirdropStampProps) => {
         {week.map((item) => (
           <div key={item.name} className={`stamp stamp-${item.status}`}>
             <h5 className="text-xl capitalize text-primary-light">{item.name}</h5>
-            {item.status === 'active' ? (
-              <button title="Open Today's Reward" className="mt-3">
+            <div className="mt-3 mb-2">
+              {item.status === 'active' ? (
+                // TODO: button onclick
+                <button title="Open Today's Reward">
+                  <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
+                </button>
+              ) : (
                 <Avatar
-                  className="w-20 h-20 !bg-primary"
-                  // src=
+                  className="w-20 h-20"
+                  src={
+                    item.status === 'success'
+                      ? StampSuccess
+                      : item.status === 'fail'
+                      ? StampFail
+                      : StampEmpty
+                  }
                 />
-              </button>
-            ) : (
-              <Avatar
-                className="w-20 h-20 mt-3"
-                src={
-                  item.status === 'success' ? StampSuccess : item.status === 'fail' ? StampFail : ''
-                }
-              />
+              )}
+            </div>
+            {item.status === 'success' && <CheckCircleIcon className="w-6 text-price-higher" />}
+            {item.status === 'fail' && <XCircleIcon className="w-6 text-price-lower" />}
+            {/* TODO: button onclick */}
+            {item.status === 'active' && (
+              <Button label="Check In" css="chrm" size="sm" className="!h-5 !font-bold" />
             )}
-
-            {item.status === 'success' && <p className="mt-2 text-xl">+{item.point}</p>}
           </div>
         ))}
       </div>

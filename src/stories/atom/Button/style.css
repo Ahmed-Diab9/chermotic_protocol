@@ -111,6 +111,10 @@ a {
     @apply bg-price-lower/10 border border-price-lower text-price-lower;
   }
   &.btn-chrm {
+    @apply bg-gradient-to-r from-price-higher to-price-lower text-inverted;
+    /* background: linear-gradient(96deg, #A6D85B 0%, #FF5044 100%); */
+  }
+  &.btn-chrm-hover {
     @apply relative border border-primary transition-all;
     &:before,
     &:after {

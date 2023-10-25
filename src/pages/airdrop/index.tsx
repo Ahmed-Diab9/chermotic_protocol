@@ -131,7 +131,7 @@ function Airdrop() {
                             </div>
                             <Button
                               label="Open Enthusiast Box"
-                              css="chrm"
+                              css="chrm-hover"
                               size="3xl"
                               className="!text-xl !min-w-[280px]"
                             />
