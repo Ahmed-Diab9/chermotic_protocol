@@ -217,13 +217,11 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                             <div className="flex flex-col gap-1 leading-none">
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p className="font-semibold">
-                                                  {/* {name} */}
-                                                  CHRM
+                                                  {name}
                                                   <span className="px-1 font-light text-primary-lighter">
                                                     |
                                                   </span>
-                                                  {/* {market} */}
-                                                  ETH/USD
+                                                  {market}
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={100}>
