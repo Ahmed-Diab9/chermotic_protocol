@@ -32,6 +32,10 @@ export const usePoolProgressV2 = () => {
   } = useLpReceiptCount();
   useLpReceiptEvents({ callbacks: [onRefreshLpReceipts, onRefreshLpReceiptCount] });
 
+  const hasMoreReceipts = useMemo(() => {
+    const toBlockTimestamp = receiptsData[receiptsData.length - 1]?.toBlockTimestamp;
+    return isNotNil(toBlockTimestamp);
+  }, [receiptsData]);
   const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
     return receipts;
@@ -78,6 +82,7 @@ export const usePoolProgressV2 = () => {
     formattedElapsed,
     receipts,
     receiptAction,
+    hasMoreReceipts,
     count,
 
     onActionChange,

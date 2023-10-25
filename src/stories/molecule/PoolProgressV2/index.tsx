@@ -25,6 +25,7 @@ export function PoolProgressV2() {
     isGuideOpen,
     count,
     receiptAction,
+    hasMoreReceipts,
     onActionChange,
     onGuideClose,
     onFetchNextLpReceipts,
@@ -99,7 +100,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div className="flex justify-center mt-5">
                               <Button
                                 label="More"
@@ -110,7 +111,7 @@ export function PoolProgressV2() {
                                 }}
                               />
                             </div>
-                          }
+                          )}
                         </>
                       )}
                     </Tab.Panel>
@@ -128,7 +129,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div
                               className="flex justify-center mt-5"
                               onClick={() => {
@@ -137,7 +138,7 @@ export function PoolProgressV2() {
                             >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          }
+                          )}
                         </>
                       }
                     </Tab.Panel>
@@ -155,7 +156,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div
                               className="flex justify-center mt-5"
                               onClick={() => {
@@ -164,7 +165,7 @@ export function PoolProgressV2() {
                             >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          }
+                          )}
                         </>
                       }
                     </Tab.Panel>
