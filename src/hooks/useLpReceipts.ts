@@ -334,6 +334,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       refreshWhenOffline: false,
       revalidateOnFocus: false,
       revalidateFirstPage: true,
+      shouldRetryOnError: false,
     }
   );
 

@@ -203,6 +203,7 @@ export const useTradeLogs = () => {
       refreshWhenHidden: false,
       revalidateOnFocus: false,
       revalidateFirstPage: false,
+      shouldRetryOnError: false,
     }
   );
 
