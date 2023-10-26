@@ -7,7 +7,6 @@ import CHRM_LOGO from '../assets/tokens/CHRM.png';
 import ETH_LOGO from '../assets/tokens/ETH.png';
 import USDC_LOGO from '../assets/tokens/USDC.png';
 import WETH_LOGO from '../assets/tokens/WETH.png';
-import CTST_LOGO from '../assets/tokens/cTST.png';
 
 const localLogos = {
   BTC: BTC_LOGO,
@@ -15,7 +14,6 @@ const localLogos = {
   WETH: WETH_LOGO,
   USDC: USDC_LOGO,
   CHRM: CHRM_LOGO,
-  cTST: CTST_LOGO,
 };
 
 export const fetchTokenInfo = async (symbols: string | string[]) => {
