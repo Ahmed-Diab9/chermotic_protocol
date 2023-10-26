@@ -126,7 +126,43 @@ function Airdrop() {
                             className="text-primary-light"
                           />
                         </div>
-                        <div className="flex justify-around mt-16">
+                        <div className="flex flex-col items-center mt-10">
+                          <img src={RandomboxImage} alt="ramdom box" className="w-[400px]" />
+                          <div className="flex mb-10 text-lg text-left border-y text-primary-light">
+                            <div className="w-1/4 px-3 py-5">
+                              <p>Credit is required to open the Random Box to obtain rCHR.</p>
+                            </div>
+                            <div className="w-1/4 px-3 py-5 border-l">
+                              <p>
+                                Random Box can be activated and opened on 1/1/2018 after the end of
+                                the Testnet period.
+                              </p>
+                            </div>
+                            <div className="w-1/4 px-3 py-5 border-l">
+                              <p>To open Random Box, you need Discord Log-in.</p>
+                            </div>
+                            <div className="w-1/4 px-3 py-5 border-l">
+                              <p>
+                                When signing in, you must be registered on the Chromatic Protocol
+                                server.
+                              </p>
+                              <Button
+                                label="Discord Chromatic Server"
+                                iconRight={<ChevronRightIcon />}
+                                css="underlined"
+                                className="mt-5 text-primary"
+                              />
+                            </div>
+                          </div>
+                          <Button
+                            label="Open Enthusiast Box"
+                            css="chrm-hover"
+                            size="3xl"
+                            className="!text-xl !w-[280px]"
+                          />
+                        </div>
+
+                        {/* <div className="flex justify-around mt-16">
                           <div>
                             <img src={RandomboxImage} alt="ramdom box" className="w-[400px] mb-7" />
                           </div>
@@ -155,11 +191,8 @@ function Airdrop() {
                               size="3xl"
                               className="!text-xl !min-w-[280px]"
                             />
-                            {/* <p className="mt-5 text-primary-light">
-                              1M rCHR for all Whitelist Holders
-                            </p> */}
                           </div>
-                        </div>
+                        </div> */}
                       </article>
 
                       <article>
