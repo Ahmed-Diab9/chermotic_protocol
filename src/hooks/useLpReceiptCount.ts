@@ -27,40 +27,46 @@ export const useLpReceiptCount = () => {
     error,
     isLoading: isCountLoading,
     mutate,
-  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ lpAddresses, walletAddress }) => {
-    let mintings = 0;
-    let burnings = 0;
-    let inProgresses = 0;
-    for (let index = 0; index < lpAddresses.length; index++) {
-      const lpAddress = lpAddresses[index];
+  } = useSWR(
+    checkAllProps(fetchKey) ? fetchKey : null,
+    async ({ lpAddresses, walletAddress }) => {
+      let mintings = 0;
+      let burnings = 0;
+      let inProgresses = 0;
+      for (let index = 0; index < lpAddresses.length; index++) {
+        const lpAddress = lpAddresses[index];
 
-      const { addLiquidities } = await graphSdk.AddLiquidityCount({ walletAddress, lpAddress });
-      const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettledCount({
-        lpAddress,
-        walletAddress,
-      });
-      const { removeLiquidities } = await graphSdk.RemoveLiquidityCount({
-        walletAddress,
-        lpAddress,
-      });
-      const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettledCount({
-        lpAddress,
-        walletAddress,
-      });
+        const { addLiquidities } = await graphSdk.AddLiquidityCount({ walletAddress, lpAddress });
+        const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettledCount({
+          lpAddress,
+          walletAddress,
+        });
+        const { removeLiquidities } = await graphSdk.RemoveLiquidityCount({
+          walletAddress,
+          lpAddress,
+        });
+        const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettledCount({
+          lpAddress,
+          walletAddress,
+        });
 
-      mintings += addLiquidities.length;
-      burnings += removeLiquidities.length;
-      inProgresses +=
-        addLiquidities.length +
-        removeLiquidities.length -
-        (addLiquiditySettleds.length + removeLiquiditySettleds.length);
+        mintings += addLiquidities.length;
+        burnings += removeLiquidities.length;
+        inProgresses +=
+          addLiquidities.length +
+          removeLiquidities.length -
+          (addLiquiditySettleds.length + removeLiquiditySettleds.length);
+      }
+      return {
+        mintings,
+        burnings,
+        inProgresses,
+      };
+    },
+    {
+      refreshInterval: 1000 * 20,
     }
-    return {
-      mintings,
-      burnings,
-      inProgresses,
-    };
-  });
+  );
 
   useError({ error });
 

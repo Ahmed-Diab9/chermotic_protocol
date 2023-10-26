@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
-import { useLpReceiptEvents } from '~/hooks/useLpReceiptEvents';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { LP_EVENT } from '~/typings/events';
 import { LpReceipt } from '~/typings/lp';
@@ -30,7 +29,6 @@ export const usePoolProgressV2 = () => {
     isCountLoading,
     onRefreshLpReceiptCount,
   } = useLpReceiptCount();
-  useLpReceiptEvents({ callbacks: [onRefreshLpReceipts, onRefreshLpReceiptCount] });
 
   const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];

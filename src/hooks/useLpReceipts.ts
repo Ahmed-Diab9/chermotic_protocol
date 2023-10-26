@@ -340,7 +340,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       return receiptsData;
     },
     {
-      refreshInterval: 1000 * 30,
+      refreshInterval: 1000 * 20,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
