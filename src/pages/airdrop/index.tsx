@@ -152,20 +152,20 @@ function Airdrop() {
                         </div>
                         <div className="p-5 mt-10 panel">
                           <div className="flex justify-between">
-                            <div className="w-1/4">
+                            <div className="w-1/3">
                               <h2 className="text-4xl">10</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
                             </div>
                             {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
-                            <div className="w-1/4 border-l">
+                            {/* <div className="w-1/4 border-l">
                               <h2 className="text-4xl">3,445</h2>
-                              <h4 className="mt-3 text-xl text-primary-light">Key Holders</h4>
-                            </div>
-                            <div className="w-1/4 border-l">
+                              <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
+                            </div> */}
+                            <div className="w-1/3 border-l">
                               <h2 className="text-4xl">13</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Credits</h4>
                             </div>
-                            <div className="w-1/4 border-l">
+                            <div className="w-1/3 border-l">
                               <h2 className="text-4xl">120</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Boosters</h4>
                             </div>
@@ -197,15 +197,15 @@ function Airdrop() {
                       <div className="p-5 mt-10 panel">
                         <div className="flex justify-between">
                           {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
-                          <div className="w-1/3">
+                          {/* <div className="w-1/3">
                             <h2 className="text-4xl">10</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
-                          </div>
-                          <div className="w-1/3 border-l">
+                          </div> */}
+                          <div className="w-1/2 border-l">
                             <h2 className="text-4xl">3,445</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Credits</h4>
                           </div>
-                          <div className="w-1/3 border-l">
+                          <div className="w-1/2 border-l">
                             <h2 className="text-4xl">13</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Boosters</h4>
                           </div>

@@ -9,8 +9,8 @@ export interface AirdropActivityProps {}
 export const AirdropActivity = (props: AirdropActivityProps) => {
   return (
     <div className="text-left AirdropActivity">
-      <div className="panel">
-        {/* "Whitelist NFT(key) can be excluded */}
+      {/* "Whitelist NFT(key) can be excluded */}
+      {/* <div className="panel">
         <div className="flex">
           <div className="flex items-center justify-between w-1/2 pr-10">
             <div className="flex items-center gap-4">
@@ -30,7 +30,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <ArrowLink label="How to get Whitelist NFT" href="" />
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="flex gap-5 mt-5">
         <div className="w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
