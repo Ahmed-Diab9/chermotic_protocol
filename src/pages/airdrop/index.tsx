@@ -14,6 +14,8 @@ import { Guide } from '~/stories/atom/Guide';
 import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
+import ZealyIcon from '~/assets/images/zealy.png';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -83,6 +85,24 @@ function Airdrop() {
                               css="active"
                               size="sm"
                               className="!text-base"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
+                          <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
+                          <p className="text-left text-price-lower">
+                            In order to automatically convert XP earned by completing quests in
+                            Zealy into credits for Chromatic Airdrop, <br />
+                            you must connect your wallet at Zealy Profile {'>'} Linked account.
+                          </p>
+                          <div className="pl-8 ml-auto border-l">
+                            <Button
+                              label="My Zealy Profile"
+                              iconRight={<ChevronRightIcon />}
+                              className=""
+                              size="lg"
+                              css="underlined"
+                              href=""
                             />
                           </div>
                         </div>
