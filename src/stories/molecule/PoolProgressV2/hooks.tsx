@@ -32,14 +32,24 @@ export const usePoolProgressV2 = () => {
   } = useLpReceiptCount();
   useLpReceiptEvents({ callbacks: [onRefreshLpReceipts, onRefreshLpReceiptCount] });
 
-  const hasMoreReceipts = useMemo(() => {
-    const toBlockTimestamp = receiptsData[receiptsData.length - 1]?.toBlockTimestamp;
-    return isNotNil(toBlockTimestamp);
-  }, [receiptsData]);
   const receipts: LpReceipt[] = useMemo(() => {
     const receipts = receiptsData?.map(({ receipts }) => receipts).flat(1) ?? [];
     return receipts;
   }, [receiptsData]);
+  const hasMoreReceipts = useMemo(() => {
+    const currentSize = receipts.length;
+    switch (receiptAction) {
+      case 'all': {
+        return currentSize < count.mintings + count.burnings;
+      }
+      case 'minting': {
+        return currentSize < count.mintings;
+      }
+      case 'burning': {
+        return currentSize < count.burnings;
+      }
+    }
+  }, [count, receiptAction, receipts]);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideClicked',
     true
