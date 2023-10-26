@@ -4,10 +4,10 @@ import { CMC_API } from '~/constants/coinmarketcap';
 import { CMCTokenInfo } from '~/typings/api';
 import BTC_LOGO from '../assets/tokens/BTC.png';
 import CHRM_LOGO from '../assets/tokens/CHRM.png';
-import CTST_LOGO from '../assets/tokens/CTST.png';
 import ETH_LOGO from '../assets/tokens/ETH.png';
 import USDC_LOGO from '../assets/tokens/USDC.png';
 import WETH_LOGO from '../assets/tokens/WETH.png';
+import CTST_LOGO from '../assets/tokens/cTST.png';
 
 const localLogos = {
   BTC: BTC_LOGO,
