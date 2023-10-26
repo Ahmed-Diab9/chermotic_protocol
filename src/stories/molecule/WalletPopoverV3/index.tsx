@@ -48,6 +48,8 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
     chromaticAddress,
     onCopyChromaticAddress,
     isChromaticAccountExist,
+
+    onLpClick,
   } = useWalletPopoverV3();
 
   if (isDisconnected) {
@@ -203,6 +205,13 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                 <div className="flex flex-col gap-3">
                                   {formattedLps.map(
                                     ({ key, name, clpName, token, market, image, balance }) => (
+                                      <Link
+                                        to="#"
+                                        key={key}
+                                        onClick={() => {
+                                          onLpClick(token, market);
+                                        }}
+                                      >
                                         <div className="flex gap-3 pb-3 border-b last:border-b-0">
                                           <SkeletonElement
                                             isLoading={isLoading}

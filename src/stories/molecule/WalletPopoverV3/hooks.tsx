@@ -5,7 +5,6 @@ import { Address, useAccount, useConnect, useDisconnect, usePublicClient } from 
 import { useChain } from '~/hooks/useChain';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useCreateAccount } from '~/hooks/useCreateAccount';
-import { useOwnedLiquidityPools } from '~/hooks/useOwnedLiquidityPools';
 import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
@@ -14,9 +13,11 @@ import { PRICE_FEEDS } from '~/configs/token';
 
 import { Token } from '~/typings/market';
 
+import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { CHAIN } from '~/constants';
 import { useEntireChromaticLp } from '~/hooks/useChromaticLp';
+import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
@@ -36,12 +37,15 @@ export function useWalletPopoverV3() {
   const { address: walletAccount } = useAccount();
   const { accountAddress: chromaticAccount, isChromaticBalanceLoading } = useChromaticAccount();
   const { onCreateAccountWithToast } = useCreateAccount();
-  const { tokens } = useSettlementToken();
+  const { tokens, onTokenSelect } = useSettlementToken();
+  const { markets } = useEntireMarkets();
+  const { onMarketSelect } = useMarket();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const { priceFeed } = usePriceFeed();
   const { lpList } = useEntireChromaticLp();
   const { disconnectAsync } = useDisconnect();
   const { switchChain } = useChain();
+  const navigate = useNavigate();
 
   const isLoading = isTokenBalanceLoading || isChromaticBalanceLoading;
 
@@ -148,7 +152,16 @@ export function useWalletPopoverV3() {
     return isNotNil(chromaticAccount) && copyText(chromaticAccount);
   }
   const isChromaticAccountExist = chromaticAccount && chromaticAccount !== ADDRESS_ZERO;
-
+  const onLpClick = (tokenName: string, marketDescription: string) => {
+    const token = tokens?.find((token) => token.name === tokenName);
+    const market = markets?.find((market) => market.description === marketDescription);
+    if (isNil(token) || isNil(market)) {
+      return;
+    }
+    onTokenSelect(token);
+    onMarketSelect(market);
+    navigate('/pool3');
+  };
   return {
     onConnect,
     onSwitchChain,
@@ -173,5 +186,7 @@ export function useWalletPopoverV3() {
     chromaticAddress,
     onCopyChromaticAddress,
     isChromaticAccountExist,
+
+    onLpClick,
   };
 }
