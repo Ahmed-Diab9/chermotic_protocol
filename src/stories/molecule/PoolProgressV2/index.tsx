@@ -239,8 +239,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         {/* minting: CLP / burning: settle token */}
         <SkeletonElement isLoading={receipt.status === 'standby' || !receipt.isSettled} width={120}>
           <Avatar label={receipt.detail[0]} size="sm" fontSize="lg" gap="1" src={token.logo} />
-          {/* todo: show only if some parts cannot be withdrawn */}
-          {receipt.detail[1] && (
+          {hasReturnedValue && receipt.detail[1] && (
             <p className="text-sm mt-[2px]">{receipt.detail[1]} CLP Returned</p>
           )}
         </SkeletonElement>
