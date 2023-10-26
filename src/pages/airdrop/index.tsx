@@ -28,10 +28,10 @@ function Airdrop() {
 
   return (
     <>
-      <div className="flex flex-col min-h-[100vh] w-full relative bg-gradient">
+      <div className="page-container bg-gradient">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-16 mx-auto mb-20">
+        <main>
           <div className="tabs tabs-flex-column">
             <Tab.Group>
               <div className="flex gap-10">
@@ -273,7 +273,7 @@ function Airdrop() {
               </div>
             </Tab.Group>
           </div>
-        </section>
+        </main>
         <Footer />
         <Toast />
         <ChainModal />

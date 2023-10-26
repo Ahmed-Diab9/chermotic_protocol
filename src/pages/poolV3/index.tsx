@@ -42,10 +42,10 @@ const PoolV3 = () => {
         <div id="prev"></div>
         <div id="current"></div>
       </div>
-      <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">
+      <div className="page-container bg-gradient">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <section className="flex flex-col w-full px-5 mx-auto mt-8 mb-20 grow max-w-[1400px]">
+        <main>
           <MarketSelectV3 />
           <div className="flex items-stretch gap-5 mt-8">
             <div className="flex-none w-[240px]">
@@ -115,7 +115,7 @@ const PoolV3 = () => {
               </div>
             </div>
           </div>
-        </section>
+        </main>
         <Footer />
         <Toast />
         <ChainModal />
