@@ -18,6 +18,8 @@ export interface ChromaticLp {
   price: bigint;
   settlementToken: Token;
   market: Market;
+
+  clpName: string;
 }
 
 export interface LpReceipt {

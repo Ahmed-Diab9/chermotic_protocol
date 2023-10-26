@@ -16,9 +16,20 @@ import { Token } from '~/typings/market';
 
 import { formatUnits } from 'viem';
 import { CHAIN } from '~/constants';
+import { useEntireChromaticLp } from '~/hooks/useChromaticLp';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
+
+type FormattedLp = {
+  key: string;
+  name: string;
+  clpName: string;
+  image: string;
+  token: string;
+  market: string;
+  balance: string;
+};
 
 export function useWalletPopoverV3() {
   const { connectAsync, connectors } = useConnect();
@@ -28,7 +39,7 @@ export function useWalletPopoverV3() {
   const { tokens } = useSettlementToken();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const { priceFeed } = usePriceFeed();
-  const { ownedPoolSummary } = useOwnedLiquidityPools();
+  const { lpList } = useEntireChromaticLp();
   const { disconnectAsync } = useDisconnect();
   const { switchChain } = useChain();
 
@@ -113,27 +124,19 @@ export function useWalletPopoverV3() {
   }, []);
   const isAssetEmpty = assets.length === 0;
 
-  const liquidityTokens = (ownedPoolSummary || []).reduce<
-    {
-      key: string;
-      name: string;
-      image: string;
-      market: string;
-      liquidity: string;
-      bins: number;
-    }[]
-  >((acc, pool) => {
-    const key = `${pool.token.name}-${pool.market}`;
-    const name = pool.token.name;
-    const image = pool.image;
+  const formattedLps = (lpList || []).reduce<FormattedLp[]>((acc, lp) => {
+    const key = `${lp.settlementToken.name}-${lp.market.description}-${lp.name}`;
+    const name = lp.name;
+    const clpName = lp.clpName;
+    const image = lp.image;
 
-    const market = pool.market;
-    const liquidity = formatDecimals(pool.liquidity, pool.token.decimals, 2, true);
-    const bins = pool.bins;
-    acc.push({ key, name, market, liquidity, bins, image });
+    const market = lp.market.description;
+    const token = lp.settlementToken.name;
+    const balance = formatDecimals(lp.balance, lp.decimals, 2, true);
+    acc.push({ key, name, clpName, token, market, balance, image });
     return acc;
   }, []);
-  const isLiquidityTokenEmpty = liquidityTokens.length === 0;
+  const isLiquidityTokenEmpty = formattedLps.length === 0;
 
   const walletAddress = walletAccount ? trimAddress(walletAccount, 7, 5) : '-';
   function onCopyWalletAddress() {
@@ -161,7 +164,7 @@ export function useWalletPopoverV3() {
     assets,
     isAssetEmpty,
 
-    liquidityTokens,
+    formattedLps,
     isLiquidityTokenEmpty,
 
     walletAddress,
