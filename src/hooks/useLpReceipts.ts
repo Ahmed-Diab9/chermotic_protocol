@@ -30,15 +30,16 @@ import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 type GetReceiptsArgs = {
+  count: number;
   walletAddress: Address;
   lpAddress: Address;
   toBlockTimestamp: bigint;
 };
 
 const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
-  const { walletAddress, lpAddress, toBlockTimestamp } = args;
+  const { walletAddress, lpAddress, toBlockTimestamp, count } = args;
   const { addLiquidities } = await graphSdk.AddLiquidities({
-    count: PAGE_SIZE,
+    count,
     orderBy: AddLiquidity_OrderBy.BlockTimestamp,
     orderDirection: OrderDirection.Desc,
     walletAddress,
@@ -92,9 +93,9 @@ const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
 };
 
 const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
-  const { walletAddress, lpAddress, toBlockTimestamp } = args;
+  const { walletAddress, lpAddress, toBlockTimestamp, count } = args;
   const { removeLiquidities } = await graphSdk.RemoveLiquidities({
-    count: PAGE_SIZE,
+    count,
     orderBy: RemoveLiquidity_OrderBy.BlockTimestamp,
     orderDirection: OrderDirection.Desc,
     walletAddress,
@@ -255,7 +256,14 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       }
       return { ...fetchKey, toBlockTimestamp: previousData?.toBlockTimestamp };
     },
-    async ({ walletAddress, currentMarket, tokens, currentAction, toBlockTimestamp }) => {
+    async ({
+      walletAddress,
+      currentMarket,
+      tokens,
+      currentAction,
+      toBlockTimestamp,
+      pageIndex,
+    }) => {
       const defaultToBlockTimestamp = BigInt(Math.round(Date.now() / 1000));
       const registry = lpClient.registry();
       const lp = lpClient.lp();
@@ -278,12 +286,14 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         throw new Error('Tokens invalid');
       }
 
+      const count = pageIndex === 0 ? 2 : PAGE_SIZE;
       let receipts: LpReceipt[] = [];
       for (let index = 0; index < lpAddresses.length; index++) {
         const lpAddress = lpAddresses[index];
         let currentReceipts = [] as LpReceipt[];
         if (currentAction !== 'burning') {
           const addMap = await getAddReceipts(graphSdk, {
+            count,
             walletAddress,
             lpAddress,
             toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
@@ -292,6 +302,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         }
         if (currentAction !== 'minting') {
           const removeMap = await getRemoveReceipts(graphSdk, {
+            count,
             walletAddress,
             lpAddress,
             toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
@@ -312,7 +323,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         }
         return previous.blockTimestamp < next.blockTimestamp ? 1 : -1;
       });
-      receipts = receipts.slice(0, PAGE_SIZE);
+      receipts = receipts.slice(0, count);
       const detailedReceipts = await mapToDetailedReceipts({
         client,
         receipts,
