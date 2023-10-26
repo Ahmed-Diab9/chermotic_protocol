@@ -4,6 +4,7 @@ import { CMC_API } from '~/constants/coinmarketcap';
 import { CMCTokenInfo } from '~/typings/api';
 import BTC_LOGO from '../assets/tokens/BTC.png';
 import CHRM_LOGO from '../assets/tokens/CHRM.png';
+import CTST_LOGO from '../assets/tokens/CTST.png';
 import ETH_LOGO from '../assets/tokens/ETH.png';
 import USDC_LOGO from '../assets/tokens/USDC.png';
 import WETH_LOGO from '../assets/tokens/WETH.png';
@@ -14,6 +15,7 @@ const localLogos = {
   WETH: WETH_LOGO,
   USDC: USDC_LOGO,
   CHRM: CHRM_LOGO,
+  cTST: CTST_LOGO,
 };
 
 export const fetchTokenInfo = async (symbols: string | string[]) => {

@@ -24,6 +24,7 @@ import { checkAllProps } from '~/utils';
 import { trimMarket } from '~/utils/market';
 import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
+import CLP from '../assets/tokens/CLP.png';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
@@ -172,7 +173,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
     const token = {
       name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
       decimals: receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
-      logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
+      logo: receipt.action === 'burning' ? settlementToken?.image : clpToken.image,
     };
 
     if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
@@ -204,7 +205,6 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       status,
       message,
       detail: [detail, remainedDetail],
-
       token,
     } satisfies LpReceipt;
   });
@@ -274,6 +274,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
           return {
             address: lpAddress,
             ...tokenMeta,
+            image: CLP,
           };
         })
       );

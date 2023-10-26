@@ -49,6 +49,7 @@ export interface LpReceipt {
 
 export interface LpToken {
   name: string;
+  image: string;
   symbol: string;
   decimals: number;
   address: Address;
