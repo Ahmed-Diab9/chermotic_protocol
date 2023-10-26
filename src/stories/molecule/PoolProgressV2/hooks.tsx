@@ -49,8 +49,8 @@ export const usePoolProgressV2 = () => {
     }
   }, [count, receiptAction, receipts]);
   const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
-    'app:isLpGuideClicked',
-    true
+    'app:isLpGuideOpen',
+    false
   );
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
@@ -73,9 +73,9 @@ export const usePoolProgressV2 = () => {
   useEffect(() => {
     function onLp() {
       if (isNotNil(openButtonRef.current) && isNil(ref.current)) {
-        setIsGuideOpen(true);
         openButtonRef.current.click();
       }
+      setIsGuideOpen(true);
     }
     window.addEventListener(LP_EVENT, onLp);
     return () => {
