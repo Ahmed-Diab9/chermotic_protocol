@@ -52,10 +52,6 @@ const router = createBrowserRouter([
     path: '/airdrop',
     element: <Airdrop />,
   },
-  {
-    path: '/faucet',
-    element: <Faucet />,
-  },
 ]);
 
 export { router };
