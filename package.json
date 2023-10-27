@@ -26,9 +26,9 @@
     "@chromatic-protocol/sdk-viem/viem": "1.12.1"
   },
   "dependencies": {
-    "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.24",
+    "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.25",
     "@chromatic-protocol/react-compound-charts": "^1.0.0-rc.9",
-    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.156",
+    "@chromatic-protocol/sdk-viem": "^0.1.0-rc.159",
     "@floating-ui/dom": "^1.4.2",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",

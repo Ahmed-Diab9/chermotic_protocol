@@ -18,14 +18,14 @@ export interface ChromaticLp {
   price: bigint;
   settlementToken: Token;
   market: Market;
+
+  clpName: string;
 }
 
 export interface LpReceipt {
   key: string;
   id: bigint;
   lpAddress: Address;
-  oracleVersion: bigint;
-  timestamp: bigint;
   amount: bigint;
   mintedAmount: bigint;
   burnedAmount: bigint;
@@ -49,6 +49,7 @@ export interface LpReceipt {
 
 export interface LpToken {
   name: string;
+  image: string;
   symbol: string;
   decimals: number;
   address: Address;

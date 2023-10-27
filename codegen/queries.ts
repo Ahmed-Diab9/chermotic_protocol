@@ -103,8 +103,8 @@ export const ADD_LIQUIDITIY_COUNT = gql`
 `;
 
 export const ADD_LIQUIDITY_SETTLED_COUNT = gql`
-  query AddLiquiditySettledCount($lpAddress: Bytes!) {
-    addLiquiditySettleds(where: { lp: $lpAddress }) {
+  query AddLiquiditySettledCount($walletAddress: Bytes!, $lpAddress: Bytes!) {
+    addLiquiditySettleds(where: { lp: $lpAddress, recipient: $walletAddress }) {
       id
       lp
       receiptId
@@ -127,8 +127,8 @@ export const REMOVE_LIQUIDITY_COUNT = gql`
 `;
 
 export const REMOVE_LIQUIDITY_SETTLED_COUNT = gql`
-  query RemoveLiquiditySettledCount($lpAddress: Bytes!) {
-    removeLiquiditySettleds(where: { lp: $lpAddress }) {
+  query RemoveLiquiditySettledCount($walletAddress: Bytes!, $lpAddress: Bytes!) {
+    removeLiquiditySettleds(where: { lp: $lpAddress, recipient: $walletAddress }) {
       id
       lp
       receiptId
