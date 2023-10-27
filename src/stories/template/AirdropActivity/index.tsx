@@ -1,12 +1,13 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
-import KeyLgIcon from '/src/assets/images/airdrop_key.svg';
-import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
-import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
+import { useAirdropActivity } from './hooks';
 import './style.css';
+import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
+import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
 
 export interface AirdropActivityProps {}
 
 export const AirdropActivity = (props: AirdropActivityProps) => {
+  const { airdropAssets, formattedCredit, isLoading } = useAirdropActivity();
   return (
     <div className="text-lg text-left AirdropActivity">
       {/* "Whitelist NFT(key) can be excluded */}
@@ -38,7 +39,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               <img src={CreditLgIcon} alt="airdrop credit" />
               <h4 className="text-[28px]">Credit</h4>
             </div>
-            <h4 className="text-[28px]">2,345</h4>
+            <h4 className="text-[28px]">{formattedCredit}</h4>
           </div>
           <p className="pt-5">
             Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
@@ -64,7 +65,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               <h4 className="text-[28px]">Booster</h4>
             </div>
             <div className="flex flex-col gap-2 text-right">
-              <h4 className="text-[28px]">17</h4>
+              <h4 className="text-[28px]">{airdropAssets?.booster}</h4>
               <p className="text-primary-light">17 Booster Chances</p>
             </div>
           </div>
