@@ -25,6 +25,7 @@ export function PoolProgressV2() {
     isGuideOpen,
     count,
     receiptAction,
+    hasMoreReceipts,
     onActionChange,
     onGuideClose,
     onFetchNextLpReceipts,
@@ -74,17 +75,16 @@ export function PoolProgressV2() {
                   </div>
                   <Tab.Panels className="flex-auto">
                     <div className="mb-1">
-                      {isGuideOpen && (
-                        <Guide
-                          title="You can leave now"
-                          // The percentage value in the paragraph is a value that is different for each market.
-                          paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
-                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                          outLinkAbout="Next Oracle Round"
-                          className="!rounded-none"
-                          onClick={onGuideClose}
-                        />
-                      )}
+                      <Guide
+                        isVisible={isGuideOpen}
+                        title="You can leave now"
+                        // The percentage value in the paragraph is a value that is different for each market.
+                        paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
+                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                        outLinkAbout="Next Oracle Round"
+                        className="!rounded-none"
+                        onClick={onGuideClose}
+                      />
                     </div>
                     {/* tab - all */}
                     <Tab.Panel className="flex flex-col mb-5">
@@ -99,7 +99,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div className="flex justify-center mt-5">
                               <Button
                                 label="More"
@@ -110,7 +110,7 @@ export function PoolProgressV2() {
                                 }}
                               />
                             </div>
-                          }
+                          )}
                         </>
                       )}
                     </Tab.Panel>
@@ -128,7 +128,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div
                               className="flex justify-center mt-5"
                               onClick={() => {
@@ -137,7 +137,7 @@ export function PoolProgressV2() {
                             >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          }
+                          )}
                         </>
                       }
                     </Tab.Panel>
@@ -155,7 +155,7 @@ export function PoolProgressV2() {
                           ))}
                           {/* More button(including wrapper): should be shown when there are more than 2 lists  */}
                           {/* default: show up to 2 lists */}
-                          {
+                          {hasMoreReceipts && (
                             <div
                               className="flex justify-center mt-5"
                               onClick={() => {
@@ -164,7 +164,7 @@ export function PoolProgressV2() {
                             >
                               <Button label="More" css="underlined" size="sm" />
                             </div>
-                          }
+                          )}
                         </>
                       }
                     </Tab.Panel>
@@ -238,8 +238,7 @@ const ProgressItem = (props: ProgressItemProps) => {
         {/* minting: CLP / burning: settle token */}
         <SkeletonElement isLoading={receipt.status === 'standby' || !receipt.isSettled} width={120}>
           <Avatar label={receipt.detail[0]} size="sm" fontSize="lg" gap="1" src={token.logo} />
-          {/* todo: show only if some parts cannot be withdrawn */}
-          {receipt.detail[1] && (
+          {hasReturnedValue && receipt.detail[1] && (
             <p className="text-sm mt-[2px]">{receipt.detail[1]} CLP Returned</p>
           )}
         </SkeletonElement>
@@ -247,7 +246,7 @@ const ProgressItem = (props: ProgressItemProps) => {
       <div className="ml-auto text-right">
         {receipt.status === 'completed' && (
           <p className="text-sm text-primary-light mb-[2px]">
-            {formatTimestamp(receipt.timestamp)}
+            {formatTimestamp(receipt.blockTimestamp)}
           </p>
         )}
         <div className="flex items-center gap-[6px] text-sm tracking-tight text-primary">

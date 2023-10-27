@@ -8,7 +8,10 @@ export const usePoolStat = () => {
       ' ' +
       selectedLp.settlementToken.name
     : undefined;
-  const clpSupply = formatDecimals(selectedLp?.totalSupply, selectedLp?.decimals, 3, true) + ' CLP';
+  const clpSupply =
+    formatDecimals(selectedLp?.totalSupply, selectedLp?.decimals, 3, true) +
+    ' ' +
+    selectedLp?.clpName;
   const utilization = formatDecimals(selectedLp?.utilization, 2, 2, false) + ' %';
   const utilizedValue = selectedLp
     ? formatDecimals(

@@ -265,6 +265,7 @@ export const useTradeHistory = () => {
       refreshWhenOffline: false,
       revalidateOnFocus: false,
       revalidateFirstPage: false,
+      shouldRetryOnError: false,
     }
   );
 

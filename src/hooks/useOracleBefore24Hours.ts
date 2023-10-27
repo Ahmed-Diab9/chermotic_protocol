@@ -29,21 +29,40 @@ export const useOracleBefore24Hours = ({ market }: { market?: Market }) => {
       return;
     }
 
+    const [fromOracle, endOracle] = await Promise.allSettled([
+      oracleProvider.read.atVersion([0n]),
+      oracleProvider.read.atVersion([currentVersion]),
+    ]);
+    if (fromOracle.status === 'fulfilled' && endOracle.status === 'fulfilled') {
+      const { timestamp: fromTimestamp } = fromOracle.value;
+      const { timestamp: endTimestamp } = endOracle.value;
+      const fromDate = new Date(Number(fromTimestamp) * 1000);
+      const endDate = new Date(Number(endTimestamp) * 1000);
+      if (fromDate.setDate(fromDate.getDate() + 1) > endDate.getTime()) {
+        return;
+      }
+    }
+
     const searchVersion = async (
       minVersion: bigint,
       maxVersion: bigint
-    ): Promise<OracleWithMarket> => {
+    ): Promise<OracleWithMarket | undefined> => {
       if (searchIndex > 16) {
-        throw new Error('Execution counts exceeded');
+        if (import.meta.env.DEV) {
+          throw new Error('Execution counts exceeded');
+        }
+        return;
       }
       searchIndex++;
       const averageVersion = (minVersion + maxVersion) / 2n;
       const averageOracle = await oracleProvider.read.atVersion([averageVersion]);
       const oracleDiff = Number(market.oracleValue.timestamp - averageOracle.timestamp);
       if (oracleDiff < 60 * 60 * 24) {
+        await new Promise((resolve) => setTimeout(resolve, 400));
         return searchVersion(minVersion, averageVersion);
       }
       if (oracleDiff > 60 * 60 * 24 + 60 * 10) {
+        await new Promise((resolve) => setTimeout(resolve, 400));
         return searchVersion(averageVersion, maxVersion);
       }
       return { ...averageOracle, marketAddress: market.address };

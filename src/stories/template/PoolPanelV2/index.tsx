@@ -34,6 +34,7 @@ export function PoolPanelV2() {
 
     tokenName,
     tokenImage,
+    clpName,
     clpImage,
 
     isAssetsLoading,
@@ -252,12 +253,12 @@ export function PoolPanelV2() {
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
                                     <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
-                                      {formattedClp} CLP
+                                      {formattedClp} {clpName}
                                     </SkeletonElement>
                                   </p>
                                 </div>
                                 <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
-                                  <Avatar label="CLP" size="xs" gap="1" src={clpImage} />
+                                  <Avatar label={clpName} size="xs" gap="1" src={clpImage} />
                                 </span>
                               </div>
                               {/* todo: input error */}

@@ -82,7 +82,7 @@ export const useMarket = (_interval?: number) => {
         (market) => market.description.split(/\s*\/\s*/) as [string, string]
       );
       const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
-      return markets.map((market, marketIndex) => {
+      const detailedMarkets = markets.map((market, marketIndex) => {
         const description = marketNames[marketIndex].join('/');
         return {
           ...market,
@@ -91,6 +91,8 @@ export const useMarket = (_interval?: number) => {
           image: marketImageMap[marketNames[marketIndex][0]],
         } as Market;
       });
+
+      return detailedMarkets;
     },
     {
       refreshInterval: 1000 * 30,

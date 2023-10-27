@@ -39,7 +39,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
     assets,
     isAssetEmpty,
 
-    liquidityTokens,
+    formattedLps,
     isLiquidityTokenEmpty,
 
     walletAddress,
@@ -48,6 +48,8 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
     chromaticAddress,
     onCopyChromaticAddress,
     isChromaticAccountExist,
+
+    onLpClick,
   } = useWalletPopoverV3();
 
   if (isDisconnected) {
@@ -201,9 +203,15 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                 </p>
                               ) : (
                                 <div className="flex flex-col gap-3">
-                                  {liquidityTokens.map(
-                                    ({ key, name, market, image, liquidity, bins }) => (
-                                      <Link to="#" key={key}>
+                                  {formattedLps.map(
+                                    ({ key, name, clpName, token, market, image, balance }) => (
+                                      <Link
+                                        to="#"
+                                        key={key}
+                                        onClick={() => {
+                                          onLpClick(token, market);
+                                        }}
+                                      >
                                         <div className="flex gap-3 pb-3 border-b last:border-b-0">
                                           <SkeletonElement
                                             isLoading={isLoading}
@@ -217,25 +225,23 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                             <div className="flex flex-col gap-1 leading-none">
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p className="font-semibold">
-                                                  {/* {name} */}
-                                                  CHRM
+                                                  {token}
                                                   <span className="px-1 font-light text-primary-lighter">
                                                     |
                                                   </span>
-                                                  {/* {market} */}
-                                                  ETH/USD
+                                                  {market}
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p className="text-primary-lighter">
                                                   {/* pool name */}
-                                                  Mezzanine Pool
+                                                  {name} Pool
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={60}>
                                                 <p className="font-medium break-all text-primary">
                                                   {/* {liquidity} {name} */}
-                                                  10 CLP
+                                                  {balance} {clpName}
                                                 </p>
                                               </SkeletonElement>
                                             </div>

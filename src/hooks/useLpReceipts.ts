@@ -17,26 +17,30 @@ import {
 } from '~/__generated__/request';
 import { SUBGRAPH_API_URL } from '~/configs/lp';
 import { PAGE_SIZE } from '~/constants/arbiscan';
+import { useAppSelector } from '~/store';
 import { LpReceipt, LpToken } from '~/typings/lp';
-import { Market, Token } from '~/typings/market';
+import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
+import { trimMarket } from '~/utils/market';
 import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
+import CLP from '../assets/tokens/CLP.png';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 type GetReceiptsArgs = {
+  count: number;
   walletAddress: Address;
   lpAddress: Address;
   toBlockTimestamp: bigint;
 };
 
 const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
-  const { walletAddress, lpAddress, toBlockTimestamp } = args;
+  const { walletAddress, lpAddress, toBlockTimestamp, count } = args;
   const { addLiquidities } = await graphSdk.AddLiquidities({
-    count: PAGE_SIZE,
+    count,
     orderBy: AddLiquidity_OrderBy.BlockTimestamp,
     orderDirection: OrderDirection.Desc,
     walletAddress,
@@ -79,7 +83,6 @@ const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
       lpAddress,
       recipient,
       amount,
-      oracleVersion,
       blockNumber,
       blockTimestamp,
       isIssued: true,
@@ -91,9 +94,9 @@ const getAddReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
 };
 
 const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
-  const { walletAddress, lpAddress, toBlockTimestamp } = args;
+  const { walletAddress, lpAddress, toBlockTimestamp, count } = args;
   const { removeLiquidities } = await graphSdk.RemoveLiquidities({
-    count: PAGE_SIZE,
+    count,
     orderBy: RemoveLiquidity_OrderBy.BlockTimestamp,
     orderDirection: OrderDirection.Desc,
     walletAddress,
@@ -127,15 +130,14 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
     return map;
   }, new Map<bigint, LpReceipt>());
   const removeMap = removeLiquidities.reduce((map, current) => {
-    const { receiptId, recipient, lpTokenAmount, oracleVersion, blockNumber, blockTimestamp } =
-      bigintify(
-        current,
-        'receiptId',
-        'lpTokenAmount',
-        'oracleVersion',
-        'blockNumber',
-        'blockTimestamp'
-      );
+    const { receiptId, recipient, lpTokenAmount, blockNumber, blockTimestamp } = bigintify(
+      current,
+      'receiptId',
+      'lpTokenAmount',
+      'oracleVersion',
+      'blockNumber',
+      'blockTimestamp'
+    );
     const settled = removeSettledMap.get(receiptId) ?? { isSettled: false };
     map.set(receiptId, {
       action: 'burning',
@@ -143,7 +145,6 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
       lpAddress,
       recipient,
       amount: lpTokenAmount,
-      oracleVersion: oracleVersion,
       blockNumber,
       blockTimestamp,
       isIssued: true,
@@ -157,7 +158,7 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
 type MapToDetailedReceiptsArgs = {
   client: Client;
   receipts: LpReceipt[];
-  currentMarket: Market;
+  currentMarket: MarketLike;
   currentAction: 'all' | 'minting' | 'burning';
   settlementToken: Token;
   clpTokens: Record<`0x${string}`, LpToken>;
@@ -172,7 +173,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
     const token = {
       name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
       decimals: receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
-      logo: receipt.action === 'burning' ? settlementToken?.image : undefined,
+      logo: receipt.action === 'burning' ? settlementToken?.image : clpToken.image,
     };
 
     if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
@@ -198,18 +199,12 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
       : undefined;
 
-    const oracleProvider = await client.market().contracts().oracleProvider(currentMarket.address);
-    const oracleValue = await oracleProvider.read.atVersion([receipt.oracleVersion]);
-    const { timestamp } = oracleValue;
-
     return {
       ...receipt,
       key,
       status,
       message,
       detail: [detail, remainedDetail],
-
-      timestamp,
       token,
     } satisfies LpReceipt;
   });
@@ -217,7 +212,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
 };
 
 type UseLpReceipts = {
-  action: 'all' | 'minting' | 'burning';
+  currentAction: 'all' | 'minting' | 'burning';
 };
 
 export const useLpReceipts = (props: UseLpReceipts) => {
@@ -225,7 +220,8 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const { action } = props;
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const { currentAction } = props;
   const graphClient = new GraphQLClient(SUBGRAPH_API_URL);
   const graphSdk = getSdk(graphClient);
 
@@ -235,6 +231,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
     isLoading,
     size,
     setSize,
+    mutate,
   } = useSWRInfinite(
     (pageIndex, previousData?: { receipts: LpReceipt[]; toBlockTimestamp: bigint }) => {
       if (!isReady) {
@@ -249,9 +246,9 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       const fetchKey = {
         key: 'getChromaticLpReceiptsNext',
         walletAddress: address,
-        currentMarket,
+        currentMarket: trimMarket(currentMarket),
+        currentAction,
         tokens,
-        action,
         pageIndex,
       };
       if (!checkAllProps(fetchKey)) {
@@ -259,7 +256,14 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       }
       return { ...fetchKey, toBlockTimestamp: previousData?.toBlockTimestamp };
     },
-    async ({ walletAddress, currentMarket, tokens, action, toBlockTimestamp }) => {
+    async ({
+      walletAddress,
+      currentMarket,
+      tokens,
+      currentAction,
+      toBlockTimestamp,
+      pageIndex,
+    }) => {
       const defaultToBlockTimestamp = BigInt(Math.round(Date.now() / 1000));
       const registry = lpClient.registry();
       const lp = lpClient.lp();
@@ -270,6 +274,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
           return {
             address: lpAddress,
             ...tokenMeta,
+            image: CLP,
           };
         })
       );
@@ -282,20 +287,23 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         throw new Error('Tokens invalid');
       }
 
+      const count = pageIndex === 0 ? 2 : PAGE_SIZE;
       let receipts: LpReceipt[] = [];
       for (let index = 0; index < lpAddresses.length; index++) {
         const lpAddress = lpAddresses[index];
         let currentReceipts = [] as LpReceipt[];
-        if (action !== 'burning') {
+        if (currentAction !== 'burning') {
           const addMap = await getAddReceipts(graphSdk, {
+            count,
             walletAddress,
             lpAddress,
             toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
           });
           currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
         }
-        if (action !== 'minting') {
+        if (currentAction !== 'minting') {
           const removeMap = await getRemoveReceipts(graphSdk, {
+            count,
             walletAddress,
             lpAddress,
             toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
@@ -316,12 +324,12 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         }
         return previous.blockTimestamp < next.blockTimestamp ? 1 : -1;
       });
-      receipts = receipts.slice(0, PAGE_SIZE);
+      receipts = receipts.slice(0, count);
       const detailedReceipts = await mapToDetailedReceipts({
         client,
         receipts,
         currentMarket,
-        currentAction: action,
+        currentAction,
         settlementToken,
         clpTokens,
       });
@@ -333,22 +341,31 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       return receiptsData;
     },
     {
-      refreshInterval: 0,
+      refreshInterval: 1000 * 20,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
-      revalidateAll: true,
+      revalidateFirstPage: true,
+      shouldRetryOnError: false,
     }
   );
 
   useError({ error });
 
   const onFetchNextLpReceipts = () => {
-    setSize((size) => size + 1);
+    if (isLoading) {
+      return;
+    }
+    setSize(size + 1);
+  };
+
+  const onRefreshLpReceipts = () => {
+    mutate();
   };
 
   return {
     receiptsData,
     onFetchNextLpReceipts,
+    onRefreshLpReceipts,
   };
 };

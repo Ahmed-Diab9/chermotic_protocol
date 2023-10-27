@@ -41,6 +41,7 @@ export function usePoolPanelV2() {
   const tokenName = currentToken?.name || '-';
   const tokenImage = currentToken?.image;
   const clpImage = selectedLp?.image;
+  const clpName = selectedLp?.clpName;
 
   // ----------------------------------------------------------------
   const selectedBalance = useMemo(() => {
@@ -139,6 +140,7 @@ export function usePoolPanelV2() {
 
     tokenName,
     tokenImage,
+    clpName,
     clpImage,
   };
 }
