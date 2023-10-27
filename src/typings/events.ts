@@ -3,6 +3,8 @@ export const POOL_EVENT = 'pool';
 export const LP_EVENT = 'lp';
 export const LP_RECEIPT_EVENT = 'lp-receipts';
 
+export const SYNC_EVENT = 'synchronize';
+
 export const dispatchTradeEvent = () =>
   window.dispatchEvent(
     new CustomEvent(TRADE_EVENT, {
@@ -27,6 +29,14 @@ export const dispatchLpEvent = () =>
 export const dispatchLpReceiptEvent = () => {
   window.dispatchEvent(
     new CustomEvent(LP_RECEIPT_EVENT, {
+      bubbles: true,
+      cancelable: true,
+    })
+  );
+};
+export const dispatchSyncEvent = () => {
+  window.dispatchEvent(
+    new CustomEvent(SYNC_EVENT, {
       bubbles: true,
       cancelable: true,
     })
