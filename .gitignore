@@ -32,3 +32,6 @@ storybook-static
 # GraphQL Codegen
 graphql.schema.json
 src/lib/graphql/sdk/*
+
+# Mock Service Worker
+public/mockServiceWorker.js
