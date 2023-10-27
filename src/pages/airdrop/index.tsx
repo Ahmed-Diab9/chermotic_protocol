@@ -10,12 +10,11 @@ import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropActivity } from '~/stories/template/AirdropActivity';
-import { Guide } from '~/stories/atom/Guide';
 import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 import ZealyIcon from '~/assets/images/zealy.png';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -58,7 +57,7 @@ function Airdrop() {
                           color="chrm"
                         />
                       </div>
-                      <div className="flex items-baseline justify-between mt-10">
+                      <div className="mt-10 text-left">
                         <p className="text-xl text-primary-light">
                           Airdrop season 1 for Testnet has just begun!
                         </p>
@@ -67,7 +66,7 @@ function Airdrop() {
                         </p>
                       </div>
                     </section>
-                    <section className="flex flex-col gap-24 mt-16">
+                    <section className="flex flex-col gap-[140px] mt-16">
                       <article>
                         <AirdropStamp />
                       </article>
@@ -76,7 +75,7 @@ function Airdrop() {
                         <div className="flex justify-between mb-5 text-left">
                           <h2 className="text-4xl">My Activities</h2>
                           <div className="flex items-center gap-3">
-                            <p className="text-primary-light">
+                            <p className="text-lg text-primary-light">
                               Zealy PX is automatically reflected as a credit once an hour. 1PX =
                               1Credit
                             </p>
@@ -84,7 +83,7 @@ function Airdrop() {
                               label="Update Now"
                               css="active"
                               size="sm"
-                              className="!text-base"
+                              className="!text-lg"
                             />
                           </div>
                         </div>
@@ -225,14 +224,24 @@ function Airdrop() {
                           </div>
                         </div>
                         <div className="mt-3 mb-12">
-                          <Guide
-                            title="Traders who place fake bids that cannot be accepted will be filtered"
-                            direction="row"
-                            css="alert"
-                            outLink="link"
-                            isVisible
-                            isClosable={false}
-                          />
+                          <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
+                            <div className="flex gap-3 text-price-lower">
+                              <ExclamationTriangleIcon className="w-4" />
+                              <p className="text-left">
+                                Traders who place fake bids that cannot be accepted will be filtered
+                              </p>
+                            </div>
+                            <div className="pl-8 ml-auto border-l">
+                              <Button
+                                label="Learn More"
+                                iconRight={<ChevronRightIcon />}
+                                className=""
+                                size="lg"
+                                css="underlined"
+                                href=""
+                              />
+                            </div>
+                          </div>
                         </div>
                         <AirdropBoard />
                       </article>
@@ -254,7 +263,7 @@ function Airdrop() {
                             <h2 className="text-4xl">10</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
                           </div> */}
-                          <div className="w-1/2 border-l">
+                          <div className="w-1/2">
                             <h2 className="text-4xl">3,445</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Credits</h4>
                           </div>

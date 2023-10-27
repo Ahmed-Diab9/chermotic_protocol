@@ -27,23 +27,23 @@ export const AirdropStamp = (props: AirdropStampProps) => {
       <div className="flex pb-5 border-b">
         <div className="w-1/2 pl-5 pr-10">
           <h4 className="mb-5 text-3xl text-primary-light">Sign-In Rewards</h4>
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-2">
             <BoosterIcon className="w-6" />
-            <p className="text-xl">Sign-In 7 days in a week & get 1 booster</p>
+            <p className="text-lg">Sign-In 7 days in a week & get 1 booster</p>
           </div>
           <div className="flex items-center gap-2">
             <CoinStackIcon className="w-6" />
-            <p className="text-xl">Sign-In 5 days in a week & get 50 extra credits</p>
+            <p className="text-lg">Sign-In 5 days in a week & get 50 extra credits</p>
           </div>
         </div>
-        <div className="ml-auto text-primary-light">
+        <div className="ml-auto text-lg text-primary-light">
           The date changes at 9am local time (UTC+09:00).
         </div>
       </div>
       <div className="flex justify-between px-10 mt-6">
         {week.map((item) => (
           <div key={item.name} className={`stamp stamp-${item.status}`}>
-            <h5 className="text-xl capitalize text-primary-light">{item.name}</h5>
+            <h5 className="text-lg capitalize text-primary-light">{item.name}</h5>
             <div className="mt-3 mb-2">
               {item.status === 'active' ? (
                 // TODO: button onclick

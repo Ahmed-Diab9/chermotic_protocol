@@ -8,7 +8,7 @@ export interface AirdropActivityProps {}
 
 export const AirdropActivity = (props: AirdropActivityProps) => {
   return (
-    <div className="text-left AirdropActivity">
+    <div className="text-lg text-left AirdropActivity">
       {/* "Whitelist NFT(key) can be excluded */}
       {/* <div className="panel">
         <div className="flex">
