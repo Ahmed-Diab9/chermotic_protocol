@@ -20,9 +20,15 @@ import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
+import { useAirdropAssets } from '~/hooks/useAirdropAssets';
+import { useAirdropSync } from '~/hooks/useAirdropSync';
+import { numberFormat } from '~/utils/number';
 import './style.css';
 
 function Airdrop() {
+  const { airdropAssets } = useAirdropAssets();
+  const { synchronize } = useAirdropSync();
+  const { refreshAssets } = useAirdropAssets();
   useTokenLocal();
   useMarketLocal();
 
@@ -85,6 +91,10 @@ function Airdrop() {
                               css="active"
                               size="sm"
                               className="!text-lg"
+                              onClick={async () => {
+                                await synchronize();
+                                refreshAssets();
+                              }}
                             />
                           </div>
                         </div>
@@ -282,11 +292,13 @@ function Airdrop() {
                             <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
                           </div> */}
                           <div className="w-1/2">
-                            <h2 className="text-4xl">3,445</h2>
+                            <h2 className="text-4xl">
+                              {numberFormat(airdropAssets?.credit ?? 0, { useGrouping: true })}
+                            </h2>
                             <h4 className="mt-3 text-xl text-primary-light">Credits</h4>
                           </div>
                           <div className="w-1/2 border-l">
-                            <h2 className="text-4xl">13</h2>
+                            <h2 className="text-4xl">{airdropAssets?.booster}</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Boosters</h4>
                           </div>
                         </div>
