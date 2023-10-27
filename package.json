@@ -20,7 +20,8 @@
     "prebuild:dev": "yarn codegen",
     "prebuild:testnet": "yarn codegen",
     "prebuild:mainnet": "yarn codegen",
-    "prebuild": "yarn codegen"
+    "prebuild": "yarn codegen",
+    "postinstall": "patch-package"
   },
   "resolutions": {
     "@chromatic-protocol/sdk-viem/viem": "1.12.1"
@@ -42,6 +43,8 @@
     "js-big-decimal": "^2.0.4",
     "memoize-one": "^6.0.0",
     "normalize.css": "^8.0.1",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "ramda": "^0.29.0",
     "re-resizable": "^6.9.11",
     "react": "^18.2.0",

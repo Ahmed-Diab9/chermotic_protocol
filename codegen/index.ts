@@ -25,30 +25,30 @@ const config: CodegenConfig = {
   generates: {
     [`${GENERATED_PATH}/lp.ts`]: {
       documents: 'codegen/lp.ts',
-      schema: `${SUBGRAPH_API_URL}/chromatic-lp`,
+      schema: `https://${SUBGRAPH_API_URL}/chromatic-lp`,
       plugins: PLUGINS,
-      presetConfig: {
-        gqlTagName: 'gql',
-      },
       config: CONFIG,
     },
     [`${GENERATED_PATH}/pricefeed.ts`]: {
       documents: 'codegen/pricefeed.ts',
-      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      schema: `https://${SUBGRAPH_API_URL}/chainlink-pricefeed`,
       plugins: PLUGINS,
-      presetConfig: {
-        gqlTagName: 'gql',
-      },
       config: CONFIG,
     },
     [`${GENERATED_PATH}/hasura.ts`]: {
       documents: 'codegen/hasura.ts',
-      schema: `${HASURA_API_URL}`,
+      schema: `https://${HASURA_API_URL}`,
       plugins: PLUGINS,
-      presetConfig: {
-        gqlTagName: 'gql',
-      },
       config: CONFIG,
+    },
+    [`${GENERATED_PATH}/pricefeed_ws.ts`]: {
+      documents: 'codegen/pricefeed.ts',
+      schema: `https://${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      plugins: PLUGINS,
+      config: {
+        ...CONFIG,
+        useWebSocketClient: true,
+      },
     },
   },
 };
