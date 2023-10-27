@@ -1,42 +1,31 @@
-import { useState } from 'react';
-import '~/stories/atom/Button/style.css';
-import { Tag } from '~/stories/atom/Tag';
 import { Button } from '~/stories/atom/Button';
+import '~/stories/atom/Button/style.css';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import { Tag } from '~/stories/atom/Tag';
 
+import { useAirdropBoard } from './hooks';
 import './style.css';
 
-const boardList = [
-  { rank: '1', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-  { rank: '2', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-  { rank: '3', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-  { rank: '4', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-  { rank: '5', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-  { rank: '6', name: '10FCR4A', credit24hour: '242', credit: '242424', booster: '10' },
-];
-
 export const AirdropBoard = () => {
-  const [activeButton, setActiveButton] = useState('Today');
-  const categories = ['Today', 'Yesterday', 'All Time'];
+  const { filterLabels, activeLabel, leaderboard, onLabelChange } = useAirdropBoard();
 
   return (
     <div className="AirdropBoard">
       <div className="flex gap-3">
-        {categories.map((category) => (
+        {filterLabels.map((label, labelIndex) => (
           <button
-            key={category}
-            onClick={() => setActiveButton(category)}
+            key={`${label}-${labelIndex}`}
+            onClick={() => onLabelChange(labelIndex)}
             className={`btn btn-lg !text-xl btn-has-tag btn-${
-              activeButton === category ? 'active' : 'lighter'
+              activeLabel === label ? 'active' : 'lighter'
             }`}
           >
-            {category}
+            {label}
           </button>
         ))}
       </div>
       <article className="mt-7 wrap-list">
-        {!boardList ? (
-          // TODO: show when there is no list
+        {!leaderboard ? (
           <p className="mt-10 text-xl text-center text-primary/20">You have no history yet.</p>
         ) : (
           <div className="list">
@@ -50,9 +39,10 @@ export const AirdropBoard = () => {
               </div>
             </div>
             <div className="tbody">
-              {boardList.map((item) => (
+              {leaderboard.map((boardItem) => (
                 <div
                   className="tr"
+                  key={`${boardItem.address}-${boardItem.rank}`}
                   // ref={ }
                 >
                   <div className="td">
@@ -60,7 +50,7 @@ export const AirdropBoard = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      <Tag label={`#${item.rank}`} className="text-xl bg-primary/10" />
+                      <Tag label={`#${boardItem.rank}`} className="text-xl bg-primary/10" />
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -68,7 +58,7 @@ export const AirdropBoard = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {item.name}
+                      {boardItem.address}
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -76,7 +66,7 @@ export const AirdropBoard = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {item.credit24hour}
+                      {boardItem.credit}
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -84,7 +74,7 @@ export const AirdropBoard = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {item.credit}
+                      {boardItem.credit}
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -92,7 +82,7 @@ export const AirdropBoard = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {item.booster}
+                      {boardItem.booster}
                     </SkeletonElement>
                   </div>
                 </div>
