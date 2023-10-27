@@ -1,25 +1,18 @@
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
-import { Button } from '~/stories/atom/Button';
 import { Avatar } from '~/stories/atom/Avatar';
-import StampSuccess from '/src/assets/images/stamp_success.png';
-import StampFail from '/src/assets/images/stamp_fail.png';
+import { Button } from '~/stories/atom/Button';
+import { useAirdropStamp } from './hooks';
+import './style.css';
 import StampActive from '/src/assets/images/stamp_active.png';
 import StampEmpty from '/src/assets/images/stamp_empty.png';
-import './style.css';
+import StampFail from '/src/assets/images/stamp_fail.png';
+import StampSuccess from '/src/assets/images/stamp_success.png';
 
 export interface AirdropStampProps {}
 
 export const AirdropStamp = (props: AirdropStampProps) => {
-  const week = [
-    { name: 'mon', status: 'success' },
-    { name: 'tue', status: 'fail' },
-    { name: 'wed', status: 'success' },
-    { name: 'thu', status: 'active' },
-    { name: 'fri', status: 'empty' },
-    { name: 'sat', status: 'empty' },
-    { name: 'sun', status: 'empty' },
-  ];
+  const { schedules, onSignIn } = useAirdropStamp();
 
   return (
     <div className="p-5 text-left panel AirdropStamp">
@@ -40,11 +33,14 @@ export const AirdropStamp = (props: AirdropStampProps) => {
         </div>
       </div>
       <div className="flex justify-between px-10 mt-6">
-        {week.map((item) => (
-          <div key={item.name} className={`stamp stamp-${item.status}`}>
-            <h5 className="text-lg capitalize text-primary-light">{item.name}</h5>
+        {schedules.map((schedule) => (
+          <div
+            key={`${schedule.id}-${schedule.date}-${schedule.name}`}
+            className={`stamp stamp-${schedule.status}`}
+          >
+            <h5 className="text-lg capitalize text-primary-light">{schedule.name}</h5>
             <div className="mt-3 mb-2">
-              {item.status === 'active' ? (
+              {schedule.status === 'active' ? (
                 // TODO: button onclick
                 <button title="Open Today's Reward">
                   <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
@@ -53,20 +49,28 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                 <Avatar
                   className="w-20 h-20"
                   src={
-                    item.status === 'success'
+                    schedule.status === 'success'
                       ? StampSuccess
-                      : item.status === 'fail'
+                      : schedule.status === 'fail'
                       ? StampFail
                       : StampEmpty
                   }
                 />
               )}
             </div>
-            {item.status === 'success' && <CheckCircleIcon className="w-6 text-price-higher" />}
-            {item.status === 'fail' && <XCircleIcon className="w-6 text-price-lower" />}
+            {schedule.status === 'success' && <CheckCircleIcon className="w-6 text-price-higher" />}
+            {schedule.status === 'fail' && <XCircleIcon className="w-6 text-price-lower" />}
             {/* TODO: button onclick */}
-            {item.status === 'active' && (
-              <Button label="Check In" css="chrm" size="sm" className="!h-5 !font-bold" />
+            {schedule.status === 'active' && (
+              <Button
+                label="Check In"
+                css="chrm"
+                size="sm"
+                className="!h-5 !font-bold"
+                onClick={() => {
+                  onSignIn();
+                }}
+              />
             )}
           </div>
         ))}
