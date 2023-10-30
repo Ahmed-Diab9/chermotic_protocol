@@ -14,7 +14,12 @@ import { Button } from '~/stories/atom/Button';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 import ZealyIcon from '~/assets/images/zealy.png';
-import { ChevronRightIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import GalxeIcon from '~/assets/images/galxe.png';
+import {
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+  ArrowUpTrayIcon,
+} from '@heroicons/react/24/outline';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -106,14 +111,32 @@ function Airdrop() {
                           </div>
                         </div>
                         <AirdropActivity />
-                        <div className="flex justify-between mt-10">
+                        <div className="flex items-center gap-4 py-2 pl-4 pr-5 mt-5 text-lg panel">
+                          <img src={GalxeIcon} alt="galxe" className="w-[24px]" />
+                          <p className="text-left">
+                            You can update Credit and Booster by registering NFT acquired from
+                            Galxe.
+                          </p>
+                          <div className="pl-8 ml-auto border-l">
+                            <Button
+                              label="Upload NFT"
+                              iconRight={<ArrowUpTrayIcon />}
+                              className=""
+                              size="lg"
+                              css="underlined"
+                              href=""
+                            />
+                          </div>
+                        </div>
+                        {/* <div className="flex justify-between mt-10">
                           <h4 className="text-xl">Galxe activity update</h4>
                           <Button
                             label="Update Credit and Booster by registering NFT acquired from Galxe"
                             css="underlined"
                             className="!text-lg text-primary-light"
                           />
-                        </div>
+                        </div> */}
+                        {/* GalxeIcon */}
                       </article>
 
                       <article>
