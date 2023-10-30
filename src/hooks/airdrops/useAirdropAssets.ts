@@ -1,10 +1,10 @@
-import axios from 'axios';
 import { useCallback } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
+import { airdropClient } from '~/apis/airdrop';
 import { AirdropAsset } from '~/typings/airdrop';
 import { checkAllProps } from '~/utils';
-import { useError } from './useError';
+import { useError } from '../useError';
 
 export const useAirdropAssets = () => {
   const { address } = useAccount();
@@ -18,7 +18,7 @@ export const useAirdropAssets = () => {
     isLoading,
     mutate,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ walletAddress }) => {
-    const response = await axios.get(`/airdrops/assets?address=${walletAddress}`);
+    const response = await airdropClient.get(`/airdrop/assets?address=${walletAddress}`);
     const data = response.data as AirdropAsset;
 
     return data;

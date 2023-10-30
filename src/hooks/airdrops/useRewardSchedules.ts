@@ -1,11 +1,11 @@
-import axios from 'axios';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
-import { AirdropSchedule } from '~/typings/airdrop';
+import { airdropClient } from '~/apis/airdrop';
+import { AirdropSchedule, AirdropScheduleResponse } from '~/typings/airdrop';
 import { SYNC_EVENT } from '~/typings/events';
 import { checkAllProps } from '~/utils';
-import { useError } from './useError';
+import { useError } from '../useError';
 
 const compareDates = (targetDate: Date, currentDate: Date) => {
   currentDate.setUTCHours(0);
@@ -31,15 +31,16 @@ export const useRewardSchedules = () => {
     address,
   };
   const {
-    data: schedules,
+    data: { detailedSchedules: schedules, bonusRewards } = {},
     error,
     isLoading,
     mutate,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address }) => {
-    const response = await axios.get(`/airdrops/signin-reward/schedules?address=${address}`);
-    const data = response.data as AirdropSchedule[];
+    const response = await airdropClient.get(`/airdrop/signin-reward/schedules?address=${address}`);
+    const data = response.data as AirdropScheduleResponse;
+
     const current = new Date();
-    return data.map((schedule) => {
+    const detailedSchedules = data.schedules.map((schedule) => {
       schedule = {
         ...schedule,
         date: new Date(schedule.date),
@@ -59,6 +60,8 @@ export const useRewardSchedules = () => {
         name: day,
       };
     });
+
+    return { detailedSchedules, bonusRewards: data.bonus_rewards };
   });
 
   useEffect(() => {
@@ -73,5 +76,5 @@ export const useRewardSchedules = () => {
 
   useError({ error });
 
-  return { schedules, isLoading };
+  return { schedules, bonusRewards, isLoading };
 };

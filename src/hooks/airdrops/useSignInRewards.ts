@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useAccount } from 'wagmi';
+import { airdropClient } from '~/apis/airdrop';
 import { checkAllProps } from '~/utils';
-import { useError } from './useError';
+import { useError } from '../useError';
 import { useRewardSchedules } from './useRewardSchedules';
 
 export const useSignInRewards = () => {
@@ -26,7 +26,7 @@ export const useSignInRewards = () => {
     checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ address, round, date }) => {
       const body = { address, round, date };
-      const response = await axios.post(`/airdrops/signin-reward`, body, {
+      const response = await airdropClient.post(`/airdrop/signin-reward`, body, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -37,5 +37,5 @@ export const useSignInRewards = () => {
 
   useError({ error });
 
-  return { signInRewards, isMutating };
+  return { signInRewards, isMutating, isLoading };
 };

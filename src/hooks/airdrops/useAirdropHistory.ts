@@ -1,10 +1,10 @@
-import axios from 'axios';
 import { useCallback } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
+import { airdropClient } from '~/apis/airdrop';
 import { AirdropHistory } from '~/typings/airdrop';
 import { checkAllProps } from '~/utils';
-import { useError } from './useError';
+import { useError } from '../useError';
 
 const formatHistoryDate = (rawDate: Date) => {
   const year = rawDate.getUTCFullYear().toString().padStart(4, '0');
@@ -30,7 +30,7 @@ export const useAirdropHistory = () => {
     isLoading,
     mutate,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address }) => {
-    const response = await axios.get(`/airdrops/assets/histories?address=${address}`);
+    const response = await airdropClient.get(`/airdrop/assets/histories?address=${address}`);
     const data = response.data as AirdropHistory[];
 
     return data.map((element) => ({
