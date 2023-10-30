@@ -54,7 +54,7 @@ const PoolV3 = () => {
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
-            <div className="mt-10">
+            <div className="flex-auto mt-10">
               <div className="mb-10 text-left">
                 <div className="flex items-center mb-5">
                   <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
@@ -97,7 +97,7 @@ const PoolV3 = () => {
                     <PoolAnalyticsV3 />
                   </div>
                 </div>
-                <div className="flex-none w-[420px] flex flex-col gap-3">
+                <div className="flex-none w-2/5 max-w-[420px] flex flex-col gap-3">
                   {/* To be added later */}
                   {/* <PoolBalance /> */}
                   <div className="panel panel-translucent">
