@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
-import { useAirdropAssets } from '~/hooks/useAirdropAssets';
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
 import { numberFormat } from '~/utils/number';
 
 export const useAirdropActivity = () => {

@@ -20,8 +20,10 @@ import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
-import { useAirdropAssets } from '~/hooks/useAirdropAssets';
-import { useAirdropSync } from '~/hooks/useAirdropSync';
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
+import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
+import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
+import { useAppSelector } from '~/store';
 import { numberFormat } from '~/utils/number';
 import './style.css';
 
@@ -29,6 +31,10 @@ function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
   const { synchronize } = useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
+  const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
+  const { metadata } = useAirdropLeaderBoard({
+    type: labelMap[filterLabels[selectedIndex]],
+  });
   useTokenLocal();
   useMarketLocal();
 
@@ -233,7 +239,7 @@ function Airdrop() {
                         <div className="p-5 mt-10 mb-12 panel">
                           <div className="flex justify-between">
                             <div className="w-1/3">
-                              <h2 className="text-4xl">10</h2>
+                              <h2 className="text-4xl">{metadata?.participants}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
                             </div>
                             {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
@@ -242,11 +248,11 @@ function Airdrop() {
                               <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
                             </div> */}
                             <div className="w-1/3 border-l">
-                              <h2 className="text-4xl">13</h2>
+                              <h2 className="text-4xl">{metadata?.totalCredit}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Credits</h4>
                             </div>
                             <div className="w-1/3 border-l">
-                              <h2 className="text-4xl">120</h2>
+                              <h2 className="text-4xl">{metadata?.totalBooster}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Boosters</h4>
                             </div>
                           </div>
