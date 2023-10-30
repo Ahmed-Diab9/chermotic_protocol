@@ -25,6 +25,7 @@ export const usePoolMenuV3 = () => {
       const assets = formatDecimals(lp.totalValue, lp.settlementToken.decimals, 2, true);
       return {
         name: lp.name,
+        tag: lp.tag,
         price,
         assets,
         label: undefined as string | undefined,

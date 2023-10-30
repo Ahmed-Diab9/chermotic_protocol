@@ -30,6 +30,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
   const lpAddresses = await registry?.lpListByMarket(market.address);
   const lpInfoArray = lpAddresses.map(async (lpAddress) => {
     const lp = lpClient.lp();
+    const lpTag = lp.getLpTag(lpAddress);
     const lpName = lp.getLpName(lpAddress);
     let balance = undefined as Promise<bigint> | undefined;
     if (isNotNil(walletAddress)) {
@@ -49,6 +50,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       totalSupply,
       valueInfo,
       utilization,
+      lpTag,
     ] as const;
     const response = await Promise.allSettled(requests);
     return response.reduce(
@@ -97,6 +99,13 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
             provider = {
               ...provider,
               utilization: value as number,
+            };
+            break;
+          }
+          case 7: {
+            provider = {
+              ...provider,
+              tag: value as Awaited<typeof lpTag>,
             };
             break;
           }

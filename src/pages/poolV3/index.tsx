@@ -1,5 +1,6 @@
-import { isNil, isNotNil } from 'ramda';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { isNil, isNotNil } from 'ramda';
+import { useMemo } from 'react';
 import PlusIcon from '~/assets/icons/PlusIcon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
@@ -37,6 +38,20 @@ const PoolV3 = () => {
     : undefined;
   const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
   const marketDescription = selectedLp?.market.description;
+  const tagClass = useMemo(() => {
+    switch (selectedLp?.tag.toLowerCase()) {
+      case 'high risk': {
+        return 'tag-risk-high';
+      }
+      case 'mid risk': {
+        return 'tag-risk-mid';
+      }
+      case 'low risk': {
+        return 'tag-risk-low';
+      }
+    }
+    return '';
+  }, [selectedLp]);
 
   return (
     <>
@@ -59,10 +74,10 @@ const PoolV3 = () => {
                 <div className="flex items-center mb-5">
                   <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
                     <h2 className="mr-3 text-4xl">
-                      {lpTitle} {selectedLp?.name} Pool
+                      {lpTitle} {selectedLp?.name}
                     </h2>
                   </SkeletonElement>
-                  <Tag label={`high risk`} className="tag-risk-high" />
+                  <Tag label={selectedLp?.tag} className={tagClass} />
                   <Button
                     label="Metamask"
                     iconLeft={<PlusIcon className="w-3 h-3" />}
