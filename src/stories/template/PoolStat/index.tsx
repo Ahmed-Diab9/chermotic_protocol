@@ -21,7 +21,11 @@ export const PoolStat = (props: PoolStatProps) => {
             <AssetManagementIcon className="w-6" />
             <div className="flex">
               <h5>Assets under Management</h5>
-              <TooltipGuide label="asset-under-management" tip="tooltip" />
+              <TooltipGuide
+                label="asset-under-management"
+                tip="Total amount of liquidity provided to this Liquidity Pool"
+                outLink=""
+              />
             </div>
           </div>
           <SkeletonElement isLoading={isNil(aum)} width={60}>
@@ -35,7 +39,7 @@ export const PoolStat = (props: PoolStatProps) => {
             <ClpSupplyIcon className="w-6" />
             <div className="flex">
               <h5>CLP supply</h5>
-              <TooltipGuide label="clp-supply" tip="tooltip" />
+              <TooltipGuide label="clp-supply" tip="The amount of CLP in circulation" outLink="" />
             </div>
           </div>
           <div className="text-right">
