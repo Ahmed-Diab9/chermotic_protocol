@@ -1,8 +1,7 @@
 import { isNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
-import { useAirdropAssets } from '~/hooks/useAirdropAssets';
-import { useAirdropHistory } from '~/hooks/useAirdropHistory';
-import { numberFormat } from '~/utils/number';
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
+import { useAirdropHistory } from '~/hooks/airdrops/useAirdropHistory';
 
 const filterLabels = ['All', 'Credits', 'Booster'] as const;
 const labelMap = {
@@ -14,10 +13,11 @@ const labelMap = {
 export const useFilteredAirdropHistory = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { airdropHistory = [], refreshHistory } = useAirdropHistory();
+  const { airdropAssets, isLoading } = useAirdropAssets();
   const activeLabel = useMemo(() => filterLabels[selectedIndex], [selectedIndex]);
 
   const filteredHistory = useMemo(() => {
-    const label = labelMap[filterLabels[selectedIndex]];
+    const label = labelMap[activeLabel];
     if (label === 'all') {
       return airdropHistory;
     }
@@ -31,7 +31,33 @@ export const useFilteredAirdropHistory = () => {
         }
       }
     });
-  }, [airdropHistory, selectedIndex]);
+  }, [airdropHistory, activeLabel]);
+
+  const hasMoreHistory = useMemo(() => {
+    if (isNil(airdropAssets)) {
+      return false;
+    }
+    const sum = airdropHistory.reduce(
+      (sum, history) => {
+        sum.credit += history.credit;
+        sum.booster += history.booster;
+        return sum;
+      },
+      { credit: 0, booster: 0 }
+    );
+    const label = labelMap[activeLabel];
+    switch (label) {
+      case 'all': {
+        return airdropAssets.booster < sum.booster || airdropAssets.credit < sum.credit;
+      }
+      case 'booster': {
+        return airdropAssets.booster < sum.booster;
+      }
+      case 'credits': {
+        return airdropAssets.credit < sum.credit;
+      }
+    }
+  }, [airdropHistory, activeLabel, airdropAssets]);
 
   const nameCounts = useMemo(() => {
     return airdropHistory.reduce(
@@ -53,15 +79,6 @@ export const useFilteredAirdropHistory = () => {
     );
   }, [airdropHistory]);
 
-  const { airdropAssets, isLoading } = useAirdropAssets();
-
-  const formattedCredit = useMemo(() => {
-    if (isNil(airdropAssets)) {
-      return '0';
-    }
-    return numberFormat(airdropAssets.credit, { useGrouping: true });
-  }, [airdropAssets]);
-
   const onLabelChange = useCallback((nextIndex: number) => {
     setSelectedIndex(nextIndex);
   }, []);
@@ -73,6 +90,7 @@ export const useFilteredAirdropHistory = () => {
     activeLabel,
     nameCounts,
     airdropAssets,
+    hasMoreHistory,
     onLabelChange,
     refreshHistory,
   };
