@@ -13,11 +13,12 @@ import {
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
 
-import { AdvancedChartProps } from '.';
 import datafeed from '~/apis/datafeed';
 
+import { AdvancedChartProps } from '.';
+
 export const useAdvancedChart = (props: AdvancedChartProps) => {
-  const { symbol, darkMode } = props;
+  const { symbol, darkMode, currentPrice } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
 
@@ -86,6 +87,13 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       tvWidget.remove();
     };
   }, []);
+
+  useEffect(() => {
+    const priceChanged = new CustomEvent('priceChanged', {
+      detail: { symbol: symbol, price: currentPrice },
+    });
+    window.dispatchEvent(priceChanged);
+  }, [currentPrice]);
 
   useEffect(() => {
     if (isNil(tvWidgetRef.current) || isNil(symbol)) return;

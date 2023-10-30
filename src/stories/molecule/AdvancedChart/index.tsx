@@ -5,6 +5,7 @@ export interface AdvancedChartProps {
   className?: string;
   darkMode?: boolean;
   symbol?: string;
+  currentPrice?: number;
 }
 
 export function AdvancedChart(props: AdvancedChartProps) {
