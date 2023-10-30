@@ -118,7 +118,7 @@ a {
     @apply relative border border-primary transition-all;
     &:before,
     &:after {
-      @apply absolute top-0 left-0 inline-block border w-full h-full rounded-full opacity-0 -z-10 transition-all;
+      @apply absolute top-0 left-0 inline-block border w-full h-full rounded-full opacity-0 -z-10 transition-colors;
       content: '';
     }
     &:before {
