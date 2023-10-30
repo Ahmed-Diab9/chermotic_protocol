@@ -69,12 +69,7 @@ const PoolV3 = () => {
                     size="sm"
                   />
                 </div>
-                <p className="text-lg text-primary-light">
-                  Highest rist and highest APR for the risk tolerant Level LPs. In case of
-                  unexpected shortfalls resulting from adverse market conditions or other incidents,
-                  the Junior Tranche bears the highest risk but also earns the largest share of
-                  platform profits
-                </p>
+                <p className="text-lg text-primary-light">0000000000000000000000000000</p>
               </div>
               <div className="flex items-center justify-between mb-3 text-lg text-primary">
                 {/* To be added later */}

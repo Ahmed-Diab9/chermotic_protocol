@@ -223,14 +223,14 @@ export function PoolPanelV2() {
 
             {/* tab - remove */}
             <Tab.Panel className="w-full">
-              <div className="flex items-start gap-3 text-left mb-7">
+              {/* <div className="flex items-start gap-3 text-left mb-7">
                 <ExclamationTriangleIcon className="flex-none w-4" />
                 <p className="text-primary-light">
                   Removing Liquidity (Burning CLP Tokens) are conducting from both wallet and
                   Staking vault. Please choose where your CLPs should be removed from between your
                   wallet and staking vault.
                 </p>
-              </div>
+              </div> */}
 
               {/* inner tab */}
               <section className="tabs-line tabs-base">
