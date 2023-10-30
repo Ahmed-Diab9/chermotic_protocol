@@ -4,7 +4,7 @@ import { isNil } from 'ramda';
 const currentDate = new Date();
 
 export const handlers = [
-  handler.get('/airdrops/accounts', (request, response, context) => {
+  handler.get('/airdrop/accounts', (request, response, context) => {
     const address = request.url.searchParams.get('address');
     if (isNil(address)) {
       return response(
@@ -25,7 +25,7 @@ export const handlers = [
       )
     );
   }),
-  handler.get('/airdrops/assets', (request, response, context) => {
+  handler.get('/airdrop/assets', (request, response, context) => {
     const address = request.url.searchParams.get('address');
     if (isNil(address)) {
       return response(
@@ -39,13 +39,13 @@ export const handlers = [
       context.body(JSON.stringify({ credit: 1000, booster: 10 }))
     );
   }),
-  handler.post('/airdrops/assets/sync-zealy', async (request, response, context) => {
+  handler.post('/airdrop/assets/sync-zealy', async (request, response, context) => {
     const data = await request.json();
     const { address } = data as { address: `0x${string}` };
     return response(context.status(200), context.body(JSON.stringify({ synced_count: 10 })));
   }),
 
-  handler.get('/airdrops/assets/histories', (request, response, context) => {
+  handler.get('/airdrop/assets/histories', (request, response, context) => {
     const address = request.url.searchParams.get('address');
     if (isNil(address)) {
       return response(
@@ -85,7 +85,7 @@ export const handlers = [
       )
     );
   }),
-  handler.get('/airdrops/leaderboard/today', async (request, response, context) => {
+  handler.get('/airdrop/leaderboard/today', async (request, response, context) => {
     const _page = request.url.searchParams.get('page');
     const _limit = request.url.searchParams.get('limit');
     if (isNil(_page) || isNil(_limit)) {
@@ -147,7 +147,7 @@ export const handlers = [
       )
     );
   }),
-  handler.get('/airdrops/leaderboard/yesterday', async (request, response, context) => {
+  handler.get('/airdrop/leaderboard/yesterday', async (request, response, context) => {
     const _page = request.url.searchParams.get('page');
     const _limit = request.url.searchParams.get('limit');
     if (isNil(_page) || isNil(_limit)) {
@@ -209,7 +209,7 @@ export const handlers = [
       )
     );
   }),
-  handler.get('/airdrops/leaderboard/all', async (request, response, context) => {
+  handler.get('/airdrop/leaderboard/all', async (request, response, context) => {
     const _page = request.url.searchParams.get('page');
     const _limit = request.url.searchParams.get('limit');
     if (isNil(_page) || isNil(_limit)) {
@@ -271,7 +271,7 @@ export const handlers = [
       )
     );
   }),
-  handler.post('/airdrops/signin-reward', async (request, response, context) => {
+  handler.post('/airdrop/signin-reward', async (request, response, context) => {
     const data = await request.json();
     const { address, round, date } = data as {
       address: `0x${string}`;
@@ -309,7 +309,7 @@ export const handlers = [
       )
     );
   }),
-  handler.get('/airdrops/signin-reward/schedules', (request, response, context) => {
+  handler.get('/airdrop/signin-reward/schedules', (request, response, context) => {
     const address = request.url.searchParams.get('address');
     if (isNil(address)) {
       return response(
@@ -323,39 +323,15 @@ export const handlers = [
       context.body(
         JSON.stringify([
           {
-            date: '2023-10-23T00:00:00.000Z',
+            date: '2023-10-30T00:00:00.000Z',
             round: 1,
             credit: 10,
             booster: 0,
-            created_at: '2023-10-27T02:28:59.914Z',
-            attendance: false,
+            created_at: '2023-10-27T01:51:16.292Z',
+            attendance: true,
           },
           {
-            date: '2023-10-24T00:00:00.000Z',
-            round: 1,
-            credit: 10,
-            booster: 0,
-            created_at: '2023-10-27T02:28:59.914Z',
-            attendance: false,
-          },
-          {
-            date: '2023-10-25T00:00:00.000Z',
-            round: 1,
-            credit: 10,
-            booster: 0,
-            created_at: '2023-10-27T02:28:59.914Z',
-            attendance: false,
-          },
-          {
-            date: '2023-10-26T00:00:00.000Z',
-            round: 1,
-            credit: 10,
-            booster: 0,
-            created_at: '2023-10-27T02:28:59.914Z',
-            attendance: false,
-          },
-          {
-            date: '2023-10-27T00:00:00.000Z',
+            date: '2023-10-31T00:00:00.000Z',
             round: 1,
             credit: 10,
             booster: 0,
@@ -363,7 +339,7 @@ export const handlers = [
             attendance: false,
           },
           {
-            date: '2023-10-28T00:00:00.000Z',
+            date: '2023-11-01T00:00:00.000Z',
             round: 1,
             credit: 10,
             booster: 0,
@@ -371,7 +347,31 @@ export const handlers = [
             attendance: false,
           },
           {
-            date: '2023-10-29T00:00:00.000Z',
+            date: '2023-11-02T00:00:00.000Z',
+            round: 1,
+            credit: 10,
+            booster: 0,
+            created_at: '2023-10-27T01:51:16.292Z',
+            attendance: false,
+          },
+          {
+            date: '2023-11-03T00:00:00.000Z',
+            round: 1,
+            credit: 10,
+            booster: 0,
+            created_at: '2023-10-27T01:51:16.292Z',
+            attendance: false,
+          },
+          {
+            date: '2023-11-04T00:00:00.000Z',
+            round: 1,
+            credit: 10,
+            booster: 0,
+            created_at: '2023-10-27T01:51:16.292Z',
+            attendance: false,
+          },
+          {
+            date: '2023-11-05T00:00:00.000Z',
             round: 1,
             credit: 10,
             booster: 0,
