@@ -127,7 +127,7 @@ export function PoolPanelV2() {
                 <article className="mb-5">
                   <div className="flex justify-between place-items-stretch">
                     <div className="flex flex-col items-start justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center text-left gap-x-2">
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
@@ -249,7 +249,7 @@ export function PoolPanelV2() {
                           <article>
                             <div className="flex justify-between mb-5 place-items-stretch">
                               <div className="flex flex-col items-start justify-between">
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-wrap items-center text-left gap-x-2">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
                                     <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
