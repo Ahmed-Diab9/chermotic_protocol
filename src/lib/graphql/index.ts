@@ -4,7 +4,7 @@ import {
   RequestMiddleware,
   Variables,
 } from 'graphql-request';
-import { HASURA_API_URL, SUBGRAPH_API_URL } from '~/configs/subgraph';
+import { HASURA_API_URL, SUBGRAPH_API_URL, SUBGRAPH_API_WS_URL } from '~/configs/subgraph';
 
 import * as Lp from '~/lib/graphql/sdk/lp';
 import * as Hasura from '~/lib/graphql/sdk/hasura';
@@ -25,15 +25,15 @@ function getOperations(object: Object) {
 const urlMap: UrlMap = [
   {
     operations: getOperations(Lp),
-    url: `https://${SUBGRAPH_API_URL}/chromatic-lp`,
+    url: `${SUBGRAPH_API_URL}/chromatic-lp`,
   },
   {
     operations: getOperations(Pricefeed),
-    url: `https://${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+    url: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
   },
   {
     operations: getOperations(Hasura),
-    url: `https://${HASURA_API_URL}`,
+    url: `${HASURA_API_URL}`,
   },
 ];
 
@@ -58,9 +58,19 @@ const hasuraGraphSdk = Hasura.getSdk(graphClient);
 const lpGraphSdk = Lp.getSdk(graphClient);
 const pricefeedGraphSdk = Pricefeed.getSdk(graphClient);
 
-const websocketClient = new WebSocket(`wss://${SUBGRAPH_API_URL}/chainlink-pricefeed`);
-const graphWSClient = new GraphQLWebSocketClient(websocketClient, {});
+const createGraphWSClient = async (url: string) => {
+  return new Promise<GraphQLWebSocketClient>((resolve) => {
+    const socket = new WebSocket(url, 'graphql-ws');
+    const client: GraphQLWebSocketClient = new GraphQLWebSocketClient(socket, {
+      onAcknowledged: async (_p) => {
+        resolve(client);
+      },
+    });
+  });
+};
 
-const pricefeedGraphSubSdk = PricefeedWS.getSdk(graphWSClient);
+const pricefeedGraphSubSdk = PricefeedWS.getSdk(
+  await createGraphWSClient(`${SUBGRAPH_API_WS_URL}/chainlink-pricefeed`)
+);
 
 export { hasuraGraphSdk, lpGraphSdk, pricefeedGraphSdk, pricefeedGraphSubSdk };

@@ -25,25 +25,25 @@ const config: CodegenConfig = {
   generates: {
     [`${GENERATED_PATH}/lp.ts`]: {
       documents: 'codegen/lp.ts',
-      schema: `https://${SUBGRAPH_API_URL}/chromatic-lp`,
+      schema: `${SUBGRAPH_API_URL}/chromatic-lp`,
       plugins: PLUGINS,
       config: CONFIG,
     },
     [`${GENERATED_PATH}/pricefeed.ts`]: {
       documents: 'codegen/pricefeed.ts',
-      schema: `https://${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
       plugins: PLUGINS,
       config: CONFIG,
     },
     [`${GENERATED_PATH}/hasura.ts`]: {
       documents: 'codegen/hasura.ts',
-      schema: `https://${HASURA_API_URL}`,
+      schema: `${HASURA_API_URL}`,
       plugins: PLUGINS,
       config: CONFIG,
     },
     [`${GENERATED_PATH}/pricefeed_ws.ts`]: {
       documents: 'codegen/pricefeed.ts',
-      schema: `https://${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
       plugins: PLUGINS,
       config: {
         ...CONFIG,
