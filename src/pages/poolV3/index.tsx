@@ -1,4 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
+import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import PlusIcon from '~/assets/icons/PlusIcon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
@@ -35,6 +36,7 @@ const PoolV3 = () => {
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;
   const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
+  const marketDescription = selectedLp?.market.description;
 
   return (
     <>
@@ -105,6 +107,18 @@ const PoolV3 = () => {
                   </div>
                   <div className="panel panel-translucent">
                     <PoolDetail />
+                  </div>
+                  <div className="mt-5">
+                    <Button
+                      to="/trade"
+                      className="!bg-gray-light/60"
+                      label={
+                        isNotNil(marketDescription)
+                          ? `Trade on ${marketDescription} Pool`
+                          : 'Market loading'
+                      }
+                      iconRight={<ArrowTriangleIcon className="-rotate-90" />}
+                    />
                   </div>
                 </div>
               </div>

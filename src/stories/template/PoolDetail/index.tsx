@@ -1,9 +1,7 @@
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
-import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 
-import { isNil, isNotNil } from 'ramda';
+import { isNil } from 'ramda';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { trimAddress } from '~/utils/address';
@@ -13,7 +11,7 @@ export interface PoolDetailProps {}
 
 export const PoolDetail = (props: PoolDetailProps) => {
   const blockExplorer = useBlockExplorer();
-  const { lpTitle, lpName, lpAddress, marketDescription, onCopyAddress } = usePoolDetail();
+  const { lpTitle, lpName, lpAddress, onCopyAddress } = usePoolDetail();
 
   return (
     <div className="p-5 PoolDetail">
@@ -51,16 +49,6 @@ export const PoolDetail = (props: PoolDetailProps) => {
           CLP tokens are independent for each pool, having unique Token IDs and names such as
           'USDT-ETH/USD:Junior pool'.
           <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" />
-        </div>
-        <div className="mt-5">
-          <Button
-            to="/trade"
-            css="underlined"
-            label={
-              isNotNil(marketDescription) ? `Trade on ${marketDescription} Pool` : 'Market loading'
-            }
-            iconRight={<ArrowTriangleIcon className="-rotate-90" />}
-          />
         </div>
       </div>
     </div>
