@@ -41,6 +41,17 @@ export interface AirdropSchedule {
   status: 'success' | 'fail' | 'active' | 'empty';
 }
 
+export interface AirdropBonusReward {
+  consecutive: number;
+  credit: number;
+  booster: number;
+}
+
+export interface AirdropScheduleResponse {
+  schedules: AirdropSchedule[];
+  bonus_rewards: AirdropBonusReward[];
+}
+
 export interface LeaderBoard {
   participants: number;
   total_credit: number;

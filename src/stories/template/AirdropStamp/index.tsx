@@ -12,7 +12,7 @@ import StampSuccess from '/src/assets/images/stamp_success.png';
 export interface AirdropStampProps {}
 
 export const AirdropStamp = (props: AirdropStampProps) => {
-  const { schedules, onSignIn } = useAirdropStamp();
+  const { schedules, creditText, boosterText, onSignIn } = useAirdropStamp();
 
   return (
     <div className="p-5 text-left panel AirdropStamp">
@@ -21,11 +21,11 @@ export const AirdropStamp = (props: AirdropStampProps) => {
           <h4 className="mb-5 text-3xl text-primary-light">Sign-In Rewards</h4>
           <div className="flex items-center gap-2 mb-2">
             <BoosterIcon className="w-6" />
-            <p className="text-lg">Sign-In 7 days in a week & get 1 booster</p>
+            <p className="text-lg">{boosterText}</p>
           </div>
           <div className="flex items-center gap-2">
             <CoinStackIcon className="w-6" />
-            <p className="text-lg">Sign-In 5 days in a week & get 50 extra credits</p>
+            <p className="text-lg">{creditText}</p>
           </div>
         </div>
         <div className="ml-auto text-lg text-primary-light">

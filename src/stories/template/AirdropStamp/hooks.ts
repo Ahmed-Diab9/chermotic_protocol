@@ -1,13 +1,13 @@
 import { isNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi';
-import { useRewardSchedules } from '~/hooks/useRewardSchedules';
-import { useSignInRewards } from '~/hooks/useSignInRewards';
+import { useRewardSchedules } from '~/hooks/airdrops/useRewardSchedules';
+import { useSignInRewards } from '~/hooks/airdrops/useSignInRewards';
 import { dispatchSyncEvent } from '~/typings/events';
 
 export const useAirdropStamp = () => {
   const { address } = useAccount();
-  const { schedules = [], isLoading } = useRewardSchedules();
+  const { schedules = [], bonusRewards = [], isLoading } = useRewardSchedules();
   const { signInRewards, isMutating } = useSignInRewards();
 
   const activeSchedule = useMemo(() => {
@@ -22,5 +22,21 @@ export const useAirdropStamp = () => {
     dispatchSyncEvent();
   }, [activeSchedule, address, signInRewards]);
 
-  return { schedules, onSignIn };
+  const { creditText, boosterText } = useMemo(() => {
+    let creditText = '';
+    let boosterText = '';
+    for (let index = 0; index < bonusRewards.length; index++) {
+      const reward = bonusRewards[index];
+      if (reward.booster !== 0) {
+        boosterText = `Sign-In ${reward.consecutive} days in a week & get ${reward.booster} booster`;
+      }
+      if (reward.credit !== 0) {
+        creditText = `Sign-In ${reward.consecutive} days in a week & get ${reward.credit} extra credits`;
+      }
+    }
+
+    return { creditText, boosterText };
+  }, [bonusRewards]);
+
+  return { schedules, creditText, boosterText, onSignIn };
 };
