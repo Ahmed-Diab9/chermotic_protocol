@@ -7,7 +7,8 @@ import { useAirdropBoard } from './hooks';
 import './style.css';
 
 export const AirdropBoard = () => {
-  const { filterLabels, activeLabel, leaderboard, onLabelChange } = useAirdropBoard();
+  const { filterLabels, labelMap, activeLabel, leaderboard, hasMoreLeaderBoard, onLabelChange } =
+    useAirdropBoard();
 
   return (
     <div className="AirdropBoard">
@@ -17,7 +18,7 @@ export const AirdropBoard = () => {
             key={`${label}-${labelIndex}`}
             onClick={() => onLabelChange(labelIndex)}
             className={`btn btn-lg !text-xl btn-has-tag btn-${
-              activeLabel === label ? 'active' : 'lighter'
+              activeLabel === labelMap[label] ? 'active' : 'lighter'
             }`}
           >
             {label}
@@ -89,9 +90,11 @@ export const AirdropBoard = () => {
               ))}
             </div>
             {/* 'more' button should be visible only when there are more lists. */}
-            <div className="mt-6 text-center">
-              <Button label="More" css="underlined" size="lg" />
-            </div>
+            {hasMoreLeaderBoard && (
+              <div className="mt-6 text-center">
+                <Button label="More" css="underlined" size="lg" />
+              </div>
+            )}
           </div>
         )}
       </article>
