@@ -51,7 +51,7 @@ export const AirdropBoard = () => {
             <div className="tbody">
               {boardList.map((item) => (
                 <div
-                  className="tr panel panel-translucent"
+                  className="tr"
                   // ref={ }
                 >
                   <div className="td">

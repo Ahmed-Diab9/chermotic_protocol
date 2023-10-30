@@ -53,7 +53,7 @@ export const AirdropHistory = () => {
             <div className="tbody">
               {filteredContent.map((history) => (
                 <div
-                  className="tr panel panel-translucent"
+                  className="tr"
                   // ref={ }
                 >
                   <div className="td">

@@ -14,6 +14,7 @@
       @apply flex flex-col gap-2;
       .tr {
         @apply gap-5 py-5 px-10;
+        @apply bg-paper/40 rounded;
       }
       .td {
         &:not(:nth-child(1)) {
