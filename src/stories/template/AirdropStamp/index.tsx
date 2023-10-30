@@ -37,7 +37,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
           </div>
         </div>
         <div className="ml-auto text-lg text-primary-light">
-          The date changes at 9am local time (UTC+09:00).
+          The date changes at 9am local time (UTC+09:00)
         </div>
       </div>
       <div className="flex justify-between px-10 mt-6">

@@ -218,14 +218,13 @@ function Airdrop() {
                       </article>
 
                       <article>
-                        <div className="text-left">
+                        <div className="flex items-baseline">
                           <h2 className="text-4xl">Leader board</h2>
-                          <p className="mt-4 text-xl text-primary-light">
-                            Get to the top of the leaderboard to boost your points. The top 100 on a
-                            rolling 24H basis get a boost!
-                          </p>
+                          <div className="ml-auto text-lg text-primary-light">
+                            The date changes at 9am local time (UTC+09:00)
+                          </div>
                         </div>
-                        <div className="p-5 mt-10 panel">
+                        <div className="p-5 mt-10 mb-12 panel">
                           <div className="flex justify-between">
                             <div className="w-1/3">
                               <h2 className="text-4xl">10</h2>
@@ -246,7 +245,7 @@ function Airdrop() {
                             </div>
                           </div>
                         </div>
-                        <div className="mt-3 mb-12">
+                        {/* <div className="mt-3 mb-12">
                           <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
                             <div className="flex gap-3 text-price-lower">
                               <ExclamationTriangleIcon className="w-4" />
@@ -265,19 +264,19 @@ function Airdrop() {
                               />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <AirdropBoard />
                       </article>
                     </section>
                   </Tab.Panel>
                   <Tab.Panel>
                     <section>
-                      <BlurText label="My History" className="text-[60px]" color="chrm" />
-                      <div className="mt-5 text-left">
-                        <p className="text-xl text-primary-light">
-                          Get to the top of the leaderboard to boost your points. <br />
-                          The top 100 on a rolling 24H basis get a boost!
-                        </p>
+                      <div className="flex items-baseline">
+                        <BlurText label="My History" className="text-[60px]" color="chrm" />
+                        {/* <h2 className="text-4xl">My board</h2> */}
+                        <div className="ml-auto text-lg text-primary-light">
+                          The date changes at 9am local time (UTC+09:00)
+                        </div>
                       </div>
                       <div className="p-5 mt-10 panel">
                         <div className="flex justify-between">
