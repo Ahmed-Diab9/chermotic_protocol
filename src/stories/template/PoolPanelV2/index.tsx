@@ -200,8 +200,8 @@ export function PoolPanelV2() {
                 <article>
                   <div className="mt-7">
                     <Button
-                      label="Add"
-                      className="w-full"
+                      label="Add Liquidity"
+                      className="w-full !font-bold"
                       css="active"
                       size="2xl"
                       onClick={() => {
@@ -296,7 +296,7 @@ export function PoolPanelV2() {
                             <div className="mb-5 mt-7">
                               <Button
                                 label="Remove Liquidity"
-                                className="w-full"
+                                className="w-full !font-bold"
                                 css="active"
                                 size="2xl"
                                 onClick={() => {

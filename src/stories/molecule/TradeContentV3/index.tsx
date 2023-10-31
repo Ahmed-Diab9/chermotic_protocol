@@ -287,8 +287,8 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
           <div className="my-4">
             <TransactionButton
               label={isLong ? 'Buy' : 'Sell'}
-              size="3xl"
-              className="w-full"
+              size="2xl"
+              className="w-full !font-bold"
               css={isLong ? 'long' : 'short'}
               disabled={disabled}
               onClick={onOpenPosition}
