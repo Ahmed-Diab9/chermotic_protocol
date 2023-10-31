@@ -1,0 +1,42 @@
+.AirdropHistory {
+  .wrap-list {
+    @apply mt-7 min-h-[40vh];
+  }
+  .list {
+    @apply text-left text-xl;
+    .thead {
+      @apply items-stretch;
+      .tr {
+        @apply px-10;
+      }
+      .td {
+        @apply py-3 text-primary-light;
+      }
+    }
+    .tbody {
+      @apply flex flex-col gap-2;
+      .tr {
+        @apply gap-5 py-5 px-10;
+        @apply bg-paper/40 rounded;
+      }
+      .td {
+        &:not(:nth-child(1)) {
+          @apply break-all;
+        }
+      }
+    }
+    .tr {
+      @apply flex gap-5 justify-between;
+    }
+    .td {
+      @apply flex items-center;
+      flex: 1 1 auto;
+    }
+  }
+  .td {
+    @apply w-[20%];
+    &:nth-child(4) {
+      @apply w-[40%];
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { Tooltip } from 'react-tooltip';
 import { Outlink } from '../Outlink';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { ArrowUpRightIcon } from '@heroicons/react/24/outline';
 import './style.css';
 
 interface TooltipGuideProps {
@@ -9,7 +8,19 @@ interface TooltipGuideProps {
   tip?: string;
   outLink?: string;
   outLinkAbout?: string;
-  position?: 'top' | 'right' | 'bottom' | 'left';
+  place?:
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'right'
+    | 'right-start'
+    | 'right-end'
+    | 'bottom'
+    | 'bottom-start'
+    | 'bottom-end'
+    | 'left'
+    | 'left-start'
+    | 'left-end';
   size?: 'sm' | 'base' | 'lg';
   align?: 'center' | 'left' | 'right';
   className?: string;
@@ -25,7 +36,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
     tip,
     outLink,
     outLinkAbout,
-    position = 'top',
+    place = 'top',
     size = 'base',
     align = 'left',
     className = '',
@@ -45,7 +56,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
         <Tooltip
           anchorSelect={`.tooltip-${label}`}
           className={`tooltip tooltip-solid text-${align}`}
-          place={position}
+          place={place}
           clickable
           // isOpen
           // events={["click"]}

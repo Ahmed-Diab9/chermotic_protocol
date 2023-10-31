@@ -1,0 +1,21 @@
+.avatar {
+  @apply flex-none;
+  .wrapper-img {
+    @apply rounded-full overflow-hidden shrink-0 flex items-center justify-center border-none;
+  }
+}
+.avatar-xs {
+  @apply w-4 h-4;
+}
+.avatar-sm {
+  @apply w-5 h-5;
+}
+.avatar-base {
+  @apply w-6 h-6;
+}
+.avatar-lg {
+  @apply w-8 h-8;
+}
+.avatar-xl {
+  @apply w-10 h-10;
+}

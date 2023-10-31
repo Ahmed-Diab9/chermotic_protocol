@@ -246,7 +246,7 @@ export function MarketSelectV3() {
                     outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
                     className="mr-0"
                     iconClass="!w-3"
-                    position="top"
+                    place="top"
                   />
                 </div>
                 <h4>

@@ -82,7 +82,7 @@ export function PoolProgressV2() {
                         paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
                         outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
-                        className="!rounded-none"
+                        className="!rounded-none !px-7"
                         onClick={onGuideClose}
                       />
                     </div>

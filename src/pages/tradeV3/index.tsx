@@ -26,10 +26,10 @@ function TradeV3() {
         <div id="prev"></div>
         <div id="current"></div>
       </div>
-      <div className="flex flex-col min-h-[100vh] w-full relative">
+      <div className="page-container">
         <BookmarkBoardV3 />
         <HeaderV3 hasAccount />
-        <section className="flex flex-col grow w-full min-w-[1280px] items-stretch px-10 mt-8 mx-auto mb-20">
+        <main className="!max-w-none">
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-5">
               <div className="mb-5">
@@ -40,7 +40,7 @@ function TradeV3() {
             </article>
             <TradePanelV3 />
           </div>
-        </section>
+        </main>
         <Footer />
         <Toast />
         <ChainModal />

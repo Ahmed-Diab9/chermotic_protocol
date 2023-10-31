@@ -1,0 +1,5 @@
+.AirdropActivity {
+  .panel {
+    @apply py-5 px-7;
+  }
+}
