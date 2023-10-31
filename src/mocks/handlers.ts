@@ -273,9 +273,8 @@ export const handlers = [
   }),
   handler.post('/airdrop/signin-reward', async (request, response, context) => {
     const data = await request.json();
-    const { address, round, date } = data as {
+    const { address, date } = data as {
       address: `0x${string}`;
-      round: number;
       date: Date;
     };
     return response(
@@ -285,7 +284,6 @@ export const handlers = [
           reward_credit: 11,
           reward_booster: 11,
           total_credit: 50,
-          round: round + 1,
         })
       )
     );

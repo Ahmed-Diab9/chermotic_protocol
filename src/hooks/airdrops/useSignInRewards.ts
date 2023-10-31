@@ -15,25 +15,21 @@ export const useSignInRewards = () => {
   const fetchKey = {
     key: 'requestSignInRewards',
     address,
-    round: activeSchedule?.round,
     date: activeSchedule?.date,
   };
   const {
     trigger: signInRewards,
     isMutating,
     error,
-  } = useSWRMutation(
-    checkAllProps(fetchKey) ? fetchKey : undefined,
-    async ({ address, round, date }) => {
-      const body = { address, round, date };
-      const response = await airdropClient.post(`/airdrop/signin-reward`, body, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return response;
-    }
-  );
+  } = useSWRMutation(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address, date }) => {
+    const body = { address, date };
+    const response = await airdropClient.post(`/airdrop/signin-reward`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  });
 
   useError({ error });
 
