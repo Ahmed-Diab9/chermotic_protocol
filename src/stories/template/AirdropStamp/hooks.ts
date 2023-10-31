@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 import { useRewardSchedules } from '~/hooks/airdrops/useRewardSchedules';
 import { useSignInRewards } from '~/hooks/airdrops/useSignInRewards';
-import { dispatchSyncEvent } from '~/typings/events';
+import { dispatchRewardEvent } from '~/typings/events';
 
 export const useAirdropStamp = () => {
   const { address } = useAccount();
@@ -19,7 +19,7 @@ export const useAirdropStamp = () => {
     }
     await signInRewards();
 
-    dispatchSyncEvent();
+    dispatchRewardEvent();
   }, [activeSchedule, address, signInRewards]);
 
   const { creditText, boosterText } = useMemo(() => {

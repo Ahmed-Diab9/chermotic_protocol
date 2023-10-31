@@ -3,7 +3,7 @@ export const POOL_EVENT = 'pool';
 export const LP_EVENT = 'lp';
 export const LP_RECEIPT_EVENT = 'lp-receipts';
 
-export const SYNC_EVENT = 'synchronize';
+export const REWARD_EVENT = 'reward';
 
 export const dispatchTradeEvent = () =>
   window.dispatchEvent(
@@ -36,7 +36,15 @@ export const dispatchLpReceiptEvent = () => {
 };
 export const dispatchSyncEvent = () => {
   window.dispatchEvent(
-    new CustomEvent(SYNC_EVENT, {
+    new CustomEvent(REWARD_EVENT, {
+      bubbles: true,
+      cancelable: true,
+    })
+  );
+};
+export const dispatchRewardEvent = () => {
+  window.dispatchEvent(
+    new CustomEvent(REWARD_EVENT, {
       bubbles: true,
       cancelable: true,
     })
@@ -48,6 +56,7 @@ declare global {
     [POOL_EVENT]: CustomEvent<unknown>;
     [LP_EVENT]: CustomEvent<unknown>;
     [LP_RECEIPT_EVENT]: CustomEvent<unknown>;
+    [REWARD_EVENT]: CustomEvent<unknown>;
   }
   interface Window {
     addEventListener<K extends keyof CustomEventMap>(

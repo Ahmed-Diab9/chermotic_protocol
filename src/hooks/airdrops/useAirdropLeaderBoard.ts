@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { airdropClient } from '~/apis/airdrop';
 import { LeaderBoard } from '~/typings/airdrop';
+import { REWARD_EVENT } from '~/typings/events';
 import { useError } from '../useError';
 
 interface UseAirdropLeaderBoard {
@@ -51,6 +52,16 @@ export const useAirdropLeaderBoard = (props: UseAirdropLeaderBoard) => {
   const refreshLeaderBoard = useCallback(() => {
     mutate();
   }, [mutate]);
+
+  useEffect(() => {
+    const onRewardRefresh = () => {
+      refreshLeaderBoard();
+    };
+    window.addEventListener(REWARD_EVENT, onRewardRefresh);
+    return () => {
+      window.removeEventListener(REWARD_EVENT, onRewardRefresh);
+    };
+  }, [refreshLeaderBoard]);
 
   useError({ error });
 

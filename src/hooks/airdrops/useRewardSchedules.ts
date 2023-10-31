@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { airdropClient } from '~/apis/airdrop';
 import { AirdropSchedule, AirdropScheduleResponse } from '~/typings/airdrop';
-import { SYNC_EVENT } from '~/typings/events';
+import { REWARD_EVENT } from '~/typings/events';
 import { checkAllProps } from '~/utils';
 import { useError } from '../useError';
 
@@ -65,12 +65,12 @@ export const useRewardSchedules = () => {
   });
 
   useEffect(() => {
-    const onAirdropSync = () => {
+    const onRewardRefresh = () => {
       mutate();
     };
-    window.addEventListener(SYNC_EVENT, onAirdropSync);
+    window.addEventListener(REWARD_EVENT, onRewardRefresh);
     return () => {
-      window.removeEventListener(SYNC_EVENT, onAirdropSync);
+      window.removeEventListener(REWARD_EVENT, onRewardRefresh);
     };
   }, [mutate]);
 

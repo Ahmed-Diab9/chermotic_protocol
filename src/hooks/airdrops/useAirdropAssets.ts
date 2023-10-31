@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { airdropClient } from '~/apis/airdrop';
 import { AirdropAsset } from '~/typings/airdrop';
+import { REWARD_EVENT } from '~/typings/events';
 import { checkAllProps } from '~/utils';
 import { useError } from '../useError';
 
@@ -27,6 +28,16 @@ export const useAirdropAssets = () => {
   const refreshAssets = useCallback(() => {
     mutate();
   }, [mutate]);
+
+  useEffect(() => {
+    const onRewardRefresh = () => {
+      refreshAssets();
+    };
+    window.addEventListener(REWARD_EVENT, onRewardRefresh);
+    return () => {
+      window.removeEventListener(REWARD_EVENT, onRewardRefresh);
+    };
+  }, [refreshAssets]);
 
   useError({ error });
 
