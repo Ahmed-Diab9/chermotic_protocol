@@ -37,9 +37,10 @@ export const AirdropHistory = () => {
           </button>
         ))}
       </div>
-      <article className="mt-7">
+      <article className="wrap-list">
         {!historyList ? (
-          <p className="mt-10 text-center text-primary/20">You have no history yet.</p>
+          // TODO: show when there is no list
+          <p className="mt-10 text-xl text-center text-primary/20">You have no history yet.</p>
         ) : (
           <div className="list">
             <div className="thead">

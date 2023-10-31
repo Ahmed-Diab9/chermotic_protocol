@@ -1,4 +1,7 @@
 .AirdropBoard {
+  .wrap-list {
+    @apply mt-7 min-h-[40vh];
+  }
   .list {
     @apply text-left text-xl;
     .thead {
