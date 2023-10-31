@@ -68,7 +68,7 @@ const Pool = () => {
                 <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" />
               </div>
             </article>
-            <div className="mt-10">
+            <div className="">
               <Link to={'/trade'}>
                 <Button
                   css="light"
