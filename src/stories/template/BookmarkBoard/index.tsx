@@ -1,5 +1,4 @@
 import { StarIcon } from '@heroicons/react/20/solid';
-import '~/stories/atom/Tabs/style.css';
 import { useBookmarkBoard } from './hooks';
 import './style.css';
 
