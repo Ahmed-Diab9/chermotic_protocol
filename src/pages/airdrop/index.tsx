@@ -149,7 +149,7 @@ function Airdrop() {
                           />
                         </div>
                         <div className="flex flex-col items-center mt-10">
-                          <img src={RandomboxImage} alt="ramdom box" className="w-[400px]" />
+                          <img src={RandomboxImage} alt="ramdom box" className="w-[280px] mb-5" />
                           <div className="flex mb-10 text-lg text-left border-y text-primary-light">
                             <div className="w-1/4 px-3 py-5">
                               <p>Credit is required to open the Random Box to obtain rCHR.</p>
@@ -177,7 +177,7 @@ function Airdrop() {
                             </div>
                           </div>
                           <Button
-                            label="Open Enthusiast Box"
+                            label="Open Random Box"
                             css="chrm-hover"
                             size="3xl"
                             className="!text-xl !w-[280px]"
