@@ -72,7 +72,8 @@ const PoolV3 = () => {
                     size="sm"
                   />
                 </div>
-                <p className="text-lg text-primary-light">0000000000000000000000000000</p>
+                <p className="text-lg text-primary-light">Pool Description</p>
+                {/* TODO: learn more button */}
               </div>
               <div className="flex items-center justify-between mb-3 text-lg text-primary">
                 {/* To be added later */}
