@@ -184,7 +184,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       detail = formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
     }
     let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
-    const key = `${currentAction}-receipt-${receipt.id}-${receipt.action}-${status}`;
+    const key = `${token.name}-${currentAction}-receipt-${receipt.id}-${receipt.action}-${status}`;
 
     if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
       const dividedByAmount = divPreserved(
