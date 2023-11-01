@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { getSdk } from '~/__generated__/request';
@@ -64,15 +64,20 @@ export const useLpReceiptCount = () => {
       };
     },
     {
-      refreshInterval: 1000 * 20,
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateFirstPage: true,
+      shouldRetryOnError: false,
     }
   );
 
   useError({ error });
 
-  const onRefreshLpReceiptCount = () => {
+  const onRefreshLpReceiptCount = useCallback(() => {
     mutate();
-  };
+  }, [mutate]);
 
   return {
     count,

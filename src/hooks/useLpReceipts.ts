@@ -6,6 +6,7 @@
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { GraphQLClient } from 'graphql-request';
 import { isNil, isNotNil } from 'ramda';
+import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { Address, useAccount } from 'wagmi';
 import {
@@ -341,7 +342,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       return receiptsData;
     },
     {
-      refreshInterval: 1000 * 20,
+      refreshInterval: 0,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -352,16 +353,16 @@ export const useLpReceipts = (props: UseLpReceipts) => {
 
   useError({ error });
 
-  const onFetchNextLpReceipts = () => {
+  const onFetchNextLpReceipts = useCallback(() => {
     if (isLoading) {
       return;
     }
     setSize(size + 1);
-  };
+  }, [isLoading, size, setSize]);
 
-  const onRefreshLpReceipts = () => {
+  const onRefreshLpReceipts = useCallback(() => {
     mutate();
-  };
+  }, [mutate]);
 
   return {
     receiptsData,
