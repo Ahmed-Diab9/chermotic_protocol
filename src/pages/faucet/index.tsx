@@ -1,5 +1,6 @@
 import { testSettlementTokenABI } from '@chromatic-protocol/sdk-viem';
 import { isNil } from 'ramda';
+import { toast } from 'react-toastify';
 import { getContract } from 'viem';
 import { useAccount } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
@@ -17,26 +18,36 @@ export const Faucet = () => {
   const { client } = useChromaticClient();
   const { onLoadBackgroundRef } = useBackgroundGradient();
   const onFaucet = async () => {
-    if (isNil(client.walletClient)) {
-      return;
-    }
-    const cTST = tokens?.find((token) => token.name === 'cTST');
-    if (isNil(tokens) || isNil(cTST)) {
-      return;
-    }
-    if (isNil(address)) {
-      return;
-    }
-    const contract = getContract({
-      abi: testSettlementTokenABI,
-      address: cTST!.address,
-      publicClient: client.publicClient,
-      walletClient: client.walletClient,
-    });
-    const { request } = await contract.simulate.faucet({ account: address, chain: arbitrumGoerli });
+    try {
+      if (isNil(client.walletClient)) {
+        return;
+      }
+      const cTST = tokens?.find((token) => token.name === 'cETH');
+      if (isNil(tokens) || isNil(cTST)) {
+        return;
+      }
+      if (isNil(address)) {
+        return;
+      }
+      const contract = getContract({
+        abi: testSettlementTokenABI,
+        address: cTST!.address,
+        publicClient: client.publicClient,
+        walletClient: client.walletClient,
+      });
+      const { request } = await contract.simulate.faucet({
+        account: address,
+        chain: arbitrumGoerli,
+      });
 
-    const hash = await client.walletClient?.writeContract(request);
-    await client.publicClient?.waitForTransactionReceipt({ hash });
+      const hash = await client.walletClient?.writeContract(request);
+      await client.publicClient?.waitForTransactionReceipt({ hash });
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
+      toast.error('Invalid faucet');
+    }
   };
 
   return (
