@@ -4,6 +4,7 @@ import { isNil, isNotNil } from 'ramda';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
+import { LP_TAG_ORDER } from '~/configs/lp';
 import { useAppDispatch } from '~/store';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
@@ -36,8 +37,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
     if (isNotNil(walletAddress)) {
       balance = lp.balanceOf(lpAddress, walletAddress);
     }
-    const metadata = await lp.lpTokenMeta(lpAddress);
-    const { decimals, symbol: clpName } = metadata;
+    const metadata = lp.lpTokenMeta(lpAddress);
     const totalSupply = lp.totalSupply(lpAddress);
     const valueInfo = lp.valueInfo(lpAddress);
     const utilization = lp.utilization(lpAddress);
@@ -46,7 +46,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       lpAddress,
       lpName,
       balance,
-      decimals,
+      metadata,
       totalSupply,
       valueInfo,
       utilization,
@@ -73,6 +73,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
             break;
           }
           case 3: {
+            const { decimals, symbol: clpName } = value as Awaited<typeof metadata>;
             provider.decimals = decimals;
             provider.clpName = clpName;
             break;
@@ -122,7 +123,14 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
     );
   });
 
-  return PromiseOnlySuccess(lpInfoArray) ?? [];
+  const settledLpArray = (await PromiseOnlySuccess(lpInfoArray)) ?? [];
+  settledLpArray.sort((previousLp, nextLp) => {
+    const { tag: previousLpTag } = previousLp;
+    const { tag: nextLpTag } = nextLp;
+    return LP_TAG_ORDER[previousLpTag] - LP_TAG_ORDER[nextLpTag];
+  });
+
+  return settledLpArray;
 };
 
 export const useEntireChromaticLp = () => {
@@ -152,7 +160,6 @@ export const useEntireChromaticLp = () => {
         const lpArray = await fetchChromaticLp({ lpClient, registry, walletAddress, market });
         chromaticLps = chromaticLps.concat(lpArray);
       }
-
       return chromaticLps.map((lpValue) => {
         const { totalValue, totalSupply, decimals, market } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);

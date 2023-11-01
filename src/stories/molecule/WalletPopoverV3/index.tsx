@@ -235,7 +235,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p className="text-primary-lighter">
                                                   {/* pool name */}
-                                                  {name} Pool
+                                                  {name}
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={60}>
