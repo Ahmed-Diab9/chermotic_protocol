@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { TradeInput } from '~/typings/trade';
 
 interface ITrades extends Omit<TradeInput, 'direction'> {}
@@ -29,7 +29,14 @@ const tradesSlice = createSlice({
   reducers: {
     updateTradesState: (state, action: PayloadAction<Required<TradeInput, 'direction'>>) => {
       const { direction, ...newValues } = action.payload;
-      state[direction] = { ...state[direction], ...newValues };
+      state = {
+        ...state,
+        [direction]: {
+          ...state[direction],
+          ...newValues,
+        },
+      };
+      return state;
     },
     clearTradeState: (state, action: PayloadAction<TradeInput['direction'] | undefined>) => {
       if (action.payload === 'long') {
@@ -40,6 +47,7 @@ const tradesSlice = createSlice({
         state.long = emptyTrade;
         state.short = emptyTrade;
       }
+      return state;
     },
   },
 });
