@@ -127,7 +127,7 @@ export function PoolPanelV2() {
                 <article className="mb-5">
                   <div className="flex justify-between place-items-stretch">
                     <div className="flex flex-col items-start justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center text-left gap-x-2">
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
@@ -200,8 +200,8 @@ export function PoolPanelV2() {
                 <article>
                   <div className="mt-7">
                     <Button
-                      label="Add"
-                      className="w-full"
+                      label="Add Liquidity"
+                      className="w-full !font-bold"
                       css="active"
                       size="2xl"
                       onClick={() => {
@@ -223,14 +223,14 @@ export function PoolPanelV2() {
 
             {/* tab - remove */}
             <Tab.Panel className="w-full">
-              <div className="flex items-start gap-3 text-left mb-7">
+              {/* <div className="flex items-start gap-3 text-left mb-7">
                 <ExclamationTriangleIcon className="flex-none w-4" />
                 <p className="text-primary-light">
                   Removing Liquidity (Burning CLP Tokens) are conducting from both wallet and
                   Staking vault. Please choose where your CLPs should be removed from between your
                   wallet and staking vault.
                 </p>
-              </div>
+              </div> */}
 
               {/* inner tab */}
               <section className="tabs-line tabs-base">
@@ -249,7 +249,7 @@ export function PoolPanelV2() {
                           <article>
                             <div className="flex justify-between mb-5 place-items-stretch">
                               <div className="flex flex-col items-start justify-between">
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-wrap items-center text-left gap-x-2">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
                                     <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
@@ -296,7 +296,7 @@ export function PoolPanelV2() {
                             <div className="mb-5 mt-7">
                               <Button
                                 label="Remove Liquidity"
-                                className="w-full"
+                                className="w-full !font-bold"
                                 css="active"
                                 size="2xl"
                                 onClick={() => {

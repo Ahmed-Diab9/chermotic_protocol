@@ -49,7 +49,14 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
           <div className="flex w-1/2 gap-3 pr-5">
             <Thumbnail className="w-12 h-12 !bg-transparent" src={ProfitIcon} />
             <div className="text-left text-primary-light">
-              <p>Profit</p>
+              <div className="flex">
+                <p>Profit</p>
+                <TooltipGuide
+                  label="performance-profit"
+                  tip="The Profit of LP during the period(including unrealized PnL)"
+                  outLink=""
+                />
+              </div>
               {/* todo: text price color */}
               <h4 className="text-price-higher mt-[2px]">13,526.03</h4>
               <p className="text-sm">($101.33)</p>
@@ -60,7 +67,11 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
             <div className="text-left text-primary-light">
               <div className="flex">
                 <p>Trailing APR</p>
-                <TooltipGuide label="Trailing-apr" tip="tooltip" />
+                <TooltipGuide
+                  label="performance-trailing-apr"
+                  tip="APR estimated based on the profit during the period"
+                  outLink=""
+                />
               </div>
               {/* todo: text price color */}
               <h4 className="text-price-higher mt-[2px]">7.54%</h4>

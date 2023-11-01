@@ -1,13 +1,12 @@
-import { Link } from 'react-router-dom';
-
 import LogoSimple from '~/assets/icons/LogoSimple';
-
+import { Link } from 'react-router-dom';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
+import { HeaderMenuPopover } from '~/stories/molecule/HeaderMenuPopover';
+import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
-import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 
 interface HeaderV3Props {
   hasAccount?: boolean;
@@ -20,8 +19,6 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const links = [
     { to: 'trade', text: 'Trade', className: '' },
     { to: 'pool', text: 'Pools', className: '' },
-    { to: 'trade3', text: 'Trade3', className: 'text-primary-light' },
-    { to: 'pool3', text: 'Pools3', className: 'text-primary-light' },
     { to: 'airdrop', text: 'Airdrop', className: '' },
   ];
 
@@ -50,6 +47,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
               {link.text}
             </Link>
           ))}
+          <HeaderMenuPopover />
         </div>
         <div className="flex gap-5">
           {hasAccount && <AccountPopoverV3 />}

@@ -25,7 +25,7 @@ export const usePoolDetail = () => {
     lpTitle,
     lpName: selectedLp?.name,
     lpAddress: selectedLp?.address,
-    marketDescription: selectedLp?.market.description,
+    // marketDescription: selectedLp?.market.description,
     onCopyAddress,
   };
 };

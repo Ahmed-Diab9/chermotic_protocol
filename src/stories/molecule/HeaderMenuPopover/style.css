@@ -1,0 +1,27 @@
+.HeaderMenuPopover {
+  @apply relative;
+  .popover-panel {
+    @apply absolute rounded top-10 mt-2 w-[480px];
+    @apply border py-5 text-left;
+    @apply bg-paper/60 text-primary backdrop-blur-xl;
+    h2 {
+      @apply text-lg mb-3 text-primary-light;
+    }
+    a {
+      @apply hover:underline;
+    }
+    .wrapper-ul {
+      @apply px-5 w-1/3;
+    }
+    ul {
+      @apply flex flex-col gap-2;
+    }
+    .list-item {
+      @apply flex items-center;
+      &::before {
+        @apply w-1 h-1 bg-primary inline-block mr-2 rounded-full;
+        content: '';
+      }
+    }
+  }
+}

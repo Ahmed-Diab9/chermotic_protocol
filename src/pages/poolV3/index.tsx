@@ -1,4 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import PlusIcon from '~/assets/icons/PlusIcon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
@@ -35,6 +36,7 @@ const PoolV3 = () => {
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;
   const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
+  const marketDescription = selectedLp?.market.description;
 
   return (
     <>
@@ -52,7 +54,7 @@ const PoolV3 = () => {
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
-            <div className="mt-10">
+            <div className="flex-auto mt-10">
               <div className="mb-10 text-left">
                 <div className="flex items-center mb-5">
                   <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
@@ -64,17 +66,14 @@ const PoolV3 = () => {
                   <Button
                     label="Metamask"
                     iconLeft={<PlusIcon className="w-3 h-3" />}
-                    className="ml-4 !pl-2 !pt-[2px] !bg-gray-light/60"
+                    // className="ml-4 !pl-2 !pt-[2px] !bg-gray-light/60"
+                    className="ml-4 !pl-2 !pt-[2px] !bg-gray-lighter/60 hover:!bg-gray-light/60"
                     gap="1"
                     size="sm"
                   />
                 </div>
-                <p className="text-lg text-primary-light">
-                  Highest rist and highest APR for the risk tolerant Level LPs. In case of
-                  unexpected shortfalls resulting from adverse market conditions or other incidents,
-                  the Junior Tranche bears the highest risk but also earns the largest share of
-                  platform profits
-                </p>
+                <p className="text-lg text-primary-light">Pool Description</p>
+                {/* TODO: learn more button */}
               </div>
               <div className="flex items-center justify-between mb-3 text-lg text-primary">
                 {/* To be added later */}
@@ -99,7 +98,7 @@ const PoolV3 = () => {
                     <PoolAnalyticsV3 />
                   </div>
                 </div>
-                <div className="flex-none w-[420px] flex flex-col gap-3">
+                <div className="flex-none w-2/5 max-w-[420px] flex flex-col gap-3">
                   {/* To be added later */}
                   {/* <PoolBalance /> */}
                   <div className="panel panel-translucent">
@@ -110,6 +109,18 @@ const PoolV3 = () => {
                   </div>
                   <div className="panel panel-translucent">
                     <PoolDetail />
+                  </div>
+                  <div className="mt-5">
+                    <Button
+                      to="/trade"
+                      className="!bg-gray-lighter/60 hover:!bg-gray-light/60"
+                      label={
+                        isNotNil(marketDescription)
+                          ? `Trade on ${marketDescription} Pool`
+                          : 'Market loading'
+                      }
+                      iconRight={<ChevronRightIcon />}
+                    />
                   </div>
                 </div>
               </div>
