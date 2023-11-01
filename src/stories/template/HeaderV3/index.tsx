@@ -17,8 +17,8 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const { isActiveLink, walletPopoverProps } = useHeaderV3();
 
   const links = [
-    { to: 'trade3', text: 'Trade', className: '' },
-    { to: 'pool3', text: 'Pools', className: '' },
+    { to: 'trade', text: 'Trade', className: '' },
+    { to: 'pool', text: 'Pools', className: '' },
     { to: 'airdrop', text: 'Airdrop', className: '' },
   ];
 

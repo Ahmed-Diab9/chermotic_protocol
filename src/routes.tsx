@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     element: <Navigate to={'/trade'} />,
   },
   {
-    path: '/pool',
+    path: '/pool1',
     element: <Pool />,
   },
   {
@@ -22,12 +22,12 @@ const router = createBrowserRouter([
     element: <PoolV2 />,
   },
   {
-    path: '/pool3',
+    path: '/pool',
     element: <PoolV3 />,
   },
 
   {
-    path: '/trade',
+    path: '/trade1',
     element: <Trade />,
   },
   {
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     element: <TradeV2 />,
   },
   {
-    path: '/trade3',
+    path: '/trade',
     element: <TradeV3 />,
   },
 
