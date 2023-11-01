@@ -8,8 +8,9 @@ import { LP_TAG_ORDER } from '~/configs/lp';
 import { useAppDispatch } from '~/store';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
-import { Market } from '~/typings/market';
+import { MarketLike } from '~/typings/market';
 import { checkAllProps } from '~/utils';
+import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import CLP from '../assets/tokens/CLP.png';
@@ -23,7 +24,7 @@ type FetchChromaticLpArgs = {
   lpClient: LpClient;
   registry: ChromaticRegistry;
   walletAddress?: Address;
-  market: Market;
+  market: MarketLike;
 };
 
 const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
@@ -141,7 +142,7 @@ export const useEntireChromaticLp = () => {
   const fetchKey = {
     key: 'getEntireChromaticLp',
     walletAddress,
-    markets,
+    markets: trimMarkets(markets),
     tokens,
   };
 
@@ -193,7 +194,7 @@ export const useChromaticLp = () => {
   const { tokens } = useSettlementToken();
   const fetchKey = {
     key: 'getChromaticLp',
-    market: currentMarket,
+    market: trimMarket(currentMarket),
     tokens,
   };
   const { setState: setStoredLpAddress } = useLocalStorage<Address>('app:lp');

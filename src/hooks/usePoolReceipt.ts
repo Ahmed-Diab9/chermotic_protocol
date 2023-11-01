@@ -85,7 +85,6 @@ const usePoolReceipt = () => {
     name: 'getPoolReceipt',
     type: 'EOA',
     address: walletAddress,
-    currentOracleVersion: currentMarket?.oracleValue.version,
     marketAddress: currentMarket?.address,
     liquidityPool: liquidityPool,
   };
@@ -96,9 +95,11 @@ const usePoolReceipt = () => {
     isLoading: isReceiptsLoading,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ marketAddress, address, currentOracleVersion, liquidityPool }) => {
+    async ({ marketAddress, address, liquidityPool }) => {
       const lensApi = client.lens();
+      const marketApi = client.market();
       const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
+      const marketOracle = await marketApi.getCurrentPrice(marketAddress);
       if (!receipts) {
         return [];
       }
@@ -158,7 +159,7 @@ const usePoolReceipt = () => {
           status = receiptDetail(
             action,
             receiptOracleVersion,
-            currentOracleVersion,
+            marketOracle.version,
             claimableLiquidityForReceipt,
             pendingRemoveLiquidityMap[tradingFeeRate]
           );

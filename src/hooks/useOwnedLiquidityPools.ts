@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
+import { trimMarkets } from '~/utils/market';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
 import { PromiseOnlySuccess } from '../utils/promise';
@@ -64,7 +65,7 @@ export const useOwnedLiquidityPools = () => {
     type: 'EOA',
     address: walletAddress,
     tokens,
-    markets,
+    markets: trimMarkets(markets),
   };
 
   const {

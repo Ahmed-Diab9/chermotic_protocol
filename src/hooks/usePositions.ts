@@ -1,5 +1,6 @@
 import {
   ChromaticAccount,
+  ChromaticMarket,
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
@@ -11,9 +12,10 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
 import { useAppSelector } from '~/store';
-import { Market } from '~/typings/market';
+import { MarketLike } from '~/typings/market';
 import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
+import { trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
@@ -38,14 +40,15 @@ function determinePositionStatus(position: IChromaticPosition, currentOracleVers
 async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
-  market: Market,
+  marketApi: ChromaticMarket,
+  market: MarketLike,
   walletAddress: Address
 ) {
   const positionIds = await accountApi.getPositionIds(market.address);
 
   const positions = await positionApi.getPositions(market.address, [...positionIds]);
-
-  const { price: currentPrice, version: currentVersion } = market.oracleValue;
+  const marketOracle = await marketApi.getCurrentPrice(market.address);
+  const { price: currentPrice, version: currentVersion } = marketOracle;
   const withLiquidation = await PromiseOnlySuccess(
     positions
       .filter((position) => position.owner === walletAddress)
@@ -96,12 +99,10 @@ export const usePositions = () => {
   const fetchKey = {
     name: 'getPositions',
     type: 'EOA',
-    markets,
-    entireMarkets,
+    markets: trimMarkets(markets),
+    entireMarkets: trimMarkets(entireMarkets),
     chromaticAccount: accountAddress,
-    currentToken: currentToken,
     filterOption,
-    walletAddress: address,
   };
 
   const {
@@ -111,9 +112,10 @@ export const usePositions = () => {
     isLoading,
   } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
-    async ({ currentToken, markets, entireMarkets, filterOption, walletAddress }) => {
+    async ({ markets, entireMarkets, filterOption, chromaticAccount }) => {
       const accountApi = client.account();
       const positionApi = client.position();
+      const marketApi = client.market();
 
       const filteredMarkets =
         filterOption === 'ALL'
@@ -123,7 +125,7 @@ export const usePositions = () => {
           : markets.filter((market) => market.address === currentMarket?.address);
       const positionsResponse = await PromiseOnlySuccess(
         filteredMarkets.map(async (market) => {
-          return getPositions(accountApi, positionApi, market, walletAddress);
+          return getPositions(accountApi, positionApi, marketApi, market, chromaticAccount);
         })
       );
       const flattenPositions = positionsResponse.flat(1);
@@ -151,8 +153,15 @@ export const usePositions = () => {
 
       const accountApi = client.account();
       const positionApi = client.position();
+      const marketApi = client.market();
 
-      const newPositions = await getPositions(accountApi, positionApi, currentMarket, address);
+      const newPositions = await getPositions(
+        accountApi,
+        positionApi,
+        marketApi,
+        currentMarket,
+        address
+      );
       const mergedPositions = [...filteredPositions, ...newPositions];
       mergedPositions.sort((previous, next) =>
         previous.openTimestamp < next.openTimestamp ? 1 : -1
