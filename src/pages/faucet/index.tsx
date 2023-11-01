@@ -6,14 +6,10 @@ import { arbitrumGoerli } from 'wagmi/chains';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Button } from '~/stories/atom/Button';
-import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
-import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
-import { BlurText } from '~/stories/atom/BlurText';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
+import { Footer } from '~/stories/template/Footer';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
-import { Guide } from '~/stories/atom/Guide';
 
 export const Faucet = () => {
   const { tokens } = useSettlementToken();
@@ -44,11 +40,11 @@ export const Faucet = () => {
 
   return (
     <>
-      <div className="page-container">
+      <div className="page-container bg-gradient-chrm">
         <HeaderV3 />
         {/* <Button onClick={() => onFaucet()} label="Faucet" className="mt-4" /> */}
-        <main className="justify-center">
-          <section className="text-left panel w-full max-w-[800px] py-10 mx-auto">
+        <main>
+          <section className="text-left panel panel-translucent w-full max-w-[800px] py-10 mx-auto my-20">
             <div className="px-10 mb-10">
               <div className="flex items-baseline gap-3 mb-2">
                 <h2 className="text-[60px]">Faucet</h2>
@@ -104,6 +100,7 @@ export const Faucet = () => {
             </div>
           </section>
         </main>
+        <Footer />
       </div>
     </>
   );
