@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import PlusIcon from '~/assets/icons/PlusIcon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
+import { useLpReceiptEvent } from '~/hooks/useLpReceiptEvent';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
@@ -30,6 +31,7 @@ const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
+  useLpReceiptEvent();
   const { onLoadBackgroundRef } = useBackgroundGradient();
 
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
