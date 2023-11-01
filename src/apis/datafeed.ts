@@ -64,8 +64,6 @@ pricefeedGraphSubSdk.GetEveryRoundUpdates({
               close: tradePrice,
             };
 
-      console.log({ interval, tradeTime, lastBarTime, nextBarTime, tradePrice, bar });
-
       map.set(resolution, { ...resolutionItem, lastBar: bar });
       callback(bar);
     });
@@ -202,7 +200,6 @@ export default {
         noData: false,
       });
     } catch (error) {
-      console.log('[getBars]: Get error', error);
       onErrorCallback('error');
     }
   },
