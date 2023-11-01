@@ -32,7 +32,7 @@ function Airdrop() {
 
   return (
     <>
-      <div className="page-container bg-gradient">
+      <div className="page-container bg-gradient-chrm">
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main>

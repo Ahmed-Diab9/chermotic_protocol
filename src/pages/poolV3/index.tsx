@@ -44,7 +44,7 @@ const PoolV3 = () => {
         <div id="prev"></div>
         <div id="current"></div>
       </div>
-      <div className="page-container bg-gradient">
+      <div className="page-container bg-gradient-chrm">
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main>
