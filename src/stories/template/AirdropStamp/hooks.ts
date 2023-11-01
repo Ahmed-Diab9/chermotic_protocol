@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useRewardSchedules } from '~/hooks/airdrops/useRewardSchedules';
 import { useSignInRewards } from '~/hooks/airdrops/useSignInRewards';
@@ -9,6 +9,7 @@ export const useAirdropStamp = () => {
   const { address } = useAccount();
   const { schedules = [], bonusRewards = [], isLoading } = useRewardSchedules();
   const { signInRewards, isMutating } = useSignInRewards();
+  const [hasModal, setHasModal] = useState(false);
 
   const activeSchedule = useMemo(() => {
     return schedules.find((schedule) => schedule.status === 'active');
@@ -38,5 +39,27 @@ export const useAirdropStamp = () => {
     return { creditText, boosterText };
   }, [bonusRewards]);
 
-  return { schedules, creditText, boosterText, onSignIn };
+  const onScheduleClick = () => {
+    setHasModal(true);
+  };
+
+  const onModalClose = () => {
+    setHasModal(false);
+  };
+
+  const onModalConfirm = useCallback(() => {
+    setHasModal(false);
+
+    onSignIn();
+  }, [onSignIn]);
+
+  return {
+    schedules,
+    creditText,
+    boosterText,
+    hasModal,
+    onScheduleClick,
+    onModalConfirm,
+    onModalClose,
+  };
 };
