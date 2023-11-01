@@ -53,7 +53,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
               <div className="mt-3 mb-2">
                 {schedule.status === 'active' ? (
                   // TODO: button onclick
-                  <button title="Open Today's Reward">
+                  <button title="Open Today's Reward" onClick={onScheduleClick}>
                     <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
                   </button>
                 ) : (
@@ -80,9 +80,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                   css="chrm"
                   size="sm"
                   className="!h-5 !font-bold"
-                  onClick={() => {
-                    onScheduleClick();
-                  }}
+                  onClick={onScheduleClick}
                 />
               )}
             </div>
