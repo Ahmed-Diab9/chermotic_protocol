@@ -6,7 +6,6 @@ import { usePublicClient } from 'wagmi';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useCreateAccount } from '~/hooks/useCreateAccount';
 import { useMargins } from '~/hooks/useMargins';
-import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import useTokenTransaction from '~/hooks/useTokenTransaction';
@@ -35,7 +34,6 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
   const { totalMargin } = useMargins();
   const { totalBalance } = useMargins();
   const { currentToken, isTokenLoading } = useSettlementToken();
-  const { isFeedLoading } = usePriceFeed();
 
   const publicClient = usePublicClient();
 
@@ -65,7 +63,7 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
     }
   }, [publicClient, chromaticAddress]);
 
-  const isLoading = isTokenLoading || isFeedLoading || isAccountAddressLoading;
+  const isLoading = isTokenLoading || isAccountAddressLoading;
 
   const isDeposit = type === 'Deposit';
 

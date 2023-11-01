@@ -22,7 +22,6 @@ const arbitrumGoerliFeeds: Record<string, Address | undefined> = {
   USDT: '0x0a023a3423D9b27A0BE48c768CCF2dD7877fEf5E',
   LINK: '0xd28Ba6CA3bB72bF371b80a2a0a33cBcf9073C954',
   DAI: '0x103b53E977DA6E4Fa92f76369c8b7e20E7fb7fe1',
-  CHRM: '0x1692Bdd32F31b831caAc1b0c9fAF68613682813b',
 };
 export const PRICE_FEEDS: Record<string, Record<string, Address | undefined> | undefined> = {
   arbitrum_one: arbitrumFeeds,
