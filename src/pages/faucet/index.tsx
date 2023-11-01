@@ -3,19 +3,22 @@ import { isNil } from 'ramda';
 import { getContract } from 'viem';
 import { useAccount } from 'wagmi';
 import { arbitrumGoerli } from 'wagmi/chains';
-import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Button } from '~/stories/atom/Button';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
+import { BlurText } from '~/stories/atom/BlurText';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
+import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { Avatar } from '~/stories/atom/Avatar';
+import { Guide } from '~/stories/atom/Guide';
 
 export const Faucet = () => {
   const { tokens } = useSettlementToken();
   const { address } = useAccount();
   const { client } = useChromaticClient();
-  const { onLoadBackgroundRef } = useBackgroundGradient();
   const onFaucet = async () => {
     if (isNil(client.walletClient)) {
       return;
@@ -41,17 +44,66 @@ export const Faucet = () => {
 
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
-        <div id="prev"></div>
-        <div id="current"></div>
-      </div>
-      <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">
-        <BookmarkBoardV3 />
+      <div className="page-container">
         <HeaderV3 />
-        <section className="flex flex-col w-full px-5 mx-auto mt-8 mb-20 grow max-w-[1400px]">
-          <MarketSelectV3 />
-          <Button onClick={() => onFaucet()} label="Faucet" className="mt-4" />
-        </section>
+        {/* <Button onClick={() => onFaucet()} label="Faucet" className="mt-4" /> */}
+        <main className="justify-center">
+          <section className="text-left panel w-full max-w-[800px] py-10 mx-auto">
+            <div className="px-10 mb-10">
+              <div className="flex items-baseline gap-3 mb-2">
+                <h2 className="text-[60px]">Faucet</h2>
+                <h4 className="text-2xl">for Chromatic Progocol Testnet on Arbitrum Goerli</h4>
+              </div>
+              <div className="flex items-center gap-2 mb-8">
+                <p className="text-lg text-primary-light">
+                  cETH, cBTC are only test tokens of the Chromatic protocol testnet. <br />
+                  It is an independent token that is not pegged to ETH, BTC or wETH, wBTC.
+                </p>
+              </div>
+              <div className="relative flex items-center gap-4 px-5 py-3 overflow-hidden border rounded-xl bg-paper-lighter">
+                <p className="text-xl text-primary-light">Target Address</p>
+                <div className="text-xl w-[calc(100%-200px)] overflow-hidden overflow-ellipsis text-left">
+                  0x255d6457C8E4072e4B300c783Af891f674614E55
+                </div>
+                <Button iconOnly={<OutlinkIcon />} className="ml-auto" css="unstyled" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3 px-10 py-6 border-t">
+              <Avatar size="2xl" />
+              <div>
+                <h2 className="text-2xl">cETH</h2>
+                <p className="mt-1 text-primary-light">Arbitrum Goerli</p>
+              </div>
+              <Button
+                // onClick={() => onFaucet()}
+                label="Request 100cETH"
+                className="ml-auto"
+                css="active"
+                size="xl"
+              />
+            </div>
+            <div className="flex items-center gap-3 px-10 py-6 border-y">
+              <Avatar size="2xl" />
+              <div>
+                <h2 className="text-2xl">cBTC</h2>
+                <p className="mt-1 text-primary-light">Arbitrum Goerli</p>
+              </div>
+              <Button
+                // onClick={() => onFaucet()}
+                label="Request 100cBTC"
+                className="ml-auto"
+                css="active"
+                size="xl"
+              />
+            </div>
+            <div className="px-10 mt-10">
+              <p className="text-lg text-primary-light">
+                You can get 100cETH or 100cBTC at a time. Once received, it will be activated again
+                after 24 hours.
+              </p>
+            </div>
+          </section>
+        </main>
       </div>
     </>
   );

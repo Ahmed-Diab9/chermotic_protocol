@@ -19,3 +19,9 @@
 .avatar-xl {
   @apply w-10 h-10;
 }
+.avatar-2xl {
+  @apply w-12 h-12;
+}
+.avatar-3xl {
+  @apply w-[60px] h-[60px];
+}
