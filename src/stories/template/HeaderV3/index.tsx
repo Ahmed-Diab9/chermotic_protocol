@@ -17,15 +17,16 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const { isActiveLink, walletPopoverProps } = useHeaderV3();
 
   const links = [
-    { to: 'trade', text: 'Trade', className: '' },
-    { to: 'pool', text: 'Pools', className: '' },
-    { to: 'airdrop', text: 'Airdrop', className: '' },
+    { to: 'trade', className: '' },
+    { to: 'pool', className: '' },
+    { to: 'airdrop', className: '' },
+    { to: 'faucet', className: '' },
   ];
 
   return (
     <header className="HeaderV3">
       <div className="h-[70px] px-10 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-6 text-lg">
+        <div className="flex items-center gap-6">
           <a
             href="https://chromatic.finance/"
             className="mr-4"
@@ -44,12 +45,21 @@ export const HeaderV3 = (props: HeaderV3Props) => {
                 isActiveLink(link.to) ? '!border-primary' : '!border-transparent'
               }`}
             >
-              {link.text}
+              {link.to}
             </Link>
           ))}
           <HeaderMenuPopover />
         </div>
-        <div className="flex gap-5">
+        <div className="flex items-center gap-5">
+          {/* <Link
+            // key="faucet"
+            to={`/faucet`}
+            className={`link  ${
+              isActiveLink('faucet') ? '!border-primary' : '!border-transparent'
+            }`}
+          >
+            faucet
+          </Link> */}
           {hasAccount && <AccountPopoverV3 />}
           <div className="hidden">
             <ThemeToggle />
