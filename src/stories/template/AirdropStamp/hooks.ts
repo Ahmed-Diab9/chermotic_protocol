@@ -55,6 +55,8 @@ export const useAirdropStamp = () => {
 
   return {
     schedules,
+    bonusRewards,
+    activeSchedule,
     creditText,
     boosterText,
     hasModal,

@@ -16,6 +16,8 @@ export interface AirdropStampProps {}
 export const AirdropStamp = (props: AirdropStampProps) => {
   const {
     schedules,
+    bonusRewards,
+    activeSchedule,
     creditText,
     boosterText,
     hasModal,
@@ -88,7 +90,14 @@ export const AirdropStamp = (props: AirdropStampProps) => {
         </div>
       </div>
       {createPortal(
-        <AirdropStampModal isOpen={hasModal} onClick={onModalConfirm} onClose={onModalClose} />,
+        <AirdropStampModal
+          schedules={schedules}
+          activeSchedule={activeSchedule}
+          bonusRewards={bonusRewards}
+          isOpen={hasModal}
+          onClick={onModalConfirm}
+          onClose={onModalClose}
+        />,
         document.getElementById('modal')!
       )}
     </>

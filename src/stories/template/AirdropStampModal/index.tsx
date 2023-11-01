@@ -4,15 +4,21 @@ import { Dialog } from '@headlessui/react';
 import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
 import { Button } from '~/stories/atom/Button';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { AirdropBonusReward, AirdropSchedule } from '~/typings/airdrop';
+import { useAirdropStampModal } from './hooks';
 
 export interface AirdropStampModalProps {
   isOpen: boolean;
+  schedules: AirdropSchedule[];
+  activeSchedule?: AirdropSchedule;
+  bonusRewards: AirdropBonusReward[];
   onClick: () => unknown;
   onClose: () => unknown;
 }
 
 export function AirdropStampModal(props: AirdropStampModalProps) {
   const { isOpen, onClick, onClose } = props;
+  const { hasBonusCredits, hasBooster, rewardContent } = useAirdropStampModal(props);
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -27,9 +33,25 @@ export function AirdropStampModal(props: AirdropStampModalProps) {
               <h2 className="text-4xl">Congratulations</h2>
               <p className="mt-4 text-primary-light">You have received the following rewards.</p>
               <div className="flex items-center justify-center pb-4 mt-8 border-b">
-                <RewardItem name="credit" description="Daily Sign-In" value={10} />
-                {/* <RewardItem name="credit" description="5 Day bonus" value={50} /> */}
-                <RewardItem name="booster" description="7 Day bonus" value={1} />
+                <RewardItem
+                  name="credit"
+                  description={rewardContent.dailyCredits.text}
+                  value={rewardContent.dailyCredits.value}
+                />
+                {hasBonusCredits && (
+                  <RewardItem
+                    name="credit"
+                    description={rewardContent.bonusCredits.text}
+                    value={rewardContent.bonusCredits.value}
+                  />
+                )}
+                {hasBooster && (
+                  <RewardItem
+                    name="booster"
+                    description={rewardContent.booster.text}
+                    value={rewardContent.booster.value}
+                  />
+                )}
               </div>
               <p className="mt-6 text-primary-light">
                 Rewards reveived have been added to my activity’s credits and Booster.
