@@ -57,7 +57,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     balances && tokenAddress && balances[tokenAddress]
       ? numberFormat(formatUnits(balances[tokenAddress], tokenDecimals), {
           maxDigits: 5,
-          useGrouping: true,
+          useGrouping: false,
         })
       : 0;
 
@@ -93,7 +93,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   const minTakeProfit = oracleProperties?.minTakeProfit || 1;
   const maxTakeProfit = useMemo(
     () => (isLong ? oracleProperties?.maxTakeProfit || 1000 : 100),
-    [direction]
+    [isLong, oracleProperties?.maxTakeProfit]
   );
   const takeProfitPlaceholder = '10';
 
@@ -114,7 +114,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
         ? '-'
         : numberFormat(value, { useGrouping: true, compact: true, type: 'string' });
     return [format(freeLiq), format(totalLiq)];
-  }, [totalUnusedLiquidity, totalMaxLiquidity, currentToken]);
+  }, [totalUnusedLiquidity, totalMaxLiquidity, tokenDecimals]);
 
   const tradeFee = formatDecimals(fee, tokenDecimals, 2);
   const tradeFeePercent = formatDecimals(feePercent, tokenDecimals, 3);
@@ -169,7 +169,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
       stopLossRatio: `${isLong ? '-' : '+'}${format(stopLoss)}`,
       stopLossPrice: format(stopLossPrice),
     };
-  }, [input, currentMarket]);
+  }, [input, currentMarket, direction]);
 
   return {
     disabled,
