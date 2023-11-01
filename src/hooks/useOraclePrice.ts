@@ -6,19 +6,27 @@ interface Props {
   symbol: string;
 }
 
+interface Response {
+  current: string;
+  blockTimestamp: string;
+  roundId: string;
+  symbol: string;
+}
+
 export const useOraclePrice = ({ symbol }: Props) => {
   const fetchKey = {
     name: 'subscribeOraclePrice',
     symbol: symbol,
   };
 
-  const { data } = useSWRSubscription(fetchKey, ({ symbol }, { next }) => {
+  const { data }: { data?: Response } = useSWRSubscription(fetchKey, ({ symbol }, { next }) => {
     const unsubscribe = pricefeedGraphSubSdk.GetRoundUpdates(
       { symbol },
       {
         next: (data) => {
           try {
-            next(null, data);
+            const { __typename, ...lastOracle } = data.answerUpdateds[0];
+            next(null, lastOracle);
           } catch (e) {
             next(e);
           }
