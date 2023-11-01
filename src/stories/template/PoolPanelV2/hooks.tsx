@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { parseUnits } from 'viem';
 import { useAddChromaticLp } from '~/hooks/useAddChromaticLp';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import usePoolInput from '~/hooks/usePoolInput';
 import { useRemoveChromaticLp } from '~/hooks/useRemoveChromaticLp';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
@@ -12,7 +11,6 @@ import { formatDecimals } from '~/utils/number';
 
 export function usePoolPanelV2() {
   const { currentToken, isTokenLoading } = useSettlementToken();
-  const { rangeChartRef } = usePoolInput();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
   const {
     liquidity: {
@@ -116,7 +114,6 @@ export function usePoolPanelV2() {
   return {
     selectedTab,
     onTabChange,
-    rangeChartRef,
     setIsBinValueVisible,
 
     shortUsedLp,

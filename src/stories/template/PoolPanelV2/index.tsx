@@ -23,7 +23,6 @@ import './style.css';
 export function PoolPanelV2() {
   const {
     onTabChange,
-    rangeChartRef,
     setIsBinValueVisible,
 
     shortUsedLp,
@@ -91,15 +90,11 @@ export function PoolPanelV2() {
                   </div>
                 </div>
                 <article className="-mx-7">
-                  {/* todo: remove range handle for V2 pool chart */}
                   <PoolChart
                     id="pool"
-                    chartRef={rangeChartRef}
-                    onChange={() => {
-                      // FIXME
-                    }}
                     height={180}
                     isDotVisible={isBinValueVisible}
+                    isHandlesVisible={false}
                   />
                 </article>
                 <div className="flex justify-between mt-10">
