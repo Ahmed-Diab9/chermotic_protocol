@@ -35,3 +35,14 @@ export const GET_ROUND_UPDATES = gql`
     }
   }
 `;
+
+export const GET_EVERY_ROUND_UPDATES = gql`
+  subscription GetEveryRoundUpdates {
+    answerUpdateds(first: 1, orderBy: roundId, orderDirection: desc) {
+      current
+      blockTimestamp
+      roundId
+      symbol
+    }
+  }
+`;

@@ -12,7 +12,7 @@ import { useTradeChartPanel } from './hooks';
 export interface TradeChartViewProps {}
 
 export function TradeChartPanel(props: TradeChartViewProps) {
-  const { darkMode, symbol, price } = useTradeChartPanel();
+  const { darkMode, symbol, lastOracle } = useTradeChartPanel();
 
   return (
     <ResizablePanel
@@ -34,7 +34,6 @@ export function TradeChartPanel(props: TradeChartViewProps) {
           className="flex flex-col items-center flex-auto"
           darkMode={darkMode}
           symbol={symbol}
-          currentPrice={price}
         />
       </div>
     </ResizablePanel>
