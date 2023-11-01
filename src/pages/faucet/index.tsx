@@ -48,7 +48,7 @@ export const Faucet = () => {
             <div className="px-10 mb-10">
               <div className="flex items-baseline gap-3 mb-2">
                 <h2 className="text-[60px]">Faucet</h2>
-                <h4 className="text-2xl">for Chromatic Progocol Testnet on Arbitrum Goerli</h4>
+                <h4 className="text-2xl">for Chromatic Protocol Testnet on Arbitrum Goerli</h4>
               </div>
               <div className="flex items-center gap-2 mb-8">
                 <p className="text-lg text-primary-light">
