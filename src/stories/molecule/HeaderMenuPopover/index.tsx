@@ -4,14 +4,9 @@ import { Link } from 'react-router-dom';
 import { Popover } from '@headlessui/react';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 
-// import { useHeaderMenuPopover } from './hooks';
-
 export function HeaderMenuPopover() {
-  // const { isConnected, isLoading, isAccountExist, balance, tokenImage } = useHeaderMenuPopover();
-
   return (
     <>
-      {/* <div className="border-l HeaderMenuPopover border-primary/10 panel panel-transparent"> */}
       <div className="HeaderMenuPopover">
         <div className="flex flex-col gap-[6px] text-right">
           <Popover.Group className="flex gap-2">
@@ -27,17 +22,20 @@ export function HeaderMenuPopover() {
                         <h2>Development</h2>
                         <ul className="">
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://github.com/chromatic-protocol" target="_blank">
                               Github
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link
+                              to="https://github.com/chromatic-protocol/contracts"
+                              target="_blank"
+                            >
                               Contract
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://github.com/chromatic-protocol/sdk" target="_blank">
                               SDK
                             </Link>
                           </li>
@@ -47,12 +45,12 @@ export function HeaderMenuPopover() {
                         <h2>Docs</h2>
                         <ul className="">
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://chromatic.gitbook.io/docs" target="_blank">
                               Gitbook
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://medium.com/@chromatic-protocol" target="_blank">
                               Medium
                             </Link>
                           </li>
@@ -62,7 +60,7 @@ export function HeaderMenuPopover() {
                         <h2>Social</h2>
                         <ul className="">
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://twitter.com/chromatic_perp" target="_blank">
                               Twitter
                             </Link>
                           </li>
@@ -85,7 +83,7 @@ export function HeaderMenuPopover() {
                       </div>
                     </div>
                     <div className="flex gap-12 pt-5 mt-5 border-t px-7">
-                      <Link to="" target="_blank">
+                      <Link to="https://chromatic.finance/" target="_blank">
                         Chromatic Intro
                       </Link>
                       <Link to="" target="_blank">
