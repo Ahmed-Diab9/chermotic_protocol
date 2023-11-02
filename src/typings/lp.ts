@@ -21,6 +21,8 @@ export interface ChromaticLp {
   market: Market;
 
   clpName: string;
+  clpSymbol: string;
+  clpDecimals: number;
 }
 
 export interface LpReceipt {

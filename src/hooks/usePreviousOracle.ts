@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { Market } from '~/typings/market';
 import { checkAllProps } from '~/utils';
+import { trimMarket } from '~/utils/market';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 
@@ -12,13 +13,14 @@ export const usePreviousOracle = ({ market }: Props) => {
   const { isReady, client } = useChromaticClient();
   const fetchKey = {
     name: 'getPreviousOracleVersion',
-    market,
+    market: trimMarket(market),
   };
 
   const { data: previousOracle, error } = useSWR(
     isReady && checkAllProps(fetchKey) && fetchKey,
     async ({ market }) => {
-      const currentVersion = market.oracleValue.version;
+      const marketOracle = await client.market().getCurrentPrice(market.address);
+      const currentVersion = marketOracle.version;
       const oracleProvider = await client.market().contracts().oracleProvider(market.address);
 
       if (currentVersion <= 0n) {

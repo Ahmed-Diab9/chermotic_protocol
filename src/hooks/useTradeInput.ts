@@ -10,7 +10,15 @@ import { FEE_RATE_DECIMAL } from '~/configs/decimals';
 
 import { TradeInput } from '~/typings/trade';
 
-import { abs, divFloat, floatMath, formatDecimals, mulFloat, mulPreserved } from '~/utils/number';
+import {
+  abs,
+  divFloat,
+  divPreserved,
+  floatMath,
+  formatDecimals,
+  mulFloat,
+  mulPreserved,
+} from '~/utils/number';
 
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tradesAction } from '~/store/reducer/trades';
@@ -134,7 +142,10 @@ export const useTradeInput = (props: Props) => {
       { tradeFee: 0n, makerMargin: state.makerMargin }
     );
 
-    const feePercent = tradeFee / (makerMargin !== 0n ? makerMargin : 1n);
+    const feePercent =
+      state.makerMargin === 0n
+        ? tradeFee
+        : divPreserved(tradeFee, state.makerMargin, currentToken.decimals) * 100n;
     return { tradeFee, feePercent };
   }, [
     state.makerMargin,

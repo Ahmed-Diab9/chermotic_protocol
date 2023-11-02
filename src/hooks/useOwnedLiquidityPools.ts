@@ -8,9 +8,10 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
+import { trimMarkets } from '~/utils/market';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
-import { PromiseOnlySuccess } from '../utils/promise';
+import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useEntireMarkets, useMarket } from './useMarket';
@@ -26,31 +27,36 @@ async function getLiquidityPool(
   tokenAddress: Address
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-  const binsResponse = bins.map(async (bin) => {
-    const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
-    const { name, decimals, description, image } = await marketApi.clbTokenMeta(
-      marketAddress,
-      tokenId
-    );
-    return {
-      liquidity: bin.liquidity,
-      freeLiquidity: bin.freeLiquidity,
-      removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
-      clbTokenName: name,
-      clbTokenImage: image,
-      clbTokenDescription: description,
-      clbTokenDecimals: decimals,
-      clbTokenBalance: bin.clbBalance,
-      clbTokenValue: bin.clbValue,
-      clbTotalSupply: bin.clbTotalSupply,
-      binValue: bin.binValue,
-      clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
-      baseFeeRate: bin.tradingFeeRate,
-      tokenId: tokenId,
-    } satisfies OwnedBin;
-  });
-  const filteredBins = await PromiseOnlySuccess(binsResponse);
-  return { tokenAddress, marketAddress, bins: filteredBins };
+  const detailedBins = await promiseSlowLoop(
+    bins,
+    async (bin) => {
+      const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
+      const { name, decimals, description, image } = await marketApi.clbTokenMeta(
+        marketAddress,
+        tokenId
+      );
+      return {
+        liquidity: bin.liquidity,
+        freeLiquidity: bin.freeLiquidity,
+        removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
+        clbTokenName: name,
+        clbTokenImage: image,
+        clbTokenDescription: description,
+        clbTokenDecimals: decimals,
+        clbTokenBalance: bin.clbBalance,
+        clbTokenValue: bin.clbValue,
+        clbTotalSupply: bin.clbTotalSupply,
+        binValue: bin.binValue,
+        clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
+        baseFeeRate: bin.tradingFeeRate,
+        tokenId: tokenId,
+      } satisfies OwnedBin;
+    },
+    {
+      interval: 400,
+    }
+  );
+  return { tokenAddress, marketAddress, bins: detailedBins };
 }
 
 export const useOwnedLiquidityPools = () => {
@@ -64,7 +70,7 @@ export const useOwnedLiquidityPools = () => {
     type: 'EOA',
     address: walletAddress,
     tokens,
-    markets,
+    markets: trimMarkets(markets),
   };
 
   const {

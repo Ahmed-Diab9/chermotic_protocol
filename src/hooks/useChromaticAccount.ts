@@ -7,6 +7,7 @@ import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
+import { promiseSlowLoop } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -69,14 +70,22 @@ export const useChromaticAccount = () => {
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
-    checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
+    isReady && checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
     async ({ tokens }) => {
       const accountApi = client.account();
-      const result = await accountApi.balances(tokens.map((token) => token.address));
+      const result = await promiseSlowLoop(
+        tokens,
+        async (token) => {
+          const balance = await accountApi.balance(token.address);
+          return { token: token.address, balance };
+        },
+        { interval: 500, hasCatch: true }
+      );
 
       const balances = fromPairs(
         result?.map((balance) => [balance.token, balance.balance] as const) || []
       );
+      console.log(new Date().toISOString());
       return balances;
     },
     {
