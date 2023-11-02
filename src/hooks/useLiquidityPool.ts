@@ -9,7 +9,7 @@ import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
-import { PromiseOnlySuccess } from '../utils/promise';
+import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
@@ -52,11 +52,13 @@ export const useLiquidityPools = () => {
         return map;
       }, {} as Record<Address, Address>);
 
-      const promise = Object.keys(marketAddresses).map(async (address) => {
-        return getLiquidityPool(marketApi, lensApi, address as Address);
-      });
-
-      return PromiseOnlySuccess(promise);
+      return promiseSlowLoop(
+        Object.keys(marketAddresses),
+        (marketAddress) => {
+          return getLiquidityPool(marketApi, lensApi, marketAddress as Address);
+        },
+        { interval: 500 }
+      );
     },
     {
       dedupingInterval: 8000,
@@ -169,12 +171,16 @@ async function getLiquidityPool(
     )
   );
 
-  const clbTokenMetas = await PromiseOnlySuccess(
-    tokenIds.map(async (tokenId, index) => ({
-      tokenId,
-      baseFeeRate: baseFeeRates[index],
-      ...(await marketApi.clbTokenMeta(marketAddress, tokenId)),
-    }))
+  const clbTokenMetas = await promiseSlowLoop(
+    tokenIds,
+    async (tokenId, index) => {
+      return {
+        tokenId,
+        baseFeeRate: baseFeeRates[index],
+        ...(await marketApi.clbTokenMeta(marketAddress, tokenId)),
+      };
+    },
+    { interval: 500 }
   );
 
   const liquidityBins = await liquidityBinsPromise;

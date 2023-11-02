@@ -1,6 +1,3 @@
-export const SUBGRAPH_API_URL =
-  'https://graph-arbitrum-goerli.api.chromatic.finance/subgraphs/name/chromatic-lp';
-
 export const LP_TAG_ORDER: Record<string, number> = {
   'Low Risk': 0,
   'Mid Risk': 1,

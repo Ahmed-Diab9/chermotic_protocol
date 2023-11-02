@@ -31,4 +31,4 @@ storybook-static
 
 # GraphQL Codegen
 graphql.schema.json
-src/__generated__/*
+src/lib/graphql/sdk/*

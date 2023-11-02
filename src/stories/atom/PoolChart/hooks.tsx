@@ -11,6 +11,7 @@ export function usePoolChart({
   chartRef,
   onChange,
   isDotVisible,
+  isHandlesVisible,
   height,
   width,
 }: usePoolChartProps) {
@@ -28,6 +29,7 @@ export function usePoolChart({
       height: height,
       width: width,
       isGridVisible: true,
+      isHandlesVisible: isHandlesVisible,
     },
     tooltipProps: {
       id: id,
