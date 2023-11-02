@@ -1,5 +1,6 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
+import { DEFAULT_CREDIT_POINT } from '~/constants/airdrop';
 import { AirdropBonusReward, AirdropSchedule } from '~/typings/airdrop';
 
 export interface UseAirdropStampModal {
@@ -24,8 +25,8 @@ export const useAirdropStampModal = (props: UseAirdropStampModal) => {
       'dailyCredits' | 'bonusCredits' | 'booster',
       { text: string; value: number }
     >;
-    const schedule = schedules[0];
-    const dailyCredit = schedule.credit;
+    const schedule = schedules.at(0);
+    const dailyCredit = schedule?.credit ?? DEFAULT_CREDIT_POINT;
     newContent['dailyCredits'] = {
       text: 'Daily Sign-In',
       value: dailyCredit,
