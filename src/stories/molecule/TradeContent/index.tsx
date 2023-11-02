@@ -2,12 +2,12 @@ import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
 import { Listbox, Switch } from '@headlessui/react';
-import { TradeChart } from '~/stories/atom/TradeChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
@@ -113,6 +113,7 @@ export const TradeContent = (props: TradeContentProps) => {
               disableDetail={disableDetail}
               tokenName={tokenName}
               minAmount={minAmount}
+              maxAmount={balance}
               onAmountChange={onAmountChange}
             />
           </div>

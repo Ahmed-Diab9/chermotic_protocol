@@ -14,6 +14,7 @@ interface AmountSwitchProps {
   tokenName?: string;
   tokenImage?: string;
   minAmount: string;
+  maxAmount: string | number;
   optionInputDirection?: 'row' | 'column';
   onAmountChange: (value: string) => unknown;
 }
@@ -30,6 +31,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     tokenImage,
     onAmountChange,
     minAmount,
+    maxAmount,
     optionInputDirection,
   } = props;
 
@@ -64,6 +66,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
         <div className={`tooltip-input-balance-${direction}`}>
           <OptionInput
             value={preset.value.toString()}
+            maxValue={maxAmount}
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}

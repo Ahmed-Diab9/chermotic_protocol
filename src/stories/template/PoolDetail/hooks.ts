@@ -12,6 +12,23 @@ export const usePoolDetail = () => {
     }
     return `CLP-${selectedLp.settlementToken.name}-${selectedLp.market.description}`;
   }, [selectedLp]);
+  const lpTag = useMemo(() => {
+    if (isNil(selectedLp)) {
+      return;
+    }
+    switch (selectedLp.tag.toLowerCase()) {
+      case 'high risk': {
+        return 'text-risk-high';
+      }
+      case 'mid risk': {
+        return 'text-risk-mid';
+      }
+      case 'low risk': {
+        return 'text-risk-low';
+      }
+    }
+    return '';
+  }, [selectedLp]);
 
   const onCopyAddress = () => {
     if (selectedLp) {
@@ -24,6 +41,7 @@ export const usePoolDetail = () => {
   return {
     lpTitle,
     lpName: selectedLp?.name,
+    lpTag,
     lpAddress: selectedLp?.address,
     // marketDescription: selectedLp?.market.description,
     onCopyAddress,

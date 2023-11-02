@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
 import '~/stories/atom/Tabs/style.css';
 import { Tag } from '~/stories/atom/Tag';
@@ -14,10 +15,10 @@ export const PoolMenuV3 = (props: PoolMenuV3Props) => {
         return (
           <PoolMenuV3Item
             key={`${lp.name}-${lpIndex}`}
-            title={lp.name}
+            name={lp.name}
+            tag={lp.tag}
             price={lp.price}
             aum={lp.assets}
-            label={lp.label ?? 'No labels'}
             tokenSymbol={lp.tokenSymbol}
             selected={lp.name === selectedLp?.name}
             onClick={() => {
@@ -31,8 +32,8 @@ export const PoolMenuV3 = (props: PoolMenuV3Props) => {
 };
 
 export interface PoolMenuV3ItemProps {
-  label: string;
-  title: string;
+  name: string;
+  tag: string;
   price: number | string;
   aum: number | string;
   tokenSymbol: string;
@@ -41,19 +42,33 @@ export interface PoolMenuV3ItemProps {
 }
 
 export const PoolMenuV3Item = (props: PoolMenuV3ItemProps) => {
-  const { label, title, price, aum, tokenSymbol, selected, onClick } = props;
+  const { name, tag, price, aum, tokenSymbol, selected, onClick } = props;
+  const tagClass = useMemo(() => {
+    switch (tag.toLowerCase()) {
+      case 'high risk': {
+        return 'tag-risk-high';
+      }
+      case 'mid risk': {
+        return 'tag-risk-mid';
+      }
+      case 'low risk': {
+        return 'tag-risk-low';
+      }
+    }
+    return '';
+  }, [tag]);
 
   return (
     <button
       className={`flex items-center w-full px-5 py-3 border rounded ${
         selected ? 'border-primary-light bg-primary/10' : 'border-primary/10'
       }`}
-      title={title}
+      title={name}
       onClick={onClick}
     >
       <div className="text-left">
-        <Tag label={`${label} risk`} className={`tag-risk-${label}`} />
-        <h3 className="mt-2 mb-3 text-xl">{title}</h3>
+        <Tag label={`${tag}`} className={tagClass} />
+        <h3 className="mt-2 mb-3 text-xl">{name}</h3>
         <div className="flex text-primary-light">
           <p>
             Price

@@ -4,7 +4,7 @@ import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
-import { LP_EVENT } from '~/typings/events';
+import { LP_EVENT, LP_RECEIPT_EVENT } from '~/typings/events';
 import { LpReceipt } from '~/typings/lp';
 
 export const usePoolProgressV2 = () => {
@@ -82,6 +82,17 @@ export const usePoolProgressV2 = () => {
       window.removeEventListener(LP_EVENT, onLp);
     };
   }, [setIsGuideOpen]);
+
+  useEffect(() => {
+    function onLpReceiptRefresh() {
+      onRefreshLpReceipts();
+      onRefreshLpReceiptCount();
+    }
+    window.addEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
+    return () => {
+      window.removeEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
+    };
+  }, [onRefreshLpReceipts, onRefreshLpReceiptCount]);
 
   return {
     openButtonRef,

@@ -11,5 +11,7 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
         batchSize: 2048,
       },
     },
+    pollingInterval: 1000 * 12,
+    retryCount: 1,
   }
 );
