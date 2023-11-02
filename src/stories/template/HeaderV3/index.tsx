@@ -56,20 +56,27 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             </>
           )}
         </div>
-        <div className="flex items-center gap-5">
+
+        <div className="flex items-center">
           <Button
             label="faucet"
             href={`/faucet`}
             css="translucent"
-            className="capitalize "
+            className="capitalize !gap-1 !bg-primary/10 !h-[40px]"
             size="lg"
             iconRight={<WaterdropIcon className="!w-3 !h-3" />}
           />
-          {hasAccount && <AccountPopoverV3 />}
+          {hasAccount && (
+            <div className="ml-3">
+              <AccountPopoverV3 />
+            </div>
+          )}
+          <div className="ml-5">
+            <WalletPopoverV3 {...walletPopoverProps} />
+          </div>
           <div className="hidden">
             <ThemeToggle />
           </div>
-          <WalletPopoverV3 {...walletPopoverProps} />
         </div>
       </div>
     </header>
