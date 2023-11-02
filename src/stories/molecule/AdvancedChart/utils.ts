@@ -1,4 +1,4 @@
-import { IChartingLibraryWidget } from '~/charting_library/charting_library';
+import { IChartingLibraryWidget } from '~/lib/charting_library';
 
 async function changeTheme(widget: IChartingLibraryWidget, theme: 'dark' | 'light') {
   const transparent = 'rgba(255,255,255,0)';

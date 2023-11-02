@@ -9,7 +9,7 @@ export interface AdvancedChartProps {
 
 export function AdvancedChart(props: AdvancedChartProps) {
   const { className } = props;
-  const { isLoading, onLoadChartRef } = useAdvancedChart(props);
+  const { isLoading, chartContainerRef } = useAdvancedChart(props);
 
   return (
     <>
@@ -21,9 +21,7 @@ export function AdvancedChart(props: AdvancedChartProps) {
       </div>
       <div
         style={{ display: isLoading ? 'none' : undefined }}
-        ref={(element) => {
-          onLoadChartRef(element);
-        }}
+        ref={chartContainerRef}
         className={`advanced-chart-container ${className}`}
       />
     </>

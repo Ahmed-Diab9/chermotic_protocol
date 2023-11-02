@@ -1,31 +1,54 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+import { HASURA_API_URL, SUBGRAPH_API_URL } from '../src/configs/subgraph';
+
+const GENERATED_PATH = 'src/lib/graphql/sdk';
+
+const PLUGINS = ['typescript', 'typescript-operations', 'typescript-graphql-request'];
+
+const CONFIG = {
+  scalars: {
+    Bytes: {
+      input: '`0x${string}`',
+      output: '`0x${string}`',
+    },
+    BigInt: {
+      input: 'string',
+      output: 'string',
+    },
+  },
+};
+
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'https://graph-arbitrum-goerli.api.chromatic.finance/subgraphs/name/chromatic-lp',
   noSilentErrors: true,
-  documents: 'codegen/**/*.ts',
   generates: {
-    'src/__generated__/request.ts': {
-      plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
-      presetConfig: {
-        gqlTagName: 'gql',
-      },
-      config: {
-        scalars: {
-          Bytes: {
-            input: '`0x${string}`',
-            output: '`0x${string}`',
-          },
-          BigInt: {
-            input: 'string',
-            output: 'string',
-          },
-        },
-      },
+    [`${GENERATED_PATH}/lp.ts`]: {
+      documents: 'codegen/lp.ts',
+      schema: `${SUBGRAPH_API_URL}/chromatic-lp`,
+      plugins: PLUGINS,
+      config: CONFIG,
     },
-    './graphql.schema.json': {
-      plugins: ['introspection'],
+    [`${GENERATED_PATH}/pricefeed.ts`]: {
+      documents: 'codegen/pricefeed.ts',
+      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      plugins: PLUGINS,
+      config: CONFIG,
+    },
+    [`${GENERATED_PATH}/hasura.ts`]: {
+      documents: 'codegen/hasura.ts',
+      schema: `${HASURA_API_URL}`,
+      plugins: PLUGINS,
+      config: CONFIG,
+    },
+    [`${GENERATED_PATH}/pricefeed_ws.ts`]: {
+      documents: 'codegen/pricefeed.ts',
+      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
+      plugins: PLUGINS,
+      config: {
+        ...CONFIG,
+        useWebSocketClient: true,
+      },
     },
   },
 };
