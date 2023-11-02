@@ -1,7 +1,5 @@
-import GitbookIcon from '~/assets/icons/GitbookIcon';
+import { GitbookIcon, MediumIcon, TwitterIcon } from '~/assets/icons/SocialIcon';
 import { ChromaticLogo } from '~/assets/icons/Logo';
-import MediumIcon from '~/assets/icons/MediumIcon';
-import TwitterIcon from '~/assets/icons/TwitterIcon';
 import { Button } from '../../atom/Button';
 
 export const Footer = () => (
