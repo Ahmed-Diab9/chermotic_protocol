@@ -5,22 +5,16 @@ import { Address, useAccount, useConnect, useDisconnect, usePublicClient } from 
 import { useChain } from '~/hooks/useChain';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useCreateAccount } from '~/hooks/useCreateAccount';
-import usePriceFeed from '~/hooks/usePriceFeed';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 
-import { PRICE_FEEDS } from '~/configs/token';
-
-import { Token } from '~/typings/market';
-
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
-import { CHAIN } from '~/constants';
 import { useEntireChromaticLp } from '~/hooks/useChromaticLp';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
-import { formatBalance, formatDecimals, numberFormat, withComma } from '~/utils/number';
+import { formatDecimals, numberFormat } from '~/utils/number';
 
 type FormattedLp = {
   key: string;
@@ -41,7 +35,6 @@ export function useWalletPopoverV3() {
   const { markets } = useEntireMarkets();
   const { onMarketSelect } = useMarket();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
-  const { priceFeed } = usePriceFeed();
   const { lpList } = useEntireChromaticLp();
   const { disconnectAsync } = useDisconnect();
   const { switchChain } = useChain();
@@ -61,22 +54,6 @@ export function useWalletPopoverV3() {
   function onDisconnect() {
     return disconnectAsync();
   }
-
-  const getTokenPrice = useCallback(
-    (token: Token) => {
-      if (!tokenBalances || !priceFeed) return '';
-      const priceFeedAddress = PRICE_FEEDS[CHAIN]?.[token.name] || '0x';
-      if (isNotNil(tokenBalances[token.address]) && isNotNil(priceFeed[priceFeedAddress])) {
-        const balance = tokenBalances[token.address];
-        const tokenDecimals = token.decimals;
-        const price = priceFeed[priceFeedAddress].value;
-        const priceDecimals = priceFeed[priceFeedAddress].decimals;
-        return `${withComma(formatBalance(balance, price, tokenDecimals, priceDecimals))}`;
-      }
-      return '-';
-    },
-    [tokenBalances, priceFeed]
-  );
 
   const publicClient = usePublicClient();
 
@@ -102,7 +79,6 @@ export function useWalletPopoverV3() {
     {
       key: string;
       name: string;
-      usdPrice: string;
       balance: string;
       explorerUrl?: string;
       image: string;
@@ -112,7 +88,7 @@ export function useWalletPopoverV3() {
     const key = token.address;
     const name = token.name;
     const image = token.image;
-    const usdPrice = getTokenPrice(token);
+
     const balance = numberFormat(
       formatUnits(tokenBalances?.[token.address] || 0n, token.decimals),
       {
@@ -123,7 +99,7 @@ export function useWalletPopoverV3() {
       }
     );
     const explorerUrl = getExplorerUrl('token', token.address);
-    acc.push({ key, name, usdPrice, balance, explorerUrl, image });
+    acc.push({ key, name, balance, explorerUrl, image });
     return acc;
   }, []);
   const isAssetEmpty = assets.length === 0;

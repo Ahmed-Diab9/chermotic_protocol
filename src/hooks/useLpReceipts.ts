@@ -6,6 +6,7 @@
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { GraphQLClient } from 'graphql-request';
 import { isNil, isNotNil } from 'ramda';
+import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { Address, useAccount } from 'wagmi';
 import {
@@ -184,7 +185,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       detail = formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
     }
     let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
-    const key = `${currentAction}-receipt-${receipt.id}-${receipt.action}-${status}`;
+    const key = `${token.name}-${currentAction}-receipt-${receipt.id}-${receipt.action}-${status}`;
 
     if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
       const dividedByAmount = divPreserved(
@@ -341,7 +342,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       return receiptsData;
     },
     {
-      refreshInterval: 1000 * 20,
+      refreshInterval: 0,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -352,16 +353,16 @@ export const useLpReceipts = (props: UseLpReceipts) => {
 
   useError({ error });
 
-  const onFetchNextLpReceipts = () => {
+  const onFetchNextLpReceipts = useCallback(() => {
     if (isLoading) {
       return;
     }
     setSize(size + 1);
-  };
+  }, [isLoading, size, setSize]);
 
-  const onRefreshLpReceipts = () => {
+  const onRefreshLpReceipts = useCallback(() => {
     mutate();
-  };
+  }, [mutate]);
 
   return {
     receiptsData,

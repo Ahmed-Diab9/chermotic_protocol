@@ -148,49 +148,48 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                 <p className="text-center text-primary/20">You have no asset.</p>
                               ) : (
                                 <div className="flex flex-col gap-3">
-                                  {assets.map(
-                                    ({ key, name, image, usdPrice, balance, explorerUrl }) => (
-                                      <div key={key} className="flex items-center">
-                                        <div className="flex items-center gap-1">
-                                          <SkeletonElement
-                                            isLoading={isLoading}
-                                            circle
-                                            width={24}
-                                            height={24}
+                                  {assets.map(({ key, name, image, balance, explorerUrl }) => (
+                                    <div key={key} className="flex items-center">
+                                      <div className="flex items-center gap-1">
+                                        <SkeletonElement
+                                          isLoading={isLoading}
+                                          circle
+                                          width={24}
+                                          height={24}
+                                        />
+                                        <SkeletonElement isLoading={isLoading} width={40}>
+                                          <Avatar
+                                            label={name}
+                                            src={image}
+                                            size="base"
+                                            fontSize="base"
+                                            gap="2"
                                           />
-                                          <SkeletonElement isLoading={isLoading} width={40}>
-                                            <Avatar
-                                              label={name}
-                                              src={image}
-                                              size="base"
-                                              fontSize="base"
-                                              gap="2"
-                                            />
-                                          </SkeletonElement>
-                                          <Button
-                                            href={explorerUrl}
-                                            iconOnly={<OutlinkIcon />}
-                                            css="unstyled"
-                                            size="sm"
-                                            className="text-primary-light"
-                                          />
-                                        </div>
+                                        </SkeletonElement>
+                                        <Button
+                                          href={explorerUrl}
+                                          iconOnly={<OutlinkIcon />}
+                                          css="unstyled"
+                                          size="sm"
+                                          className="text-primary-light"
+                                        />
+                                      </div>
 
-                                        <div className="ml-auto text-right">
-                                          <p className="text-sm text-primary-lighter">
+                                      <div className="ml-auto text-right">
+                                        {/* TODO: Don't show prices of each token in USD */}
+                                        {/* <p className="text-sm text-primary-lighter">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               ${usdPrice}
                                             </SkeletonElement>
-                                          </p>
-                                          <p className="mt-1 text-base font-medium text-primary">
-                                            <SkeletonElement isLoading={isLoading} width={40}>
-                                              {balance} {name}
-                                            </SkeletonElement>
-                                          </p>
-                                        </div>
+                                          </p> */}
+                                        <p className="mt-1 text-base font-medium text-primary">
+                                          <SkeletonElement isLoading={isLoading} width={40}>
+                                            {balance} {name}
+                                          </SkeletonElement>
+                                        </p>
                                       </div>
-                                    )
-                                  )}
+                                    </div>
+                                  ))}
                                 </div>
                               )}
                             </article>
@@ -235,7 +234,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                               <SkeletonElement isLoading={isLoading} width={100}>
                                                 <p className="text-primary-lighter">
                                                   {/* pool name */}
-                                                  {name} Pool
+                                                  {name}
                                                 </p>
                                               </SkeletonElement>
                                               <SkeletonElement isLoading={isLoading} width={60}>

@@ -11,7 +11,7 @@ export interface PoolDetailProps {}
 
 export const PoolDetail = (props: PoolDetailProps) => {
   const blockExplorer = useBlockExplorer();
-  const { lpTitle, lpName, lpAddress, onCopyAddress } = usePoolDetail();
+  const { lpTitle, lpName, lpTag, lpAddress, onCopyAddress } = usePoolDetail();
 
   return (
     <div className="p-5 PoolDetail">
@@ -21,7 +21,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
             <h3>{lpTitle}</h3>
           </SkeletonElement>
           {/* todo: change text-color for each risk - high / mid / low */}
-          <h3 className={`text-risk-high`}>{lpName} Pool</h3>
+          <h3 className={lpTag}>{lpName}</h3>
         </div>
         <div className="flex gap-2">
           <AddressCopyButton

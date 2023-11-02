@@ -1,6 +1,7 @@
 export const TRADE_EVENT = 'trade';
 export const POOL_EVENT = 'pool';
 export const LP_EVENT = 'lp';
+export const LP_RECEIPT_EVENT = 'lp-receipts';
 
 export const dispatchTradeEvent = () =>
   window.dispatchEvent(
@@ -23,11 +24,20 @@ export const dispatchLpEvent = () =>
       cancelable: true,
     })
   );
+export const dispatchLpReceiptEvent = () => {
+  window.dispatchEvent(
+    new CustomEvent(LP_RECEIPT_EVENT, {
+      bubbles: true,
+      cancelable: true,
+    })
+  );
+};
 declare global {
   interface CustomEventMap {
     [TRADE_EVENT]: CustomEvent<unknown>;
     [POOL_EVENT]: CustomEvent<unknown>;
     [LP_EVENT]: CustomEvent<unknown>;
+    [LP_RECEIPT_EVENT]: CustomEvent<unknown>;
   }
   interface Window {
     addEventListener<K extends keyof CustomEventMap>(
