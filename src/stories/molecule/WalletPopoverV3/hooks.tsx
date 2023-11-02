@@ -19,7 +19,7 @@ import { formatDecimals, numberFormat } from '~/utils/number';
 type FormattedLp = {
   key: string;
   name: string;
-  clpName: string;
+  clpSymbol: string;
   image: string;
   token: string;
   market: string;
@@ -107,13 +107,13 @@ export function useWalletPopoverV3() {
   const formattedLps = (lpList || []).reduce<FormattedLp[]>((acc, lp) => {
     const key = `${lp.settlementToken.name}-${lp.market.description}-${lp.name}`;
     const name = lp.name;
-    const clpName = lp.clpName;
+    const clpSymbol = lp.clpSymbol;
     const image = lp.image;
 
     const market = lp.market.description;
     const token = lp.settlementToken.name;
     const balance = formatDecimals(lp.balance, lp.decimals, 2, true);
-    acc.push({ key, name, clpName, token, market, balance, image });
+    acc.push({ key, name, clpSymbol, token, market, balance, image });
     return acc;
   }, []);
   const isLiquidityTokenEmpty = formattedLps.length === 0;
