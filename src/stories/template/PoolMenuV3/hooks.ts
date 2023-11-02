@@ -1,14 +1,12 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
-import { useAppDispatch, useAppSelector } from '~/store';
-import { lpAction } from '~/store/reducer/lp';
+import { useAppSelector } from '~/store';
 import { formatDecimals } from '~/utils/number';
 
 export const usePoolMenuV3 = () => {
-  const { lpList } = useChromaticLp();
+  const { lpList, onLpSelect } = useChromaticLp();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
-  const dispatch = useAppDispatch();
 
   const onMenuClick = (lpName: string) => {
     const nextLp = lpList?.find((lp) => lp.name === lpName);
@@ -16,7 +14,7 @@ export const usePoolMenuV3 = () => {
     if (isNil(nextLp)) {
       return;
     }
-    dispatch(lpAction.onLpSelect(nextLp));
+    onLpSelect(nextLp);
   };
 
   const formattedLp = useMemo(() => {
@@ -25,6 +23,7 @@ export const usePoolMenuV3 = () => {
       const assets = formatDecimals(lp.totalValue, lp.settlementToken.decimals, 2, true);
       return {
         name: lp.name,
+        tag: lp.tag,
         price,
         assets,
         label: undefined as string | undefined,

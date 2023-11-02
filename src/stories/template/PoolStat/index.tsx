@@ -42,9 +42,11 @@ export const PoolStat = (props: PoolStatProps) => {
               <TooltipGuide label="clp-supply" tip="The amount of CLP in circulation" outLink="" />
             </div>
           </div>
-          <div className="text-right">
-            <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" src={clpImage} />
-          </div>
+          <SkeletonElement isLoading={isNil(clpSupply)} width={60}>
+            <div className="text-right">
+              <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" src={clpImage} />
+            </div>
+          </SkeletonElement>
         </div>
       </div>
       <div className="flex flex-col gap-3 pt-3 mt-5 border-t">

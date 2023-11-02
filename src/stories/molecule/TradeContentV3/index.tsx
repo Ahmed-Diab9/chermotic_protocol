@@ -4,13 +4,12 @@ import '~/stories/atom/Toggle/style.css';
 import { Listbox, Switch } from '@headlessui/react';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { Tag } from '~/stories/atom/Tag';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
-import { TradeChart } from '~/stories/atom/TradeChart';
 
 import { useTradeContentV3 } from './hooks';
 
@@ -118,6 +117,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             tokenName={tokenName}
             tokenImage={tokenImage}
             minAmount={minAmount}
+            maxAmount={balance}
             onAmountChange={onAmountChange}
             optionInputDirection="row"
           />

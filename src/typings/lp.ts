@@ -4,6 +4,7 @@ import { Market, Token } from './market';
 export interface ChromaticLp {
   address: Address;
   name: string;
+  tag: string;
   balance: bigint;
   decimals: number;
   image: string;

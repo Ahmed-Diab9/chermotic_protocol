@@ -56,7 +56,7 @@ export function useTradeContentV2(props: TradeContentV2Props) {
     balances && tokenAddress && balances[tokenAddress]
       ? numberFormat(formatUnits(balances[tokenAddress], tokenDecimals), {
           maxDigits: 5,
-          useGrouping: true,
+          useGrouping: false,
         })
       : 0;
 
