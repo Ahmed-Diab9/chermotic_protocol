@@ -52,7 +52,7 @@ export const Faucet = () => {
   return (
     <>
       <div className="page-container bg-gradient-chrm">
-        <HeaderV3 />
+        <HeaderV3 hideMenu />
         {/* <Button onClick={() => onFaucet()} label="Faucet" className="mt-4" /> */}
         <main>
           <section className="text-left panel panel-translucent w-full max-w-[800px] py-10 mx-auto my-20">
@@ -111,7 +111,7 @@ export const Faucet = () => {
             </div>
           </section>
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   );
