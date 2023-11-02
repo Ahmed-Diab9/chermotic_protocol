@@ -13,6 +13,8 @@ export interface ButtonProps {
     | 'unstyled'
     | 'underlined'
     | 'translucent'
+    | 'long'
+    | 'short'
     | 'chrm'
     | 'chrm-hover';
   disabled?: boolean;
