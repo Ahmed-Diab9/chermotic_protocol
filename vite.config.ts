@@ -16,7 +16,7 @@ const plugins: PluginOption[] = [
   }),
 ];
 
-if (!process.env.STORYBOOK) {
+if (process.env.STORYBOOK !== 'true') {
   plugins.push(
     topLevelAwait({
       // The export name of top-level await promise for each chunk module
