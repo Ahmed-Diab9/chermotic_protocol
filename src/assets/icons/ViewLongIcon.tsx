@@ -1,6 +1,13 @@
 export default function ViewLongIcon(props: any) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="none"
+      viewBox="0 0 16 16"
+      {...props}
+    >
       <path className="fill-price-higher" d="M2.667 2.667h4.666v10.667H2.667V2.667Z" />
       <path
         className="fill-primary"

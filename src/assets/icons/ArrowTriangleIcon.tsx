@@ -1,5 +1,4 @@
 export default function ArrowTriangleIcon(props: any) {
-  const { className } = props;
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,7 +6,7 @@ export default function ArrowTriangleIcon(props: any) {
       height="13"
       fill="none"
       viewBox="0 0 12 13"
-      className={className}
+      {...props}
     >
       <path
         className="fill-current"

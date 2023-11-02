@@ -1,6 +1,13 @@
 export default function OutlinkIcon(props: any) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="none"
+      viewBox="0 0 16 16"
+      {...props}
+    >
       <path
         className="fill-current"
         fillRule="evenodd"

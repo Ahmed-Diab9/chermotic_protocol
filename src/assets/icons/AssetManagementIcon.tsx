@@ -1,6 +1,13 @@
 export default function AssetManagementIcon(props: any) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" fill="none" viewBox="0 0 24 25">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="25"
+      fill="none"
+      viewBox="0 0 24 25"
+      {...props}
+    >
       <g clipPath="url(#a)">
         <path
           className="fill-current"
