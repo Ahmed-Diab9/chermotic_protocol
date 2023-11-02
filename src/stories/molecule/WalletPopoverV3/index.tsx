@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
@@ -14,7 +15,6 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { useWalletPopoverV3 } from './hooks';
 

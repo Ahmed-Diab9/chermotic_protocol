@@ -1,4 +1,4 @@
-import LOADING from '~/assets/icons/loading.png';
+import LOADING from '~/assets/images/loading.png';
 import { useAdvancedChart } from './hooks';
 
 export interface AdvancedChartProps {

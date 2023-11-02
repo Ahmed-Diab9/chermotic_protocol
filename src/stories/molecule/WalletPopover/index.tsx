@@ -14,7 +14,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { useWalletPopover } from './hooks';
 

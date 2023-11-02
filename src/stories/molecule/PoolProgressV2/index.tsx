@@ -2,7 +2,7 @@ import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import CheckIcon from '~/assets/icons/CheckIcon';
+import { CheckIcon } from '~/assets/icons/Icon';
 
 import { Disclosure, Tab } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';

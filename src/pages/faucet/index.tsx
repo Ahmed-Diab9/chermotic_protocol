@@ -9,7 +9,7 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Button } from '~/stories/atom/Button';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { Footer } from '~/stories/template/Footer';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 
 export const Faucet = () => {

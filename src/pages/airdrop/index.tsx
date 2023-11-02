@@ -11,7 +11,7 @@ import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { Button } from '~/stories/atom/Button';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 import ZealyIcon from '~/assets/images/zealy.png';
 import GalxeIcon from '~/assets/images/galxe.png';

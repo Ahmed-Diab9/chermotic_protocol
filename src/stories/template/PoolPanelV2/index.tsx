@@ -1,7 +1,7 @@
 import { Switch, Tab } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React, { PropsWithChildren } from 'react';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { ChartLabel } from '~/stories/atom/ChartLabel';

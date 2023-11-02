@@ -4,7 +4,7 @@ import './style.css';
 import { useState } from 'react';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import ViewBothIcon from '~/assets/icons/ViewBothIcon';
+import ViewBothIcon from '~/assets/icons/ViewIcon';
 import ViewLongIcon from '~/assets/icons/ViewLongIcon';
 import ViewShortIcon from '~/assets/icons/ViewShortIcon';
 
