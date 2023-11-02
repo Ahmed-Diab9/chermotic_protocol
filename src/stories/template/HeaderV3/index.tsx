@@ -1,4 +1,4 @@
-import LogoSimple from '~/assets/icons/LogoSimple';
+import { ChromaticSimpleLogo } from '~/assets/icons/Logo';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
@@ -35,7 +35,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             rel="noopener noreferrer"
           >
             {' '}
-            <LogoSimple className="text-primary h-9" />
+            <ChromaticSimpleLogo className="text-primary h-9" />
           </a>
           {links.map((link) => (
             <Link
