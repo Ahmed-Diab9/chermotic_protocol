@@ -1,0 +1,126 @@
+diff --git a/node_modules/graphql-request/build/cjs/graphql-ws.js b/node_modules/graphql-request/build/cjs/graphql-ws.js
+index 0900854..32eb2ab 100644
+--- a/node_modules/graphql-request/build/cjs/graphql-ws.js
++++ b/node_modules/graphql-request/build/cjs/graphql-ws.js
+@@ -9,8 +9,8 @@ const CONNECTION_INIT = `connection_init`;
+ const CONNECTION_ACK = `connection_ack`;
+ const PING = `ping`;
+ const PONG = `pong`;
+-const SUBSCRIBE = `subscribe`;
+-const NEXT = `next`;
++const START = `start`;
++const DATA = `data`;
+ const ERROR = `error`;
+ const COMPLETE = `complete`;
+ class GraphQLWebSocketMessage {
+@@ -95,7 +95,7 @@ class GraphQLWebSocketClient {
+                 }
+                 const { query, variables, subscriber } = this.socketState.subscriptions[message.id];
+                 switch (message.type) {
+-                    case NEXT: {
++                    case DATA: {
+                         if (!message.payload.errors && message.payload.data) {
+                             subscriber.next && subscriber.next(message.payload.data);
+                         }
+@@ -170,7 +170,7 @@ class GraphQLWebSocketClient {
+         this.socket.close(1000);
+     }
+ }
+-GraphQLWebSocketClient.PROTOCOL = `graphql-transport-ws`;
++GraphQLWebSocketClient.PROTOCOL = `graphql-ws`;
+ exports.GraphQLWebSocketClient = GraphQLWebSocketClient;
+ // Helper functions
+ function parseMessage(data, f = (a) => a) {
+@@ -187,7 +187,7 @@ function Pong(payload) {
+     return new GraphQLWebSocketMessage(PONG, payload, undefined);
+ }
+ function Subscribe(id, payload) {
+-    return new GraphQLWebSocketMessage(SUBSCRIBE, payload, id);
++    return new GraphQLWebSocketMessage(START, payload, id);
+ }
+ function Complete(id) {
+     return new GraphQLWebSocketMessage(COMPLETE, undefined, id);
+diff --git a/node_modules/graphql-request/build/esm/graphql-ws.js b/node_modules/graphql-request/build/esm/graphql-ws.js
+index 474185e..206ec41 100644
+--- a/node_modules/graphql-request/build/esm/graphql-ws.js
++++ b/node_modules/graphql-request/build/esm/graphql-ws.js
+@@ -6,8 +6,8 @@ const CONNECTION_INIT = `connection_init`;
+ const CONNECTION_ACK = `connection_ack`;
+ const PING = `ping`;
+ const PONG = `pong`;
+-const SUBSCRIBE = `subscribe`;
+-const NEXT = `next`;
++const START = `start`;
++const DATA = `data`;
+ const ERROR = `error`;
+ const COMPLETE = `complete`;
+ class GraphQLWebSocketMessage {
+@@ -92,7 +92,7 @@ class GraphQLWebSocketClient {
+                 }
+                 const { query, variables, subscriber } = this.socketState.subscriptions[message.id];
+                 switch (message.type) {
+-                    case NEXT: {
++                    case DATA: {
+                         if (!message.payload.errors && message.payload.data) {
+                             subscriber.next && subscriber.next(message.payload.data);
+                         }
+@@ -167,7 +167,7 @@ class GraphQLWebSocketClient {
+         this.socket.close(1000);
+     }
+ }
+-GraphQLWebSocketClient.PROTOCOL = `graphql-transport-ws`;
++GraphQLWebSocketClient.PROTOCOL = `graphql-ws`;
+ export { GraphQLWebSocketClient };
+ // Helper functions
+ function parseMessage(data, f = (a) => a) {
+@@ -184,7 +184,7 @@ function Pong(payload) {
+     return new GraphQLWebSocketMessage(PONG, payload, undefined);
+ }
+ function Subscribe(id, payload) {
+-    return new GraphQLWebSocketMessage(SUBSCRIBE, payload, id);
++    return new GraphQLWebSocketMessage(START, payload, id);
+ }
+ function Complete(id) {
+     return new GraphQLWebSocketMessage(COMPLETE, undefined, id);
+diff --git a/node_modules/graphql-request/src/graphql-ws.ts b/node_modules/graphql-request/src/graphql-ws.ts
+index b2b19d3..bc694d6 100644
+--- a/node_modules/graphql-request/src/graphql-ws.ts
++++ b/node_modules/graphql-request/src/graphql-ws.ts
+@@ -8,8 +8,8 @@ const CONNECTION_INIT = `connection_init`
+ const CONNECTION_ACK = `connection_ack`
+ const PING = `ping`
+ const PONG = `pong`
+-const SUBSCRIBE = `subscribe`
+-const NEXT = `next`
++const START = `start`
++const DATA = `data`;
+ const ERROR = `error`
+ const COMPLETE = `complete`
+ 
+@@ -85,7 +85,7 @@ type SocketState = {
+ }
+ 
+ export class GraphQLWebSocketClient {
+-  static PROTOCOL = `graphql-transport-ws`
++  static PROTOCOL = `graphql-ws`
+ 
+   private socket: WebSocket
+   private socketState: SocketState = { acknowledged: false, lastRequestId: 0, subscriptions: {} }
+@@ -144,7 +144,7 @@ export class GraphQLWebSocketClient {
+         const { query, variables, subscriber } = this.socketState.subscriptions[message.id]!
+ 
+         switch (message.type) {
+-          case NEXT: {
++          case DATA: {
+             if (!message.payload.errors && message.payload.data) {
+               subscriber.next && subscriber.next(message.payload.data)
+             }
+@@ -272,7 +272,7 @@ function Pong(payload: any) {
+ }
+ 
+ function Subscribe(id: string, payload: SubscribePayload) {
+-  return new GraphQLWebSocketMessage(SUBSCRIBE, payload, id)
++  return new GraphQLWebSocketMessage(START, payload, id)
+ }
+ 
+ function Complete(id: string) {
