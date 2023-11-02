@@ -17,9 +17,10 @@ type UrlMap = {
 }[];
 
 function getOperations(object: Object) {
+  const documentSuffix = 'Document';
   return Object.keys(object)
-    .filter((k) => k.endsWith('Document'))
-    .map((k) => k.slice(0, -'Docuemnt'.length));
+    .filter((k) => k.endsWith(documentSuffix))
+    .map((k) => k.slice(0, -documentSuffix.length));
 }
 
 const urlMap: UrlMap = [
