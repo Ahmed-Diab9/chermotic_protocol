@@ -5,7 +5,7 @@ import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
 import { HeaderMenuPopover } from '~/stories/molecule/HeaderMenuPopover';
 import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 import { Button } from '~/stories/atom/Button';
-import WaterdropIcon from '~/assets/icons/WaterdropIcon';
+import WaterdropIcon from '~/assets/icons/Icon';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
@@ -58,14 +58,16 @@ export const HeaderV3 = (props: HeaderV3Props) => {
         </div>
 
         <div className="flex items-center">
-          <Button
-            label="faucet"
-            href={`/faucet`}
-            css="translucent"
-            className="capitalize !gap-1 !bg-primary/10 !h-[40px]"
-            size="lg"
-            iconRight={<WaterdropIcon className="!w-3 !h-3" />}
-          />
+          {!hideMenu && (
+            <Button
+              label="faucet"
+              href={`/faucet`}
+              css="translucent"
+              className="capitalize !gap-1 !bg-primary/10 !h-[40px]"
+              size="lg"
+              iconRight={<WaterdropIcon className="!w-3 !h-3" />}
+            />
+          )}
           {hasAccount && (
             <div className="ml-3">
               <AccountPopoverV3 />
