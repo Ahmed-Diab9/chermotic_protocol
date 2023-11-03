@@ -57,7 +57,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           )}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-0">
           {!hideMenu && (
             <Button
               label="faucet"
