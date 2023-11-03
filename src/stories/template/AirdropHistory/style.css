@@ -1,6 +1,6 @@
 .AirdropHistory {
   .wrap-list {
-    @apply mt-7 min-h-[40vh];
+    @apply mt-7 min-h-[40vh] mb-20;
   }
   .list {
     @apply text-left text-xl;
