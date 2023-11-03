@@ -134,7 +134,7 @@ const PoolV3 = () => {
                       label={
                         isNotNil(marketDescription)
                           ? `Trade on ${marketDescription} Pool`
-                          : 'Market loading'
+                          : 'Loading...'
                       }
                       iconRight={<ChevronRightIcon />}
                     />

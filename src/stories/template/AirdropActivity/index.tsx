@@ -10,28 +10,6 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
   const { airdropAssets, formattedCredit, isLoading } = useAirdropActivity();
   return (
     <div className="text-lg text-left AirdropActivity">
-      {/* "Whitelist NFT(key) can be excluded */}
-      {/* <div className="panel">
-        <div className="flex">
-          <div className="flex items-center justify-between w-1/2 pr-10">
-            <div className="flex items-center gap-4">
-              <img src={KeyIcon} alt="airdrop credit" />
-              <div>
-                <h4 className="text-[28px]">Whitelist NFT</h4>
-                <p className="mt-2 text-primary-light">From Chromatic Discord</p>
-              </div>
-            </div>
-            <h4 className="text-[28px]">1</h4>
-          </div>
-          <div className="flex flex-col justify-center w-1/2 pl-10 border-l">
-            <p className="mb-2">
-              Keys are whitelist tokens and admission tickets required to participate in Airdrop.
-              You must have the key to open Airdrop's Random Box.
-            </p>
-            <ArrowLink label="How to get Whitelist NFT" href="" />
-          </div>
-        </div>
-      </div> */}
       <div className="flex gap-5 mt-5">
         <div className="w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
