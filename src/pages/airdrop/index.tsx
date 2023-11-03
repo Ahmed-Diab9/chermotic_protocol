@@ -13,7 +13,6 @@ import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
-import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 
@@ -25,6 +24,7 @@ import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
 import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
 import { useAppSelector } from '~/store';
 import { numberFormat } from '~/utils/number';
+import { useAccount } from 'wagmi';
 import './style.css';
 
 function Airdrop() {
@@ -38,11 +38,16 @@ function Airdrop() {
   useTokenLocal();
   useMarketLocal();
 
+  const { isConnected: _isConnected, address } = useAccount();
+  // const isWrongChain = _isConnected && _isWrongChain;
+  // const isDisconnected = !_isConnected;
+
   return (
     <>
       <div className="page-container bg-gradient">
         <HeaderV3 />
         <main>
+          {_isConnected ? 'connected' : 'unconnected'}
           <div className="tabs tabs-flex-column">
             <Tab.Group>
               <div className="flex gap-10">

@@ -36,7 +36,6 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {' '}
             <ChromaticSimpleLogo className="text-primary h-9" />
           </a>
           {!hideMenu && (
