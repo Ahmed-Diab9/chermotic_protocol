@@ -4,9 +4,7 @@ import './style.css';
 import { useState } from 'react';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import ViewBothIcon from '~/assets/icons/ViewIcon';
-import ViewLongIcon from '~/assets/icons/ViewLongIcon';
-import ViewShortIcon from '~/assets/icons/ViewShortIcon';
+import { ViewBothIcon, ViewLongIcon, ViewShortIcon } from '~/assets/icons/ViewIcon';
 
 import { Button } from '~/stories/atom/Button';
 import { ResizablePanel } from '~/stories/atom/ResizablePanel';
