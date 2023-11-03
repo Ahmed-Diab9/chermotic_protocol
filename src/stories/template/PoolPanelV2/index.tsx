@@ -1,5 +1,4 @@
 import { Switch, Tab } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import React, { PropsWithChildren } from 'react';
 import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -164,13 +163,17 @@ export function PoolPanelV2() {
                 </article>
 
                 <article className="">
+                  {/* 
                   <div className="py-3 border-t border-dashed">
                     <PoolInfo label="EST. Receive">
                       <Avatar label="995.34 CLP" size="sm" fontSize="lg" gap="1" />
                     </PoolInfo>
-                  </div>
+                  </div> 
+                  */}
+                  {/* TODO: Need to show pool fee later. like 0.35%  */}
+                  {/* 
                   <div className="flex flex-col gap-2">
-                    {/* <PoolInfo
+                    <PoolInfo
                       label="Allowance"
                       tooltipLabel="allowance"
                       tooltipTip=""
@@ -185,12 +188,12 @@ export function PoolPanelV2() {
                         // onChange={}
                         autoCorrect
                       />
-                    </PoolInfo> */}
-                    <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
-                      {/* 0.35% */}
-                      0%
                     </PoolInfo>
-                  </div>
+                    <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
+                      0.35%
+                    </PoolInfo>
+                  </div> 
+                  */}
                 </article>
                 <article>
                   <div className="mt-7">
@@ -275,17 +278,21 @@ export function PoolPanelV2() {
                                 )}
                               </div>
                             </div>
+                            {/* 
                             <div className="py-3 border-t border-dashed">
                               <PoolInfo label="EST. Receive">
                                 <Avatar label="995.34 ETH" size="sm" fontSize="lg" gap="1" />
                               </PoolInfo>
-                            </div>
+                            </div> 
+                            */}
+                            {/* TODO: Need to show pool fee later. like 0.35%  */}
+                            {/* 
                             <div className="flex flex-col gap-2">
                               <PoolInfo label="Fees" tooltipLabel="fees" tooltipTip="">
-                                {/* 0.35% */}
                                 0%
                               </PoolInfo>
-                            </div>
+                            </div> 
+                            */}
                           </article>
                           <article>
                             <div className="mb-5 mt-7">
