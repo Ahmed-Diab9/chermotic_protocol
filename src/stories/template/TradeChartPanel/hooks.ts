@@ -1,5 +1,5 @@
 import { isNotNil } from 'ramda';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useMarket } from '~/hooks/useMarket';
