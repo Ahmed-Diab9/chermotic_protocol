@@ -2,7 +2,6 @@ import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Tab } from '@headlessui/react';
 import '~/stories/atom/Tabs/style.css';
-import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { BlurText } from '~/stories/atom/BlurText';
@@ -33,7 +32,6 @@ function Airdrop() {
   return (
     <>
       <div className="page-container bg-gradient">
-        <BookmarkBoardV3 />
         <HeaderV3 />
         <main>
           <div className="tabs tabs-flex-column">
