@@ -63,8 +63,9 @@ const Faucet = () => {
               </div>
               <div className="flex items-center gap-2 mb-8">
                 <p className="text-lg text-primary-light">
-                  cBTC are exclusive test tokens used on the Chromatic protocol testnet. <br />
-                  They are stand-alone tokens and are not linked to ETH, BTC, wETH, or wBTC
+                  cETH and cBTC are exclusive test tokens used on the Chromatic protocol testnet.
+                  <br />
+                  They are stand-alone tokens and not linked to ETH, BTC, wETH, or wBTC.
                 </p>
               </div>
               <div className="relative flex items-center gap-4 px-5 py-3 overflow-hidden border rounded-xl bg-paper-lighter">
