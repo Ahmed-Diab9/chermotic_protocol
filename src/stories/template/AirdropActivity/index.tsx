@@ -1,7 +1,7 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
-import KeyIcon from '/src/assets/images/airdrop_key.svg';
-import CreditIcon from '/src/assets/images/airdrop_credit.svg';
-import BoosterIcon from '/src/assets/images/airdrop_booster.svg';
+import KeyLgIcon from '/src/assets/images/airdrop_key.svg';
+import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
+import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
 import './style.css';
 
 export interface AirdropActivityProps {}
@@ -35,7 +35,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
         <div className="w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
             <div className="flex items-center gap-4">
-              <img src={CreditIcon} alt="airdrop credit" />
+              <img src={CreditLgIcon} alt="airdrop credit" />
               <h4 className="text-[28px]">Credit</h4>
             </div>
             <h4 className="text-[28px]">2,345</h4>
@@ -60,7 +60,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
         <div className="w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
             <div className="flex items-center gap-4">
-              <img src={BoosterIcon} alt="airdrop credit" />
+              <img src={BoosterLgIcon} alt="airdrop credit" />
               <h4 className="text-[28px]">Booster</h4>
             </div>
             <div className="flex flex-col gap-2 text-right">

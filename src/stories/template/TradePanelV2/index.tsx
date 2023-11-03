@@ -1,8 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { Resizable } from 're-resizable';
 import { useMemo, useState } from 'react';
-import DecreaseIcon from '~/assets/icons/DecreaseIcon';
-import IncreaseIcon from '~/assets/icons/IncreaseIcon';
+import { DecreaseIcon, IncreaseIcon } from '~/assets/icons/Icon';
 import { useThrottledResize } from '~/hooks/useThrottledResize';
 import { Outlink } from '~/stories/atom/Outlink';
 import '~/stories/atom/Tabs/style.css';

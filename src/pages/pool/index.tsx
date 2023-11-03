@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
 import { Link } from 'react-router-dom';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';

@@ -6,6 +6,7 @@ declare global {
   }
 }
 
+// TODO: check potential issues
 BigInt.prototype.toJSON = function () {
   return this.toString() + 'n';
 };

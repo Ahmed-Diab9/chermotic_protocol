@@ -1,8 +1,7 @@
 import './style.css';
 
 import { Popover } from '@headlessui/react';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { ArrowTriangleIcon, OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';

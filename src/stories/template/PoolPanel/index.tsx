@@ -1,6 +1,6 @@
 import { Switch, Tab } from '@headlessui/react';
 import { createPortal } from 'react-dom';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';

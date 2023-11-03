@@ -104,6 +104,9 @@ a {
       @apply !w-[36px] !h-[36px];
     }
   }
+  &.btn-translucent {
+    @apply bg-gray-lighter/60 hover:bg-gray-light/60;
+  }
   &.btn-long {
     @apply bg-price-higher/10 border border-price-higher text-price-higher;
   }

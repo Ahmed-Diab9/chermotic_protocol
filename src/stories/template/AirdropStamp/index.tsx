@@ -1,6 +1,5 @@
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
-import CoinStackIcon from '~/assets/icons/CoinStackIcon';
-import BoosterIcon from '~/assets/icons/BoosterIcon';
+import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
 import { Button } from '~/stories/atom/Button';
 import { Avatar } from '~/stories/atom/Avatar';
 import StampSuccess from '/src/assets/images/stamp_success.png';

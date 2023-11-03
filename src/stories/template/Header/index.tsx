@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-
-import LogoSimple from '~/assets/icons/LogoSimple';
-
+import { ChromaticSimpleLogo } from '~/assets/icons/Logo';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { WalletPopover } from '~/stories/molecule/WalletPopover';
 import './style.css';
@@ -30,7 +28,7 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <LogoSimple className="text-primary h-9" />
+            <ChromaticSimpleLogo className="text-primary h-9" />
           </a>
           {links.map((link) => (
             <Link

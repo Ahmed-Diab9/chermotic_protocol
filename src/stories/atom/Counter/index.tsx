@@ -1,6 +1,5 @@
 import { Button } from '../Button';
-import MinusIcon from '~/assets/icons/MinusIcon';
-import PlusIcon from '~/assets/icons/PlusIcon';
+import { PlusIcon, MinusIcon } from '~/assets/icons/Icon';
 
 interface CounterProps {
   label?: string;

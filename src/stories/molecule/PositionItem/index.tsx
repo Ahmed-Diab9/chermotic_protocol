@@ -1,4 +1,4 @@
-import CheckIcon from '~/assets/icons/CheckIcon';
+import { CheckIcon } from '~/assets/icons/Icon';
 
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';

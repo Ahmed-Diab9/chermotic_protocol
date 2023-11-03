@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
-import AssetManagementIcon from '~/assets/icons/AssetManagementIcon';
-import ClpSupplyIcon from '~/assets/icons/ClpSupplyIcon';
+import { AssetManagementIcon } from '~/assets/icons/PoolIcon';
+import { ClpSupplyIcon } from '~/assets/icons/PoolIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Progress } from '~/stories/atom/Progress';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';

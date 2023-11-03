@@ -2,8 +2,7 @@ import './style.css';
 
 import { Popover } from '@headlessui/react';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { ArrowTriangleIcon, OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 import { Button } from '~/stories/atom/Button';
@@ -195,17 +194,7 @@ export function MarketSelectV2() {
           </Popover>
           <h2 className={`text-3xl ml-2 ${priceClass}`}>
             <SkeletonElement isLoading={isLoading} width={80}>
-              <span className="flex items-center gap-1">
-                ${price}
-                {/* if price goes higher than previous round */}
-                {/* <span className="text-price-higher">
-                  <IncreaseIcon />
-                </span> */}
-                {/* if price goes lower than previous round */}
-                {/* <span className="text-price-lower">
-                  <DecreaseIcon />
-                </span> */}
-              </span>
+              <span className="flex items-center gap-1">${price}</span>
             </SkeletonElement>
           </h2>
         </div>

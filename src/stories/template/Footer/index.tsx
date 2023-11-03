@@ -1,7 +1,5 @@
-import GitbookIcon from '~/assets/icons/GitbookIcon';
-import Logo from '~/assets/icons/Logo';
-import MediumIcon from '~/assets/icons/MediumIcon';
-import TwitterIcon from '~/assets/icons/TwitterIcon';
+import { GitbookIcon, MediumIcon, TwitterIcon } from '~/assets/icons/SocialIcon';
+import { ChromaticLogo } from '~/assets/icons/Logo';
 import { Button } from '../../atom/Button';
 
 export const Footer = () => (
@@ -13,7 +11,7 @@ export const Footer = () => (
         rel="noopener noreferrer"
         title="Chromatic"
       >
-        <Logo className="text-inverted dark:text-primary" />
+        <ChromaticLogo className="text-inverted dark:text-primary" />
       </a>
       <p className="text-inverted-lighter dark:text-primary-lighter">
         A New Era in Decentralized Perpetual Futures
