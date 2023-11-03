@@ -61,7 +61,7 @@ const PoolV3 = () => {
         <div id="prev"></div>
         <div id="current"></div>
       </div>
-      <div className="page-container bg-gradient">
+      <div className="page-container bg-gradient-chrm">
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main>
@@ -83,8 +83,8 @@ const PoolV3 = () => {
                   <Button
                     label="Metamask"
                     iconLeft={<PlusIcon className="w-3 h-3" />}
-                    // className="ml-4 !pl-2 !pt-[2px] !bg-gray-light/60"
-                    className="ml-4 !pl-2 !pt-[2px] !bg-gray-lighter/60 hover:!bg-gray-light/60"
+                    css="translucent"
+                    className="ml-4 !pl-2 !pt-[2px]"
                     gap="1"
                     size="sm"
                   />
@@ -130,7 +130,7 @@ const PoolV3 = () => {
                   <div className="mt-5">
                     <Button
                       to="/trade"
-                      className="!bg-gray-lighter/60 hover:!bg-gray-light/60"
+                      css="translucent"
                       label={
                         isNotNil(marketDescription)
                           ? `Trade on ${marketDescription} Pool`

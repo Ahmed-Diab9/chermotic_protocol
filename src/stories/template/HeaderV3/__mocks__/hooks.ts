@@ -6,7 +6,8 @@ export function useHeaderV3() {
 
   return {
     isActiveLink: () => false,
-
+    address: '0x',
+    hasAccount: false,
     walletPopoverProps,
   };
 }

@@ -12,7 +12,11 @@ export interface ButtonProps {
     | 'square'
     | 'unstyled'
     | 'underlined'
-    | string;
+    | 'translucent'
+    | 'long'
+    | 'short'
+    | 'chrm'
+    | 'chrm-hover';
   disabled?: boolean;
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
   align?: 'center' | 'left' | 'right';

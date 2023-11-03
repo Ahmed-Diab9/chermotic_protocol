@@ -136,6 +136,12 @@ body {
   }
 }
 
+.bg-gradient-chrm {
+  @apply overflow-visible bg-no-repeat bg-cover;
+  background-image: url('/src/assets/images/bg_airdrop_gradient.png');
+  background-position: bottom;
+}
+
 .page-container {
   @apply flex flex-col min-h-[100vh] w-full relative;
   > main {
