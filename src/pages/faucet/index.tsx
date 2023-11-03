@@ -63,8 +63,8 @@ export const Faucet = () => {
               </div>
               <div className="flex items-center gap-2 mb-8">
                 <p className="text-lg text-primary-light">
-                  cETH, cBTC are only test tokens of the Chromatic protocol testnet. <br />
-                  It is an independent token that is not pegged to ETH, BTC or wETH, wBTC.
+                  cBTC are exclusive test tokens used on the Chromatic protocol testnet. <br />
+                  They are stand-alone tokens and are not linked to ETH, BTC, wETH, or wBTC
                 </p>
               </div>
               <div className="relative flex items-center gap-4 px-5 py-3 overflow-hidden border rounded-xl bg-paper-lighter">
@@ -105,8 +105,8 @@ export const Faucet = () => {
             </div>
             <div className="px-10 mt-10">
               <p className="text-lg text-primary-light">
-                You can get 100cETH or 100cBTC at a time. Once received, it will be activated again
-                after 24 hours.
+                You can obtain 100 cETH or 100 cBTC at once. After receiving it, it will be
+                available again after 24 hours.
               </p>
             </div>
           </section>
