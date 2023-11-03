@@ -1340,10 +1340,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.28":
-  version "1.0.1-rc.28"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.28.tgz#9860f7df2986661b4db5d30263a70a77347cc166"
-  integrity sha512-/Itt4gf622fIxhI+hHN+S1urIsmDThdq1nfUZmjIWBzeCgh/Qd6wAAaN36ZXRpKz1VhLEeYsYBxYlqyRA4DhrA==
+"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.29":
+  version "1.0.1-rc.29"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.29.tgz#34f9b45d1d12b44d4e1d1f23ee88d6ddce56b822"
+  integrity sha512-y+dkfyaONwjKBS5W5hncvJrobWepqlTEmE/NiBGw5aL0Y6VVeTBJJd/xCD78YLGBnTiLw9gLRtcHHr9OjZyOFg==
   dependencies:
     viem "^1.5.0"
 
@@ -1355,10 +1355,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk-viem@^0.1.0-rc.161":
-  version "0.1.0-rc.161"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.161.tgz#faa36f6ce441e46f131a8a0f93fdb9943637f14a"
-  integrity sha512-wWNG23ZTzXBEbeT/+GmOTE27kPf/y3Ja02343ZNd+dRM2mB4hmcCLOtXKkvnuPKc+UEOxEVu324UK/JlzOZcSA==
+"@chromatic-protocol/sdk-viem@^0.1.0-rc.163":
+  version "0.1.0-rc.163"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.163.tgz#5a7da02bdd3945a5c4050ca2d342abf46bbcf30e"
+  integrity sha512-Sh9fM+OvgvMe5C+3pSBSRUJ8kyyU0uWpWrm898hwerADB3VuUKMormGIf5Q9YUL+9Arxj5Or85MVw3cxf+D5Hw==
   dependencies:
     viem "^1.12.1"
 
