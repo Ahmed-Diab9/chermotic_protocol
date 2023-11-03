@@ -148,15 +148,6 @@ function Airdrop() {
                                 />
                               </div>
                             </div>
-                            {/* <div className="flex justify-between mt-10">
-                          <h4 className="text-xl">Galxe activity update</h4>
-                          <Button
-                            label="Update Credit and Booster by registering NFT acquired from Galxe"
-                            css="underlined"
-                            className="!text-lg text-primary-light"
-                          />
-                        </div> */}
-                            {/* GalxeIcon */}
                           </article>
 
                           <article>
@@ -203,38 +194,6 @@ function Airdrop() {
                                 className="!text-xl !w-[280px]"
                               />
                             </div>
-
-                            {/* <div className="flex justify-around mt-16">
-                          <div>
-                            <img src={RandomboxImage} alt="ramdom box" className="w-[400px] mb-7" />
-                          </div>
-                          <div className="w-1/2 mt-4 text-xl text-left">
-                            <ul className="flex flex-col gap-3 list-disc text-primary-light">
-                              <li>Credit is required to open the Random Box to obtain rCHR.</li>
-                              <li>
-                                Random Box can be activated and opened on 1/1/2018 after the end of
-                                the Testnet period.
-                              </li>
-                              <li className="text-primary">
-                                To open Random Box, you need Discord Log-in, and when signing in,
-                                you must be registered on the Chromatic Protocol server.
-                              </li>
-                            </ul>
-                            <div className="my-10">
-                              <Button
-                                label="Go to Discord Chromatic Server"
-                                css="underlined"
-                                className="text-primary-light"
-                              />
-                            </div>
-                            <Button
-                              label="Open Enthusiast Box"
-                              css="chrm-hover"
-                              size="3xl"
-                              className="!text-xl !min-w-[280px]"
-                            />
-                          </div>
-                        </div> */}
                           </article>
 
                           <article>
@@ -250,11 +209,6 @@ function Airdrop() {
                                   <h2 className="text-4xl">{metadata?.participants}</h2>
                                   <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
                                 </div>
-                                {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
-                                {/* <div className="w-1/4 border-l">
-                              <h2 className="text-4xl">3,445</h2>
-                              <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
-                            </div> */}
                                 <div className="w-1/3 border-l">
                                   <h2 className="text-4xl">{metadata?.totalCredit}</h2>
                                   <h4 className="mt-3 text-xl text-primary-light">Total Credits</h4>
@@ -295,18 +249,12 @@ function Airdrop() {
                         <section>
                           <div className="flex items-baseline">
                             <BlurText label="My History" className="text-[60px]" color="chrm" />
-                            {/* <h2 className="text-4xl">My board</h2> */}
                             <div className="ml-auto text-lg text-primary-light">
                               The date changes at 9am local time (UTC+09:00)
                             </div>
                           </div>
                           <div className="p-5 mt-10 panel">
                             <div className="flex justify-between">
-                              {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
-                              {/* <div className="w-1/3">
-                            <h2 className="text-4xl">10</h2>
-                            <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
-                          </div> */}
                               <div className="w-1/2">
                                 <h2 className="text-4xl">
                                   {numberFormat(airdropAssets?.credit ?? 0, { useGrouping: true })}
