@@ -112,15 +112,15 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
     lpAddress,
   });
   const removeSettledMap = removeLiquiditySettleds.reduce((map, current) => {
-    const { receiptId, witdrawnSettlementAmount, refundedAmount } = bigintify(
+    const { receiptId, withdrawnSettlementAmount, refundedAmount } = bigintify(
       current,
       'receiptId',
-      'witdrawnSettlementAmount',
+      'withdrawnSettlementAmount',
       'refundedAmount'
     );
     map.set(receiptId, {
       id: receiptId,
-      burnedAmount: witdrawnSettlementAmount,
+      burnedAmount: withdrawnSettlementAmount,
       remainedAmount: refundedAmount,
       isSettled: true,
       hasReturnedValue: refundedAmount !== 0n,

@@ -81,7 +81,7 @@ export const REMOVE_LIQUIDITY_SETTLEDS = gql`
       lp
       receiptId
       burningAmount
-      witdrawnSettlementAmount
+      withdrawnSettlementAmount
       refundedAmount
       blockNumber
       blockTimestamp
