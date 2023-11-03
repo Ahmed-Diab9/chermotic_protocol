@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import '~/stories/atom/Button/style.css';
 import { Button } from '~/stories/atom/Button';
+import '~/stories/atom/Button/style.css';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
+import { useFilteredAirdropHistory } from './hooks';
 import './style.css';
 
 const historyList = [
@@ -13,27 +13,31 @@ const historyList = [
 ];
 
 export const AirdropHistory = () => {
-  const [activeButton, setActiveButton] = useState('All');
-  const categories = ['All', 'Credits', 'Booster'];
-  const filteredContent =
-    activeButton === 'All'
-      ? historyList
-      : historyList.filter((item) => item.category === activeButton);
+  const {
+    pagedHistory = [],
+    filterLabels,
+    labelMap,
+    activeLabel,
+    nameCounts,
+    hasMoreHistory,
+    onLabelChange,
+    fetchNextHistory,
+  } = useFilteredAirdropHistory();
 
   return (
     <div className="AirdropHistory">
       <div className="flex gap-3">
-        {categories.map((category) => (
+        {filterLabels.map((label, labelIndex) => (
           <button
-            key={category}
-            onClick={() => setActiveButton(category)}
+            key={`${label}-${labelIndex}`}
+            onClick={() => onLabelChange(labelIndex)}
             className={`btn btn-lg !text-xl btn-has-tag btn-${
-              activeButton === category ? 'active' : 'lighter'
+              label === activeLabel ? 'active' : 'lighter'
             }`}
           >
-            {category}
+            {label}
             {/* TODO: show the number of list of each category */}
-            <span className="tag">2</span>
+            <span className="tag">{nameCounts[labelMap[label]]}</span>
           </button>
         ))}
       </div>
@@ -52,9 +56,10 @@ export const AirdropHistory = () => {
               </div>
             </div>
             <div className="tbody">
-              {filteredContent.map((history) => (
+              {pagedHistory.map((history) => (
                 <div
                   className="tr"
+                  key={`${history.id}-${history.name}-${history.score}`}
                   // ref={ }
                 >
                   <div className="td">
@@ -62,7 +67,7 @@ export const AirdropHistory = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {history.category}
+                      {history.name}
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -78,7 +83,7 @@ export const AirdropHistory = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {history.through}
+                      {history.activity_type}
                     </SkeletonElement>
                   </div>
                   <div className="td">
@@ -86,16 +91,25 @@ export const AirdropHistory = () => {
                       // isLoading={isLoading}
                       width={40}
                     >
-                      {history.date}
+                      {history.created_at.toString()}
                     </SkeletonElement>
                   </div>
                 </div>
               ))}
             </div>
             {/* 'more' button should be visible only when there are more lists. */}
-            <div className="mt-6 text-center">
-              <Button label="More" css="underlined" size="lg" />
-            </div>
+            {hasMoreHistory && (
+              <div className="mt-6 text-center">
+                <Button
+                  label="More"
+                  css="underlined"
+                  size="lg"
+                  onClick={() => {
+                    fetchNextHistory();
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
       </article>

@@ -13,5 +13,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    isOpen: false,
+    schedules: [],
+    bonusRewards: [],
+    onClick() {},
+    onClose() {},
+  },
 };
