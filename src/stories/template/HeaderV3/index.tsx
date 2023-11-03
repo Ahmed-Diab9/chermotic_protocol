@@ -1,23 +1,23 @@
-import LogoSimple from '~/assets/icons/LogoSimple';
 import { Link } from 'react-router-dom';
-import { ThemeToggle } from '~/stories/atom/ThemeToggle';
-import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
-import { HeaderMenuPopover } from '~/stories/molecule/HeaderMenuPopover';
-import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
-import { Button } from '~/stories/atom/Button';
 import WaterdropIcon from '~/assets/icons/Icon';
+import LogoSimple from '~/assets/icons/LogoSimple';
+import { Button } from '~/stories/atom/Button';
+import { ThemeToggle } from '~/stories/atom/ThemeToggle';
+import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
+import { HeaderMenuPopover } from '~/stories/molecule/HeaderMenuPopover';
+import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
 
 interface HeaderV3Props {
-  hasAccount?: boolean;
   hideMenu?: boolean;
 }
 
 export const HeaderV3 = (props: HeaderV3Props) => {
-  const { hasAccount, hideMenu } = props;
-  const { isActiveLink, walletPopoverProps } = useHeaderV3();
+  const { hideMenu } = props;
+
+  const { hasAccount, isActiveLink, walletPopoverProps } = useHeaderV3();
 
   const links = [
     { to: 'trade', className: '' },
