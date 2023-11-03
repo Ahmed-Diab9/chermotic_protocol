@@ -65,28 +65,28 @@ export function HeaderMenuPopover() {
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
+                            <Link to="https://discord.gg/NPhCtVthCV" target="_blank">
                               Discord
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
-                              Zealy
-                            </Link>
+                            {/* <Link to="" target="_blank"> */}
+                            Zealy
+                            {/* </Link> */}
                           </li>
                           <li className="list-item">
-                            <Link to="" target="_blank">
-                              Galxe
-                            </Link>
+                            {/* <Link to="" target="_blank"> */}
+                            Galxe
+                            {/* </Link> */}
                           </li>
                         </ul>
                       </div>
                     </div>
                     <div className="flex gap-12 pt-5 mt-5 border-t px-7">
                       <Link to="https://chromatic.finance/" target="_blank">
-                        Chromatic Intro
+                        Website
                       </Link>
-                      <Link to="" target="_blank">
+                      <Link to="https://linktr.ee/chromaticprotocol" target="_blank">
                         LinkTree
                       </Link>
                     </div>
