@@ -31,6 +31,7 @@ export function useHeaderV3() {
     address,
     hasAccount: isNotNil(address) && isTradePage,
     isActiveLink,
+    _isConnected,
 
     walletPopoverProps,
   };

@@ -17,7 +17,7 @@ interface HeaderV3Props {
 export const HeaderV3 = (props: HeaderV3Props) => {
   const { hideMenu } = props;
 
-  const { hasAccount, isActiveLink, walletPopoverProps } = useHeaderV3();
+  const { hasAccount, isActiveLink, walletPopoverProps, _isConnected } = useHeaderV3();
 
   const links = [
     { to: 'trade', className: '' },
@@ -57,7 +57,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
         </div>
 
         <div className="flex items-center gap-0">
-          {!hideMenu && (
+          {!hideMenu && _isConnected && (
             <Button
               label="faucet"
               href={`/faucet`}
