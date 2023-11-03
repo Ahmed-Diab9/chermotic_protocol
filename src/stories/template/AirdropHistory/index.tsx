@@ -14,13 +14,14 @@ const historyList = [
 
 export const AirdropHistory = () => {
   const {
-    filteredHistory = [],
+    pagedHistory = [],
     filterLabels,
     labelMap,
     activeLabel,
     nameCounts,
     hasMoreHistory,
     onLabelChange,
+    fetchNextHistory,
   } = useFilteredAirdropHistory();
 
   return (
@@ -55,7 +56,7 @@ export const AirdropHistory = () => {
               </div>
             </div>
             <div className="tbody">
-              {filteredHistory.map((history) => (
+              {pagedHistory.map((history) => (
                 <div
                   className="tr"
                   key={`${history.id}-${history.name}-${history.score}`}
@@ -99,7 +100,14 @@ export const AirdropHistory = () => {
             {/* 'more' button should be visible only when there are more lists. */}
             {hasMoreHistory && (
               <div className="mt-6 text-center">
-                <Button label="More" css="underlined" size="lg" />
+                <Button
+                  label="More"
+                  css="underlined"
+                  size="lg"
+                  onClick={() => {
+                    fetchNextHistory();
+                  }}
+                />
               </div>
             )}
           </div>

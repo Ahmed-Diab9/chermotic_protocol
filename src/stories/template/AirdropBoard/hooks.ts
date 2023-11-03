@@ -9,7 +9,7 @@ const ADDRESS_PREFIX = '0x';
 export const useAirdropBoard = () => {
   const { filterLabels, labelMap, selectedLabel } = useAppSelector((state) => state.airdrop);
   const dispatch = useAppDispatch();
-  const { leaderboardData, metadata, isLoading } = useAirdropLeaderBoard({
+  const { leaderboardData, metadata, isLoading, fetchNextLeaderBoard } = useAirdropLeaderBoard({
     type: selectedLabel,
   });
   const leaderboard = useMemo(() => {
@@ -51,5 +51,6 @@ export const useAirdropBoard = () => {
     leaderboard,
     hasMoreLeaderBoard,
     onLabelChange,
+    fetchNextLeaderBoard,
   };
 };

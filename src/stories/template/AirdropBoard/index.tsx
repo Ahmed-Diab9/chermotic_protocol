@@ -7,8 +7,15 @@ import { useAirdropBoard } from './hooks';
 import './style.css';
 
 export const AirdropBoard = () => {
-  const { filterLabels, labelMap, activeLabel, leaderboard, hasMoreLeaderBoard, onLabelChange } =
-    useAirdropBoard();
+  const {
+    filterLabels,
+    labelMap,
+    activeLabel,
+    leaderboard,
+    hasMoreLeaderBoard,
+    onLabelChange,
+    fetchNextLeaderBoard,
+  } = useAirdropBoard();
 
   return (
     <div className="AirdropBoard">
@@ -92,7 +99,14 @@ export const AirdropBoard = () => {
             {/* 'more' button should be visible only when there are more lists. */}
             {hasMoreLeaderBoard && (
               <div className="mt-6 text-center">
-                <Button label="More" css="underlined" size="lg" />
+                <Button
+                  label="More"
+                  css="underlined"
+                  size="lg"
+                  onClick={() => {
+                    fetchNextLeaderBoard();
+                  }}
+                />
               </div>
             )}
           </div>

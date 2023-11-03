@@ -1,5 +1,6 @@
 import { isNil } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
+import { PAGE_SIZE } from '~/constants/arbiscan';
 import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
 import { useAirdropHistory } from '~/hooks/airdrops/useAirdropHistory';
 
@@ -15,6 +16,7 @@ export const useFilteredAirdropHistory = () => {
   const { airdropHistory = [], refreshHistory } = useAirdropHistory();
   const { airdropAssets, isLoading } = useAirdropAssets();
   const activeLabel = useMemo(() => filterLabels[selectedIndex], [selectedIndex]);
+  const [page, setPage] = useState(0);
 
   const filteredHistory = useMemo(() => {
     const label = labelMap[activeLabel];
@@ -33,11 +35,15 @@ export const useFilteredAirdropHistory = () => {
     });
   }, [airdropHistory, activeLabel]);
 
+  const pagedHistory = useMemo(() => {
+    return filteredHistory.slice(0, (page + 1) * PAGE_SIZE);
+  }, [page, filteredHistory]);
+
   const hasMoreHistory = useMemo(() => {
     if (isNil(airdropAssets)) {
       return false;
     }
-    const sum = airdropHistory.reduce(
+    const sum = pagedHistory.reduce(
       (sum, history) => {
         sum.credit += history.credit;
         sum.booster += history.booster;
@@ -48,16 +54,16 @@ export const useFilteredAirdropHistory = () => {
     const label = labelMap[activeLabel];
     switch (label) {
       case 'all': {
-        return airdropAssets.booster < sum.booster || airdropAssets.credit < sum.credit;
+        return sum.booster < airdropAssets.booster || sum.credit < airdropAssets.credit;
       }
       case 'booster': {
-        return airdropAssets.booster < sum.booster;
+        return sum.booster < airdropAssets.booster;
       }
       case 'credits': {
-        return airdropAssets.credit < sum.credit;
+        return sum.credit < airdropAssets.credit;
       }
     }
-  }, [airdropHistory, activeLabel, airdropAssets]);
+  }, [pagedHistory, activeLabel, airdropAssets]);
 
   const nameCounts = useMemo(() => {
     return airdropHistory.reduce(
@@ -83,8 +89,15 @@ export const useFilteredAirdropHistory = () => {
     setSelectedIndex(nextIndex);
   }, []);
 
+  const fetchNextHistory = useCallback(() => {
+    if (!hasMoreHistory) {
+      return;
+    }
+    setPage(page + 1);
+  }, [page, hasMoreHistory]);
+
   return {
-    filteredHistory,
+    pagedHistory,
     filterLabels,
     labelMap,
     activeLabel,
@@ -93,5 +106,6 @@ export const useFilteredAirdropHistory = () => {
     hasMoreHistory,
     onLabelChange,
     refreshHistory,
+    fetchNextHistory,
   };
 };
