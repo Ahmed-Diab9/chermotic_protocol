@@ -1,5 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -10,7 +11,6 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { useAssetPanel } from './hooks';
 
 export interface AssetPanelProps {

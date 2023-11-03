@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
-import PlusIcon from '~/assets/icons/PlusIcon';
+import { PlusIcon } from '~/assets/icons/Icon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useLpReceiptEvent } from '~/hooks/useLpReceiptEvent';

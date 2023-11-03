@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
+import { ArrowTriangleIcon } from '~/assets/icons/Icon';
 import '~/stories/atom/Tabs/style.css';
 import { Tag } from '~/stories/atom/Tag';
 import { usePoolMenuV3 } from './hooks';

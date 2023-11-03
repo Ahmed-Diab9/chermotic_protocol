@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import '~/stories/template/Modal/style.css';
 
-import CoinStackIcon from '~/assets/icons/CoinStackIcon';
-import BoosterIcon from '~/assets/icons/BoosterIcon';
+import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
 import { Dialog } from '@headlessui/react';
 import { Button } from '~/stories/atom/Button';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';

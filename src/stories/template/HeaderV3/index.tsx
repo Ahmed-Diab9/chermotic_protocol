@@ -1,6 +1,6 @@
+import { ChromaticSimpleLogo } from '~/assets/icons/Logo';
 import { Link } from 'react-router-dom';
-import WaterdropIcon from '~/assets/icons/Icon';
-import LogoSimple from '~/assets/icons/LogoSimple';
+import { WaterdropIcon } from '~/assets/icons/Icon';
 import { Button } from '~/stories/atom/Button';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
@@ -37,7 +37,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             rel="noopener noreferrer"
           >
             {' '}
-            <LogoSimple className="text-primary h-9" />
+            <ChromaticSimpleLogo className="text-primary h-9" />
           </a>
           {!hideMenu && (
             <>

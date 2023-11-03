@@ -10,8 +10,8 @@ import { Outlink } from '~/stories/atom/Outlink';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { useAccountPanelV3 } from './hooks';
 
 export interface AccountPanelV3Props {

@@ -1,5 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
-import PlusIcon from '~/assets/icons/PlusIcon';
+import { PlusIcon } from '~/assets/icons/Icon';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';

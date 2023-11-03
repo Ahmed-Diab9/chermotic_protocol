@@ -2,7 +2,7 @@ import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
+import { ArrowTriangleIcon } from '~/assets/icons/Icon';
 import { Button } from '~/stories/atom/Button';
 import { ResizablePanel } from '~/stories/atom/ResizablePanel';
 

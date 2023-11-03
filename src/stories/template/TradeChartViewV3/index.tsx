@@ -62,7 +62,7 @@ export const TradeChartViewV3 = (props: TradeChartViewV3Props) => {
         {/* loading */}
         {isNil(marketSymbol) ? (
           <div className="flex items-center justify-center h-full">
-            <img src="/src/assets/icons/loading.png" className="w-10 animate-spin" alt="" />
+            <img src="/src/assets/images/loading.png" className="w-10 animate-spin" alt="" />
           </div>
         ) : (
           <div
