@@ -85,7 +85,6 @@ export const useChromaticAccount = () => {
       const balances = fromPairs(
         result?.map((balance) => [balance.token, balance.balance] as const) || []
       );
-      console.log(new Date().toISOString());
       return balances;
     },
     {

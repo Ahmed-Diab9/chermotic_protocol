@@ -1,31 +1,40 @@
+import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { OutlinkIcon } from '~/assets/icons/Icon';
+import RandomboxImage from '~/assets/images/airdrop_randombox.png';
+import GalxeIcon from '~/assets/images/galxe.png';
+import ZealyIcon from '~/assets/images/zealy.png';
+import { BlurText } from '~/stories/atom/BlurText';
+import { Button } from '~/stories/atom/Button';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Tab } from '@headlessui/react';
 import '~/stories/atom/Tabs/style.css';
+import { AirdropActivity } from '~/stories/template/AirdropActivity';
+import { AirdropBoard } from '~/stories/template/AirdropBoard';
+import { AirdropHistory } from '~/stories/template/AirdropHistory';
+import { AirdropStamp } from '~/stories/template/AirdropStamp';
+import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
-import { BlurText } from '~/stories/atom/BlurText';
-import { AirdropStamp } from '~/stories/template/AirdropStamp';
-import { AirdropHistory } from '~/stories/template/AirdropHistory';
-import { AirdropBoard } from '~/stories/template/AirdropBoard';
-import { AirdropActivity } from '~/stories/template/AirdropActivity';
-import { Button } from '~/stories/atom/Button';
-import { OutlinkIcon } from '~/assets/icons/Icon';
-import RandomboxImage from '~/assets/images/airdrop_randombox.png';
-import ZealyIcon from '~/assets/images/zealy.png';
-import GalxeIcon from '~/assets/images/galxe.png';
-import {
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-  ArrowUpTrayIcon,
-} from '@heroicons/react/24/outline';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
+import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
+import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
+import { useAppSelector } from '~/store';
+import { numberFormat } from '~/utils/number';
 import './style.css';
 
 function Airdrop() {
+  const { airdropAssets } = useAirdropAssets();
+  const { synchronize } = useAirdropSync();
+  const { refreshAssets } = useAirdropAssets();
+  const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
+  const { metadata } = useAirdropLeaderBoard({
+    type: labelMap[filterLabels[selectedIndex]],
+  });
   useTokenLocal();
   useMarketLocal();
 
@@ -87,6 +96,10 @@ function Airdrop() {
                               css="active"
                               size="sm"
                               className="!text-lg"
+                              onClick={async () => {
+                                await synchronize();
+                                refreshAssets();
+                              }}
                             />
                           </div>
                         </div>
@@ -225,7 +238,7 @@ function Airdrop() {
                         <div className="p-5 mt-10 mb-12 panel">
                           <div className="flex justify-between">
                             <div className="w-1/3">
-                              <h2 className="text-4xl">10</h2>
+                              <h2 className="text-4xl">{metadata?.participants}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Participants</h4>
                             </div>
                             {/* if "Whitelist NFT (Key)"" is excluded, "Key holders info" is also excluded. */}
@@ -234,11 +247,11 @@ function Airdrop() {
                               <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
                             </div> */}
                             <div className="w-1/3 border-l">
-                              <h2 className="text-4xl">13</h2>
+                              <h2 className="text-4xl">{metadata?.totalCredit}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Credits</h4>
                             </div>
                             <div className="w-1/3 border-l">
-                              <h2 className="text-4xl">120</h2>
+                              <h2 className="text-4xl">{metadata?.totalBooster}</h2>
                               <h4 className="mt-3 text-xl text-primary-light">Total Boosters</h4>
                             </div>
                           </div>
@@ -284,11 +297,13 @@ function Airdrop() {
                             <h4 className="mt-3 text-xl text-primary-light">Whitelist NFT</h4>
                           </div> */}
                           <div className="w-1/2">
-                            <h2 className="text-4xl">3,445</h2>
+                            <h2 className="text-4xl">
+                              {numberFormat(airdropAssets?.credit ?? 0, { useGrouping: true })}
+                            </h2>
                             <h4 className="mt-3 text-xl text-primary-light">Credits</h4>
                           </div>
                           <div className="w-1/2 border-l">
-                            <h2 className="text-4xl">13</h2>
+                            <h2 className="text-4xl">{airdropAssets?.booster}</h2>
                             <h4 className="mt-3 text-xl text-primary-light">Boosters</h4>
                           </div>
                         </div>

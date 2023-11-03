@@ -1,4 +1,5 @@
 import { accountReducer } from './account';
+import { airdropReducer } from './airdrop';
 import { lpReducer } from './lp';
 import { marketReducer } from './market';
 import { poolsReducer } from './pools';
@@ -14,6 +15,7 @@ const rootReducer = {
   trades: tradesReducer,
   position: positionReducer,
   lp: lpReducer,
+  airdrop: airdropReducer,
 };
 
 export default rootReducer;

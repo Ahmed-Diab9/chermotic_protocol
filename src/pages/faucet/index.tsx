@@ -12,7 +12,7 @@ import { Footer } from '~/stories/template/Footer';
 import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 
-export const Faucet = () => {
+const Faucet = () => {
   const { tokens } = useSettlementToken();
   const { address } = useAccount();
   const { client } = useChromaticClient();
@@ -116,3 +116,5 @@ export const Faucet = () => {
     </>
   );
 };
+
+export default Faucet;

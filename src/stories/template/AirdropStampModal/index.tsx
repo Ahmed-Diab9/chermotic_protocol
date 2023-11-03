@@ -1,38 +1,57 @@
-import { useState } from 'react';
 import '~/stories/template/Modal/style.css';
 
-import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
 import { Dialog } from '@headlessui/react';
+import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
 import { Button } from '~/stories/atom/Button';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
+import { AirdropBonusReward, AirdropSchedule } from '~/typings/airdrop';
+import { useAirdropStampModal } from './hooks';
 
-export function AirdropStampModal() {
-  let [isOpen, setIsOpen] = useState(true);
+export interface AirdropStampModalProps {
+  isOpen: boolean;
+  schedules: AirdropSchedule[];
+  activeSchedule?: AirdropSchedule;
+  bonusRewards: AirdropBonusReward[];
+  onClick: () => unknown;
+  onClose: () => unknown;
+}
+
+export function AirdropStampModal(props: AirdropStampModalProps) {
+  const { isOpen, onClick, onClose } = props;
+  const { hasBonusCredits, hasBooster, rewardContent } = useAirdropStampModal(props);
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-      // open={isOpen}
-      // onClose={onClose}
-    >
+    <Dialog open={isOpen} onClose={onClose}>
       <div className="backdrop" aria-hidden="true" />
       <div className="fixed inset-0 z-40 flex items-center justify-center p-4 shadow-xl">
         <Dialog.Panel className="modal modal-base">
           <Dialog.Title className="modal-title">
-            <ModalCloseButton
-              onClick={() => setIsOpen(false)}
-              // onClick={onClose}
-            />
+            <ModalCloseButton onClick={onClose} />
           </Dialog.Title>
           <Dialog.Description className="gap-5 modal-content">
             <article className="text-center">
               <h2 className="text-4xl">Congratulations</h2>
               <p className="mt-4 text-primary-light">You have received the following rewards.</p>
               <div className="flex items-center justify-center pb-4 mt-8 border-b">
-                <RewardItem name="credit" description="Daily Sign-In" value={10} />
-                {/* <RewardItem name="credit" description="5 Day bonus" value={50} /> */}
-                <RewardItem name="booster" description="7 Day bonus" value={1} />
+                <RewardItem
+                  name="credit"
+                  description={rewardContent.dailyCredits.text}
+                  value={rewardContent.dailyCredits.value}
+                />
+                {hasBonusCredits && (
+                  <RewardItem
+                    name="credit"
+                    description={rewardContent.bonusCredits.text}
+                    value={rewardContent.bonusCredits.value}
+                  />
+                )}
+                {hasBooster && (
+                  <RewardItem
+                    name="booster"
+                    description={rewardContent.booster.text}
+                    value={rewardContent.booster.value}
+                  />
+                )}
               </div>
               <p className="mt-6 text-primary-light">
                 Rewards reveived have been added to my activity’s credits and Booster.
@@ -40,13 +59,7 @@ export function AirdropStampModal() {
             </article>
           </Dialog.Description>
           <div className="modal-button">
-            <Button
-              label="OK"
-              size="xl"
-              className="text-lg"
-              css="active"
-              // onClick={onClose}
-            />
+            <Button label="OK" size="xl" className="text-lg" css="active" onClick={onClick} />
           </div>
         </Dialog.Panel>
       </div>
