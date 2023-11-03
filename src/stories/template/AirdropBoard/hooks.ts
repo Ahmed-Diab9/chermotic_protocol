@@ -4,6 +4,8 @@ import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { airdropAction } from '~/store/reducer/airdrop';
 
+const ADDRESS_PREFIX = '0x';
+
 export const useAirdropBoard = () => {
   const { filterLabels, labelMap, selectedLabel } = useAppSelector((state) => state.airdrop);
   const dispatch = useAppDispatch();
@@ -11,7 +13,13 @@ export const useAirdropBoard = () => {
     type: selectedLabel,
   });
   const leaderboard = useMemo(() => {
-    return leaderboardData.map((board) => board.data).flat(1);
+    return leaderboardData
+      .map((board) => board.data)
+      .flat(1)
+      .map((board) => ({
+        ...board,
+        address: board.address.slice(ADDRESS_PREFIX.length, ADDRESS_PREFIX.length + 6),
+      }));
   }, [leaderboardData]);
   const hasMoreLeaderBoard = useMemo(() => {
     if (isNil(metadata) || isLoading) {
