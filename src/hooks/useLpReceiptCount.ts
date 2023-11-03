@@ -1,12 +1,11 @@
-import { GraphQLClient } from 'graphql-request';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
-import { getSdk } from '~/__generated__/request';
-import { SUBGRAPH_API_URL } from '~/configs/lp';
 import { checkAllProps } from '~/utils';
 import { useChromaticLp } from './useChromaticLp';
 import { useError } from './useError';
+
+import { lpGraphSdk } from '~/lib/graphql';
 
 export const useLpReceiptCount = () => {
   const { address: walletAddress } = useAccount();
@@ -14,8 +13,6 @@ export const useLpReceiptCount = () => {
   const lpAddresses = useMemo(() => {
     return lpList?.map((lp) => lp.address);
   }, [lpList]);
-  const graphClient = new GraphQLClient(SUBGRAPH_API_URL);
-  const graphSdk = getSdk(graphClient);
 
   const fetchKey = {
     key: 'getLpReceiptCount',
@@ -36,16 +33,16 @@ export const useLpReceiptCount = () => {
       for (let index = 0; index < lpAddresses.length; index++) {
         const lpAddress = lpAddresses[index];
 
-        const { addLiquidities } = await graphSdk.AddLiquidityCount({ walletAddress, lpAddress });
-        const { addLiquiditySettleds } = await graphSdk.AddLiquiditySettledCount({
+        const { addLiquidities } = await lpGraphSdk.AddLiquidityCount({ walletAddress, lpAddress });
+        const { addLiquiditySettleds } = await lpGraphSdk.AddLiquiditySettledCount({
           lpAddress,
           walletAddress,
         });
-        const { removeLiquidities } = await graphSdk.RemoveLiquidityCount({
+        const { removeLiquidities } = await lpGraphSdk.RemoveLiquidityCount({
           walletAddress,
           lpAddress,
         });
-        const { removeLiquiditySettleds } = await graphSdk.RemoveLiquiditySettledCount({
+        const { removeLiquiditySettleds } = await lpGraphSdk.RemoveLiquiditySettledCount({
           lpAddress,
           walletAddress,
         });

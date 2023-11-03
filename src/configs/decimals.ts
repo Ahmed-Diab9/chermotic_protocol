@@ -6,3 +6,4 @@ export const BUFFER_DECIMALS = 4;
 export const PNL_RATE_DECIMALS = 4;
 export const CLB_TOKEN_VALUE_DECIMALS = 6;
 export const BPS_DECIMALS = 2;
+export const CAHINLINK_DECIMALS = 8;

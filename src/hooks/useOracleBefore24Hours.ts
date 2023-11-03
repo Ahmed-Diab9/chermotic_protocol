@@ -5,6 +5,7 @@ import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { Market } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { checkAllProps } from '~/utils';
+import { trimMarket } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -15,14 +16,16 @@ export const useOracleBefore24Hours = ({ market }: { market?: Market }) => {
   const { isReady, client } = useChromaticClient();
   const fetchKey = {
     name: 'getOracleBefore24Hours',
-    market,
+    market: trimMarket(market),
   };
   const {
     data: oracle,
     error,
     mutate: _mutate,
-  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ market }) => {
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ market: trimmedMarket }) => {
     let searchIndex = 0;
+    const marketOracle = await client.market().getCurrentPrice(trimmedMarket.address);
+    const market = { ...trimmedMarket, oracleValue: marketOracle };
     const currentVersion = market.oracleValue.version;
     const oracleProvider = await client.market().contracts().oracleProvider(market.address);
     if (currentVersion <= 0n) {

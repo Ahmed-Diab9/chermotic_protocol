@@ -203,7 +203,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                               ) : (
                                 <div className="flex flex-col gap-3">
                                   {formattedLps.map(
-                                    ({ key, name, clpName, token, market, image, balance }) => (
+                                    ({ key, name, clpSymbol, token, market, image, balance }) => (
                                       <Link
                                         to="#"
                                         key={key}
@@ -240,7 +240,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                               <SkeletonElement isLoading={isLoading} width={60}>
                                                 <p className="font-medium break-all text-primary">
                                                   {/* {liquidity} {name} */}
-                                                  {balance} {clpName}
+                                                  {balance} {clpSymbol}
                                                 </p>
                                               </SkeletonElement>
                                             </div>

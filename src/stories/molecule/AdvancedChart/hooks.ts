@@ -8,19 +8,17 @@ import {
   ResolutionString,
   TradingTerminalFeatureset,
   widget,
-} from '~/charting_library';
+} from '~/lib/charting_library';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
 
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
+import datafeed from '~/apis/datafeed';
 
-import useLocalStorage from '~/hooks/useLocalStorage';
 import { AdvancedChartProps } from '.';
 
 export const useAdvancedChart = (props: AdvancedChartProps) => {
-  const { symbol } = props;
-  const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', true);
+  const { symbol, darkMode } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
 
@@ -28,13 +26,9 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
 
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
 
-  const onLoadChartRef = (element: HTMLDivElement | null) => {
-    chartContainerRef.current = element as HTMLInputElement;
-  };
-
   const defaultProps = {
-    interval: '1h' as ResolutionString,
-    datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed(PYTH_TV_PRICEFEED),
+    interval: '60' as ResolutionString,
+    datafeed: datafeed,
     library_path: '/charting_library/',
     fullscreen: false,
     autosize: true,
@@ -54,8 +48,8 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       'popup_hints',
     ] as TradingTerminalFeatureset[],
     favorites: {
-      intervals: ['30', '60', 'd'] as ResolutionString[],
-      chartTypes: ['Candles', 'Baseline'] as ChartTypeFavorites[],
+      intervals: ['5', '60', '240', '1D'] as ResolutionString[],
+      chartTypes: ['Bars', 'Candles'] as ChartTypeFavorites[],
     },
   };
 
@@ -70,8 +64,8 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
           format: (price) =>
             numberFormat(price, {
               compact: false,
-              maxDigits: 4,
-              minDigits: 4,
+              maxDigits: 2,
+              minDigits: 2,
               roundingMode: 'trunc',
               type: 'string',
               useGrouping: false,
@@ -106,5 +100,5 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
     changeTheme(tvWidgetRef.current, darkMode ? 'dark' : 'light');
   }, [darkMode, isChartReady]);
 
-  return { isLoading, onLoadChartRef };
+  return { isLoading, chartContainerRef };
 };

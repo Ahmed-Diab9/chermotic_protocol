@@ -1,9 +1,4 @@
-import {
-  BarData,
-  RangeChart as Chart,
-  DotData,
-  RangeChartData,
-} from '@chromatic-protocol/react-compound-charts';
+import { RangeChart as Chart, RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import './style.css';
 
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
@@ -11,10 +6,11 @@ import { usePoolChart } from './hooks';
 
 export interface PoolChartProps {
   id: string;
-  onChange: (props: RangeChartData) => void;
+  onChange?: (props: RangeChartData) => void;
   height: number;
   width?: number;
   isDotVisible?: boolean;
+  isHandlesVisible?: boolean;
   chartRef?: any;
 }
 
