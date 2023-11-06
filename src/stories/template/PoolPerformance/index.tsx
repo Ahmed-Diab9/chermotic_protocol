@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import { Listbox } from '@headlessui/react';
+import { useState } from 'react';
+import AprIcon from '~/assets/images/pool_apr.svg';
+import ProfitIcon from '~/assets/images/pool_profit.svg';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import ProfitIcon from '~/assets/images/pool_profit.svg';
-import AprIcon from '~/assets/images/pool_apr.svg';
 
+import { usePoolPerformance } from './hooks';
 import './style.css';
 
 export interface PoolPerformanceProps {}
@@ -20,6 +21,7 @@ const selectItem = [
 ];
 
 export const PoolPerformance = (props: PoolPerformanceProps) => {
+  const { tokenName } = usePoolPerformance();
   const [selectedItem, setSelectedItem] = useState(selectItem[0]);
 
   return (
@@ -28,7 +30,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
         <div className="text-left">
           <h3 className="mb-1">CLP Performance</h3>
           <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-light">
-            <Avatar size="xs" label="ETH" gap="1" />
+            <Avatar size="xs" label={tokenName} gap="1" />
           </span>
         </div>
         <div className="w-[140px] select">

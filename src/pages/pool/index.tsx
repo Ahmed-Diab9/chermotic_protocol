@@ -25,7 +25,10 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const blockExplorer = useBlockExplorer();
+  const blockExplorer = useBlockExplorer({
+    path: 'token',
+    address: clbTokenAddress,
+  });
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -49,11 +52,7 @@ const Pool = () => {
                     }}
                   />
                   <Button
-                    href={
-                      clbTokenAddress && blockExplorer
-                        ? `${blockExplorer}/token/${clbTokenAddress}`
-                        : undefined
-                    }
+                    href={blockExplorer}
                     label="view scanner"
                     css="light"
                     size="lg"

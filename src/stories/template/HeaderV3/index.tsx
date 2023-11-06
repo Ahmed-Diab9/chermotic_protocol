@@ -1,6 +1,6 @@
-import { ChromaticSimpleLogo } from '~/assets/icons/Logo';
 import { Link } from 'react-router-dom';
 import { WaterdropIcon } from '~/assets/icons/Icon';
+import { ChromaticSimpleLogo } from '~/assets/icons/Logo';
 import { Button } from '~/stories/atom/Button';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
@@ -22,6 +22,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const links = [
     { to: 'trade', className: '' },
     { to: 'pool', className: '' },
+    // TODO: Enable airdrop link later
     // { to: 'airdrop', className: '' },
   ];
 
