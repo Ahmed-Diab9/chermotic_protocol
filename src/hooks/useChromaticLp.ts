@@ -13,7 +13,7 @@ import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { promiseSlowLoop } from '~/utils/promise';
-import CLP from '../assets/tokens/CLP.png';
+import CLP from '../assets/tokens/CLP.svg';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
