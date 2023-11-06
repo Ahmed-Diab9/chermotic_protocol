@@ -7,16 +7,13 @@
   }
   .tabs {
     .btn-tabs {
-      /* @apply gap-1 pl-1 pr-4; */
-      button {
-        @apply w-1/2;
-      }
+      @apply w-1/2;
       &[aria-selected='true'] {
         &.short {
-          @apply !text-price-lower border-price-lower border-t;
+          @apply !text-price-lower border-price-lower;
         }
         &.long {
-          @apply !text-price-higher border-price-higher border-t;
+          @apply !text-price-higher border-price-higher;
         }
       }
     }

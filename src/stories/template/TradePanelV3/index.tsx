@@ -1,7 +1,6 @@
 import { Tab } from '@headlessui/react';
 import { Resizable } from 're-resizable';
 import { useMemo, useState } from 'react';
-// import { DecreaseIcon, IncreaseIcon } from '~/assets/icons/Icon';
 import { useThrottledResize } from '~/hooks/useThrottledResize';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TradeContentV3 } from '~/stories/molecule/TradeContentV3';
@@ -52,14 +51,12 @@ export const TradePanelV3 = () => {
             <div className="flex">
               <div className="flex-grow border-r">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-lower border-b">
-                  {/* <DecreaseIcon /> */}
                   SHORT
                 </div>
                 <TradeContentV3 direction="short" />
               </div>
               <div className="flex-grow">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-higher border-b">
-                  {/* <IncreaseIcon /> */}
                   LONG
                 </div>
                 <TradeContentV3 direction="long" />
@@ -71,11 +68,9 @@ export const TradePanelV3 = () => {
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
               <Tab.List className="flex w-full">
                 <Tab value="short" className="btn-tabs short">
-                  {/* <DecreaseIcon /> */}
                   SHORT
                 </Tab>
                 <Tab value="long" className="btn-tabs long">
-                  {/* <IncreaseIcon /> */}
                   LONG
                 </Tab>
               </Tab.List>

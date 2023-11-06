@@ -28,6 +28,7 @@
     }
     [aria-selected='true'] {
       @apply text-primary !border-b-transparent;
+      @apply border-primary border-t;
     }
     [aria-selected='false'] {
       @apply text-primary/20 dark:text-primary-lighter bg-inverted-lighter border-x;

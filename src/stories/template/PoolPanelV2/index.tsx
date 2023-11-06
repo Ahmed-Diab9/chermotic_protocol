@@ -58,9 +58,9 @@ export function PoolPanelV2() {
     <div className="PoolPanelV2">
       <div className="tabs tabs-default tabs-lg">
         <Tab.Group onChange={onTabChange}>
-          <Tab.List className="">
-            <Tab className="w-1/2 text-3xl">ADD</Tab>
-            <Tab className="w-1/2 text-3xl">REMOVE</Tab>
+          <Tab.List className="flex w-full">
+            <Tab className="btn-tabs">ADD</Tab>
+            <Tab className="btn-tabs">REMOVE</Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full pt-5 pb-0 px-7">
             {/* tab - add */}
