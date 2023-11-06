@@ -178,16 +178,14 @@ async function getLiquidityPool(
   );
 
   const liquidityBins = await liquidityBinsPromise;
-  const clbTokenMetas = await promiseSlowLoop(
-    tokenIds,
-    async (tokenId, index) => {
+  const clbTokenMetas = await PromiseOnlySuccess(
+    tokenIds.map(async (tokenId, index) => {
       return {
         tokenId,
         baseFeeRate: baseFeeRates[index],
         ...(await marketApi.clbTokenMeta(marketAddress, tokenId)),
       };
-    },
-    { interval: 250 }
+    })
   );
   const bins = clbTokenMetas.map(({ tokenId, baseFeeRate, name, description, decimals, image }) => {
     const bin = liquidityBins[baseFeeRate];
