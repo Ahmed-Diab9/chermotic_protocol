@@ -20,6 +20,10 @@ const Faucet = () => {
   });
   const { address } = useAccount();
   const isLoading = isTokenLoading || isNil(buttonStates);
+  const blockExplorer = useBlockExplorer({
+    address,
+    path: 'address',
+  });
 
   return (
     <>
@@ -48,7 +52,7 @@ const Faucet = () => {
                   iconOnly={<OutlinkIcon />}
                   className="ml-auto"
                   css="unstyled"
-                <Button iconOnly={<OutlinkIcon />} className="ml-auto" css="unstyled" />
+                  href={blockExplorer}
                 />
               </div>
             </div>
