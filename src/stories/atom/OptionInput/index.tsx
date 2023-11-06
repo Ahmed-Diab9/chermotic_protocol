@@ -19,7 +19,7 @@ interface OptionInputProps {
   className?: string;
   disabled?: boolean;
   error?: boolean;
-  errorMsg?: string;
+  errorMsg?: string | undefined;
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
 }

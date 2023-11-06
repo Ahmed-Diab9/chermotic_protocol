@@ -142,11 +142,13 @@ export function PoolPanelV2() {
                         maxValue={maxAmount}
                         onChange={onAmountChange}
                         error={isExceeded}
+                        errorMsg={isExceeded ? 'Exceeded your wallet balance.' : undefined}
                         assetSrc={tokenImage}
+                        size="lg"
                       />
-                      {isExceeded && (
+                      {/* {isExceeded && (
                         <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
-                      )}
+                      )} */}
                     </div>
                   </div>
                   {/* To be added later */}
