@@ -57,29 +57,30 @@ const Faucet = () => {
                 />
               </div>
             </div>
-            <SkeletonElement isLoading={isLoading} containerClassName="flex px-10 h-[40px]">
-              {allowedTokens?.map((allowedToken) => (
-                <div
-                  key={`${allowedToken.address}-${allowedToken.name}`}
-                  className="flex items-center gap-3 px-10 py-6 border-t"
-                >
-                  <Avatar size="2xl" />
-                  <div>
-                    <h2 className="text-2xl">{allowedToken.name}</h2>
-                    <p className="mt-1 text-primary-light">{currentChain.name}</p>
+            <article>
+              <SkeletonElement isLoading={isLoading} containerClassName="flex px-10 h-[40px]">
+                {allowedTokens?.map((allowedToken) => (
+                  <div
+                    key={`${allowedToken.address}-${allowedToken.name}`}
+                    className="flex items-center gap-3 px-10 py-6 border-t last:border-b"
+                  >
+                    <Avatar size="2xl" />
+                    <div>
+                      <h2 className="text-2xl">{allowedToken.name}</h2>
+                      <p className="mt-1 text-primary-light">{currentChain.name}</p>
+                    </div>
+                    <Button
+                      onClick={() => onFaucetClick(allowedToken.name)}
+                      label={buttonStates?.[allowedToken.name].label}
+                      className="ml-auto"
+                      css="active"
+                      size="xl"
+                      disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
+                    />
                   </div>
-                  <Button
-                    onClick={() => onFaucetClick(allowedToken.name)}
-                    label={buttonStates?.[allowedToken.name].label}
-                    className="ml-auto"
-                    css="active"
-                    size="xl"
-                    disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
-                  />
-                </div>
-              ))}
-            </SkeletonElement>
-
+                ))}
+              </SkeletonElement>
+            </article>
             <div className="px-10 mt-10">
               <p className="text-lg text-primary-light">
                 You can obtain 100 cETH or 100 cBTC at once. After receiving it, it will be
