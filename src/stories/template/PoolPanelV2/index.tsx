@@ -273,7 +273,7 @@ export function PoolPanelV2() {
                                 {isExceeded && (
                                   <TooltipAlert
                                     label="wallet-balance"
-                                    tip="Exceeded your wallet balance."
+                                    tip="Exceeded your CLP balance."
                                   />
                                 )}
                               </div>
