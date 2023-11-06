@@ -240,9 +240,17 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
               onChange={onAmountChange}
               className="w-full"
               error={isAmountError}
-              // errorMsg={}
+              errorMsg={
+                isLess
+                  ? `Less than minimum amount. (${minimumAmount})`
+                  : isExceeded && isDeposit
+                  ? 'Exceeded your wallet balance.'
+                  : isExceeded && !isDeposit
+                  ? 'Exceeded the available margin.'
+                  : undefined
+              }
             />
-            {isExceeded && (
+            {/* {isExceeded && (
               <TooltipAlert
                 label="input-amount"
                 tip={isDeposit ? 'Exceeded your wallet balance.' : 'Exceeded the available margin.'}
@@ -253,7 +261,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
                 label="input-amount"
                 tip={`Less than minimum amount. (${minimumAmount})`}
               />
-            )}
+            )} */}
           </div>
           <div className="text-sm">
             <div className="mb-1 text-primary-lighter">
