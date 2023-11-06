@@ -79,7 +79,8 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
           </article>
           <div className="my-7">
             <p className="text-primary-light">
-              This process may take approximately 10 seconds or so. Please wait a moment.
+              This process may take approximately 10 seconds or so. <br />
+              Please wait a moment.
             </p>
           </div>
           <div className="text-center">
