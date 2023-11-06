@@ -19,6 +19,7 @@ interface OptionInputProps {
   className?: string;
   disabled?: boolean;
   error?: boolean;
+  errorMsg?: string;
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
 }
@@ -37,6 +38,7 @@ export const OptionInput = (props: OptionInputProps) => {
     className = '',
     disabled = false,
     error = false,
+    errorMsg,
     onChange,
   } = props;
   const [ratio, setRatio] = useState<number>();
@@ -95,20 +97,23 @@ export const OptionInput = (props: OptionInputProps) => {
           onClick={onClick(100)}
         />
       </div>
-      <Input
-        label={label}
-        placeholder={placeholder}
-        assetSrc={assetSrc}
-        size={size}
-        css={css}
-        align={align}
-        value={value}
-        onChange={onChangeInput}
-        className="relative border-gray-light"
-        disabled={disabled}
-        error={error}
-        debug
-      />
+      <div className="">
+        <Input
+          label={label}
+          placeholder={placeholder}
+          assetSrc={assetSrc}
+          size={size}
+          css={css}
+          align={align}
+          value={value}
+          onChange={onChangeInput}
+          className="relative border-gray-light"
+          disabled={disabled}
+          error={error}
+          debug
+        />
+        {errorMsg && <p className="mt-2 text-right text-price-lower">{errorMsg}</p>}
+      </div>
     </div>
   );
 };
