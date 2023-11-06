@@ -52,11 +52,11 @@ export const TradeManagement = () => {
         className="panel"
         bottom
       >
-        <div className="w-full h-full tabs tabs-default tabs-left">
+        <div className="w-full h-full wrapper-tabs">
           <Tab.Group>
             <div className="flex flex-col w-full h-full">
               <div className="flex items-center border-b">
-                <Tab.List className="flex-none tabs-list">
+                <Tab.List className="flex-none tabs-list tabs-default tabs-left">
                   <Tab>Position</Tab>
                   <Tab>History</Tab>
                   <Tab>Trades</Tab>

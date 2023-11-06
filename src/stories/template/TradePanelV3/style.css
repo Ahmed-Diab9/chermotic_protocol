@@ -6,7 +6,7 @@
     }
   }
   .tabs {
-    .btn-tabs {
+    .btn-tab {
       @apply w-1/2;
       &[aria-selected='true'] {
         &.short {

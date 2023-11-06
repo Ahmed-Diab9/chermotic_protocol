@@ -1,7 +1,7 @@
 .TradePanelV2 {
   @apply relative;
   .tabs {
-    .btn-tabs {
+    .btn-tab {
       @apply gap-1 pl-1 pr-4;
       &[aria-selected='true'] {
         &.short {

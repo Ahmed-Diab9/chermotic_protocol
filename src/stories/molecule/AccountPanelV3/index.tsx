@@ -108,10 +108,10 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
 
       {isAccountExist && (
         <>
-          <div className="w-full tabs">
+          <div className="w-full wrapper-tabs">
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
-              <Tab.List className="flex items-center w-full mb-5">
+              <Tab.List className="flex items-center w-full mb-5 tabs-list">
                 <div className="text-left">
                   <p className="mb-1 text-primary-lighter">Account Balance</p>
                   <Avatar
@@ -122,10 +122,10 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
                   />
                 </div>
                 <div className="flex gap-3 ml-auto">
-                  <Tab value="short" className="btn-tabs btn-sm btn btn-line">
+                  <Tab value="short" className="btn-tab btn-sm btn btn-line">
                     Deposit
                   </Tab>
-                  <Tab value="long" className="btn-tabs btn-sm btn btn-line">
+                  <Tab value="long" className="btn-tab btn-sm btn btn-line">
                     Withdraw
                   </Tab>
                 </div>

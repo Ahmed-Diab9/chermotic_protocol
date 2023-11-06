@@ -45,7 +45,7 @@ export function PoolProgress() {
   } = usePoolProgress();
 
   return (
-    <div className="PoolProgress tabs tabs-line tabs-base">
+    <div className="PoolProgress">
       <Disclosure>
         {({ open }) => {
           return (
@@ -75,147 +75,149 @@ export function PoolProgress() {
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="relative px-5 border-t" ref={ref}>
-                <Tab.Group>
-                  <div className="flex mt-5">
-                    <Tab.List className="!justify-start !gap-7 px-5">
-                      <Tab id="all">All</Tab>
-                      <Tab id="minting">Minting ({mintingsCount})</Tab>
-                      <Tab id="burning">Burning ({burningsCount})</Tab>
-                    </Tab.List>
-                  </div>
-                  <div className="mt-5">
-                    {isGuideOpen && (
-                      <Guide
-                        title="Next Oracle Round"
-                        // The percentage value in the paragraph is a value that is different for each market.
-                        paragraph="Waiting for the next oracle round. The next oracle round is updated
+                <div className="wrapper-tabs">
+                  <Tab.Group>
+                    <div className="flex mt-5">
+                      <Tab.List className="!justify-start !gap-7 px-5 tabs-list tabs-line tabs-base">
+                        <Tab id="all">All</Tab>
+                        <Tab id="minting">Minting ({mintingsCount})</Tab>
+                        <Tab id="burning">Burning ({burningsCount})</Tab>
+                      </Tab.List>
+                    </div>
+                    <div className="mt-5">
+                      {isGuideOpen && (
+                        <Guide
+                          title="Next Oracle Round"
+                          // The percentage value in the paragraph is a value that is different for each market.
+                          paragraph="Waiting for the next oracle round. The next oracle round is updated
         whenever the Chainlink price moves by
         0.05% or more, and it is updated at least once a day."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                    )}
-                  </div>
-                  <Tab.Panels className="flex-auto mt-3">
-                    {/* tab1 - all */}
-                    <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isReceiptsEmpty ? (
-                        <p className="my-6 text-center text-primary/20">
-                          You have no order in progress.
-                        </p>
-                      ) : (
-                        <>
-                          <div className="absolute top-5 right-5">
-                            <Button
-                              label="Claim All"
-                              className="ml-auto"
-                              size="base"
-                              css="active"
-                              onClick={onAllClaimClicked}
-                              disabled={isClaimDisabled}
-                            />
-                          </div>
-                          {poolReceipts.map((props) => (
-                            <ProgressItem {...props} />
-                          ))}
-                        </>
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
                       )}
-                    </Tab.Panel>
-                    {/* tab1 - minting */}
-                    <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isMintingsEmpty ? (
-                        <p className="my-6 text-center text-primary/20">
-                          You have no order in progress.
-                        </p>
-                      ) : (
-                        <>
-                          <div className="absolute top-5 right-5">
-                            {/* 1. when list is empty: button invisible (done) */}
-                            {/* 2. when list cannot be claimed: button disabled */}
-                            {/* todo: button disabled when there is nothing to claim in list */}
-                            <Button
-                              label="Claim All"
-                              className="ml-auto"
-                              size="base"
-                              css="active"
-                              onClick={onAddClaimClicked}
-                              disabled={isMintingClaimDisabled}
-                            />
-                          </div>
-                          {mintingReceipts.map((props) => (
-                            <ProgressItem {...props} />
-                          ))}
-                        </>
-                      )}
-                    </Tab.Panel>
-                    {/* tab1 - burning */}
-                    <Tab.Panel className="flex flex-col gap-3 mb-5">
-                      {isBurningsEmpty ? (
-                        <p className="my-6 text-center text-primary/20">
-                          You have no order in progress.
-                        </p>
-                      ) : (
-                        <>
-                          <div className="absolute top-5 right-5">
-                            {/* 1. when list is empty: button invisible (done) */}
-                            {/* 2. when list cannot be claimed: button disabled */}
-                            {/* todo: button disabled when there is nothing to claim in list */}
-                            <Button
-                              label="Claim All"
-                              className="ml-auto"
-                              size="base"
-                              css="active"
-                              onClick={onRemoveClaimClicked}
-                              disabled={isBurningClaimDisabled}
-                            />
-                          </div>
-                          {burningReceipts.map((props) => (
-                            <ProgressItem {...props} />
-                          ))}
-                        </>
-                      )}
-                    </Tab.Panel>
-                    <div>
-                      <TooltipGuide
-                        tipOnly
-                        label="minting-standby"
-                        // TODO: 퍼센트값 불러오기
-                        tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="minting-completed"
-                        tip="The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="burning-standby"
-                        // TODO: 퍼센트값 불러오기
-                        tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="buring-in-progress"
-                        tip="The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
-                      <TooltipGuide
-                        tipOnly
-                        label="buring-completed"
-                        tip="The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
-                        outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                        outLinkAbout="Next Oracle Round"
-                      />
                     </div>
-                  </Tab.Panels>
-                </Tab.Group>
+                    <Tab.Panels className="flex-auto mt-3">
+                      {/* tab1 - all */}
+                      <Tab.Panel className="flex flex-col gap-3 mb-5">
+                        {isReceiptsEmpty ? (
+                          <p className="my-6 text-center text-primary/20">
+                            You have no order in progress.
+                          </p>
+                        ) : (
+                          <>
+                            <div className="absolute top-5 right-5">
+                              <Button
+                                label="Claim All"
+                                className="ml-auto"
+                                size="base"
+                                css="active"
+                                onClick={onAllClaimClicked}
+                                disabled={isClaimDisabled}
+                              />
+                            </div>
+                            {poolReceipts.map((props) => (
+                              <ProgressItem {...props} />
+                            ))}
+                          </>
+                        )}
+                      </Tab.Panel>
+                      {/* tab1 - minting */}
+                      <Tab.Panel className="flex flex-col gap-3 mb-5">
+                        {isMintingsEmpty ? (
+                          <p className="my-6 text-center text-primary/20">
+                            You have no order in progress.
+                          </p>
+                        ) : (
+                          <>
+                            <div className="absolute top-5 right-5">
+                              {/* 1. when list is empty: button invisible (done) */}
+                              {/* 2. when list cannot be claimed: button disabled */}
+                              {/* todo: button disabled when there is nothing to claim in list */}
+                              <Button
+                                label="Claim All"
+                                className="ml-auto"
+                                size="base"
+                                css="active"
+                                onClick={onAddClaimClicked}
+                                disabled={isMintingClaimDisabled}
+                              />
+                            </div>
+                            {mintingReceipts.map((props) => (
+                              <ProgressItem {...props} />
+                            ))}
+                          </>
+                        )}
+                      </Tab.Panel>
+                      {/* tab1 - burning */}
+                      <Tab.Panel className="flex flex-col gap-3 mb-5">
+                        {isBurningsEmpty ? (
+                          <p className="my-6 text-center text-primary/20">
+                            You have no order in progress.
+                          </p>
+                        ) : (
+                          <>
+                            <div className="absolute top-5 right-5">
+                              {/* 1. when list is empty: button invisible (done) */}
+                              {/* 2. when list cannot be claimed: button disabled */}
+                              {/* todo: button disabled when there is nothing to claim in list */}
+                              <Button
+                                label="Claim All"
+                                className="ml-auto"
+                                size="base"
+                                css="active"
+                                onClick={onRemoveClaimClicked}
+                                disabled={isBurningClaimDisabled}
+                              />
+                            </div>
+                            {burningReceipts.map((props) => (
+                              <ProgressItem {...props} />
+                            ))}
+                          </>
+                        )}
+                      </Tab.Panel>
+                      <div>
+                        <TooltipGuide
+                          tipOnly
+                          label="minting-standby"
+                          // TODO: 퍼센트값 불러오기
+                          tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
+                        <TooltipGuide
+                          tipOnly
+                          label="minting-completed"
+                          tip="The liquidity provisioning (CLB minting) process has been completed. Please transfer CLB tokens to your wallet by claiming them."
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
+                        <TooltipGuide
+                          tipOnly
+                          label="burning-standby"
+                          // TODO: 퍼센트값 불러오기
+                          tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
+                        <TooltipGuide
+                          tipOnly
+                          label="buring-in-progress"
+                          tip="The liquidity withdrawal process is still in progress. Through consecutive oracle rounds, additional removable liquidity is retrieved. You can either stop the process and claim only the assets that have been retrieved so far, or wait until the process is completed."
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
+                        <TooltipGuide
+                          tipOnly
+                          label="buring-completed"
+                          tip="The liquidity withdrawal (CLB burning) process has been completed. Don't forget to transfer the assets to your wallet by claiming them."
+                          outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                          outLinkAbout="Next Oracle Round"
+                        />
+                      </div>
+                    </Tab.Panels>
+                  </Tab.Group>
+                </div>
               </Disclosure.Panel>
             </>
           );

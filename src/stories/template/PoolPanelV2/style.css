@@ -6,7 +6,7 @@
     @apply w-[50%] dark:border-transparent;
   }
   .tabs {
-    .btn-tabs {
+    .btn-tab {
       @apply w-1/2 text-3xl;
     }
   }

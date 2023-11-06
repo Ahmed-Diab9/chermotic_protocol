@@ -56,11 +56,11 @@ export function PoolPanelV2() {
 
   return (
     <div className="PoolPanelV2">
-      <div className="tabs tabs-default tabs-lg">
+      <div className="wrapper-tabs">
         <Tab.Group onChange={onTabChange}>
-          <Tab.List className="flex w-full">
-            <Tab className="btn-tabs">ADD</Tab>
-            <Tab className="btn-tabs">REMOVE</Tab>
+          <Tab.List className="flex w-full tabs-list tabs-default tabs-lg">
+            <Tab className="btn-tab">ADD</Tab>
+            <Tab className="btn-tab">REMOVE</Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full pt-5 pb-0 px-7">
             {/* tab - add */}
@@ -233,13 +233,13 @@ export function PoolPanelV2() {
               </div> */}
 
               {/* inner tab */}
-              <section className="tabs-line tabs-base">
+              <section className="wrapper-tabs">
                 <Tab.Group>
                   {({ selectedIndex }) => (
                     <>
                       {/* tab02: required for the next version */}
                       {/* <div className="flex flex-wrap items-baseline border-b">
-                        <Tab.List className="!justify-start !gap-6">
+                        <Tab.List className="!justify-start !gap-6 tabs-list tabs-line tabs-base">
                           <Tab>Remove from Wallet</Tab>
                           <Tab>Remove from Staking vault</Tab>
                         </Tab.List>

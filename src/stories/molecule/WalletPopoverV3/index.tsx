@@ -135,126 +135,128 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                         />
                       </div>
                     </article>
-                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden tabs tabs-line dark:bg-inverted-lighter">
-                      <Tab.Group>
-                        <Tab.List className="absolute left-0 w-full top-4">
-                          <Tab className="w-[80px]">Assets</Tab>
-                          <Tab>Liquidity Token</Tab>
-                        </Tab.List>
-                        <Tab.Panels className="mt-[60px] pb-[60px] absolute bottom-0 px-4 overflow-auto h-[calc(100%-72px)] w-full">
-                          <Tab.Panel>
-                            <article>
-                              {isAssetEmpty ? (
-                                <p className="text-center text-primary/20">You have no asset.</p>
-                              ) : (
-                                <div className="flex flex-col gap-3">
-                                  {assets.map(({ key, name, image, balance, explorerUrl }) => (
-                                    <div key={key} className="flex items-center">
-                                      <div className="flex items-center gap-1">
-                                        <SkeletonElement
-                                          isLoading={isLoading}
-                                          circle
-                                          width={24}
-                                          height={24}
-                                        />
-                                        <SkeletonElement isLoading={isLoading} width={40}>
-                                          <Avatar
-                                            label={name}
-                                            src={image}
-                                            size="base"
-                                            fontSize="base"
-                                            gap="2"
+                    <div className="relative flex flex-col flex-auto w-full py-4 overflow-hidden dark:bg-inverted-lighter">
+                      <div className="wrapper-tabs">
+                        <Tab.Group>
+                          <Tab.List className="absolute left-0 w-full top-4 tabs-list tabs-line">
+                            <Tab className="w-[80px]">Assets</Tab>
+                            <Tab>Liquidity Token</Tab>
+                          </Tab.List>
+                          <Tab.Panels className="mt-[60px] pb-[60px] absolute bottom-0 px-4 overflow-auto h-[calc(100%-72px)] w-full">
+                            <Tab.Panel>
+                              <article>
+                                {isAssetEmpty ? (
+                                  <p className="text-center text-primary/20">You have no asset.</p>
+                                ) : (
+                                  <div className="flex flex-col gap-3">
+                                    {assets.map(({ key, name, image, balance, explorerUrl }) => (
+                                      <div key={key} className="flex items-center">
+                                        <div className="flex items-center gap-1">
+                                          <SkeletonElement
+                                            isLoading={isLoading}
+                                            circle
+                                            width={24}
+                                            height={24}
                                           />
-                                        </SkeletonElement>
-                                        <Button
-                                          href={explorerUrl}
-                                          iconOnly={<OutlinkIcon />}
-                                          css="unstyled"
-                                          size="sm"
-                                          className="text-primary-light"
-                                        />
-                                      </div>
+                                          <SkeletonElement isLoading={isLoading} width={40}>
+                                            <Avatar
+                                              label={name}
+                                              src={image}
+                                              size="base"
+                                              fontSize="base"
+                                              gap="2"
+                                            />
+                                          </SkeletonElement>
+                                          <Button
+                                            href={explorerUrl}
+                                            iconOnly={<OutlinkIcon />}
+                                            css="unstyled"
+                                            size="sm"
+                                            className="text-primary-light"
+                                          />
+                                        </div>
 
-                                      <div className="ml-auto text-right">
-                                        {/* TODO: Don't show prices of each token in USD */}
-                                        {/* <p className="text-sm text-primary-lighter">
+                                        <div className="ml-auto text-right">
+                                          {/* TODO: Don't show prices of each token in USD */}
+                                          {/* <p className="text-sm text-primary-lighter">
                                             <SkeletonElement isLoading={isLoading} width={40}>
                                               ${usdPrice}
                                             </SkeletonElement>
                                           </p> */}
-                                        <p className="mt-1 text-base font-medium text-primary">
-                                          <SkeletonElement isLoading={isLoading} width={40}>
-                                            {balance} {name}
-                                          </SkeletonElement>
-                                        </p>
+                                          <p className="mt-1 text-base font-medium text-primary">
+                                            <SkeletonElement isLoading={isLoading} width={40}>
+                                              {balance} {name}
+                                            </SkeletonElement>
+                                          </p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </article>
-                          </Tab.Panel>
-                          <Tab.Panel>
-                            <article>
-                              {isLiquidityTokenEmpty ? (
-                                <p className="text-center text-primary/20">
-                                  You have no liquidity token.
-                                </p>
-                              ) : (
-                                <div className="flex flex-col gap-3">
-                                  {formattedLps.map(
-                                    ({ key, name, clpSymbol, token, market, image, balance }) => (
-                                      <Link
-                                        to="#"
-                                        key={key}
-                                        onClick={() => {
-                                          onLpClick(token, market);
-                                        }}
-                                      >
-                                        <div className="flex gap-3 pb-3 border-b last:border-b-0">
-                                          <SkeletonElement
-                                            isLoading={isLoading}
-                                            circle
-                                            width={40}
-                                            height={40}
-                                          >
-                                            <Avatar size="xl" src={image} />
-                                          </SkeletonElement>
-                                          <div className="flex-1 gap-3">
-                                            <div className="flex flex-col gap-1 leading-none">
-                                              <SkeletonElement isLoading={isLoading} width={100}>
-                                                <p className="font-semibold">
-                                                  {token}
-                                                  <span className="px-1 font-light text-primary-lighter">
-                                                    |
-                                                  </span>
-                                                  {market}
-                                                </p>
-                                              </SkeletonElement>
-                                              <SkeletonElement isLoading={isLoading} width={100}>
-                                                <p className="text-primary-lighter">
-                                                  {/* pool name */}
-                                                  {name}
-                                                </p>
-                                              </SkeletonElement>
-                                              <SkeletonElement isLoading={isLoading} width={60}>
-                                                <p className="font-medium break-all text-primary">
-                                                  {/* {liquidity} {name} */}
-                                                  {balance} {clpSymbol}
-                                                </p>
-                                              </SkeletonElement>
+                                    ))}
+                                  </div>
+                                )}
+                              </article>
+                            </Tab.Panel>
+                            <Tab.Panel>
+                              <article>
+                                {isLiquidityTokenEmpty ? (
+                                  <p className="text-center text-primary/20">
+                                    You have no liquidity token.
+                                  </p>
+                                ) : (
+                                  <div className="flex flex-col gap-3">
+                                    {formattedLps.map(
+                                      ({ key, name, clpSymbol, token, market, image, balance }) => (
+                                        <Link
+                                          to="#"
+                                          key={key}
+                                          onClick={() => {
+                                            onLpClick(token, market);
+                                          }}
+                                        >
+                                          <div className="flex gap-3 pb-3 border-b last:border-b-0">
+                                            <SkeletonElement
+                                              isLoading={isLoading}
+                                              circle
+                                              width={40}
+                                              height={40}
+                                            >
+                                              <Avatar size="xl" src={image} />
+                                            </SkeletonElement>
+                                            <div className="flex-1 gap-3">
+                                              <div className="flex flex-col gap-1 leading-none">
+                                                <SkeletonElement isLoading={isLoading} width={100}>
+                                                  <p className="font-semibold">
+                                                    {token}
+                                                    <span className="px-1 font-light text-primary-lighter">
+                                                      |
+                                                    </span>
+                                                    {market}
+                                                  </p>
+                                                </SkeletonElement>
+                                                <SkeletonElement isLoading={isLoading} width={100}>
+                                                  <p className="text-primary-lighter">
+                                                    {/* pool name */}
+                                                    {name}
+                                                  </p>
+                                                </SkeletonElement>
+                                                <SkeletonElement isLoading={isLoading} width={60}>
+                                                  <p className="font-medium break-all text-primary">
+                                                    {/* {liquidity} {name} */}
+                                                    {balance} {clpSymbol}
+                                                  </p>
+                                                </SkeletonElement>
+                                              </div>
                                             </div>
                                           </div>
-                                        </div>
-                                      </Link>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </article>
-                          </Tab.Panel>
-                        </Tab.Panels>
-                      </Tab.Group>
+                                        </Link>
+                                      )
+                                    )}
+                                  </div>
+                                )}
+                              </article>
+                            </Tab.Panel>
+                          </Tab.Panels>
+                        </Tab.Group>
+                      </div>
                     </div>
                   </section>
                   <section className="mt-10 mb-5 box-inner">
