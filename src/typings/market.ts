@@ -32,7 +32,7 @@ export interface Market {
 export type MarketLike = Omit<Market, 'oracleValue'>;
 
 export interface Bookmark {
+  id: string;
   tokenName: string;
   marketDescription: string;
-  marketAddress: Address;
 }

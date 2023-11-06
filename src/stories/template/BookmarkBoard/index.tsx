@@ -20,7 +20,7 @@ export const BookmarkBoard = (props: BookmarkBoardProps) => {
           {bookmarks.map((bookmark, index) => (
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <a
-              key={bookmark.marketAddress}
+              key={bookmark.id}
               href="#"
               className="item-bookmark"
               onClick={(event) => {
@@ -29,8 +29,8 @@ export const BookmarkBoard = (props: BookmarkBoardProps) => {
               }}
             >
               <span>{bookmark.name}</span>
-              <span className={bookmarkClasses?.[bookmark.marketAddress]}>
-                ${bookmarkPrices?.[bookmark.marketAddress]}
+              <span className={bookmarkClasses?.[bookmark.id]}>
+                ${bookmarkPrices?.[bookmark.id]}
               </span>
             </a>
           ))}

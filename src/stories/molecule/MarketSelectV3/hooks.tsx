@@ -181,13 +181,9 @@ export function useMarketSelectV3() {
   }, [publicClient, currentMarket]);
 
   const onBookmarkClick = (newBookmark: Bookmark) => {
-    const storedAddress = bookmarks?.find(
-      (bookmark) => bookmark.marketAddress === newBookmark.marketAddress
-    )?.marketAddress;
-    if (isNotNil(storedAddress)) {
-      setBookmarks(
-        (bookmarks ?? []).filter((bookmark) => bookmark.marketAddress !== storedAddress)
-      );
+    const foundBookmark = bookmarks?.find((bookmark) => bookmark.id === newBookmark.id);
+    if (isNotNil(foundBookmark)) {
+      setBookmarks((bookmarks ?? []).filter((bookmark) => bookmark.id !== newBookmark.id));
       return;
     }
     setBookmarks((bookmarks ?? []).concat(newBookmark));
@@ -195,9 +191,9 @@ export function useMarketSelectV3() {
 
   const isBookmarked = useMemo(() => {
     return bookmarks?.reduce((record, bookmark) => {
-      record[bookmark.marketAddress] = true;
+      record[bookmark.id] = true;
       return record;
-    }, {} as Record<Address, boolean>);
+    }, {} as Record<string, boolean>);
   }, [bookmarks]);
 
   return {
