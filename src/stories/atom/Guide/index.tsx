@@ -9,6 +9,7 @@ interface GuideProps {
   outLinkAbout?: string;
   direction?: 'row' | 'column';
   css?: 'default' | 'alert';
+  paddingX?: number;
   className?: string;
   isVisible?: boolean;
   isClosable?: boolean;
@@ -23,6 +24,7 @@ export const Guide = (props: GuideProps) => {
     outLinkAbout,
     direction = 'column',
     css = 'default',
+    paddingX = 5,
     className,
     onClick,
     isVisible,
@@ -33,7 +35,7 @@ export const Guide = (props: GuideProps) => {
     <>
       {isVisible && (
         <div
-          className={`relative px-5 text-left rounded flex gap-3 ${
+          className={`relative px-${paddingX} text-left rounded flex gap-3 ${
             direction === 'row' ? 'py-2 items-center' : 'py-4'
           } ${className} ${
             css === 'alert' ? 'bg-price-lower/10 text-price-lower' : 'bg-paper-light'
@@ -71,7 +73,7 @@ export const Guide = (props: GuideProps) => {
                 <Button
                   iconOnly={<XMarkIcon />}
                   css="unstyled"
-                  className={`absolute right-1 text-primary-lighter  ${
+                  className={`absolute right-${paddingX} text-primary-lighter  ${
                     direction === 'row' ? 'top-0' : 'top-1'
                   }`}
                   onClick={onClick}
