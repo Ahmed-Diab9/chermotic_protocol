@@ -58,7 +58,7 @@ export function usePoolPanelV2() {
       }
     }
   }, [tokenBalances, currentToken, selectedLp, selectedTab]);
-  const selectedDecimals = selectedTab === 0 ? currentToken?.decimals : selectedLp?.decimals;
+  const selectedDecimals = selectedTab === 0 ? currentToken?.decimals : selectedLp?.clpDecimals;
   const maxAmount = formatDecimals(
     selectedBalance,
     selectedDecimals,
@@ -108,7 +108,7 @@ export function usePoolPanelV2() {
     if (isNil(selectedLp)) {
       return;
     }
-    return formatDecimals(selectedLp.balance, selectedLp.decimals, 2, true);
+    return formatDecimals(selectedLp.balance, selectedLp.clpDecimals, 2, true);
   }, [selectedLp]);
 
   return {

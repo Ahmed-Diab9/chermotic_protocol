@@ -6,8 +6,9 @@ import {
 } from 'graphql-request';
 import { HASURA_API_URL, SUBGRAPH_API_URL, SUBGRAPH_API_WS_URL } from '~/configs/subgraph';
 
-import * as Lp from '~/lib/graphql/sdk/lp';
 import * as Hasura from '~/lib/graphql/sdk/hasura';
+import * as Lp from '~/lib/graphql/sdk/lp';
+import * as Performance from '~/lib/graphql/sdk/performance';
 import * as Pricefeed from '~/lib/graphql/sdk/pricefeed';
 import * as PricefeedWS from '~/lib/graphql/sdk/pricefeed_ws';
 
@@ -58,6 +59,7 @@ const graphClient = new GraphQLClient('', {
 const hasuraGraphSdk = Hasura.getSdk(graphClient);
 const lpGraphSdk = Lp.getSdk(graphClient);
 const pricefeedGraphSdk = Pricefeed.getSdk(graphClient);
+const performanceSdk = Performance.getSdk(graphClient);
 
 const createGraphWSClient = async (url: string) => {
   return new Promise<GraphQLWebSocketClient>((resolve) => {
@@ -74,4 +76,4 @@ const pricefeedGraphSubSdk = PricefeedWS.getSdk(
   await createGraphWSClient(`${SUBGRAPH_API_WS_URL}/chainlink-pricefeed`)
 );
 
-export { hasuraGraphSdk, lpGraphSdk, pricefeedGraphSdk, pricefeedGraphSubSdk };
+export { hasuraGraphSdk, lpGraphSdk, performanceSdk, pricefeedGraphSdk, pricefeedGraphSubSdk };

@@ -3,17 +3,19 @@ import { CHRM } from '~/configs/token';
 import { CMC_API } from '~/constants/coinmarketcap';
 import { CMCTokenInfo } from '~/typings/api';
 import BTC_LOGO from '../assets/tokens/BTC.png';
-import CHRM_LOGO from '../assets/tokens/CHRM.png';
 import ETH_LOGO from '../assets/tokens/ETH.png';
 import USDC_LOGO from '../assets/tokens/USDC.png';
 import WETH_LOGO from '../assets/tokens/WETH.png';
+import cBTC_LOGO from '../assets/tokens/cBTC.svg';
+import cETH_LOGO from '../assets/tokens/cETH.svg';
 
 const localLogos = {
   BTC: BTC_LOGO,
   ETH: ETH_LOGO,
   WETH: WETH_LOGO,
   USDC: USDC_LOGO,
-  CHRM: CHRM_LOGO,
+  cETH: cETH_LOGO,
+  cBTC: cBTC_LOGO,
 };
 
 export const fetchTokenInfo = async (symbols: string | string[]) => {
@@ -43,6 +45,6 @@ export const fetchTokenImages = async (symbols: string[], useApi = false) => {
     }
     return imageMap;
   }, {} as Record<string, string>);
-  imageMap[CHRM] = CHRM_LOGO;
+
   return imageMap;
 };

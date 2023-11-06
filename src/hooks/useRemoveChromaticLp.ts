@@ -26,7 +26,7 @@ export const useRemoveChromaticLp = () => {
         return;
       }
       setIsRemovalPending(true);
-      const parsedAmount = parseUnits(amount, selectedLp.decimals);
+      const parsedAmount = parseUnits(amount, selectedLp.clpDecimals);
       const lp = lpClient.lp();
       const isClpApproved = await lp.approveLpTokenToLp(selectedLp.address, parsedAmount);
       if (!isClpApproved) {
