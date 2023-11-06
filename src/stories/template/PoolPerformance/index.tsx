@@ -1,28 +1,26 @@
 import { Listbox } from '@headlessui/react';
-import { useState } from 'react';
 import AprIcon from '~/assets/images/pool_apr.svg';
 import ProfitIcon from '~/assets/images/pool_profit.svg';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
+import { isNotNil } from 'ramda';
 import { usePoolPerformance } from './hooks';
 import './style.css';
 
 export interface PoolPerformanceProps {}
 
-const selectItem = [
-  { id: 1, title: 'A week', unavailable: false },
-  { id: 2, title: 'A month', unavailable: false },
-  { id: 3, title: '3 monthes', unavailable: false },
-  { id: 4, title: '6 monthes', unavailable: false },
-  { id: 5, title: 'A year', unavailable: false },
-  { id: 6, title: 'All time', unavailable: false },
-];
-
 export const PoolPerformance = (props: PoolPerformanceProps) => {
-  const { tokenName } = usePoolPerformance();
-  const [selectedItem, setSelectedItem] = useState(selectItem[0]);
+  const {
+    tokenName,
+    tokenImage,
+    performance,
+    period,
+    trailingApr,
+    formattedPeriods,
+    onPeriodChange,
+  } = usePoolPerformance();
 
   return (
     <div className="p-5 PoolPerformance">
@@ -30,16 +28,26 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
         <div className="text-left">
           <h3 className="mb-1">CLP Performance</h3>
           <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-light">
-            <Avatar size="xs" label={tokenName} gap="1" />
+            <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
           </span>
         </div>
         <div className="w-[140px] select">
-          <Listbox value={selectedItem} onChange={setSelectedItem}>
-            <Listbox.Button>{selectedItem.title}</Listbox.Button>
+          <Listbox
+            value={period}
+            onChange={(selectedValue) => {
+              const nextIndex = formattedPeriods.findIndex(
+                (formattedPeriod) => formattedPeriod === selectedValue
+              );
+              if (isNotNil(nextIndex)) {
+                onPeriodChange(nextIndex);
+              }
+            }}
+          >
+            <Listbox.Button>{period}</Listbox.Button>
             <Listbox.Options>
-              {selectItem.map((item) => (
-                <Listbox.Option key={item.id} value={item} disabled={item.unavailable}>
-                  {item.title}
+              {formattedPeriods.map((period) => (
+                <Listbox.Option key={period} value={period} disabled={false}>
+                  {period}
                 </Listbox.Option>
               ))}
             </Listbox.Options>
@@ -60,8 +68,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">13,526.03</h4>
-              <p className="text-sm">($101.33)</p>
+              <h4 className="text-price-higher mt-[2px]">{performance}%</h4>
             </div>
           </div>
           <div className="flex w-1/2 gap-3 pl-5 border-l">
@@ -76,7 +83,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">7.54%</h4>
+              <h4 className="text-price-higher mt-[2px]">{trailingApr}%</h4>
             </div>
           </div>
         </div>
