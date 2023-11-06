@@ -35,7 +35,7 @@
   @apply h-9 px-3 text-xl;
 }
 .input-lg {
-  @apply h-[42px] px-5 text-2xl;
+  @apply h-[42px] px-[14px] text-2xl;
 }
 .input-xl {
   @apply h-12 px-5 text-2xl;
