@@ -59,9 +59,10 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${className}`}>
+      {errorMsg && <p className="mb-2 text-right text-price-lower">{errorMsg}</p>}
       <div
-        className={`flex ${className} ${
+        className={`flex ${
           direction === 'row'
             ? 'items-center justify-between w-full gap-3'
             : 'flex-col-reverse items-stretch gap-2'
@@ -113,7 +114,6 @@ export const OptionInput = (props: OptionInputProps) => {
           debug
         />
       </div>
-      {errorMsg && <p className="mt-2 text-right text-price-lower">{errorMsg}</p>}
     </div>
   );
 };
