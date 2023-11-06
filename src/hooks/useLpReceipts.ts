@@ -16,14 +16,14 @@ import {
   RemoveLiquidity_OrderBy,
   Sdk,
 } from '~/lib/graphql/sdk/lp';
+import { useAppSelector } from '~/store';
 import { LpReceipt, LpToken } from '~/typings/lp';
 import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
 import { trimMarket } from '~/utils/market';
 import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
-import { PromiseOnlySuccess, promiseSlowLoop } from '~/utils/promise';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
-import { useChromaticLp } from './useChromaticLp';
 import { useError } from './useError';
 import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
@@ -159,23 +159,22 @@ type MapToDetailedReceiptsArgs = {
   currentMarket: MarketLike;
   currentAction: 'all' | 'minting' | 'burning';
   settlementToken: Token;
-  clpMeta: Record<`0x${string}`, LpToken>;
+  clpMeta: LpToken;
 };
 
 const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
   const { client, receipts, currentAction, currentMarket, settlementToken, clpMeta } = args;
   const detailedReceipts = receipts.map(async (receipt) => {
-    const clpToken = clpMeta[receipt.lpAddress];
     const status = receipt.isIssued && receipt.isSettled ? 'completed' : 'standby';
     let detail = '';
     const token = {
-      name: receipt.action === 'minting' ? clpToken?.symbol : settlementToken?.name,
-      decimals: receipt.action === 'minting' ? clpToken.decimals : settlementToken?.decimals,
-      logo: receipt.action === 'burning' ? settlementToken?.image : clpToken.image,
+      name: receipt.action === 'minting' ? clpMeta?.symbol : settlementToken?.name,
+      decimals: receipt.action === 'minting' ? clpMeta.decimals : settlementToken?.decimals,
+      logo: receipt.action === 'burning' ? settlementToken?.image : clpMeta.image,
     };
 
     if (status === 'completed' && receipt.action === 'minting' && receipt.isSettled) {
-      detail = formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' ' + token.name;
+      detail = formatDecimals(receipt.mintedAmount, token.decimals, 2, true) + ' CLP';
     }
 
     if (status === 'completed' && receipt.action === 'burning' && receipt.isSettled) {
@@ -188,13 +187,13 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       const dividedByAmount = divPreserved(
         receipt.remainedAmount,
         receipt.amount,
-        clpToken.decimals
+        clpMeta.decimals
       );
-      const returnedRatio = formatDecimals(dividedByAmount * 100n, clpToken.decimals, 2, true);
+      const returnedRatio = formatDecimals(dividedByAmount * 100n, clpMeta.decimals, 2, true);
       message = `${returnedRatio}% withdrawn`;
     }
     const remainedDetail = isNotNil(receipt.remainedAmount)
-      ? formatDecimals(receipt.remainedAmount, clpToken.decimals, 2, true)
+      ? formatDecimals(receipt.remainedAmount, clpMeta.decimals, 2, true)
       : undefined;
 
     return {
@@ -218,26 +217,21 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const { lpList } = useChromaticLp();
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const clpMeta = useMemo(() => {
-    if (isNil(lpList)) {
+    if (isNil(selectedLp)) {
       return;
     }
-    const metadata = lpList.reduce(
-      (record, { clpName, clpSymbol, clpDecimals, image, address }) => {
-        record[address] = {
-          name: clpName,
-          symbol: clpSymbol,
-          decimals: clpDecimals,
-          image,
-          address,
-        };
-        return record;
-      },
-      {} as Record<Address, LpToken>
-    );
+    const { clpName, clpSymbol, clpDecimals, image, address } = selectedLp;
+    const metadata = {
+      name: clpName,
+      symbol: clpSymbol,
+      decimals: clpDecimals,
+      image,
+      address,
+    } satisfies LpToken;
     return metadata;
-  }, [lpList]);
+  }, [selectedLp]);
 
   const { currentAction } = props;
 
@@ -283,7 +277,6 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       pageIndex,
     }) => {
       const defaultToBlockTimestamp = BigInt(Math.round(Date.now() / 1000));
-      const lpAddresses = Object.keys(clpMeta) as Address[];
       const settlementToken = tokens.find((token) => token.address === currentMarket.tokenAddress);
       if (isNil(settlementToken)) {
         throw new Error('Tokens invalid');
@@ -292,34 +285,26 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       const count = pageIndex === 0 ? 2 : PAGE_SIZE;
       let receipts: LpReceipt[] = [];
 
-      await promiseSlowLoop(
-        lpAddresses,
-        async (lpAddress) => {
-          let currentReceipts = [] as LpReceipt[];
-          if (currentAction !== 'burning') {
-            const addMap = await getAddReceipts(lpGraphSdk, {
-              count,
-              walletAddress,
-              lpAddress,
-              toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
-            });
-            currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
-          }
-          if (currentAction !== 'minting') {
-            const removeMap = await getRemoveReceipts(lpGraphSdk, {
-              count,
-              walletAddress,
-              lpAddress,
-              toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
-            });
-            currentReceipts = currentReceipts.concat(Array.from(removeMap.values()));
-          }
-          receipts = receipts.concat(currentReceipts);
-        },
-        {
-          interval: 400,
-        }
-      );
+      let currentReceipts = [] as LpReceipt[];
+      if (currentAction !== 'burning') {
+        const addMap = await getAddReceipts(lpGraphSdk, {
+          count,
+          walletAddress,
+          lpAddress: clpMeta.address,
+          toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
+        });
+        currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
+      }
+      if (currentAction !== 'minting') {
+        const removeMap = await getRemoveReceipts(lpGraphSdk, {
+          count,
+          walletAddress,
+          lpAddress: clpMeta.address,
+          toBlockTimestamp: toBlockTimestamp ?? defaultToBlockTimestamp,
+        });
+        currentReceipts = currentReceipts.concat(Array.from(removeMap.values()));
+      }
+      receipts = receipts.concat(currentReceipts);
       receipts.sort((previous, next) => {
         if (isNil(previous.blockTimestamp) && isNil(next.blockTimestamp)) {
           return 0;
