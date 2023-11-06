@@ -32,7 +32,7 @@ const PoolV2 = () => {
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;
-  const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
+  const price = formatDecimals(selectedLp?.price, selectedLp?.clpDecimals, 3, true);
 
   return (
     <div className="flex flex-col min-h-[100vh] min-w-[1280px] w-full relative">

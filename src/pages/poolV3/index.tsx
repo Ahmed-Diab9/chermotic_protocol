@@ -38,7 +38,7 @@ const PoolV3 = () => {
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;
-  const price = formatDecimals(selectedLp?.price, selectedLp?.decimals, 3, true);
+  const price = formatDecimals(selectedLp?.price, selectedLp?.clpDecimals, 3, true);
   const marketDescription = selectedLp?.market.description;
   const tagClass = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
