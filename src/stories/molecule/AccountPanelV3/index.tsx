@@ -240,6 +240,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
               onChange={onAmountChange}
               className="w-full"
               error={isAmountError}
+              // errorMsg={}
             />
             {isExceeded && (
               <TooltipAlert

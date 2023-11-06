@@ -83,7 +83,7 @@ export function PoolProgressV2() {
                         outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                         outLinkAbout="Next Oracle Round"
                         className="!rounded-none"
-                        paddingX={7}
+                        padding="lg"
                         onClick={onGuideClose}
                       />
                     </div>
