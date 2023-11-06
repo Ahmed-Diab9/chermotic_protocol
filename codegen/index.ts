@@ -24,10 +24,6 @@ const CONFIG = {
       input: 'string',
       output: 'string',
     },
-    numeric: {
-      input: 'string',
-      output: 'string',
-    },
   },
 };
 
