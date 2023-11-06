@@ -70,16 +70,14 @@ export const Guide = (props: GuideProps) => {
             )}
 
             {isClosable && (
-              <div className="pl-12">
-                <Button
-                  iconOnly={<XMarkIcon />}
-                  css="unstyled"
-                  className={`absolute btn-x text-primary-lighter  ${
-                    direction === 'row' ? 'top-0' : 'top-1'
-                  }`}
-                  onClick={onClick}
-                />
-              </div>
+              <Button
+                iconOnly={<XMarkIcon />}
+                css="unstyled"
+                className={`absolute btn-x text-primary-lighter  ${
+                  direction === 'row' ? 'top-0 pl-12' : 'top-1'
+                }`}
+                onClick={onClick}
+              />
             )}
           </div>
         </div>
