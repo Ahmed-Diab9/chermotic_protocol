@@ -169,7 +169,7 @@ export function MarketSelectV3() {
                     </article>
                   </section>
                   {/* todo later : create new market */}
-                  <div className="flex items-center justify-between px-3 py-2 border-t">
+                  {/* <div className="flex items-center justify-between px-3 py-2 border-t">
                     <Button
                       label="Create a new market"
                       iconLeft={<PlusCircleIcon />}
@@ -178,7 +178,7 @@ export function MarketSelectV3() {
                       className="!p-0 !inline-flex !h-auto"
                     />
                     <p className="text-sm text-primary-light">3 markets are on the process</p>
-                  </div>
+                  </div> */}
                 </Popover.Panel>
               </>
             )}
