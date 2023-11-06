@@ -42,15 +42,15 @@ export function MarketSelectV2() {
           <BookmarkButton
             size="lg"
             onClick={() => {
-              if (isNotNil(marketAddress) && isNotNil(onBookmarkClick)) {
+              if (isNotNil(onBookmarkClick)) {
                 onBookmarkClick({
+                  id: `${tokenName}:${marketDescription}`,
                   tokenName,
-                  marketAddress,
                   marketDescription,
                 });
               }
             }}
-            isMarked={isNotNil(marketAddress) && isBookmarked?.[marketAddress]}
+            isMarked={isBookmarked?.[`${tokenName}:${marketDescription}`]}
           />
           <Popover className="h-full">
             {({ open }) => (
@@ -142,12 +142,12 @@ export function MarketSelectV2() {
                                 className="absolute left-0 ml-2"
                                 onClick={() => {
                                   onBookmarkClick?.({
+                                    id: `${settlementToken}:${description}`,
                                     tokenName: settlementToken!,
-                                    marketAddress: key,
                                     marketDescription: description,
                                   });
                                 }}
-                                isMarked={isBookmarked?.[key]}
+                                isMarked={isBookmarked?.[`${settlementToken}:${description}`]}
                               />
                               <button
                                 className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 border ${

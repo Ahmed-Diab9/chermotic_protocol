@@ -2,7 +2,6 @@ import { isNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { formatUnits } from 'viem';
-import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
@@ -28,25 +27,25 @@ export const useBookmarkBoard = () => {
           type: 'string',
         }
       );
-      prices[bookmark.marketAddress] = price;
+      prices[bookmark.id] = price;
       return prices;
-    }, {} as Record<Address, string>);
+    }, {} as Record<string, string>);
   }, [bookmarkOracles]);
 
   const bookmarkClasses = useMemo(() => {
     return bookmarkOracles?.reduce((classes, bookmark) => {
       const className = compareOracles(bookmark.previousOracle, bookmark.currentOracle);
-      classes[bookmark.marketAddress] = className;
+      classes[bookmark.id] = className;
       return classes;
-    }, {} as Record<Address, string>);
+    }, {} as Record<string, string>);
   }, [bookmarkOracles]);
 
   const bookmarks = useMemo(() => {
     return bookmarkOracles?.map((oracle) => ({
+      id: oracle.id,
       name: `${oracle.tokenName}-${oracle.marketDescription}`,
       tokenName: oracle.tokenName,
       marketDescription: oracle.marketDescription,
-      marketAddress: oracle.marketAddress,
     }));
   }, [bookmarkOracles]);
 
@@ -57,7 +56,7 @@ export const useBookmarkBoard = () => {
         toast.error('Token not selected.');
         return;
       }
-      const market = markets?.find((market) => market.address === bookmark.marketAddress);
+      const market = markets?.find((market) => market.description === bookmark.marketDescription);
       if (isNil(market)) {
         toast.error('Market not selected.');
         return;
