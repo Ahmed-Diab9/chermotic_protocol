@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 export const LP_PERFORMANCES = gql`
-  query LPPerformancesByPk($address: citext!, $date: date!) {
+  query LpPerformancesByPk($address: citext!, $date: date!) {
     lp_performances_by_pk(address: $address, date: $date) {
       address
       date

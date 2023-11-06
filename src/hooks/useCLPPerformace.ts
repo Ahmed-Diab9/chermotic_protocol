@@ -19,7 +19,7 @@ export const useCLPPerformance = () => {
     error,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ lpAddress }) => {
     const date = new Date().toISOString();
-    const response = await performanceSdk.LPPerformancesByPk({ address: lpAddress, date });
+    const response = await performanceSdk.LpPerformancesByPk({ address: lpAddress, date });
 
     const performaces = periods.reduce((performances, period) => {
       const profit = response.lp_performances_by_pk?.[`rate_${period}`];

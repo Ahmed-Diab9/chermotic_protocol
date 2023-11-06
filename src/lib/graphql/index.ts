@@ -37,6 +37,10 @@ const urlMap: UrlMap = [
     operations: getOperations(Hasura),
     url: `${HASURA_API_URL}`,
   },
+  {
+    operations: getOperations(Performance),
+    url: `${HASURA_API_URL}`,
+  },
 ];
 
 const getRequestMiddleware =
