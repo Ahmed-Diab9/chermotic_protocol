@@ -79,7 +79,7 @@ export const useChromaticAccount = () => {
           const balance = await accountApi.balance(token.address);
           return { token: token.address, balance };
         },
-        { interval: 500, hasCatch: true }
+        { interval: 500 }
       );
 
       const balances = fromPairs(

@@ -13,7 +13,7 @@ import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { promiseSlowLoop } from '~/utils/promise';
-import CLP from '../assets/tokens/CLP.png';
+import CLP from '../assets/tokens/CLP.svg';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
@@ -79,7 +79,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
             }
             case 3: {
               const { decimals, symbol, name } = value as Awaited<typeof metadata>;
-              provider.decimals = decimals;
+              provider.clpDecimals = decimals;
               provider.clpName = name;
               provider.clpSymbol = symbol;
               break;
@@ -168,7 +168,7 @@ export const useEntireChromaticLp = () => {
         chromaticLps = chromaticLps.concat(lpArray);
       }
       return chromaticLps.map((lpValue) => {
-        const { totalValue, totalSupply, decimals, market } = lpValue;
+        const { totalValue, totalSupply, clpDecimals, market } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);
         if (isNil(settlementToken)) {
           return {
@@ -178,7 +178,7 @@ export const useEntireChromaticLp = () => {
         if (totalSupply === 0n) {
           return { ...lpValue, settlementToken };
         }
-        const lpPrice = divPreserved(totalValue, totalSupply, decimals);
+        const lpPrice = divPreserved(totalValue, totalSupply, clpDecimals);
         return {
           ...lpValue,
           price: lpPrice,
@@ -215,7 +215,7 @@ export const useChromaticLp = () => {
       const registry = lpClient.registry();
       const lpArray = await fetchChromaticLp({ lpClient, registry, walletAddress, market });
       return lpArray.map((lpValue) => {
-        const { totalValue, totalSupply, decimals } = lpValue;
+        const { totalValue, totalSupply, clpDecimals } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);
         if (isNil(settlementToken) || isNil(currentMarket)) {
           return {
@@ -225,7 +225,7 @@ export const useChromaticLp = () => {
         if (totalSupply === 0n) {
           return { ...lpValue, settlementToken, market: currentMarket };
         }
-        const lpPrice = divPreserved(totalValue, totalSupply, decimals);
+        const lpPrice = divPreserved(totalValue, totalSupply, clpDecimals);
         return {
           ...lpValue,
           price: lpPrice,

@@ -85,11 +85,15 @@ export function useWalletPopoverV3() {
     }[]
   >((acc, token) => {
     // if (isNil(tokenBalances[token.address])) return acc;
+    const balance = tokenBalances?.[token.address];
+    if (isNil(balance) || balance === 0n) {
+      return acc;
+    }
     const key = token.address;
     const name = token.name;
     const image = token.image;
 
-    const balance = numberFormat(
+    const formattedBalance = numberFormat(
       formatUnits(tokenBalances?.[token.address] || 0n, token.decimals),
       {
         maxDigits: 5,
@@ -99,12 +103,15 @@ export function useWalletPopoverV3() {
       }
     );
     const explorerUrl = getExplorerUrl('token', token.address);
-    acc.push({ key, name, balance, explorerUrl, image });
+    acc.push({ key, name, balance: formattedBalance, explorerUrl, image });
     return acc;
   }, []);
   const isAssetEmpty = assets.length === 0;
 
   const formattedLps = (lpList || []).reduce<FormattedLp[]>((acc, lp) => {
+    if (lp.balance === 0n) {
+      return acc;
+    }
     const key = `${lp.settlementToken.name}-${lp.market.description}-${lp.name}`;
     const name = lp.name;
     const clpSymbol = lp.clpSymbol;
@@ -112,7 +119,7 @@ export function useWalletPopoverV3() {
 
     const market = lp.market.description;
     const token = lp.settlementToken.name;
-    const balance = formatDecimals(lp.balance, lp.decimals, 2, true);
+    const balance = formatDecimals(lp.balance, lp.clpDecimals, 2, true);
     acc.push({ key, name, clpSymbol, token, market, balance, image });
     return acc;
   }, []);
@@ -136,7 +143,7 @@ export function useWalletPopoverV3() {
     }
     onTokenSelect(token);
     onMarketSelect(market);
-    navigate('/pool3');
+    navigate('/pool');
   };
   return {
     onConnect,

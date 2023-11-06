@@ -57,11 +57,12 @@ export const useLiquidityPools = () => {
         (marketAddress) => {
           return getLiquidityPool(marketApi, lensApi, marketAddress as Address);
         },
-        { interval: 500 }
+        { interval: 250 }
       );
     },
     {
       dedupingInterval: 8000,
+      keepPreviousData: true,
     }
   );
 
@@ -81,10 +82,13 @@ export const useLiquidityPool = (marketAddress?: Address) => {
   const fetchKeyData = {
     name: 'useLiquidityPool',
     marketAddress: currentMarketAddress,
-    oracleVersion: currentMarket?.oracleValue.version,
   };
 
-  const { data: liquidityPool, mutate: fetchLiquidityPool } = useSWR(
+  const {
+    data: liquidityPool,
+    mutate: fetchLiquidityPool,
+    error,
+  } = useSWR(
     isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress }) => {
       const lensApi = client.lens();
@@ -129,6 +133,8 @@ export const useLiquidityPool = (marketAddress?: Address) => {
     }
   }, [liquidityPool]);
 
+  useError({ error });
+
   return {
     liquidityPool,
     fetchLiquidityPool,
@@ -171,19 +177,16 @@ async function getLiquidityPool(
     )
   );
 
-  const clbTokenMetas = await promiseSlowLoop(
-    tokenIds,
-    async (tokenId, index) => {
+  const liquidityBins = await liquidityBinsPromise;
+  const clbTokenMetas = await PromiseOnlySuccess(
+    tokenIds.map(async (tokenId, index) => {
       return {
         tokenId,
         baseFeeRate: baseFeeRates[index],
         ...(await marketApi.clbTokenMeta(marketAddress, tokenId)),
       };
-    },
-    { interval: 500 }
+    })
   );
-
-  const liquidityBins = await liquidityBinsPromise;
   const bins = clbTokenMetas.map(({ tokenId, baseFeeRate, name, description, decimals, image }) => {
     const bin = liquidityBins[baseFeeRate];
     return {

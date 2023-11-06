@@ -19,7 +19,7 @@ export const usePoolMenuV3 = () => {
 
   const formattedLp = useMemo(() => {
     return lpList?.map((lp, lpIndex) => {
-      const price = formatDecimals(lp.price, lp.decimals, 2, true);
+      const price = formatDecimals(lp.price, lp.clpDecimals, 2, true);
       const assets = formatDecimals(lp.totalValue, lp.settlementToken.decimals, 2, true);
       return {
         name: lp.name,

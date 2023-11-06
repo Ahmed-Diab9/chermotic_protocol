@@ -16,6 +16,14 @@ const CONFIG = {
       input: 'string',
       output: 'string',
     },
+    citext: {
+      input: 'string',
+      output: 'string',
+    },
+    date: {
+      input: 'string',
+      output: 'string',
+    },
   },
 };
 
@@ -49,6 +57,12 @@ const config: CodegenConfig = {
         ...CONFIG,
         useWebSocketClient: true,
       },
+    },
+    [`${GENERATED_PATH}/performance.ts`]: {
+      documents: 'codegen/performance.ts',
+      schema: `${HASURA_API_URL}`,
+      plugins: PLUGINS,
+      config: CONFIG,
     },
   },
 };

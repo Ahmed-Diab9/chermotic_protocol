@@ -29,7 +29,7 @@ export const useAddChromaticLp = () => {
       }
       setIsAddPending(true);
       const lp = lpClient.lp();
-      const parsedAmount = parseUnits(amount, selectedLp.decimals);
+      const parsedAmount = parseUnits(amount, selectedLp.clpDecimals);
       const isApproved = await lp.approveSettlementTokenToLp(selectedLp.address, parsedAmount);
       if (!isApproved) {
         throw new Error('Settlement token approval failed.');
