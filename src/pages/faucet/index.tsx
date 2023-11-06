@@ -1,15 +1,25 @@
+import { isNil } from 'ramda';
 import { useAccount } from 'wagmi';
 import { OutlinkIcon } from '~/assets/icons/Icon';
+import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { useFaucet } from '~/hooks/useFaucet';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 
 const Faucet = () => {
-  const { allowedTokens, buttonStates, isLoading, currentChain, onFaucetClick } = useFaucet({
+  const {
+    allowedTokens,
+    buttonStates,
+    isLoading: isTokenLoading,
+    currentChain,
+    onFaucetClick,
+  } = useFaucet({
     allowedTokens: ['cBTC', 'cETH'],
   });
   const { address } = useAccount();
+  const isLoading = isTokenLoading || isNil(buttonStates);
 
   return (
     <>
@@ -34,29 +44,37 @@ const Faucet = () => {
                 <div className="text-xl w-[calc(100%-200px)] overflow-hidden overflow-ellipsis text-left">
                   {address}
                 </div>
-                <Button iconOnly={<OutlinkIcon />} className="ml-auto" css="unstyled" />
-              </div>
-            </div>
-            {allowedTokens?.map((allowedToken) => (
-              <div
-                key={`${allowedToken.address}-${allowedToken.name}`}
-                className="flex items-center gap-3 px-10 py-6 border-t"
-              >
-                <Avatar size="2xl" />
-                <div>
-                  <h2 className="text-2xl">{allowedToken.name}</h2>
-                  <p className="mt-1 text-primary-light">{currentChain.name}</p>
-                </div>
                 <Button
-                  onClick={() => onFaucetClick(allowedToken.name)}
-                  label={buttonStates?.[allowedToken.name].label}
+                  iconOnly={<OutlinkIcon />}
                   className="ml-auto"
-                  css="active"
-                  size="xl"
-                  disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
+                  css="unstyled"
+                <Button iconOnly={<OutlinkIcon />} className="ml-auto" css="unstyled" />
                 />
               </div>
-            ))}
+            </div>
+            <SkeletonElement isLoading={isLoading} containerClassName="flex px-10 h-[40px]">
+              {allowedTokens?.map((allowedToken) => (
+                <div
+                  key={`${allowedToken.address}-${allowedToken.name}`}
+                  className="flex items-center gap-3 px-10 py-6 border-t"
+                >
+                  <Avatar size="2xl" />
+                  <div>
+                    <h2 className="text-2xl">{allowedToken.name}</h2>
+                    <p className="mt-1 text-primary-light">{currentChain.name}</p>
+                  </div>
+                  <Button
+                    onClick={() => onFaucetClick(allowedToken.name)}
+                    label={buttonStates?.[allowedToken.name].label}
+                    className="ml-auto"
+                    css="active"
+                    size="xl"
+                    disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
+                  />
+                </div>
+              ))}
+            </SkeletonElement>
+
             <div className="px-10 mt-10">
               <p className="text-lg text-primary-light">
                 You can obtain 100 cETH or 100 cBTC at once. After receiving it, it will be
