@@ -41,7 +41,7 @@ export const useTokenBalances = () => {
       return [tokens[index].address, balance || 0n] as const;
     });
 
-    return fromPairs(result) as Record<Address, bigint>;
+    return fromPairs(result as [Address, bigint][]) as Record<Address, bigint>;
   });
 
   useError({ error, logger });
