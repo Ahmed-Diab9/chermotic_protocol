@@ -56,7 +56,7 @@ function Airdrop() {
                 <Tab.Group>
                   <div className="flex gap-10">
                     <Tab.List className="tabs-list min-w-[210px] tabs-flex-column">
-                      <Tab>Airdrop 1</Tab>
+                      <Tab>Season 1</Tab>
                       <Tab>My History</Tab>
                       <button
                         onClick={() => {
@@ -73,17 +73,18 @@ function Airdrop() {
                         <section>
                           <div className="w-[560px]">
                             <BlurText
-                              label="Chromatic Airdrop Program"
+                              label="Chromatic Airdrop Season 1"
                               className="text-[60px]"
                               color="chrm"
                             />
                           </div>
                           <div className="mt-10 text-left">
-                            <p className="text-xl text-primary-light">
-                              Airdrop season 1 for Testnet has just begun!
+                            <p className="mb-2 text-xl text-primary-light">
+                              May the CHRMA be with you!
                             </p>
                             <p className="text-xl text-primary-light">
-                              Airdrop 1 period: Oct 20 2023 ~ Jan 20 2024
+                              Airdrop 1 period: Nov 2023 ~ 1Q 2024 (The end date will be announced
+                              later.)
                             </p>
                           </div>
                         </section>
@@ -163,21 +164,27 @@ function Airdrop() {
                               <img src={RandomboxImage} alt="ramdom box" className="w-[330px]" />
                               <div className="flex mb-10 text-lg text-left border-y text-primary-light">
                                 <div className="w-1/4 px-3 py-5">
-                                  <p>Credit is required to open the Random Box to obtain rCHR.</p>
-                                </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
                                   <p>
-                                    Random Box can be activated and opened on 1/1/2018 after the end
-                                    of the Testnet period.
+                                    You can obtain rCHRMA through random box. 100 Credits are
+                                    required to run Random Box once.
                                   </p>
                                 </div>
                                 <div className="w-1/4 px-3 py-5 border-l">
-                                  <p>To open Random Box, you need Discord Log-in.</p>
+                                  <p>
+                                    Random Box will be activated and open in the first quarter of
+                                    2024 after the end of the testnet period.
+                                  </p>
                                 </div>
                                 <div className="w-1/4 px-3 py-5 border-l">
                                   <p>
-                                    When signing in, you must be registered on the Chromatic
-                                    Protocol server.
+                                    To open Random Box, you will need to join a specific Discord
+                                    server specified by Chromatic Protocol.
+                                  </p>
+                                </div>
+                                <div className="w-1/4 px-3 py-5 border-l">
+                                  <p>
+                                    The address of the Discord server designated by Chromatic
+                                    Protocol will be announced before the random box is released.
                                   </p>
                                   <Button
                                     label="Discord Chromatic Server"
