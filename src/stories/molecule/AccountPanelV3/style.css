@@ -1,5 +1,5 @@
 .AccountPanelV3 {
-  .btn-tabs[aria-selected='true'] {
+  .btn-tab[aria-selected='true'] {
     @apply bg-primary text-inverted;
   }
 }

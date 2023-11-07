@@ -79,7 +79,8 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
           </article>
           <div className="my-7">
             <p className="text-primary-light">
-              This process may take approximately 10 seconds or so. Please wait a moment.
+              This process may take approximately 10 seconds or so. <br />
+              Please wait a moment.
             </p>
           </div>
           <div className="text-center">
@@ -107,10 +108,10 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
 
       {isAccountExist && (
         <>
-          <div className="w-full tabs">
+          <div className="w-full wrapper-tabs">
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
-              <Tab.List className="flex items-center w-full mb-5">
+              <Tab.List className="flex items-center w-full mb-5 tabs-list">
                 <div className="text-left">
                   <p className="mb-1 text-primary-lighter">Account Balance</p>
                   <Avatar
@@ -121,10 +122,10 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
                   />
                 </div>
                 <div className="flex gap-3 ml-auto">
-                  <Tab value="short" className="btn-tabs btn-sm btn btn-line">
+                  <Tab value="short" className="btn-tab btn-sm btn btn-line">
                     Deposit
                   </Tab>
-                  <Tab value="long" className="btn-tabs btn-sm btn btn-line">
+                  <Tab value="long" className="btn-tab btn-sm btn btn-line">
                     Withdraw
                   </Tab>
                 </div>
@@ -239,8 +240,17 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
               onChange={onAmountChange}
               className="w-full"
               error={isAmountError}
+              errorMsg={
+                isLess
+                  ? `Less than minimum amount. (${minimumAmount})`
+                  : isExceeded && isDeposit
+                  ? 'Exceeded your wallet balance.'
+                  : isExceeded && !isDeposit
+                  ? 'Exceeded the available margin.'
+                  : undefined
+              }
             />
-            {isExceeded && (
+            {/* {isExceeded && (
               <TooltipAlert
                 label="input-amount"
                 tip={isDeposit ? 'Exceeded your wallet balance.' : 'Exceeded the available margin.'}
@@ -251,7 +261,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
                 label="input-amount"
                 tip={`Less than minimum amount. (${minimumAmount})`}
               />
-            )}
+            )} */}
           </div>
           <div className="text-sm">
             <div className="mb-1 text-primary-lighter">

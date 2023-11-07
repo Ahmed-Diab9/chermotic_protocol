@@ -41,11 +41,11 @@ export const TradeManagementV3 = () => {
 
   return (
     <div className="TradeManagementV3">
-      <div className="w-full tabs tabs-line tabs-left">
+      <div className="w-full wrapper-tabs">
         <Tab.Group>
           <div className="flex flex-col w-full">
             <div className="flex items-end border-b border-gray-light">
-              <Tab.List className="flex-none tabs-list">
+              <Tab.List className="flex-none tabs-list tabs-line tabs-left">
                 <Tab>Position</Tab>
                 <Tab>History</Tab>
                 <Tab>Trades</Tab>

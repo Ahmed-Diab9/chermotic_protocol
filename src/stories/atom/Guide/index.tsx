@@ -1,6 +1,7 @@
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '../Outlink';
+import './style.css';
 
 interface GuideProps {
   title: string;
@@ -9,6 +10,7 @@ interface GuideProps {
   outLinkAbout?: string;
   direction?: 'row' | 'column';
   css?: 'default' | 'alert';
+  padding?: 'sm' | 'base' | 'lg';
   className?: string;
   isVisible?: boolean;
   isClosable?: boolean;
@@ -23,6 +25,7 @@ export const Guide = (props: GuideProps) => {
     outLinkAbout,
     direction = 'column',
     css = 'default',
+    padding = 'base',
     className,
     onClick,
     isVisible,
@@ -33,11 +36,11 @@ export const Guide = (props: GuideProps) => {
     <>
       {isVisible && (
         <div
-          className={`relative px-5 text-left rounded flex gap-3 ${
+          className={`relative text-left rounded flex gap-3 ${
             direction === 'row' ? 'py-2 items-center' : 'py-4'
-          } ${className} ${
+          } ${
             css === 'alert' ? 'bg-price-lower/10 text-price-lower' : 'bg-paper-light'
-          }`}
+          } ${className} guide guide-p-${padding}`}
         >
           <div>
             {/* <BellIcon className="w-4" /> */}
@@ -67,16 +70,14 @@ export const Guide = (props: GuideProps) => {
             )}
 
             {isClosable && (
-              <div className="pl-12">
-                <Button
-                  iconOnly={<XMarkIcon />}
-                  css="unstyled"
-                  className={`absolute right-1 text-primary-lighter  ${
-                    direction === 'row' ? 'top-0' : 'top-1'
-                  }`}
-                  onClick={onClick}
-                />
-              </div>
+              <Button
+                iconOnly={<XMarkIcon />}
+                css="unstyled"
+                className={`absolute btn-x text-primary-lighter  ${
+                  direction === 'row' ? 'top-0 pl-12' : 'top-1'
+                }`}
+                onClick={onClick}
+              />
             )}
           </div>
         </div>

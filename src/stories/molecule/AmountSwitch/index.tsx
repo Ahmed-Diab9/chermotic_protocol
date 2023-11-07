@@ -70,10 +70,12 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}
+            errorMsg={errorMessage}
             assetSrc={tokenImage}
             direction={optionInputDirection}
+            size="lg"
           />
-          {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}
+          {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">

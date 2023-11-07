@@ -48,9 +48,9 @@ export function TradePanel() {
         </div>
       ) : (
         <div className="relative w-full max-w-[680px] bg-paper border dark:border-transparent shadow-lg dark:shadow-none rounded-2xl">
-          <div className="w-full tabs tabs-line tabs-lg">
+          <div className="w-full wrapper-tabs">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-              <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto">
+              <Tab.List className="flex w-full gap-10 px-10 pt-4 mx-auto tabs-list tabs-line tabs-lg">
                 <Tab
                   value="short"
                   className="pb-2 mx-auto text-3xl font-bold border-b-2 border-primary"

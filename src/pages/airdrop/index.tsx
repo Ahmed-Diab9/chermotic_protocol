@@ -52,10 +52,10 @@ function Airdrop() {
         {_isConnected ? (
           <>
             <main>
-              <div className="tabs tabs-flex-column">
+              <div className="wrapper-tabs">
                 <Tab.Group>
                   <div className="flex gap-10">
-                    <Tab.List className="tabs-list min-w-[210px]">
+                    <Tab.List className="tabs-list min-w-[210px] tabs-flex-column">
                       <Tab>Airdrop 1</Tab>
                       <Tab>My History</Tab>
                       <button

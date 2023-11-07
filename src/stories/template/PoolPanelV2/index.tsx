@@ -56,11 +56,11 @@ export function PoolPanelV2() {
 
   return (
     <div className="PoolPanelV2">
-      <div className="tabs tabs-default tabs-lg">
+      <div className="wrapper-tabs">
         <Tab.Group onChange={onTabChange}>
-          <Tab.List className="">
-            <Tab className="w-1/2 text-3xl">ADD</Tab>
-            <Tab className="w-1/2 text-3xl">REMOVE</Tab>
+          <Tab.List className="flex w-full tabs-list tabs-default tabs-lg">
+            <Tab className="btn-tab">ADD</Tab>
+            <Tab className="btn-tab">REMOVE</Tab>
           </Tab.List>
           <Tab.Panels className="flex flex-col items-center w-full pt-5 pb-0 px-7">
             {/* tab - add */}
@@ -119,9 +119,9 @@ export function PoolPanelV2() {
 
               <section className="pt-5 mt-3 border-t border-dashed">
                 <article className="mb-5">
-                  <div className="flex justify-between place-items-stretch">
+                  <div className="flex justify-between gap-5">
                     <div className="flex flex-col items-start justify-between">
-                      <div className="flex flex-wrap items-center text-left gap-x-2">
+                      <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
@@ -142,11 +142,13 @@ export function PoolPanelV2() {
                         maxValue={maxAmount}
                         onChange={onAmountChange}
                         error={isExceeded}
+                        errorMsg={isExceeded ? 'Exceeded your wallet balance.' : undefined}
                         assetSrc={tokenImage}
+                        size="lg"
                       />
-                      {isExceeded && (
+                      {/* {isExceeded && (
                         <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
-                      )}
+                      )} */}
                     </div>
                   </div>
                   {/* To be added later */}
@@ -231,13 +233,13 @@ export function PoolPanelV2() {
               </div> */}
 
               {/* inner tab */}
-              <section className="tabs-line tabs-base">
+              <section className="wrapper-tabs">
                 <Tab.Group>
                   {({ selectedIndex }) => (
                     <>
                       {/* tab02: required for the next version */}
                       {/* <div className="flex flex-wrap items-baseline border-b">
-                        <Tab.List className="!justify-start !gap-6">
+                        <Tab.List className="!justify-start !gap-6 tabs-list tabs-line tabs-base">
                           <Tab>Remove from Wallet</Tab>
                           <Tab>Remove from Staking vault</Tab>
                         </Tab.List>
@@ -245,9 +247,9 @@ export function PoolPanelV2() {
                       <Tab.Panels className="mt-5">
                         <Tab.Panel>
                           <article>
-                            <div className="flex justify-between mb-5 place-items-stretch">
+                            <div className="flex justify-between gap-5 mb-5">
                               <div className="flex flex-col items-start justify-between">
-                                <div className="flex flex-wrap items-center text-left gap-x-2">
+                                <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
                                     <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
@@ -259,23 +261,22 @@ export function PoolPanelV2() {
                                   <Avatar label={'CLP'} size="xs" gap="1" src={clpImage} />
                                 </span>
                               </div>
-                              {/* todo: input error */}
-                              {/* - Input : error prop is true when has error */}
-                              {/* - TooltipAlert : is shown when has error */}
                               <div className="tooltip-wallet-balance">
                                 <OptionInput
                                   value={amount}
                                   maxValue={maxAmount}
                                   onChange={onAmountChange}
                                   error={isExceeded}
+                                  errorMsg={isExceeded ? 'Exceeded your CLP balance.' : undefined}
                                   assetSrc={clpImage}
+                                  size="lg"
                                 />
-                                {isExceeded && (
+                                {/* {isExceeded && (
                                   <TooltipAlert
                                     label="wallet-balance"
-                                    tip="Exceeded your wallet balance."
+                                    tip="Exceeded your CLP balance."
                                   />
-                                )}
+                                )} */}
                               </div>
                             </div>
                             {/* 

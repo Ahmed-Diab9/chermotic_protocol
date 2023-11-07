@@ -74,9 +74,9 @@ export function PoolPanel() {
 
   return (
     <div className="PoolPanel">
-      <div className="tabs tabs-line tabs-lg">
+      <div className="wrapper-tabs">
         <Tab.Group>
-          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
+          <Tab.List className="w-full mx-auto pt-4 flex !justify-center tabs-list tabs-line tabs-lg">
             <Tab className="text-3xl">ADD</Tab>
             <Tab className="text-3xl">REMOVE</Tab>
           </Tab.List>
@@ -323,12 +323,12 @@ export function PoolPanel() {
               </section>
 
               {/* inner tab */}
-              <section className="tabs-line tabs-base">
+              <section className="tabs tabs-base">
                 <Tab.Group onChange={onTabChange}>
                   {({ selectedIndex }) => (
                     <>
                       <div className="flex flex-wrap items-baseline">
-                        <Tab.List className="pt-[36px] !justify-start !gap-10">
+                        <Tab.List className="pt-[36px] !justify-start !gap-10 tabs-list tabs-line">
                           <Tab>Short LP</Tab>
                           <Tab>Long LP</Tab>
                         </Tab.List>

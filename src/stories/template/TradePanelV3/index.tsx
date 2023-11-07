@@ -1,7 +1,6 @@
 import { Tab } from '@headlessui/react';
 import { Resizable } from 're-resizable';
 import { useMemo, useState } from 'react';
-// import { DecreaseIcon, IncreaseIcon } from '~/assets/icons/Icon';
 import { useThrottledResize } from '~/hooks/useThrottledResize';
 import { Outlink } from '~/stories/atom/Outlink';
 import { TradeContentV3 } from '~/stories/molecule/TradeContentV3';
@@ -52,14 +51,12 @@ export const TradePanelV3 = () => {
             <div className="flex">
               <div className="flex-grow border-r">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-lower border-b">
-                  {/* <DecreaseIcon /> */}
                   SHORT
                 </div>
                 <TradeContentV3 direction="short" />
               </div>
               <div className="flex-grow">
                 <div className="flex items-center justify-center h-[60px] gap-2 text-4xl font-extrabold text-price-higher border-b">
-                  {/* <IncreaseIcon /> */}
                   LONG
                 </div>
                 <TradeContentV3 direction="long" />
@@ -67,15 +64,13 @@ export const TradePanelV3 = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full tabs tabs-default tabs-lg">
+          <div className="w-full wrapper-tabs">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-              <Tab.List className="flex w-full">
-                <Tab value="short" className="btn-tabs short">
-                  {/* <DecreaseIcon /> */}
+              <Tab.List className="flex w-full tabs-list tabs-default tabs-lg">
+                <Tab value="short" className="btn-tab short">
                   SHORT
                 </Tab>
-                <Tab value="long" className="btn-tabs long">
-                  {/* <IncreaseIcon /> */}
+                <Tab value="long" className="btn-tab long">
                   LONG
                 </Tab>
               </Tab.List>

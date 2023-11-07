@@ -66,14 +66,14 @@ export const TradePanelV2 = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full tabs tabs-default tabs-lg">
+          <div className="w-full wrapper-tabs">
             <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}>
-              <Tab.List className="flex w-full">
-                <Tab value="short" className="btn-tabs short">
+              <Tab.List className="flex w-full tabs-list tabs-default tabs-lg">
+                <Tab value="short" className="btn-tab short">
                   <DecreaseIcon />
                   SHORT
                 </Tab>
-                <Tab value="long" className="btn-tabs long">
+                <Tab value="long" className="btn-tab long">
                   <IncreaseIcon />
                   LONG
                 </Tab>
