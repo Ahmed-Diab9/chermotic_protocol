@@ -249,6 +249,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
                   ? 'Exceeded the available margin.'
                   : undefined
               }
+              errorMsgAlign="left"
             />
             {/* {isExceeded && (
               <TooltipAlert
