@@ -48,10 +48,16 @@ export const usePoolProgressV2 = () => {
       }
     }
   }, [count, receiptAction, receipts]);
-  const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
+  const { state: storedIsGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideOpen',
     false
   );
+  const isGuideOpen = useMemo(() => {
+    if (!storedIsGuideOpen) {
+      return storedIsGuideOpen;
+    }
+    return receipts.filter((receipt) => !receipt.isSettled).length > 0;
+  }, [storedIsGuideOpen, receipts]);
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
