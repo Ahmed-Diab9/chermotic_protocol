@@ -47,7 +47,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
   } = usePositionItemV2(props);
 
   return (
-    <div className="tr">
+    <div className="text-left tr">
       <div className="td">
         <div>
           <div className="text-sm text-primary-light">

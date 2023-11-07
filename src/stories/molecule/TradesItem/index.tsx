@@ -17,7 +17,7 @@ export function TradesItem(props: TradesItemProps) {
   } = props;
 
   return (
-    <div className="tr" ref={(element) => onLoadRef?.(element)}>
+    <div className="text-left tr" ref={(element) => onLoadRef?.(element)}>
       <div className="td">
         <div>
           <div className="flex text-sm text-primary-light">
