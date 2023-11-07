@@ -19,7 +19,7 @@ import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
 export function useTradeManagementV3() {
   const { currentMarket } = useMarket();
-  const { positions, isLoading } = usePositions();
+  const { positions, isLoading, fetchCurrentPositions } = usePositions();
   const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
   const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
   const { initialBlockNumber } = useInitialBlockNumber();
@@ -38,9 +38,11 @@ export function useTradeManagementV3() {
     if (previousOracle !== currentMarket.oracleValue.version) {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
+        fetchCurrentPositions();
       }
       if (isNotNil(closingPositionSize) && closingPositionSize > 0) {
         toast.info('The closing process has been completed.');
+        fetchCurrentPositions();
       }
     }
   }, [currentMarket, previousOracle, openingPositionSize, closingPositionSize]);
