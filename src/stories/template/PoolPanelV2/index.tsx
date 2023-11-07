@@ -249,7 +249,7 @@ export function PoolPanelV2() {
                           <article>
                             <div className="flex justify-between gap-5 mb-5">
                               <div className="flex flex-col items-start justify-between">
-                                <div className="flex flex-wrap items-center text-left gap-x-2">
+                                <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
                                   <p className="text-lg text-primary-light">
                                     <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
