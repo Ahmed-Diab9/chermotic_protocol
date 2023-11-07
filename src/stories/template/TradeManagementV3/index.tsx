@@ -27,6 +27,7 @@ export const TradeManagementV3 = () => {
     isPositionsEmpty,
     positionList,
     isHistoryLoading,
+    isTradeLogsLoading,
     historyList,
     tradeList,
     hasMoreHistory,
@@ -187,7 +188,7 @@ export const TradeManagementV3 = () => {
                         {hasMoreHistory && (
                           <HistoryItem
                             key={'history-next'}
-                            isLoading={true}
+                            isLoading={isHistoryLoading}
                             onLoadRef={onLoadHistoryRef}
                           />
                         )}
@@ -215,13 +216,13 @@ export const TradeManagementV3 = () => {
                           <TradesItem
                             key={trade.positionId.toString()}
                             trade={trade}
-                            isLoading={isHistoryLoading}
+                            isLoading={isTradeLogsLoading}
                           />
                         ))}
                         {hasMoreTrades && (
                           <TradesItem
                             key="trades-next"
-                            isLoading={true}
+                            isLoading={isTradeLogsLoading}
                             onLoadRef={onLoadTradesRef}
                           />
                         )}
