@@ -119,9 +119,9 @@ export function PoolPanelV2() {
 
               <section className="pt-5 mt-3 border-t border-dashed">
                 <article className="mb-5">
-                  <div className="flex justify-between place-items-stretch">
+                  <div className="flex justify-between gap-5">
                     <div className="flex flex-col items-start justify-between">
-                      <div className="flex flex-wrap items-center text-left gap-x-2">
+                      <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
@@ -247,7 +247,7 @@ export function PoolPanelV2() {
                       <Tab.Panels className="mt-5">
                         <Tab.Panel>
                           <article>
-                            <div className="flex justify-between mb-5 place-items-stretch">
+                            <div className="flex justify-between gap-5 mb-5">
                               <div className="flex flex-col items-start justify-between">
                                 <div className="flex flex-wrap items-center text-left gap-x-2">
                                   <h4 className="text-xl">CLP Balance (Wallet)</h4>
@@ -261,23 +261,22 @@ export function PoolPanelV2() {
                                   <Avatar label={'CLP'} size="xs" gap="1" src={clpImage} />
                                 </span>
                               </div>
-                              {/* todo: input error */}
-                              {/* - Input : error prop is true when has error */}
-                              {/* - TooltipAlert : is shown when has error */}
                               <div className="tooltip-wallet-balance">
                                 <OptionInput
                                   value={amount}
                                   maxValue={maxAmount}
                                   onChange={onAmountChange}
                                   error={isExceeded}
+                                  errorMsg={isExceeded ? 'Exceeded your CLP balance.' : undefined}
                                   assetSrc={clpImage}
+                                  size="lg"
                                 />
-                                {isExceeded && (
+                                {/* {isExceeded && (
                                   <TooltipAlert
                                     label="wallet-balance"
                                     tip="Exceeded your CLP balance."
                                   />
-                                )}
+                                )} */}
                               </div>
                             </div>
                             {/* 
