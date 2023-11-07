@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 
@@ -12,6 +13,7 @@ export const useAddChromaticLp = () => {
   const { currentMarket } = useMarket();
   const { address } = useAccount();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const { fetchBalances } = useChromaticAccount();
   const [isAddPending, setIsAddPending] = useState(false);
 
   const onAddChromaticLp = async (amount: string) => {
@@ -34,6 +36,7 @@ export const useAddChromaticLp = () => {
         throw new Error('Settlement token approval failed.');
       }
       const receipt = await lp.addLiquidity(selectedLp.address, parsedAmount, address);
+      await fetchBalances();
 
       setIsAddPending(false);
     } catch (error) {
