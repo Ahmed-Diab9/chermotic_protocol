@@ -76,8 +76,8 @@ export function useMarketSelectV3() {
 
   const priceFormatter = Intl.NumberFormat('en', {
     useGrouping: true,
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
+    maximumFractionDigits: 3,
+    minimumFractionDigits: 3,
   });
 
   const isLoading = isTokenLoading || isMarketLoading;
@@ -107,7 +107,7 @@ export function useMarketSelectV3() {
     };
     const settlementToken = _tokens?.find((token) => token.address === market.tokenAddress)?.name;
     const description = market.description;
-    const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
+    const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 3)));
     const image = market.image;
     return {
       key,
@@ -123,7 +123,7 @@ export function useMarketSelectV3() {
   const price = formatDecimals(
     currentMarket?.oracleValue?.price || 0,
     ORACLE_PROVIDER_DECIMALS,
-    2,
+    3,
     true
   );
   const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
