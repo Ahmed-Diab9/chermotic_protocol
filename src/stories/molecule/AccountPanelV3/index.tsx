@@ -2,15 +2,14 @@ import './style.css';
 
 import { Tab } from '@headlessui/react';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { Outlink } from '~/stories/atom/Outlink';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { OutlinkIcon } from '~/assets/icons/Icon';
 
 import { useAccountPanelV3 } from './hooks';
 
@@ -31,7 +30,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
 
     tokenName,
     tokenImage,
-    balance,
+    availableMargin,
     onClickCreateAccount,
   } = useAccountPanelV3(props);
   const { onPanelClose } = props;
@@ -113,10 +112,16 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
             <Tab.Group>
               <Tab.List className="flex items-center w-full mb-5 tabs-list">
                 <div className="text-left">
-                  <p className="mb-1 text-primary-lighter">Account Balance</p>
+                  <p className="mb-1 text-primary-lighter flex">
+                    Available Margin
+                    <TooltipGuide
+                      label="available-margin"
+                      tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
+                    />
+                  </p>
                   <Avatar
                     // label={balance}
-                    label={`${balance} ${tokenName}`}
+                    label={`${availableMargin} ${tokenName}`}
                     fontSize="3xl"
                     src={tokenImage}
                   />
@@ -161,7 +166,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
     addressExplorer,
     tokenName,
     tokenImage,
-    availableMargin,
+    balance,
 
     maxAmount,
     minimumAmount,
@@ -199,16 +204,10 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
             <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
           </div>
           <div>
-            <div className="flex mb-1 text-primary-lighter">
-              Available Margin
-              <TooltipGuide
-                label="available-margin"
-                tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
-              />
-            </div>
+            <div className="flex mb-1 text-primary-lighter">Account Balance</div>
             <div>
               <SkeletonElement isLoading={isLoading} width={80}>
-                {availableMargin} {tokenName}
+                {balance} {tokenName}
               </SkeletonElement>
             </div>
           </div>
