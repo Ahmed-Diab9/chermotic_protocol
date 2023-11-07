@@ -30,7 +30,10 @@ export const useLpReceiptEvent = () => {
   const { lpClient, isReady } = useChromaticClient();
   const { lpList } = useChromaticLp();
   const { address } = useAccount();
-  const ref = useRef<((() => unknown) | undefined)[]>([]);
+  const addLiquidityRef = useRef<((() => unknown) | undefined)[]>([]);
+  const addLiquiditySettledRef = useRef<((() => unknown) | undefined)[]>([]);
+  const removeLiquidityRef = useRef<((() => unknown) | undefined)[]>([]);
+  const removeLiquiditySettledRef = useRef<((() => unknown) | undefined)[]>([]);
 
   const lpAddresses = useMemo(() => {
     if (isNil(lpList)) {
@@ -46,32 +49,146 @@ export const useLpReceiptEvent = () => {
     if (lpAddresses.length === 0) {
       return;
     }
-    if (ref.current.length > 0) {
+    if (addLiquidityRef.current.length > 0) {
+      return;
+    }
+    if (addLiquiditySettledRef.current.length > 0) {
+      return;
+    }
+    if (removeLiquidityRef.current.length > 0) {
+      return;
+    }
+    if (removeLiquiditySettledRef.current.length > 0) {
       return;
     }
     for (let index = 0; index < lpAddresses.length; index++) {
       const lpAddress = lpAddresses[index];
-      const unwatch = lpClient.publicClient?.watchEvent({
+      const unwatch = lpClient.publicClient?.watchContractEvent({
         address: lpAddress,
-        events: receiptAbi,
+        abi: receiptAbi,
+        eventName: 'AddLiquidity',
         onLogs: (logs) => {
           const filteredLogs = logs.filter(
-            (log) => isNotNil(log) && 'recipient' in log.args && log.args.recipient === address
+            (log) =>
+              isNotNil(log) &&
+              log.eventName === 'AddLiquidity' &&
+              'recipient' in log.args &&
+              log.args.recipient === address
           );
           if (filteredLogs.length > 0) {
             dispatchLpReceiptEvent();
           }
         },
       });
-      ref.current.push(unwatch);
+      addLiquidityRef.current.push(unwatch);
     }
+  }, [isReady, lpAddresses, address]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    if (lpAddresses.length === 0) {
+      return;
+    }
+    if (addLiquiditySettledRef.current.length > 0) {
+      return;
+    }
+    for (let index = 0; index < lpAddresses.length; index++) {
+      const lpAddress = lpAddresses[index];
+      const unwatch = lpClient.publicClient?.watchContractEvent({
+        address: lpAddress,
+        abi: receiptAbi,
+        eventName: 'AddLiquiditySettled',
+        onLogs: (logs) => {
+          const filteredLogs = logs.filter(
+            (log) =>
+              isNotNil(log) &&
+              log.eventName === 'AddLiquiditySettled' &&
+              'recipient' in log.args &&
+              log.args.recipient === address
+          );
+          if (filteredLogs.length > 0) {
+            dispatchLpReceiptEvent();
+          }
+        },
+      });
+      addLiquiditySettledRef.current.push(unwatch);
+    }
+  }, [isReady, lpAddresses, address]);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    if (lpAddresses.length === 0) {
+      return;
+    }
+    if (removeLiquidityRef.current.length > 0) {
+      return;
+    }
+    for (let index = 0; index < lpAddresses.length; index++) {
+      const lpAddress = lpAddresses[index];
+      const unwatch = lpClient.publicClient?.watchContractEvent({
+        address: lpAddress,
+        abi: receiptAbi,
+        eventName: 'RemoveLiquidity',
+        onLogs: (logs) => {
+          const filteredLogs = logs.filter(
+            (log) =>
+              isNotNil(log) &&
+              log.eventName === 'RemoveLiquidity' &&
+              'recipient' in log.args &&
+              log.args.recipient === address
+          );
+          if (filteredLogs.length > 0) {
+            dispatchLpReceiptEvent();
+          }
+        },
+      });
+      removeLiquidityRef.current.push(unwatch);
+    }
+  }, [isReady, lpAddresses, address]);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+    if (lpAddresses.length === 0) {
+      return;
+    }
+    if (removeLiquiditySettledRef.current.length > 0) {
+      return;
+    }
+    for (let index = 0; index < lpAddresses.length; index++) {
+      const lpAddress = lpAddresses[index];
+      const unwatch = lpClient.publicClient?.watchContractEvent({
+        address: lpAddress,
+        abi: receiptAbi,
+        eventName: 'RemoveLiquiditySettled',
+        onLogs: (logs) => {
+          const filteredLogs = logs.filter(
+            (log) =>
+              isNotNil(log) &&
+              log.eventName === 'RemoveLiquiditySettled' &&
+              'recipient' in log.args &&
+              log.args.recipient === address
+          );
+          if (filteredLogs.length > 0) {
+            dispatchLpReceiptEvent();
+          }
+        },
+      });
+      removeLiquiditySettledRef.current.push(unwatch);
+    }
   }, [isReady, lpAddresses, address]);
 
   useEffect(() => {
     return () => {
-      ref.current.forEach((f) => f?.());
+      addLiquidityRef.current.forEach((cleanup) => cleanup?.());
+      addLiquiditySettledRef.current.forEach((cleanup) => cleanup?.());
+      removeLiquidityRef.current.forEach((cleanup) => cleanup?.());
+      removeLiquiditySettledRef.current.forEach((cleanup) => cleanup?.());
     };
   }, []);
 };
