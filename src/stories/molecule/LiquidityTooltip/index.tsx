@@ -3,7 +3,7 @@ import { isNotNil } from 'ramda';
 import { useCallback } from 'react';
 import { ChartTooltip } from '~/stories/atom/ChartTooltip';
 import { CLBTokenValue } from '~/typings/chart';
-import { withComma } from '~/utils/number';
+import { numberFormat } from '~/utils/number';
 
 export type LiquidityTooltipData = {
   available: number;
@@ -22,7 +22,15 @@ export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityToo
   if (!data || !clbTokenValues) return null;
 
   function toString(num?: number) {
-    return isNotNil(num) ? withComma(num) : '-';
+    return isNotNil(num)
+      ? numberFormat(num, {
+          maxDigits: 4,
+          minDigits: 4,
+          useGrouping: true,
+          roundingMode: 'trunc',
+          type: 'string',
+        })
+      : '-';
   }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -42,7 +50,7 @@ export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityToo
       const ratio = liquidity !== 0 ? +((utilized / liquidity) * 100).toFixed(2) : undefined;
 
       return {
-        clbTokenValue: clbTokenValue,
+        clbTokenValue: toString(clbTokenValue),
         liquidity: toString(liquidity),
         utilized: toString(utilized),
         ratio: toString(ratio),
