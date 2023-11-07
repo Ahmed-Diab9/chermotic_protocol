@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
-import { dispatchLpEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
 
 export const useRemoveChromaticLp = () => {
@@ -33,9 +32,6 @@ export const useRemoveChromaticLp = () => {
         throw new Error('CLP approval failed.');
       }
       const receipt = await lp.removeLiquidity(selectedLp.address, parsedAmount);
-
-      dispatchLpEvent();
-      toast('Removal completed.');
 
       setIsRemovalPending(false);
     } catch (error) {

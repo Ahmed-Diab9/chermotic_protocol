@@ -1,8 +1,9 @@
 import { iChromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/contracts';
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { useAccount } from 'wagmi';
-import { dispatchLpReceiptEvent } from '~/typings/events';
+import { dispatchLpEvent, dispatchLpReceiptEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
 import { useChromaticLp } from './useChromaticLp';
 
@@ -76,6 +77,8 @@ export const useLpReceiptEvent = () => {
               log.args.recipient === address
           );
           if (filteredLogs.length > 0) {
+            toast('Add completed.');
+            dispatchLpEvent();
             dispatchLpReceiptEvent();
           }
         },
@@ -142,6 +145,8 @@ export const useLpReceiptEvent = () => {
               log.args.recipient === address
           );
           if (filteredLogs.length > 0) {
+            toast('Removal completed.');
+            dispatchLpEvent();
             dispatchLpReceiptEvent();
           }
         },

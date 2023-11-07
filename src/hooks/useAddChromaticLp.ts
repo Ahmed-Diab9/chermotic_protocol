@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
-import { dispatchLpEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
 import { useMarket } from './useMarket';
 
@@ -36,9 +35,6 @@ export const useAddChromaticLp = () => {
       }
       const receipt = await lp.addLiquidity(selectedLp.address, parsedAmount, address);
 
-      dispatchLpEvent();
-
-      toast('Add completed.');
       setIsAddPending(false);
     } catch (error) {
       setIsAddPending(false);
