@@ -359,6 +359,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
 
   return {
     receiptsData,
+    isReceiptsLoading: isLoading,
     onFetchNextLpReceipts,
     onRefreshLpReceipts,
   };

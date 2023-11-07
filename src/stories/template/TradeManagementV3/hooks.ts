@@ -2,6 +2,7 @@ import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
@@ -23,6 +24,7 @@ export function useTradeManagementV3() {
   const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
   const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
   const { initialBlockNumber } = useInitialBlockNumber();
+  const { fetchBalances } = useChromaticAccount();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
@@ -39,13 +41,22 @@ export function useTradeManagementV3() {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
         fetchCurrentPositions();
+        fetchBalances();
       }
       if (isNotNil(closingPositionSize) && closingPositionSize > 0) {
         toast.info('The closing process has been completed.');
         fetchCurrentPositions();
+        fetchBalances();
       }
     }
-  }, [currentMarket, previousOracle, openingPositionSize, closingPositionSize]);
+  }, [
+    currentMarket,
+    previousOracle,
+    openingPositionSize,
+    closingPositionSize,
+    fetchBalances,
+    fetchCurrentPositions,
+  ]);
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
