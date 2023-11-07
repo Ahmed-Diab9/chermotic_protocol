@@ -1,5 +1,7 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
@@ -10,20 +12,24 @@ import { LpReceipt } from '~/typings/lp';
 export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
-
+  const { fetchBalances } = useChromaticAccount();
   const { formattedElapsed } = useLastOracle();
   const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
   const {
     receiptsData = [],
+    isReceiptsLoading,
     onFetchNextLpReceipts,
     onRefreshLpReceipts,
   } = useLpReceipts({
     currentAction: receiptAction,
   });
+  const { refreshChromaticLp } = useChromaticLp();
   const {
     count = {
       mintings: 0,
       burnings: 0,
+      mintingSettleds: 0,
+      burningSettleds: 0,
       inProgresses: 0,
     },
     isCountLoading,
@@ -48,10 +54,24 @@ export const usePoolProgressV2 = () => {
       }
     }
   }, [count, receiptAction, receipts]);
-  const { state: isGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
+  const { state: storedIsGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideOpen',
     false
   );
+  const isGuideOpens = useMemo(() => {
+    if (!storedIsGuideOpen) {
+      return {
+        all: false,
+        minting: false,
+        burning: false,
+      };
+    }
+    return {
+      all: count.inProgresses > 0,
+      minting: count.mintings > count.mintingSettleds,
+      burning: count.burnings > count.burningSettleds,
+    };
+  }, [storedIsGuideOpen, count]);
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
@@ -87,17 +107,20 @@ export const usePoolProgressV2 = () => {
     function onLpReceiptRefresh() {
       onRefreshLpReceipts();
       onRefreshLpReceiptCount();
+
+      fetchBalances();
+      refreshChromaticLp();
     }
     window.addEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
     return () => {
       window.removeEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
     };
-  }, [onRefreshLpReceipts, onRefreshLpReceiptCount]);
+  }, [onRefreshLpReceipts, onRefreshLpReceiptCount, fetchBalances, refreshChromaticLp]);
 
   return {
     openButtonRef,
     ref,
-    isGuideOpen,
+    isGuideOpens,
     formattedElapsed,
     receipts,
     receiptAction,

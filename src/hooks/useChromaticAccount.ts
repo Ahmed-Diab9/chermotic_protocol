@@ -83,12 +83,13 @@ export const useChromaticAccount = () => {
       );
 
       const balances = fromPairs(
-        result?.map((balance) => [balance.token, balance.balance] as const) || []
+        result?.map((balance) => [balance.token, balance.balance] as [Address, bigint])
       );
       return balances;
     },
     {
-      refreshInterval: 3000,
+      // TODO: Find proper interval seconds
+      refreshInterval: 1000 * 12,
     }
   );
 

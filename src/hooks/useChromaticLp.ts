@@ -209,6 +209,7 @@ export const useChromaticLp = () => {
     data: lpList,
     error,
     isLoading: isLpLoading,
+    mutate,
   } = useSWR(
     isReady && checkAllProps(fetchKey) ? { ...fetchKey, walletAddress } : undefined,
     async ({ walletAddress, market, tokens }) => {
@@ -245,7 +246,11 @@ export const useChromaticLp = () => {
     toast('Liquidity provider is selected.');
   };
 
+  const refreshChromaticLp = () => {
+    mutate();
+  };
+
   useError({ error });
 
-  return { lpList, isLpLoading, onLpSelect };
+  return { lpList, isLpLoading, onLpSelect, fetchChromaticLp, refreshChromaticLp };
 };

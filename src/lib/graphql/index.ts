@@ -3,7 +3,7 @@ import {
   GraphQLWebSocketClient,
   RequestMiddleware,
   Variables,
-} from 'graphql-request';
+} from '@chromatic-protocol/graphql-request';
 import { HASURA_API_URL, SUBGRAPH_API_URL, SUBGRAPH_API_WS_URL } from '~/configs/subgraph';
 
 import * as Hasura from '~/lib/graphql/sdk/hasura';
@@ -67,8 +67,7 @@ const performanceSdk = Performance.getSdk(graphClient);
 
 const createGraphWSClient = async (url: string) => {
   return new Promise<GraphQLWebSocketClient>((resolve) => {
-    const socket = new WebSocket(url, 'graphql-ws');
-    const client: GraphQLWebSocketClient = new GraphQLWebSocketClient(socket, {
+    const client: GraphQLWebSocketClient = new GraphQLWebSocketClient(url, {
       onAcknowledged: async (_p) => {
         resolve(client);
       },

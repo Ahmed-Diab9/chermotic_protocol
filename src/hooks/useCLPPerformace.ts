@@ -2,6 +2,7 @@ import useSWR from 'swr';
 import { performanceSdk } from '~/lib/graphql';
 import { useAppSelector } from '~/store';
 import { checkAllProps } from '~/utils';
+import { numberFormat } from '~/utils/number';
 import { useError } from './useError';
 
 const periods = ['d7', 'd30', 'd90', 'd180', 'd365', 'all'] as const;
@@ -23,9 +24,14 @@ export const useCLPPerformance = () => {
 
     const performaces = periods.reduce((performances, period) => {
       const profit = response.lp_performances_by_pk?.[`rate_${period}`];
-      performances[period] = BigInt(profit ?? 0);
+      performances[period] = numberFormat(profit ?? '0', {
+        minDigits: 2,
+        maxDigits: 2,
+        roundingMode: 'trunc',
+        type: 'string',
+      });
       return performances;
-    }, {} as Record<Period, bigint>);
+    }, {} as Record<Period, string>);
 
     return performaces;
   });

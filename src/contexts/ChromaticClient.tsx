@@ -37,7 +37,8 @@ function useContextValue(): ContextValue {
         return currentClient;
       });
       setLpClient((currentLpClient) => {
-        currentLpClient.publicClient = publicClient;
+        // TODO: Resolve type errors
+        (currentLpClient.publicClient as PublicClient | undefined) = publicClient;
         return currentLpClient;
       });
 
@@ -55,7 +56,8 @@ function useContextValue(): ContextValue {
         return currentClient;
       });
       setLpClient((currentLpClient) => {
-        currentLpClient.walletClient = walletClient;
+        // TODO: Resolve type errors
+        (currentLpClient.walletClient as WalletClient | undefined) = walletClient;
         return currentLpClient;
       });
       setWalletAddress(walletClient?.account.address);
