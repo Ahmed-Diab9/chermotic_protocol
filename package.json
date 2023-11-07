@@ -28,6 +28,7 @@
     "@chromatic-protocol/sdk-viem/viem": "1.12.1"
   },
   "dependencies": {
+    "@chromatic-protocol/graphql-request": "^0.0.1-rc.4",
     "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.30",
     "@chromatic-protocol/react-compound-charts": "^1.0.0",
     "@chromatic-protocol/sdk-viem": "^0.1.0-rc.164",
@@ -36,11 +37,9 @@
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
     "@sentry/react": "^7.58.1",
-    "@types/ramda": "^0.29.2",
     "axios": "^1.5.0",
     "debug": "^4.3.4",
     "graphql": "^16.8.1",
-    "graphql-request": "6.1.0",
     "js-big-decimal": "^2.0.4",
     "memoize-one": "^6.0.0",
     "normalize.css": "^8.0.1",
@@ -77,6 +76,8 @@
     "@storybook/react": "^7.2.0",
     "@storybook/react-vite": "^7.2.0",
     "@storybook/testing-library": "^0.2.0",
+    "@types/graphql": "^14.5.0",
+    "@types/ramda": "^0.29.2",
     "@types/react": "^18.2.18",
     "@types/react-datepicker": "^4.15.0",
     "@types/react-dom": "^18.2.7",
