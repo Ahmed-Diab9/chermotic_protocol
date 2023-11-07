@@ -5,7 +5,7 @@
       @apply !w-5;
     }
   }
-  .tabs {
+  .wrapper-tabs {
     .btn-tab {
       @apply w-1/2;
       &[aria-selected='true'] {

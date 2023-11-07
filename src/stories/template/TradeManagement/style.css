@@ -1,6 +1,6 @@
 .TradeManagement {
   @apply min-w-[680px];
-  .tabs {
+  .wrapper-tabs {
     .tabs-panels {
       @apply h-[calc(100%-40px)] w-full;
     }

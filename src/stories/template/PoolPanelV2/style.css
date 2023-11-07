@@ -5,7 +5,7 @@
     @apply flex flex-auto bg-paper-light rounded-xl border px-4;
     @apply w-[50%] dark:border-transparent;
   }
-  .tabs {
+  .wrapper-tabs {
     .btn-tab {
       @apply w-1/2 text-3xl;
     }
