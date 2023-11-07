@@ -68,7 +68,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">{performance}%</h4>
+              <h4 className="text-price-higher mt-[2px]">{performance}</h4>
             </div>
           </div>
           <div className="flex w-1/2 gap-3 pl-5 border-l">
@@ -83,7 +83,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">{trailingApr}%</h4>
+              <h4 className="text-price-higher mt-[2px]">{trailingApr}</h4>
             </div>
           </div>
         </div>

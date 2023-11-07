@@ -9,7 +9,6 @@ import { OptionInput } from '~/stories/atom/OptionInput';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
@@ -37,10 +36,10 @@ export function PoolPanelV2() {
 
     isAssetsLoading,
     isLpLoading,
-    isExceeded,
-    amount,
-    maxAmount,
-    formattedBalance,
+    isExceededs,
+    amounts,
+    maxAmounts,
+    formattedBalances,
     formattedClp,
     isAddPending,
     isRemovalPending,
@@ -125,7 +124,7 @@ export function PoolPanelV2() {
                         <h4 className="text-xl">Wallet Balance</h4>
                         <p className="text-lg text-primary-light">
                           <SkeletonElement isLoading={isAssetsLoading} width={40}>
-                            {formattedBalance} {tokenName}
+                            {formattedBalances.add} {tokenName}
                           </SkeletonElement>
                         </p>
                       </div>
@@ -138,11 +137,11 @@ export function PoolPanelV2() {
                     {/* - TooltipAlert : is shown when has error */}
                     <div className="tooltip-wallet-balance">
                       <OptionInput
-                        value={amount}
-                        maxValue={maxAmount}
+                        value={amounts.add}
+                        maxValue={maxAmounts.add}
                         onChange={onAmountChange}
-                        error={isExceeded}
-                        errorMsg={isExceeded ? 'Exceeded your wallet balance.' : undefined}
+                        error={isExceededs.add}
+                        errorMsg={isExceededs.add ? 'Exceeded your wallet balance.' : undefined}
                         assetSrc={tokenImage}
                         size="lg"
                       />
@@ -205,12 +204,12 @@ export function PoolPanelV2() {
                       css="active"
                       size="2xl"
                       onClick={() => {
-                        if (amount === '') {
+                        if (amounts.add === '') {
                           return;
                         }
-                        onAddChromaticLp(amount);
+                        onAddChromaticLp(amounts.add);
                       }}
-                      disabled={isAddPending}
+                      disabled={isExceededs.add || isAddPending}
                     />
                   </div>
                 </article>
@@ -263,11 +262,13 @@ export function PoolPanelV2() {
                               </div>
                               <div className="tooltip-wallet-balance">
                                 <OptionInput
-                                  value={amount}
-                                  maxValue={maxAmount}
+                                  value={amounts.remove}
+                                  maxValue={maxAmounts.remove}
                                   onChange={onAmountChange}
-                                  error={isExceeded}
-                                  errorMsg={isExceeded ? 'Exceeded your CLP balance.' : undefined}
+                                  error={isExceededs.remove}
+                                  errorMsg={
+                                    isExceededs.remove ? 'Exceeded your CLP balance.' : undefined
+                                  }
                                   assetSrc={clpImage}
                                   size="lg"
                                 />
@@ -303,12 +304,12 @@ export function PoolPanelV2() {
                                 css="active"
                                 size="2xl"
                                 onClick={() => {
-                                  if (amount === '') {
+                                  if (amounts.remove === '') {
                                     return;
                                   }
-                                  onRemoveChromaticLp(amount);
+                                  onRemoveChromaticLp(amounts.remove);
                                 }}
-                                disabled={isRemovalPending}
+                                disabled={isExceededs.remove || isRemovalPending}
                               />
                             </div>
                           </article>

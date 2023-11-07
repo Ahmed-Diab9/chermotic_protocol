@@ -136,8 +136,8 @@ export const usePositions = () => {
     }
   );
 
-  function fetchCurrentPositions() {
-    fetchPositions<Position[]>(async (positions) => {
+  async function fetchCurrentPositions() {
+    await fetchPositions<Position[]>(async (positions) => {
       if (
         isNil(positions) ||
         isNil(accountAddress) ||

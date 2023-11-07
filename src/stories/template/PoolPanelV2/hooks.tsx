@@ -1,4 +1,4 @@
-import { isNil, isNotNil } from 'ramda';
+import { isNil } from 'ramda';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'viem';
 import { useAddChromaticLp } from '~/hooks/useAddChromaticLp';
@@ -42,31 +42,36 @@ export function usePoolPanelV2() {
   const clpName = selectedLp?.clpName;
 
   // ----------------------------------------------------------------
-  const selectedBalance = useMemo(() => {
-    switch (selectedTab) {
-      case 0: {
-        if (tokenBalances && currentToken && tokenBalances[currentToken.address]) {
-          return tokenBalances[currentToken.address];
-        }
-        break;
-      }
-      case 1: {
-        if (isNotNil(selectedLp)) {
-          return selectedLp.balance;
-        }
-        break;
-      }
-    }
-  }, [tokenBalances, currentToken, selectedLp, selectedTab]);
-  const selectedDecimals = selectedTab === 0 ? currentToken?.decimals : selectedLp?.clpDecimals;
-  const maxAmount = formatDecimals(
-    selectedBalance,
-    selectedDecimals,
-    selectedDecimals,
-    false,
-    'trunc'
-  );
-  const formattedBalance = formatDecimals(selectedBalance, selectedDecimals, 2, true);
+  const selectedBalances = useMemo(() => {
+    return {
+      add: tokenBalances && currentToken && tokenBalances[currentToken.address],
+      remove: selectedLp?.balance,
+    };
+  }, [tokenBalances, currentToken, selectedLp]);
+  const maxAmounts = useMemo(() => {
+    return {
+      add: formatDecimals(
+        selectedBalances.add,
+        currentToken?.decimals,
+        currentToken?.decimals,
+        false,
+        'trunc'
+      ),
+      remove: formatDecimals(
+        selectedBalances.remove,
+        selectedLp?.clpDecimals,
+        selectedLp?.clpDecimals,
+        false,
+        'trunc'
+      ),
+    };
+  }, [currentToken, selectedLp, selectedBalances]);
+  const formattedBalances = useMemo(() => {
+    return {
+      add: formatDecimals(selectedBalances.add, currentToken?.decimals, 2, true),
+      remove: formatDecimals(selectedBalances.remove, selectedLp?.clpDecimals, 2, true),
+    };
+  }, [selectedBalances, currentToken, selectedLp]);
 
   const shortUsedLp = liquidityFormatter.format(
     +formatDecimals(shortTotalMaxLiquidity - shortTotalUnusedLiquidity, currentToken?.decimals)
@@ -81,28 +86,65 @@ export function usePoolPanelV2() {
     +formatDecimals(longTotalMaxLiquidity, currentToken?.decimals)
   );
 
-  const [amount, setAmount] = useState('');
-  const isExceeded = useMemo(() => {
-    if (isNil(selectedBalance) || isNil(selectedDecimals)) {
-      return false;
+  const [amounts, setAmounts] = useState({
+    add: '',
+    remove: '',
+  });
+  const isExceededs = useMemo(() => {
+    if (isNil(currentToken) || isNil(selectedLp) || isNil(selectedBalances)) {
+      return {
+        add: false,
+        remove: false,
+      };
     }
-    if (parseUnits(amount.toString(), selectedDecimals) > selectedBalance) {
-      return true;
-    }
-    return false;
-  }, [amount, selectedBalance, selectedDecimals]);
+    return {
+      add: parseUnits(amounts.add, currentToken.decimals) > (selectedBalances?.add ?? 0n),
+      remove: parseUnits(amounts.remove, selectedLp.clpDecimals) > (selectedBalances?.remove ?? 0n),
+    };
+  }, [amounts, selectedBalances, currentToken, selectedLp]);
   const { onAddChromaticLp, isAddPending } = useAddChromaticLp();
   const { onRemoveChromaticLp, isRemovalPending } = useRemoveChromaticLp();
   const onAmountChange = (value: string) => {
     if (value.length === 0) {
-      setAmount('');
+      switch (selectedTab) {
+        case 0: {
+          setAmounts((state) => ({
+            ...state,
+            add: '',
+          }));
+          break;
+        }
+        case 1: {
+          setAmounts((state) => ({
+            ...state,
+            remove: '',
+          }));
+          break;
+        }
+      }
       return;
     }
     const parsed = parseFloat(value);
     if (isNaN(parsed)) {
       return;
     }
-    setAmount(value);
+    switch (selectedTab) {
+      case 0: {
+        setAmounts((state) => ({
+          ...state,
+          add: value,
+        }));
+        break;
+      }
+      case 1: {
+        setAmounts((state) => ({
+          ...state,
+          remove: value,
+        }));
+        break;
+      }
+    }
+    return;
   };
   const formattedClp = useMemo(() => {
     if (isNil(selectedLp)) {
@@ -124,10 +166,10 @@ export function usePoolPanelV2() {
 
     isAssetsLoading,
     isLpLoading: isNil(selectedLp),
-    isExceeded,
-    amount,
-    maxAmount,
-    formattedBalance,
+    isExceededs,
+    amounts,
+    maxAmounts,
+    formattedBalances,
     formattedClp,
     isAddPending,
     isRemovalPending,

@@ -88,7 +88,8 @@ export const useChromaticAccount = () => {
       return balances;
     },
     {
-      refreshInterval: 3000,
+      // TODO: Find proper interval seconds
+      refreshInterval: 1000 * 12,
     }
   );
 

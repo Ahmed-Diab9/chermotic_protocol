@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
-import { dispatchLpEvent } from '~/typings/events';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 
 export const useRemoveChromaticLp = () => {
@@ -12,6 +12,7 @@ export const useRemoveChromaticLp = () => {
   const { address } = useAccount();
   const selectedLp = useAppSelector((state) => state.lp.selectedLp);
   const [isRemovalPending, setIsRemovalPending] = useState(false);
+  const { fetchBalances } = useChromaticAccount();
 
   const onRemoveChromaticLp = async (amount: string) => {
     try {
@@ -33,9 +34,7 @@ export const useRemoveChromaticLp = () => {
         throw new Error('CLP approval failed.');
       }
       const receipt = await lp.removeLiquidity(selectedLp.address, parsedAmount);
-
-      dispatchLpEvent();
-      toast('Removal completed.');
+      await fetchBalances();
 
       setIsRemovalPending(false);
     } catch (error) {

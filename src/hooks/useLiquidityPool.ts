@@ -94,7 +94,9 @@ export const useLiquidityPool = (marketAddress?: Address) => {
       const lensApi = client.lens();
       const marketApi = client.market();
 
-      return getLiquidityPool(marketApi, lensApi, marketAddress);
+      const pool = await getLiquidityPool(marketApi, lensApi, marketAddress);
+
+      return pool;
     },
     { keepPreviousData: false, dedupingInterval: 8000 }
   );
