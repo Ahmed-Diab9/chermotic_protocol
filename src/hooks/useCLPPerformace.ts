@@ -29,6 +29,7 @@ export const useCLPPerformance = () => {
         maxDigits: 2,
         roundingMode: 'trunc',
         type: 'string',
+        useGrouping: true,
       });
       return performances;
     }, {} as Record<Period, string>);
