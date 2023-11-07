@@ -1,8 +1,8 @@
 diff --git a/node_modules/@graphql-codegen/typescript-graphql-request/cjs/visitor.js b/node_modules/@graphql-codegen/typescript-graphql-request/cjs/visitor.js
-index d70e073..48b8f7a 100644
+index d70e073..ec9aece 100644
 --- a/node_modules/@graphql-codegen/typescript-graphql-request/cjs/visitor.js
 +++ b/node_modules/@graphql-codegen/typescript-graphql-request/cjs/visitor.js
-@@ -13,14 +13,24 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
+@@ -13,14 +13,21 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
          super(schema, fragments, rawConfig, {
              rawRequest: (0, visitor_plugin_common_1.getConfigValue)(rawConfig.rawRequest, false),
              extensionsType: (0, visitor_plugin_common_1.getConfigValue)(rawConfig.extensionsType, 'any'),
@@ -15,12 +15,9 @@ index d70e073..48b8f7a 100644
          const buildPath = this.config.emitLegacyCommonJSImports ? 'cjs' : 'esm';
 -        this._additionalImports.push(`${typeImport} { GraphQLClient } from 'graphql-request';`);
 -        this._additionalImports.push(`${typeImport} { GraphQLClientRequestHeaders } from 'graphql-request/build/${buildPath}/types${fileExtension}';`);
-+        if (this.config.useWebSocketClient) {
++        if (this.config.useWebSocketClient){
 +            this._additionalImports.push(
-+                `${typeImport} { GraphQLWebSocketClient } from '@chromatic-protocol/graphql-request/build/esm/graphql-ws';`,
-+            );
-+            this._additionalImports.push(
-+                `${typeImport} { GraphQLSubscriber, UnsubscribeCallback } from '@chromatic-protocol/graphql-request/build/cjs/graphql-ws';`,
++                `${typeImport} { GraphQLWebSocketClient, GraphQLSubscriber, UnsubscribeCallback } from '@chromatic-protocol/graphql-request';`,
 +            );
 +        } else {
 +            this._additionalImports.push(`${typeImport} { GraphQLClient } from '@chromatic-protocol/graphql-request';`);
@@ -29,7 +26,7 @@ index d70e073..48b8f7a 100644
          if (this.config.rawRequest) {
              if (this.config.documentMode !== visitor_plugin_common_1.DocumentMode.string) {
                  this._additionalImports.push(`import { GraphQLError, print } from 'graphql'`);
-@@ -70,19 +80,35 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
+@@ -70,19 +77,35 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
                  o.node.variableDefinitions.length === 0 ||
                  o.node.variableDefinitions.every(v => v.type.kind !== graphql_1.Kind.NON_NULL_TYPE || v.defaultValue);
              const docVarName = this.getDocumentNodeVariable(o.documentVariableName);
@@ -71,7 +68,7 @@ index d70e073..48b8f7a 100644
          })
              .filter(Boolean)
              .map(s => (0, visitor_plugin_common_1.indentMultiline)(s, 2));
-@@ -90,7 +116,7 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
+@@ -90,7 +113,7 @@ class GraphQLRequestVisitor extends visitor_plugin_common_1.ClientSideBaseVisito
  
  const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
  ${extraVariables.join('\n')}
@@ -81,10 +78,10 @@ index d70e073..48b8f7a 100644
  ${allPossibleActions.join(',\n')}
    };
 diff --git a/node_modules/@graphql-codegen/typescript-graphql-request/esm/visitor.js b/node_modules/@graphql-codegen/typescript-graphql-request/esm/visitor.js
-index cb37bd7..3731d9e 100644
+index cb37bd7..e9862db 100644
 --- a/node_modules/@graphql-codegen/typescript-graphql-request/esm/visitor.js
 +++ b/node_modules/@graphql-codegen/typescript-graphql-request/esm/visitor.js
-@@ -9,14 +9,24 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
+@@ -9,14 +9,21 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
          super(schema, fragments, rawConfig, {
              rawRequest: getConfigValue(rawConfig.rawRequest, false),
              extensionsType: getConfigValue(rawConfig.extensionsType, 'any'),
@@ -99,10 +96,7 @@ index cb37bd7..3731d9e 100644
 -        this._additionalImports.push(`${typeImport} { GraphQLClientRequestHeaders } from 'graphql-request/build/${buildPath}/types${fileExtension}';`);
 +        if (this.config.useWebSocketClient){
 +            this._additionalImports.push(
-+                `${typeImport} { GraphQLWebSocketClient } from '@chromatic-protocol/graphql-request/build/esm/graphql-ws';`,
-+            );
-+            this._additionalImports.push(
-+                `${typeImport} { GraphQLWebSocketClient, GraphQLSubscriber, UnsubscribeCallback } from '@chromatic-protocol/graphql-request/build/cjs/graphql-ws';`,
++                `${typeImport} { GraphQLWebSocketClient, GraphQLSubscriber, UnsubscribeCallback } from '@chromatic-protocol/graphql-request';`,
 +            );
 +        } else {
 +            this._additionalImports.push(`${typeImport} { GraphQLClient } from '@chromatic-protocol/graphql-request';`);
@@ -111,7 +105,7 @@ index cb37bd7..3731d9e 100644
          if (this.config.rawRequest) {
              if (this.config.documentMode !== DocumentMode.string) {
                  this._additionalImports.push(`import { GraphQLError, print } from 'graphql'`);
-@@ -66,19 +76,35 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
+@@ -66,19 +73,35 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
                  o.node.variableDefinitions.length === 0 ||
                  o.node.variableDefinitions.every(v => v.type.kind !== Kind.NON_NULL_TYPE || v.defaultValue);
              const docVarName = this.getDocumentNodeVariable(o.documentVariableName);
@@ -153,7 +147,7 @@ index cb37bd7..3731d9e 100644
          })
              .filter(Boolean)
              .map(s => indentMultiline(s, 2));
-@@ -86,7 +112,7 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
+@@ -86,7 +109,7 @@ export class GraphQLRequestVisitor extends ClientSideBaseVisitor {
  
  const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
  ${extraVariables.join('\n')}

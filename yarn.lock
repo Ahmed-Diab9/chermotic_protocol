@@ -1211,10 +1211,10 @@
   resolved "https://registry.yarnpkg.com/@base2/pretty-print-object/-/pretty-print-object-1.0.1.tgz#371ba8be66d556812dc7fb169ebc3c08378f69d4"
   integrity sha512-4iri8i1AqYHJE2DstZYkyEprg6Pq6sKx3xn5FpySk9sNhH7qN2LLlHJCfDTZRILNwQNPD7mATWM0TBui7uC1pA==
 
-"@chromatic-protocol/graphql-request@^0.0.1-rc.3":
-  version "0.0.1-rc.3"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/graphql-request/-/graphql-request-0.0.1-rc.3.tgz#cb205c279845243e28fdb636a02abd0f63769fcf"
-  integrity sha512-lxoxd+FPno0LngnMzLK2hSje0BahBLeOJGXvVGe/SQNvIe8ICaTdB8r9ttvOFSKCp4FMrWedQiZMI42OrYNczg==
+"@chromatic-protocol/graphql-request@^0.0.1-rc.4":
+  version "0.0.1-rc.4"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/graphql-request/-/graphql-request-0.0.1-rc.4.tgz#a6153c3a3ae7b53d2db470e570fd312a724b8acd"
+  integrity sha512-kK3q7T1X2WirjFasS3IR3DmHivrfW1r/ddJT8RoAbr6aqMy+Ubl2TbYafeSKHTL+2I0igv7HsbWBNnBOUuBShQ==
   dependencies:
     "@graphql-typed-document-node/core" "^3.2.0"
 

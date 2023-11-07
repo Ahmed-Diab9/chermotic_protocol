@@ -28,7 +28,7 @@
     "@chromatic-protocol/sdk-viem/viem": "1.12.1"
   },
   "dependencies": {
-    "@chromatic-protocol/graphql-request": "^0.0.1-rc.3",
+    "@chromatic-protocol/graphql-request": "^0.0.1-rc.4",
     "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.30",
     "@chromatic-protocol/react-compound-charts": "^1.0.0",
     "@chromatic-protocol/sdk-viem": "^0.1.0-rc.164",
