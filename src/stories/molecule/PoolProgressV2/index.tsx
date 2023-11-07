@@ -22,7 +22,7 @@ export function PoolProgressV2() {
     ref,
     formattedElapsed,
     receipts = [],
-    isGuideOpen,
+    isGuideOpens,
     count,
     receiptAction,
     hasMoreReceipts,
@@ -77,7 +77,7 @@ export function PoolProgressV2() {
                     <Tab.Panels className="flex-auto">
                       <div className="mb-1">
                         <Guide
-                          isVisible={isGuideOpen}
+                          isVisible={isGuideOpens[receiptAction]}
                           title="The process is in progress. You may leave now."
                           // The percentage value in the paragraph is a value that is different for each market.
                           paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
@@ -118,11 +118,13 @@ export function PoolProgressV2() {
                       </Tab.Panel>
                       {/* tab - minting */}
                       <Tab.Panel className="flex flex-col mb-5">
-                        {/* {mintingSize === 0 ? (
-                        <p className="my-6 text-center text-primary/20">
-                          There is no liquidity add history.
-                        </p>
-                      ) : ( */}
+                        {count.mintings === 0 ? (
+                          <p className="my-6 text-center text-primary/20">
+                            There is no liquidity add history.
+                          </p>
+                        ) : (
+                          <></>
+                        )}
                         {
                           <>
                             {receipts.map((receipt) => (
@@ -145,11 +147,13 @@ export function PoolProgressV2() {
                       </Tab.Panel>
                       {/* tab - burning */}
                       <Tab.Panel className="flex flex-col mb-5">
-                        {/* {burningSize === 0 ? (
-                        <p className="my-6 text-center text-primary/20">
-                          There is no liquidity remove history.
-                        </p>
-                      ) : ( */}
+                        {count.burnings === 0 ? (
+                          <p className="my-6 text-center text-primary/20">
+                            There is no liquidity remove history.
+                          </p>
+                        ) : (
+                          <></>
+                        )}
                         {
                           <>
                             {receipts.map((receipt) => (

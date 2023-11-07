@@ -29,6 +29,8 @@ export const useLpReceiptCount = () => {
     async ({ lpAddress, walletAddress }) => {
       let mintings = 0;
       let burnings = 0;
+      let mintingSettleds = 0;
+      let burningSettleds = 0;
       let inProgresses = 0;
 
       const { addLiquidities } = await lpGraphSdk.AddLiquidityCount({ walletAddress, lpAddress });
@@ -47,18 +49,20 @@ export const useLpReceiptCount = () => {
 
       mintings += addLiquidities.length;
       burnings += removeLiquidities.length;
-      inProgresses +=
-        addLiquidities.length +
-        removeLiquidities.length -
-        (addLiquiditySettleds.length + removeLiquiditySettleds.length);
+      mintingSettleds += addLiquiditySettleds.length;
+      burningSettleds += removeLiquiditySettleds.length;
+      inProgresses = mintings + burnings - (mintingSettleds + burningSettleds);
       return {
         mintings,
         burnings,
+        mintingSettleds,
+        burningSettleds,
         inProgresses,
       };
     },
     {
-      refreshInterval: 0,
+      // TODO: Find proper interval seconds
+      refreshInterval: 1000 * 24,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,

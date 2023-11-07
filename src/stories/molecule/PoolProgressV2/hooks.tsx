@@ -24,6 +24,8 @@ export const usePoolProgressV2 = () => {
     count = {
       mintings: 0,
       burnings: 0,
+      mintingSettleds: 0,
+      burningSettleds: 0,
       inProgresses: 0,
     },
     isCountLoading,
@@ -52,12 +54,20 @@ export const usePoolProgressV2 = () => {
     'app:isLpGuideOpen',
     false
   );
-  const isGuideOpen = useMemo(() => {
+  const isGuideOpens = useMemo(() => {
     if (!storedIsGuideOpen) {
-      return storedIsGuideOpen;
+      return {
+        all: false,
+        minting: false,
+        burning: false,
+      };
     }
-    return receipts.filter((receipt) => !receipt.isSettled).length > 0;
-  }, [storedIsGuideOpen, receipts]);
+    return {
+      all: count.inProgresses > 0,
+      minting: count.mintings > count.mintingSettleds,
+      burning: count.burnings > count.burningSettleds,
+    };
+  }, [storedIsGuideOpen, count]);
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
