@@ -63,7 +63,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 <p>Profit</p>
                 <TooltipGuide
                   label="performance-profit"
-                  tip="The Profit of LP during the period(including unrealized PnL)"
+                  tip="Profit includes PnL, Interest and a portion of fees, but does not include token rewards."
                   outLink=""
                 />
               </div>
