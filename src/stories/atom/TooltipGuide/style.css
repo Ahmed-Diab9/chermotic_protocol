@@ -5,7 +5,7 @@
   }
   &:hover [role='tooltip'],
   .react-tooltip__show {
-    @apply visible;
+    @apply visible opacity-100;
   }
   .tooltip-icon {
     @apply inline-flex relative;
