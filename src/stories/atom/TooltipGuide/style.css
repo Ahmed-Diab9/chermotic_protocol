@@ -1,7 +1,11 @@
 .wrapper-tooltip {
   @apply flex items-center self-center;
-  .react-tooltip {
-    @apply !opacity-100;
+  [role='tooltip'] {
+    @apply invisible;
+  }
+  &:hover [role='tooltip'],
+  .react-tooltip__show {
+    @apply visible;
   }
   .tooltip-icon {
     @apply inline-flex relative;
