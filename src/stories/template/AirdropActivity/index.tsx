@@ -25,16 +25,16 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             open one random box.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col gap-1 pr-5">
-              <ArrowInfo label="My Credit History" href="#" />
-              <ArrowInfo label="Learn more" href="#" />
-            </div>
-            <div className="flex flex-col w-3/5 gap-2">
+            <div className="flex flex-col w-[324px] gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
                 You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
                 Competitions, or completing special missions given on Discord.
               </p>
+            </div>
+            <div className="flex flex-col gap-1 pl-5">
+              <ArrowInfo label="My Credit History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
           </div>
         </div>
@@ -54,16 +54,16 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             using Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col gap-1 pr-5">
-              <ArrowInfo label="My Booster History" href="#" />
-              <ArrowInfo label="Learn more" href="#" />
-            </div>
-            <div className="flex flex-col w-3/5 gap-2">
+            <div className="flex flex-col w-[324px] gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
                 You can earn Boosters participating in Trading Competitions, or completing special
                 missions given on Discord.
               </p>
+            </div>
+            <div className="flex flex-col gap-1 pl-5">
+              <ArrowInfo label="My Booster History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
           </div>
         </div>
