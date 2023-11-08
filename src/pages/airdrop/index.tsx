@@ -71,17 +71,17 @@ function Airdrop() {
                     <Tab.Panels className="flex-auto block">
                       <Tab.Panel>
                         <section>
-                          <div className="w-[560px]">
+                          <h2 className="mb-2 text-4xl font-semibold text-left text-primary">
+                            Chromatic Airdrop Season 1
+                          </h2>
+                          <div className="w-full">
                             <BlurText
-                              label="Chromatic Airdrop Season 1"
+                              label="May the CHRMA be with you!"
                               className="text-[60px]"
                               color="chrm"
                             />
                           </div>
                           <div className="mt-10 text-left">
-                            <p className="mb-2 text-xl text-primary-light">
-                              May the CHRMA be with you!
-                            </p>
                             <p className="text-xl text-primary-light">
                               Airdrop 1 period: Nov 2023 ~ 1Q 2024 (The end date will be announced
                               later.)
