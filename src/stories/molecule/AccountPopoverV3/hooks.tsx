@@ -13,7 +13,7 @@ export function useAccountPopoverV3() {
   const { isConnected } = useAccount();
   const { isChromaticBalanceLoading } = useChromaticAccount();
   const { isTokenBalanceLoading } = useTokenBalances();
-  const { totalBalance } = useMargins();
+  const { totalMargin } = useMargins();
   const { currentToken } = useSettlementToken();
   const { connectAsync, connectors } = useConnect();
   const { status } = useChromaticAccount();
@@ -26,8 +26,8 @@ export function useAccountPopoverV3() {
   const tokenImage = currentToken?.image;
 
   const balance =
-    isNotNil(totalBalance) && isNotNil(currentToken)
-      ? formatDecimals(totalBalance, currentToken.decimals, 2, true)
+    isNotNil(totalMargin) && isNotNil(currentToken)
+      ? formatDecimals(totalMargin, currentToken.decimals, 5, true, 'trunc')
       : '-';
 
   const onClickConnect = () => connectAsync({ connector: connectors[0] });

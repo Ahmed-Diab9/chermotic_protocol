@@ -77,7 +77,7 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
 
   const balance =
     isNotNil(totalBalance) && isNotNil(currentToken)
-      ? formatDecimals(totalBalance, currentToken.decimals, 2, true)
+      ? formatDecimals(totalBalance, currentToken.decimals, 5, true)
       : '-';
 
   const availableMargin = numberFormat(formatUnits(totalMargin, currentToken?.decimals || 0), {
