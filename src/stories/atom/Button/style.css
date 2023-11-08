@@ -1,5 +1,5 @@
 .btn {
-  @apply inline-flex items-center;
+  @apply inline-flex items-center justify-center;
   @apply font-semibold leading-[1];
   @apply cursor-pointer;
   border-radius: 100px;
