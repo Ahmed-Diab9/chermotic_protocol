@@ -110,7 +110,7 @@ export const TradeManagementV3 = () => {
                     <div className="list">
                       <div className="thead">
                         <div className="tr">
-                          <div className="td">Position</div>
+                          <div className="td">Entry Time</div>
                           <div className="td">Entry Price</div>
                           <div className="td">Contract Qty</div>
                           <div className="td">Leverage</div>
