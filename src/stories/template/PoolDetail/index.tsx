@@ -28,7 +28,6 @@ export const PoolDetail = (props: PoolDetailProps) => {
             address={lpAddress && trimAddress(lpAddress, 6, 6)}
             // TODO: onclick should be updated to open in a new tab (not copy)
             onClick={onCopyAddress}
-            className="min-w-[200px]"
             icon="outlink"
           />
           {/* <Button

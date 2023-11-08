@@ -19,9 +19,9 @@ export const AddressWithButton = (props: AddressWithButtonProps) => {
   return (
     <>
       <div
-        className={`flex items-center justify-between flex-auto border dark:border-transparent border-collapse rounded-full max-w-[220px] bg-paper dark:bg-paper-light text-primary ${className}`}
+        className={`flex items-center justify-between flex-auto border dark:border-transparent border-collapse rounded-full w-fit bg-paper dark:bg-paper-light text-primary ${className}`}
       >
-        <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px] text-left">
+        <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[100px] text-left">
           {address ? <>{address}</> : <Skeleton width="100%" />}
         </p>
         {icon === 'copy' && <TooltipGuide tipOnly tip="Copy" label="copy-address" />}
