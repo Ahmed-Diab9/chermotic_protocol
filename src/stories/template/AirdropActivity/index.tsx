@@ -1,5 +1,6 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { useAirdropActivity } from './hooks';
+import { Outlink } from '~/stories/atom/Outlink';
 import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
 import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
@@ -23,16 +24,17 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
             open one random box.
           </p>
-          <div className="flex items-end justify-between pt-12 mt-auto mr-5">
-            <div className="flex flex-col gap-2">
-              <ArrowInfo label="My Credit History" href="" />
-              {/* <ArrowInfo label="More Detail" href="" /> */}
+          <div className="flex items-end justify-between pt-10 mt-auto">
+            <div className="flex flex-col gap-1 pr-5">
+              <ArrowInfo label="My Credit History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
-              <ArrowInfo label="Zealy Quest" href="#" />
-              <ArrowInfo label="Galxe Quest" href="#" />
-              <ArrowInfo label="Trading Competition" />
+            <div className="flex flex-col w-3/5 gap-2">
+              <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
+              <p className="text-primary-light">
+                You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
+                Competitions, or completing special missions given on Discord.
+              </p>
             </div>
           </div>
         </div>
@@ -51,15 +53,17 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Boosters increase the probability of getting a lot of CHRMA from the Random Box. By
             using Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
-          <div className="flex items-end justify-between pt-12 mt-auto mr-5">
-            <div className="flex flex-col gap-2">
-              <ArrowInfo label="My Credit History" href="" />
-              {/* <ArrowInfo label="More Detail" href="" /> */}
+          <div className="flex items-end justify-between pt-10 mt-auto">
+            <div className="flex flex-col gap-1 pr-5">
+              <ArrowInfo label="My Credit History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
-              <ArrowInfo label="Galaxe Quest" href="#" />
-              <ArrowInfo label="Trade Competition" />
+            <div className="flex flex-col w-3/5 gap-2">
+              <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
+              <p className="text-primary-light">
+                You can earn Boosters participating in Trading Competitions, or completing special
+                missions given on Discord.
+              </p>
             </div>
           </div>
         </div>
