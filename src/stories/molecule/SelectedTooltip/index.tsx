@@ -1,7 +1,7 @@
 import { isNotNil } from 'ramda';
 import { ChartTooltip } from '~/stories/atom/ChartTooltip';
 
-import { withComma } from '~/utils/number';
+import { numberFormat } from '~/utils/number';
 
 interface SelectedTooltipProps {
   id?: string;
@@ -12,7 +12,15 @@ export const SelectedTooltip = ({ id = '', data }: SelectedTooltipProps) => {
   if (!data) return null;
 
   function toString(num?: number) {
-    return isNotNil(num) ? withComma(num) : '-';
+    return isNotNil(num)
+      ? numberFormat(num, {
+          maxDigits: 4,
+          minDigits: 4,
+          type: 'string',
+          roundingMode: 'trunc',
+          useGrouping: true,
+        })
+      : '-';
   }
 
   return (

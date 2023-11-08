@@ -232,6 +232,7 @@ export function useTradeManagementV3() {
     historyBottomRef,
     tradeBottomRef,
     isHistoryLoading,
+    isTradeLogsLoading,
     historyList,
     tradeList,
     hasMoreHistory,

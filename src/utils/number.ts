@@ -34,6 +34,12 @@ export const formatDecimals = (
     useGrouping: useGrouping || false,
     roundingMode,
   });
+  const numericFormatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    useGrouping: useGrouping || false,
+    roundingMode,
+  });
   switch (typeof value) {
     case 'number': {
       const numeric = formatUnits(BigInt(value), tokenDecimals ?? 0);
@@ -48,9 +54,9 @@ export const formatDecimals = (
       const [numeric, decimals = ''] = formatted.split('.');
       const trimmedDecimals = decimals.slice(0, decimalLimit);
       if (trimmedDecimals.length === 0) {
-        return numeric;
+        return numericFormatter.format(Number(numeric));
       }
-      return `${numeric}.${trimmedDecimals}`;
+      return `${numericFormatter.format(Number(numeric))}.${trimmedDecimals}`;
     }
     case 'undefined': {
       return '0';

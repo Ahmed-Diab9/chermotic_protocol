@@ -56,8 +56,10 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   const balance =
     balances && tokenAddress && balances[tokenAddress]
       ? numberFormat(formatUnits(balances[tokenAddress], tokenDecimals), {
-          maxDigits: 5,
+          minDigits: currentToken.decimals,
+          maxDigits: currentToken.decimals,
           useGrouping: false,
+          roundingMode: 'trunc',
         })
       : 0;
 
