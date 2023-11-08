@@ -183,7 +183,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     </div>
                     <div>
                       <div className="flex mb-1 text-primary-lighter">
-                        Available Margin
+                        <p>Available Margin</p>
                         <TooltipGuide
                           label="available-margin"
                           tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
