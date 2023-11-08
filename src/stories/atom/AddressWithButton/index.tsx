@@ -8,13 +8,13 @@ import Skeleton from 'react-loading-skeleton';
 interface AddressWithButtonProps {
   address?: string;
   disabled?: boolean;
-  button?: 'copy' | 'outlink';
+  icon?: 'copy' | 'outlink';
   className?: string;
   onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
 export const AddressWithButton = (props: AddressWithButtonProps) => {
-  const { address, button = 'copy', onClick, className } = props;
+  const { address, icon = 'copy', onClick, className } = props;
 
   return (
     <>
@@ -24,7 +24,7 @@ export const AddressWithButton = (props: AddressWithButtonProps) => {
         <p className="w-[calc(100%-40px)] px-4 overflow-hidden min-w-[80px] text-left">
           {address ? <>{address}</> : <Skeleton width="100%" />}
         </p>
-        {button === 'copy' && <TooltipGuide tipOnly tip="Copy" label="copy-address" />}
+        {icon === 'copy' && <TooltipGuide tipOnly tip="Copy" label="copy-address" />}
         {/* <TooltipGuide
           tipOnly
           tip={button === 'copy' ? 'Copy' : button === 'outlink' ? 'Open in a new tab' : ''}
@@ -36,7 +36,7 @@ export const AddressWithButton = (props: AddressWithButtonProps) => {
           size="lg"
           className="m-[-1px] tooltip-copy-address"
           iconOnly={
-            button === 'copy' ? <Square2StackIcon /> : button === 'outlink' ? <OutlinkIcon /> : null
+            icon === 'copy' ? <Square2StackIcon /> : icon === 'outlink' ? <OutlinkIcon /> : null
           }
           onClick={onClick}
         />

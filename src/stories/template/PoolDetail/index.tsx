@@ -29,7 +29,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
             // TODO: onclick should be updated to open in a new tab (not copy)
             onClick={onCopyAddress}
             className="min-w-[200px]"
-            button="outlink"
+            icon="outlink"
           />
           {/* <Button
             href={
