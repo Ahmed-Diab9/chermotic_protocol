@@ -26,8 +26,10 @@ export const PoolDetail = (props: PoolDetailProps) => {
         <div className="flex gap-2">
           <AddressWithButton
             address={lpAddress && trimAddress(lpAddress, 6, 6)}
+            // TODO: onclick should be updated to open in a new tab (not copy)
             onClick={onCopyAddress}
             className="min-w-[200px]"
+            button="outlink"
           />
           {/* <Button
             href={
