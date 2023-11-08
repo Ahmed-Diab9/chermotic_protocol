@@ -8,7 +8,13 @@
     @apply visible opacity-100;
   }
   .tooltip-icon {
-    @apply inline-flex relative;
+    @apply inline-flex relative mx-1;
+  }
+  &:first-child .tooltip-icon {
+    @apply ml-0;
+  }
+  &:last-child .tooltip-icon {
+    @apply mr-0;
   }
   .tooltip-base {
     @apply max-w-[420px];
