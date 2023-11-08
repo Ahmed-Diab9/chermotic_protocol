@@ -1,5 +1,6 @@
-import { isNil } from 'ramda';
-import { useCallback, useMemo, useState } from 'react';
+import { isNil, isNotNil } from 'ramda';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PAGE_SIZE } from '~/constants/arbiscan';
 import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
 import { useAirdropHistory } from '~/hooks/airdrops/useAirdropHistory';
@@ -12,13 +13,43 @@ const labelMap = {
 } as const;
 
 export const useFilteredAirdropHistory = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>();
   const { airdropHistory = [], refreshHistory } = useAirdropHistory();
   const { airdropAssets, isLoading } = useAirdropAssets();
-  const activeLabel = useMemo(() => filterLabels[selectedIndex], [selectedIndex]);
+  const activeLabel = useMemo(
+    () => (isNotNil(selectedIndex) ? filterLabels[selectedIndex] : undefined),
+    [selectedIndex]
+  );
   const [page, setPage] = useState(0);
 
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab !== 'history') {
+      setSelectedIndex(0);
+      return;
+    }
+    const label = searchParams.get('label');
+    switch (label) {
+      case 'credit': {
+        setSelectedIndex(1);
+        break;
+      }
+      case 'booster': {
+        setSelectedIndex(2);
+        break;
+      }
+      default: {
+        setSelectedIndex(0);
+        return;
+      }
+    }
+  }, [searchParams]);
+
   const filteredHistory = useMemo(() => {
+    if (isNil(activeLabel)) {
+      return [];
+    }
     const label = labelMap[activeLabel];
     if (label === 'all') {
       return airdropHistory;
@@ -40,7 +71,7 @@ export const useFilteredAirdropHistory = () => {
   }, [page, filteredHistory]);
 
   const hasMoreHistory = useMemo(() => {
-    if (isNil(airdropAssets)) {
+    if (isNil(airdropAssets) || isNil(activeLabel)) {
       return false;
     }
     const sum = pagedHistory.reduce(
