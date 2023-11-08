@@ -61,3 +61,5 @@ export type LpReceiptPartial = Pick<
   LpReceipt,
   'action' | 'isIssued' | 'isSettled' | 'id' | 'recipient'
 >;
+
+export type ReceiptAction = 'all' | 'minting' | 'burning';
