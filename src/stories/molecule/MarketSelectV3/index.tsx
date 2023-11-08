@@ -1,7 +1,6 @@
 import './style.css';
 
 import { Popover } from '@headlessui/react';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { ArrowTriangleIcon, OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
