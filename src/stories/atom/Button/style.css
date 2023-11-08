@@ -1,7 +1,7 @@
 .btn {
-  @apply flex items-center;
+  @apply inline-flex items-center;
   @apply font-semibold leading-[1];
-  @apply inline-block cursor-pointer;
+  @apply cursor-pointer;
   border-radius: 100px;
   > div {
     justify-content: center;
