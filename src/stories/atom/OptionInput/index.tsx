@@ -20,6 +20,7 @@ interface OptionInputProps {
   disabled?: boolean;
   error?: boolean;
   errorMsg?: string | undefined;
+  errorMsgAlign?: 'left' | 'center' | 'right';
   onClick?: () => unknown;
   onChange?: (value: string) => unknown;
 }
@@ -39,6 +40,7 @@ export const OptionInput = (props: OptionInputProps) => {
     disabled = false,
     error = false,
     errorMsg,
+    errorMsgAlign = 'right',
     onChange,
   } = props;
   const [ratio, setRatio] = useState<number>();
@@ -60,7 +62,7 @@ export const OptionInput = (props: OptionInputProps) => {
 
   return (
     <div className={`flex flex-col ${className}`}>
-      {errorMsg && <p className="mb-2 text-right text-price-lower">{errorMsg}</p>}
+      {errorMsg && <p className={`mb-2 text-price-lower text-${errorMsgAlign}`}>{errorMsg}</p>}
       <div
         className={`flex ${
           direction === 'row'

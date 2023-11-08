@@ -48,7 +48,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
   return (
     <div className="wrapper-tooltip">
       {tipOnly || (
-        <span className={`mx-1 tooltip-${label} tooltip-icon ${className}`}>
+        <span className={`tooltip-${label} tooltip-icon ${className}`}>
           <InformationCircleIcon className={`w-4 text-primary-lighter ${iconClass}`} />
         </span>
       )}

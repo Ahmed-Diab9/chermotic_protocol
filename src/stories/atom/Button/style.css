@@ -12,6 +12,7 @@
   }
   &:disabled {
     @apply cursor-not-allowed;
+    @apply bg-gray-light border-transparent text-primary/20;
   }
   &.toggle-on {
     @apply border border-primary text-primary;

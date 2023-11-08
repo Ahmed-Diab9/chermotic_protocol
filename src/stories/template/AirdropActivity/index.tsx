@@ -1,5 +1,6 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { useAirdropActivity } from './hooks';
+import { Outlink } from '~/stories/atom/Outlink';
 import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
 import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
@@ -11,7 +12,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
   return (
     <div className="text-lg text-left AirdropActivity">
       <div className="flex gap-5 mt-5">
-        <div className="w-1/2 panel">
+        <div className="flex flex-col w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
             <div className="flex items-center gap-4">
               <img src={CreditLgIcon} alt="airdrop credit" />
@@ -23,20 +24,21 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
             open one random box.
           </p>
-          <div className="flex items-end justify-between pt-12 mr-5">
-            <div className="flex flex-col gap-2">
-              <ArrowLink label="My Credit History" href="" />
-              <ArrowLink label="More Detail" href="" />
+          <div className="flex items-end justify-between pt-10 mt-auto">
+            <div className="flex flex-col gap-1 pr-5">
+              <ArrowInfo label="My Credit History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
-              <ArrowLink label="Galaxe Quest" href="" />
-              <ArrowLink label="Trade Competition (Testnet)" href="" />
-              <ArrowLink label="Gleam Events" href="" />
+            <div className="flex flex-col w-3/5 gap-2">
+              <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
+              <p className="text-primary-light">
+                You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
+                Competitions, or completing special missions given on Discord.
+              </p>
             </div>
           </div>
         </div>
-        <div className="w-1/2 panel">
+        <div className="flex flex-col w-1/2 panel">
           <div className="flex items-center justify-between pb-5 border-b">
             <div className="flex items-center gap-4">
               <img src={BoosterLgIcon} alt="airdrop credit" />
@@ -48,19 +50,20 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
           </div>
           <p className="pt-5">
-            Boosters increase the probability of getting a lot of CHR from the Random Box. By using
-            Booster, you can earn approximately twice as much rCHR as without using Booster.
+            Boosters increase the probability of getting a lot of CHRMA from the Random Box. By
+            using Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
-          <div className="flex items-end justify-between pt-12 mr-5">
-            <div className="flex flex-col gap-2">
-              <ArrowLink label="My Credit History" href="" />
-              <ArrowLink label="More Detail" href="" />
+          <div className="flex items-end justify-between pt-10 mt-auto">
+            <div className="flex flex-col gap-1 pr-5">
+              <ArrowInfo label="My Booster History" href="#" />
+              <ArrowInfo label="Learn more" href="#" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h5 className="mb-1 text-xl text-chrm">How to get Credit</h5>
-              <ArrowLink label="Galaxe Quest" href="" />
-              <ArrowLink label="Trade Competition (Testnet)" href="" />
-              <ArrowLink label="Gleam Events" href="" />
+            <div className="flex flex-col w-3/5 gap-2">
+              <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
+              <p className="text-primary-light">
+                You can earn Boosters participating in Trading Competitions, or completing special
+                missions given on Discord.
+              </p>
             </div>
           </div>
         </div>
@@ -69,23 +72,30 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
   );
 };
 
-interface ArrowLinkProps {
+interface ArrowInfoProps {
   label: string;
-  href: string;
+  href?: string;
 }
 
-const ArrowLink = (props: ArrowLinkProps) => {
+const ArrowInfo = (props: ArrowInfoProps) => {
   const { label, href } = props;
-
-  return (
-    <a
-      href={href}
-      className="flex items-center gap-1 text-primary-light hover:underline"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <ArrowLongRightIcon className="w-4" />
-      <span>{label}</span>
-    </a>
-  );
+  if (href)
+    return (
+      <a
+        href={href}
+        className="flex items-center gap-1 text-primary-light hover:underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <ArrowLongRightIcon className="w-4" />
+        <span>{label}</span>
+      </a>
+    );
+  else
+    return (
+      <p className="flex items-center gap-1 text-primary-light">
+        <ArrowLongRightIcon className="w-4" />
+        <span>{label}</span>
+      </p>
+    );
 };

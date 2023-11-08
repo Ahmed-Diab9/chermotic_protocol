@@ -1,4 +1,4 @@
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Outlink } from '~/stories/atom/Outlink';
 
 import { isNil } from 'ramda';
@@ -24,10 +24,12 @@ export const PoolDetail = (props: PoolDetailProps) => {
           <h3 className={lpTag}>{lpName}</h3>
         </div>
         <div className="flex gap-2">
-          <AddressCopyButton
+          <AddressWithButton
             address={lpAddress && trimAddress(lpAddress, 6, 6)}
+            // TODO: onclick should be updated to open in a new tab (not copy)
             onClick={onCopyAddress}
             className="min-w-[200px]"
+            icon="outlink"
           />
           {/* <Button
             href={
@@ -45,7 +47,8 @@ export const PoolDetail = (props: PoolDetailProps) => {
       <div className="pt-3 mt-3 text-left border-t">
         <div className="text-base text-primary-light">
           When providing liquidity to the liquidity pools of the Chromatic protocol, providers
-          receive an equivalent amount of CLP tokens. <br />
+          receive an equivalent amount of CLP tokens.
+          <br />
           CLP tokens are independent for each pool, having unique Token IDs and names such as
           'USDT-ETH/USD:Junior pool'.
           {/* <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" /> */}

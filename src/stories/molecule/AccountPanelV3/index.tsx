@@ -248,19 +248,8 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
                   ? 'Exceeded the available margin.'
                   : undefined
               }
+              errorMsgAlign="left"
             />
-            {/* {isExceeded && (
-              <TooltipAlert
-                label="input-amount"
-                tip={isDeposit ? 'Exceeded your wallet balance.' : 'Exceeded the available margin.'}
-              />
-            )}
-            {isLess && (
-              <TooltipAlert
-                label="input-amount"
-                tip={`Less than minimum amount. (${minimumAmount})`}
-              />
-            )} */}
           </div>
           <div className="text-sm">
             <div className="mb-1 text-primary-lighter">
@@ -281,13 +270,6 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
           onClick={() => onClickSubmit(onClose)}
           disabled={isSubmitDisabled}
         />
-        {/* <Button
-                iconOnly={<ChevronDoubleUpIcon />}
-                size="sm"
-                css="unstyled"
-                className="w-full my-2"
-                onClick={close}
-              /> */}
       </div>
     </div>
   );

@@ -42,7 +42,7 @@ export function HistoryItem(props: HistoryItemProps) {
               {closeTime}
             </SkeletonElement>
           </div>
-          <div className="flex items-center gap-2 mt-[4px]">
+          <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
                 <h6>{token && token.name}</h6>
