@@ -1,8 +1,8 @@
-import './style.css';
 import { FillUpChart } from '@chromatic-protocol/react-compound-charts';
+import './style.css';
 
-import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 
 import { useTradeChart } from './hooks';
 
@@ -19,12 +19,13 @@ export interface TradeChartProps {
 export function TradeChart(props: TradeChartProps) {
   const { id } = props;
 
-  const { liquidityTooltipProps, selectedTooltipProps, fillupChartProps } = useTradeChart(props);
+  const { tokenName, liquidityTooltipProps, selectedTooltipProps, fillupChartProps } =
+    useTradeChart(props);
 
   return (
     <>
       <SelectedTooltip id={id} {...selectedTooltipProps} />
-      <LiquidityTooltip id={id} {...liquidityTooltipProps} />
+      <LiquidityTooltip id={id} {...liquidityTooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
         <FillUpChart {...fillupChartProps} />
       </div>

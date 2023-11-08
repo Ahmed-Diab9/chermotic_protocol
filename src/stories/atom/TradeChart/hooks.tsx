@@ -6,6 +6,7 @@ import {
   FILLUP_POS_CONFIG,
   FILLUP_POS_TICKS,
 } from '~/configs/chart';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { TradeChartProps } from '.';
 
 interface UseTradeChartProps extends TradeChartProps {}
@@ -14,7 +15,7 @@ export function useTradeChart(props: UseTradeChartProps) {
   const { negative = false, positive = true, selectedAmount = 0, height, width } = props;
 
   const { liquidity, clbTokenValues } = useChartData();
-
+  const { currentToken } = useSettlementToken();
   const isNegative = negative === true || positive === false;
 
   const trackConfig = isNegative ? FILLUP_NEG_CONFIG : FILLUP_POS_CONFIG;
@@ -43,6 +44,7 @@ export function useTradeChart(props: UseTradeChartProps) {
   };
 
   return {
+    tokenName: currentToken?.name,
     fillupChartProps,
     selectedTooltipProps,
     liquidityTooltipProps,
