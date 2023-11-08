@@ -11,11 +11,13 @@ import { TradeChartPanel } from '~/stories/template/TradeChartPanel';
 import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
 import { TradePanelV3 } from '~/stories/template/TradePanelV3';
 
+import { usePositionFilterLocal } from '~/hooks/usePositionFilterLocal';
 import './style.css';
 
 function TradeV3() {
   useTokenLocal();
   useMarketLocal();
+  usePositionFilterLocal();
 
   const { beforeCondition, afterCondition, toggleConditions, onLoadBackgroundRef } =
     useBackgroundGradient();
