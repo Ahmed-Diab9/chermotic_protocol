@@ -16,6 +16,7 @@ import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { ChromaticLogo } from '~/assets/icons/Logo';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -154,11 +155,13 @@ function Airdrop() {
                           <article>
                             <div className="flex justify-between gap-5 text-left">
                               <h2 className="text-4xl">rCHR Random Box</h2>
-                              <Button
-                                label="What is rCHR?"
-                                css="underlined"
-                                className="text-primary-light"
-                              />
+                              <div className="flex items-center">
+                                <p className="text-primary-light">What is rCHR?</p>
+                                <TooltipGuide
+                                  label="airdrop-rchr"
+                                  tip="rCHR is a rewarded CHR token that can be attributed to CHR."
+                                />
+                              </div>
                             </div>
                             <div className="flex flex-col items-center mt-10">
                               <img src={RandomboxImage} alt="ramdom box" className="w-[330px]" />
