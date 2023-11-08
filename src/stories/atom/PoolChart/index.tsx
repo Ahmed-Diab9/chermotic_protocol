@@ -15,12 +15,12 @@ export interface PoolChartProps {
 }
 
 export function PoolChart(props: PoolChartProps) {
-  const { rangeChartProps, tooltipProps } = usePoolChart(props);
+  const { tokenName, rangeChartProps, tooltipProps } = usePoolChart(props);
   const { id } = props;
 
   return (
     <>
-      <LiquidityTooltip {...tooltipProps} />
+      <LiquidityTooltip {...tooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
         <Chart {...rangeChartProps} />
       </div>
