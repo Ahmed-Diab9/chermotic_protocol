@@ -80,14 +80,14 @@ const PoolV3 = () => {
                     </h2>
                   </SkeletonElement>
                   <Tag label={selectedLp?.tag} className={tagClass} />
-                  {/* <Button
+                  <Button
                     label="Metamask"
                     iconLeft={<PlusIcon className="w-3 h-3" />}
                     css="translucent"
-                    className="ml-4 !pl-2 !pt-[2px]"
+                    className="ml-4 !pl-2 !py-1"
                     gap="1"
                     size="sm"
-                  /> */}
+                  />
                 </div>
                 <p className="text-lg text-primary-light">Pool Description</p>
                 {/* TODO: learn more button */}

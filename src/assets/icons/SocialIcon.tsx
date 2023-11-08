@@ -78,3 +78,184 @@ export function TelegramIcon(props: any) {
     </svg>
   );
 }
+
+export function MetamaskIcon(props: any) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="none" viewBox="0 0 20 20">
+      <path
+        fill="#CDBDB2"
+        fillRule="evenodd"
+        d="m5.731 17.344 2.6.69v-.902l.213-.212h1.486v1.804H8.438l-1.964-.849-.743-.53Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#CDBDB2"
+        fillRule="evenodd"
+        d="m14.222 17.344-2.547.69v-.902l-.213-.212H9.978v1.804h1.592l1.963-.849.69-.53Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#393939"
+        fillRule="evenodd"
+        d="m8.544 15.38-.212 1.752.265-.212h2.76l.318.212-.213-1.751-.424-.265-2.123.053-.371.212Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#F89C35"
+        fillRule="evenodd"
+        d="M7.11 3.547 8.385 6.52l.584 8.65h2.07l.636-8.65 1.168-2.972H7.111Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#F89D35"
+        fillRule="evenodd"
+        d="M1.54 10.074.052 14.373l3.715-.213h2.388v-1.857l-.106-3.82-.531.424-3.98 1.167Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#D87C30"
+        fillRule="evenodd"
+        d="m4.352 10.552 4.351.106-.478 2.229-2.07-.53-1.803-1.805Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EA8D3A"
+        fillRule="evenodd"
+        d="m4.352 10.605 1.804 1.698v1.698l-1.804-3.396Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#F89D35"
+        fillRule="evenodd"
+        d="m6.156 12.356 2.122.53.69 2.283-.477.265-2.335-1.38v-1.698Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EB8F35"
+        fillRule="evenodd"
+        d="m6.156 14.054-.425 3.29 2.813-1.963-2.388-1.327Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EA8E3A"
+        fillRule="evenodd"
+        d="m8.703 10.658.265 4.51-.796-2.308.531-2.202Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#D87C30"
+        fillRule="evenodd"
+        d="m3.715 14.107 2.44-.053-.424 3.29-2.016-3.237Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EB8F35"
+        fillRule="evenodd"
+        d="m1.22 18.777 4.511-1.433-2.016-3.237-3.662.266 1.168 4.404Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#E8821E"
+        fillRule="evenodd"
+        d="m8.385 6.519-2.282 1.91-1.751 2.123 4.351.16-.318-4.193Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#DFCEC3"
+        fillRule="evenodd"
+        d="m5.731 17.344 2.813-1.963-.213 1.698v.955l-1.91-.371-.69-.319Zm8.491 0-2.76-1.963.213 1.698v.955l1.91-.371.637-.319Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#393939"
+        fillRule="evenodd"
+        d="m7.535 11.613.584 1.22-2.07-.53 1.486-.69Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#E88F35"
+        fillRule="evenodd"
+        d="M1.167 1.053 8.384 6.52l-1.22-2.972-5.997-2.494Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#8E5A30"
+        fillRule="evenodd"
+        d="M1.168 1.053.212 3.972l.531 3.184-.371.212.53.478-.424.371.583.53-.371.319.85 1.061 3.979-1.22C7.465 7.35 8.42 6.554 8.385 6.519c-.036-.036-2.441-1.857-7.217-5.466Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#F89D35"
+        fillRule="evenodd"
+        d="m18.414 10.074 1.486 4.299-3.715-.213h-2.388v-1.857l.106-3.82.531.424 3.98 1.167Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#D87C30"
+        fillRule="evenodd"
+        d="m15.602 10.552-4.352.106.478 2.229 2.07-.53 1.804-1.805Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EA8D3A"
+        fillRule="evenodd"
+        d="m15.602 10.605-1.805 1.698v1.698l1.805-3.396Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#F89D35"
+        fillRule="evenodd"
+        d="m13.797 12.356-2.122.53-.69 2.283.478.265 2.334-1.38v-1.698Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EB8F35"
+        fillRule="evenodd"
+        d="m13.797 14.054.425 3.29-2.76-1.91 2.335-1.38Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EA8E3A"
+        fillRule="evenodd"
+        d="m11.25 10.658-.265 4.51.796-2.308-.53-2.202Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#D87C30"
+        fillRule="evenodd"
+        d="m16.238 14.107-2.44-.053.424 3.29 2.016-3.237Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#EB8F35"
+        fillRule="evenodd"
+        d="m18.732 18.777-4.51-1.433 2.016-3.237 3.662.266-1.168 4.404Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#E8821E"
+        fillRule="evenodd"
+        d="m11.569 6.519 2.281 1.91 1.752 2.123-4.352.16.319-4.193Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#393939"
+        fillRule="evenodd"
+        d="m12.418 11.613-.584 1.22 2.07-.53-1.486-.69Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#E88F35"
+        fillRule="evenodd"
+        d="M18.786 1.053 11.569 6.52l1.22-2.972 5.997-2.494Z"
+        clipRule="evenodd"
+      />
+      <path
+        fill="#8E5A30"
+        fillRule="evenodd"
+        d="m18.785 1.053.956 2.919-.53 3.184.37.212-.53.478.424.371-.583.53.371.319-.849 1.061-3.98-1.22c-1.946-1.557-2.9-2.353-2.865-2.388.035-.036 2.44-1.857 7.216-5.466Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
