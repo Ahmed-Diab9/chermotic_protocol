@@ -1,4 +1,4 @@
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Outlink } from '~/stories/atom/Outlink';
 
 import { isNil } from 'ramda';
@@ -24,7 +24,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
           <h3 className={lpTag}>{lpName}</h3>
         </div>
         <div className="flex gap-2">
-          <AddressCopyButton
+          <AddressWithButton
             address={lpAddress && trimAddress(lpAddress, 6, 6)}
             onClick={onCopyAddress}
             className="min-w-[200px]"

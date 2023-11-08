@@ -9,7 +9,7 @@ import arbitrumIcon from '~/assets/images/arbitrum.svg';
 
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -123,7 +123,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                         Connected Wallet
                       </h4>
                       <div className="flex items-center justify-between gap-2">
-                        <AddressCopyButton address={walletAddress} onClick={onCopyWalletAddress} />
+                        <AddressWithButton address={walletAddress} onClick={onCopyWalletAddress} />
                         <Button
                           href={accountExplorerUrl}
                           label="view transition"
@@ -264,7 +264,7 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
                             My Account
                           </h4>
                           <div className="flex items-center justify-between gap-2">
-                            <AddressCopyButton
+                            <AddressWithButton
                               address={chromaticAddress}
                               onClick={onCopyChromaticAddress}
                             />

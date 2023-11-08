@@ -4,14 +4,14 @@ import { Button } from '../Button';
 import { TooltipGuide } from '../TooltipGuide';
 import Skeleton from 'react-loading-skeleton';
 
-interface AddressCopyButtonProps {
+interface AddressWithButtonProps {
   address?: string;
   disabled?: boolean;
   className?: string;
   onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-export const AddressCopyButton = (props: AddressCopyButtonProps) => {
+export const AddressWithButton = (props: AddressWithButtonProps) => {
   const { address, onClick, className } = props;
 
   return (

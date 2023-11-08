@@ -6,7 +6,7 @@ import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
@@ -43,7 +43,7 @@ const Pool = () => {
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <div className="flex gap-2">
-                  <AddressCopyButton
+                  <AddressWithButton
                     address={clbTokenAddress && trimAddress(clbTokenAddress, 6, 6)}
                     onClick={() => {
                       if (clbTokenAddress) {
