@@ -79,16 +79,18 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">
-        <TooltipGuide
-          label="contract-qty"
-          tip={preset.tooltip}
-          outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-          outLinkAbout="Payoff"
-        />
         <p>{preset.subLabel}</p>
         <p className="ml-2 text-lg text-black2">
           {numberFormat(preset.subValue, { maxDigits: 5, useGrouping: true })} {tokenName}
         </p>
+        <div className="ml-1">
+          <TooltipGuide
+            label="contract-qty"
+            tip={preset.tooltip}
+            outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
+            outLinkAbout="Payoff"
+          />
+        </div>
       </div>
     </>
   );
