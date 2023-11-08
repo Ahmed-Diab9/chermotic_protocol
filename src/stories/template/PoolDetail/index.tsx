@@ -48,8 +48,8 @@ export const PoolDetail = (props: PoolDetailProps) => {
           When providing liquidity to the liquidity pools of the Chromatic protocol, providers
           receive an equivalent amount of CLP tokens.
           <br />
-          CLP tokens are independent for each pool, having unique Token IDs and names such as
-          'USDT-ETH/USD:Junior pool'.
+          CLP tokens are independent for each pool, having unique Token IDs and names such as '
+          {lpTitle} {lpName} pool'.
           {/* <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" /> */}
         </div>
       </div>
