@@ -154,12 +154,12 @@ function Airdrop() {
 
                           <article>
                             <div className="flex justify-between gap-5 text-left">
-                              <h2 className="text-4xl">rCHR Random Box</h2>
+                              <h2 className="text-4xl">rCHRMA Random Box</h2>
                               <div className="flex items-center">
-                                <p className="text-primary-light">What is rCHR?</p>
+                                <p className="text-primary-light">What is rCHRMA?</p>
                                 <TooltipGuide
                                   label="airdrop-rchr"
-                                  tip="rCHR is a rewarded CHR token that can be attributed to CHR."
+                                  tip="rCHRMA is a rewarded CHRMA token that can be attributed to CHRMA."
                                 />
                               </div>
                             </div>

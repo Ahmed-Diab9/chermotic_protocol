@@ -48,8 +48,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
           </div>
           <p className="pt-5">
-            Boosters increase the probability of getting a lot of CHR from the Random Box. By using
-            Booster, you can earn approximately twice as much rCHR as without using Booster.
+            Boosters increase the probability of getting a lot of CHRMA from the Random Box. By
+            using Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
           <div className="flex items-end justify-between pt-12 mt-auto mr-5">
             <div className="flex flex-col gap-2">
