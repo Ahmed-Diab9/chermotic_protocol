@@ -52,10 +52,7 @@ export const formatDecimals = (
     case 'bigint': {
       const formatted = formatUnits(value, tokenDecimals ?? 0);
       const [numeric, decimals = ''] = formatted.split('.');
-      const trimmedDecimals = decimals.slice(0, decimalLimit);
-      if (trimmedDecimals.length === 0) {
-        return numericFormatter.format(Number(numeric));
-      }
+      const trimmedDecimals = decimals.slice(0, decimalLimit).padEnd(2, '0');
       return `${numericFormatter.format(Number(numeric))}.${trimmedDecimals}`;
     }
     case 'undefined': {
