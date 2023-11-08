@@ -32,7 +32,6 @@ export const PoolDetail = (props: PoolDetailProps) => {
             onClick={onCopyAddress}
             icon="outlink"
           />
-          <Button href="" label="view scanner" css="light" size="lg" iconOnly={<MetamaskIcon />} />
           {/* <Button
             href={
               clbTokenAddress && blockExplorer
@@ -55,10 +54,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
           {lpTitle} {lpName} pool'.
           {/* <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" /> */}
         </div>
-        {/* <button title="add metamask">
-          <MetamaskIcon />
-        </button> */}
-        <div className="flex mt-2">
+        <div className="flex mt-3">
           <Button
             label="Metamask"
             iconLeft={<PlusIcon className="w-3 h-3" />}
