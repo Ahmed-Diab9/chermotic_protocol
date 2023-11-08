@@ -55,7 +55,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
             <div className="flex flex-col gap-1 pr-5">
-              <ArrowInfo label="My Credit History" href="#" />
+              <ArrowInfo label="My Booster History" href="#" />
               <ArrowInfo label="Learn more" href="#" />
             </div>
             <div className="flex flex-col w-3/5 gap-2">
