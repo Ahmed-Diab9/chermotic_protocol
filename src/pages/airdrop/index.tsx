@@ -78,7 +78,7 @@ function Airdrop() {
                           <div className="w-full">
                             <BlurText
                               label="May the CHRMA be with you!"
-                              className="text-[60px]"
+                              className="text-[60px] tracking-tight"
                               color="chrm"
                             />
                           </div>
