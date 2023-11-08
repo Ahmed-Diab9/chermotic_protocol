@@ -47,10 +47,20 @@ export const usePoolProgressV2 = () => {
   return {
     openButtonRef,
     ref,
-    isGuideOpen: true,
+    counts: {
+      minting: 3,
+      burning: 2,
+      mintingSettled: 2,
+      burningSettled: 1,
+      inProgress: 1,
+    },
+    isGuideOpens: {
+      all: true,
+      minting: true,
+      burning: false,
+    },
 
     lastOracle,
-
     poolReceipts: [mintingReceipt, burningReceipt],
     poolReceiptsCount: 2,
     isReceiptsEmpty: false,
