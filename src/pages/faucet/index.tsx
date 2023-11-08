@@ -65,7 +65,7 @@ const Faucet = () => {
                     key={`${allowedToken.address}-${allowedToken.name}`}
                     className="flex items-center gap-3 px-10 py-6 border-t last:border-b"
                   >
-                    <Avatar size="2xl" />
+                    <Avatar size="2xl" src={allowedToken.image} />
                     <div>
                       <h2 className="text-2xl">{allowedToken.name}</h2>
                       <p className="mt-1 text-primary-light">{currentChain.name}</p>
