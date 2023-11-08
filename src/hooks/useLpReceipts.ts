@@ -17,7 +17,7 @@ import {
   Sdk,
 } from '~/lib/graphql/sdk/lp';
 import { useAppSelector } from '~/store';
-import { LpReceipt, LpToken } from '~/typings/lp';
+import { LpReceipt, LpToken, ReceiptAction } from '~/typings/lp';
 import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
 import { trimMarket } from '~/utils/market';
@@ -157,7 +157,7 @@ type MapToDetailedReceiptsArgs = {
   client: Client;
   receipts: LpReceipt[];
   currentMarket: MarketLike;
-  currentAction: 'all' | 'minting' | 'burning';
+  currentAction: ReceiptAction;
   settlementToken: Token;
   clpMeta: LpToken;
 };
@@ -209,7 +209,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
 };
 
 type UseLpReceipts = {
-  currentAction: 'all' | 'minting' | 'burning';
+  currentAction: ReceiptAction;
 };
 
 export const useLpReceipts = (props: UseLpReceipts) => {

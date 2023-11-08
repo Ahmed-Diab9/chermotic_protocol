@@ -7,14 +7,14 @@ import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { LP_EVENT, LP_RECEIPT_EVENT } from '~/typings/events';
-import { LpReceipt } from '~/typings/lp';
+import { LpReceipt, ReceiptAction } from '~/typings/lp';
 
 export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { fetchBalances } = useChromaticAccount();
   const { formattedElapsed } = useLastOracle();
-  const [receiptAction, setReceiptAction] = useState('all' as 'all' | 'minting' | 'burning');
+  const [receiptAction, setReceiptAction] = useState<ReceiptAction>('all');
   const {
     receiptsData = [],
     isReceiptsLoading,
@@ -25,12 +25,12 @@ export const usePoolProgressV2 = () => {
   });
   const { refreshChromaticLp } = useChromaticLp();
   const {
-    count = {
-      mintings: 0,
-      burnings: 0,
-      mintingSettleds: 0,
-      burningSettleds: 0,
-      inProgresses: 0,
+    counts = {
+      minting: 0,
+      burning: 0,
+      mintingSettled: 0,
+      burningSettled: 0,
+      inProgress: 0,
     },
     isCountLoading,
     onRefreshLpReceiptCount,
@@ -44,21 +44,21 @@ export const usePoolProgressV2 = () => {
     const currentSize = receipts.length;
     switch (receiptAction) {
       case 'all': {
-        return currentSize < count.mintings + count.burnings;
+        return currentSize < counts.minting + counts.burning;
       }
       case 'minting': {
-        return currentSize < count.mintings;
+        return currentSize < counts.minting;
       }
       case 'burning': {
-        return currentSize < count.burnings;
+        return currentSize < counts.burning;
       }
     }
-  }, [count, receiptAction, receipts]);
+  }, [counts, receiptAction, receipts]);
   const { state: storedIsGuideOpen, setState: setIsGuideOpen } = useLocalStorage(
     'app:isLpGuideOpen',
     false
   );
-  const isGuideOpens = useMemo(() => {
+  const isGuideOpens = useMemo<Record<ReceiptAction, boolean>>(() => {
     if (!storedIsGuideOpen) {
       return {
         all: false,
@@ -67,11 +67,11 @@ export const usePoolProgressV2 = () => {
       };
     }
     return {
-      all: count.inProgresses > 0,
-      minting: count.mintings > count.mintingSettleds,
-      burning: count.burnings > count.burningSettleds,
+      all: counts.inProgress > 0,
+      minting: counts.minting > counts.mintingSettled,
+      burning: counts.burning > counts.burningSettled,
     };
-  }, [storedIsGuideOpen, count]);
+  }, [storedIsGuideOpen, counts]);
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
@@ -125,7 +125,7 @@ export const usePoolProgressV2 = () => {
     receipts,
     receiptAction,
     hasMoreReceipts,
-    count,
+    counts,
 
     onActionChange,
     onGuideClose,

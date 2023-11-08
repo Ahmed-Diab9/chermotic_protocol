@@ -23,7 +23,7 @@ export function PoolProgressV2() {
     formattedElapsed,
     receipts = [],
     isGuideOpens,
-    count,
+    counts,
     receiptAction,
     hasMoreReceipts,
     onActionChange,
@@ -44,7 +44,7 @@ export function PoolProgressV2() {
                 <div className="text-left">
                   <div className="flex text-xl font-bold">
                     In Progress
-                    <span className="mx-1">({count?.inProgresses})</span>
+                    <span className="mx-1">({counts['inProgress']})</span>
                     <TooltipGuide
                       label="in-progress"
                       tip='When providing or withdrawing liquidity, it is executed based on the price of the next oracle round. You can monitor the process of each order being executed in the "In Progress" window.'
@@ -70,8 +70,8 @@ export function PoolProgressV2() {
                     <div className="flex mt-2 border-b px-7">
                       <Tab.List className="!justify-start !gap-7 tabs-list tabs-line tabs-base">
                         <Tab id="all">All</Tab>
-                        <Tab id="minting">Minting ({count?.mintings})</Tab>
-                        <Tab id="burning">Burning ({count?.burnings})</Tab>
+                        <Tab id="minting">Minting ({counts['minting']})</Tab>
+                        <Tab id="burning">Burning ({counts['burning']})</Tab>
                       </Tab.List>
                     </div>
                     <Tab.Panels className="flex-auto">
@@ -118,7 +118,7 @@ export function PoolProgressV2() {
                       </Tab.Panel>
                       {/* tab - minting */}
                       <Tab.Panel className="flex flex-col mb-5">
-                        {count.mintings === 0 ? (
+                        {counts['minting'] === 0 ? (
                           <p className="my-6 text-center text-primary/20">
                             There is no liquidity add history.
                           </p>
@@ -147,7 +147,7 @@ export function PoolProgressV2() {
                       </Tab.Panel>
                       {/* tab - burning */}
                       <Tab.Panel className="flex flex-col mb-5">
-                        {count.burnings === 0 ? (
+                        {counts['burning'] === 0 ? (
                           <p className="my-6 text-center text-primary/20">
                             There is no liquidity remove history.
                           </p>

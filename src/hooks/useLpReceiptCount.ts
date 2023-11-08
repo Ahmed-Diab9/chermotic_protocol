@@ -20,18 +20,18 @@ export const useLpReceiptCount = () => {
     walletAddress,
   };
   const {
-    data: count,
+    data: counts,
     error,
     isLoading: isCountLoading,
     mutate,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
     async ({ lpAddress, walletAddress }) => {
-      let mintings = 0;
-      let burnings = 0;
-      let mintingSettleds = 0;
-      let burningSettleds = 0;
-      let inProgresses = 0;
+      let minting = 0;
+      let burning = 0;
+      let mintingSettled = 0;
+      let burningSettled = 0;
+      let inProgress = 0;
 
       const { addLiquidities } = await lpGraphSdk.AddLiquidityCount({ walletAddress, lpAddress });
       const { addLiquiditySettleds } = await lpGraphSdk.AddLiquiditySettledCount({
@@ -47,17 +47,17 @@ export const useLpReceiptCount = () => {
         walletAddress,
       });
 
-      mintings += addLiquidities.length;
-      burnings += removeLiquidities.length;
-      mintingSettleds += addLiquiditySettleds.length;
-      burningSettleds += removeLiquiditySettleds.length;
-      inProgresses = mintings + burnings - (mintingSettleds + burningSettleds);
+      minting += addLiquidities.length;
+      burning += removeLiquidities.length;
+      mintingSettled += addLiquiditySettleds.length;
+      burningSettled += removeLiquiditySettleds.length;
+      inProgress = minting + burning - (mintingSettled + burningSettled);
       return {
-        mintings,
-        burnings,
-        mintingSettleds,
-        burningSettleds,
-        inProgresses,
+        minting,
+        burning,
+        mintingSettled,
+        burningSettled,
+        inProgress,
       };
     },
     {
@@ -78,7 +78,7 @@ export const useLpReceiptCount = () => {
   }, [mutate]);
 
   return {
-    count,
+    counts,
     isCountLoading,
     onRefreshLpReceiptCount,
   };
