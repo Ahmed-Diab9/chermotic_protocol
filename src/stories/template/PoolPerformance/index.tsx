@@ -78,7 +78,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 <p>Trailing APR</p>
                 <TooltipGuide
                   label="performance-trailing-apr"
-                  tip="APR estimated based on the profit during the period"
+                  tip="Estimated APR based on the profit during the period"
                   outLink=""
                 />
               </div>

@@ -231,7 +231,7 @@ export function MarketSelectV3() {
                   <p className="text-sm text-primary-light">Interest Rate</p>
                   <TooltipGuide
                     label="interest-rate"
-                    tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement asset."
+                    tip="This is the rate of Borrow Fee that needs to be paid to the LP while the position is open. The Interest Rate is determined by the Dao for each settlement token."
                     outLink="https://chromatic-protocol.gitbook.io/docs/fee/interest"
                     className="mr-0"
                     iconClass="!w-3"
