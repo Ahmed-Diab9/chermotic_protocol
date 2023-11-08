@@ -186,7 +186,7 @@ function Airdrop() {
                                 </div>
                                 <div className="w-1/4 px-3 py-5 border-l">
                                   <p>
-                                    The address of the Discord server designated by Chromatic
+                                    The address of the Discord server specified by Chromatic
                                     Protocol will be announced before the random box is released.
                                   </p>
                                   <Button
