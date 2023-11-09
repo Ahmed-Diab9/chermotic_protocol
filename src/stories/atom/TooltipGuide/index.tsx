@@ -46,7 +46,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
   } = props;
 
   return (
-    <div className="wrapper-tooltip">
+    <span className="wrapper-tooltip">
       {tipOnly || (
         <span className={`tooltip-${label} tooltip-icon ${className}`}>
           <InformationCircleIcon className={`w-4 text-primary-lighter ${iconClass}`} />
@@ -61,7 +61,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
           // isOpen
           // events={["click"]}
         >
-          <div className={`tooltip-${size}`}>
+          <span className={`tooltip-${size}`}>
             <p className="text-sm font-medium text-inverted">{tip}</p>
             {outLink && (
               <Outlink
@@ -70,9 +70,9 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
                 className="mt-2 !text-inverted-light"
               />
             )}
-          </div>
+          </span>
         </Tooltip>
       )}
-    </div>
+    </span>
   );
 };

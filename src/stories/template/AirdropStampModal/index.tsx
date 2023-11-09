@@ -31,7 +31,7 @@ export function AirdropStampModal(props: AirdropStampModalProps) {
           <Dialog.Description className="gap-5 modal-content">
             <article className="text-center">
               <h2 className="text-4xl">Congratulations</h2>
-              <p className="mt-4 text-primary-light">You have received the following rewards.</p>
+              <p className="mt-3 text-primary-light">You have received the following rewards.</p>
               <div className="flex items-center justify-center pb-4 mt-8 border-b">
                 <RewardItem
                   name="credit"
@@ -54,7 +54,7 @@ export function AirdropStampModal(props: AirdropStampModalProps) {
                 )}
               </div>
               <p className="mt-6 text-primary-light">
-                Rewards reveived have been added to my activity’s credits and Booster.
+                Rewards received have been added to my credits and boosters.
               </p>
             </article>
           </Dialog.Description>

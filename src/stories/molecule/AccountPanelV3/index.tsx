@@ -112,13 +112,13 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
             <Tab.Group>
               <Tab.List className="flex items-center w-full mb-5 tabs-list">
                 <div className="text-left">
-                  <p className="mb-1 text-primary-lighter flex">
-                    Available Margin
+                  <div className="flex mb-1 text-primary-lighter">
+                    <h4>Available Margin</h4>
                     <TooltipGuide
                       label="available-margin"
                       tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
                     />
-                  </p>
+                  </div>
                   <Avatar
                     // label={balance}
                     label={`${availableMargin} ${tokenName}`}

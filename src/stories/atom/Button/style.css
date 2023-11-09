@@ -1,7 +1,7 @@
 .btn {
-  @apply flex items-center;
+  @apply inline-flex items-center justify-center;
   @apply font-semibold leading-[1];
-  @apply inline-block cursor-pointer;
+  @apply cursor-pointer;
   border-radius: 100px;
   > div {
     justify-content: center;
@@ -98,7 +98,7 @@ a {
     }
   }
   &.btn-wallet {
-    @apply !h-[42px] p-[2px] flex items-center border !border-transparent rounded-full;
+    @apply !h-[42px] p-[2px] justify-start border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
     @apply dark:bg-paper/60 dark:text-primary;
     .avatar {

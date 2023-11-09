@@ -72,7 +72,7 @@ export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityToo
               <p>CLB Value: {clbTokenValue}</p>
               <p>Liquidity: {liquidity}</p>
               <p>
-                Utilization: {utilized} ({ratio}%)
+                Bin Utilization: {utilized} ({ratio}%)
               </p>
             </div>
           </div>

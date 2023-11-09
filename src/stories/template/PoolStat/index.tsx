@@ -18,8 +18,11 @@ export const PoolStat = (props: PoolStatProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AssetManagementIcon className="w-6" />
-            <div className="flex">
-              <h5>Assets under Management</h5>
+            <div className="flex text-left">
+              <h5>
+                Assets under <br />
+                Management
+              </h5>
               <TooltipGuide
                 label="asset-under-management"
                 tip="Total amount of liquidity provided to this Liquidity Pool"
@@ -51,7 +54,14 @@ export const PoolStat = (props: PoolStatProps) => {
       <div className="flex flex-col gap-3 pt-3 mt-5 border-t">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h5>Utilization</h5>
+            <div className="flex">
+              <h5>Pool Utilization</h5>
+              <TooltipGuide
+                label="pool-utilization"
+                tip="Pool Utilization = Liquidity provided in the Liquidity Bin / Total liquidity managed by this pool."
+                outLink=""
+              />
+            </div>
             <div className="text-right">
               <h5>{utilization}</h5>
               <p className="text-sm text-primary-lighter">{utilizedValue}</p>

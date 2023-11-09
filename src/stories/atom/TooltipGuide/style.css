@@ -1,5 +1,5 @@
 .wrapper-tooltip {
-  @apply flex items-center self-center;
+  @apply inline-flex items-center self-center;
   [role='tooltip'] {
     @apply invisible;
   }
