@@ -133,7 +133,7 @@ function Airdrop() {
                               </div>
                             </div>
                             <AirdropActivity />
-                            <div className="flex items-center gap-4 py-2 pl-4 pr-5 mt-5 text-lg panel">
+                            {/* <div className="flex items-center gap-4 py-2 pl-4 pr-5 mt-5 text-lg panel">
                               <img src={GalxeIcon} alt="galxe" className="w-[24px]" />
                               <p className="text-left">
                                 You can update Credit and Booster by registering NFT acquired from
@@ -149,7 +149,7 @@ function Airdrop() {
                                   href=""
                                 />
                               </div>
-                            </div>
+                            </div> */}
                           </article>
 
                           <article>
