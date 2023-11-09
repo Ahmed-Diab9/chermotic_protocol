@@ -1,6 +1,6 @@
 import type { ChromaticLens } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
-import { isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -10,7 +10,7 @@ import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
-import { promiseSlowLoop } from '../utils/promise';
+import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useEntireMarkets, useMarket } from './useMarket';
@@ -45,12 +45,10 @@ export const useLiquidityPools = () => {
     async ({ addresses }) => {
       const lensApi = client.lens();
 
-      return promiseSlowLoop(
-        addresses,
-        ({ marketAddress, tokenAddresses }) => {
+      return PromiseOnlySuccess(
+        addresses.map(({ marketAddress, tokenAddresses }) => {
           return getLiquidityPool(lensApi, marketAddress, tokenAddresses);
-        },
-        { interval: 1000 }
+        })
       );
     },
     {

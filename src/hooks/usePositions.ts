@@ -19,7 +19,7 @@ import { Logger } from '~/utils/log';
 import { trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { checkAllProps } from '../utils';
-import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
+import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
@@ -132,12 +132,10 @@ export const usePositions = () => {
           : filterOption === 'TOKEN_BASED'
           ? markets
           : markets.filter((market) => market.address === currentMarket?.address);
-      const positionsResponse = await promiseSlowLoop(
-        filteredMarkets,
-        async (market) => {
+      const positionsResponse = await PromiseOnlySuccess(
+        filteredMarkets.map(async (market) => {
           return getPositions(accountApi, positionApi, marketApi, market, chromaticAccount);
-        },
-        { interval: 1000 }
+        })
       );
       const flattenPositions = positionsResponse.flat(1);
       flattenPositions.sort((previous, next) =>
