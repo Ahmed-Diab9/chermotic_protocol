@@ -37,27 +37,6 @@ const config: CodegenConfig = {
       plugins: PLUGINS,
       config: CONFIG,
     },
-    [`${GENERATED_PATH}/pricefeed.ts`]: {
-      documents: 'codegen/pricefeed.ts',
-      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
-      plugins: PLUGINS,
-      config: CONFIG,
-    },
-    [`${GENERATED_PATH}/hasura.ts`]: {
-      documents: 'codegen/hasura.ts',
-      schema: `${HASURA_API_URL}`,
-      plugins: PLUGINS,
-      config: CONFIG,
-    },
-    [`${GENERATED_PATH}/pricefeed_ws.ts`]: {
-      documents: 'codegen/pricefeed.ts',
-      schema: `${SUBGRAPH_API_URL}/chainlink-pricefeed`,
-      plugins: PLUGINS,
-      config: {
-        ...CONFIG,
-        useWebSocketClient: true,
-      },
-    },
     [`${GENERATED_PATH}/performance.ts`]: {
       documents: 'codegen/performance.ts',
       schema: `${HASURA_API_URL}`,

@@ -12,7 +12,7 @@ import { useTradeChartPanel } from './hooks';
 export interface TradeChartViewProps {}
 
 export function TradeChartPanel(props: TradeChartViewProps) {
-  const { darkMode, symbol, lastOracle } = useTradeChartPanel();
+  const { darkMode, symbol } = useTradeChartPanel();
 
   return (
     <ResizablePanel
