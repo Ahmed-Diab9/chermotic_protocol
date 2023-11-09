@@ -140,7 +140,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                         <Tab.Group>
                           <Tab.List className="absolute left-0 w-full top-4 tabs-list tabs-line">
                             <Tab className="w-[80px]">Assets</Tab>
-                            <Tab>Liquidity Token</Tab>
+                            <Tab>Liquidity Tokens</Tab>
                           </Tab.List>
                           <Tab.Panels className="mt-[60px] pb-[60px] absolute bottom-0 px-4 overflow-auto h-[calc(100%-72px)] w-full">
                             <Tab.Panel>

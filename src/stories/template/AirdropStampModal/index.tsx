@@ -54,7 +54,7 @@ export function AirdropStampModal(props: AirdropStampModalProps) {
                 )}
               </div>
               <p className="mt-6 text-primary-light">
-                Rewards reveived have been added to my activity’s credits and Booster.
+                Rewards received have been added to my credits and boosters.
               </p>
             </article>
           </Dialog.Description>
