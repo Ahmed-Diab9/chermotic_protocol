@@ -14,7 +14,7 @@ import { MarketLike } from '~/typings/market';
 import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
-import { promiseSlowLoop } from '~/utils/promise';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import CLP from '../assets/tokens/CLP.svg';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -32,9 +32,8 @@ type FetchChromaticLpArgs = {
 const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
   const { lpClient, registry, walletAddress, market } = args;
   const lpAddresses = await registry?.lpListByMarket(market.address);
-  const lpInfoArray = await promiseSlowLoop(
-    lpAddresses,
-    async (lpAddress) => {
+  const lpInfoArray = await PromiseOnlySuccess(
+    lpAddresses.map(async (lpAddress) => {
       const lp = lpClient.lp();
       const lpTag = lp.getLpTag(lpAddress);
       const lpName = lp.getLpName(lpAddress);
@@ -129,8 +128,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
           market,
         } as ChromaticLp
       );
-    },
-    { interval: 100 }
+    })
   );
 
   lpInfoArray.sort((previousLp, nextLp) => {
@@ -162,12 +160,10 @@ export const useEntireChromaticLp = () => {
     isReady && checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ walletAddress, markets, tokens }) => {
       const registry = lpClient.registry();
-      const chromaticLps = await promiseSlowLoop(
-        markets,
-        (market) => {
+      const chromaticLps = await PromiseOnlySuccess(
+        markets.map((market) => {
           return fetchChromaticLp({ lpClient, registry, walletAddress, market });
-        },
-        { interval: 200 }
+        })
       );
       return chromaticLps.flat(1).map((lpValue) => {
         const { totalValue, totalSupply, clpDecimals, market } = lpValue;

@@ -7,7 +7,7 @@ import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
-import { promiseSlowLoop } from '~/utils/promise';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -73,23 +73,17 @@ export const useChromaticAccount = () => {
     isReady && checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
     async ({ tokens }) => {
       const accountApi = client.account();
-      const result = await promiseSlowLoop(
-        tokens,
-        async (token) => {
+      const result = await PromiseOnlySuccess(
+        tokens.map(async (token) => {
           const balance = await accountApi.balance(token.address);
           return { token: token.address, balance };
-        },
-        { interval: 500 }
+        })
       );
 
       const balances = fromPairs(
         result?.map((balance) => [balance.token, balance.balance] as [Address, bigint])
       );
       return balances;
-    },
-    {
-      // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 12,
     }
   );
 
