@@ -130,7 +130,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         } as ChromaticLp
       );
     },
-    { interval: 400 }
+    { interval: 100 }
   );
 
   lpInfoArray.sort((previousLp, nextLp) => {
@@ -162,14 +162,14 @@ export const useEntireChromaticLp = () => {
     isReady && checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ walletAddress, markets, tokens }) => {
       const registry = lpClient.registry();
-      let chromaticLps = [] as ChromaticLp[];
-      for (let index = 0; index < markets.length; index++) {
-        const market = markets[index];
-
-        const lpArray = await fetchChromaticLp({ lpClient, registry, walletAddress, market });
-        chromaticLps = chromaticLps.concat(lpArray);
-      }
-      return chromaticLps.map((lpValue) => {
+      const chromaticLps = await promiseSlowLoop(
+        markets,
+        (market) => {
+          return fetchChromaticLp({ lpClient, registry, walletAddress, market });
+        },
+        { interval: 200 }
+      );
+      return chromaticLps.flat(1).map((lpValue) => {
         const { totalValue, totalSupply, clpDecimals, market } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);
         if (isNil(settlementToken)) {
@@ -217,7 +217,7 @@ export const useChromaticLp = () => {
     async ({ walletAddress, market, tokens }) => {
       const registry = lpClient.registry();
       const lpArray = await fetchChromaticLp({ lpClient, registry, walletAddress, market });
-      return lpArray.map((lpValue) => {
+      const detailedLps = lpArray.map((lpValue) => {
         const { totalValue, totalSupply, clpDecimals } = lpValue;
         const settlementToken = tokens?.find((token) => token.address === market.tokenAddress);
         if (isNil(settlementToken) || isNil(currentMarket)) {
@@ -236,6 +236,7 @@ export const useChromaticLp = () => {
           market: currentMarket,
         };
       });
+      return detailedLps;
     }
   );
 
