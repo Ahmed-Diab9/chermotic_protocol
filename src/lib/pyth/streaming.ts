@@ -6,7 +6,7 @@ const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
 
 const channelToSubscription = new Map<string | undefined, SubscriptionItem>();
 
-type StreamData = {
+export type StreamData = {
   id: string;
   f: string;
   p: number;
@@ -74,61 +74,45 @@ function handleStreamingData(data: StreamData): void {
   channelToSubscription.set(channelString, subscriptionItem);
 }
 
-function startStreaming(retries = 3, delay = 3000) {
-  fetch(streamingUrl)
-    .then((response) => {
-      if (!response.body) {
-        throw new Error('null body');
-      }
-      const reader = response.body.getReader();
-
-      function streamData() {
-        reader
-          .read()
-          .then(({ value, done }) => {
-            if (done) {
-              console.error('[stream] Streaming ended.');
-              return;
-            }
-
-            // FIXME: @jaycho-46 handle uncompleted lines
-            // Assuming the streaming data is separated by line breaks
-            const dataStrings = new TextDecoder().decode(value).split('\n');
-            dataStrings.forEach((dataString) => {
-              const trimmedDataString = dataString.trim();
-              if (trimmedDataString) {
-                try {
-                  const jsonData: StreamData = JSON.parse(dataString);
-                  handleStreamingData(jsonData);
-                } catch (e: any) {
-                  // console.error('Error parsing JSON:', e.message);
-                }
-              }
-            });
-
-            streamData();
-          })
-          .catch((error) => {
-            console.error('[stream] Error reading from stream:', error);
-            attemptReconnect(retries, delay);
-          });
-      }
-
-      streamData();
-    })
-    .catch((error) => {
-      console.error('[stream] Error fetching from the streaming endpoint:', error);
-    });
-  function attemptReconnect(retriesLeft: number, delay: number) {
-    if (retriesLeft > 0) {
-      console.log(`[stream] Attempting to reconnect in ${delay}ms...`);
-      setTimeout(() => {
-        startStreaming(retriesLeft - 1, delay);
-      }, delay);
-    } else {
-      console.error('[stream] Maximum reconnection attempts reached.');
-    }
+export async function startStreaming() {
+  const response = await fetch(streamingUrl);
+  if (!response.body) {
+    throw new Error('null body');
   }
+  const reader = response.body.getReader();
+
+  function streamData() {
+    reader.read().then(({ value, done }) => {
+      if (done) {
+        return;
+      }
+
+      // FIXME: @jaycho-46 handle uncompleted lines
+      // Assuming the streaming data is separated by line breaks
+      const dataStrings = new TextDecoder().decode(value).split('\n');
+      dataStrings.forEach((dataString) => {
+        const trimmedDataString = dataString.trim();
+        if (trimmedDataString) {
+          try {
+            const jsonData: StreamData = JSON.parse(dataString);
+            // console.log(jsonData.id);
+            handleStreamingData(jsonData);
+          } catch (e: any) {
+            // console.error('Error parsing JSON:', e.message);
+          }
+        }
+      });
+      streamData();
+    });
+  }
+
+  streamData();
+
+  return async () => {
+    reader.cancel();
+    reader.releaseLock();
+    response.body?.cancel();
+  };
 }
 
 function getNextDailyBarTime(barTime: number) {
@@ -142,9 +126,8 @@ export function subscribeOnStream(
   resolution: ResolutionString,
   onRealtimeCallback: SubscribeBarsCallback,
   subscriberUID: string,
-  onResetCacheNeededCallback: () => void,
   lastDailyBar: Bar
-): void {
+) {
   const channelString = symbolInfo.ticker;
   const handler = {
     id: subscriberUID,
@@ -158,9 +141,6 @@ export function subscribeOnStream(
     handlers: [handler],
   };
   channelToSubscription.set(channelString, subscriptionItem);
-  console.log('[subscribeBars]: Subscribe to streaming. Channel:', channelString);
-
-  startStreaming();
 }
 
 export function unsubscribeFromStream(subscriberUID: string) {
@@ -171,7 +151,6 @@ export function unsubscribeFromStream(subscriberUID: string) {
     );
 
     if (handlerIndex !== -1) {
-      console.log('[unsubscribeBars]: Unsubscribe from streaming. Channel:', channelString);
       channelToSubscription.delete(channelString);
       break;
     }

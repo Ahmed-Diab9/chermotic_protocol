@@ -1,15 +1,18 @@
 import { IDatafeedChartApi, IExternalDatafeed } from '~/lib/charting_library';
 
-import { subscribeOnStream, unsubscribeFromStream } from './streaming';
+import { startStreaming, subscribeOnStream, unsubscribeFromStream } from './streaming';
 
 import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 
 const lastBarsCache = new Map();
 
+let closeStream = () => {};
+
 const datafeed: IDatafeedChartApi & IExternalDatafeed = {
   onReady: (callback: Function) => {
     fetch(`${PYTH_TV_PRICEFEED}/config`).then((response) => {
-      response.json().then((configurationData) => {
+      response.json().then(async (configurationData) => {
+        closeStream = await startStreaming();
         setTimeout(() => callback(configurationData));
       });
     });
@@ -64,24 +67,22 @@ const datafeed: IDatafeedChartApi & IExternalDatafeed = {
         });
     });
   },
-  subscribeBars: (
-    symbolInfo,
-    resolution,
-    onRealtimeCallback,
-    subscriberUID,
-    onResetCacheNeededCallback
-  ) => {
+  subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, subscriberUID) => {
     subscribeOnStream(
       symbolInfo,
       resolution,
       onRealtimeCallback,
       subscriberUID,
-      onResetCacheNeededCallback,
       lastBarsCache.get(symbolInfo.ticker)
     );
   },
   unsubscribeBars: (subscriberUID) => {
     unsubscribeFromStream(subscriberUID);
+    try {
+      closeStream();
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
