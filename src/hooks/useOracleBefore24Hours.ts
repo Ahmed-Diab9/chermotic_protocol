@@ -27,7 +27,6 @@ export const useOracleBefore24Hours = ({ market }: { market?: Market }) => {
     mutate: _mutate,
   } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ market: trimmedMarket }) => {
     const marketOracle = await client.market().getCurrentPrice(trimmedMarket.address);
-    console.log(marketOracle, 'curr');
     const oracleProvider = await client.market().contracts().oracleProvider(trimmedMarket.address);
 
     const endOracle = await oracleProvider.read.atVersion([
