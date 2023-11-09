@@ -19,7 +19,7 @@ import { Logger } from '~/utils/log';
 import { trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { checkAllProps } from '../utils';
-import { PromiseOnlySuccess } from '../utils/promise';
+import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useSettlementToken } from './useSettlementToken';
@@ -51,14 +51,33 @@ async function getPositions(
   const marketOracle = await marketApi.getCurrentPrice(market.address);
   const { price: currentPrice, version: currentVersion } = marketOracle;
   const withLiquidation = await PromiseOnlySuccess(
-    positions
+    positions.map(async (position) => {
+      const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
+        market.address,
+        position.openPrice,
+        position
+      );
+      return {
+        ...position,
+        tokenAddress: market.tokenAddress,
+        marketAddress: market.address,
+        lossPrice: lossCutPrice ?? 0n,
+        profitPrice: profitStopPrice ?? 0n,
+        collateral: position.takerMargin, //TODO ,
+        status: determinePositionStatus(position, currentVersion),
+        toLoss: isNotNil(lossCutPrice)
+          ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
+          : 0n,
+        toProfit: isNotNil(profitStopPrice)
+          ? divPreserved(profitStopPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
+          : 0n,
+      } as Position;
+    })
+  );
+  const withPnl = await PromiseOnlySuccess(
+    withLiquidation
       .filter((position) => position.owner === walletAddress)
       .map(async (position) => {
-        const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
-          market.address,
-          position.openPrice,
-          position
-        );
         const targetPrice =
           position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
         const pnl = position.openPrice
@@ -66,24 +85,12 @@ async function getPositions(
           : 0n;
         return {
           ...position,
-          tokenAddress: market.tokenAddress,
-          marketAddress: market.address,
-          lossPrice: lossCutPrice ?? 0n,
-          profitPrice: profitStopPrice ?? 0n,
           pnl,
-          collateral: position.takerMargin, //TODO ,
-          status: determinePositionStatus(position, currentVersion),
-          toLoss: isNotNil(lossCutPrice)
-            ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
-            : 0n,
-          toProfit: isNotNil(profitStopPrice)
-            ? divPreserved(profitStopPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
-            : 0n,
         } satisfies Position;
       })
   );
 
-  return withLiquidation.sort((leftPosition, rightPosition) => {
+  return withPnl.sort((leftPosition, rightPosition) => {
     return leftPosition.id < rightPosition.id ? 1 : -1;
   });
 }
@@ -115,6 +122,7 @@ export const usePositions = () => {
   } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
     async ({ markets, entireMarkets, filterOption, chromaticAccount }) => {
+      console.log('fetching...');
       const accountApi = client.account();
       const positionApi = client.position();
       const marketApi = client.market();
@@ -125,10 +133,12 @@ export const usePositions = () => {
           : filterOption === 'TOKEN_BASED'
           ? markets
           : markets.filter((market) => market.address === currentMarket?.address);
-      const positionsResponse = await PromiseOnlySuccess(
-        filteredMarkets.map(async (market) => {
+      const positionsResponse = await promiseSlowLoop(
+        filteredMarkets,
+        async (market) => {
           return getPositions(accountApi, positionApi, marketApi, market, chromaticAccount);
-        })
+        },
+        { interval: 1000 }
       );
       const flattenPositions = positionsResponse.flat(1);
       flattenPositions.sort((previous, next) =>
@@ -139,37 +149,40 @@ export const usePositions = () => {
   );
 
   async function fetchCurrentPositions() {
-    await fetchPositions<Position[]>(async (positions) => {
-      if (
-        isNil(positions) ||
-        isNil(accountAddress) ||
-        isNil(currentMarket) ||
-        isNil(currentToken) ||
-        isNil(address)
-      )
-        return positions;
+    await fetchPositions<Position[]>(
+      async (positions) => {
+        if (
+          isNil(positions) ||
+          isNil(accountAddress) ||
+          isNil(currentMarket) ||
+          isNil(currentToken) ||
+          isNil(address)
+        )
+          return positions;
 
-      const filteredPositions = positions
-        ?.filter((p) => !!p)
-        .filter((position) => position.marketAddress !== currentMarket?.address);
+        const filteredPositions = positions
+          ?.filter((p) => !!p)
+          .filter((position) => position.marketAddress !== currentMarket?.address);
 
-      const accountApi = client.account();
-      const positionApi = client.position();
-      const marketApi = client.market();
+        const accountApi = client.account();
+        const positionApi = client.position();
+        const marketApi = client.market();
 
-      const newPositions = await getPositions(
-        accountApi,
-        positionApi,
-        marketApi,
-        currentMarket,
-        address
-      );
-      const mergedPositions = [...filteredPositions, ...newPositions];
-      mergedPositions.sort((previous, next) =>
-        previous.openTimestamp < next.openTimestamp ? 1 : -1
-      );
-      return mergedPositions;
-    });
+        const newPositions = await getPositions(
+          accountApi,
+          positionApi,
+          marketApi,
+          currentMarket,
+          address
+        );
+        const mergedPositions = [...filteredPositions, ...newPositions];
+        mergedPositions.sort((previous, next) =>
+          previous.openTimestamp < next.openTimestamp ? 1 : -1
+        );
+        return mergedPositions;
+      },
+      { revalidate: false }
+    );
   }
 
   const currentPositions = useMemo(() => {

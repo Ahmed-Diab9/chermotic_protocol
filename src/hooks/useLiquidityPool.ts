@@ -10,7 +10,7 @@ import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
-import { PromiseOnlySuccess } from '../utils/promise';
+import { promiseSlowLoop } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useEntireMarkets, useMarket } from './useMarket';
@@ -45,10 +45,12 @@ export const useLiquidityPools = () => {
     async ({ addresses }) => {
       const lensApi = client.lens();
 
-      return PromiseOnlySuccess(
-        addresses?.map(({ marketAddress, tokenAddresses }) => {
+      return promiseSlowLoop(
+        addresses,
+        ({ marketAddress, tokenAddresses }) => {
           return getLiquidityPool(lensApi, marketAddress, tokenAddresses);
-        })
+        },
+        { interval: 1000 }
       );
     },
     {
