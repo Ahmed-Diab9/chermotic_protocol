@@ -31,10 +31,10 @@ type FetchChromaticLpArgs = {
 
 const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
   const { lpClient, registry, walletAddress, market } = args;
+  const lp = lpClient.lp();
   const lpAddresses = await registry?.lpListByMarket(market.address);
-  const lpInfoArray = await PromiseOnlySuccess(
-    lpAddresses.map(async (lpAddress) => {
-      const lp = lpClient.lp();
+  const lpResponses = lpAddresses
+    .map((lpAddress) => {
       const lpTag = lp.getLpTag(lpAddress);
       const lpName = lp.getLpName(lpAddress);
       let balance = undefined as Promise<bigint> | undefined;
@@ -42,94 +42,90 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         balance = lp.balanceOf(lpAddress, walletAddress);
       }
 
-      const metadata = lp.lpTokenMeta(lpAddress);
-
+      const lpToken = lp.contracts().lpToken(lpAddress);
+      const clpName = lpToken.read.name();
+      const clpSymbol = lpToken.read.symbol();
+      const clpDecimals = lpToken.read.decimals();
       const totalSupply = lp.totalSupply(lpAddress);
       const valueInfo = lp.valueInfo(lpAddress);
       const utilization = lp.utilization(lpAddress);
-
-      const requests = [
-        lpAddress,
+      return [
+        lpTag,
         lpName,
         balance,
-        metadata,
+        clpName,
+        clpSymbol,
+        clpDecimals,
         totalSupply,
         valueInfo,
         utilization,
-        lpTag,
       ] as const;
-      const response = await Promise.allSettled(requests);
-      return response.reduce(
-        (provider, responseItem, itemIndex) => {
-          if (responseItem.status === 'rejected') {
-            return provider;
-          }
-          const { value } = responseItem;
-          switch (itemIndex) {
-            case 0: {
-              provider.address = value as Awaited<typeof lpAddress>;
-              break;
-            }
-            case 1: {
-              provider.name = value as Awaited<typeof lpName>;
-              break;
-            }
-            case 2: {
-              provider.balance = value as bigint;
-              break;
-            }
-            case 3: {
-              const { decimals, symbol, name } = value as Awaited<typeof metadata>;
-              provider.clpDecimals = decimals;
-              provider.clpName = name;
-              provider.clpSymbol = symbol;
-              break;
-            }
-            case 4: {
-              provider.totalSupply = value as Awaited<typeof totalSupply>;
-              break;
-            }
-            case 5: {
-              const { total, holding, holdingClb, pending, pendingClb } = value as Awaited<
-                typeof valueInfo
-              >;
-              provider = {
-                ...provider,
-                totalValue: total,
-                holdingValue: holding,
-                holdingClbValue: holdingClb,
-                pendingValue: pending,
-                pendingClbValue: pendingClb,
-              };
-              break;
-            }
-            case 6: {
-              provider = {
-                ...provider,
-                utilization: value as number,
-              };
-              break;
-            }
-            case 7: {
-              provider = {
-                ...provider,
-                tag: value as Awaited<typeof lpTag>,
-              };
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-          return provider;
-        },
-        {
+    })
+    .flat(1);
+  const responseTuple = await Promise.allSettled(lpResponses);
+  const lpInfoArray = [] as ChromaticLp[];
+  for (let index = 0; index < responseTuple.length; index++) {
+    const item = responseTuple[index];
+    if (item.status === 'rejected') {
+      continue;
+    }
+    const tupleIndex = index % 9;
+    const lpIndex = Math.floor(index / 9);
+    switch (tupleIndex) {
+      case 0: {
+        lpInfoArray[lpIndex] = {
           image: CLP,
           market,
-        } as ChromaticLp
-      );
-    })
-  );
+          address: lpAddresses[lpIndex],
+        } as ChromaticLp;
+        lpInfoArray[lpIndex].tag = item.value as string;
+        continue;
+      }
+      case 1: {
+        lpInfoArray[lpIndex].name = item.value as string;
+        continue;
+      }
+      case 2: {
+        lpInfoArray[lpIndex].balance = item.value as bigint;
+        continue;
+      }
+      case 3: {
+        lpInfoArray[lpIndex].clpName = item.value as string;
+        continue;
+      }
+      case 4: {
+        lpInfoArray[lpIndex].clpSymbol = item.value as string;
+        continue;
+      }
+      case 5: {
+        lpInfoArray[lpIndex].clpDecimals = item.value as number;
+        continue;
+      }
+      case 6: {
+        lpInfoArray[lpIndex].totalSupply = item.value as bigint;
+        continue;
+      }
+      case 7: {
+        const { total, holding, pending, holdingClb, pendingClb } = item.value as {
+          total: bigint;
+          holding: bigint;
+          pending: bigint;
+          holdingClb: bigint;
+          pendingClb: bigint;
+        };
+        lpInfoArray[lpIndex].totalValue = total;
+        lpInfoArray[lpIndex].holdingValue = holding;
+        lpInfoArray[lpIndex].holdingClbValue = holdingClb;
+        lpInfoArray[lpIndex].pendingValue = pending;
+        lpInfoArray[lpIndex].pendingClbValue = pendingClb;
+        continue;
+      }
+      case 8: {
+        lpInfoArray[lpIndex].utilization = item.value as number;
+        continue;
+      }
+    }
+  }
 
   lpInfoArray.sort((previousLp, nextLp) => {
     const { tag: previousLpTag } = previousLp;
@@ -233,6 +229,9 @@ export const useChromaticLp = () => {
         };
       });
       return detailedLps;
+    },
+    {
+      keepPreviousData: false,
     }
   );
 
