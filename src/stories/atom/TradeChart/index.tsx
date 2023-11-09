@@ -4,6 +4,7 @@ import './style.css';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 
+import { SkeletonElement } from '../SkeletonElement';
 import { useTradeChart } from './hooks';
 
 export interface TradeChartProps {
@@ -19,7 +20,7 @@ export interface TradeChartProps {
 export function TradeChart(props: TradeChartProps) {
   const { id } = props;
 
-  const { tokenName, liquidityTooltipProps, selectedTooltipProps, fillupChartProps } =
+  const { tokenName, liquidityTooltipProps, selectedTooltipProps, fillupChartProps, isLoading } =
     useTradeChart(props);
 
   return (
@@ -27,7 +28,9 @@ export function TradeChart(props: TradeChartProps) {
       <SelectedTooltip id={id} {...selectedTooltipProps} />
       <LiquidityTooltip id={id} {...liquidityTooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <FillUpChart {...fillupChartProps} />
+        <SkeletonElement isLoading={isLoading} containerClassName="w-full h-[100px] px-3">
+          <FillUpChart {...fillupChartProps} />
+        </SkeletonElement>
       </div>
     </>
   );

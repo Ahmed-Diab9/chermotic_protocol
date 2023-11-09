@@ -1,5 +1,7 @@
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { ArrowTriangleIcon } from '~/assets/icons/Icon';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Tag } from '~/stories/atom/Tag';
 import { usePoolMenuV3 } from './hooks';
@@ -11,22 +13,24 @@ export const PoolMenuV3 = (props: PoolMenuV3Props) => {
 
   return (
     <div className="flex flex-col gap-3 PoolMenuV3">
-      {formattedLp?.map((lp, lpIndex) => {
-        return (
-          <PoolMenuV3Item
-            key={`${lp.name}-${lpIndex}`}
-            name={lp.name}
-            tag={lp.tag}
-            price={lp.price}
-            aum={lp.assets}
-            tokenSymbol={lp.tokenSymbol}
-            selected={lp.name === selectedLp?.name}
-            onClick={() => {
-              onMenuClick(lp.name);
-            }}
-          />
-        );
-      })}
+      <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="py-2">
+        {formattedLp?.map((lp, lpIndex) => {
+          return (
+            <PoolMenuV3Item
+              key={`${lp.name}-${lpIndex}`}
+              name={lp.name}
+              tag={lp.tag}
+              price={lp.price}
+              aum={lp.assets}
+              tokenSymbol={lp.tokenSymbol}
+              selected={lp.name === selectedLp?.name}
+              onClick={() => {
+                onMenuClick(lp.name);
+              }}
+            />
+          );
+        })}
+      </SkeletonElement>
     </div>
   );
 };
