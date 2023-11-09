@@ -95,13 +95,13 @@ const PoolV3 = () => {
               <div className="flex items-center justify-between mb-3 text-lg text-primary">
                 {/* To be added later */}
                 {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
-                <div className="flex items-center gap-2 ml-auto text-2xl font-semibold">
-                  CLP Price: {price}
+                <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
+                  CLP Price
                   <Avatar
-                    label={selectedLp?.settlementToken.name}
+                    label={`${price} ${selectedLp?.settlementToken.name}`}
                     size="sm"
                     gap="1"
-                    fontSize="xl"
+                    fontSize="2xl"
                     src={selectedLp?.settlementToken.image}
                   />
                 </div>
