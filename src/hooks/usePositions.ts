@@ -122,7 +122,6 @@ export const usePositions = () => {
   } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
     async ({ markets, entireMarkets, filterOption, chromaticAccount }) => {
-      console.log('fetching...');
       const accountApi = client.account();
       const positionApi = client.position();
       const marketApi = client.market();
