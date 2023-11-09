@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { performanceSdk } from '~/lib/graphql';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { checkAllProps } from '~/utils';
 import { numberFormat } from '~/utils/number';
 import { useError } from './useError';
@@ -9,7 +10,7 @@ const periods = ['d7', 'd30', 'd90', 'd180', 'd365', 'all'] as const;
 type Period = (typeof periods)[number];
 
 export const useCLPPerformance = () => {
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const fetchKey = {
     lpAddress: selectedLp?.address,
   };

@@ -7,6 +7,7 @@ import { useRemoveChromaticLp } from '~/hooks/useRemoveChromaticLp';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { formatDecimals } from '~/utils/number';
 
 export function usePoolPanelV2() {
@@ -20,7 +21,7 @@ export function usePoolPanelV2() {
       shortTotalUnusedLiquidity,
     },
   } = useLiquidityPool();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const [selectedTab, setSelectedTab] = useState(0);
   const onTabChange = (tabIndex: number) => {
     setSelectedTab(tabIndex);

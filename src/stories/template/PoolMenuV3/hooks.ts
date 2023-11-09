@@ -2,11 +2,12 @@ import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { formatDecimals } from '~/utils/number';
 
 export const usePoolMenuV3 = () => {
   const { lpList, onLpSelect } = useChromaticLp();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
 
   const onMenuClick = (lpName: string) => {
     const nextLp = lpList?.find((lp) => lp.name === lpName);

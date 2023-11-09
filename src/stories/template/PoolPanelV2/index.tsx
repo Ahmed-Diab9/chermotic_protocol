@@ -14,6 +14,7 @@ import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
 import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -48,7 +49,7 @@ export function PoolPanelV2() {
     onRemoveChromaticLp,
   } = usePoolPanelV2();
 
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;

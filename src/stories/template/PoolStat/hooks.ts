@@ -1,8 +1,9 @@
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { formatDecimals, mulPreserved } from '~/utils/number';
 
 export const usePoolStat = () => {
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const aum = selectedLp
     ? formatDecimals(selectedLp.totalValue, selectedLp.settlementToken.decimals, 3, true) +
       ' ' +

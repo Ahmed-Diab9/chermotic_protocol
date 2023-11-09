@@ -1,13 +1,12 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
-import { PlusIcon } from '~/assets/icons/Icon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useLpLocal } from '~/hooks/useLpLocal';
-import { useLpReceiptEvent } from '~/hooks/useLpReceiptEvent';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -31,10 +30,9 @@ const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
-  useLpReceiptEvent();
   const { onLoadBackgroundRef } = useBackgroundGradient();
 
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;

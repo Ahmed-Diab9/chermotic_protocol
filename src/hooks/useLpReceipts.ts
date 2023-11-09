@@ -16,7 +16,7 @@ import {
   RemoveLiquidity_OrderBy,
   Sdk,
 } from '~/lib/graphql/sdk/lp';
-import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { LpReceipt, LpToken, ReceiptAction } from '~/typings/lp';
 import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
@@ -217,7 +217,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const clpMeta = useMemo(() => {
     if (isNil(selectedLp)) {
       return;

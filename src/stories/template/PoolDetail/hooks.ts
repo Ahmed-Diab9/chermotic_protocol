@@ -2,10 +2,11 @@ import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { copyText } from '~/utils/clipboard';
 
 export const usePoolDetail = () => {
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = useMemo(() => {
     if (isNil(selectedLp)) {
       return;
