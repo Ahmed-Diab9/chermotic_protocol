@@ -59,7 +59,6 @@ export const PoolDetail = (props: PoolDetailProps) => {
             label="Metamask"
             iconLeft={<PlusIcon className="w-3 h-3" />}
             css="underlined"
-            className="!pl-2 !py-1"
             gap="1"
             size="sm"
           />

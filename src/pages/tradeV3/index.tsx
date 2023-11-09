@@ -34,7 +34,7 @@ function TradeV3() {
         <main className="!max-w-none">
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-5">
-              <div className="mb-5">
+              <div className="pb-2">
                 <MarketSelectV3 />
               </div>
               <TradeChartPanel />
