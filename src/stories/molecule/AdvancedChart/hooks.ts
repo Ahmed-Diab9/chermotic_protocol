@@ -4,17 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ChartTypeFavorites,
   IChartingLibraryWidget,
-  IExternalDatafeed,
   LanguageCode,
   ResolutionString,
   TradingTerminalFeatureset,
   widget,
 } from '~/lib/charting_library';
+import datafeed from '~/lib/pyth/datafeed';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
-
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 
 import { AdvancedChartProps } from '.';
 
@@ -26,8 +24,6 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
   const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
-
-  const datafeed = new (window as any).Datafeeds.UDFCompatibleDatafeed(PYTH_TV_PRICEFEED);
 
   const defaultProps = {
     interval: '60' as ResolutionString,
