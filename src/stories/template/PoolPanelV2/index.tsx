@@ -119,18 +119,24 @@ export function PoolPanelV2() {
               <section className="pt-5 mt-3 border-t border-dashed">
                 <article className="mb-5">
                   <div className="flex justify-between gap-5">
-                    <div className="flex flex-col items-start justify-between">
-                      <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
-                        <h4 className="text-xl">Wallet Balance</h4>
-                        <p className="text-lg text-primary-light">
-                          <SkeletonElement isLoading={isAssetsLoading} width={40}>
-                            {formattedBalances.add} {tokenName}
-                          </SkeletonElement>
-                        </p>
+                    <div className="flex flex-col items-start justify-start gap-2">
+                      <h4 className="text-xl">Wallet Balance</h4>
+                      <div className="flex items-center gap-1">
+                        <SkeletonElement
+                          isLoading={isAssetsLoading}
+                          circle
+                          width={16}
+                          height={16}
+                        />
+                        <SkeletonElement isLoading={isAssetsLoading} width={60}>
+                          <Avatar
+                            label={`${formattedBalances.add} ${tokenName}`}
+                            size="xs"
+                            gap="1"
+                            src={tokenImage}
+                          />
+                        </SkeletonElement>
                       </div>
-                      <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
-                        <Avatar label={tokenName} size="xs" gap="1" src={tokenImage} />
-                      </span>
                     </div>
                     {/* todo: input error */}
                     {/* - Input : error prop is true when has error */}
@@ -247,18 +253,25 @@ export function PoolPanelV2() {
                         <Tab.Panel>
                           <article>
                             <div className="flex justify-between gap-5 mb-5">
-                              <div className="flex flex-col items-start justify-between">
-                                <div className="flex flex-wrap items-center text-left gap-x-2 gap-y-1">
-                                  <h4 className="text-xl">CLP Balance (Wallet)</h4>
-                                  <p className="text-lg text-primary-light">
-                                    <SkeletonElement isLoading={isNil(formattedClp)} width={40}>
-                                      {formattedClp} {clpName}
-                                    </SkeletonElement>
-                                  </p>
+                              <div className="flex flex-col items-start justify-start gap-2">
+                                <h4 className="text-xl">CLP Balance (Wallet)</h4>
+                                <div className="flex items-center gap-1">
+                                  <SkeletonElement
+                                    isLoading={isNil(formattedClp)}
+                                    circle
+                                    width={16}
+                                    height={16}
+                                  />
+                                  <SkeletonElement isLoading={isNil(formattedClp)} width={60}>
+                                    <Avatar
+                                      // label={`${formattedClp} ${clpName}`}
+                                      label={`${formattedClp} CLP`}
+                                      size="xs"
+                                      gap="1"
+                                      src={clpImage}
+                                    />
+                                  </SkeletonElement>
                                 </div>
-                                <span className="inline-flex py-2 pl-2 pr-3 rounded-full bg-paper-light">
-                                  <Avatar label={'CLP'} size="xs" gap="1" src={clpImage} />
-                                </span>
                               </div>
                               <div className="tooltip-wallet-balance">
                                 <OptionInput
