@@ -21,8 +21,8 @@ export const PoolStat = (props: PoolStatProps) => {
             <div className="flex text-left">
               <h5 className="text-xl">AUM</h5>
               <TooltipGuide
-                label="asset-under-management"
-                tip="Total amount of liquidity provided to this Liquidity Pool"
+                label="aum"
+                tip="Asset under Management. Total amount of liquidity provided to this Liquidity Pool"
                 outLink=""
               />
             </div>

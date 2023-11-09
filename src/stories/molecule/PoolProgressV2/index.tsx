@@ -78,9 +78,10 @@ export function PoolProgressV2() {
                       <div className="mb-1">
                         <Guide
                           isVisible={isGuideOpens[receiptAction]}
-                          title="The process is in progress. You may leave now."
+                          title="The CLP minting or burning process is in progress. You may leave now."
                           // The percentage value in the paragraph is a value that is different for each market.
-                          paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
+                          paragraph="The liquidity provision or withdrawal process is now waiting for next oracle
+                        round. The assets will be sent to your wallet when the process completed."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
                           className="!rounded-none"
