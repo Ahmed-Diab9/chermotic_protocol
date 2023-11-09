@@ -5,6 +5,7 @@ import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
+import { dispatchLpEvent, dispatchLpReceiptEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
 
 export const useRemoveChromaticLp = () => {
@@ -12,7 +13,6 @@ export const useRemoveChromaticLp = () => {
   const { address } = useAccount();
   const selectedLp = useAppSelector(selectedLpSelector);
   const [isRemovalPending, setIsRemovalPending] = useState(false);
-  const { fetchBalances } = useChromaticAccount();
 
   const onRemoveChromaticLp = async (amount: string) => {
     try {
@@ -34,7 +34,10 @@ export const useRemoveChromaticLp = () => {
         throw new Error('CLP approval failed.');
       }
       const receipt = await lp.removeLiquidity(selectedLp.address, parsedAmount);
-      await fetchBalances();
+
+      dispatchLpEvent();
+      dispatchLpReceiptEvent();
+      toast('Removal completed.');
 
       setIsRemovalPending(false);
     } catch (error) {
