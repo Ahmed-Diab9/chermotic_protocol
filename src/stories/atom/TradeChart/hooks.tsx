@@ -14,7 +14,7 @@ interface UseTradeChartProps extends TradeChartProps {}
 export function useTradeChart(props: UseTradeChartProps) {
   const { negative = false, positive = true, selectedAmount = 0, height, width } = props;
 
-  const { liquidity, clbTokenValues } = useChartData();
+  const { liquidity, clbTokenValues, isPoolLoading } = useChartData();
   const { currentToken } = useSettlementToken();
   const isNegative = negative === true || positive === false;
 
@@ -48,5 +48,6 @@ export function useTradeChart(props: UseTradeChartProps) {
     fillupChartProps,
     selectedTooltipProps,
     liquidityTooltipProps,
+    isLoading: isPoolLoading,
   };
 }

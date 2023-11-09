@@ -16,7 +16,7 @@ export function usePoolChart({
   height,
   width,
 }: usePoolChartProps) {
-  const { liquidity, clbTokenValues } = useChartData();
+  const { liquidity, clbTokenValues, isPoolLoading } = useChartData();
   const { currentToken } = useSettlementToken();
 
   return {
@@ -39,5 +39,6 @@ export function usePoolChart({
       data: liquidity,
       clbTokenValues,
     },
+    isLoading: isPoolLoading,
   };
 }

@@ -14,6 +14,7 @@ import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useEntireMarkets, useMarket } from './useMarket';
+import { usePrevious } from './usePrevious';
 import { useSettlementToken } from './useSettlementToken';
 
 const { encodeTokenId } = ChromaticUtils;
@@ -70,7 +71,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
   const currentMarketAddress = marketAddress || currentMarket?.address;
   const currentTokenAddress = tokenAddress || currentToken?.address;
   const isLpReady = useAppSelector(isLpReadySelector);
-
+  const previousMarketAddress = usePrevious(currentMarketAddress);
   const { isReady, client } = useChromaticClient();
 
   const fetchKeyData = {
@@ -82,6 +83,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
   const {
     data: liquidityPool,
     mutate: fetchLiquidityPool,
+    isLoading,
     error,
   } = useSWR(
     isLpReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
@@ -140,6 +142,11 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
+    isPoolLoading:
+      isLoading ||
+      isNil(currentTokenAddress) ||
+      isNil(currentMarketAddress) ||
+      previousMarketAddress !== currentMarketAddress,
   };
 };
 
