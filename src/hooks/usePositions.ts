@@ -5,13 +5,14 @@ import {
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
-import { useAppSelector } from '~/store';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
 import { MarketLike } from '~/typings/market';
 import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
@@ -95,6 +96,7 @@ export const usePositions = () => {
   const { client } = useChromaticClient();
   const filterOption = useAppSelector((state) => state.position.filterOption);
   const { address } = useAccount();
+  const dispatch = useAppDispatch();
 
   const fetchKey = {
     name: 'getPositions',
@@ -176,6 +178,12 @@ export const usePositions = () => {
         marketAddress === currentMarket?.address && tokenAddress === currentToken?.address
     );
   }, [positions, currentMarket, currentToken]);
+
+  useEffect(() => {
+    if (isNotNil(positions) && !isLoading) {
+      dispatch(loadedAction.onDataLoaded('positions'));
+    }
+  }, [dispatch, isLoading, positions]);
 
   useError({
     error,

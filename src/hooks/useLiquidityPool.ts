@@ -5,8 +5,9 @@ import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
+import { isLpReadySelector } from '~/store/selector';
 import { FEE_RATES } from '../configs/feeRate';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
@@ -20,6 +21,7 @@ const { encodeTokenId } = ChromaticUtils;
 export const useLiquidityPools = () => {
   const { client } = useChromaticClient();
   const { tokens } = useSettlementToken();
+  const isLpReady = useAppSelector(isLpReadySelector);
 
   const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
 
@@ -32,7 +34,7 @@ export const useLiquidityPools = () => {
     error,
     mutate: fetchLiquidityPools,
   } = useSWR(
-    checkAllProps(fetchKeyData) && fetchKeyData,
+    isLpReady && checkAllProps(fetchKeyData) ? fetchKeyData : undefined,
     async ({ tokenAddresses }) => {
       const lensApi = client.lens();
       const marketFactoryApi = client.marketFactory();
@@ -57,7 +59,7 @@ export const useLiquidityPools = () => {
         (marketAddress) => {
           return getLiquidityPool(marketApi, lensApi, marketAddress as Address);
         },
-        { interval: 250 }
+        { interval: 500 }
       );
     },
     {
@@ -76,6 +78,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
 
   const { currentMarket } = useMarket();
   const currentMarketAddress = marketAddress || currentMarket?.address;
+  const isLpReady = useAppSelector(isLpReadySelector);
 
   const { isReady, client } = useChromaticClient();
 
@@ -89,7 +92,7 @@ export const useLiquidityPool = (marketAddress?: Address) => {
     mutate: fetchLiquidityPool,
     error,
   } = useSWR(
-    isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    isLpReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress }) => {
       const lensApi = client.lens();
       const marketApi = client.market();

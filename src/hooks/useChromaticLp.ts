@@ -1,11 +1,13 @@
 import { Client as LpClient } from '@chromatic-protocol/liquidity-provider-sdk';
 import { ChromaticRegistry } from '@chromatic-protocol/liquidity-provider-sdk/dist/esm/entities/ChromaticRegistry';
 import { isNil, isNotNil } from 'ramda';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { LP_TAG_ORDER } from '~/configs/lp';
 import { useAppDispatch } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
 import { MarketLike } from '~/typings/market';
@@ -236,6 +238,12 @@ export const useChromaticLp = () => {
       });
     }
   );
+
+  useEffect(() => {
+    if (isNotNil(lpList) && !isLpLoading) {
+      dispatch(loadedAction.onDataLoaded('chromaticLp'));
+    }
+  }, [dispatch, lpList, isLpLoading]);
 
   const onLpSelect = (nextLp: ChromaticLp) => {
     if (!isReady) {
