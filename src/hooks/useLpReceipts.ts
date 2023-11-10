@@ -349,10 +349,10 @@ export const useLpReceipts = (props: UseLpReceipts) => {
 
   useError({ error });
   useEffect(() => {
-    if (isNotNil(receiptsData) && !isLoading) {
+    if ((isNotNil(receiptsData) && isNotNil(address)) || !isLoading) {
       dispatch(loadedAction.onDataLoaded('lpReceipts'));
     }
-  }, [dispatch, isLoading, receiptsData]);
+  }, [dispatch, isLoading, receiptsData, address]);
 
   const onFetchNextLpReceipts = useCallback(() => {
     if (isLoading) {
