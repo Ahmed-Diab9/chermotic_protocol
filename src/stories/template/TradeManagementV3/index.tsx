@@ -10,6 +10,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { TradesItem } from '~/stories/molecule/TradesItem';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { FilterOption } from '~/typings/position';
@@ -34,6 +35,8 @@ export const TradeManagementV3 = () => {
     hasMoreTrades,
     onLoadHistoryRef,
     onLoadTradesRef,
+
+    formattedElapsed,
   } = useTradeManagementV3();
 
   // TODO: PERCENTAGE
@@ -46,12 +49,22 @@ export const TradeManagementV3 = () => {
         <Tab.Group>
           <div className="flex flex-col w-full">
             <div className="flex items-end border-b border-gray-light">
-              <Tab.List className="flex-none tabs-list tabs-line tabs-left">
+              <Tab.List className="flex-none font-semibold tabs-list tabs-line tabs-left">
                 <Tab>Position</Tab>
                 <Tab>History</Tab>
                 <Tab>Trades</Tab>
               </Tab.List>
               <div className="flex items-center gap-2 ml-auto">
+                <div className="flex items-baseline gap-1">
+                  <div className="flex">
+                    <p className="text-sm text-primary-light">Last oracle update</p>
+                  </div>
+                  <p>
+                    <SkeletonElement isLoading={isLoading} width={60}>
+                      {formattedElapsed}
+                    </SkeletonElement>
+                  </p>
+                </div>
                 <div className="select select-simple min-w-[168px]">
                   <Listbox
                     value={filterOption}
