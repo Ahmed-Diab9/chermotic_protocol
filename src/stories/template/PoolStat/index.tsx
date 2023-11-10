@@ -55,7 +55,7 @@ export const PoolStat = (props: PoolStatProps) => {
               <h5 className="text-xl">Pool Utilization</h5>
               <TooltipGuide
                 label="pool-utilization"
-                tip="Pool Utilization = Liquidity provided in the Liquidity Bin / Total liquidity managed by this pool."
+                tip="Liquidity provided in liquidity bins / Total liquidity managed by the pool"
                 outLink=""
               />
             </div>
