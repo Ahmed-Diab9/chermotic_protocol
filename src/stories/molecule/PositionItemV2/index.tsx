@@ -90,7 +90,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
           </div>
         </div>
       )}
-      {(isOpened || isClosed) && (
+      {isOpened && (
         <>
           <div className="td">
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -133,6 +133,29 @@ export function PositionItemV2(props: PositionItemV2Props) {
                   {lossPriceTo}
                 </SkeletonElement>
               </div>
+            </div>
+          </div>
+          <div className="td">
+            {/* PnL */}
+            <div>
+              <SkeletonElement isLoading={isLoading} width={40}>
+                {pnlAmount}
+              </SkeletonElement>
+              <div className={`mt-[2px] ${pnlClass}`}>
+                <SkeletonElement isLoading={isLoading} width={40}>
+                  {pnlPercentage}
+                </SkeletonElement>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {isClosed && (
+        <>
+          <div className="border-r td">
+            <div className="flex text-sm text-primary">
+              Your request for closing position has been completed. <br />
+              Please claim the cETH to your account.
             </div>
           </div>
           <div className="td">
