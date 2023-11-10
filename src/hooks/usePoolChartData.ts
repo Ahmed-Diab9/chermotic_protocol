@@ -5,9 +5,11 @@ import { checkAllProps } from '~/utils';
 import { Logger } from '~/utils/log';
 
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { useChromaticLp } from './useChromaticLp';
-import { useError } from './useError';
-import { useSettlementToken } from './useSettlementToken';
+import { useChromaticLp } from '~/hooks/useChromaticLp';
+import { useError } from '~/hooks/useError';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
 const logger = Logger('usePoolChartData');
 
@@ -28,21 +30,38 @@ export const usePoolChartData = () => {
   const { data, error } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
     ({ lpBins, lpBinIds, lpDecimals, marketBins, marketDecimals }) => {
-      return marketBins.map(({ baseFeeRate, tokenId }, idx) => {
-        const clpIndex = lpBinIds.indexOf(tokenId);
-        const clpBalance = Number(formatUnits(lpBins[clpIndex], lpDecimals));
+      const chartData = marketBins.reduce<{
+        clbTokenValues: CLBTokenValue[];
+        liquidity: Liquidity[];
+      }>(
+        (acc, { clbTokenValue, baseFeeRate, tokenId }, idx) => {
+          const key = baseFeeRate / 100;
+          acc.clbTokenValues.push({
+            key,
+            value: Number(formatUnits(clbTokenValue, marketDecimals)),
+          });
 
-        const liquidity =
-          Number(formatUnits(marketBins[idx].liquidity, marketDecimals)) - clpBalance;
+          const clpIndex = lpBinIds.indexOf(tokenId);
+          const clpBalance = Number(formatUnits(lpBins[clpIndex], lpDecimals));
 
-        return {
-          key: baseFeeRate / 100,
-          value: [
-            { label: 'primary', amount: clpBalance },
-            { label: 'secondary', amount: liquidity },
-          ],
-        };
-      });
+          const liquidity =
+            Number(formatUnits(marketBins[idx].liquidity, marketDecimals)) - clpBalance;
+
+          acc.liquidity.push({
+            key,
+            value: [
+              { label: 'primary', amount: clpBalance },
+              { label: 'secondary', amount: liquidity },
+            ],
+          });
+          return acc;
+        },
+        {
+          clbTokenValues: [],
+          liquidity: [],
+        }
+      );
+      return chartData;
     },
     {
       keepPreviousData: true,
@@ -52,7 +71,8 @@ export const usePoolChartData = () => {
   useError({ error, logger });
 
   return {
-    data: data || [],
+    clbTokenValues: data?.clbTokenValues || [],
+    liquidity: data?.liquidity || [],
     isPoolLoading,
   };
 };

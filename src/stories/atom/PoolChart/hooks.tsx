@@ -16,16 +16,15 @@ export function usePoolChart({
   height,
   width,
 }: usePoolChartProps) {
-  const { data, isPoolLoading } = usePoolChartData();
+  const { clbTokenValues, liquidity, isPoolLoading } = usePoolChartData();
   const { currentToken } = useSettlementToken();
 
   return {
     tokenName: currentToken?.name,
     rangeChartProps: {
       ref: chartRef,
-      barData: data,
-      dotData: [],
-      // dotData: isDotVisible ? clbTokenValues : [],
+      barData: liquidity,
+      dotData: isDotVisible ? clbTokenValues : [],
       trackConfig: RANGE_CONFIG,
       labels: RANGE_TICKS,
       onChangeCallback: onChange,
@@ -36,8 +35,8 @@ export function usePoolChart({
     },
     tooltipProps: {
       id: id,
-      data: data,
-      clbTokenValues: [],
+      data: liquidity,
+      clbTokenValues: clbTokenValues,
     },
     isLoading: isPoolLoading,
   };
