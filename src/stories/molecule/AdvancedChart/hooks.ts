@@ -9,11 +9,10 @@ import {
   TradingTerminalFeatureset,
   widget,
 } from '~/lib/charting_library';
+import datafeed from '~/lib/pyth/datafeed';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
-
-import datafeed from '~/apis/datafeed';
 
 import { AdvancedChartProps } from '.';
 
