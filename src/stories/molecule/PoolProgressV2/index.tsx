@@ -265,7 +265,7 @@ const ProgressItem = (props: ProgressItemProps) => {
           {hasReturnedValue && <TooltipGuide label="withdraw-returned" tip="" />}
           {receipt.status === 'standby' && (
             <TooltipGuide
-              label="in-progress"
+              label="receipt-in-progress"
               // TODO: 퍼센트값 불러오기
               tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
             />
