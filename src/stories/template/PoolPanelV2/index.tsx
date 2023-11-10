@@ -215,7 +215,12 @@ export function PoolPanelV2() {
                         }
                         onAddChromaticLp(amounts.add);
                       }}
-                      disabled={isExceededs.add || isAddPending || isEmpty(amounts.add)}
+                      disabled={
+                        isExceededs.add ||
+                        isAddPending ||
+                        isEmpty(amounts.add) ||
+                        amounts.add === '0'
+                      }
                     />
                   </div>
                 </article>
@@ -323,7 +328,10 @@ export function PoolPanelV2() {
                                   onRemoveChromaticLp(amounts.remove);
                                 }}
                                 disabled={
-                                  isExceededs.remove || isRemovalPending || isEmpty(amounts.remove)
+                                  isExceededs.remove ||
+                                  isRemovalPending ||
+                                  isEmpty(amounts.remove) ||
+                                  amounts.remove === '0'
                                 }
                               />
                             </div>
