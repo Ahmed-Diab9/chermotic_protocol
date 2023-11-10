@@ -37,7 +37,7 @@ export const useRemoveChromaticLp = () => {
 
       dispatchLpEvent();
       dispatchLpReceiptEvent();
-      toast('Removal completed.');
+      toast('Removal process started.');
 
       setIsRemovalPending(false);
     } catch (error) {
