@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
-import { isLpReadySelector } from '~/store/selector';
+import { isLpReadySelector, isPositionsReadySelector } from '~/store/selector';
 import { FEE_RATES } from '../configs/feeRate';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
@@ -70,7 +70,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
   const { currentToken } = useSettlementToken();
   const currentMarketAddress = marketAddress || currentMarket?.address;
   const currentTokenAddress = tokenAddress || currentToken?.address;
-  const isLpReady = useAppSelector(isLpReadySelector);
+  const isPositionsReady = useAppSelector(isPositionsReadySelector);
   const previousMarketAddress = usePrevious(currentMarketAddress);
   const { isReady, client } = useChromaticClient();
 
@@ -86,7 +86,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
     isLoading,
     error,
   } = useSWR(
-    isLpReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    isPositionsReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
 

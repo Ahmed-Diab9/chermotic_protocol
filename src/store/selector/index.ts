@@ -12,8 +12,8 @@ export const isLpReadySelector = createSelector(
 export const isPositionsReadySelector = createSelector(
   (state: RootState) => state.loaded,
   (loaded) => {
-    const { isPositionsLoaded, isPriceFeedLoaded } = loaded;
-    return isPositionsLoaded && isPriceFeedLoaded;
+    const { isPositionsLoaded } = loaded;
+    return isPositionsLoaded;
   }
 );
 

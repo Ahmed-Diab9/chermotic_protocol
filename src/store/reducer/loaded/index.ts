@@ -19,10 +19,7 @@ const loadedSlice = createSlice({
   name: 'loadeds',
   initialState,
   reducers: {
-    onDataLoaded: (
-      state,
-      action: PayloadAction<'positions' | 'chromaticLp' | 'priceFeed' | 'lpReceipts'>
-    ) => {
+    onDataLoaded: (state, action: PayloadAction<'positions' | 'chromaticLp' | 'lpReceipts'>) => {
       switch (action.payload) {
         case 'positions': {
           state.isPositionsLoaded = true;
@@ -30,10 +27,6 @@ const loadedSlice = createSlice({
         }
         case 'chromaticLp': {
           state.isChromaticLpsLoaded = true;
-          break;
-        }
-        case 'priceFeed': {
-          state.isPriceFeedLoaded = true;
           break;
         }
         case 'lpReceipts': {
