@@ -135,7 +135,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </div>
             </div>
           </div>
-          <div className="td">
+          <div className="td td-pnl">
             {/* PnL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -158,7 +158,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               Please claim the cETH to your account.
             </div>
           </div>
-          <div className="td grow-0">
+          <div className="td td-pnl">
             {/* PnL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>

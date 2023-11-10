@@ -127,7 +127,7 @@ export const TradeManagementV3 = () => {
                           <div className="td w-[6%] border-r pr-4">Leverage</div>
                           <div className="td w-[6%]">TP Price</div>
                           <div className="td w-[6%]">SL Price</div>
-                          <div className="td">PnL</div>
+                          <div className="td td-pnl">PnL</div>
                           <div className="td td-last">Close</div>
                         </div>
                       </div>
