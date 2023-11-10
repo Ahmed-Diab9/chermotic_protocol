@@ -83,9 +83,9 @@ export function useMarketSelectV3() {
 
   const isLoading = isTokenLoading || isMarketLoading;
 
-  const tokenName = currentToken?.name || '-';
+  const tokenName = currentToken?.name;
   const tokenImage = currentToken?.image;
-  const marketDescription = currentMarket?.description || '-';
+  const marketDescription = currentMarket?.description;
   const marketAddress = currentMarket?.address;
   const marketImage = currentMarket?.image;
 

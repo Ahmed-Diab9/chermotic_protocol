@@ -12,8 +12,11 @@ import { usePoolDetail } from './hooks';
 export interface PoolDetailProps {}
 
 export const PoolDetail = (props: PoolDetailProps) => {
-  const blockExplorer = useBlockExplorer();
   const { lpTitle, lpName, lpTag, lpAddress, onCopyAddress } = usePoolDetail();
+  const blockExplorer = useBlockExplorer({
+    path: 'address',
+    address: lpAddress,
+  });
 
   return (
     <div className="p-5 PoolDetail">
@@ -31,6 +34,7 @@ export const PoolDetail = (props: PoolDetailProps) => {
             // TODO: onclick should be updated to open in a new tab (not copy)
             onClick={onCopyAddress}
             icon="outlink"
+            href={blockExplorer}
           />
           {/* <Button
             href={

@@ -1,9 +1,9 @@
 import { Square2StackIcon } from '@heroicons/react/24/outline';
+import { MouseEventHandler, useMemo } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { OutlinkIcon } from '~/assets/icons/Icon';
-import { MouseEventHandler } from 'react';
 import { Button } from '../Button';
 import { TooltipGuide } from '../TooltipGuide';
-import Skeleton from 'react-loading-skeleton';
 
 interface AddressWithButtonProps {
   address?: string;
@@ -11,10 +11,23 @@ interface AddressWithButtonProps {
   icon?: 'copy' | 'outlink';
   className?: string;
   onClick: MouseEventHandler<HTMLButtonElement>;
+  href?: string;
 }
 
 export const AddressWithButton = (props: AddressWithButtonProps) => {
-  const { address, icon = 'copy', onClick, className } = props;
+  const { address, icon = 'copy', onClick, className, href } = props;
+  const hrefProps = useMemo(() => {
+    switch (icon) {
+      case 'copy': {
+        return {};
+      }
+      case 'outlink': {
+        return {
+          href: href ?? '#',
+        };
+      }
+    }
+  }, [icon, href]);
 
   return (
     <>
@@ -39,6 +52,7 @@ export const AddressWithButton = (props: AddressWithButtonProps) => {
             icon === 'copy' ? <Square2StackIcon /> : icon === 'outlink' ? <OutlinkIcon /> : null
           }
           onClick={onClick}
+          {...hrefProps}
         />
       </div>
     </>

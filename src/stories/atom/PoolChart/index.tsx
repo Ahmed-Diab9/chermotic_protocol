@@ -2,6 +2,7 @@ import { RangeChart as Chart, RangeChartData } from '@chromatic-protocol/react-c
 import './style.css';
 
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { SkeletonElement } from '../SkeletonElement';
 import { usePoolChart } from './hooks';
 
 export interface PoolChartProps {
@@ -15,14 +16,21 @@ export interface PoolChartProps {
 }
 
 export function PoolChart(props: PoolChartProps) {
-  const { rangeChartProps, tooltipProps } = usePoolChart(props);
+  const { tokenName, rangeChartProps, tooltipProps, isLoading } = usePoolChart(props);
   const { id } = props;
 
   return (
     <>
-      <LiquidityTooltip {...tooltipProps} />
+      <LiquidityTooltip {...tooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <Chart {...rangeChartProps} />
+        <SkeletonElement
+          isLoading={isLoading}
+          className="my-[6px] h-[13px]"
+          containerClassName="px-7 w-full "
+          count={8}
+        >
+          <Chart {...rangeChartProps} />
+        </SkeletonElement>
       </div>
     </>
   );

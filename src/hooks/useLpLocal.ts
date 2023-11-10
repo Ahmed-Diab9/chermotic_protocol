@@ -13,6 +13,7 @@ export const useLpLocal = () => {
 
   const onMount = useCallback(() => {
     if (isLpLoading) {
+      dispatch(lpAction.onLpUnselect());
       return;
     }
     let lp = lpList?.find((lp) => lp.address === storedLpAddress);

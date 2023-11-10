@@ -1,63 +1,55 @@
-import type { ChromaticLens, ChromaticMarket } from '@chromatic-protocol/sdk-viem';
+import type { ChromaticLens } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
-import { isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
+import { isLpReadySelector, isPositionsReadySelector } from '~/store/selector';
 import { FEE_RATES } from '../configs/feeRate';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
-import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
+import { PromiseOnlySuccess } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useMarket } from './useMarket';
+import { useEntireMarkets, useMarket } from './useMarket';
+import { usePrevious } from './usePrevious';
 import { useSettlementToken } from './useSettlementToken';
 
 const { encodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
   const { client } = useChromaticClient();
-  const { tokens } = useSettlementToken();
+  const { markets } = useEntireMarkets();
+  const isLpReady = useAppSelector(isLpReadySelector);
 
-  const tokenAddresses = useMemo(() => tokens?.map((token) => token.address), [tokens]);
+  const addresses = useMemo(() => {
+    return markets?.map((market) => {
+      return {
+        marketAddress: market.address,
+        tokenAddresses: market.tokenAddress,
+      };
+    });
+  }, [markets]);
 
   const fetchKeyData = {
     name: 'getLiquidityPools',
-    tokenAddresses,
+    addresses,
   };
   const {
     data: liquidityPools,
     error,
     mutate: fetchLiquidityPools,
   } = useSWR(
-    checkAllProps(fetchKeyData) && fetchKeyData,
-    async ({ tokenAddresses }) => {
+    isLpReady && checkAllProps(fetchKeyData) ? fetchKeyData : undefined,
+    async ({ addresses }) => {
       const lensApi = client.lens();
-      const marketFactoryApi = client.marketFactory();
-      const marketApi = client.market();
 
-      const marketAddresses = (
-        await PromiseOnlySuccess(
-          tokenAddresses.map(async (tokenAddress) => ({
-            tokenAddress,
-            marketAddresses: await marketFactoryApi
-              .contracts()
-              .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]),
-          }))
-        )
-      ).reduce((map, row) => {
-        row.marketAddresses.forEach((marketAddress) => (map[marketAddress] = row.tokenAddress));
-        return map;
-      }, {} as Record<Address, Address>);
-
-      return promiseSlowLoop(
-        Object.keys(marketAddresses),
-        (marketAddress) => {
-          return getLiquidityPool(marketApi, lensApi, marketAddress as Address);
-        },
-        { interval: 250 }
+      return PromiseOnlySuccess(
+        addresses.map(({ marketAddress, tokenAddresses }) => {
+          return getLiquidityPool(lensApi, marketAddress, tokenAddresses);
+        })
       );
     },
     {
@@ -71,30 +63,34 @@ export const useLiquidityPools = () => {
   return { liquidityPools, fetchLiquidityPools } as const;
 };
 
-export const useLiquidityPool = (marketAddress?: Address) => {
+export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address) => {
   const dispatch = useAppDispatch();
 
   const { currentMarket } = useMarket();
+  const { currentToken } = useSettlementToken();
   const currentMarketAddress = marketAddress || currentMarket?.address;
-
+  const currentTokenAddress = tokenAddress || currentToken?.address;
+  const isPositionsReady = useAppSelector(isPositionsReadySelector);
+  const previousMarketAddress = usePrevious(currentMarketAddress);
   const { isReady, client } = useChromaticClient();
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
     marketAddress: currentMarketAddress,
+    tokenAddress: currentTokenAddress,
   };
 
   const {
     data: liquidityPool,
     mutate: fetchLiquidityPool,
+    isLoading,
     error,
   } = useSWR(
-    isReady && checkAllProps(fetchKeyData) && fetchKeyData,
-    async ({ marketAddress }) => {
+    isPositionsReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
-      const marketApi = client.market();
 
-      const pool = await getLiquidityPool(marketApi, lensApi, marketAddress);
+      const pool = await getLiquidityPool(lensApi, marketAddress, tokenAddress);
 
       return pool;
     },
@@ -146,6 +142,11 @@ export const useLiquidityPool = (marketAddress?: Address) => {
       shortTotalMaxLiquidity,
       shortTotalUnusedLiquidity,
     },
+    isPoolLoading:
+      isLoading ||
+      isNil(currentTokenAddress) ||
+      isNil(currentMarketAddress) ||
+      previousMarketAddress !== currentMarketAddress,
   };
 };
 
@@ -155,11 +156,10 @@ const tokenIds = [
   ...FEE_RATES.map((rate) => encodeTokenId(rate * -1)), // SHORT COUNTER
 ];
 async function getLiquidityPool(
-  marketApi: ChromaticMarket,
   lensApi: ChromaticLens,
-  marketAddress: Address
+  marketAddress: Address,
+  tokenAddress: Address
 ) {
-  const tokenAddress = await marketApi.settlementToken(marketAddress);
   const liquidityBinsPromise = lensApi.liquidityBins(marketAddress).then((bins) =>
     bins.reduce(
       (map, bin) => {
@@ -180,28 +180,15 @@ async function getLiquidityPool(
   );
 
   const liquidityBins = await liquidityBinsPromise;
-  const clbTokenMetas = await PromiseOnlySuccess(
-    tokenIds.map(async (tokenId, index) => {
-      return {
-        tokenId,
-        baseFeeRate: baseFeeRates[index],
-        ...(await marketApi.clbTokenMeta(marketAddress, tokenId)),
-      };
-    })
-  );
-  const bins = clbTokenMetas.map(({ tokenId, baseFeeRate, name, description, decimals, image }) => {
-    const bin = liquidityBins[baseFeeRate];
+  const bins = tokenIds.map((tokenId, index) => {
+    const bin = liquidityBins[baseFeeRates[index]];
     return {
       liquidity: bin.liquidity,
       clbTokenValue: bin.clbValue,
       freeLiquidity: bin.freeLiquidity,
-      clbTokenName: name,
-      clbTokenImage: image,
-      clbTokenDescription: description,
-      clbTokenDecimals: decimals,
-      baseFeeRate,
+      baseFeeRate: baseFeeRates[index],
       tokenId,
-    } satisfies Bin;
+    } as Bin;
   });
 
   return {

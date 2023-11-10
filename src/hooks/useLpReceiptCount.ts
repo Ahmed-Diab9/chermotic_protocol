@@ -6,10 +6,11 @@ import { useError } from './useError';
 
 import { lpGraphSdk } from '~/lib/graphql';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 
 export const useLpReceiptCount = () => {
   const { address: walletAddress } = useAccount();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpAddress = useMemo(() => {
     return selectedLp?.address;
   }, [selectedLp]);
@@ -62,7 +63,7 @@ export const useLpReceiptCount = () => {
     },
     {
       // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 24,
+      refreshInterval: 1000 * 6,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,

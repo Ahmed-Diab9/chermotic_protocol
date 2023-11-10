@@ -16,9 +16,15 @@ interface LiquidityTooltipProps {
   id?: string;
   data?: BarData[];
   clbTokenValues?: CLBTokenValue[];
+  tokenName?: string;
 }
 
-export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityTooltipProps) => {
+export const LiquidityTooltip = ({
+  id = '',
+  data,
+  clbTokenValues,
+  tokenName = '',
+}: LiquidityTooltipProps) => {
   if (!data || !clbTokenValues) return null;
 
   function toString(num?: number) {
@@ -69,8 +75,6 @@ export const LiquidityTooltip = ({ id = '', data, clbTokenValues }: LiquidityToo
           <div>
             <p className="font-semibold text-primary">Liquidity Bin {feeRate}</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
-              <p>CLB Value: {clbTokenValue}</p>
-              <p>Liquidity: {liquidity}</p>
               <p>
                 Bin Utilization: {utilized} ({ratio}%)
               </p>

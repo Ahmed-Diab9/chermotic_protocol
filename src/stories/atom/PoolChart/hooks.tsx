@@ -2,6 +2,7 @@ import { useChartData } from '~/hooks/useChartData';
 
 import { RANGE_CONFIG, RANGE_TICKS } from '~/configs/chart';
 
+import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { PoolChartProps } from '.';
 
 interface usePoolChartProps extends PoolChartProps {}
@@ -15,9 +16,11 @@ export function usePoolChart({
   height,
   width,
 }: usePoolChartProps) {
-  const { liquidity, clbTokenValues } = useChartData();
+  const { liquidity, clbTokenValues, isPoolLoading } = useChartData();
+  const { currentToken } = useSettlementToken();
 
   return {
+    tokenName: currentToken?.name,
     rangeChartProps: {
       ref: chartRef,
       barData: liquidity,
@@ -36,5 +39,6 @@ export function usePoolChart({
       data: liquidity,
       clbTokenValues,
     },
+    isLoading: isPoolLoading,
   };
 }

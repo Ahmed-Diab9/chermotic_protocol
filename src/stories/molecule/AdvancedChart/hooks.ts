@@ -10,6 +10,8 @@ import {
   widget,
 } from '~/lib/charting_library';
 import datafeed from '~/lib/pyth/datafeed';
+import { useAppDispatch } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
@@ -20,6 +22,7 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
   const { symbol, darkMode } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
@@ -98,6 +101,12 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
     if (isNil(tvWidgetRef.current)) return;
     changeTheme(tvWidgetRef.current, darkMode ? 'dark' : 'light');
   }, [darkMode, isChartReady]);
+
+  useEffect(() => {
+    if (isChartReady) {
+      dispatch(loadedAction.onDataLoaded('chromaticLp'));
+    }
+  }, [dispatch, isChartReady]);
 
   return { isLoading, chartContainerRef };
 };

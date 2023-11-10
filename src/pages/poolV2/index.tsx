@@ -4,6 +4,7 @@ import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
@@ -28,7 +29,7 @@ const PoolV2 = () => {
   useMarketLocal();
   useLpLocal();
 
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;

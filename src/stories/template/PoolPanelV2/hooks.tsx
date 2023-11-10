@@ -7,6 +7,7 @@ import { useRemoveChromaticLp } from '~/hooks/useRemoveChromaticLp';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { formatDecimals } from '~/utils/number';
 
 export function usePoolPanelV2() {
@@ -20,7 +21,7 @@ export function usePoolPanelV2() {
       shortTotalUnusedLiquidity,
     },
   } = useLiquidityPool();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const [selectedTab, setSelectedTab] = useState(0);
   const onTabChange = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -102,6 +103,35 @@ export function usePoolPanelV2() {
       remove: parseUnits(amounts.remove, selectedLp.clpDecimals) > (selectedBalances?.remove ?? 0n),
     };
   }, [amounts, selectedBalances, currentToken, selectedLp]);
+  const isUnderMinimals = useMemo(() => {
+    if (isNil(currentToken) || isNil(selectedLp)) {
+      return {
+        add: false,
+        remove: false,
+      };
+    }
+    return {
+      add:
+        amounts.add.length > 0 &&
+        parseUnits(amounts.add, currentToken.decimals) < selectedLp.minimalLiquidity,
+      remove: false,
+    };
+  }, [currentToken, selectedLp, amounts.add]);
+  const errorMessages = useMemo(() => {
+    const formattedMinimal = formatDecimals(
+      selectedLp?.minimalLiquidity,
+      currentToken?.decimals,
+      3
+    );
+    return {
+      add: isExceededs.add
+        ? 'Exceeded your wallet balance.'
+        : isUnderMinimals.add
+        ? `Less than minimum betting amount. (${formattedMinimal} ${currentToken?.name})`
+        : undefined,
+      remove: isExceededs.remove ? 'Exceeded your CLP balance.' : undefined,
+    };
+  }, [isExceededs, isUnderMinimals, selectedLp, currentToken]);
   const { onAddChromaticLp, isAddPending } = useAddChromaticLp();
   const { onRemoveChromaticLp, isRemovalPending } = useRemoveChromaticLp();
   const onAmountChange = (value: string) => {
@@ -167,6 +197,8 @@ export function usePoolPanelV2() {
     isAssetsLoading,
     isLpLoading: isNil(selectedLp),
     isExceededs,
+    isUnderMinimals,
+    errorMessages,
     amounts,
     maxAmounts,
     formattedBalances,

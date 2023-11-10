@@ -14,6 +14,7 @@ import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
 import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
+import { selectedLpSelector } from '~/store/selector';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
@@ -37,6 +38,8 @@ export function PoolPanelV2() {
     isAssetsLoading,
     isLpLoading,
     isExceededs,
+    isUnderMinimals,
+    errorMessages,
     amounts,
     maxAmounts,
     formattedBalances,
@@ -48,7 +51,7 @@ export function PoolPanelV2() {
     onRemoveChromaticLp,
   } = usePoolPanelV2();
 
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
     ? `${selectedLp.settlementToken.name}-${selectedLp.market.description}`
     : undefined;
@@ -146,8 +149,8 @@ export function PoolPanelV2() {
                         value={amounts.add}
                         maxValue={maxAmounts.add}
                         onChange={onAmountChange}
-                        error={isExceededs.add}
-                        errorMsg={isExceededs.add ? 'Exceeded your wallet balance.' : undefined}
+                        error={isExceededs.add || isUnderMinimals.add}
+                        errorMsg={errorMessages.add}
                         assetSrc={tokenImage}
                         size="lg"
                       />
@@ -215,7 +218,7 @@ export function PoolPanelV2() {
                         }
                         onAddChromaticLp(amounts.add);
                       }}
-                      disabled={isExceededs.add || isAddPending}
+                      disabled={isExceededs.add || isAddPending || isLpLoading || isAssetsLoading}
                     />
                   </div>
                 </article>
@@ -279,9 +282,7 @@ export function PoolPanelV2() {
                                   maxValue={maxAmounts.remove}
                                   onChange={onAmountChange}
                                   error={isExceededs.remove}
-                                  errorMsg={
-                                    isExceededs.remove ? 'Exceeded your CLP balance.' : undefined
-                                  }
+                                  errorMsg={errorMessages.remove}
                                   assetSrc={clpImage}
                                   size="lg"
                                 />
@@ -322,7 +323,12 @@ export function PoolPanelV2() {
                                   }
                                   onRemoveChromaticLp(amounts.remove);
                                 }}
-                                disabled={isExceededs.remove || isRemovalPending}
+                                disabled={
+                                  isExceededs.remove ||
+                                  isRemovalPending ||
+                                  isLpLoading ||
+                                  isAssetsLoading
+                                }
                               />
                             </div>
                           </article>

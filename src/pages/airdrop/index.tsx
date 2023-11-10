@@ -1,32 +1,34 @@
+import { Tab } from '@headlessui/react';
 import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { OutlinkIcon } from '~/assets/icons/Icon';
+import { ChromaticLogo } from '~/assets/icons/Logo';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 import GalxeIcon from '~/assets/images/galxe.png';
 import ZealyIcon from '~/assets/images/zealy.png';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
-import { Toast } from '~/stories/atom/Toast';
-import { ChainModal } from '~/stories/container/ChainModal';
-import { Tab } from '@headlessui/react';
 import '~/stories/atom/Tabs/style.css';
+import { Toast } from '~/stories/atom/Toast';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { ChainModal } from '~/stories/container/ChainModal';
 import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
-import { ChromaticLogo } from '~/assets/icons/Logo';
-import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
+import { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAccount, useConnect } from 'wagmi';
 import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
 import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
 import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
 import { useAppSelector } from '~/store';
 import { numberFormat } from '~/utils/number';
-import { useAccount, useConnect } from 'wagmi';
 import './style.css';
 
 function Airdrop() {
@@ -39,12 +41,20 @@ function Airdrop() {
   });
   useTokenLocal();
   useMarketLocal();
+  const historyTabRef = useRef<HTMLDivElement>(null);
 
   const { isConnected: _isConnected } = useAccount();
   const { connectAsync, connectors } = useConnect();
   function onConnect() {
     return connectAsync({ connector: connectors[0] });
   }
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'history') {
+      historyTabRef.current?.click();
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -58,7 +68,7 @@ function Airdrop() {
                   <div className="flex gap-10">
                     <Tab.List className="tabs-list min-w-[210px] tabs-flex-column">
                       <Tab>Season 1</Tab>
-                      <Tab>My History</Tab>
+                      <Tab ref={historyTabRef}>My History</Tab>
                       <button
                         onClick={() => {
                           window.open('https://chromatic.finance/', '_blank');

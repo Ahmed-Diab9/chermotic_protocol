@@ -95,7 +95,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
         leverage:
           formatDecimals(
-            divPreserved(qty, collateral, currentToken.decimals),
+            divPreserved(abs(qty), collateral, currentToken.decimals),
             currentToken.decimals,
             2,
             true
@@ -125,7 +125,7 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
       collateral: formatDecimals(collateral, currentToken.decimals, 2, true),
       leverage:
         formatDecimals(
-          divPreserved(qty, collateral, currentToken.decimals),
+          divPreserved(abs(qty), collateral, currentToken.decimals),
           currentToken.decimals,
           2,
           true

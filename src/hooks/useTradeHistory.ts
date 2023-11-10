@@ -159,7 +159,6 @@ export const useTradeHistory = () => {
         currentMarket: trimMarket(currentMarket),
         filterOption,
         initialBlockNumber,
-        pageIndex,
       };
       if (!checkAllProps(fetchKey)) {
         return;
