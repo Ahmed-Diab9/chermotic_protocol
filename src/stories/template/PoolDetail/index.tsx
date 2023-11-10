@@ -26,15 +26,15 @@ export const PoolDetail = (props: PoolDetailProps) => {
             <h3>{lpTitle}</h3>
           </SkeletonElement>
           {/* todo: change text-color for each risk - high / mid / low */}
-          <h3 className={lpTag}>
-            {lpName}
+          <div className="flex items-center gap-2 mt-[2px]">
+            <h3 className={lpTag}>{lpName}test</h3>
             <Button
               iconOnly={<PlusIcon className="w-3 h-3" />}
               css="translucent"
               gap="1"
               size="xs"
             />
-          </h3>
+          </div>
         </div>
         <div className="flex gap-2">
           <AddressWithButton
