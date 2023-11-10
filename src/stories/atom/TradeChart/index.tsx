@@ -1,9 +1,10 @@
-import './style.css';
 import { FillUpChart } from '@chromatic-protocol/react-compound-charts';
+import './style.css';
 
-import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import { SelectedTooltip } from '~/stories/molecule/SelectedTooltip';
 
+import { SkeletonElement } from '../SkeletonElement';
 import { useTradeChart } from './hooks';
 
 export interface TradeChartProps {
@@ -19,14 +20,22 @@ export interface TradeChartProps {
 export function TradeChart(props: TradeChartProps) {
   const { id } = props;
 
-  const { liquidityTooltipProps, selectedTooltipProps, fillupChartProps } = useTradeChart(props);
+  const { tokenName, liquidityTooltipProps, selectedTooltipProps, fillupChartProps, isLoading } =
+    useTradeChart(props);
 
   return (
     <>
       <SelectedTooltip id={id} {...selectedTooltipProps} />
-      <LiquidityTooltip id={id} {...liquidityTooltipProps} />
+      <LiquidityTooltip id={id} {...liquidityTooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <FillUpChart {...fillupChartProps} />
+        <SkeletonElement
+          isLoading={isLoading}
+          containerClassName="px-3 w-full"
+          className="my-[4px] h-[12px]"
+          count={5}
+        >
+          <FillUpChart {...fillupChartProps} />
+        </SkeletonElement>
       </div>
     </>
   );

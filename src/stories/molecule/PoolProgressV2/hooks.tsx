@@ -1,18 +1,18 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
+import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { LP_EVENT, LP_RECEIPT_EVENT } from '~/typings/events';
 import { LpReceipt, ReceiptAction } from '~/typings/lp';
 
 export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const { fetchBalances } = useChromaticAccount();
+  const { fetchTokenBalances } = useTokenBalances();
   const { formattedElapsed } = useLastOracle();
   const [receiptAction, setReceiptAction] = useState<ReceiptAction>('all');
   const {
@@ -104,18 +104,18 @@ export const usePoolProgressV2 = () => {
   }, [setIsGuideOpen]);
 
   useEffect(() => {
-    function onLpReceiptRefresh() {
+    function onLpReceiptUpdate() {
       onRefreshLpReceipts();
       onRefreshLpReceiptCount();
 
-      fetchBalances();
+      fetchTokenBalances();
       refreshChromaticLp();
     }
-    window.addEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
+    window.addEventListener(LP_RECEIPT_EVENT, onLpReceiptUpdate);
     return () => {
-      window.removeEventListener(LP_RECEIPT_EVENT, onLpReceiptRefresh);
+      window.removeEventListener(LP_RECEIPT_EVENT, onLpReceiptUpdate);
     };
-  }, [onRefreshLpReceipts, onRefreshLpReceiptCount, fetchBalances, refreshChromaticLp]);
+  }, [onRefreshLpReceipts, onRefreshLpReceiptCount, fetchTokenBalances, refreshChromaticLp]);
 
   return {
     openButtonRef,

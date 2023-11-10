@@ -24,6 +24,8 @@ function App() {
       value={{
         keepPreviousData: true,
         shouldRetryOnError: false,
+        refreshWhenHidden: false,
+        refreshWhenOffline: false,
       }}
     >
       <Provider store={store}>

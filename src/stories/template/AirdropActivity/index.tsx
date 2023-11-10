@@ -1,6 +1,6 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 import { useAirdropActivity } from './hooks';
-import { Outlink } from '~/stories/atom/Outlink';
 import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
 import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
@@ -33,8 +33,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               </p>
             </div>
             <div className="flex flex-col gap-1 pl-5">
-              <ArrowInfo label="My Credit History" href="#" />
-              <ArrowInfo label="Learn more" href="#" />
+              <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
+              <ArrowInfo label="Learn more" to="#" />
             </div>
           </div>
         </div>
@@ -62,8 +62,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               </p>
             </div>
             <div className="flex flex-col gap-1 pl-5">
-              <ArrowInfo label="My Booster History" href="#" />
-              <ArrowInfo label="Learn more" href="#" />
+              <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
+              <ArrowInfo label="Learn more" to="#" />
             </div>
           </div>
         </div>
@@ -74,22 +74,22 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
 
 interface ArrowInfoProps {
   label: string;
-  href?: string;
+  to?: string;
 }
 
 const ArrowInfo = (props: ArrowInfoProps) => {
-  const { label, href } = props;
-  if (href)
+  const { label, to } = props;
+  if (to)
     return (
-      <a
-        href={href}
+      <Link
+        to={to}
         className="flex items-center gap-1 text-primary-light hover:underline"
         target="_blank"
         rel="noopener noreferrer"
       >
         <ArrowLongRightIcon className="w-4" />
         <span>{label}</span>
-      </a>
+      </Link>
     );
   else
     return (

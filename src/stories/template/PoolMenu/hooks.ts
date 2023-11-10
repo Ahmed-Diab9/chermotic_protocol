@@ -3,11 +3,12 @@ import { useMemo } from 'react';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { lpAction } from '~/store/reducer/lp';
+import { selectedLpSelector } from '~/store/selector';
 import { formatDecimals } from '~/utils/number';
 
 export const usePoolMenu = () => {
   const { lpList } = useChromaticLp();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
   const dispatch = useAppDispatch();
 
   const onMenuClick = (lpName: string) => {

@@ -11,7 +11,7 @@ import { useSettlementToken } from './useSettlementToken';
 const logger = Logger('useChartData');
 
 export const useChartData = () => {
-  const { liquidityPool } = useLiquidityPool();
+  const { liquidityPool, isPoolLoading } = useLiquidityPool();
   const { currentToken } = useSettlementToken();
 
   const fetchKeyData = {
@@ -73,5 +73,6 @@ export const useChartData = () => {
     liquidity: data?.liquidity || [],
     negative: negative,
     positive: positive,
+    isPoolLoading,
   };
 };

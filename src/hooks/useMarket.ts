@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { fetchTokenImages } from '~/apis/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
+import { selectedMarketSelector, selectedTokenSelector } from '~/store/selector';
 import { Market } from '~/typings/market';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
@@ -57,8 +58,8 @@ export const useEntireMarkets = () => {
 export const useMarket = (_interval?: number) => {
   const { isReady, client } = useChromaticClient();
 
-  const selectedToken = useAppSelector((state) => state.token.selectedToken);
-  const currentMarket = useAppSelector((state) => state.market.selectedMarket);
+  const selectedToken = useAppSelector(selectedTokenSelector);
+  const currentMarket = useAppSelector(selectedMarketSelector);
 
   const marketFactoryApi = client.marketFactory();
 

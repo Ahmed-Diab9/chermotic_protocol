@@ -17,6 +17,9 @@ export const lpSlice = createSlice({
     onLpSelect: (state, action: PayloadAction<ChromaticLp>) => {
       state.selectedLp = action.payload;
     },
+    onLpUnselect: (state) => {
+      state.selectedLp = undefined;
+    },
   },
 });
 

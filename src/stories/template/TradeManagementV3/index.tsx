@@ -132,9 +132,13 @@ export const TradeManagementV3 = () => {
                         </div>
                       </div>
                       <div className="tbody">
-                        {positionList.map((position) => (
-                          <PositionItemV2 key={position.id.toString()} position={position} />
-                        ))}
+                        {positionList.map((position) => {
+                          const { tokenAddress, marketAddress, qty, id } = position;
+                          const key = `${tokenAddress}:${marketAddress}:${
+                            qty > 0n ? 'long' : 'short'
+                          }:${id}`;
+                          return <PositionItemV2 key={key} position={position} />;
+                        })}
                       </div>
                     </div>
                   )}

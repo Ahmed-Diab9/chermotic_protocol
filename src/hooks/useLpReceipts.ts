@@ -5,7 +5,7 @@
 
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { Address, useAccount } from 'wagmi';
 import { PAGE_SIZE } from '~/constants/arbiscan';
@@ -16,7 +16,9 @@ import {
   RemoveLiquidity_OrderBy,
   Sdk,
 } from '~/lib/graphql/sdk/lp';
-import { useAppSelector } from '~/store';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
+import { selectedLpSelector } from '~/store/selector';
 import { LpReceipt, LpToken, ReceiptAction } from '~/typings/lp';
 import { MarketLike, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
@@ -217,7 +219,8 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   const { address } = useAccount();
   const { currentMarket } = useMarket();
   const { tokens } = useSettlementToken();
-  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+  const selectedLp = useAppSelector(selectedLpSelector);
+  const dispatch = useAppDispatch();
   const clpMeta = useMemo(() => {
     if (isNil(selectedLp)) {
       return;
@@ -335,7 +338,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
     },
     {
       // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 24,
+      refreshInterval: 1000 * 6,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -345,6 +348,11 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   );
 
   useError({ error });
+  useEffect(() => {
+    if ((isNotNil(receiptsData) && isNotNil(address)) || !isLoading) {
+      dispatch(loadedAction.onDataLoaded('lpReceipts'));
+    }
+  }, [dispatch, isLoading, receiptsData, address]);
 
   const onFetchNextLpReceipts = useCallback(() => {
     if (isLoading) {
