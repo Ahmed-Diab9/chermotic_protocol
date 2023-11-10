@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
@@ -111,52 +111,51 @@ export const useTradeInput = (props: Props) => {
   const { totalMargin: balance } = useMargins();
   // Traverse bins from low fee rates to high.
   // Derive trade fees by subtracting free liquidities from maker margin.
-  const { tradeFee, feePercent } = useMemo(() => {
-    if (
-      isNil(currentToken) ||
-      (direction === 'long' && state.makerMargin > longTotalUnusedLiquidity) ||
-      (direction === 'short' && state.makerMargin > shortTotalUnusedLiquidity)
-    ) {
-      return { tradeFee: 0n, feePercent: 0n };
-    }
-    const { tradeFee, makerMargin } = (pool?.bins || []).reduce(
-      (acc, cur) => {
-        if (
-          (direction === 'long' && cur.baseFeeRate > 0) ||
-          (direction === 'short' && cur.baseFeeRate < 0) ||
-          acc.makerMargin > 0n
-        ) {
-          const feeRate = abs(cur.baseFeeRate);
+  // { tradeFee, feePercent }
+  const getTradeFee = useCallback(
+    (makerMargin: bigint) => {
+      if (
+        isNil(currentToken) ||
+        (direction === 'long' && makerMargin > longTotalUnusedLiquidity) ||
+        (direction === 'short' && makerMargin > shortTotalUnusedLiquidity)
+      ) {
+        return { tradeFee: 0n, feePercent: 0n };
+      }
+      const { tradeFee } = (pool?.bins || []).reduce(
+        (acc, cur) => {
+          if (
+            (direction === 'long' && cur.baseFeeRate > 0) ||
+            (direction === 'short' && cur.baseFeeRate < 0) ||
+            acc.makerMargin > 0n
+          ) {
+            const feeRate = abs(cur.baseFeeRate);
 
-          if (acc.makerMargin >= cur.freeLiquidity) {
-            acc.tradeFee =
-              acc.tradeFee + mulPreserved(cur.freeLiquidity, feeRate, FEE_RATE_DECIMAL);
-            acc.makerMargin = acc.makerMargin - cur.freeLiquidity;
-          } else {
-            acc.tradeFee = acc.tradeFee + mulPreserved(acc.makerMargin, feeRate, FEE_RATE_DECIMAL);
-            acc.makerMargin = 0n;
+            if (acc.makerMargin >= cur.freeLiquidity) {
+              acc.tradeFee =
+                acc.tradeFee + mulPreserved(cur.freeLiquidity, feeRate, FEE_RATE_DECIMAL);
+              acc.makerMargin = acc.makerMargin - cur.freeLiquidity;
+            } else {
+              acc.tradeFee =
+                acc.tradeFee + mulPreserved(acc.makerMargin, feeRate, FEE_RATE_DECIMAL);
+              acc.makerMargin = 0n;
+            }
           }
-        }
-        return acc;
-      },
-      { tradeFee: 0n, makerMargin: state.makerMargin }
-    );
+          return acc;
+        },
+        { tradeFee: 0n, makerMargin: makerMargin }
+      );
 
-    const feePercent =
-      state.makerMargin === 0n
-        ? tradeFee
-        : divPreserved(tradeFee, state.makerMargin, currentToken.decimals) * 100n;
-    return { tradeFee, feePercent };
-  }, [
-    state.makerMargin,
-    direction,
-    currentToken,
-    pool?.bins,
-    longTotalUnusedLiquidity,
-    shortTotalUnusedLiquidity,
-  ]);
+      const feePercent =
+        makerMargin === 0n
+          ? tradeFee
+          : divPreserved(tradeFee, makerMargin, currentToken.decimals) * 100n;
+      return { tradeFee, feePercent };
+    },
+    [direction, currentToken, pool?.bins, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]
+  );
 
   useEffect(() => {
+    const { feePercent } = getTradeFee(state.makerMargin);
     if (isNil(currentToken) || isNil(feePercent)) return;
 
     const baseFeeAllowance = getBaseFeeAllowance(feePercent, currentToken.decimals);
@@ -167,18 +166,28 @@ export const useTradeInput = (props: Props) => {
     );
 
     onFeeAllowanceChange(maxFeeAllowance);
-  }, [feePercent, currentToken]);
+  }, [getTradeFee, currentToken, state.makerMargin]);
+
+  const { tradeFee, feePercent } = useMemo(
+    () => getTradeFee(state.makerMargin),
+    [getTradeFee, state.makerMargin]
+  );
 
   const onMethodChange = (value: 'collateral' | 'quantity') => {
     dispatch(tradesAction.updateTradesState({ direction, method: value }));
   };
 
-  const onAmountChange = (value: string) => {
+  const onAmountChange = (value: string, hasMax: boolean = false) => {
     const amount = parseUnits(value, currentToken?.decimals || 0);
 
     const { method, takeProfit, stopLoss } = state;
 
-    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+    const { makerMargin } = getCalculatedValues({ method, takeProfit, stopLoss, amount });
+
+    const { tradeFee } = getTradeFee(makerMargin);
+    const reducedAmount = amount - tradeFee;
+
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount: reducedAmount });
 
     const amounts =
       amount === undefined

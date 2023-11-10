@@ -124,7 +124,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   const maxFeeAllowance = input?.maxFeeAllowance;
   const minMaxFeeAllowance = +tradeFeePercent;
 
-  const { openPosition } = useOpenPosition();
+  const { openPosition, isLoading: isOpenPending } = useOpenPosition();
 
   function onOpenPosition() {
     openPosition({ ...input, direction }).then(() => {
@@ -236,5 +236,6 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     stopLossPrice,
 
     onOpenPosition,
+    isOpenPending,
   };
 }

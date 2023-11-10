@@ -2,6 +2,7 @@ import { Client } from '@chromatic-protocol/sdk-viem';
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
 import axios from 'axios';
 import { isNil } from 'ramda';
+import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog, getEventSelector } from 'viem';
 import { Address } from 'wagmi';
@@ -111,6 +112,7 @@ export const useTradeLogs = () => {
     error,
     size,
     setSize,
+    mutate,
   } = useSWRInfinite(
     (pageIndex, previousData) => {
       if (!isReady || isNil(initialBlockNumber)) {
@@ -211,11 +213,16 @@ export const useTradeLogs = () => {
     setSize((size) => size + 1);
   };
 
+  const refreshTradeLogs = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
   useError({ error });
 
   return {
     tradesData,
     isLoading,
     onFetchNextTrade,
+    refreshTradeLogs,
   };
 };

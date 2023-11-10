@@ -1,6 +1,7 @@
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
 import axios from 'axios';
 import { isNil, isNotNil } from 'ramda';
+import { useCallback } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { decodeEventLog } from 'viem';
 import { Address } from 'wagmi';
@@ -145,6 +146,7 @@ export const useTradeHistory = () => {
     error,
     size,
     setSize,
+    mutate,
   } = useSWRInfinite(
     (pageIndex, previousData) => {
       if (!isReady || isNil(initialBlockNumber)) {
@@ -272,11 +274,16 @@ export const useTradeHistory = () => {
     setSize((size) => size + 1);
   };
 
+  const refreshTradeHistory = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
   useError({ error });
 
   return {
     historyData,
     isLoading,
     onFetchNextHistory,
+    refreshTradeHistory,
   };
 };
