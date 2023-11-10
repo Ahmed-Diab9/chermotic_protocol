@@ -46,16 +46,16 @@ export function useLastOracle(props?: Props) {
       .map(({ type, value }) => {
         switch (type) {
           case 'hour': {
-            return `${value}h`;
+            return `${value}`;
           }
           case 'minute': {
-            return `${value}m`;
+            return `${value}`;
           }
           case 'second': {
-            return `${value}s`;
+            return `${value}`;
           }
           case 'literal': {
-            return '';
+            return ':';
           }
           case 'dayPeriod': {
             return '';
