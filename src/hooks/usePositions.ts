@@ -17,7 +17,7 @@ import { MarketLike } from '~/typings/market';
 import { OracleVersion } from '~/typings/oracleVersion';
 import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
-import { trimMarkets } from '~/utils/market';
+import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
@@ -156,6 +156,7 @@ export const usePositions = () => {
     type: 'EOA',
     markets: trimMarkets(markets),
     entireMarkets: trimMarkets(entireMarkets),
+    currentMarket: trimMarket(currentMarket),
     chromaticAccount: accountAddress,
     filterOption,
   };
@@ -167,7 +168,7 @@ export const usePositions = () => {
     isLoading,
   } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
-    async ({ markets, entireMarkets, filterOption, chromaticAccount }) => {
+    async ({ markets, entireMarkets, currentMarket, filterOption, chromaticAccount }) => {
       const accountApi = client.account();
       const positionApi = client.position();
       const marketApi = client.market();
@@ -177,7 +178,7 @@ export const usePositions = () => {
           ? entireMarkets
           : filterOption === 'TOKEN_BASED'
           ? markets
-          : markets.filter((market) => market.address === currentMarket?.address);
+          : markets.filter((market) => market.address === currentMarket.address);
       return getPositions(accountApi, positionApi, marketApi, filteredMarkets, chromaticAccount);
     }
   );
