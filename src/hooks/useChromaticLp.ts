@@ -49,6 +49,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       const totalSupply = lp.totalSupply(lpAddress);
       const valueInfo = lp.valueInfo(lpAddress);
       const utilization = lp.utilization(lpAddress);
+      const minimalLiquidity = lp.estimateMinAddLiquidityAmount(lpAddress);
       return [
         lpTag,
         lpName,
@@ -59,6 +60,7 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         totalSupply,
         valueInfo,
         utilization,
+        minimalLiquidity,
       ] as const;
     })
     .flat(1);
@@ -69,8 +71,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
     if (item.status === 'rejected') {
       continue;
     }
-    const tupleIndex = index % 9;
-    const lpIndex = Math.floor(index / 9);
+    const tupleIndex = index % 10;
+    const lpIndex = Math.floor(index / 10);
     switch (tupleIndex) {
       case 0: {
         lpInfoArray[lpIndex] = {
@@ -122,6 +124,10 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       }
       case 8: {
         lpInfoArray[lpIndex].utilization = item.value as number;
+        continue;
+      }
+      case 9: {
+        lpInfoArray[lpIndex].minimalLiquidity = item.value as bigint;
         continue;
       }
     }

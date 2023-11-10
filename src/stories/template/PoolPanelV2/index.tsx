@@ -38,6 +38,8 @@ export function PoolPanelV2() {
     isAssetsLoading,
     isLpLoading,
     isExceededs,
+    isUnderMinimals,
+    errorMessages,
     amounts,
     maxAmounts,
     formattedBalances,
@@ -147,8 +149,8 @@ export function PoolPanelV2() {
                         value={amounts.add}
                         maxValue={maxAmounts.add}
                         onChange={onAmountChange}
-                        error={isExceededs.add}
-                        errorMsg={isExceededs.add ? 'Exceeded your wallet balance.' : undefined}
+                        error={isExceededs.add || isUnderMinimals.add}
+                        errorMsg={errorMessages.add}
                         assetSrc={tokenImage}
                         size="lg"
                       />
@@ -280,9 +282,7 @@ export function PoolPanelV2() {
                                   maxValue={maxAmounts.remove}
                                   onChange={onAmountChange}
                                   error={isExceededs.remove}
-                                  errorMsg={
-                                    isExceededs.remove ? 'Exceeded your CLP balance.' : undefined
-                                  }
+                                  errorMsg={errorMessages.remove}
                                   assetSrc={clpImage}
                                   size="lg"
                                 />

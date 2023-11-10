@@ -14,6 +14,7 @@ export interface ChromaticLp {
   holdingClbValue: bigint;
   pendingClbValue: bigint;
   utilization: number;
+  minimalLiquidity: bigint;
 
   price: bigint;
   settlementToken: Token;
