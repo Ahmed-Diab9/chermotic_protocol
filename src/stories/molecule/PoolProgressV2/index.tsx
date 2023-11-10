@@ -78,9 +78,10 @@ export function PoolProgressV2() {
                       <div className="mb-1">
                         <Guide
                           isVisible={isGuideOpens[receiptAction]}
-                          title="The process is in progress. You may leave now."
+                          title="The CLP minting or burning process is in progress. You may leave now."
                           // The percentage value in the paragraph is a value that is different for each market.
-                          paragraph="The liquidity provision process is now waiting for next oracle round. The CLP tokens will be sent to your wallet when the process completed."
+                          paragraph="The liquidity provision or withdrawal process is now waiting for next oracle
+                        round. The assets will be sent to your wallet when the process completed."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
                           className="!rounded-none"
@@ -260,8 +261,22 @@ const ProgressItem = (props: ProgressItemProps) => {
           <span className="">
             {receipt.status === 'completed' ? <CheckIcon className="w-4" /> : <Loading size="sm" />}
           </span>
-          {receipt.message}
+          <p>{receipt.message}</p>
           {hasReturnedValue && <TooltipGuide label="withdraw-returned" tip="" />}
+          {receipt.status === 'standby' && receipt.action === 'minting' && (
+            <TooltipGuide
+              label="minting-standby-clp"
+              // TODO: 퍼센트값 불러오기
+              tip="Waiting for the next oracle round for liquidity provisioning (CLP minting). The next oracle round mechanism is updated whenever the Chainlink price moves by (0.05%) or more, and it is updated at least once a day."
+            />
+          )}
+          {receipt.status === 'standby' && receipt.action === 'burning' && (
+            <TooltipGuide
+              label="burning-standby-clp"
+              // TODO: 퍼센트값 불러오기
+              tip="Waiting for the next oracle round for liquidity withdrawing (CLP burning). The next oracle round mechanism is updated whenever the Chainlink price moves by (0.05%) or more, and updated at least once a day."
+            />
+          )}
           {/* todo: if some parts cannot be withdrawn */}
           {/* 00% withdrawn <TooltipGuide label="withdraw-returned" tip="" /> */}
         </div>

@@ -17,10 +17,10 @@
     @apply mr-0;
   }
   .tooltip-base {
-    @apply max-w-[420px];
+    @apply w-fit max-w-[420px];
   }
   .tooltip {
-    @apply rounded-lg;
+    @apply rounded-lg inline-flex;
   }
   .tooltip-solid {
     @apply bg-primary text-inverted;

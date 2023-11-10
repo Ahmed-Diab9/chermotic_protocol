@@ -26,7 +26,15 @@ export const PoolDetail = (props: PoolDetailProps) => {
             <h3>{lpTitle}</h3>
           </SkeletonElement>
           {/* todo: change text-color for each risk - high / mid / low */}
-          <h3 className={lpTag}>{lpName}</h3>
+          <div className="flex items-center gap-1 mt-[2px]">
+            <h3 className={lpTag}>{lpName}</h3>
+            <Button
+              iconOnly={<PlusIcon className="w-3 h-3" />}
+              css="translucent"
+              gap="1"
+              size="xs"
+            />
+          </div>
         </div>
         <div className="flex gap-2">
           <AddressWithButton
@@ -57,15 +65,6 @@ export const PoolDetail = (props: PoolDetailProps) => {
           CLP tokens are independent for each pool, having unique Token IDs and names such as '
           {lpTitle} {lpName} pool'.
           {/* <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" /> */}
-        </div>
-        <div className="flex mt-3">
-          <Button
-            label="Metamask"
-            iconLeft={<PlusIcon className="w-3 h-3" />}
-            css="underlined"
-            gap="1"
-            size="sm"
-          />
         </div>
       </div>
     </div>

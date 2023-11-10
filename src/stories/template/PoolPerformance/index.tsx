@@ -26,7 +26,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
     <div className="p-5 PoolPerformance">
       <div className="flex justify-between">
         <div className="text-left">
-          <h3 className="mb-1">CLP Performance</h3>
+          <h4 className="mb-1 text-xl">CLP Performance</h4>
           <span className="inline-flex py-1 pl-1 pr-2 rounded-full bg-paper-light">
             <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
           </span>
@@ -68,7 +68,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">{performance}</h4>
+              <h4 className="text-price-higher text-xl mt-[2px]">{performance}</h4>
             </div>
           </div>
           <div className="flex w-1/2 gap-3 pl-5 border-l">
@@ -83,7 +83,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher mt-[2px]">{trailingApr}</h4>
+              <h4 className="text-price-higher text-xl mt-[2px]">{trailingApr}</h4>
             </div>
           </div>
         </div>

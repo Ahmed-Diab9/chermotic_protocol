@@ -5,17 +5,8 @@ import { airdropClient } from '~/apis/airdrop';
 import { AirdropHistory } from '~/typings/airdrop';
 import { checkAllProps } from '~/utils';
 import { useError } from '../useError';
-
-const formatHistoryDate = (rawDate: Date) => {
-  const year = rawDate.getUTCFullYear().toString().padStart(4, '0');
-  const month = rawDate.getUTCMonth().toString().padStart(2, '0');
-  const date = rawDate.getUTCDate().toString().padStart(2, '0');
-  const hours = rawDate.getUTCHours().toString().padStart(2, '0');
-  const minutes = rawDate.getUTCMinutes().toString().padStart(2, '0');
-  const seconds = rawDate.getUTCSeconds().toString().padStart(2, '0');
-
-  return `${year}/${month}/${date} ${hours}:${minutes}:${seconds} (UTC)`;
-};
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc';
 
 export const useAirdropHistory = () => {
   const { address } = useAccount();
@@ -37,7 +28,7 @@ export const useAirdropHistory = () => {
       ...element,
       name: element.credit !== 0 ? 'Credit' : 'Booster',
       score: element.credit !== 0 ? element.credit : element.booster,
-      created_at: formatHistoryDate(new Date(element.created_at)),
+      created_at: `${format(new UTCDate(element.created_at), 'yyyy/MM/dd HH:mm:ss')} (UTC)`,
     }));
   });
 

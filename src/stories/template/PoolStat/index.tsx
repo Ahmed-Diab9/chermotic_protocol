@@ -19,20 +19,17 @@ export const PoolStat = (props: PoolStatProps) => {
           <div className="flex items-center gap-2">
             <AssetManagementIcon className="w-6" />
             <div className="flex text-left">
-              <h5>
-                Assets under <br />
-                Management
-              </h5>
+              <h5 className="text-xl">AUM</h5>
               <TooltipGuide
-                label="asset-under-management"
-                tip="Total amount of liquidity provided to this Liquidity Pool"
+                label="aum"
+                tip="Asset under Management. Total amount of liquidity provided to this Liquidity Pool"
                 outLink=""
               />
             </div>
           </div>
           <SkeletonElement isLoading={isNil(aum)} width={60}>
             <div className="text-right">
-              <Avatar label={aum} size="sm" fontSize="lg" gap="1" src={tokenImage} />
+              <Avatar label={aum} size="sm" fontSize="xl" gap="1" src={tokenImage} />
             </div>
           </SkeletonElement>
         </div>
@@ -40,31 +37,31 @@ export const PoolStat = (props: PoolStatProps) => {
           <div className="flex items-center gap-2">
             <ClpSupplyIcon className="w-6" />
             <div className="flex">
-              <h5>CLP supply</h5>
+              <h5 className="text-xl">CLP supply</h5>
               <TooltipGuide label="clp-supply" tip="The amount of CLP in circulation" outLink="" />
             </div>
           </div>
           <SkeletonElement isLoading={isNil(clpSupply)} width={60}>
             <div className="text-right">
-              <Avatar label={clpSupply} size="sm" fontSize="lg" gap="1" src={clpImage} />
+              <Avatar label={clpSupply} size="sm" fontSize="xl" gap="1" src={clpImage} />
             </div>
           </SkeletonElement>
         </div>
       </div>
-      <div className="flex flex-col gap-3 pt-3 mt-5 border-t">
+      <div className="flex flex-col gap-3 pt-5 mt-5 mb-2 border-t">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex">
-              <h5>Pool Utilization</h5>
+              <h5 className="text-xl">Pool Utilization</h5>
               <TooltipGuide
                 label="pool-utilization"
-                tip="Pool Utilization = Liquidity provided in the Liquidity Bin / Total liquidity managed by this pool."
+                tip="Liquidity provided in liquidity bins / Total liquidity managed by the pool"
                 outLink=""
               />
             </div>
             <div className="text-right">
-              <h5>{utilization}</h5>
-              <p className="text-sm text-primary-lighter">{utilizedValue}</p>
+              <h5 className="text-xl">{utilization}</h5>
+              <p className="text-base text-primary-lighter">{utilizedValue}</p>
             </div>
           </div>
           <Progress value={progressRate} max={100} />

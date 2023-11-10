@@ -9,6 +9,7 @@ export interface AirdropAsset {
 
 export interface SyncZealy {
   synced_count: number;
+  synced_xp: number;
 }
 
 export interface AirdropHistory {

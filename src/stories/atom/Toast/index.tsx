@@ -9,10 +9,18 @@ interface ToastProps {
   autoclose?: false | number;
   showLogo?: boolean;
   titleClass?: string;
+  showTest?: boolean;
 }
 
 export const Toast = (props: ToastProps) => {
-  const { title, message, autoclose = 3000, showLogo = false, titleClass } = props;
+  const {
+    title,
+    message,
+    autoclose = 3000,
+    showLogo = false,
+    titleClass,
+    showTest = false,
+  } = props;
 
   const displayMsg = () => {
     toast(<Msg message={message} title={title} titleClass={titleClass} showLogo={showLogo} />);
@@ -24,7 +32,7 @@ export const Toast = (props: ToastProps) => {
 
   return (
     <div>
-      <button onClick={displayMsg}>click</button>
+      {showTest && <button onClick={displayMsg}>click</button>}
       <ToastContainer
         position="bottom-right"
         autoClose={autoclose}

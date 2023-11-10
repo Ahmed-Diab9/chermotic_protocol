@@ -10,6 +10,7 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { TradesItem } from '~/stories/molecule/TradesItem';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { FilterOption } from '~/typings/position';
@@ -34,6 +35,8 @@ export const TradeManagementV3 = () => {
     hasMoreTrades,
     onLoadHistoryRef,
     onLoadTradesRef,
+
+    formattedElapsed,
   } = useTradeManagementV3();
 
   // TODO: PERCENTAGE
@@ -46,7 +49,7 @@ export const TradeManagementV3 = () => {
         <Tab.Group>
           <div className="flex flex-col w-full">
             <div className="flex items-end border-b border-gray-light">
-              <Tab.List className="flex-none tabs-list tabs-line tabs-left">
+              <Tab.List className="flex-none font-semibold tabs-list tabs-line tabs-left">
                 <Tab>Position</Tab>
                 <Tab>History</Tab>
                 <Tab>Trades</Tab>
@@ -71,7 +74,15 @@ export const TradeManagementV3 = () => {
                     </Listbox.Options>
                   </Listbox>
                 </div>
-                <div className="pl-2 ml-1 border-l text-primary-light">
+                <div className="flex items-center gap-2 pl-5 ml-1 border-l text-primary-light">
+                  <div className="flex flex-col items-end gap-[2px]">
+                    <p className="text-sm text-primary-light">Last oracle update</p>
+                    <p className="text-primary">
+                      <SkeletonElement isLoading={isLoading} width={60}>
+                        {formattedElapsed}
+                      </SkeletonElement>
+                    </p>
+                  </div>
                   <Button iconOnly={<ArrowPathIcon />} css="unstyled" />
                 </div>
               </div>
@@ -110,14 +121,14 @@ export const TradeManagementV3 = () => {
                     <div className="list">
                       <div className="thead">
                         <div className="tr">
-                          <div className="td">Entry Time</div>
+                          <div className="td td-first">Entry Time</div>
                           <div className="td">Entry Price</div>
                           <div className="td">Contract Qty</div>
-                          <div className="td">Leverage</div>
-                          <div className="td">TP Price</div>
-                          <div className="td">SL Price</div>
-                          <div className="td">PnL</div>
-                          <div className="td">Close</div>
+                          <div className="td w-[6%] border-r pr-4">Leverage</div>
+                          <div className="td w-[6%]">TP Price</div>
+                          <div className="td w-[6%]">SL Price</div>
+                          <div className="td td-pnl">PnL</div>
+                          <div className="td td-last">Close</div>
                         </div>
                       </div>
                       <div className="tbody">

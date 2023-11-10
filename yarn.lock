@@ -1269,6 +1269,11 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@date-fns/utc@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@date-fns/utc/-/utc-1.1.0.tgz#5b0048f9fd0bbbe7844a307adc1316b3b473e2e2"
+  integrity sha512-b56U3yaziw3yBDWj0OVq+KrAVZxkQrXXjV6nygP8myG7MxR97aB8SJCRCi9WE357u3FlvIowxr960h5kj2Heqg==
+
 "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"

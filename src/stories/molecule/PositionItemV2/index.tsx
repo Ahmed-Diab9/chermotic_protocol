@@ -48,7 +48,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
 
   return (
     <div className="text-left tr">
-      <div className="td">
+      <div className="td td-first">
         <div>
           <div className="text-sm text-primary-light">
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -73,24 +73,24 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </div>
       </div>
       {isOpening && (
-        <div className="gap-2 border-r td">
-          <Loading size="sm" />
-          <div className="flex text-sm text-primary">
-            Waiting for the next oracle round
+        <div className="td">
+          <div className="flex items-center text-sm text-primary gap-[6px]">
+            <Loading size="sm" />
+            <p>Waiting for the next oracle round</p>
             <TooltipGuide iconOnly label="opening-in-progress" />
           </div>
         </div>
       )}
       {isClosing && (
-        <div className="gap-2 border-r td">
-          <Loading size="sm" />
-          <div className="flex text-sm text-primary">
-            Closing in progress
+        <div className="td">
+          <div className="flex items-center text-sm text-primary gap-[6px]">
+            <Loading size="sm" />
+            <p>Closing in progress</p>
             <TooltipGuide iconOnly label="closing-in-progress" />
           </div>
         </div>
       )}
-      {(isOpened || isClosed) && (
+      {isOpened && (
         <>
           <div className="td">
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -103,13 +103,13 @@ export function PositionItemV2(props: PositionItemV2Props) {
               {qty}
             </SkeletonElement>
           </div>
-          <div className="td">
+          <div className="td w-[6px] border-r pr-4">
             {/* Leverage */}
             <SkeletonElement isLoading={isLoading} width={40}>
               <Tag label={leverage} className="tag-leverage" />
             </SkeletonElement>
           </div>
-          <div className="td">
+          <div className="td w-[6px]">
             {/* TP */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -122,7 +122,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </div>
             </div>
           </div>
-          <div className="td">
+          <div className="td w-[6px]">
             {/* SL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -135,7 +135,30 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </div>
             </div>
           </div>
-          <div className="td">
+          <div className="td td-pnl">
+            {/* PnL */}
+            <div>
+              <SkeletonElement isLoading={isLoading} width={40}>
+                {pnlAmount}
+              </SkeletonElement>
+              <div className={`mt-[2px] ${pnlClass}`}>
+                <SkeletonElement isLoading={isLoading} width={40}>
+                  {pnlPercentage}
+                </SkeletonElement>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {isClosed && (
+        <>
+          <div className="pr-4 border-r td">
+            <div className="flex text-sm text-primary">
+              Your request for closing position has been completed. Please claim the cETH to your
+              account.
+            </div>
+          </div>
+          <div className="td td-pnl">
             {/* PnL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -151,7 +174,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </>
       )}
 
-      <div className="td">
+      <div className="td td-last">
         <div>
           <div>
             {(isOpened || isOpening) && (

@@ -30,6 +30,7 @@
     "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.32",
     "@chromatic-protocol/react-compound-charts": "^1.0.0",
     "@chromatic-protocol/sdk-viem": "^0.1.0-rc.164",
+    "@date-fns/utc": "^1.1.0",
     "@floating-ui/dom": "^1.4.2",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
