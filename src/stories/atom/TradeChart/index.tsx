@@ -28,7 +28,12 @@ export function TradeChart(props: TradeChartProps) {
       <SelectedTooltip id={id} {...selectedTooltipProps} />
       <LiquidityTooltip id={id} {...liquidityTooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <SkeletonElement isLoading={isLoading} containerClassName="w-full h-[100px] px-3">
+        <SkeletonElement
+          isLoading={isLoading}
+          containerClassName="px-3 w-full"
+          className="my-[4px] h-[12px]"
+          count={5}
+        >
           <FillUpChart {...fillupChartProps} />
         </SkeletonElement>
       </div>

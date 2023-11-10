@@ -23,7 +23,12 @@ export function PoolChart(props: PoolChartProps) {
     <>
       <LiquidityTooltip {...tooltipProps} tokenName={tokenName} />
       <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <SkeletonElement isLoading={isLoading} containerClassName="h-[288px] w-full px-7">
+        <SkeletonElement
+          isLoading={isLoading}
+          className="my-[6px] h-[13px]"
+          containerClassName="px-7 w-full "
+          count={8}
+        >
           <Chart {...rangeChartProps} />
         </SkeletonElement>
       </div>
