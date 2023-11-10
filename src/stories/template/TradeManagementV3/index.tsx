@@ -121,14 +121,14 @@ export const TradeManagementV3 = () => {
                     <div className="list">
                       <div className="thead">
                         <div className="tr">
-                          <div className="td">Entry Time</div>
+                          <div className="td td-first">Entry Time</div>
                           <div className="td">Entry Price</div>
                           <div className="td">Contract Qty</div>
-                          <div className="td">Leverage</div>
-                          <div className="td">TP Price</div>
-                          <div className="td">SL Price</div>
+                          <div className="td w-[6%] border-r pr-4">Leverage</div>
+                          <div className="td w-[6%]">TP Price</div>
+                          <div className="td w-[6%]">SL Price</div>
                           <div className="td">PnL</div>
-                          <div className="td">Close</div>
+                          <div className="td td-last">Close</div>
                         </div>
                       </div>
                       <div className="tbody">
