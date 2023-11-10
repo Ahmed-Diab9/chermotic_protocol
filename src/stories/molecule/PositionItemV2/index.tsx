@@ -154,8 +154,8 @@ export function PositionItemV2(props: PositionItemV2Props) {
         <>
           <div className="pr-4 border-r td">
             <div className="flex text-sm text-primary">
-              Your request for closing position has been completed. <br />
-              Please claim the cETH to your account.
+              Your request for closing position has been completed. Please claim the cETH to your
+              account.
             </div>
           </div>
           <div className="td td-pnl">
