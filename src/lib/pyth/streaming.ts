@@ -116,9 +116,9 @@ export async function startStreaming() {
 }
 
 function getNextDailyBarTime(barTime: number) {
-  const date = new Date(barTime * 1000);
+  const date = new Date(barTime);
   date.setDate(date.getDate() + 1);
-  return date.getTime() / 1000;
+  return date.getTime();
 }
 
 export function subscribeOnStream(
