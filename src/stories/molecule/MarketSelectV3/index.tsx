@@ -8,7 +8,7 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import { isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useMarketSelectV3 } from './hooks';
 
 export function MarketSelectV3() {
@@ -41,7 +41,7 @@ export function MarketSelectV3() {
           <BookmarkButton
             size="lg"
             onClick={() => {
-              if (isNotNil(onBookmarkClick)) {
+              if (isNotNil(onBookmarkClick) && isNotNil(tokenName) && isNotNil(marketDescription)) {
                 onBookmarkClick({
                   id: `${tokenName}:${marketDescription}`,
                   tokenName,
@@ -57,7 +57,11 @@ export function MarketSelectV3() {
                 <Popover.Button className="flex items-center h-full gap-3">
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                    <SkeletonElement isLoading={isLoading} width={60} containerClassName="text-2xl">
+                    <SkeletonElement
+                      isLoading={isLoading || isNil(tokenName) || isNil(marketDescription)}
+                      width={60}
+                      containerClassName="text-2xl"
+                    >
                       <Avatar
                         label={tokenName}
                         src={tokenImage}
@@ -69,7 +73,11 @@ export function MarketSelectV3() {
                   </div>
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
-                    <SkeletonElement isLoading={isLoading} width={80} containerClassName="text-2xl">
+                    <SkeletonElement
+                      isLoading={isLoading || isNil(tokenName) || isNil(marketDescription)}
+                      width={80}
+                      containerClassName="text-2xl"
+                    >
                       <Avatar
                         label={marketDescription}
                         src={marketImage}
