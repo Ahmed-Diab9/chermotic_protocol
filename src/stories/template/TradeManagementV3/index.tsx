@@ -55,16 +55,6 @@ export const TradeManagementV3 = () => {
                 <Tab>Trades</Tab>
               </Tab.List>
               <div className="flex items-center gap-2 ml-auto">
-                <div className="flex items-baseline gap-1">
-                  <div className="flex">
-                    <p className="text-sm text-primary-light">Last oracle update</p>
-                  </div>
-                  <p>
-                    <SkeletonElement isLoading={isLoading} width={60}>
-                      {formattedElapsed}
-                    </SkeletonElement>
-                  </p>
-                </div>
                 <div className="select select-simple min-w-[168px]">
                   <Listbox
                     value={filterOption}
@@ -84,7 +74,17 @@ export const TradeManagementV3 = () => {
                     </Listbox.Options>
                   </Listbox>
                 </div>
-                <div className="pl-2 ml-1 border-l text-primary-light">
+                <div className="flex items-center gap-2 pl-2 ml-1 border-l text-primary-light">
+                  <div className="flex items-baseline gap-1">
+                    <div className="flex">
+                      <p className="text-sm text-primary-light">Last oracle update</p>
+                    </div>
+                    <p>
+                      <SkeletonElement isLoading={isLoading} width={60}>
+                        {formattedElapsed}
+                      </SkeletonElement>
+                    </p>
+                  </div>
                   <Button iconOnly={<ArrowPathIcon />} css="unstyled" />
                 </div>
               </div>
