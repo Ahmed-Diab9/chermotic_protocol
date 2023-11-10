@@ -1,4 +1,4 @@
-import { GraphQLClient, RequestMiddleware, Variables } from '@chromatic-protocol/graphql-request';
+import { GraphQLClient, RequestMiddleware, Variables } from 'graphql-request';
 import { HASURA_API_URL, SUBGRAPH_API_URL } from '~/configs/subgraph';
 
 import * as Lp from '~/lib/graphql/sdk/lp';
