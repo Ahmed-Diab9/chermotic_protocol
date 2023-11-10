@@ -6,11 +6,11 @@ import './style.css';
 import { Listbox, Tab } from '@headlessui/react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Button } from '~/stories/atom/Button';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { HistoryItem } from '~/stories/molecule/HistoryItem';
 import { PositionItemV2 } from '~/stories/molecule/PositionItemV2';
 import { TradesItem } from '~/stories/molecule/TradesItem';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { FilterOption } from '~/typings/position';
@@ -37,6 +37,8 @@ export const TradeManagementV3 = () => {
     onLoadTradesRef,
 
     formattedElapsed,
+    onLoadTabRef,
+    onRefreshList,
   } = useTradeManagementV3();
 
   // TODO: PERCENTAGE
@@ -46,7 +48,11 @@ export const TradeManagementV3 = () => {
   return (
     <div className="TradeManagementV3">
       <div className="w-full wrapper-tabs">
-        <Tab.Group>
+        <Tab.Group
+          onChange={(index) => {
+            onLoadTabRef(index);
+          }}
+        >
           <div className="flex flex-col w-full">
             <div className="flex items-end border-b border-gray-light">
               <Tab.List className="flex-none font-semibold tabs-list tabs-line tabs-left">
@@ -83,7 +89,13 @@ export const TradeManagementV3 = () => {
                       </SkeletonElement>
                     </p>
                   </div>
-                  <Button iconOnly={<ArrowPathIcon />} css="unstyled" />
+                  <Button
+                    iconOnly={<ArrowPathIcon />}
+                    css="unstyled"
+                    onClick={() => {
+                      onRefreshList();
+                    }}
+                  />
                 </div>
               </div>
             </div>
