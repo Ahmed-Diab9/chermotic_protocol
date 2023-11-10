@@ -55,21 +55,18 @@
     &.position .list {
       .td {
         @apply w-[8%];
-        &:nth-child(1) {
-          @apply w-[16%] min-w-[168px] grow-0;
+        &.td-first {
+          @apply w-[16%] min-w-[168px] grow-0 border-r pr-4;
         }
-        &:last-child {
-          flex: 0 0 40px;
+        &.td-last {
+          @apply border-l pl-4;
+          flex: 0 0 58px;
         }
-        &:nth-child(4),
-        &:nth-child(5),
-        &:nth-child(6) {
-          @apply w-[6%];
+        &.border-l {
+          @apply pl-4;
         }
-        &:nth-child(1),
-        &:nth-child(4),
-        &:nth-child(7) {
-          @apply border-r pr-4;
+        &.border-r {
+          @apply pr-4;
         }
       }
     }

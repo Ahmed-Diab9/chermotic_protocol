@@ -48,7 +48,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
 
   return (
     <div className="text-left tr">
-      <div className="td">
+      <div className="td td-first">
         <div>
           <div className="text-sm text-primary-light">
             <SkeletonElement isLoading={isLoading} width={40}>
@@ -73,7 +73,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </div>
       </div>
       {isOpening && (
-        <div className="gap-2 border-r td">
+        <div className="gap-2 td">
           <Loading size="sm" />
           <div className="flex text-sm text-primary">
             Waiting for the next oracle round
@@ -82,7 +82,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </div>
       )}
       {isClosing && (
-        <div className="gap-2 border-r td">
+        <div className="gap-2 td">
           <Loading size="sm" />
           <div className="flex text-sm text-primary">
             Closing in progress
@@ -103,13 +103,13 @@ export function PositionItemV2(props: PositionItemV2Props) {
               {qty}
             </SkeletonElement>
           </div>
-          <div className="td">
+          <div className="td w-[6px] border-r">
             {/* Leverage */}
             <SkeletonElement isLoading={isLoading} width={40}>
               <Tag label={leverage} className="tag-leverage" />
             </SkeletonElement>
           </div>
-          <div className="td">
+          <div className="td w-[6px]">
             {/* TP */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -122,7 +122,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               </div>
             </div>
           </div>
-          <div className="td">
+          <div className="td w-[6px]">
             {/* SL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -158,7 +158,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               Please claim the cETH to your account.
             </div>
           </div>
-          <div className="td">
+          <div className="td grow-0">
             {/* PnL */}
             <div>
               <SkeletonElement isLoading={isLoading} width={40}>
@@ -174,7 +174,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </>
       )}
 
-      <div className="td">
+      <div className="td td-last">
         <div>
           <div>
             {(isOpened || isOpening) && (
