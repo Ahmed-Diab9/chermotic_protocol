@@ -1,10 +1,8 @@
-import { AddressWithButton } from '~/stories/atom/AddressWithButton';
-import { Outlink } from '~/stories/atom/Outlink';
-import { Button } from '~/stories/atom/Button';
-import { MetamaskIcon } from '~/assets/icons/SocialIcon';
-import { PlusIcon } from '~/assets/icons/Icon';
 import { isNil } from 'ramda';
+import { PlusIcon } from '~/assets/icons/Icon';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
+import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { trimAddress } from '~/utils/address';
 import { usePoolDetail } from './hooks';
@@ -12,7 +10,7 @@ import { usePoolDetail } from './hooks';
 export interface PoolDetailProps {}
 
 export const PoolDetail = (props: PoolDetailProps) => {
-  const { lpTitle, lpName, lpTag, lpAddress, onCopyAddress } = usePoolDetail();
+  const { lpTitle, lpName, lpTag, lpAddress, onCopyAddress, onCLPRegister } = usePoolDetail();
   const blockExplorer = useBlockExplorer({
     path: 'address',
     address: lpAddress,
@@ -33,6 +31,9 @@ export const PoolDetail = (props: PoolDetailProps) => {
               css="translucent"
               gap="1"
               size="xs"
+              onClick={() => {
+                onCLPRegister();
+              }}
             />
           </div>
         </div>
