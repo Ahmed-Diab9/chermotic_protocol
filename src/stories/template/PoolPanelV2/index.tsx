@@ -12,7 +12,7 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
-import { isNil, isNotNil } from 'ramda';
+import { isEmpty, isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
 import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
@@ -215,7 +215,7 @@ export function PoolPanelV2() {
                         }
                         onAddChromaticLp(amounts.add);
                       }}
-                      disabled={isExceededs.add || isAddPending}
+                      disabled={isExceededs.add || isAddPending || isEmpty(amounts.add)}
                     />
                   </div>
                 </article>
@@ -322,7 +322,9 @@ export function PoolPanelV2() {
                                   }
                                   onRemoveChromaticLp(amounts.remove);
                                 }}
-                                disabled={isExceededs.remove || isRemovalPending}
+                                disabled={
+                                  isExceededs.remove || isRemovalPending || isEmpty(amounts.remove)
+                                }
                               />
                             </div>
                           </article>
