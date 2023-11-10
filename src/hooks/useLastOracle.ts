@@ -42,29 +42,28 @@ export function useLastOracle(props?: Props) {
     if (isNotNil(props)) {
       return preformat(elapsed).map(props.format);
     }
-    return preformat(elapsed)
-      .map(({ type, value }) => {
-        switch (type) {
-          case 'hour': {
-            return `${value}`;
-          }
-          case 'minute': {
-            return `${value}`;
-          }
-          case 'second': {
-            return `${value}`;
-          }
-          case 'literal': {
-            return ':';
-          }
-          case 'dayPeriod': {
-            return '';
-          }
-          default:
-            return value;
+    return preformat(elapsed).map(({ type, value }) => {
+      switch (type) {
+        case 'hour': {
+          return `${value}`;
         }
-      })
-      .join(' ');
+        case 'minute': {
+          return `${value}`;
+        }
+        case 'second': {
+          return `${value}`;
+        }
+        case 'literal': {
+          return ':';
+        }
+        case 'dayPeriod': {
+          return '';
+        }
+        default:
+          return value;
+      }
+    });
+    // .join(' ');
   }, [elapsed, props]);
 
   return { elapsed, formattedElapsed };
