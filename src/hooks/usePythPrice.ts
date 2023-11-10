@@ -41,10 +41,10 @@ async function startStreaming(next: (props: PriceData) => void) {
 
   streamData();
 
-  return () => {
-    reader.cancel();
+  return async () => {
+    await reader.cancel();
     reader.releaseLock();
-    response.body?.cancel();
+    await response.body?.cancel();
   };
 }
 

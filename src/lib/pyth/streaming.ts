@@ -109,9 +109,9 @@ export async function startStreaming() {
   streamData();
 
   return async () => {
-    reader.cancel();
+    await reader.cancel();
     reader.releaseLock();
-    response.body?.cancel();
+    await response.body?.cancel();
   };
 }
 
