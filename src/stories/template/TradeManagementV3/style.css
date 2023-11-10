@@ -62,12 +62,6 @@
           @apply border-l pl-4;
           flex: 0 0 58px;
         }
-        &.border-l {
-          @apply pl-4;
-        }
-        &.border-r {
-          @apply pr-4;
-        }
       }
     }
     &.history .list {

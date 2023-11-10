@@ -103,7 +103,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
               {qty}
             </SkeletonElement>
           </div>
-          <div className="td w-[6px] border-r">
+          <div className="td w-[6px] border-r pr-4">
             {/* Leverage */}
             <SkeletonElement isLoading={isLoading} width={40}>
               <Tag label={leverage} className="tag-leverage" />
@@ -152,7 +152,7 @@ export function PositionItemV2(props: PositionItemV2Props) {
       )}
       {isClosed && (
         <>
-          <div className="border-r td">
+          <div className="pr-4 border-r td">
             <div className="flex text-sm text-primary">
               Your request for closing position has been completed. <br />
               Please claim the cETH to your account.

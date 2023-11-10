@@ -124,7 +124,7 @@ export const TradeManagementV3 = () => {
                           <div className="td td-first">Entry Time</div>
                           <div className="td">Entry Price</div>
                           <div className="td">Contract Qty</div>
-                          <div className="td w-[6%] border-r">Leverage</div>
+                          <div className="td w-[6%] border-r pr-4">Leverage</div>
                           <div className="td w-[6%]">TP Price</div>
                           <div className="td w-[6%]">SL Price</div>
                           <div className="td">PnL</div>
