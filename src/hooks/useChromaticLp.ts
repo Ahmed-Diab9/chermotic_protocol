@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { LP_TAG_ORDER } from '~/configs/lp';
-import { useAppDispatch } from '~/store';
 import { loadedAction } from '~/store/reducer/loaded';
+import { useAppDispatch, useAppSelector } from '~/store';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
 import { MarketLike } from '~/typings/market';
@@ -50,6 +50,10 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       const valueInfo = lp.valueInfo(lpAddress);
       const utilization = lp.utilization(lpAddress);
       const minimalLiquidity = lp.estimateMinAddLiquidityAmount(lpAddress);
+
+      const bins = lp.clbTokenBalances(lpAddress);
+      const binIds = lp.clbTokenIds(lpAddress);
+
       return [
         lpTag,
         lpName,
@@ -61,6 +65,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         valueInfo,
         utilization,
         minimalLiquidity,
+        bins,
+        binIds,
       ] as const;
     })
     .flat(1);
@@ -71,8 +77,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
     if (item.status === 'rejected') {
       continue;
     }
-    const tupleIndex = index % 10;
-    const lpIndex = Math.floor(index / 10);
+    const tupleIndex = index % 12;
+    const lpIndex = Math.floor(index / 12);
     switch (tupleIndex) {
       case 0: {
         lpInfoArray[lpIndex] = {
@@ -128,6 +134,14 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       }
       case 9: {
         lpInfoArray[lpIndex].minimalLiquidity = item.value as bigint;
+        continue;
+      }
+      case 10: {
+        lpInfoArray[lpIndex].bins = item.value as bigint[];
+        continue;
+      }
+      case 11: {
+        lpInfoArray[lpIndex].binIds = item.value as bigint[];
         continue;
       }
     }
@@ -256,11 +270,13 @@ export const useChromaticLp = () => {
     toast('Liquidity provider is selected.');
   };
 
+  const selectedLp = useAppSelector((state) => state.lp.selectedLp);
+
   const refreshChromaticLp = () => {
     mutate();
   };
 
   useError({ error });
 
-  return { lpList, isLpLoading, onLpSelect, fetchChromaticLp, refreshChromaticLp };
+  return { lpList, isLpLoading, onLpSelect, selectedLp, fetchChromaticLp, refreshChromaticLp };
 };
