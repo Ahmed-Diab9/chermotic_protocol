@@ -122,7 +122,7 @@ export function useMarketSelectV3() {
   });
 
   const pythInfo = usePythPrice(currentMarket?.description);
-  const price = numberFormat(pythInfo.price, { minDigits: 2, maxDigits: 2 });
+  const price = numberFormat(pythInfo.price, { roundingMode: 'trunc', minDigits: 2, maxDigits: 2 });
   const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
