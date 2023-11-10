@@ -22,7 +22,7 @@ interface OptionInputProps {
   errorMsg?: string | undefined;
   errorMsgAlign?: 'left' | 'center' | 'right';
   onClick?: () => unknown;
-  onChange?: (value: string) => unknown;
+  onChange?: (value: string, hasMax?: boolean) => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -48,7 +48,7 @@ export const OptionInput = (props: OptionInputProps) => {
   const onClick = (ratio: 25 | 50 | 75 | 100) => () => {
     setRatio(ratio);
     if (ratio === 100) {
-      onChange?.(String(maxValue || ''));
+      onChange?.(String(maxValue || ''), true);
     } else {
       const nextValue = Number(maxValue) * (ratio / 100);
       onChange?.(String(nextValue || ''));

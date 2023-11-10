@@ -1,6 +1,5 @@
 // import { Input } from '~/stories/atom/Input';
 import { OptionInput } from '~/stories/atom/OptionInput';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { numberFormat } from '~/utils/number';
 
@@ -16,7 +15,7 @@ interface AmountSwitchProps {
   minAmount: string;
   maxAmount: string | number;
   optionInputDirection?: 'row' | 'column';
-  onAmountChange: (value: string) => unknown;
+  onAmountChange: (value: string, hasMax?: boolean) => unknown;
 }
 
 export const AmountSwitch = (props: AmountSwitchProps) => {
