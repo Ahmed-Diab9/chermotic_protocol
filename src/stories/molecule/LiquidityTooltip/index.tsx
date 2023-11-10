@@ -49,8 +49,8 @@ export const LiquidityTooltip = ({
         return foundData?.value.find((found) => found.label === label)?.amount ?? 0;
       }
 
-      const available = getValueByLabel('available');
-      const utilized = getValueByLabel('utilized');
+      const available = getValueByLabel('secondary');
+      const utilized = getValueByLabel('primary');
 
       const liquidity = utilized + available;
       const ratio = liquidity !== 0 ? +((utilized / liquidity) * 100).toFixed(2) : undefined;
@@ -67,7 +67,7 @@ export const LiquidityTooltip = ({
 
   return (
     <ChartTooltip
-      anchor={`#${id} .react_range__bar_stack.available, #${id} .react_range__bar_stack.utilized`}
+      anchor={`#${id} .react_range__bar_stack.primary, #${id} .react_range__bar_stack.secondary`}
       render={({ content }) => {
         const feeRate = +(content ?? 0);
         const { clbTokenValue, liquidity, utilized, ratio } = getLiquidity(feeRate);

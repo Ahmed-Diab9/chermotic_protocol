@@ -1,4 +1,4 @@
-import { useChartData } from '~/hooks/useChartData';
+import { usePoolChartData } from '~/hooks/usePoolChartData';
 
 import { RANGE_CONFIG, RANGE_TICKS } from '~/configs/chart';
 
@@ -16,18 +16,18 @@ export function usePoolChart({
   height,
   width,
 }: usePoolChartProps) {
-  const { liquidity, clbTokenValues, isPoolLoading } = useChartData();
+  const { data, isPoolLoading } = usePoolChartData();
   const { currentToken } = useSettlementToken();
 
   return {
     tokenName: currentToken?.name,
     rangeChartProps: {
       ref: chartRef,
-      barData: liquidity,
-      dotData: isDotVisible ? clbTokenValues : [],
+      barData: data,
+      dotData: [],
+      // dotData: isDotVisible ? clbTokenValues : [],
       trackConfig: RANGE_CONFIG,
       labels: RANGE_TICKS,
-      defaultValues: [-0.01, 0.01],
       onChangeCallback: onChange,
       height: height,
       width: width,
@@ -36,8 +36,8 @@ export function usePoolChart({
     },
     tooltipProps: {
       id: id,
-      data: liquidity,
-      clbTokenValues,
+      data: data,
+      clbTokenValues: [],
     },
     isLoading: isPoolLoading,
   };

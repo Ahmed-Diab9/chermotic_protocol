@@ -1,27 +1,30 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { formatUnits } from 'viem';
-import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { CLBTokenValue, Liquidity } from '~/typings/chart';
+
+import { checkAllProps } from '~/utils';
 import { Logger } from '~/utils/log';
-import { checkAllProps } from '../utils';
-import { useError } from './useError';
-import { useSettlementToken } from './useSettlementToken';
 
-const logger = Logger('useChartData');
+import { CLBTokenValue, Liquidity } from '~/typings/chart';
 
-export const useChartData = () => {
+import { useError } from '~/hooks/useError';
+import { useLiquidityPool } from '~/hooks/useLiquidityPool';
+import { useSettlementToken } from '~/hooks/useSettlementToken';
+
+const logger = Logger('useTradeChartData');
+
+export const useTradeChartData = () => {
   const { liquidityPool, isPoolLoading } = useLiquidityPool();
   const { currentToken } = useSettlementToken();
 
-  const fetchKeyData = {
-    name: 'useChartData',
+  const fetchKey = {
+    name: 'useTradeChartData',
     bins: liquidityPool?.bins,
     decimals: currentToken?.decimals,
   };
 
   const { data, error } = useSWR(
-    checkAllProps(fetchKeyData) && fetchKeyData,
+    checkAllProps(fetchKey) && fetchKey,
     ({ bins, decimals }) => {
       const chartData = bins.reduce<{
         clbTokenValues: CLBTokenValue[];
@@ -40,8 +43,8 @@ export const useChartData = () => {
           acc.liquidity.push({
             key,
             value: [
-              { label: 'utilized', amount: utilized },
-              { label: 'available', amount: available },
+              { label: 'primary', amount: utilized },
+              { label: 'secondary', amount: available },
             ],
           });
           return acc;
