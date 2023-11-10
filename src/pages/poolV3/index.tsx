@@ -18,7 +18,6 @@ import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
-import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
@@ -110,9 +109,10 @@ const PoolV3 = () => {
                   <div className="panel panel-translucent">
                     <PoolPanelV2 />
                   </div>
-                  <div className="mt-10">
+                  {/* TODO: Should be implemented later */}
+                  {/* <div className="mt-10">
                     <PoolAnalyticsV3 />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex-none w-2/5 max-w-[420px] flex flex-col gap-3">
                   {/* To be added later */}
