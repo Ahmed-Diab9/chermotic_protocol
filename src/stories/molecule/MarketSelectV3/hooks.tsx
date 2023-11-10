@@ -16,8 +16,9 @@ import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { usePreviousOracles } from '~/hooks/usePreviousOracles';
 import { Bookmark } from '~/typings/market';
-import { formatDecimals } from '~/utils/number';
+import { decimalLength, formatDecimals, numberFormat } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
+import { usePythPrice } from '~/hooks/usePythPrice';
 
 export function useMarketSelectV3() {
   const liquidityFormatter = Intl.NumberFormat('en', {
@@ -120,12 +121,8 @@ export function useMarketSelectV3() {
     };
   });
 
-  const price = formatDecimals(
-    currentMarket?.oracleValue?.price || 0,
-    ORACLE_PROVIDER_DECIMALS,
-    3,
-    true
-  );
+  const pythInfo = usePythPrice(currentMarket?.description);
+  const price = numberFormat(pythInfo.price, { roundingMode: 'trunc', minDigits: 2, maxDigits: 2 });
   const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);

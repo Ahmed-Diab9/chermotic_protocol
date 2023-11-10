@@ -21,14 +21,12 @@
     "prebuild:testnet": "yarn codegen",
     "prebuild:mainnet": "yarn codegen",
     "prebuild": "yarn codegen",
-    "postinstall": "patch-package",
     "mswgen": "yarn msw init ./public"
   },
   "resolutions": {
     "@chromatic-protocol/sdk-viem/viem": "1.12.1"
   },
   "dependencies": {
-    "@chromatic-protocol/graphql-request": "^0.0.1-rc.4",
     "@chromatic-protocol/liquidity-provider-sdk": "^1.0.1-rc.30",
     "@chromatic-protocol/react-compound-charts": "^1.0.0",
     "@chromatic-protocol/sdk-viem": "^0.1.0-rc.164",
@@ -40,11 +38,10 @@
     "axios": "^1.5.0",
     "debug": "^4.3.4",
     "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
     "js-big-decimal": "^2.0.4",
     "memoize-one": "^6.0.0",
     "normalize.css": "^8.0.1",
-    "patch-package": "^8.0.0",
-    "postinstall-postinstall": "^2.1.0",
     "ramda": "^0.29.0",
     "re-resizable": "^6.9.11",
     "react": "^18.2.0",
