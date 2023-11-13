@@ -73,7 +73,7 @@ a {
     }
   }
   &.btn-line {
-    @apply border border-primary-lighter;
+    @apply border border-primary-lighter hover:border-primary-light;
   }
   &.btn-unstyled {
     @apply bg-transparent;
@@ -100,7 +100,7 @@ a {
   &.btn-wallet {
     @apply !h-[42px] p-[2px] justify-start border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
-    @apply dark:bg-paper/60 dark:text-primary;
+    @apply dark:bg-paper/60 dark:text-primary dark:hover:bg-paper;
     .avatar {
       @apply !w-[36px] !h-[36px];
     }
@@ -108,11 +108,16 @@ a {
   &.btn-translucent {
     @apply bg-gray-lighter/60 hover:bg-gray-light/60;
   }
+  &.btn-active-translucent {
+    @apply bg-primary/10 hover:bg-primary/20;
+  }
   &.btn-long {
     @apply bg-price-higher/10 border border-price-higher text-price-higher;
+    @apply hover:bg-price-higher/30;
   }
   &.btn-short {
     @apply bg-price-lower/10 border border-price-lower text-price-lower;
+    @apply hover:bg-price-lower/30;
   }
   &.btn-chrm {
     @apply bg-gradient-to-r from-price-higher to-price-lower text-inverted;
