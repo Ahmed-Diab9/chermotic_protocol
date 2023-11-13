@@ -224,7 +224,8 @@ export function PoolPanelV2() {
                         isLpLoading ||
                         isAssetsLoading ||
                         isEmpty(amounts.add) ||
-                        amounts.add === '0'
+                        amounts.add === '0' ||
+                        errorMessages.add !== undefined
                       }
                     />
                   </div>
@@ -336,7 +337,8 @@ export function PoolPanelV2() {
                                   isLpLoading ||
                                   isAssetsLoading ||
                                   isEmpty(amounts.remove) ||
-                                  amounts.remove === '0'
+                                  amounts.remove === '0' ||
+                                  errorMessages.remove !== undefined
                                 }
                               />
                             </div>
