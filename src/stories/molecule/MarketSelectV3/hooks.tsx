@@ -122,6 +122,7 @@ export function useMarketSelectV3() {
   });
 
   const pythInfo = usePythPrice(currentMarket?.description);
+  const isPriceLoading = isLoading || pythInfo.isLoading;
   const price = numberFormat(pythInfo.price, { roundingMode: 'trunc', minDigits: 2, maxDigits: 2 });
   const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
 
@@ -195,6 +196,7 @@ export function useMarketSelectV3() {
 
   return {
     isLoading,
+    isPriceLoading,
     tokenName,
     tokenImage,
     marketDescription,
