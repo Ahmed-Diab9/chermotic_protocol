@@ -183,40 +183,38 @@ export const usePositions = () => {
     }
   );
 
-  const fetchCurrentPositions = useCallback(async () => {
-    if (isLoading) {
-      return;
-    }
-    if (
-      isNil(positions) ||
-      isNil(accountAddress) ||
-      isNil(currentMarket) ||
-      isNil(currentToken) ||
-      isNil(accountAddress)
-    )
-      return positions;
+  const fetchCurrentPositions = useCallback(
+    async (marketAddress: Address) => {
+      if (isLoading) {
+        return;
+      }
+      if (isNil(positions) || isNil(accountAddress) || isNil(accountAddress)) return positions;
 
-    const filteredPositions = positions
-      ?.filter((p) => !!p)
-      .filter((position) => position.marketAddress !== currentMarket?.address);
+      const filteredPositions = positions
+        ?.filter((p) => !!p)
+        .filter((position) => position.marketAddress !== marketAddress);
 
-    const accountApi = client.account();
-    const positionApi = client.position();
-    const marketApi = client.market();
+      const accountApi = client.account();
+      const positionApi = client.position();
+      const marketApi = client.market();
+      const foundMarket = markets?.find((market) => market.address === marketAddress);
+      if (isNil(foundMarket)) {
+        return;
+      }
 
-    const newPositions = await getPositions(
-      accountApi,
-      positionApi,
-      marketApi,
-      [currentMarket],
-      accountAddress
-    );
-    const mergedPositions = [...filteredPositions, ...newPositions];
-    mergedPositions.sort((previous, next) =>
-      previous.openTimestamp < next.openTimestamp ? 1 : -1
-    );
-    await fetchPositions<Position[]>(mergedPositions, { revalidate: false });
-  }, [client, isLoading, currentToken, currentMarket, positions, accountAddress, fetchPositions]);
+      const newPositions = await getPositions(
+        accountApi,
+        positionApi,
+        marketApi,
+        [foundMarket],
+        accountAddress
+      );
+      const mergedPositions = [...filteredPositions, ...newPositions];
+      mergedPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
+      await fetchPositions<Position[]>(mergedPositions, { revalidate: false });
+    },
+    [client, isLoading, markets, positions, accountAddress, fetchPositions]
+  );
 
   const currentPositions = useMemo(() => {
     return positions?.filter(
