@@ -1219,10 +1219,10 @@
   resolved "https://registry.yarnpkg.com/@base2/pretty-print-object/-/pretty-print-object-1.0.1.tgz#371ba8be66d556812dc7fb169ebc3c08378f69d4"
   integrity sha512-4iri8i1AqYHJE2DstZYkyEprg6Pq6sKx3xn5FpySk9sNhH7qN2LLlHJCfDTZRILNwQNPD7mATWM0TBui7uC1pA==
 
-"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.32":
-  version "1.0.1-rc.32"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.32.tgz#bba288ab2b5835d73753ef0c42d86b4a4be23344"
-  integrity sha512-XFrN3Ov12xV8TD6q7bHDgz8cPdhgI5kYNaoeT+/Z9ZWYtbOZwappZw4hfg2h5k/9TWnaaBlfve+Fmc1ru1l81w==
+"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.33":
+  version "1.0.1-rc.33"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.33.tgz#1a00b9e95731a164e0b7eef132f4906c19476a45"
+  integrity sha512-jmxQW7bCvyxg4OBRE81JhbbJjuaZdILkrK78RoIfQO23i2W0sUhrvMfsf6l9YPofuthpASZOEhnBCfgOTu12Lw==
   dependencies:
     viem "^1.5.0"
 

@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'viem';
 import { useAddChromaticLp } from '~/hooks/useAddChromaticLp';
@@ -113,13 +113,16 @@ export function usePoolPanelV2() {
     return {
       add:
         amounts.add.length > 0 &&
-        parseUnits(amounts.add, currentToken.decimals) < selectedLp.minimalLiquidity,
-      remove: false,
+        parseUnits(amounts.add, currentToken.decimals) < selectedLp.minimalAdd,
+      remove:
+        amounts.remove.length > 0 &&
+        parseUnits(amounts.remove, currentToken.decimals) < selectedLp.minimalRemove,
     };
-  }, [currentToken, selectedLp, amounts.add]);
+  }, [currentToken, selectedLp, amounts]);
   const errorMessages = useMemo(() => {
-    const formattedMinimal = formatDecimals(
-      selectedLp?.minimalLiquidity,
+    const formattedMinimalAdd = formatDecimals(selectedLp?.minimalAdd, currentToken?.decimals, 3);
+    const formattedMinimalRemove = formatDecimals(
+      selectedLp?.minimalRemove,
       currentToken?.decimals,
       3
     );
@@ -127,13 +130,50 @@ export function usePoolPanelV2() {
       add: isExceededs.add
         ? 'Exceeded your wallet balance.'
         : isUnderMinimals.add
-        ? `Less than minimum betting amount. (${formattedMinimal} ${currentToken?.name})`
+        ? `Less than minimum betting amount. (${formattedMinimalAdd} ${currentToken?.name})`
         : undefined,
-      remove: isExceededs.remove ? 'Exceeded your CLP balance.' : undefined,
+      remove: isExceededs.remove
+        ? 'Exceeded your CLP balance.'
+        : isUnderMinimals.remove
+        ? // The warning message of minimal amount should be updated
+          `Should remove minimal amount at least. (${formattedMinimalRemove} ${currentToken?.name})`
+        : undefined,
     };
   }, [isExceededs, isUnderMinimals, selectedLp, currentToken]);
   const { onAddChromaticLp, isAddPending } = useAddChromaticLp();
   const { onRemoveChromaticLp, isRemovalPending } = useRemoveChromaticLp();
+
+  const isButtonDisableds = useMemo(() => {
+    const isAddDisabled =
+      isExceededs.add ||
+      isAddPending ||
+      isNil(selectedLp) ||
+      isAssetsLoading ||
+      isEmpty(amounts.add) ||
+      amounts.add === '0' ||
+      isUnderMinimals.add;
+    const isRemoveDisabled =
+      isExceededs.remove ||
+      isRemovalPending ||
+      isNil(selectedLp) ||
+      isAssetsLoading ||
+      isEmpty(amounts.remove) ||
+      amounts.remove === '0' ||
+      isUnderMinimals.remove;
+    return {
+      add: isAddDisabled,
+      remove: isRemoveDisabled,
+    };
+  }, [
+    selectedLp,
+    amounts,
+    isExceededs,
+    isUnderMinimals,
+    isAddPending,
+    isRemovalPending,
+    isAssetsLoading,
+  ]);
+
   const onAmountChange = (value: string) => {
     if (value.length === 0) {
       switch (selectedTab) {
@@ -199,6 +239,7 @@ export function usePoolPanelV2() {
     isExceededs,
     isUnderMinimals,
     errorMessages,
+    isButtonDisableds,
     amounts,
     maxAmounts,
     formattedBalances,

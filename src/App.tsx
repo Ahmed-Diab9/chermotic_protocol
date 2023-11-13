@@ -26,6 +26,7 @@ function App() {
         shouldRetryOnError: false,
         refreshWhenHidden: false,
         refreshWhenOffline: false,
+        revalidateOnFocus: false,
       }}
     >
       <Provider store={store}>
