@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { selectedMarketSelector, selectedTokenSelector } from '~/store/selector';
 import { Market } from '~/typings/market';
+import { trimMarket } from '~/utils/market';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
@@ -104,7 +105,7 @@ export const useMarket = (_interval?: number) => {
 
   const clbTokenFetchKey = {
     name: 'getClbToken',
-    currentMarket: currentMarket,
+    currentMarket: trimMarket(currentMarket),
   };
 
   const { data: clbTokenAddress, error } = useSWR(
