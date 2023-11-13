@@ -34,6 +34,7 @@ export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
                 label="How to connect your wallet to Zealy linked account"
                 iconRight={<OutlinkIcon />}
                 css="underlined"
+                size="lg"
                 onClick={onClick}
               />
             </article>
