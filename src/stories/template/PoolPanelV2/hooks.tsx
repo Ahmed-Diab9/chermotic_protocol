@@ -135,7 +135,8 @@ export function usePoolPanelV2() {
       remove: isExceededs.remove
         ? 'Exceeded your CLP balance.'
         : isUnderMinimals.remove
-        ? `Should remove minimal amount at least. (${formattedMinimalRemove} ${currentToken?.name})`
+        ? // The warning message of minimal amount should be updated
+          `Should remove minimal amount at least. (${formattedMinimalRemove} ${currentToken?.name})`
         : undefined,
     };
   }, [isExceededs, isUnderMinimals, selectedLp, currentToken]);
