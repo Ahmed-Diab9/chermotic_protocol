@@ -25,7 +25,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             open one random box.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
                 You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
@@ -54,7 +54,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
                 You can earn Boosters participating in Trading Competitions, or completing special
@@ -83,7 +83,7 @@ const ArrowInfo = (props: ArrowInfoProps) => {
     return (
       <Link
         to={to}
-        className="flex items-center gap-1 text-primary-light hover:underline"
+        className="flex items-center gap-1 text-primary-light hover:underline whitespace-nowrap"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -93,7 +93,7 @@ const ArrowInfo = (props: ArrowInfoProps) => {
     );
   else
     return (
-      <p className="flex items-center gap-1 text-primary-light">
+      <p className="flex items-center gap-1 text-primary-light whitespace-nowrap">
         <ArrowLongRightIcon className="w-4" />
         <span>{label}</span>
       </p>

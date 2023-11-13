@@ -115,7 +115,7 @@ function Airdrop() {
                                 <Button
                                   label="Convert XP to Credit"
                                   // TODO: show icon when loading
-                                  iconRight={<Loading />}
+                                  iconLeft={<Loading />}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"
@@ -128,12 +128,20 @@ function Airdrop() {
                             </div>
                             <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
                               <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
-                              <p className="text-left text-price-lower">
-                                In order to automatically convert XP earned by completing quests in
-                                Zealy into credits for Chromatic Airdrop, <br />
-                                you must connect your wallet at Zealy Profile {'>'} Linked account.
-                              </p>
-                              <div className="pl-8 ml-auto border-l">
+                              <div className="text-left">
+                                <p className="text-left text-price-lower">
+                                  In order to automatically convert XP earned by completing quests
+                                  in Zealy into credits for Chromatic Airdrop, <br />
+                                  you must connect your wallet at Zealy Profile {'>'} Linked
+                                  account.
+                                </p>
+                                <Button
+                                  label="How to connect your wallet to Zealy linked account"
+                                  css="underlined"
+                                  className="mt-2"
+                                />
+                              </div>
+                              <div className="flex flex-col pl-8 ml-auto border-l">
                                 <Button
                                   label="My Zealy Profile"
                                   iconRight={<ChevronRightIcon />}
