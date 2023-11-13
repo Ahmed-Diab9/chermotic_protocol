@@ -31,7 +31,7 @@ function TradeV3() {
       <div className="page-container">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <main className="!max-w-none">
+        <main className="!max-w-none !min-w-[1480px]">
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-5">
               <div className="pb-2">

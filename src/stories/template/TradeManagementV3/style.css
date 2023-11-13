@@ -1,5 +1,5 @@
 .TradeManagementV3 {
-  @apply min-w-[890px];
+  @apply min-w-[700px];
   .wrapper-tabs {
     .tabs-panels {
       @apply w-full;
@@ -63,7 +63,7 @@
           flex: 0 0 58px;
         }
         &.td-pnl {
-          flex: 0 0 108px;
+          flex: 0 0 10%;
         }
       }
     }
