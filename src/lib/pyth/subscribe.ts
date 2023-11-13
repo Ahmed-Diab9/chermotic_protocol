@@ -10,7 +10,7 @@ export async function subscribePythFeed() {
 
   async function startStreaming(
     next: (props: PythStreamData) => void,
-    retries = 10,
+    retries = 30,
     delay = RETRY_DELAY
   ) {
     try {
@@ -30,8 +30,6 @@ export async function subscribePythFeed() {
           .then(({ value, done }) => {
             if (done) return;
 
-            // FIXME: @jaycho-46 handle uncompleted lines
-            // Assuming the streaming data is separated by line breaks
             const dataStrings = new TextDecoder().decode(value).split('\n');
             dataStrings.forEach((dataString) => {
               const trimmedDataString = dataString.trim();
@@ -40,14 +38,15 @@ export async function subscribePythFeed() {
                   const streamData: PythStreamData = JSON.parse(dataString);
                   next(streamData);
                 } catch (e: any) {
-                  // console.error('Error parsing JSON:', e.message);
+                  // FIXME: @jaycho-46 handle uncompleted lines
+                  // Assuming the streaming data is separated by line breaks
+                  // console.error('[stream] Error parsing JSON:', e.message);
                 }
               }
             });
             streamData();
           })
-          .catch((error) => {
-            console.error('[stream] Error reading from stream:', error);
+          .catch(() => {
             attemptReconnect(retries, delay);
           });
       }
@@ -66,7 +65,6 @@ export async function subscribePythFeed() {
 
     function attemptReconnect(retriesLeft: number, delay: number) {
       if (retriesLeft > 0) {
-        console.log(`[stream] Attempting to reconnect in ${delay}ms...`);
         setTimeout(async () => {
           unsubscriber = await startStreaming(next, retriesLeft - 1, delay);
         }, delay);
