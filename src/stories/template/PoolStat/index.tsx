@@ -19,7 +19,7 @@ export const PoolStat = (props: PoolStatProps) => {
           <div className="flex items-center gap-2">
             <AssetManagementIcon className="w-6" />
             <div className="flex text-left">
-              <h5 className="text-xl">AUM</h5>
+              <h5 className="text-lg">AUM</h5>
               <TooltipGuide
                 label="aum"
                 tip="Asset under Management. Total amount of liquidity provided to this Liquidity Pool"
@@ -37,7 +37,7 @@ export const PoolStat = (props: PoolStatProps) => {
           <div className="flex items-center gap-2">
             <ClpSupplyIcon className="w-6" />
             <div className="flex">
-              <h5 className="text-xl">CLP supply</h5>
+              <h5 className="text-lg">CLP supply</h5>
               <TooltipGuide label="clp-supply" tip="The amount of CLP in circulation" outLink="" />
             </div>
           </div>
@@ -52,7 +52,7 @@ export const PoolStat = (props: PoolStatProps) => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex">
-              <h5 className="text-xl">Pool Utilization</h5>
+              <h5 className="text-lg">Pool Utilization</h5>
               <TooltipGuide
                 label="pool-utilization"
                 tip="Liquidity provided in liquidity bins / Total liquidity managed by the pool"
