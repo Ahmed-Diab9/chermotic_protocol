@@ -38,7 +38,7 @@ export function useClaimPosition(props: Props) {
       const routerApi = client.router();
       await routerApi.claimPosition(market?.address, position.id);
 
-      await fetchCurrentPositions();
+      await fetchCurrentPositions(position.marketAddress);
       await fetchBalances();
       toast('The claiming process has been completed.');
     } catch (error) {

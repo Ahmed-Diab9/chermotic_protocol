@@ -6,7 +6,7 @@ import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { useMarket } from '~/hooks/useMarket';
+import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -15,12 +15,15 @@ import { useTradeLogs } from '~/hooks/useTradeLogs';
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
 import { formatTimestamp } from '~/utils/date';
+import { compareMarkets } from '~/utils/market';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
 export function useTradeManagementV3() {
   const { currentMarket } = useMarket();
-  const { positions, isLoading, fetchPositions, fetchCurrentPositions } = usePositions();
+  const { markets } = useEntireMarkets();
+  const previousMarkets = usePrevious(markets);
+  const { positions, isLoading, fetchPositions } = usePositions();
   const {
     historyData,
     isLoading: isHistoryLoading,
@@ -35,7 +38,7 @@ export function useTradeManagementV3() {
   } = useTradeLogs();
   const { initialBlockNumber } = useInitialBlockNumber();
   const { fetchBalances } = useChromaticAccount();
-  const previousOracle = usePrevious(currentMarket?.oracleValue.version);
+
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
   );
@@ -44,28 +47,29 @@ export function useTradeManagementV3() {
   );
 
   useEffect(() => {
-    if (isNil(previousOracle) || isNil(currentMarket)) {
+    if (isNil(previousMarkets) || isNil(markets)) {
       return;
     }
-    if (previousOracle !== currentMarket.oracleValue.version) {
+    const isVersionUpdated = compareMarkets(previousMarkets, markets);
+    if (isVersionUpdated) {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
-        fetchCurrentPositions();
+        fetchPositions();
         fetchBalances();
       }
       if (isNotNil(closingPositionSize) && closingPositionSize > 0) {
         toast.info('The closing process has been completed.');
-        fetchCurrentPositions();
+        fetchPositions();
         fetchBalances();
       }
     }
   }, [
-    currentMarket,
-    previousOracle,
+    markets,
+    previousMarkets,
     openingPositionSize,
     closingPositionSize,
     fetchBalances,
-    fetchCurrentPositions,
+    fetchPositions,
   ]);
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
