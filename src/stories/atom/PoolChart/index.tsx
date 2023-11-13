@@ -24,7 +24,7 @@ export function PoolChart(props: PoolChartProps) {
       <LiquidityTooltip {...tooltipProps} tokenName={tokenName} />
       <div id={id} className="flex items-center justify-center h-[180px]">
         {isLoading ? (
-          <img src={LOADING} className="w-10 animate-spin" alt="" />
+          <img src={LOADING} className="w-10 animate-spin" alt="loading..." />
         ) : (
           <Chart {...rangeChartProps} />
         )}
