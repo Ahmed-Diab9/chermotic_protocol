@@ -12,14 +12,6 @@
         @apply w-[10%] h-8 min-w-[120px];
       }
     }
-    [role='tablist'] {
-      [aria-selected='true'] {
-        @apply bg-inverted-lighter;
-      }
-      [aria-selected='false'] {
-        @apply bg-transparent border-b-0;
-      }
-    }
   }
   .wrapper-inner {
     @apply w-full overflow-x-hidden;

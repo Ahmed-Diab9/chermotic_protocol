@@ -12,7 +12,10 @@
   }
   &:disabled {
     @apply cursor-not-allowed;
-    @apply bg-gray-light border-transparent text-primary/20;
+    @apply border-transparent text-primary/20;
+    &:not(.btn-unstyled):not(.btn-underlined) {
+      @apply bg-gray-light;
+    }
   }
   &.toggle-on {
     @apply border border-primary text-primary;
