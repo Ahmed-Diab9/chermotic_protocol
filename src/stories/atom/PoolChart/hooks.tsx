@@ -27,6 +27,7 @@ export function usePoolChart({
       dotData: isDotVisible ? clbTokenValues : [],
       trackConfig: RANGE_CONFIG,
       labels: RANGE_TICKS,
+      labelSuffix: '%',
       onChangeCallback: onChange,
       height: height,
       width: width,

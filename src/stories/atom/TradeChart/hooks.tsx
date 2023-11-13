@@ -27,6 +27,7 @@ export function useTradeChart(props: UseTradeChartProps) {
     data: liquidity,
     trackConfig: trackConfig,
     labels: labels,
+    labelSuffix: '%',
     selectedAmount: selectedAmount,
     reverse: isNegative,
     height: height,

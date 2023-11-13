@@ -1226,10 +1226,10 @@
   dependencies:
     viem "^1.5.0"
 
-"@chromatic-protocol/react-compound-charts@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/react-compound-charts/-/react-compound-charts-1.0.0.tgz#bc5313e9c51c8a37622954725e531021ce225f4d"
-  integrity sha512-QhcKpZzVobcyzVgxpuV99UBvYLTrq3ntNpG3+8QOkBhXI1GBiE29M3gN0+758TJ5umm8roRNnFF6I0QC2BESnw==
+"@chromatic-protocol/react-compound-charts@^1.0.1-rc.1":
+  version "1.0.1-rc.1"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/react-compound-charts/-/react-compound-charts-1.0.1-rc.1.tgz#7432db01092f246fedcc59e96336f19dd6784f6c"
+  integrity sha512-404N0waB4QYJNM2IRW5MxZybtEiQoDv60hiFt2qCEsb9MROHDdVKNSdcSKy6tNpVDqHnXmi7N6F71RL7r70sdA==
   dependencies:
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
