@@ -25,7 +25,7 @@ export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
           <Dialog.Description className="gap-5 modal-content">
             <article className="text-center">
               <h4 className="text-2xl">Please connect your wallet to Zealy account.</h4>
-              <p className="mt-4 mb-6 text-primary-light">
+              <p className="mt-3 mb-6 text-primary-light">
                 In order to convert XP earned by completing quests in Zealy into credits for
                 Chromatic Airdrop, you must connect your wallet at Zealy Profile {'>'} Linked
                 account.
