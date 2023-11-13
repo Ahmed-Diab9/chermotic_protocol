@@ -2,7 +2,7 @@ import { RangeChart as Chart, RangeChartData } from '@chromatic-protocol/react-c
 import './style.css';
 
 import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
-import { SkeletonElement } from '../SkeletonElement';
+import LOADING from '~/assets/images/loading.png';
 import { usePoolChart } from './hooks';
 
 export interface PoolChartProps {
@@ -22,15 +22,12 @@ export function PoolChart(props: PoolChartProps) {
   return (
     <>
       <LiquidityTooltip {...tooltipProps} tokenName={tokenName} />
-      <div id={id} style={{ display: 'flex', justifyContent: 'center' }}>
-        <SkeletonElement
-          isLoading={isLoading}
-          className="my-[6px] h-[13px]"
-          containerClassName="px-7 w-full "
-          count={8}
-        >
+      <div id={id} className="flex items-center justify-center">
+        {isLoading ? (
+          <img src={LOADING} className="w-10 animate-spin" alt="" />
+        ) : (
           <Chart {...rangeChartProps} />
-        </SkeletonElement>
+        )}
       </div>
     </>
   );
