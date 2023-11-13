@@ -79,13 +79,13 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
   const isAssetReady = useMemo(() => {
     switch (location.pathname) {
       case '/trade': {
-        return isPositionsReady;
+        return true;
       }
       case '/pool': {
         return isLpReady;
       }
     }
-  }, [location.pathname, isLpReady, isPositionsReady]);
+  }, [location.pathname, isLpReady]);
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
@@ -102,6 +102,8 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
     isAssetReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
+
+      debugger;
 
       const pool = await getLiquidityPool(lensApi, marketAddress, tokenAddress);
 
