@@ -18,8 +18,11 @@ export const useAirdropSync = () => {
         address,
       });
       if (isNotNil((response.data as SyncZealy).synced_count)) {
-        return;
+        
       } else {
+        if (response.data.message === 'WALLET_NOT_LINKED_TO_ZEALY') {
+          //TODO show popup
+        }
         throw new Error('Error found in sync');
       }
     }

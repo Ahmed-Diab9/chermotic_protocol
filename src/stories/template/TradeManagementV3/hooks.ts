@@ -20,9 +20,19 @@ import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
 export function useTradeManagementV3() {
   const { currentMarket } = useMarket();
-  const { positions, isLoading, fetchCurrentPositions } = usePositions();
-  const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
-  const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
+  const { positions, isLoading, fetchPositions, fetchCurrentPositions } = usePositions();
+  const {
+    historyData,
+    isLoading: isHistoryLoading,
+    onFetchNextHistory,
+    refreshTradeHistory,
+  } = useTradeHistory();
+  const {
+    tradesData,
+    isLoading: isTradeLogsLoading,
+    onFetchNextTrade,
+    refreshTradeLogs,
+  } = useTradeLogs();
   const { initialBlockNumber } = useInitialBlockNumber();
   const { fetchBalances } = useChromaticAccount();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
@@ -60,6 +70,10 @@ export function useTradeManagementV3() {
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const tabRef = useRef<number>(0);
+  const onLoadTabRef = useCallback((index: number) => {
+    tabRef.current = index;
+  }, []);
   const [isGuideVisible, setGuideVisible] = useState(false);
 
   const historyBottomRef = useRef<HTMLDivElement | null>(null);
@@ -214,6 +228,22 @@ export function useTradeManagementV3() {
   const onLoadTradesRef = useCallback((element: HTMLDivElement | null) => {
     tradeBottomRef.current = element;
   }, []);
+  const onRefreshList = useCallback(async () => {
+    switch (tabRef.current) {
+      case 0: {
+        await fetchPositions();
+        break;
+      }
+      case 1: {
+        await refreshTradeHistory();
+        break;
+      }
+      case 2: {
+        await refreshTradeLogs();
+        break;
+      }
+    }
+  }, [fetchPositions, refreshTradeHistory, refreshTradeLogs]);
 
   return {
     openButtonRef,
@@ -241,5 +271,7 @@ export function useTradeManagementV3() {
     onFetchNextHistory,
     onLoadHistoryRef,
     onLoadTradesRef,
+    onLoadTabRef,
+    onRefreshList,
   };
 }

@@ -2,6 +2,7 @@ import type { ChromaticLens } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
@@ -71,8 +72,20 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
   const currentMarketAddress = marketAddress || currentMarket?.address;
   const currentTokenAddress = tokenAddress || currentToken?.address;
   const isPositionsReady = useAppSelector(isPositionsReadySelector);
+  const isLpReady = useAppSelector(isLpReadySelector);
   const previousMarketAddress = usePrevious(currentMarketAddress);
   const { isReady, client } = useChromaticClient();
+  const location = useLocation();
+  const isAssetReady = useMemo(() => {
+    switch (location.pathname) {
+      case '/trade': {
+        return isPositionsReady;
+      }
+      case '/pool': {
+        return isLpReady;
+      }
+    }
+  }, [location.pathname, isLpReady, isPositionsReady]);
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
@@ -86,7 +99,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
     isLoading,
     error,
   } = useSWR(
-    isPositionsReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    isAssetReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
 

@@ -81,6 +81,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
     stopLossPrice,
 
     onOpenPosition,
+    isOpenPending,
   } = useTradeContentV3(props);
 
   return (
@@ -290,7 +291,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               size="2xl"
               className="w-full !font-bold"
               css={isLong ? 'long' : 'short'}
-              disabled={disabled}
+              disabled={disabled || isBalanceLoading || isOpenPending}
               onClick={onOpenPosition}
             />
           </div>

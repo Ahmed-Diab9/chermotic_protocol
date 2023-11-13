@@ -39,7 +39,7 @@ export const useAddChromaticLp = () => {
 
       dispatchLpEvent();
       dispatchLpReceiptEvent();
-      toast('Add completed.');
+      toast('Add process started.');
       setIsAddPending(false);
     } catch (error) {
       setIsAddPending(false);

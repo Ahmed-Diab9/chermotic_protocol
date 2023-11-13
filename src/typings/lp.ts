@@ -23,6 +23,9 @@ export interface ChromaticLp {
   clpName: string;
   clpSymbol: string;
   clpDecimals: number;
+
+  bins: bigint[];
+  binIds: bigint[];
 }
 
 export interface LpReceipt {

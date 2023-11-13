@@ -73,19 +73,19 @@ export function PositionItemV2(props: PositionItemV2Props) {
         </div>
       </div>
       {isOpening && (
-        <div className="gap-2 td">
-          <Loading size="sm" />
-          <div className="flex text-sm text-primary">
-            Waiting for the next oracle round
+        <div className="td">
+          <div className="flex items-center text-sm text-primary gap-[6px]">
+            <Loading size="sm" />
+            <p>Waiting for the next oracle round</p>
             <TooltipGuide iconOnly label="opening-in-progress" />
           </div>
         </div>
       )}
       {isClosing && (
-        <div className="gap-2 td">
-          <Loading size="sm" />
-          <div className="flex text-sm text-primary">
-            Closing in progress
+        <div className="td">
+          <div className="flex items-center text-sm text-primary gap-[6px]">
+            <Loading size="sm" />
+            <p>Closing in progress</p>
             <TooltipGuide iconOnly label="closing-in-progress" />
           </div>
         </div>
