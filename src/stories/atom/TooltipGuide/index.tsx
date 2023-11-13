@@ -61,7 +61,7 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
           // isOpen
           // events={["click"]}
         >
-          <span className={`tooltip-${size}`}>
+          <span className={`tooltip-${size} inline-flex flex-col`}>
             <span className="text-sm font-medium text-inverted">{tip}</span>
             {outLink && (
               <Outlink
