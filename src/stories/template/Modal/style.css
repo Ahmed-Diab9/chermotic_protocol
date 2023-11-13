@@ -7,7 +7,7 @@
     @apply flex flex-col mt-5 mb-7;
   }
   .modal-button {
-    @apply flex justify-stretch;
+    @apply flex justify-stretch gap-3;
     button {
       @apply flex-auto;
     }
