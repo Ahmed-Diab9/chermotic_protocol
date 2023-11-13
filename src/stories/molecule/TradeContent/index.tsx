@@ -2,12 +2,12 @@ import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
 import { Listbox, Switch } from '@headlessui/react';
-import { TradeChart } from '~/stories/atom/TradeChart';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
@@ -113,12 +113,13 @@ export const TradeContent = (props: TradeContentProps) => {
               disableDetail={disableDetail}
               tokenName={tokenName}
               minAmount={minAmount}
+              maxAmount={balance}
               onAmountChange={onAmountChange}
             />
           </div>
         </div>
       </article>
-      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-lighter dark:bg-[#29292D]">
+      <section className="mx-[-40px] px-10 pt-5 pb-5 border-y bg-paper-light dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">

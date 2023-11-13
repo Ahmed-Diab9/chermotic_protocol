@@ -1,4 +1,4 @@
-import CheckIcon from '~/assets/icons/CheckIcon';
+import { CheckIcon } from '~/assets/icons/Icon';
 
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -9,8 +9,6 @@ import { TextRow } from '~/stories/atom/TextRow';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { Position } from '~/typings/position';
-
-import { comparePrices } from '~/utils/price';
 
 import { usePositionItem } from './hooks';
 
@@ -46,8 +44,9 @@ export function PositionItem(props: PositionItemProps) {
     isClosed,
 
     tokenName,
+    tokenImage,
     marketDescription,
-
+    marketImage,
     tpPriceClass,
     slPriceClass,
     pnlClass,
@@ -55,13 +54,20 @@ export function PositionItem(props: PositionItemProps) {
 
   return (
     <div className="mb-3 overflow-hidden border dark:border-transparent bg-paper rounded-xl">
-      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-lighter dark:bg-paper">
+      <div className="flex items-center gap-6 px-5 py-3 border-b bg-paper-light dark:bg-paper">
         <div className={`flex flex-auto items-center gap-6 ${isOpening ? 'opacity-30' : ''}`}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
               <SkeletonElement isLoading={isLoading} width={40}>
-                <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+                <Avatar
+                  label={tokenName}
+                  src={tokenImage}
+                  size="xs"
+                  gap="1"
+                  fontSize="base"
+                  fontWeight="bold"
+                />
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1">
@@ -69,6 +75,7 @@ export function PositionItem(props: PositionItemProps) {
               <SkeletonElement isLoading={isLoading} width={40}>
                 <Avatar
                   label={marketDescription}
+                  src={marketImage}
                   size="xs"
                   gap="1"
                   fontSize="base"
@@ -134,7 +141,7 @@ export function PositionItem(props: PositionItemProps) {
           )}
         </div>
       </div>
-      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-[#29292D]">
+      <div className="flex items-stretch justify-between gap-6 px-5 py-4 dark:bg-inverted-lighter">
         <div
           className={`flex flex-auto items-stretch justify-between gap-6 ${
             isOpening ? 'opacity-30' : ''

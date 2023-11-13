@@ -29,7 +29,7 @@ export function SliderRail({ getRailProps }: { getRailProps: GetRailProps }) {
       <div style={railOuterStyle} {...getRailProps()} />
       <div
         style={railInnerStyle}
-        className="bg-paper border-gray-light dark:border-transparent dark:bg-gray-light"
+        className="bg-paper border-gray-light dark:border-transparent dark:bg-gray-lighter"
       />
     </Fragment>
   );

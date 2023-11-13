@@ -25,21 +25,40 @@ export const formatDecimals = (
   value?: bigint | number | string,
   tokenDecimals?: number,
   decimalLimit?: number,
-  useGrouping?: boolean
+  useGrouping?: boolean,
+  roundingMode?: 'ceil' | 'floor' | 'trunc'
 ) => {
   const formatter = Intl.NumberFormat('en', {
     maximumFractionDigits: decimalLimit,
     minimumFractionDigits: decimalLimit,
     useGrouping: useGrouping || false,
+    roundingMode,
   });
-  let numberValue = Number(value);
-  if (isNaN(numberValue)) return '0';
-  if (!Number.isInteger(numberValue)) {
-    console.warn('The value is not Integer', value);
-    numberValue = Math.floor(numberValue);
+  const numericFormatter = Intl.NumberFormat('en', {
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    useGrouping: useGrouping || false,
+    roundingMode,
+  });
+  switch (typeof value) {
+    case 'number': {
+      const numeric = formatUnits(BigInt(value), tokenDecimals ?? 0);
+      return formatter.format(Number(numeric));
+    }
+    case 'string': {
+      const numeric = formatUnits(BigInt(value), tokenDecimals ?? 0);
+      return formatter.format(Number(numeric));
+    }
+    case 'bigint': {
+      const formatted = formatUnits(value, tokenDecimals ?? 0);
+      const [numeric, decimals = ''] = formatted.split('.');
+      const trimmedDecimals = decimals.slice(0, decimalLimit).padEnd(2, '0');
+      return `${numericFormatter.format(Number(numeric))}.${trimmedDecimals}`;
+    }
+    case 'undefined': {
+      return '0';
+    }
   }
-  const valueWithTokenDecimals = formatUnits(BigInt(numberValue), tokenDecimals ?? 0);
-  return formatter.format(Number(valueWithTokenDecimals));
 };
 
 export const numberFormat = <T extends string | number | bigint, U extends 'string' | 'number'>(
@@ -213,4 +232,32 @@ export const isNotZero = (value: number | string | undefined) => {
     return false;
   }
   return Number(value) !== 0;
+};
+
+type BigIntified<
+  R extends Record<string, unknown>,
+  K extends keyof R,
+  Ks extends [K, ...K[]]
+> = Ks extends []
+  ? never
+  : {
+      [Key in keyof R]: Key extends Ks[number] ? bigint : R[Key];
+    };
+
+export const bigintify = <
+  R extends Record<string, unknown>,
+  K extends keyof R,
+  Ks extends [K, ...K[]]
+>(
+  obj: R,
+  ...keys: Ks
+): BigIntified<R, K, Ks> => {
+  for (let index = 0; index < keys.length; index++) {
+    const key = keys[index];
+    const value = obj[key];
+    if (typeof value === 'string') {
+      (obj[key] as bigint) = BigInt(value);
+    }
+  }
+  return obj as BigIntified<R, K, Ks>;
 };

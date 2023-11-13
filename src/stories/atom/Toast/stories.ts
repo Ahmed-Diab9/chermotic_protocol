@@ -17,6 +17,19 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    message: 'this is toast',
+    message: 'message',
+    showTest: true,
+  },
+};
+
+export const Testnet: Story = {
+  args: {
+    title: 'Introducing Chromatic Testnet',
+    titleClass: 'text-chrm',
+    message:
+      'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
+    showLogo: true,
+    autoclose: false,
+    showTest: true,
   },
 };

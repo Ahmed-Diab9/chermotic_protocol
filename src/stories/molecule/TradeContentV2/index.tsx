@@ -8,6 +8,7 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { Tag } from '~/stories/atom/Tag';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
@@ -83,7 +84,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
   } = useTradeContentV2(props);
 
   return (
-    <div className="px-5 w-full max-w-[480px]">
+    <div className="w-full px-5">
       <article className="pt-8 pb-5 border-gray-lighter">
         <div className="flex items-center gap-2">
           <h4>Available Balance</h4>
@@ -116,20 +117,18 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
               disableDetail={disableDetail}
               tokenName={tokenName}
               minAmount={minAmount}
+              maxAmount={balance}
               onAmountChange={onAmountChange}
             />
           </div>
         </div>
       </article>
-      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-lighter dark:bg-[#29292D]">
+      <section className="mx-[-20px] px-5 pt-5 pb-4 border-y bg-paper-light dark:bg-inverted-lighter">
         <article>
           <div className="flex justify-between mb-4">
             <div className="flex items-center gap-2">
               <h4>Leverage</h4>
-              <Tag
-                label={`Up to ${maxLeverage}x`}
-                className="normal-case bg-[#13DED3]/10 text-[#13DED3]"
-              />
+              <Tag label={`Up to ${maxLeverage}x`} className="normal-case tag-leverage" />
             </div>
             <Switch.Group>
               <div className="toggle-wrapper">
@@ -177,7 +176,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <article className="flex-auto pr-5">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <h4>Take Profit</h4>
+                <h4 className="text-left">Take Profit</h4>
               </div>
               <div className="w-20">
                 <Input
@@ -205,7 +204,7 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
           <article className="flex-auto h-20 pl-5 border-l">
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <h4>Stop Loss</h4>
+                <h4 className="text-left">Stop Loss</h4>
               </div>
               <div className="w-20">
                 <Input
@@ -233,6 +232,24 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
         </div>
       </section>
       <section>
+        <div className="relative -mx-5 border-b">
+          <TradeChart
+            id={`trade-${direction}`}
+            positive={isLong}
+            height={140}
+            selectedAmount={makerMargin}
+          />
+          <div
+            className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
+              isLong ? 'items-end right-0' : 'items-start left-0'
+            }`}
+          >
+            <p className="text-black3">LP Volume</p>
+            <p>
+              {totalLiquididy} / {freeLiquidity}
+            </p>
+          </div>
+        </div>
         <article className="">
           <div className="flex flex-col gap-1 mt-5 border-gray-light">
             <div className="flex justify-between">
@@ -277,48 +294,54 @@ export const TradeContentV2 = (props: TradeContentV2Props) => {
             />
           </div>
 
-          <div className="flex flex-col gap-2 px-5 pt-4 mt-4 pb-5 -mx-5 border-t border-dashed border-gray-light  bg-paper-lighter dark:bg-[#29292D]">
-            <div className="flex justify-between">
-              <div className="flex">
-                <p>EST. Execution Price</p>
-                <TooltipGuide
-                  label="execution-price"
-                  tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
-                  outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
-                  outLinkAbout="Next Oracle Round"
-                />
+          <div className="px-5 pt-4 pb-5 mt-4 -mx-5 border-t border-dashed bg-paper-light dark:bg-inverted-lighter">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between">
+                <div className="flex">
+                  <p>EST. Execution Price</p>
+                  <TooltipGuide
+                    label="execution-price"
+                    tip="The displayed price reflects the current oracle price, and the actual transactions are executed at the price of the next oracle round."
+                    outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
+                    outLinkAbout="Next Oracle Round"
+                  />
+                </div>
+                <p>$ {executionPrice}</p>
               </div>
-              <p>$ {executionPrice}</p>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Take Profit Price</p>
+              <div className="flex justify-between">
+                <div className="flex items-center gap-2">
+                  <p>EST. Take Profit Price</p>
+                </div>
+                <p>
+                  $ {takeProfitPrice}
+                  <span
+                    className={`ml-2 text-primary-lighter ${
+                      takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
+                    } ${
+                      takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''
+                    }`}
+                  >
+                    ({takeProfitRatio}%)
+                  </span>
+                </p>
               </div>
-              <p>
-                $ {takeProfitPrice}
-                <span
-                  className={`ml-2 text-primary-lighter ${
-                    takeProfitRatio !== '-' && direction === 'long' ? '!text-price-higher' : ''
-                  } ${takeProfitRatio !== '-' && direction === 'short' ? '!text-price-lower' : ''}`}
-                >
-                  ({takeProfitRatio}%)
-                </span>
-              </p>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <p>EST. Stop Loss Price</p>
+              <div className="flex justify-between">
+                <div className="flex items-center gap-2">
+                  <p>EST. Stop Loss Price</p>
+                </div>
+                <p>
+                  $ {stopLossPrice}
+                  <span
+                    className={`ml-2 text-primary-lighter ${
+                      stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
+                    } ${
+                      stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''
+                    }`}
+                  >
+                    ({stopLossRatio}%)
+                  </span>
+                </p>
               </div>
-              <p>
-                $ {stopLossPrice}
-                <span
-                  className={`ml-2 text-primary-lighter ${
-                    stopLossRatio !== '-' && direction === 'long' ? '!text-price-lower' : ''
-                  } ${stopLossRatio !== '-' && direction === 'short' ? '!text-price-higher' : ''}`}
-                >
-                  ({stopLossRatio}%)
-                </span>
-              </p>
             </div>
           </div>
         </article>

@@ -1,8 +1,13 @@
 import { isNil } from 'ramda';
 import { useMemo } from 'react';
-import { usePublicClient } from 'wagmi';
+import { Address, usePublicClient } from 'wagmi';
 
-export const useBlockExplorer = () => {
+interface UseBlockExplorer {
+  path?: string;
+  address?: Address;
+}
+
+export const useBlockExplorer = (props?: UseBlockExplorer) => {
   const publicClient = usePublicClient();
   const blockExplorer = useMemo(() => {
     try {
@@ -15,6 +20,13 @@ export const useBlockExplorer = () => {
       return;
     }
   }, [publicClient]);
+  const explorerUrl = useMemo(() => {
+    if (isNil(props)) {
+      return blockExplorer;
+    }
+    const { path, address } = props;
+    return `${blockExplorer}/${path}/${address}`;
+  }, [blockExplorer, props]);
 
-  return blockExplorer;
+  return explorerUrl;
 };

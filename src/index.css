@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;600;700;800&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;600;700;800;900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import url('react-loading-skeleton/dist/skeleton.css');
 @import-normalize;
 
@@ -23,8 +25,8 @@
     --color-gray-darker: 51 51 51; /* #333333 */
 
     --color-paper: 255 255 255; /* #ffffff */
-    --color-paper-light: 252 252 252; /* #fcfcfc */
-    --color-paper-dark: 21 21 21; /* #151515 */
+    --color-paper-lightest: 252 252 252; /* #fcfcfc */
+    --color-paper-darkest: 21 21 21; /* #151515 */
     --alpha-paper-light: 0.2;
     --alpha-paper-dark: 0.2;
 
@@ -37,6 +39,7 @@
     --color-error: 255 50 50; /* #FF3232 */
     --color-error-light: 253 212 212; /* #FDD4D4 */
 
+    --color-leverage: 85 242 234;
     --color-price-higher: 101 206 18;
     --color-price-lower: 255 79 68;
     --color-status-standby: 255 152 32;
@@ -45,6 +48,9 @@
     --color-status-completed-light: 35 248 95;
     --color-status-inprogress: 19 210 199;
     --color-status-inprogress-light: 30 252 239;
+    --color-risk-high: 255 118 38;
+    --color-risk-mid: 60 242 232;
+    --color-risk-low: 166 216 91;
 
     --color-shadow-base: rgba(121, 121, 121, 0.08);
     --color-shadow-md: rgba(229, 229, 229, 0.16);
@@ -64,14 +70,14 @@
     --alpha-inverted-lighter: 0.3;
 
     --color-gray: 93 93 105; /* #616161 */
-    --color-gray-light: 74 74 82;
-    --color-gray-lighter: 74 74 88;
+    --color-gray-light: 74 74 84;
+    --color-gray-lighter: 51 51 58;
     --color-gray-dark: 115 115 125;
     --color-gray-darker: 238 238 242; /* #eeeeee */
 
-    --color-paper: 46 46 50;
-    --color-paper-light: 31 31 33;
-    --color-paper-dark: 252 252 254; /* #fcfcfc */
+    --color-paper: 35 35 39;
+    --color-paper-lightest: 25 25 27;
+    --color-paper-darkest: 252 252 254; /* #fcfcfc */
     --alpha-paper-light: 0.4;
     --alpha-paper-dark: 0.2;
 
@@ -83,6 +89,9 @@
     --color-status-completed-light: 35 248 95;
     --color-status-inprogress: 19 210 199;
     --color-status-inprogress-light: 30 252 239;
+    --color-risk-high: 255 118 38;
+    --color-risk-mid: 60 242 232;
+    --color-risk-low: 166 216 91;
 
     /* --color-shadow-base: rgba(121, 121, 121, 0.08); */
     /* --color-shadow-md: rgba(229, 229, 229, 0.16); */
@@ -91,34 +100,159 @@
     /* --color-shadow-modal: rgba(181, 181, 181, 0.16); */
 
     --color-price-higher: 166 216 91;
+    --color-price-higher-light: 176 215 109;
     --color-price-lower: 255 50 50;
+    --color-price-lower-light: 255 79 68;
   }
 }
 
 *,
 ::before,
 ::after {
-  @apply border-gray-lighter dark:border-paper-lighter;
+  @apply border-gray-lighter;
 }
 
 body {
-  @apply font-mono text-base tracking-tight min-w-[1080px];
+  @apply font-mono text-base tracking-normal min-w-[1360px] relative;
   @apply text-primary bg-paper-lightest;
-  word-spacing: -0.1em;
+  word-spacing: -0.04em;
+  /* letter-spacing: 0.04em !important; */
+}
+
+#gradient {
+  @apply w-full h-full absolute top-0 left-0;
+  &::after {
+    @apply w-full h-full absolute top-0 left-0;
+    content: '';
+    background: linear-gradient(
+      180deg,
+      rgb(var(--color-paper-lightest) / 0) 0%,
+      rgb(var(--color-paper-lightest)) 80%
+    );
+  }
+  #prev,
+  #current {
+    @apply w-full h-full absolute top-0 left-0;
+  }
+}
+
+.bg-gradient-chrm {
+  @apply overflow-visible bg-no-repeat bg-cover;
+  background-image: url('/src/assets/images/bg_airdrop_gradient.png');
+  background-position: bottom;
+}
+
+.page-container {
+  @apply flex flex-col relative;
+  @apply min-h-[100vh] w-full overflow-x-scroll;
+  > main {
+    @apply flex flex-col w-full px-10 mx-auto mt-8 mb-20 grow items-stretch;
+    @apply max-w-[1480px] min-w-[1360px];
+  }
+}
+
+#gradient #prev,
+#gradient #current {
+  transition: opacity 2s;
+}
+.bg-higher-higher,
+.bg-higher-lower,
+.bg-lower-higher,
+.bg-lower-lower {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.bg-higher-higher {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+}
+.bg-higher-lower {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-higher-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+}
+.bg-lower-higher {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-higher-light) / 0.19) 100%
+  );
+}
+.bg-lower-lower {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-price-lower-light) / 0.19) 0%,
+    rgb(var(--color-price-lower-light) / 0.19) 100%
+  );
+}
+
+::-webkit-scrollbar {
+  @apply w-2;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-paper-lighter rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-paper-light;
 }
 
 .sb-show-main,
 .docs-story {
-  @apply text-primary bg-inverted;
+  @apply text-primary bg-inverted min-w-0;
 }
 
 .panel {
-  @apply bg-paper border dark:border-transparent rounded shadow-lg dark:shadow-none;
+  @apply rounded shadow-lg dark:shadow-none bg-paper;
+  &.panel-transparent {
+    @apply bg-transparent;
+  }
+  &.panel-translucent {
+    @apply bg-paper/60;
+  }
 }
 
+h1,
+h2,
+h3 {
+  @apply font-bold;
+}
+h4,
+h5,
+h6 {
+  @apply font-semibold;
+}
+h3 {
+  @apply text-xl;
+}
 h4 {
   @apply text-lg;
-  font-weight: 500;
+}
+h5 {
+  @apply text-base;
+}
+h6 {
+  @apply text-sm;
+}
+
+.text-chrm {
+  background: linear-gradient(
+    91deg,
+    #ff4f44 -4.01%,
+    #fe8b63 36.14%,
+    #95ed60 77.44%,
+    #a6d85b 106.11%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 *:focus {
@@ -142,9 +276,13 @@ input[type='number']::-webkit-outer-spin-button {
 
 .backdrop {
   @apply fixed inset-0 bg-inverted/90;
+  &.backdrop-light {
+    @apply bg-inverted/50;
+  }
 }
 
 /* z-index */
+
 .modal {
   @apply z-40;
 }
@@ -152,6 +290,10 @@ input[type='number']::-webkit-outer-spin-button {
 .backdrop + div {
   @apply z-30;
 }
+.sticky.top-0 {
+  @apply z-30;
+}
+
 .popover-panel {
   @apply z-20;
 }

@@ -1,5 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -10,7 +11,6 @@ import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
 import { useAssetPanel } from './hooks';
 
 export interface AssetPanelProps {
@@ -31,6 +31,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
     chromaticAddress,
     addressExplorer,
     tokenName,
+    tokenImage,
     availableMargin,
 
     maxAmount,
@@ -52,11 +53,12 @@ export const AssetPanel = (props: AssetPanelProps) => {
     <Popover>
       {({ open, close }) => (
         <>
-          <Popover.Button
+          {/* <Popover.Button
             className={`btn btn-light btn-sm ${
               open ? '!border-primary dark:!border-transparent dark:!bg-gray-dark' : ''
             }`}
-          >
+          > */}
+          <Popover.Button className={`btn btn-line btn-sm ${open ? '!border-primary-light' : ''}`}>
             {type}
           </Popover.Button>
 
@@ -111,7 +113,8 @@ export const AssetPanel = (props: AssetPanelProps) => {
                 </article>
                 <div className="my-7">
                   <p className="text-primary-light">
-                    This process may take approximately 10 seconds or so. Please wait a moment.
+                    This process may take approximately 10 seconds or so. <br />
+                    Please wait a moment.
                   </p>
                 </div>
                 <div className="text-center">
@@ -159,7 +162,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
           {isAccountExist && (
             <Popover.Panel className="popover-panel">
               <div className="w-full gap-2 pt-2">
-                <article className="relative flex items-center gap-4 p-4 overflow-hidden border dark:border-transparent rounded-xl bg-paper-lighter">
+                <article className="relative flex items-center gap-4 p-4 overflow-hidden border dark:border-transparent rounded-xl bg-paper-light">
                   <p className="flex-none pr-4 border-r text-primary-lighter">My Account</p>
                   <div className="w-[calc(100%-140px)] overflow-hidden overflow-ellipsis text-left">
                     {chromaticAddress}
@@ -176,11 +179,11 @@ export const AssetPanel = (props: AssetPanelProps) => {
                   <article className="flex flex-col items-start w-2/5 min-w-[140px] gap-3">
                     <h4 className="text-lg font-semibold">{type}</h4>
                     <div className="py-2 pl-2 pr-3 border rounded-full">
-                      <Avatar size="xs" label={tokenName} gap="1" />
+                      <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
                     </div>
                     <div>
                       <div className="flex mb-1 text-primary-lighter">
-                        Available Margin
+                        <p>Available Margin</p>
                         <TooltipGuide
                           label="available-margin"
                           tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
@@ -253,7 +256,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                     size="xl"
                     css="active"
                     className="w-full"
-                    onClick={onClickSubmit}
+                    onClick={() => onClickSubmit(close)}
                     disabled={isSubmitDisabled}
                   />
                   <Button

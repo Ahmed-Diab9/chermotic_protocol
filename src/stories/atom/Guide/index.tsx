@@ -1,48 +1,85 @@
-import { useState } from 'react';
-import { Outlink } from '../Outlink';
+import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Button } from '~/stories/atom/Button';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { Outlink } from '../Outlink';
+import './style.css';
 
 interface GuideProps {
   title: string;
-  paragraph: string;
+  paragraph?: string;
   outLink?: string;
   outLinkAbout?: string;
-  flex?: boolean;
+  direction?: 'row' | 'column';
+  css?: 'default' | 'alert';
+  padding?: 'sm' | 'base' | 'lg';
+  className?: string;
+  isVisible?: boolean;
+  isClosable?: boolean;
   onClick?: () => unknown;
 }
 
 export const Guide = (props: GuideProps) => {
-  const { title, paragraph, outLink, outLinkAbout, flex } = props;
-
-  const [guideVisible, setGuideVisible] = useState(true);
-  const closeGuide = () => {
-    setGuideVisible(false);
-  };
+  const {
+    title,
+    paragraph,
+    outLink,
+    outLinkAbout,
+    direction = 'column',
+    css = 'default',
+    padding = 'base',
+    className,
+    onClick,
+    isVisible,
+    isClosable = true,
+  } = props;
 
   return (
     <>
-      {guideVisible && (
+      {isVisible && (
         <div
-          className={`relative px-5 text-left rounded-xl bg-paper-light ${
-            flex ? 'flex gap-4 py-2 !pr-12' : 'py-4'
-          }`}
+          className={`relative text-left rounded flex gap-3 ${
+            direction === 'row' ? 'py-2 items-center' : 'py-4'
+          } ${
+            css === 'alert' ? 'bg-price-lower/10 text-price-lower' : 'bg-paper-light'
+          } ${className} guide guide-p-${padding}`}
         >
-          <div className="flex items-center gap-1">
-            <BellIcon className="w-4" />
-            {/* <InformationCircleIcon className="w-4" /> */}
-            <p className="whitespace-nowrap">{title}</p>
+          <div>
+            {/* <BellIcon className="w-4" /> */}
+            <ExclamationTriangleIcon className="w-4" />
           </div>
-          <p className="my-2 text-sm text-primary-lighter">{paragraph}</p>
-          {outLink && <Outlink outLink={outLink} outLinkAbout={outLinkAbout} />}
-          {/* todo: 버튼 누르면 닫힘 */}
-          <Button
-            iconOnly={<XMarkIcon />}
-            css="unstyled"
-            className="absolute top-1 right-1 text-primary-lighter"
-            onClick={closeGuide}
-          />
+          <div
+            className={`flex ${
+              direction === 'row' ? 'flex-auto gap-4 items-center' : 'gap-2 flex-col'
+            }`}
+          >
+            <div className="flex items-center gap-1">
+              <p className="whitespace-nowrap">{title}</p>
+            </div>
+            <p className="text-sm text-primary-lighter">{paragraph}</p>
+            {outLink && (
+              <div
+                className={`${direction === 'row' ? '' : 'mt-2'} ${
+                  isClosable === false ? 'ml-auto' : ''
+                }`}
+              >
+                <Outlink
+                  outLink={outLink}
+                  outLinkAbout={outLinkAbout}
+                  className={`${css === 'alert' ? '!text-primary-lighter' : ''}`}
+                />
+              </div>
+            )}
+
+            {isClosable && (
+              <Button
+                iconOnly={<XMarkIcon />}
+                css="unstyled"
+                className={`absolute btn-x text-primary-lighter  ${
+                  direction === 'row' ? 'top-0 pl-12' : 'top-1'
+                }`}
+                onClick={onClick}
+              />
+            )}
+          </div>
         </div>
       )}
     </>

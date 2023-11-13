@@ -1,0 +1,20 @@
+.guide {
+  &.guide-p-sm {
+    @apply px-3;
+    .btn-x {
+      @apply right-1;
+    }
+  }
+  &.guide-p-base {
+    @apply px-5;
+    .btn-x {
+      @apply right-3;
+    }
+  }
+  &.guide-p-lg {
+    @apply px-7;
+    .btn-x {
+      @apply right-5;
+    }
+  }
+}

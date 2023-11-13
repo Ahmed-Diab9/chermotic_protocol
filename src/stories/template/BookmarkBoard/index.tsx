@@ -1,31 +1,36 @@
-import '~/stories/atom/Tabs/style.css';
-import './style.css';
-import { Button } from '~/stories/atom/Button';
 import { StarIcon } from '@heroicons/react/20/solid';
-
-const BookmarkBoardItems = [
-  { name: 'USDC-ETH/USD', rate: 0.1212 },
-  { name: 'USDC-ETH/USD', rate: 0.1212 },
-  { name: 'USDC-ETH/USD', rate: -0.1212 },
-];
+import { useBookmarkBoard } from './hooks';
+import './style.css';
 
 export interface BookmarkBoardProps {}
 
 export const BookmarkBoard = (props: BookmarkBoardProps) => {
+  const {
+    bookmarks = [],
+    bookmarkPrices,
+    bookmarkClasses,
+    isBookmarkLoading,
+    onBookmarkClick,
+  } = useBookmarkBoard();
   return (
-    <div className="mb-2 BookmarkBoard">
+    <div className={`mb-2 BookmarkBoard ${bookmarks.length <= 0 ? 'hidden' : ''}`}>
       <div className="flex items-stretch h-6">
         <StarIcon className="w-4 mr-3" />
         <div className="flex gap-5">
-          {BookmarkBoardItems.map((item, index) => (
-            <a key={index} href="" className="item-bookmark">
-              <span>{item.name}</span>
-              <span
-                className={
-                  item.rate > 0 ? 'text-price-higher' : item.rate < 0 ? 'text-price-lower' : ''
-                }
-              >
-                {item.rate}%
+          {bookmarks.map((bookmark, index) => (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid
+            <a
+              key={bookmark.id}
+              href="#"
+              className="item-bookmark"
+              onClick={(event) => {
+                event.preventDefault();
+                onBookmarkClick(bookmark);
+              }}
+            >
+              <span>{bookmark.name}</span>
+              <span className={bookmarkClasses?.[bookmark.id]}>
+                ${bookmarkPrices?.[bookmark.id]}
               </span>
             </a>
           ))}

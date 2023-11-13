@@ -5,7 +5,7 @@ import { useLastOracle } from '~/hooks/useLastOracle';
 import { POOL_EVENT } from '~/typings/events';
 import { Token } from '~/typings/market';
 
-import usePoolReceipt, { LpReceipt } from '~/hooks/usePoolReceipt';
+import usePoolReceipt, { PoolReceipt } from '~/hooks/usePoolReceipt';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { formatDecimals } from '~/utils/number';
 
@@ -15,7 +15,7 @@ const formatter = Intl.NumberFormat('en', {
   minimumFractionDigits: 2,
 });
 
-const receiptDetail = (receipt: LpReceipt, token: Token) => {
+const receiptDetail = (receipt: PoolReceipt, token: Token) => {
   const { burningAmount = 0n, amount, status, action, progressPercent } = receipt;
   if (status === 'standby') {
     return 'Waiting for the next oracle round';
@@ -60,7 +60,7 @@ export const usePoolProgress = () => {
 
   const receipts = _receipts || [];
 
-  const lastOracle = useLastOracle();
+  const { formattedElapsed } = useLastOracle();
 
   const tokenName = currentToken?.name || '-';
 
@@ -70,6 +70,7 @@ export const usePoolProgress = () => {
         const status = receipt.status;
         const detail = receiptDetail(receipt, currentToken);
         const name = receipt.name;
+        const image = receipt.image;
         const remainedCLBAmount = formatDecimals(
           receipt.remainedCLBAmount,
           currentToken.decimals,
@@ -94,6 +95,7 @@ export const usePoolProgress = () => {
           status,
           detail,
           name,
+          image,
           remainedCLBAmount,
           tokenName,
           progressPercent,
@@ -134,7 +136,7 @@ export const usePoolProgress = () => {
     ref,
     isGuideOpen,
 
-    lastOracle,
+    formattedElapsed,
 
     poolReceipts,
     poolReceiptsCount,

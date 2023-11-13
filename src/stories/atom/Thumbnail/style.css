@@ -4,7 +4,7 @@
   }
 }
 .thumb-xs {
-  @apply w-6 h-6;
+  @apply w-5 h-5;
 }
 .thumb-sm {
   @apply w-8 h-8;

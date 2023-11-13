@@ -1,12 +1,13 @@
 import { fromPairs, isNil } from 'ramda';
-import { Address } from 'wagmi';
 import { useMemo } from 'react';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
+import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -19,7 +20,7 @@ export const useChromaticAccount = () => {
   const status = useAppSelector((state) => state.account.status);
   const { setAccountStatus } = accountAction;
 
-  const { client, walletAddress } = useChromaticClient();
+  const { client, walletAddress, isReady } = useChromaticClient();
 
   const fetchKey = useMemo(
     () => ({
@@ -35,7 +36,7 @@ export const useChromaticAccount = () => {
     error,
     mutate: fetchAddress,
     isLoading: isAccountAddressLoading,
-  } = useSWR(checkAllProps(fetchKey) && fetchKey, async () => {
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ address }) => {
     try {
       const accountApi = client.account();
       const accountAddress = await accountApi.getAccount();
@@ -69,18 +70,20 @@ export const useChromaticAccount = () => {
     mutate: fetchBalances,
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
-    checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
+    isReady && checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
     async ({ tokens }) => {
       const accountApi = client.account();
-      const result = await accountApi.balances(tokens.map((token) => token.address));
+      const result = await PromiseOnlySuccess(
+        tokens.map(async (token) => {
+          const balance = await accountApi.balance(token.address);
+          return { token: token.address, balance };
+        })
+      );
 
       const balances = fromPairs(
-        result?.map((balance) => [balance.token, balance.balance] as const) || []
+        result?.map((balance) => [balance.token, balance.balance] as [Address, bigint])
       );
       return balances;
-    },
-    {
-      refreshInterval: 3000,
     }
   );
 

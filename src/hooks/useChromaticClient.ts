@@ -11,7 +11,7 @@ export function useChromaticClient() {
 
   const { address } = useAccount();
 
-  const { isReady, walletAddress, client, setPublicClient, setWalletClient } =
+  const { isReady, walletAddress, client, lpClient, setPublicClient, setWalletClient } =
     useContext(ChromaticContext);
 
   useEffect(() => {
@@ -28,5 +28,6 @@ export function useChromaticClient() {
     walletAddress,
     isReady,
     client,
+    lpClient,
   };
 }

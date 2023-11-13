@@ -1,38 +1,70 @@
-import { isNil } from 'ramda';
-import { useEffect, useState } from 'react';
-import { padTimeZero } from '~/utils/number';
+import { isNil, isNotNil } from 'ramda';
+import { useEffect, useMemo, useState } from 'react';
 import { useMarket } from './useMarket';
 
-export function useLastOracle() {
+const formatter = Intl.DateTimeFormat('en-US', {
+  second: '2-digit',
+  minute: '2-digit',
+  hour: '2-digit',
+  hourCycle: 'h23',
+  timeZone: 'UTC',
+});
+const preformat = (elapsed: number) => {
+  return formatter.formatToParts(elapsed);
+};
+
+interface Props {
+  format: (item: Intl.DateTimeFormatPart) => string;
+}
+
+export function useLastOracle(props?: Props) {
   const { currentMarket } = useMarket();
-  const [lapsed, setLapsed] = useState<{ hours: string; minutes: string; seconds: string }>({
-    hours: '-',
-    minutes: '-',
-    seconds: '-',
-  });
+  const [elapsed, setElapsed] = useState<number>();
 
   useEffect(() => {
     const timestamp = currentMarket?.oracleValue?.timestamp;
     if (isNil(timestamp)) return;
-
-    let timerId = setTimeout(function onTimeout() {
-      const timeDiff = Date.now() / 1000 - Number(timestamp);
-      const hours = Math.floor(timeDiff / 3600);
-      const minutes = Math.floor((timeDiff % 3600) / 60);
-      const seconds = Math.floor((timeDiff % 3600) % 60);
-
-      setLapsed({
-        hours: padTimeZero(hours),
-        minutes: padTimeZero(minutes),
-        seconds: padTimeZero(seconds),
-      });
-
-      timerId = setTimeout(onTimeout, 1000);
+    let timerId: NodeJS.Timeout;
+    timerId = setInterval(() => {
+      const timeDiff = Date.now() - Number(timestamp) * 1000;
+      setElapsed(timeDiff);
     }, 1000);
+
     return () => {
       clearTimeout(timerId);
     };
   }, [currentMarket]);
 
-  return lapsed;
+  const formattedElapsed = useMemo(() => {
+    if (isNil(elapsed)) {
+      return;
+    }
+    if (isNotNil(props)) {
+      return preformat(elapsed).map(props.format);
+    }
+    return preformat(elapsed).map(({ type, value }) => {
+      switch (type) {
+        case 'hour': {
+          return `${value}`;
+        }
+        case 'minute': {
+          return `${value}`;
+        }
+        case 'second': {
+          return `${value}`;
+        }
+        case 'literal': {
+          return ':';
+        }
+        case 'dayPeriod': {
+          return '';
+        }
+        default:
+          return value;
+      }
+    });
+    // .join(' ');
+  }, [elapsed, props]);
+
+  return { elapsed, formattedElapsed };
 }

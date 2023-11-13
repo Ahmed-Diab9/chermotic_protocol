@@ -1,0 +1,21 @@
+.TradePanelV3 {
+  .wrapper-handle {
+    @apply !w-5;
+    > div {
+      @apply !w-5;
+    }
+  }
+  .wrapper-tabs {
+    .btn-tab {
+      @apply w-1/2;
+      &[aria-selected='true'] {
+        &.short {
+          @apply !text-price-lower border-price-lower;
+        }
+        &.long {
+          @apply !text-price-higher border-price-higher;
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Listbox } from '@headlessui/react';
-import './style.css';
+import '~/stories/atom/Select/style.css';
 
 interface SelectProps {
   onClick?: () => void;
 }
 
-const listitem = [
+const selectItem = [
   { id: 1, title: 'select default', unavailable: false },
   { id: 2, title: 'select 02', unavailable: false },
   { id: 3, title: 'select 03', unavailable: false },
@@ -15,15 +15,15 @@ const listitem = [
 ];
 
 export const Select = (props: SelectProps) => {
-  const [selectedItem, setSelectedItem] = useState(listitem[0]);
+  const [selectedItem, setSelectedItem] = useState(selectItem[0]);
 
   return (
     // for example, not used yet
-    <div className="select">
+    <div className="w-20 select">
       <Listbox value={selectedItem} onChange={setSelectedItem}>
         <Listbox.Button>{selectedItem.title}</Listbox.Button>
         <Listbox.Options>
-          {listitem.map((item) => (
+          {selectItem.map((item) => (
             <Listbox.Option key={item.id} value={item} disabled={item.unavailable}>
               {item.title}
             </Listbox.Option>

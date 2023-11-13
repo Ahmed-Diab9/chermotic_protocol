@@ -1,0 +1,5 @@
+.AirdropStamp {
+  .stamp {
+    @apply flex flex-col items-center;
+  }
+}

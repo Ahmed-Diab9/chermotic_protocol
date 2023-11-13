@@ -1,8 +1,9 @@
 import { isNil } from 'ramda';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatUnits } from 'viem';
 
 import { useSettlementToken } from '~/hooks/useSettlementToken';
+import { useThrottledResize } from '~/hooks/useThrottledResize';
 
 import { useAppSelector } from '~/store';
 
@@ -13,25 +14,30 @@ export function useLiquidityItems() {
     isScrolled: false,
     hasSameHeight: false,
   });
-  useEffect(() => {
-    const bins = document.querySelector('#bins');
-    if (isNil(bins)) return;
-    if (bins.clientHeight === bins.scrollHeight) {
-      setArrowState(() => ({ isScrolled: false, hasSameHeight: true }));
-    }
-    const onWindowResize = () => {
-      if (bins.scrollTop !== 0) {
+  const binsRef = useRef<HTMLDivElement | null>(null);
+  const onLoadBinsRef = useCallback((element: HTMLDivElement | null) => {
+    binsRef.current = element;
+  }, []);
+  useThrottledResize({
+    interval: 200,
+    onResize(size) {
+      if (isNil(binsRef.current)) {
+        return;
+      }
+      if (binsRef.current.scrollTop !== 0) {
         setArrowState((state) => ({ ...state, isScrolled: true }));
-      } else if (bins.clientHeight === bins.scrollHeight) {
+      } else if (binsRef.current.clientHeight === binsRef.current.scrollHeight) {
         setArrowState({ isScrolled: false, hasSameHeight: true });
       } else {
         setArrowState({ isScrolled: false, hasSameHeight: false });
       }
-    };
-    window.addEventListener('resize', onWindowResize);
-    return () => {
-      window.removeEventListener('resize', onWindowResize);
-    };
+    },
+  });
+  useEffect(() => {
+    if (isNil(binsRef.current)) return;
+    if (binsRef.current.clientHeight === binsRef.current.scrollHeight) {
+      setArrowState(() => ({ isScrolled: false, hasSameHeight: true }));
+    }
   }, []);
 
   const isScrollTriggerVisible = !arrowState.hasSameHeight;
@@ -90,6 +96,7 @@ export function useLiquidityItems() {
       key: selectedBin.clbTokenDescription,
       image: selectedBin.clbTokenImage,
       tokenName: currentToken?.name || '-',
+      tokenImage: currentToken?.image,
       clbTokenName: selectedBin.clbTokenDescription,
       qty: formatDecimals(selectedBin.clbTokenBalance, currentToken?.decimals, 2),
       progress: +formatUnits(clbRemovable, currentToken?.decimals || 0),
@@ -102,6 +109,7 @@ export function useLiquidityItems() {
   });
 
   return {
+    onLoadBinsRef,
     isScrollTriggerVisible,
     isScrollTriggerHasOpacity,
     onScrollLiquidityWrapper,

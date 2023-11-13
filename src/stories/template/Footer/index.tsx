@@ -1,19 +1,17 @@
-import GitbookIcon from '~/assets/icons/GitbookIcon';
-import Logo from '~/assets/icons/Logo';
-import MediumIcon from '~/assets/icons/MediumIcon';
-import TwitterIcon from '~/assets/icons/TwitterIcon';
+import { GitbookIcon, MediumIcon, TwitterIcon } from '~/assets/icons/SocialIcon';
+import { ChromaticLogo } from '~/assets/icons/Logo';
 import { Button } from '../../atom/Button';
 
 export const Footer = () => (
   <footer>
-    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-primary dark:bg-paper-lightest dark:border-t">
+    <div className="flex flex-col items-center gap-4 pt-6 pb-8 text-center bg-primary dark:bg-paper-lightest/60 dark:border-t">
       <a
         href="https://chromatic.finance/"
         target="_blank"
         rel="noopener noreferrer"
         title="Chromatic"
       >
-        <Logo className="text-inverted dark:text-primary" />
+        <ChromaticLogo className="text-inverted dark:text-primary" />
       </a>
       <p className="text-inverted-lighter dark:text-primary-lighter">
         A New Era in Decentralized Perpetual Futures

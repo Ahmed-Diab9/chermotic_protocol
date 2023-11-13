@@ -1,12 +1,12 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNotNil } from 'ramda';
 import { Link } from 'react-router-dom';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { useBlockExplorer } from '~/hooks/useBlockExplorer';
 import { useMarket } from '~/hooks/useMarket';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
-import { AddressCopyButton } from '~/stories/atom/AddressCopyButton';
+import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Button } from '~/stories/atom/Button';
 import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
@@ -25,7 +25,10 @@ const Pool = () => {
   useTokenLocal();
   useMarketLocal();
 
-  const blockExplorer = useBlockExplorer();
+  const blockExplorer = useBlockExplorer({
+    path: 'token',
+    address: clbTokenAddress,
+  });
 
   return (
     <div className="flex flex-col min-h-[100vh] w-full">
@@ -40,7 +43,7 @@ const Pool = () => {
               <div className="flex items-center justify-between w-full gap-1">
                 <h4 className="font-bold">Token(ERC-1155) Contract Address</h4>
                 <div className="flex gap-2">
-                  <AddressCopyButton
+                  <AddressWithButton
                     address={clbTokenAddress && trimAddress(clbTokenAddress, 6, 6)}
                     onClick={() => {
                       if (clbTokenAddress) {
@@ -49,11 +52,7 @@ const Pool = () => {
                     }}
                   />
                   <Button
-                    href={
-                      clbTokenAddress && blockExplorer
-                        ? `${blockExplorer}/token/${clbTokenAddress}`
-                        : undefined
-                    }
+                    href={blockExplorer}
                     label="view scanner"
                     css="light"
                     size="lg"
@@ -68,7 +67,7 @@ const Pool = () => {
                 <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/tokens/clb-token-erc-1155" />
               </div>
             </article>
-            <div className="mt-10">
+            <div className="">
               <Link to={'/trade'}>
                 <Button
                   css="light"
@@ -76,7 +75,7 @@ const Pool = () => {
                   label={
                     isNotNil(selectedMarket)
                       ? `Trade on ${selectedMarket.description} Pool`
-                      : 'Market loading'
+                      : 'Loading...'
                   }
                   iconRight={<ChevronRightIcon />}
                 />

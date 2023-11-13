@@ -1,4 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
@@ -9,7 +10,7 @@ import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
 import { AppError } from '~/typings/error';
-import { TradeEvent } from '~/typings/events';
+import { dispatchTradeEvent } from '~/typings/events';
 import { TradeInput } from '~/typings/trade';
 
 import { errorLog } from '~/utils/log';
@@ -24,8 +25,10 @@ function useOpenPosition() {
   const {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
   } = useLiquidityPool();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function openPosition(input: TradeInput) {
+    setIsLoading(true);
     if (isNil(input)) {
       toast('Input data needed');
       return;
@@ -77,16 +80,18 @@ function useOpenPosition() {
       await fetchPositions();
       await fetchBalances();
 
-      window.dispatchEvent(TradeEvent);
+      dispatchTradeEvent();
       toast('The opening process has been started.');
     } catch (error) {
       toast.error('Transaction rejected.');
     } finally {
+      setIsLoading(false);
       return;
     }
   }
 
   return {
+    isLoading,
     openPosition,
   };
 }

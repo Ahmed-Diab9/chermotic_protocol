@@ -1,8 +1,12 @@
-import React from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
+import Airdrop from './pages/airdrop';
+import Faucet from './pages/faucet';
 import Pool from './pages/pool';
+import PoolV2 from './pages/poolV2';
+import PoolV3 from './pages/poolV3';
 import Trade from './pages/trade';
 import TradeV2 from './pages/tradeV2';
+import TradeV3 from './pages/tradeV3';
 
 const router = createBrowserRouter([
   {
@@ -10,16 +14,42 @@ const router = createBrowserRouter([
     element: <Navigate to={'/trade'} />,
   },
   {
-    path: '/pool',
+    path: '/pool1',
     element: <Pool />,
   },
   {
-    path: '/trade',
+    path: '/pool2',
+    element: <PoolV2 />,
+  },
+  {
+    path: '/pool',
+    element: <PoolV3 />,
+  },
+
+  {
+    path: '/trade1',
     element: <Trade />,
   },
   {
     path: '/trade2',
     element: <TradeV2 />,
+  },
+  {
+    path: '/trade',
+    element: <TradeV3 />,
+  },
+
+  {
+    path: '/airdrop',
+    element: <Airdrop />,
+  },
+  {
+    path: '/faucet',
+    element: <Faucet />,
+  },
+  {
+    path: '/airdrop',
+    element: <Airdrop />,
   },
 ]);
 

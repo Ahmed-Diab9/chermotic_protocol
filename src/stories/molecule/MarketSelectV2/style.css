@@ -2,12 +2,12 @@
   @apply flex items-center justify-between gap-6 pl-5 pr-0;
   @apply h-[80px];
   &:has([data-headlessui-state='open']) {
-    @apply dark:border-paper-lighter dark:shadow-lg rounded-s-none;
+    @apply dark:border-gray-lighter dark:shadow-lg rounded-bl-none;
   }
   .popover-panel {
     @apply flex flex-col absolute left-0 ml-[-1px];
     @apply bg-paper min-h-[230px] rounded-b;
-    @apply border px-5 pt-3;
+    @apply border;
     /* width: calc(100% + 2px); */
   }
   .inner-popover {

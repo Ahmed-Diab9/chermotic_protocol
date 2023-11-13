@@ -7,15 +7,15 @@
   &[aria-checked='false'] {
     @apply bg-gray-light dark:bg-gray-lighter;
     &::after {
-      @apply translate-x-0 dark:bg-[#888888];
+      @apply translate-x-0 dark:bg-primary-lighter;
     }
   }
   &[aria-checked='true'] {
-    @apply bg-primary dark:bg-paper-darkest;
+    @apply bg-primary dark:bg-gray-lighter dark:border-transparent;
   }
   &::after {
     @apply inline-block transition duration-200 ease-in-out transform rounded-full pointer-events-none;
-    @apply bg-paper dark:bg-gray-dark;
+    @apply bg-paper dark:bg-primary;
     content: '';
   }
 }

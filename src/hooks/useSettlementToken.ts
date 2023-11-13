@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
+import { fetchTokenImages } from '~/apis/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
+import { selectedTokenSelector } from '~/store/selector';
 import { Token } from '~/typings/market';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { useChromaticClient } from './useChromaticClient';
@@ -13,7 +15,7 @@ export const useSettlementToken = () => {
   const { client, isReady } = useChromaticClient();
 
   const dispatch = useAppDispatch();
-  const currentToken = useAppSelector((state) => state.token.selectedToken);
+  const currentToken = useAppSelector(selectedTokenSelector);
 
   const { setState: setStoredToken } = useLocalStorage('app:token');
 
@@ -30,8 +32,10 @@ export const useSettlementToken = () => {
     const marketFactoryApi = client.marketFactory();
 
     const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
+    const tokenNames = registeredSettlementTokens.map((token) => token.name);
+    const tokenImageMap = await fetchTokenImages(tokenNames);
 
-    return PromiseOnlySuccess(
+    const settlementTokens = await PromiseOnlySuccess(
       registeredSettlementTokens.map(async (token) => {
         const minimumMargin = await marketFactoryApi
           .contracts()
@@ -39,9 +43,12 @@ export const useSettlementToken = () => {
         return {
           ...token,
           minimumMargin,
-        };
+          image: tokenImageMap[token.name],
+        } as Token;
       })
     );
+
+    return settlementTokens;
   });
 
   useError({ error });

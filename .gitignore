@@ -28,3 +28,10 @@ storybook-static
 # Local Netlify folder
 .netlify
 .env
+
+# GraphQL Codegen
+graphql.schema.json
+src/lib/graphql/sdk/*
+
+# Mock Service Worker
+public/mockServiceWorker.js

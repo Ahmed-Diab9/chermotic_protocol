@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { Address } from 'wagmi';
 import { AppError } from '~/typings/error';
 import { errorLog } from '~/utils/log';
+import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { usePositions } from './usePositions';
 
@@ -14,7 +15,8 @@ interface Props {
 function useClosePosition(props: Props) {
   const { marketAddress, positionId } = props;
   const { client } = useChromaticClient();
-  const { positions, fetchPositions } = usePositions();
+  const { positions, fetchPositions, fetchCurrentPositions } = usePositions();
+  const { fetchBalances } = useChromaticAccount();
 
   async function onClosePosition() {
     const position = positions?.find(
@@ -29,7 +31,8 @@ function useClosePosition(props: Props) {
       const routerApi = client.router();
       await routerApi?.closePosition(position.marketAddress, position.id);
 
-      await fetchPositions();
+      await fetchCurrentPositions(position.marketAddress);
+      await fetchBalances();
       toast('The closing process has been started.');
     } catch (error) {
       errorLog(error);

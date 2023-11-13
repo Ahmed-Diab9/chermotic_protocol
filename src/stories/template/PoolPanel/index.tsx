@@ -1,6 +1,6 @@
 import { Switch, Tab } from '@headlessui/react';
 import { createPortal } from 'react-dom';
-import OutlinkIcon from '~/assets/icons/OutlinkIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';
@@ -48,6 +48,7 @@ export function PoolPanel() {
     isLoading,
 
     tokenName,
+    tokenImage,
     walletBalance,
 
     binCount,
@@ -73,9 +74,9 @@ export function PoolPanel() {
 
   return (
     <div className="PoolPanel">
-      <div className="tabs tabs-line tabs-lg">
+      <div className="wrapper-tabs">
         <Tab.Group>
-          <Tab.List className="w-full mx-auto pt-4 flex !justify-center">
+          <Tab.List className="w-full mx-auto pt-4 flex !justify-center tabs-list tabs-line tabs-lg">
             <Tab className="text-3xl">ADD</Tab>
             <Tab className="text-3xl">REMOVE</Tab>
           </Tab.List>
@@ -152,7 +153,7 @@ export function PoolPanel() {
 
                 <article>
                   <div className="flex items-center justify-between mt-10 overflow-hidden gap-9">
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-light">
                       <p>Min trade Fee</p>
                       <Counter
                         value={minRateValue}
@@ -162,7 +163,7 @@ export function PoolPanel() {
                       />
                     </div>
                     <p>~</p>
-                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-lighter">
+                    <div className="inline-flex flex-col items-center flex-auto w-[40%] max-w-[260px] gap-4 p-5 text-center border rounded-lg dark:border-transparent dark:bg-paper-light">
                       <p>Max trade Fee</p>
                       <Counter
                         value={maxRateValue}
@@ -261,7 +262,7 @@ export function PoolPanel() {
                     <div className="flex items-center gap-1 mt-2">
                       <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
                       <SkeletonElement isLoading={isLoading} width={40}>
-                        <Avatar label={tokenName} size="xs" gap="1" />
+                        <Avatar label={tokenName} src={tokenImage} size="xs" gap="1" />
                       </SkeletonElement>
                     </div>
                   </div>
@@ -322,12 +323,12 @@ export function PoolPanel() {
               </section>
 
               {/* inner tab */}
-              <section className="tabs-line tabs-base">
+              <section className="tabs tabs-base">
                 <Tab.Group onChange={onTabChange}>
                   {({ selectedIndex }) => (
                     <>
                       <div className="flex flex-wrap items-baseline">
-                        <Tab.List className="pt-[36px] !justify-start !gap-10">
+                        <Tab.List className="pt-[36px] !justify-start !gap-10 tabs-list tabs-line">
                           <Tab>Short LP</Tab>
                           <Tab>Long LP</Tab>
                         </Tab.List>
@@ -409,11 +410,12 @@ interface BinItemProps {
   isSelected: boolean;
   onSelectBin: () => unknown;
   label: string;
+  image: string;
   marketDescription: string;
   baseFeeRate: number | string;
   onClickRemove: (e: React.MouseEvent<HTMLButtonElement>) => unknown;
   explorerUrl?: string;
-  tokenImage: string;
+  tokenImage?: string;
   tokenBalance: string;
   freeLiquidity: string;
   tokenValue: string;
@@ -427,6 +429,7 @@ const BinItem = (props: BinItemProps) => {
     isSelected,
     onSelectBin,
     label,
+    image,
     marketDescription,
     baseFeeRate,
     onClickRemove,
@@ -439,14 +442,21 @@ const BinItem = (props: BinItemProps) => {
   } = props;
 
   return (
-    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-lighter rounded-xl">
-      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-lighter">
+    <div className="overflow-hidden border dark:border-transparent dark:bg-paper-light rounded-xl">
+      <div className="flex items-center justify-between gap-5 px-5 py-3 border-b bg-paper-light">
         <Checkbox label={label} isChecked={isSelected} onClick={onSelectBin} />
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <SkeletonElement isLoading={isLoading} circle width={16} height={16} />
             <SkeletonElement isLoading={isLoading} width={40}>
-              <Avatar label={tokenName} size="xs" gap="1" fontSize="base" fontWeight="bold" />
+              <Avatar
+                label={tokenName}
+                src={tokenImage}
+                size="xs"
+                gap="1"
+                fontSize="base"
+                fontWeight="bold"
+              />
             </SkeletonElement>
           </div>
           <p className="font-semibold text-primary">
@@ -463,7 +473,7 @@ const BinItem = (props: BinItemProps) => {
       <div className="flex items-center gap-8 py-5 px-7">
         <div className="flex justify-center text-center">
           <SkeletonElement isLoading={isLoading} width={60} height={60}>
-            <Thumbnail src={tokenImage} size="lg" className="rounded" />
+            <Thumbnail src={image} size="lg" className="rounded" />
           </SkeletonElement>
         </div>
         <div className="flex flex-col gap-2 min-w-[28%] text-left">

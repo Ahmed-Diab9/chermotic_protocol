@@ -1,10 +1,10 @@
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
-import { Button } from '~/stories/atom/Button';
+
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import ArrowTriangleIcon from '~/assets/icons/ArrowTriangleIcon';
-import { Resizable } from 're-resizable';
-import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
+import { ArrowTriangleIcon } from '~/assets/icons/Icon';
+import { Button } from '~/stories/atom/Button';
+import { ResizablePanel } from '~/stories/atom/ResizablePanel';
 
 const tradeListItems = [
   { direction: 'long', price: 2424.1212, amount: 0.1212, time: '10:00:30' },
@@ -19,31 +19,16 @@ const tradeListItems = [
 export interface TradeListProps {}
 
 export const TradeList = (props: TradeListProps) => {
-  const { width, height, minHeight, maxHeight, handleResizeStop } = useResizable({
-    initialWidth: 240,
-    initialHeight: 242,
-    minHeight: 120,
-    maxHeight: 800,
-  });
-
   return (
     <div className="TradeList min-h-[236px]">
-      <Resizable
-        size={{ width, height }}
-        minHeight={minHeight}
-        maxHeight={maxHeight}
-        enable={{
-          top: false,
-          right: false,
-          bottom: true,
-          left: false,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
-        }}
-        onResizeStop={handleResizeStop}
+      <ResizablePanel
+        initialWidth={240}
+        initialHeight={242}
+        minHeight={120}
+        maxHeight={800}
+        minWidth={240}
         className="relative flex flex-col pb-2 overflow-hidden panel"
+        bottom
       >
         <div className="sticky flex items-stretch flex-none border-b">
           <div className="flex items-center flex-auto px-3">
@@ -86,7 +71,7 @@ export const TradeList = (props: TradeListProps) => {
             </div>
           ))}
         </div>
-      </Resizable>
+      </ResizablePanel>
     </div>
   );
 };

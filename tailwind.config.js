@@ -15,7 +15,8 @@ export const darkMode = 'class';
 export const theme = {
   extend: {
     fontFamily: {
-      mono: ['Source Code Pro', monospace],
+      // mono: ['Source Code Pro', monospace],
+      mono: ['Work Sans', ...defaultTheme.fontFamily.sans],
       // sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       // serif: ["OffBit regular", "VCR mono", ...defaultTheme.fontFamily.serif],
       // display: ["VCR mono", ...defaultTheme.fontFamily.sans],
@@ -46,10 +47,10 @@ export const theme = {
         DEFAULT: 'rgb(var(--color-paper))',
         light: 'rgb(var(--color-gray-light) / var(--alpha-paper-light))',
         lighter: 'rgb(var(--color-gray-lighter) / var(--alpha-paper-light))',
-        lightest: 'rgb(var(--color-paper-light))',
+        lightest: 'rgb(var(--color-paper-lightest))',
         dark: 'rgb(var(--color-gray-dark) / var(--alpha-paper-dark))',
         darker: 'rgb(var(--color-gray-darker) / var(--alpha-paper-dark))',
-        darkest: 'rgb(var(--color-paper-dark))',
+        darkest: 'rgb(var(--color-paper-darkest))',
       },
 
       info: {
@@ -69,9 +70,16 @@ export const theme = {
         light: 'rgb(var(--color-error-light))',
       },
 
+      leverage: 'rgb(var(--color-leverage))',
       price: {
-        higher: 'rgb(var(--color-price-higher))',
-        lower: 'rgb(var(--color-price-lower))',
+        higher: {
+          DEFAULT: 'rgb(var(--color-price-higher))',
+          light: 'rgb(var(--color-price-higher-light)) / 0.19',
+        },
+        lower: {
+          DEFAULT: 'rgb(var(--color-price-lower))',
+          light: 'rgb(var(--color-price-lower-light)) / 0.19',
+        },
       },
       status: {
         standby: {
@@ -87,6 +95,11 @@ export const theme = {
           light: 'rgb(var(--color-status-inprogress-light))',
         },
       },
+      risk: {
+        high: 'rgb(var(--color-risk-high))',
+        mid: 'rgb(var(--color-risk-mid))',
+        low: 'rgb(var(--color-risk-low))',
+      },
     },
 
     boxShadow: {
@@ -100,7 +113,7 @@ export const theme = {
       xs: ['10px', 'normal'],
       sm: ['11px', 'normal'],
       base: ['12px', 'normal'],
-      lg: ['14px', 'normal'],
+      lg: ['13px', 'normal'],
       xl: ['16px', 'normal'],
       '2xl': ['18px', 'normal'],
       '3xl': ['20px', 'normal'],
@@ -119,4 +132,4 @@ export const theme = {
     },
   },
 };
-export const plugins = [];
+export const plugins = [require('tailwind-scrollbar-hide')];

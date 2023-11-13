@@ -1,46 +1,57 @@
 .wrapper-tooltip {
-  @apply flex items-center self-center;
-  .react-tooltip {
-    @apply !opacity-100;
+  @apply inline-flex items-center self-center;
+  [role='tooltip'] {
+    @apply invisible;
+  }
+  &:hover [role='tooltip'],
+  .react-tooltip__show {
+    @apply visible opacity-100;
   }
   .tooltip-icon {
-    @apply inline-flex relative;
+    @apply inline-flex relative mx-1;
+  }
+  &:first-child .tooltip-icon {
+    @apply ml-0;
+  }
+  &:last-child .tooltip-icon {
+    @apply mr-0;
   }
   .tooltip-base {
-    @apply max-w-[420px];
+    @apply w-fit max-w-[420px];
   }
   .tooltip {
-    @apply rounded-lg;
+    @apply rounded-lg inline-flex;
   }
   .tooltip-solid {
     @apply bg-primary text-inverted;
   }
   .tooltip-outline {
     @apply border;
-    @apply bg-inverted text-primary border-gray-light dark:border-gray-lighter;
+    @apply bg-paper/60 backdrop-blur-xl text-primary border-gray-lighter;
+
     &.react-tooltip__place-top .react-tooltip-arrow,
     &.react-tooltip__place-top-start .react-tooltip-arrow,
     &.react-tooltip__place-top-end .react-tooltip-arrow {
       @apply border-r border-b mb-[-.5px];
-      @apply border-gray-light dark:border-gray-lighter;
+      @apply border-gray-lighter;
     }
     &.react-tooltip__place-right .react-tooltip-arrow,
     &.react-tooltip__place-right-start .react-tooltip-arrow,
     &.react-tooltip__place-right-end .react-tooltip-arrow {
-      @apply border-b border-l ml-[-.5px];
-      @apply border-gray-light dark:border-gray-lighter;
+      @apply border-b border-r ml-[-.5px];
+      @apply border-gray-lighter;
     }
     &.react-tooltip__place-bottom .react-tooltip-arrow,
     &.react-tooltip__place-bottom-start .react-tooltip-arrow,
     &.react-tooltip__place-bottom-end .react-tooltip-arrow {
-      @apply border-l border-t mt-[-.5px];
-      @apply border-gray-light dark:border-gray-lighter;
+      @apply border-r border-b mt-[-.5px];
+      @apply border-gray-lighter;
     }
     &.react-tooltip__place-left .react-tooltip-arrow,
     &.react-tooltip__place-left-start .react-tooltip-arrow,
     &.react-tooltip__place-left-end .react-tooltip-arrow {
-      @apply border-t border-r mr-[-.5px];
-      @apply border-gray-light dark:border-gray-lighter;
+      @apply border-b border-r mr-[-.5px];
+      @apply border-gray-lighter;
     }
   }
 }

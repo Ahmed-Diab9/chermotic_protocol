@@ -7,9 +7,9 @@ interface TabsProps {
 
 export const Tabs = (props: TabsProps) => {
   return (
-    <div className="tabs">
+    <div className="wrapper-tabs">
       <Tab.Group>
-        <Tab.List>
+        <Tab.List className="tabs-list">
           <Tab>Tab 1</Tab>
           <Tab>Tab 2</Tab>
           <Tab>Tab 3</Tab>

@@ -20,8 +20,8 @@ import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
 import { useMarket } from './useMarket';
 
-export type LpReceiptAction = 'add' | 'remove';
-export interface LpReceipt {
+export type PoolReceiptAction = 'add' | 'remove';
+export interface PoolReceipt {
   id: bigint;
   version: bigint;
   amount: bigint;
@@ -29,8 +29,9 @@ export interface LpReceipt {
   feeRate: number;
   status: 'standby' | 'in progress' | 'completed'; // "standby";
   name: string;
+  image: string;
   burningAmount: bigint;
-  action: LpReceiptAction;
+  action: PoolReceiptAction;
   progressPercent: number;
   totalCLBAmount: bigint;
   remainedCLBAmount: bigint;
@@ -84,7 +85,6 @@ const usePoolReceipt = () => {
     name: 'getPoolReceipt',
     type: 'EOA',
     address: walletAddress,
-    currentOracleVersion: currentMarket?.oracleValue.version,
     marketAddress: currentMarket?.address,
     liquidityPool: liquidityPool,
   };
@@ -95,9 +95,11 @@ const usePoolReceipt = () => {
     isLoading: isReceiptsLoading,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ marketAddress, address, currentOracleVersion, liquidityPool }) => {
+    async ({ marketAddress, address, liquidityPool }) => {
       const lensApi = client.lens();
+      const marketApi = client.market();
       const receipts = await lensApi.contracts().lens.read.lpReceipts([marketAddress, address]);
+      const marketOracle = await marketApi.getCurrentPrice(marketAddress);
       if (!receipts) {
         return [];
       }
@@ -153,11 +155,11 @@ const usePoolReceipt = () => {
             burnedSettlementAmount +
             mulPreserved(remainedCLBAmount, bin.clbTokenValue, bin.clbTokenDecimals);
 
-          let status: LpReceipt['status'] = 'standby';
+          let status: PoolReceipt['status'] = 'standby';
           status = receiptDetail(
             action,
             receiptOracleVersion,
-            currentOracleVersion,
+            marketOracle.version,
             claimableLiquidityForReceipt,
             pendingRemoveLiquidityMap[tradingFeeRate]
           );
@@ -171,6 +173,7 @@ const usePoolReceipt = () => {
             version: receiptOracleVersion,
             recipient,
             name: binName(tradingFeeRate, currentMarket?.description),
+            image: bin.clbTokenImage,
             burningAmount: action === 0 ? 0n : burnedSettlementAmount,
             progressPercent: Number(
               formatDecimals(
@@ -184,15 +187,15 @@ const usePoolReceipt = () => {
             ),
             totalCLBAmount: amount,
             remainedCLBAmount: remainedCLBAmount,
-          } satisfies LpReceipt;
+          } satisfies PoolReceipt;
           return result;
         })
-        .filter((receipt): receipt is NonNullable<LpReceipt> => !!receipt);
+        .filter((receipt): receipt is NonNullable<PoolReceipt> => !!receipt);
     }
   );
 
   const onClaimCLBTokens = useCallback(
-    async (receiptId: bigint, action?: LpReceipt['action']) => {
+    async (receiptId: bigint, action?: PoolReceipt['action']) => {
       const routerApi = client.router();
       if (isNil(currentMarket)) {
         errorLog('no selected markets');

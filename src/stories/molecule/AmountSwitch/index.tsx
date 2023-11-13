@@ -1,7 +1,8 @@
-import { Input } from '~/stories/atom/Input';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+// import { Input } from '~/stories/atom/Input';
+import { OptionInput } from '~/stories/atom/OptionInput';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { numberFormat } from '~/utils/number';
+
 interface AmountSwitchProps {
   collateral: string;
   quantity: string;
@@ -10,8 +11,11 @@ interface AmountSwitchProps {
   disabled: boolean;
   disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
   tokenName?: string;
+  tokenImage?: string;
   minAmount: string;
-  onAmountChange: (value: string) => unknown;
+  maxAmount: string | number;
+  optionInputDirection?: 'row' | 'column';
+  onAmountChange: (value: string, hasMax?: boolean) => unknown;
 }
 
 export const AmountSwitch = (props: AmountSwitchProps) => {
@@ -23,8 +27,11 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     disabled,
     disableDetail,
     tokenName,
+    tokenImage,
     onAmountChange,
     minAmount,
+    maxAmount,
+    optionInputDirection,
   } = props;
 
   const errors = {
@@ -54,28 +61,35 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
 
   return (
     <>
-      <div className="max-w-[220px]">
+      <div className="">
         <div className={`tooltip-input-balance-${direction}`}>
-          <Input
+          <OptionInput
             value={preset.value.toString()}
+            maxValue={maxAmount}
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}
+            errorMsg={errorMessage}
+            assetSrc={tokenImage}
+            direction={optionInputDirection}
+            size="lg"
           />
-          {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />}
+          {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">
-        <TooltipGuide
-          label="contract-qty"
-          tip={preset.tooltip}
-          outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
-          outLinkAbout="Payoff"
-        />
         <p>{preset.subLabel}</p>
         <p className="ml-2 text-lg text-black2">
           {numberFormat(preset.subValue, { maxDigits: 5, useGrouping: true })} {tokenName}
         </p>
+        <div className="ml-1">
+          <TooltipGuide
+            label="contract-qty"
+            tip={preset.tooltip}
+            outLink="https://chromatic-protocol.gitbook.io/docs/trade/tp-sl-configuration"
+            outLinkAbout="Payoff"
+          />
+        </div>
       </div>
     </>
   );

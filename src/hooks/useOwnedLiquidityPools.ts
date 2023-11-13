@@ -3,17 +3,18 @@ import {
   ChromaticMarket,
   utils as ChromaticUtils,
 } from '@chromatic-protocol/sdk-viem';
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
+import { trimMarkets } from '~/utils/market';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
-import { PromiseOnlySuccess } from '../utils/promise';
+import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useMarket } from './useMarket';
+import { useEntireMarkets, useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 const { encodeTokenId } = ChromaticUtils;
@@ -26,87 +27,100 @@ async function getLiquidityPool(
   tokenAddress: Address
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-  const binsResponse = bins.map(async (bin) => {
-    const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
-    const { name, decimals, description, image } = await marketApi.clbTokenMeta(
-      marketAddress,
-      tokenId
-    );
-    return {
-      liquidity: bin.liquidity,
-      freeLiquidity: bin.freeLiquidity,
-      removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
-      clbTokenName: name,
-      clbTokenImage: image,
-      clbTokenDescription: description,
-      clbTokenDecimals: decimals,
-      clbTokenBalance: bin.clbBalance,
-      clbTokenValue: bin.clbValue,
-      clbTotalSupply: bin.clbTotalSupply,
-      binValue: bin.binValue,
-      clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
-      baseFeeRate: bin.tradingFeeRate,
-      tokenId: tokenId,
-    } satisfies OwnedBin;
-  });
-  const filteredBins = await PromiseOnlySuccess(binsResponse);
-  return { tokenAddress, marketAddress, bins: filteredBins };
+  const detailedBins = await promiseSlowLoop(
+    bins,
+    async (bin) => {
+      const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
+      const { name, decimals, description, image } = await marketApi.clbTokenMeta(
+        marketAddress,
+        tokenId
+      );
+      return {
+        liquidity: bin.liquidity,
+        freeLiquidity: bin.freeLiquidity,
+        removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
+        clbTokenName: name,
+        clbTokenImage: image,
+        clbTokenDescription: description,
+        clbTokenDecimals: decimals,
+        clbTokenBalance: bin.clbBalance,
+        clbTokenValue: bin.clbValue,
+        clbTotalSupply: bin.clbTotalSupply,
+        binValue: bin.binValue,
+        clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
+        baseFeeRate: bin.tradingFeeRate,
+        tokenId: tokenId,
+      } satisfies OwnedBin;
+    },
+    {
+      interval: 400,
+    }
+  );
+  return { tokenAddress, marketAddress, bins: detailedBins };
 }
 
 export const useOwnedLiquidityPools = () => {
   const { client, walletAddress } = useChromaticClient();
-  const { currentToken } = useSettlementToken();
-  const { markets, currentMarket } = useMarket();
-  const marketAddresses = useMemo(() => markets?.map((market) => market.address), [markets]);
+  const { tokens, currentToken } = useSettlementToken();
+  const { currentMarket } = useMarket();
+  const { markets } = useEntireMarkets();
 
   const fetchKey = {
     name: 'getOwnedPools',
     type: 'EOA',
     address: walletAddress,
-    tokenAddress: currentToken?.address,
-    marketAddresses: marketAddresses,
+    tokens,
+    markets: trimMarkets(markets),
   };
 
   const {
     data: ownedPools,
     error,
     mutate: fetchOwnedPools,
-  } = useSWR(
-    checkAllProps(fetchKey) ? fetchKey : null,
-    async ({ address, marketAddresses, tokenAddress }) => {
-      const lensApi = client.lens();
-      const marketApi = client.market();
+  } = useSWR(checkAllProps(fetchKey) ? fetchKey : null, async ({ address, tokens, markets }) => {
+    const lensApi = client.lens();
+    const marketApi = client.market();
 
-      const poolsResponse = await PromiseOnlySuccess(
-        marketAddresses.map(async (marketAddress) => {
-          return getLiquidityPool(lensApi, marketApi, address, marketAddress, tokenAddress);
-        })
-      );
-      return poolsResponse;
-    }
-  );
+    const poolsResponse = await PromiseOnlySuccess(
+      markets.map(async (market) => {
+        const token = tokens.find((token) => token.address === market.tokenAddress);
+        if (isNil(token)) {
+          throw new Error('Tokens not found.');
+        }
+        return getLiquidityPool(lensApi, marketApi, address, market.address, token.address);
+      })
+    );
+    return poolsResponse;
+  });
 
   function fetchCurrentOwnedPool() {
-    fetchOwnedPools(async (ownedPools) => {
-      if (isNil(ownedPools) || isNil(walletAddress) || isNil(currentMarket) || isNil(currentToken))
-        return ownedPools;
+    fetchOwnedPools<{ tokenAddress: Address; marketAddress: Address; bins: OwnedBin[] }[]>(
+      async (ownedPools) => {
+        if (
+          isNil(ownedPools) ||
+          isNil(walletAddress) ||
+          isNil(currentMarket) ||
+          isNil(currentToken)
+        )
+          return ownedPools;
 
-      const filteredPoolData = ownedPools?.filter(
-        (pool) => pool.marketAddress !== currentMarket?.address
-      );
+        const filteredPoolData = ownedPools?.filter(
+          (pool) => pool.marketAddress !== currentMarket?.address
+        );
 
-      const lensApi = client.lens();
-      const marketApi = client.market();
+        const lensApi = client.lens();
+        const marketApi = client.market();
 
-      const newPoolData = await getLiquidityPool(
-        lensApi,
-        marketApi,
-        walletAddress,
-        currentMarket.address,
-        currentToken.address
-      );
-      return [...filteredPoolData, newPoolData];
-    });
+        const newPoolData = await getLiquidityPool(
+          lensApi,
+          marketApi,
+          walletAddress,
+          currentMarket.address,
+          currentToken.address
+        );
+        return [...filteredPoolData, newPoolData];
+      }
+    );
   }
 
   const currentOwnedPool = ownedPools?.find(
@@ -114,19 +128,23 @@ export const useOwnedLiquidityPools = () => {
   );
 
   const ownedPoolSummary = useMemo(() => {
-    if (isNil(ownedPools) || isNil(currentToken) || isNil(markets)) return [];
+    if (isNil(ownedPools) || isNil(tokens) || isNil(markets)) return [];
 
-    const array: LiquidityPoolSummary[] = markets.map((market) => {
-      const { description: marketDescription } = market;
+    const array: (LiquidityPoolSummary | undefined)[] = markets.map((market) => {
+      const { description: marketDescription, image: marketImage } = market;
+      const token = tokens.find((token) => token.address === market.tokenAddress);
       const pool = ownedPools.find((pool) => pool.marketAddress === market.address);
-
+      if (isNil(token)) {
+        return undefined;
+      }
       if (isNil(pool)) {
         return {
           token: {
-            name: currentToken.name,
-            decimals: currentToken.decimals,
+            name: token.name,
+            decimals: token.decimals,
           },
           market: marketDescription,
+          image: marketImage,
           liquidity: 0n,
           bins: 0,
         };
@@ -136,17 +154,20 @@ export const useOwnedLiquidityPools = () => {
 
       return {
         token: {
-          name: currentToken.name,
-          decimals: currentToken.decimals,
+          name: token.name,
+          decimals: token.decimals,
         },
         market: marketDescription,
+        image: marketImage,
         liquidity: liquiditySum,
         bins: pool.bins.length,
       };
     });
 
-    return array;
-  }, [ownedPools, currentToken, markets]);
+    return array.filter((summaryInfo): summaryInfo is LiquidityPoolSummary =>
+      isNotNil(summaryInfo)
+    );
+  }, [ownedPools, tokens, markets]);
 
   useError({ error });
 

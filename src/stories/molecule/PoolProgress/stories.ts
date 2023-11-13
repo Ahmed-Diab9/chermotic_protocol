@@ -23,6 +23,7 @@ export const Default: Story = {
       address: '0x8888888888888888888888888888888888888888',
       tokenAddress: '0x8888888888888888888888888888888888888888',
       description: 'ETH/USD',
+      image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
       oracleValue: {
         price: 10000n,
         timestamp: 1000000n,
@@ -116,6 +117,7 @@ export const Empty: Story = {
       address: '0x8888888888888888888888888888888888888888',
       tokenAddress: '0x8888888888888888888888888888888888888888',
       description: 'ETH/USD',
+      image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
       oracleValue: {
         price: 10000n,
         timestamp: 1000000n,
@@ -138,6 +140,7 @@ export const EmptyMinting: Story = {
       address: '0x8888888888888888888888888888888888888888',
       tokenAddress: '0x8888888888888888888888888888888888888888',
       description: 'ETH/USD',
+      image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
       oracleValue: {
         price: 10000n,
         timestamp: 1000000n,

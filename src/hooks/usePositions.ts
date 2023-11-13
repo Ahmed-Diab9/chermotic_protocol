@@ -1,17 +1,23 @@
 import {
   ChromaticAccount,
+  ChromaticMarket,
   ChromaticPosition,
   IPosition as IChromaticPosition,
 } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useMarket } from '~/hooks/useMarket';
-import { Market, Token } from '~/typings/market';
+import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
+import { MarketLike } from '~/typings/market';
+import { OracleVersion } from '~/typings/oracleVersion';
 import { POSITION_STATUS, Position } from '~/typings/position';
 import { Logger } from '~/utils/log';
+import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
@@ -36,49 +42,102 @@ function determinePositionStatus(position: IChromaticPosition, currentOracleVers
 async function getPositions(
   accountApi: ChromaticAccount,
   positionApi: ChromaticPosition,
-  market: Market,
-  token: Token
+  marketApi: ChromaticMarket,
+  markets: MarketLike[],
+  walletAddress: Address
 ) {
-  if (market.tokenAddress !== token.address) {
-    return [];
+  const tuplesPromise = markets
+    .map((market) => {
+      const idsPromise = accountApi.getPositionIds(market.address);
+      const oraclePromise = marketApi.getCurrentPrice(market.address);
+      return [market.address, market.tokenAddress, oraclePromise, idsPromise] as const;
+    })
+    .flat(1);
+  const tuples = await Promise.allSettled(tuplesPromise);
+  const marketOracles = {} as Record<Address, OracleVersion>;
+  const positionIds = [] as [Address, Address, bigint[]][];
+  for (let index = 0; index < tuples.length; index++) {
+    const item = tuples[index];
+    if (item.status === 'rejected') {
+      continue;
+    }
+    const tupleIndex = index % 4;
+    const marketIndex = Math.floor(index / 4);
+    switch (tupleIndex) {
+      case 0: {
+        const marketAddress = item.value as Address;
+        marketOracles[marketAddress] = {} as OracleVersion;
+        positionIds[marketIndex] = [marketAddress, '0x', []];
+        continue;
+      }
+      case 1: {
+        const tokenAddress = item.value as Address;
+        positionIds[marketIndex][1] = tokenAddress;
+        continue;
+      }
+      case 2: {
+        marketOracles[positionIds[marketIndex][0]] = item.value as OracleVersion;
+        continue;
+      }
+      case 3: {
+        positionIds[marketIndex][2] = item.value as bigint[];
+        continue;
+      }
+    }
   }
-  const positionIds = await accountApi.getPositionIds(market.address);
+  const positionsResponse = positionIds.map(async ([marketAddress, tokenAddress, ids]) => {
+    const positions = await positionApi.getPositions(marketAddress, [...ids]);
+    return positions.map((position) => ({ ...position, marketAddress, tokenAddress }));
+  });
+  const positions = (await PromiseOnlySuccess(positionsResponse)).flat(1);
 
-  const positions = await positionApi.getPositions(market.address, [...positionIds]);
-
-  const { price: currentPrice, version: currentVersion } = market.oracleValue;
   const withLiquidation = await PromiseOnlySuccess(
-    positions.map(async (position) => {
-      const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
-        market.address,
-        position.openPrice,
-        position
-      );
+    positions
+      .filter((position) => position.owner === walletAddress)
+      .map(async (position) => {
+        const { price: currentPrice, version: currentVersion } =
+          marketOracles[position.marketAddress];
+        const { profitStopPrice = 0n, lossCutPrice = 0n } = await positionApi.getLiquidationPrice(
+          position.marketAddress,
+          position.openPrice,
+          position
+        );
+        return {
+          ...position,
+          lossPrice: lossCutPrice ?? 0n,
+          profitPrice: profitStopPrice ?? 0n,
+          collateral: position.takerMargin, //TODO ,
+          status: determinePositionStatus(position, currentVersion),
+          toLoss: isNotNil(lossCutPrice)
+            ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
+            : 0n,
+          toProfit: isNotNil(profitStopPrice)
+            ? divPreserved(profitStopPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
+            : 0n,
+        } as Position;
+      })
+  );
+  const withPnl = await PromiseOnlySuccess(
+    withLiquidation.map(async (position) => {
+      const { price: currentPrice } = marketOracles[position.marketAddress];
       const targetPrice =
         position.closePrice && position.closePrice !== 0n ? position.closePrice : currentPrice;
       const pnl = position.openPrice
-        ? await positionApi.getPnl(market.address, position.openPrice, targetPrice, position)
+        ? await positionApi.getPnl(
+            position.marketAddress,
+            position.openPrice,
+            targetPrice,
+            position
+          )
         : 0n;
       return {
         ...position,
-        tokenAddress: token.address,
-        marketAddress: market.address,
-        lossPrice: lossCutPrice ?? 0n,
-        profitPrice: profitStopPrice ?? 0n,
         pnl,
-        collateral: position.takerMargin, //TODO ,
-        status: determinePositionStatus(position, currentVersion),
-        toLoss: isNotNil(lossCutPrice)
-          ? divPreserved(lossCutPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
-          : 0n,
-        toProfit: isNotNil(profitStopPrice)
-          ? divPreserved(profitStopPrice - currentPrice, currentPrice, ORACLE_PROVIDER_DECIMALS)
-          : 0n,
       } satisfies Position;
     })
   );
 
-  return withLiquidation.sort((leftPosition, rightPosition) => {
+  return withPnl.sort((leftPosition, rightPosition) => {
     return leftPosition.id < rightPosition.id ? 1 : -1;
   });
 }
@@ -86,15 +145,20 @@ async function getPositions(
 export const usePositions = () => {
   const { accountAddress } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
+  const { markets: entireMarkets } = useEntireMarkets();
   const { markets, currentMarket } = useMarket();
   const { client } = useChromaticClient();
+  const filterOption = useAppSelector((state) => state.position.filterOption);
+  const dispatch = useAppDispatch();
 
   const fetchKey = {
     name: 'getPositions',
     type: 'EOA',
-    markets: markets,
+    markets: trimMarkets(markets),
+    entireMarkets: trimMarkets(entireMarkets),
+    currentMarket: trimMarket(currentMarket),
     chromaticAccount: accountAddress,
-    currentToken: currentToken,
+    filterOption,
   };
 
   const {
@@ -102,34 +166,55 @@ export const usePositions = () => {
     error,
     mutate: fetchPositions,
     isLoading,
-  } = useSWR(checkAllProps(fetchKey) && fetchKey, async ({ currentToken, markets }) => {
-    const accountApi = client.account();
-    const positionApi = client.position();
+  } = useSWR(
+    checkAllProps(fetchKey) && fetchKey,
+    async ({ markets, entireMarkets, currentMarket, filterOption, chromaticAccount }) => {
+      const accountApi = client.account();
+      const positionApi = client.position();
+      const marketApi = client.market();
 
-    const positionsResponse = await PromiseOnlySuccess(
-      markets.map(async (market) => {
-        return getPositions(accountApi, positionApi, market, currentToken);
-      })
-    );
-    return positionsResponse.flat(1);
-  });
+      const filteredMarkets =
+        filterOption === 'ALL'
+          ? entireMarkets
+          : filterOption === 'TOKEN_BASED'
+          ? markets
+          : markets.filter((market) => market.address === currentMarket.address);
+      return getPositions(accountApi, positionApi, marketApi, filteredMarkets, chromaticAccount);
+    }
+  );
 
-  function fetchCurrentPositions() {
-    fetchPositions(async (positions) => {
-      if (isNil(positions) || isNil(accountAddress) || isNil(currentMarket) || isNil(currentToken))
-        return positions;
+  const fetchCurrentPositions = useCallback(
+    async (marketAddress: Address) => {
+      if (isLoading) {
+        return;
+      }
+      if (isNil(positions) || isNil(accountAddress) || isNil(accountAddress)) return positions;
 
       const filteredPositions = positions
         ?.filter((p) => !!p)
-        .filter((position) => position.marketAddress !== currentMarket?.address);
+        .filter((position) => position.marketAddress !== marketAddress);
 
       const accountApi = client.account();
       const positionApi = client.position();
+      const marketApi = client.market();
+      const foundMarket = markets?.find((market) => market.address === marketAddress);
+      if (isNil(foundMarket)) {
+        return;
+      }
 
-      const newPositions = await getPositions(accountApi, positionApi, currentMarket, currentToken);
-      return [...filteredPositions, ...newPositions];
-    });
-  }
+      const newPositions = await getPositions(
+        accountApi,
+        positionApi,
+        marketApi,
+        [foundMarket],
+        accountAddress
+      );
+      const mergedPositions = [...filteredPositions, ...newPositions];
+      mergedPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
+      await fetchPositions<Position[]>(mergedPositions, { revalidate: false });
+    },
+    [client, isLoading, markets, positions, accountAddress, fetchPositions]
+  );
 
   const currentPositions = useMemo(() => {
     return positions?.filter(
@@ -137,6 +222,12 @@ export const usePositions = () => {
         marketAddress === currentMarket?.address && tokenAddress === currentToken?.address
     );
   }, [positions, currentMarket, currentToken]);
+
+  useEffect(() => {
+    if (isNotNil(positions) && !isLoading) {
+      dispatch(loadedAction.onDataLoaded('positions'));
+    }
+  }, [dispatch, isLoading, positions]);
 
   useError({
     error,

@@ -4,6 +4,7 @@ export interface Token {
   name: string;
   address: Address;
   decimals: number;
+  image: string;
   minimumMargin: bigint;
 }
 
@@ -25,4 +26,13 @@ export interface Market {
     price: bigint;
   };
   tokenAddress: Address;
+  image: string;
+}
+
+export type MarketLike = Omit<Market, 'oracleValue'>;
+
+export interface Bookmark {
+  id: string;
+  tokenName: string;
+  marketDescription: string;
 }

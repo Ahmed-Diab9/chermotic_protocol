@@ -8,7 +8,7 @@ import { useMarket } from './useMarket';
 export const useMarketLocal = () => {
   const { markets, isMarketLoading } = useMarket();
   const dispatch = useAppDispatch();
-  const { state: storedMarket, deleteState: deleteMarket } = useLocalStorage('app:market');
+  const { state: storedMarket, setState: setStoredMarket } = useLocalStorage<string>('app:market');
 
   const onMount = useCallback(() => {
     if (isMarketLoading) {
@@ -22,6 +22,9 @@ export const useMarketLocal = () => {
     market = markets?.[0];
     if (isNotNil(market)) {
       dispatch(marketAction.onMarketSelect(market));
+
+      // Store the description of market only when local storage don't have one.
+      setStoredMarket(market.description);
       return;
     }
   }, [markets, isMarketLoading, storedMarket, dispatch]);
