@@ -61,7 +61,7 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex flex-col items-end ${className}`}>
       {errorMsg && <p className={`mb-2 text-price-lower text-${errorMsgAlign}`}>{errorMsg}</p>}
       <div
         className={`flex ${
