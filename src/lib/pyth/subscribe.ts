@@ -1,17 +1,24 @@
-import { useRef } from 'react';
-import useSWRSubscription from 'swr/subscription';
-
 import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 import { PythStreamData } from '~/typings/api';
 
 const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
 
-export function useSubscribePythFeed() {
-  const subscriberRef = useRef<(() => Promise<void>) | undefined>(undefined);
+export async function subscribePythFeed() {
+  let unsubscriber: (() => Promise<void>) | undefined;
 
-  async function startStreaming(next: (props: PythStreamData) => void, retries = 5, delay = 3000) {
+  const RETRY_DELAY = 1000;
+
+  async function startStreaming(
+    next: (props: PythStreamData) => void,
+    retries = 10,
+    delay = RETRY_DELAY
+  ) {
     try {
-      const response = await fetch(streamingUrl);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), delay);
+      const response = await fetch(streamingUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
       if (!response.body) {
         throw new Error('null body');
       }
@@ -51,6 +58,7 @@ export function useSubscribePythFeed() {
         await reader.cancel();
         reader.releaseLock();
         await response.body?.cancel();
+        return;
       };
     } catch (err) {
       attemptReconnect(retries, delay);
@@ -59,10 +67,8 @@ export function useSubscribePythFeed() {
     function attemptReconnect(retriesLeft: number, delay: number) {
       if (retriesLeft > 0) {
         console.log(`[stream] Attempting to reconnect in ${delay}ms...`);
-        setTimeout(() => {
-          startStreaming(next, retriesLeft - 1, delay).then((unsubscriber) => {
-            subscriberRef.current = unsubscriber;
-          });
+        setTimeout(async () => {
+          unsubscriber = await startStreaming(next, retriesLeft - 1, delay);
         }, delay);
       } else {
         console.error('[stream] Maximum reconnection attempts reached.');
@@ -70,22 +76,15 @@ export function useSubscribePythFeed() {
     }
   }
 
-  useSWRSubscription('subscribePricefeed', () => {
-    function subscriber(data: PythStreamData) {
-      window.dispatchEvent(
-        new CustomEvent('price-update', {
-          detail: data,
-        })
-      );
-    }
+  function subscriber(data: PythStreamData) {
+    window.dispatchEvent(
+      new CustomEvent('price-update', {
+        detail: data,
+      })
+    );
+  }
 
-    startStreaming(subscriber).then((unsubscriber) => {
-      subscriberRef.current = unsubscriber;
-    });
-    return async () => {
-      if (subscriberRef.current) {
-        await subscriberRef.current();
-      }
-    };
-  });
+  unsubscriber = await startStreaming(subscriber);
+
+  return unsubscriber;
 }
