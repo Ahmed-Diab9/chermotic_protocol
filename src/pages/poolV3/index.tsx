@@ -24,6 +24,7 @@ import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
 import { formatDecimals } from '~/utils/number';
+import { usePoolDetail } from '~/stories/template/PoolDetail/hooks';
 import './style.css';
 
 const PoolV3 = () => {
@@ -31,6 +32,7 @@ const PoolV3 = () => {
   useMarketLocal();
   useLpLocal();
   const { onLoadBackgroundRef } = useBackgroundGradient();
+  const { onCLPRegister } = usePoolDetail();
 
   const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
@@ -52,6 +54,7 @@ const PoolV3 = () => {
     }
     return '';
   }, [selectedLp]);
+
   const lpDescription = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
       case 'high risk': {
@@ -99,6 +102,9 @@ const PoolV3 = () => {
                     className="ml-4 !pl-2 !py-1"
                     gap="1"
                     size="sm"
+                    onClick={() => {
+                      onCLPRegister();
+                    }}
                   />
                 </div>
                 <p className="text-lg text-primary-light">{lpDescription}</p>
