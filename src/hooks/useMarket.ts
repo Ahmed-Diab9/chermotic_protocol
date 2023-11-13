@@ -26,30 +26,36 @@ export const useEntireMarkets = () => {
     data: markets,
     error,
     isLoading: isMarketsLoading,
-  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ tokenAddresses }) => {
-    const response = await PromiseOnlySuccess(
-      tokenAddresses.map(async (tokenAddress) => {
-        const marketFactoryApi = client.marketFactory();
-        const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
-        const marketNames = markets.map(
-          (market) => market.description.split(/\s*\/\s*/) as [string, string]
-        );
-        const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
-        return markets.map((market, marketIndex) => {
-          const description = marketNames[marketIndex].join('/');
+  } = useSWR(
+    isReady && checkAllProps(fetchKey) && fetchKey,
+    async ({ tokenAddresses }) => {
+      const response = await PromiseOnlySuccess(
+        tokenAddresses.map(async (tokenAddress) => {
+          const marketFactoryApi = client.marketFactory();
+          const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
+          const marketNames = markets.map(
+            (market) => market.description.split(/\s*\/\s*/) as [string, string]
+          );
+          const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
+          return markets.map((market, marketIndex) => {
+            const description = marketNames[marketIndex].join('/');
 
-          return {
-            ...market,
-            description,
-            tokenAddress,
-            image: marketImageMap[marketNames[marketIndex][0]],
-          } satisfies Market;
-        });
-      })
-    );
+            return {
+              ...market,
+              description,
+              tokenAddress,
+              image: marketImageMap[marketNames[marketIndex][0]],
+            } satisfies Market;
+          });
+        })
+      );
 
-    return response.flat();
-  });
+      return response.flat();
+    },
+    {
+      refreshInterval: 1000 * 30,
+    }
+  );
 
   useError({ error });
 
