@@ -73,7 +73,7 @@ export const LiquidityTooltip = ({
         const { clbTokenValue, liquidity, utilized, ratio } = getLiquidity(feeRate);
         return (
           <div>
-            <p className="font-semibold text-primary">Liquidity Bin {feeRate}</p>
+            <p className="font-semibold text-primary">Liquidity Bin {feeRate}%</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
               <p>
                 Bin Utilization: {utilized} ({ratio}%)
