@@ -1,6 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { OutlinkIcon } from '~/assets/icons/Icon';
+import { Loading } from '~/stories/atom/Loading';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
 import GalxeIcon from '~/assets/images/galxe.png';
@@ -109,11 +110,12 @@ function Airdrop() {
                               <h2 className="text-4xl">My Activities</h2>
                               <div className="flex items-center gap-3">
                                 <p className="text-lg text-primary-light">
-                                  Zealy PX is automatically reflected as a credit once an hour. 1PX
-                                  = 1Credit
+                                  Please convert your Zealy XP to Credit. 1XP = 1Credit
                                 </p>
                                 <Button
-                                  label="Update Now"
+                                  label="Convert XP to Credit"
+                                  // TODO: show icon when loading
+                                  iconRight={<Loading />}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"

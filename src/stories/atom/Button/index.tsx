@@ -13,6 +13,7 @@ export interface ButtonProps {
     | 'unstyled'
     | 'underlined'
     | 'translucent'
+    | 'active-translucent'
     | 'long'
     | 'short'
     | 'chrm'

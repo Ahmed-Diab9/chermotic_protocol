@@ -62,8 +62,8 @@ export const HeaderV3 = (props: HeaderV3Props) => {
             <Button
               label="faucet"
               href={`/faucet`}
-              css="translucent"
-              className="capitalize !gap-1 !bg-primary/10 !h-[40px]"
+              css="active-translucent"
+              className="capitalize !gap-1 !h-[40px]"
               size="lg"
               iconRight={<WaterdropIcon className="!w-3 !h-3" />}
             />

@@ -24,6 +24,7 @@ import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
 import { formatDecimals } from '~/utils/number';
+import { usePoolDetail } from '~/stories/template/PoolDetail/hooks';
 import './style.css';
 
 const PoolV3 = () => {
@@ -31,6 +32,7 @@ const PoolV3 = () => {
   useMarketLocal();
   useLpLocal();
   const { onLoadBackgroundRef } = useBackgroundGradient();
+  const { onCLPRegister } = usePoolDetail();
 
   const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
@@ -48,6 +50,21 @@ const PoolV3 = () => {
       }
       case 'low risk': {
         return 'tag-risk-low';
+      }
+    }
+    return '';
+  }, [selectedLp]);
+
+  const lpDescription = useMemo(() => {
+    switch (selectedLp?.tag.toLowerCase()) {
+      case 'high risk': {
+        return 'Liquidity is provided at a same amount from low to high fee bins.';
+      }
+      case 'mid risk': {
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. However, there is less difference between the highest and lowest fee bins than with crescendo.';
+      }
+      case 'low risk': {
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
       }
     }
     return '';
@@ -85,9 +102,12 @@ const PoolV3 = () => {
                     className="ml-4 !pl-2 !py-1"
                     gap="1"
                     size="sm"
+                    onClick={() => {
+                      onCLPRegister();
+                    }}
                   />
                 </div>
-                <p className="text-lg text-primary-light">Pool Description</p>
+                <p className="text-lg text-primary-light">{lpDescription}</p>
                 {/* TODO: learn more button */}
               </div>
               <div className="flex items-center justify-between mb-3 text-lg text-primary">

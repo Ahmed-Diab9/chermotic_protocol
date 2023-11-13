@@ -12,7 +12,10 @@
   }
   &:disabled {
     @apply cursor-not-allowed;
-    @apply bg-gray-light border-transparent text-primary/20;
+    @apply border-transparent text-primary/20;
+    &:not(.btn-unstyled):not(.btn-underlined) {
+      @apply bg-gray-light;
+    }
   }
   &.toggle-on {
     @apply border border-primary text-primary;
@@ -50,16 +53,16 @@ a {
     }
   }
   &.btn-default {
-    @apply border border-gray-light text-primary bg-paper hover:bg-paper-light;
-    @apply dark:border-transparent dark:bg-gray-light dark:hover:bg-gray;
+    @apply border border-gray-light text-primary bg-paper enabled:hover:bg-paper-light;
+    @apply dark:border-transparent dark:bg-gray-light dark:enabled:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
     }
   }
   &.btn-light {
-    @apply border border-gray-lighter text-primary bg-paper hover:bg-paper-light;
-    @apply dark:border-transparent dark:bg-paper-light dark:hover:bg-gray;
+    @apply border border-gray-lighter text-primary bg-paper enabled:hover:bg-paper-light;
+    @apply dark:border-transparent dark:bg-paper-light dark:enabled:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
@@ -73,7 +76,7 @@ a {
     }
   }
   &.btn-line {
-    @apply border border-primary-lighter;
+    @apply border border-primary-lighter enabled:hover:border-primary-light;
   }
   &.btn-unstyled {
     @apply bg-transparent;
@@ -89,7 +92,7 @@ a {
   }
   &.btn-circle {
     @apply border !rounded-full overflow-hidden p-0;
-    @apply border-gray-lighter bg-paper hover:bg-paper-light text-primary;
+    @apply border-gray-lighter bg-paper enabled:hover:bg-paper-light text-primary;
   }
   &.btn-square {
     @apply border-l rounded-none;
@@ -100,19 +103,24 @@ a {
   &.btn-wallet {
     @apply !h-[42px] p-[2px] justify-start border !border-transparent rounded-full;
     @apply bg-primary border-gray-lighter text-inverted;
-    @apply dark:bg-paper/60 dark:text-primary;
+    @apply dark:bg-paper/60 dark:text-primary dark:enabled:hover:bg-paper;
     .avatar {
       @apply !w-[36px] !h-[36px];
     }
   }
   &.btn-translucent {
-    @apply bg-gray-lighter/60 hover:bg-gray-light/60;
+    @apply bg-gray-lighter/60 enabled:hover:bg-gray-light/60;
+  }
+  &.btn-active-translucent {
+    @apply bg-primary/10 enabled:hover:bg-primary/20;
   }
   &.btn-long {
     @apply bg-price-higher/10 border border-price-higher text-price-higher;
+    @apply enabled:hover:bg-price-higher/30;
   }
   &.btn-short {
     @apply bg-price-lower/10 border border-price-lower text-price-lower;
+    @apply enabled:hover:bg-price-lower/30;
   }
   &.btn-chrm {
     @apply bg-gradient-to-r from-price-higher to-price-lower text-inverted;
@@ -132,7 +140,7 @@ a {
     &:after {
       @apply border-price-higher;
     }
-    &:hover {
+    &:enabled:hover {
       &:before,
       &:after {
         @apply opacity-100;

@@ -81,7 +81,7 @@ export const TradeManagementV3 = () => {
                   </Listbox>
                 </div>
                 <div className="flex items-center gap-2 pl-5 ml-1 border-l text-primary-light">
-                  <div className="flex flex-col items-end gap-[2px]">
+                  <div className="flex flex-col items-end text-right gap-[2px]">
                     <p className="text-sm text-primary-light">Last oracle update</p>
                     <p className="text-primary">
                       <SkeletonElement isLoading={isLoading} width={60}>

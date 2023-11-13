@@ -61,7 +61,7 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex flex-col items-end ${className}`}>
       {errorMsg && <p className={`mb-2 text-price-lower text-${errorMsgAlign}`}>{errorMsg}</p>}
       <div
         className={`flex ${
@@ -73,28 +73,28 @@ export const OptionInput = (props: OptionInputProps) => {
         <div className="flex gap-1">
           {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
           <Button
-            className="flex-auto shadow-base !text-lg"
+            className="flex-auto shadow-base !text-lg !px-2"
             label="25%"
             size="sm"
             css={ratio === 25 ? 'active' : 'default'}
             onClick={onClick(25)}
           />
           <Button
-            className="flex-auto shadow-base !text-lg"
+            className="flex-auto shadow-base !text-lg !px-2"
             label="50%"
             size="sm"
             css={ratio === 50 ? 'active' : 'default'}
             onClick={onClick(50)}
           />
           <Button
-            className="flex-auto shadow-base !text-lg"
+            className="flex-auto shadow-base !text-lg !px-2"
             label="75%"
             size="sm"
             css={ratio === 75 ? 'active' : 'default'}
             onClick={onClick(75)}
           />
           <Button
-            className="flex-auto shadow-base !text-lg"
+            className="flex-auto shadow-base !text-lg !px-2"
             label="Max"
             size="sm"
             css={ratio === 100 ? 'active' : 'default'}

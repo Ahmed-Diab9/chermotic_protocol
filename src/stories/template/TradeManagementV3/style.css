@@ -1,5 +1,5 @@
 .TradeManagementV3 {
-  @apply min-w-[680px];
+  @apply min-w-[720px];
   .wrapper-tabs {
     .tabs-panels {
       @apply w-full;
@@ -10,14 +10,6 @@
     .tabs-list {
       button {
         @apply w-[10%] h-8 min-w-[120px];
-      }
-    }
-    [role='tablist'] {
-      [aria-selected='true'] {
-        @apply bg-inverted-lighter;
-      }
-      [aria-selected='false'] {
-        @apply bg-transparent border-b-0;
       }
     }
   }
@@ -63,7 +55,7 @@
           flex: 0 0 58px;
         }
         &.td-pnl {
-          flex: 0 0 108px;
+          flex: 0 0 10%;
         }
       }
     }

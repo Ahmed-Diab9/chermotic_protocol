@@ -17,7 +17,7 @@ export function AdvancedChart(props: AdvancedChartProps) {
         style={{ display: isLoading ? undefined : 'none' }}
         className="flex items-center justify-center w-full h-full"
       >
-        <img src={LOADING} className="w-10 animate-spin" alt="" />
+        <img src={LOADING} className="w-10 animate-spin" alt="loading..." />
       </div>
       <div
         style={{ display: isLoading ? 'none' : undefined }}
