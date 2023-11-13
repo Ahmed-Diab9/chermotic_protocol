@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { selectedMarketSelector, selectedTokenSelector } from '~/store/selector';
 import { Market } from '~/typings/market';
+import { trimMarket } from '~/utils/market';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
@@ -25,30 +26,36 @@ export const useEntireMarkets = () => {
     data: markets,
     error,
     isLoading: isMarketsLoading,
-  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ tokenAddresses }) => {
-    const response = await PromiseOnlySuccess(
-      tokenAddresses.map(async (tokenAddress) => {
-        const marketFactoryApi = client.marketFactory();
-        const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
-        const marketNames = markets.map(
-          (market) => market.description.split(/\s*\/\s*/) as [string, string]
-        );
-        const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
-        return markets.map((market, marketIndex) => {
-          const description = marketNames[marketIndex].join('/');
+  } = useSWR(
+    isReady && checkAllProps(fetchKey) && fetchKey,
+    async ({ tokenAddresses }) => {
+      const response = await PromiseOnlySuccess(
+        tokenAddresses.map(async (tokenAddress) => {
+          const marketFactoryApi = client.marketFactory();
+          const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
+          const marketNames = markets.map(
+            (market) => market.description.split(/\s*\/\s*/) as [string, string]
+          );
+          const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
+          return markets.map((market, marketIndex) => {
+            const description = marketNames[marketIndex].join('/');
 
-          return {
-            ...market,
-            description,
-            tokenAddress,
-            image: marketImageMap[marketNames[marketIndex][0]],
-          } satisfies Market;
-        });
-      })
-    );
+            return {
+              ...market,
+              description,
+              tokenAddress,
+              image: marketImageMap[marketNames[marketIndex][0]],
+            } satisfies Market;
+          });
+        })
+      );
 
-    return response.flat();
-  });
+      return response.flat();
+    },
+    {
+      refreshInterval: 1000 * 30,
+    }
+  );
 
   useError({ error });
 
@@ -104,7 +111,7 @@ export const useMarket = (_interval?: number) => {
 
   const clbTokenFetchKey = {
     name: 'getClbToken',
-    currentMarket: currentMarket,
+    currentMarket: trimMarket(currentMarket),
   };
 
   const { data: clbTokenAddress, error } = useSWR(

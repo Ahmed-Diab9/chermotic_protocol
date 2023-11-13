@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { LP_TAG_ORDER } from '~/configs/lp';
-import { loadedAction } from '~/store/reducer/loaded';
 import { useAppDispatch, useAppSelector } from '~/store';
+import { loadedAction } from '~/store/reducer/loaded';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
 import { MarketLike } from '~/typings/market';
@@ -49,7 +49,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
       const totalSupply = lp.totalSupply(lpAddress);
       const valueInfo = lp.valueInfo(lpAddress);
       const utilization = lp.utilization(lpAddress);
-      const minimalLiquidity = lp.estimateMinAddLiquidityAmount(lpAddress);
+      const minimalAdd = lp.estimateMinAddLiquidityAmount(lpAddress);
+      const minimalRemove = lp.estimateMinRemoveLiquidityAmount(lpAddress);
 
       const bins = lp.clbTokenBalances(lpAddress);
       const binIds = lp.clbTokenIds(lpAddress);
@@ -64,7 +65,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         totalSupply,
         valueInfo,
         utilization,
-        minimalLiquidity,
+        minimalAdd,
+        minimalRemove,
         bins,
         binIds,
       ] as const;
@@ -77,8 +79,8 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
     if (item.status === 'rejected') {
       continue;
     }
-    const tupleIndex = index % 12;
-    const lpIndex = Math.floor(index / 12);
+    const tupleIndex = index % 13;
+    const lpIndex = Math.floor(index / 13);
     switch (tupleIndex) {
       case 0: {
         lpInfoArray[lpIndex] = {
@@ -133,14 +135,18 @@ const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
         continue;
       }
       case 9: {
-        lpInfoArray[lpIndex].minimalLiquidity = item.value as bigint;
+        lpInfoArray[lpIndex].minimalAdd = item.value as bigint;
         continue;
       }
       case 10: {
-        lpInfoArray[lpIndex].bins = item.value as bigint[];
+        lpInfoArray[lpIndex].minimalRemove = item.value as bigint;
         continue;
       }
       case 11: {
+        lpInfoArray[lpIndex].bins = item.value as bigint[];
+        continue;
+      }
+      case 12: {
         lpInfoArray[lpIndex].binIds = item.value as bigint[];
         continue;
       }

@@ -31,7 +31,7 @@ function useClosePosition(props: Props) {
       const routerApi = client.router();
       await routerApi?.closePosition(position.marketAddress, position.id);
 
-      await fetchCurrentPositions();
+      await fetchCurrentPositions(position.marketAddress);
       await fetchBalances();
       toast('The closing process has been started.');
     } catch (error) {

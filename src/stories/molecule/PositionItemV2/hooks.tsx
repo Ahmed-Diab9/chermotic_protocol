@@ -83,12 +83,8 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
     const currentOracleVersion = markets?.find(
       (market) => market.address === position.marketAddress
     )?.oracleValue;
-    if (
-      isNil(currentOracleVersion) ||
-      isNil(currentOracleVersion.version) ||
-      currentOracleVersion.version <= position.openVersion
-    ) {
-      return {
+    if (position.status === POSITION_STATUS.OPENING) {
+      const pendingPosition = {
         tokenName: currentToken.name,
         marketDescription: currentMarket.description,
         qty: formatDecimals(abs(qty), currentToken.decimals, 2, true),
@@ -112,6 +108,8 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         entryTime: formatTimestamp(position.openTimestamp),
         pnlAmount: '-',
       };
+
+      return pendingPosition;
     }
     const pnlPercentage = divPreserved(
       position.pnl,

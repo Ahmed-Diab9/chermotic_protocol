@@ -184,8 +184,11 @@ export const useTradeInput = (props: Props) => {
 
     const { makerMargin } = getCalculatedValues({ method, takeProfit, stopLoss, amount });
 
-    const { tradeFee } = getTradeFee(makerMargin);
-    const reducedAmount = amount - tradeFee;
+    let reducedAmount = amount;
+    if (hasMax) {
+      const { tradeFee } = getTradeFee(makerMargin);
+      reducedAmount = amount - tradeFee;
+    }
 
     const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount: reducedAmount });
 

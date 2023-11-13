@@ -12,7 +12,7 @@ import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 
-import { isEmpty, isNil, isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
 import { PoolChart } from '~/stories/atom/PoolChart';
@@ -44,8 +44,7 @@ export function PoolPanelV2() {
     maxAmounts,
     formattedBalances,
     formattedClp,
-    isAddPending,
-    isRemovalPending,
+    isButtonDisableds,
     onAmountChange,
     onAddChromaticLp,
     onRemoveChromaticLp,
@@ -218,15 +217,7 @@ export function PoolPanelV2() {
                         }
                         onAddChromaticLp(amounts.add);
                       }}
-                      disabled={
-                        isExceededs.add ||
-                        isAddPending ||
-                        isLpLoading ||
-                        isAssetsLoading ||
-                        isEmpty(amounts.add) ||
-                        amounts.add === '0' ||
-                        errorMessages.add !== undefined
-                      }
+                      disabled={isButtonDisableds.add}
                     />
                   </div>
                 </article>
@@ -331,15 +322,7 @@ export function PoolPanelV2() {
                                   }
                                   onRemoveChromaticLp(amounts.remove);
                                 }}
-                                disabled={
-                                  isExceededs.remove ||
-                                  isRemovalPending ||
-                                  isLpLoading ||
-                                  isAssetsLoading ||
-                                  isEmpty(amounts.remove) ||
-                                  amounts.remove === '0' ||
-                                  errorMessages.remove !== undefined
-                                }
+                                disabled={isButtonDisableds.remove}
                               />
                             </div>
                           </article>

@@ -115,13 +115,15 @@ const PoolV3 = () => {
                 {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
                 <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
                   CLP Price
-                  <Avatar
-                    label={`${price} ${selectedLp?.settlementToken.name}`}
-                    size="sm"
-                    gap="1"
-                    fontSize="2xl"
-                    src={selectedLp?.settlementToken.image}
-                  />
+                  <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
+                    <Avatar
+                      label={`${price} ${selectedLp?.settlementToken.name}`}
+                      size="sm"
+                      gap="1"
+                      fontSize="2xl"
+                      src={selectedLp?.settlementToken.image}
+                    />
+                  </SkeletonElement>
                 </div>
               </div>
               <div className="flex gap-3">
