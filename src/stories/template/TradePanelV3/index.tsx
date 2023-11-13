@@ -30,7 +30,7 @@ export const TradePanelV3 = () => {
         height: '100%',
       }}
       maxWidth={isWide ? '50%' : '40%'}
-      minWidth={isWide ? 960 : 480}
+      minWidth={isWide ? 960 : 460}
       minHeight={640}
       enable={{
         top: false,
