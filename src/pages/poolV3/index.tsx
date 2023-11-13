@@ -52,6 +52,20 @@ const PoolV3 = () => {
     }
     return '';
   }, [selectedLp]);
+  const lpDescription = useMemo(() => {
+    switch (selectedLp?.tag.toLowerCase()) {
+      case 'high risk': {
+        return 'Liquidity is provided at a same amount from low to high fee bins.';
+      }
+      case 'mid risk': {
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. However, there is less difference between the highest and lowest fee bins than with crescendo.';
+      }
+      case 'low risk': {
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
+      }
+    }
+    return '';
+  }, [selectedLp]);
 
   return (
     <>
@@ -87,7 +101,7 @@ const PoolV3 = () => {
                     size="sm"
                   />
                 </div>
-                <p className="text-lg text-primary-light">Pool Description</p>
+                <p className="text-lg text-primary-light">{lpDescription}</p>
                 {/* TODO: learn more button */}
               </div>
               <div className="flex items-center justify-between mb-3 text-lg text-primary">
