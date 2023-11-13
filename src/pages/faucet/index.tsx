@@ -59,28 +59,55 @@ const Faucet = () => {
               </div>
             </div>
             <article>
-              <SkeletonElement isLoading={isLoading} containerClassName="flex px-10 h-[40px]">
-                {allowedTokens?.map((allowedToken) => (
-                  <div
-                    key={`${allowedToken.address}-${allowedToken.name}`}
-                    className="flex items-center gap-3 px-10 py-6 border-t last:border-b"
-                  >
-                    <Avatar size="2xl" src={allowedToken.image} />
+              {isLoading ? (
+                <>
+                  <div className="flex items-center gap-3 px-10 py-6 border-t">
+                    <SkeletonElement width={48} height={48} circle isLoading={isLoading} />
                     <div>
-                      <h2 className="text-2xl">{allowedToken.name}</h2>
-                      <p className="mt-1 text-primary-light">{currentChain.name}</p>
+                      <h2 className="text-2xl">
+                        <SkeletonElement width={60} isLoading={isLoading} />
+                      </h2>
+                      <p className="mt-1">
+                        <SkeletonElement width={120} isLoading={isLoading} />
+                      </p>
                     </div>
-                    <Button
-                      onClick={() => onFaucetClick(allowedToken.name)}
-                      label={buttonStates?.[allowedToken.name].label}
-                      className="ml-auto"
-                      css="active"
-                      size="xl"
-                      disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
-                    />
                   </div>
-                ))}
-              </SkeletonElement>
+                  <div className="flex items-center gap-3 px-10 py-6 border-y">
+                    <SkeletonElement width={48} height={48} circle isLoading={isLoading} />
+                    <div>
+                      <h2 className="text-2xl">
+                        <SkeletonElement width={60} isLoading={isLoading} />
+                      </h2>
+                      <p className="mt-1">
+                        <SkeletonElement width={120} isLoading={isLoading} />
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {allowedTokens?.map((allowedToken) => (
+                    <div
+                      key={`${allowedToken.address}-${allowedToken.name}`}
+                      className="flex items-center gap-3 px-10 py-6 border-t last:border-b"
+                    >
+                      <Avatar size="2xl" src={allowedToken.image} />
+                      <div>
+                        <h2 className="text-2xl">{allowedToken.name}</h2>
+                        <p className="mt-1 text-primary-light">{currentChain.name}</p>
+                      </div>
+                      <Button
+                        onClick={() => onFaucetClick(allowedToken.name)}
+                        label={buttonStates?.[allowedToken.name].label}
+                        className="ml-auto"
+                        css="active"
+                        size="xl"
+                        disabled={isLoading || !buttonStates?.[allowedToken.name].isActive}
+                      />
+                    </div>
+                  ))}
+                </>
+              )}
             </article>
             <div className="px-10 mt-10">
               <p className="text-lg text-primary-light">
