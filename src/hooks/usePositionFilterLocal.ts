@@ -9,7 +9,7 @@ export const usePositionFilterLocal = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { state: storedFilterOption, setState: setStoredFilterOption } = useLocalStorage(
     'app:position',
-    'ALL' as FilterOption
+    'MARKET_ONLY' as FilterOption
   );
 
   const dispatch = useAppDispatch();

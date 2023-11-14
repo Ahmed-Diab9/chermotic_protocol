@@ -9,10 +9,8 @@ import { useSettlementToken } from './useSettlementToken';
 
 export const usePositionFilter = () => {
   const filterOption = useAppSelector((state) => state.position.filterOption);
-  const { state: storedFilterOption, setState: setStoredFilterOption } = useLocalStorage(
-    'app:position',
-    'ALL' as FilterOption
-  );
+  const { state: storedFilterOption, setState: setStoredFilterOption } =
+    useLocalStorage<FilterOption>('app:position', 'MARKET_ONLY');
 
   const { currentToken } = useSettlementToken();
   const { currentMarket } = useMarket();
