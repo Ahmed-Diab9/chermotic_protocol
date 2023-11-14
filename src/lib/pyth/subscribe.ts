@@ -32,23 +32,32 @@ export async function subscribePythFeed() {
 
             const text = new TextDecoder().decode(value);
             let json = '';
+            let isStarted = false;
             let jsons = [] as string[];
             for (let step = 0; step < text.length; step++) {
               const char = text[step];
-              if (char === '{') {
-                json = '{';
-                continue;
+              switch (char) {
+                case '{': {
+                  json = '{';
+                  isStarted = true;
+                  continue;
+                }
+                case '}': {
+                  json += '}';
+                  if (isStarted) {
+                    jsons = jsons.concat(json);
+                    isStarted = false;
+                  }
+                  continue;
+                }
+                default: {
+                  json += char;
+                }
               }
-              if (char === '}') {
-                json += '}';
-                jsons = jsons.concat(json);
-                continue;
-              }
-              json += char;
             }
-            jsons.forEach((jsonItem) => {
+            const fullJson = `[${jsons.join(',')}]`;
+            (JSON.parse(fullJson) as Array<PythStreamData>).forEach((streamData) => {
               try {
-                const streamData: PythStreamData = JSON.parse(jsonItem);
                 next(streamData);
               } catch (error) {
                 if (import.meta.env.DEV) {
