@@ -9,14 +9,14 @@ import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 
 export interface AirdropZealyConvertModalProps {
   isOpen: boolean;
-  xp: number;
-  credit: number;
+  xp?: number;
+  credit?: number;
   onClick: () => unknown;
   onClose: () => unknown;
 }
 
 export function AirdropZealyConvertModal(props: AirdropZealyConvertModalProps) {
-  const { isOpen, xp, credit, onClick, onClose } = props;
+  const { isOpen, xp = 0, credit = 0, onClick, onClose } = props;
 
   return (
     <Dialog open={isOpen} onClose={onClose}>

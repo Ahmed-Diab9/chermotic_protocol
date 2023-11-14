@@ -9,65 +9,45 @@ import { checkAllProps } from '~/utils';
 
 export const useAirdropSync = () => {
   const { address } = useAccount();
-  const [syncState, setSyncState] = useState({
-    isFailed: false,
-    isZealyConnected: true,
-    receivedXp: 0,
-    convertedCredit: 0,
-  });
   const fetchKey = {
     address,
     key: 'fetchAirdropSync',
   };
-  const { trigger: synchronize, isMutating } = useSWRMutation(
-    checkAllProps(fetchKey) ? fetchKey : undefined,
-    async ({ address }) => {
-      try {
-        const response = await airdropClient.post('/airdrop/assets/sync-zealy', {
-          address,
-        });
-        if (isNotNil((response.data as SyncZealy).synced_count)) {
-          setSyncState((state) => ({
-            ...state,
-            isLoaded: true,
-            isZealyConnected: true,
-          }));
-          return;
-        }
-        if (response.data.message === 'WALLET_NOT_LINKED_TO_ZEALY') {
-          setSyncState((state) => ({
-            ...state,
-            isFailed: true,
-            isLoaded: true,
-          }));
-        } else {
-          setSyncState((state) => ({
-            ...state,
-            isFailed: true,
-            isLoaded: true,
-          }));
-          throw new Error('Error found in sync');
-        }
-      } catch (error) {
-        if (!(error instanceof AxiosError)) {
-          console.error(error);
-          return;
-        }
-        const { response } = error;
-        if (response?.data.message === 'WALLET_NOT_LINKED_TO_ZEALY') {
-          // FIXME
-        }
-        setSyncState((state) => ({
-          ...state,
+  const [isOpened, setIsOpened] = useState(false);
+  const {
+    trigger: synchronize,
+    isMutating,
+    data: syncState,
+  } = useSWRMutation(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address }) => {
+    setIsOpened(true);
+    try {
+      const response = await airdropClient.post('/airdrop/assets/sync-zealy', {
+        address,
+      });
+      const { synced_xp: xp } = response.data as SyncZealy;
+      if (isNotNil(xp)) {
+        return {
+          credit: xp,
+          xp,
+          isZealyConnected: true,
+        };
+      }
+    } catch (error) {
+      if (!(error instanceof AxiosError)) {
+        console.error(error);
+        return;
+      }
+      const { response } = error;
+      if (response?.data.message === 'WALLET_NOT_LINKED_TO_ZEALY') {
+        return {
           isFailed: true,
-          isLoaded: true,
-        }));
+        };
       }
     }
-  );
+  });
 
   const onModalClose = useCallback(() => {
-    setSyncState({ isFailed: false, isZealyConnected: false, receivedXp: 0, convertedCredit: 0 });
+    setIsOpened(false);
   }, []);
 
   const onZealyConnect = useCallback(() => {
@@ -79,17 +59,12 @@ export const useAirdropSync = () => {
     onModalClose();
   }, [onModalClose]);
 
-  // FIXME: Need to implement
-  const onCreditConvert = useCallback(() => {
-    onModalClose();
-  }, [onModalClose]);
-
   return {
     syncState,
     isMutating,
+    isOpened,
     synchronize,
     onZealyConnect,
-    onCreditConvert,
     onModalClose,
   };
 };

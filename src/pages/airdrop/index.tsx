@@ -36,7 +36,7 @@ import './style.css';
 
 function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
-  const { syncState, isMutating, synchronize, onZealyConnect, onCreditConvert, onModalClose } =
+  const { syncState, isMutating, isOpened, synchronize, onZealyConnect, onModalClose } =
     useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
   const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
@@ -66,15 +66,15 @@ function Airdrop() {
     <>
       <div className="page-container bg-gradient-chrm">
         <AirdropZealyConnectModal
-          isOpen={syncState.isFailed}
+          isOpen={Boolean(isOpened && syncState?.isFailed)}
           onClick={onZealyConnect}
           onClose={onModalClose}
         />
         <AirdropZealyConvertModal
-          isOpen={syncState.isZealyConnected}
-          xp={syncState.receivedXp}
-          credit={syncState.convertedCredit}
-          onClick={onCreditConvert}
+          isOpen={Boolean(isOpened && syncState?.isZealyConnected)}
+          xp={syncState?.xp}
+          credit={syncState?.credit}
+          onClick={onModalClose}
           onClose={onModalClose}
         />
         <HeaderV3 />
@@ -156,6 +156,7 @@ function Airdrop() {
                                   label="Convert XP to Credit"
                                   // TODO: show icon when loading
                                   iconLeft={isMutating ? <Loading /> : null}
+                                  disabled={isMutating}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"
