@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { AirdropStampModal } from '.';
+import { AirdropZealyConvertModal } from '.';
 
 const meta = {
-  title: 'Template/Modal/AirdropStampModal',
-  component: AirdropStampModal,
+  title: 'Template/Modal/AirdropZealyConvertModal',
+  component: AirdropZealyConvertModal,
   // argTypes: {
   // },
-} satisfies Meta<typeof AirdropStampModal>;
+} satisfies Meta<typeof AirdropZealyConvertModal>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -15,8 +15,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     isOpen: true,
-    schedules: [],
-    bonusRewards: [],
     onClick() {},
     onClose() {},
   },

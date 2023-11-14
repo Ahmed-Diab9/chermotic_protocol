@@ -21,15 +21,16 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <h4 className="text-[28px]">{formattedCredit}</h4>
           </div>
           <p className="pt-5">
-            Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
-            open one random box.
+            Credits are the currency used to activate Random Boxes in the Airdrop. One hundred
+            credits are needed to unlock a single random box.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
-                You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
-                Competitions, or completing special missions given on Discord.
+                Credits may be acquired through the completion of Chromatic's Zealy Quest, active
+                participation in Trading Competitions, or the fulfillment of specialized missions
+                offered on Discord.
               </p>
             </div>
             <div className="flex flex-col gap-1 pl-5">
@@ -54,11 +55,11 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
           <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
-                You can earn Boosters participating in Trading Competitions, or completing special
-                missions given on Discord.
+                Boosters can be acquired through participation in Trading Competitions or by
+                successfully completing special missions available on Discord.
               </p>
             </div>
             <div className="flex flex-col gap-1 pl-5">
@@ -83,7 +84,7 @@ export const ArrowInfo = (props: ArrowInfoProps) => {
     return (
       <Link
         to={to}
-        className="flex items-center gap-1 text-primary-light hover:underline"
+        className="flex items-center gap-1 text-primary-light hover:underline whitespace-nowrap"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -93,7 +94,7 @@ export const ArrowInfo = (props: ArrowInfoProps) => {
     );
   else
     return (
-      <p className="flex items-center gap-1 text-primary-light">
+      <p className="flex items-center gap-1 text-primary-light whitespace-nowrap">
         <ArrowLongRightIcon className="w-4" />
         <span>{label}</span>
       </p>

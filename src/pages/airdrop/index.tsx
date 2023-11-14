@@ -132,7 +132,7 @@ function Airdrop() {
                                 <Button
                                   label="Convert XP to Credit"
                                   // TODO: show icon when loading
-                                  iconRight={<Loading />}
+                                  iconLeft={<Loading />}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"
@@ -145,12 +145,19 @@ function Airdrop() {
                             </div>
                             <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
                               <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
-                              <p className="text-left text-price-lower">
-                                In order to automatically convert XP earned by completing quests in
-                                Zealy into credits for Chromatic Airdrop, <br />
-                                you must connect your wallet at Zealy Profile {'>'} Linked account.
-                              </p>
-                              <div className="pl-8 ml-auto border-l">
+                              <div className="text-left">
+                                <p className="text-left text-price-lower">
+                                  To convert XP from Zealy quests to Chromatic Airdrop credits
+                                  automatically, connect your wallet via Zealy Profile {'>'} Linked
+                                  Account.
+                                </p>
+                                <Button
+                                  label="How to connect your wallet to Zealy linked account"
+                                  css="underlined"
+                                  className="mt-1"
+                                />
+                              </div>
+                              <div className="flex flex-col pl-8 ml-auto border-l">
                                 <Button
                                   label="My Zealy Profile"
                                   iconRight={<ChevronRightIcon />}
@@ -195,35 +202,25 @@ function Airdrop() {
                             <div className="flex flex-col items-center mt-10">
                               <img src={RandomboxImage} alt="ramdom box" className="w-[330px]" />
                               <div className="flex mb-10 text-lg text-left border-y text-primary-light">
-                                <div className="w-1/4 px-3 py-5">
+                                <div className="w-1/3 px-3 py-5">
                                   <p>
-                                    You can obtain rCHRMA through random box. 100 Credits are
-                                    required to run Random Box once.
+                                    rCHRMA can be obtained through a random box, requiring 100
+                                    credits for a single box opening.
                                   </p>
                                 </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
+                                <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    Random Box will be activated and open in the first quarter of
-                                    2024 after the end of the testnet period.
+                                    The Random Box will be activated and opened in the first quarter
+                                    of 2024, following the conclusion of the testnet period.
                                   </p>
                                 </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
+                                <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    To open Random Box, you will need to join a specific Discord
-                                    server specified by Chromatic Protocol.
+                                    To unlock the Random Box, it is crucial to join the designated
+                                    Discord server outlined by the Chromatic Protocol. The Chromatic
+                                    Protocol will announce the Discord server address before the
+                                    random box release.
                                   </p>
-                                </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
-                                  <p>
-                                    The address of the Discord server specified by Chromatic
-                                    Protocol will be announced before the random box is released.
-                                  </p>
-                                  <Button
-                                    label="Discord Chromatic Server"
-                                    iconRight={<ChevronRightIcon />}
-                                    css="underlined"
-                                    className="mt-5 text-primary"
-                                  />
                                 </div>
                               </div>
                               <Button
