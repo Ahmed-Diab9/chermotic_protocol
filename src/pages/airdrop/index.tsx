@@ -1,42 +1,43 @@
 import { Tab } from '@headlessui/react';
-import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAccount, useConnect } from 'wagmi';
+
 import { OutlinkIcon } from '~/assets/icons/Icon';
-import { Loading } from '~/stories/atom/Loading';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
-import GalxeIcon from '~/assets/images/galxe.png';
 import ZealyIcon from '~/assets/images/zealy.png';
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
+import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
+import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
+import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { useAppSelector } from '~/store';
+
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
-import { Outlink } from '~/stories/atom/Outlink';
+import { Loading } from '~/stories/atom/Loading';
 import '~/stories/atom/Tabs/style.css';
 import { Toast } from '~/stories/atom/Toast';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { AirdropActivity, ArrowInfo } from '~/stories/template/AirdropActivity';
+import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
+import { AirdropZealyConnectModal } from '~/stories/template/AirdropZealyConnectModal';
+import { AirdropZealyConvertModal } from '~/stories/template/AirdropZealyConvertModal';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
 import { Modal } from '~/stories/template/Modal';
-
-import { useMarketLocal } from '~/hooks/useMarketLocal';
-import { useTokenLocal } from '~/hooks/useTokenLocal';
-
-import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useAccount, useConnect } from 'wagmi';
-import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
-import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
-import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
-import { useAppSelector } from '~/store';
 import { numberFormat } from '~/utils/number';
 import './style.css';
 
 function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
-  const { synchronize } = useAirdropSync();
+  const { syncState, isMutating, synchronize, onZealyConnect, onCreditConvert, onModalClose } =
+    useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
   const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
   const { metadata } = useAirdropLeaderBoard({
@@ -64,6 +65,18 @@ function Airdrop() {
   return (
     <>
       <div className="page-container bg-gradient-chrm">
+        <AirdropZealyConnectModal
+          isOpen={syncState.isFailed}
+          onClick={onZealyConnect}
+          onClose={onModalClose}
+        />
+        <AirdropZealyConvertModal
+          isOpen={syncState.isZealyConnected}
+          xp={syncState.receivedXp}
+          credit={syncState.convertedCredit}
+          onClick={onCreditConvert}
+          onClose={onModalClose}
+        />
         <HeaderV3 />
         {_isConnected ? (
           <>
@@ -142,7 +155,7 @@ function Airdrop() {
                                 <Button
                                   label="Convert XP to Credit"
                                   // TODO: show icon when loading
-                                  iconLeft={<Loading />}
+                                  iconLeft={isMutating ? <Loading /> : null}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"
