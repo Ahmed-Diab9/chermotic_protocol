@@ -12,9 +12,9 @@ export const ModalCloseButton = (props: ModalCloseButtonProps) => {
 
   return (
     <Button
-      iconOnly={<XMarkIcon className="!w-5 text-primary-lighter" />}
+      iconOnly={<XMarkIcon className="!w-5" />}
       css="unstyled"
-      className="absolute top-2 right-2"
+      className="absolute top-2 right-2 text-primary-lighter"
       onClick={onClick}
     />
   );

@@ -313,7 +313,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                     onClick={close}
                     size="lg"
                     css="unstyled"
-                    className="absolute left-0 t-10 ml-[-60px]"
+                    className="absolute left-0 t-10 ml-[-60px] text-primary-light"
                   />
                 </div>
               </Popover.Panel>

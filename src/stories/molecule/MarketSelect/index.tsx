@@ -130,11 +130,11 @@ export function MarketSelect() {
               />
             </div>
           </div>
-          <div className="flex pl-3 mr-3 border-l text-primary-light">
+          <div className="flex pl-3 mr-3 border-l">
             <Button
               css="unstyled"
               iconOnly={<OutlinkIcon />}
-              className="self-center"
+              className="self-center text-primary-light"
               href={explorerUrl}
             />
           </div>

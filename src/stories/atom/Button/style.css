@@ -79,9 +79,12 @@ a {
     @apply border border-primary-lighter enabled:hover:border-primary-light;
   }
   &.btn-unstyled {
-    @apply bg-transparent enabled:hover:opacity-100;
+    @apply bg-transparent;
     &.text-primary-lighter {
       @apply enabled:hover:text-primary-light;
+    }
+    &.text-primary-light {
+      @apply enabled:hover:text-primary/80;
     }
   }
   &.btn-underlined {
@@ -91,6 +94,12 @@ a {
     }
     &:disabled {
       @apply opacity-20;
+    }
+    &.text-primary-lighter {
+      @apply enabled:hover:text-primary-light;
+    }
+    &.text-primary-light {
+      @apply enabled:hover:text-primary/80;
     }
   }
   &.btn-circle {

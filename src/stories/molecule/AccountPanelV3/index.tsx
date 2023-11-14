@@ -193,7 +193,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
           href={addressExplorer}
           size="base"
           css="unstyled"
-          className="absolute right-2"
+          className="absolute right-2 text-primary-light"
           iconOnly={<OutlinkIcon />}
         />
       </article>
