@@ -6,13 +6,11 @@ import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 
 const lastBarsCache = new Map();
 
-let closeStream = () => {};
-
 const datafeed: IDatafeedChartApi & IExternalDatafeed = {
   onReady: (callback: Function) => {
     fetch(`${PYTH_TV_PRICEFEED}/config`).then((response) => {
       response.json().then(async (configurationData) => {
-        closeStream = await startStreaming();
+        startStreaming();
         setTimeout(() => callback(configurationData));
       });
     });
@@ -78,11 +76,6 @@ const datafeed: IDatafeedChartApi & IExternalDatafeed = {
   },
   unsubscribeBars: (subscriberUID) => {
     unsubscribeFromStream(subscriberUID);
-    try {
-      closeStream();
-    } catch (e) {
-      console.log(e);
-    }
   },
 };
 

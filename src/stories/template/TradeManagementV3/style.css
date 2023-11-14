@@ -17,7 +17,6 @@
     @apply w-full overflow-x-hidden;
   }
   .list {
-    /* @apply h-full overflow-y-hidden; */
     .thead {
       @apply items-stretch border-b bg-inverted-lighter;
       .td {
@@ -39,7 +38,7 @@
       @apply flex gap-5 justify-between px-5;
     }
     .td {
-      @apply flex items-center;
+      @apply flex items-center text-left;
       flex: 1 1 auto;
     }
   }
