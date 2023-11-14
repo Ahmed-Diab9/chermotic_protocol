@@ -14,6 +14,7 @@ import { useMarketSelectV3 } from './hooks';
 export function MarketSelectV3() {
   const {
     isLoading,
+    isPriceLoading,
     tokenName,
     tokenImage,
     marketDescription,
@@ -198,7 +199,7 @@ export function MarketSelectV3() {
         </div>
         <div className="flex justify-between mt-3">
           <h2 className={`text-[40px] ${priceClass}`}>
-            <SkeletonElement isLoading={isLoading} width={80}>
+            <SkeletonElement isLoading={isPriceLoading} width={80}>
               <span className="flex items-center gap-1">${price}</span>
             </SkeletonElement>
           </h2>

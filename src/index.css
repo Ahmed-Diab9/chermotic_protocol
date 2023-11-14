@@ -144,7 +144,7 @@ body {
 
 .page-container {
   @apply flex flex-col relative;
-  @apply min-h-[100vh] w-full overflow-x-scroll;
+  @apply min-h-[100vh] w-full;
   > main {
     @apply flex flex-col w-full px-10 mx-auto mt-8 mb-20 grow items-stretch;
     @apply max-w-[1480px] min-w-[1360px];
@@ -195,7 +195,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  @apply w-2;
+  @apply w-2 h-0;
 }
 ::-webkit-scrollbar-thumb {
   @apply bg-paper-lighter rounded-full;
