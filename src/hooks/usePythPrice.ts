@@ -1,78 +1,17 @@
 import { useMemo } from 'react';
 import useSWRSubscription from 'swr/subscription';
 
-import { StreamData } from '~/lib/pyth/streaming';
-
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
+import { PythStreamData } from '~/typings/api';
 
 import { checkAllProps } from '~/utils';
-
-const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
-
-async function startStreaming(next: (props: PriceData) => void) {
-  const response = await fetch(streamingUrl);
-  if (!response.body) {
-    throw new Error('null body');
-  }
-  const reader = response.body.getReader();
-
-  function streamData() {
-    reader.read().then(({ value, done }) => {
-      if (done) {
-        return;
-      }
-
-      const dataStrings = new TextDecoder().decode(value).split('\n');
-      dataStrings.forEach((dataString) => {
-        const trimmedDataString = dataString.trim();
-        if (trimmedDataString) {
-          try {
-            const { id, p: price, t: time }: StreamData = JSON.parse(dataString);
-            const symbol = id.split('.')[1].trim();
-            next({ symbol, price, time });
-          } catch (e: any) {
-            // console.error('Error parsing JSON:', e.message);
-          }
-        }
-      });
-      streamData();
-    });
-  }
-
-  streamData();
-
-  return async () => {
-    await reader.cancel();
-    reader.releaseLock();
-    await response.body?.cancel();
-  };
-}
-
-type PriceData = {
-  time: number;
-  price: number;
-  symbol: string;
-};
 
 interface IUsePythPrice {
   time: number;
   price: number;
+  isLoading: boolean;
 }
 
 export function usePythPrice(symbol?: string): IUsePythPrice {
-  useSWRSubscription('subscribePricefeed', () => {
-    const close = startStreaming((data: PriceData) => {
-      window.dispatchEvent(
-        new CustomEvent('price-update', {
-          detail: data,
-        })
-      );
-    });
-    return async () => {
-      (await close)();
-    };
-  });
-
   const pythSymbol = useMemo(() => symbol?.replace(' / ', '/'), [symbol]);
 
   const subscriptionKey = {
@@ -84,8 +23,10 @@ export function usePythPrice(symbol?: string): IUsePythPrice {
     checkAllProps(subscriptionKey) && subscriptionKey,
     ({ symbol }, { next }) => {
       const listener = ({ detail }: any) => {
-        if (detail.symbol === symbol) {
-          next(null, detail);
+        const { id, p: price, t: time } = detail as PythStreamData;
+        const dataSymbol = id.split('.')[1].trim();
+        if (dataSymbol === symbol) {
+          next(null, { symbol, price, time });
         }
       };
       window.addEventListener('price-update', listener);
@@ -99,5 +40,6 @@ export function usePythPrice(symbol?: string): IUsePythPrice {
   return {
     price: data?.price || 0,
     time: data?.time || 0,
+    isLoading: data ? false : true,
   };
 }

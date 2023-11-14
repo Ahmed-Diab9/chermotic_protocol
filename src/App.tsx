@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { SWRConfig } from 'swr';
@@ -7,8 +8,9 @@ import '~/App.css';
 import '~/bigint';
 import { router } from '~/routes';
 import { store } from '~/store/index';
-import { chains, publicClient, webSocketPublicClient } from './configs/wagmiClient';
-import { ChromaticProvider } from './contexts/ChromaticClient';
+import { chains, publicClient, webSocketPublicClient } from '~/configs/wagmiClient';
+import { ChromaticProvider } from '~/contexts/ChromaticClient';
+import { subscribePythFeed } from '~/lib/pyth/subscribe';
 
 const config = createConfig({
   autoConnect: true,
@@ -19,6 +21,15 @@ const config = createConfig({
 });
 
 function App() {
+  useEffect(() => {
+    const unsubscriber = subscribePythFeed();
+    return () => {
+      unsubscriber.then((action) => {
+        action && action();
+      });
+    };
+  }, []);
+
   return (
     <SWRConfig
       value={{

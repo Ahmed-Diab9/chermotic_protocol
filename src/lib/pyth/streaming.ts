@@ -1,18 +1,7 @@
 import { LibrarySymbolInfo, ResolutionString, SubscribeBarsCallback } from '~/lib/charting_library';
-
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
-
-const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
+import { PythStreamData } from '~/typings/api';
 
 const channelToSubscription = new Map<string | undefined, SubscriptionItem>();
-
-export type StreamData = {
-  id: string;
-  f: string;
-  p: number;
-  t: number;
-  s: number;
-};
 
 type Bar = {
   time: number;
@@ -34,7 +23,7 @@ type SubscriptionItem = {
   handlers: Handler[];
 };
 
-function handleStreamingData(data: StreamData): void {
+function handleStreamingData(data: PythStreamData): void {
   const { id, p, t } = data;
 
   const tradePrice = p;
@@ -75,43 +64,13 @@ function handleStreamingData(data: StreamData): void {
 }
 
 export async function startStreaming() {
-  const response = await fetch(streamingUrl);
-  if (!response.body) {
-    throw new Error('null body');
+  function streamData({ detail }: any) {
+    handleStreamingData(detail);
   }
-  const reader = response.body.getReader();
-
-  function streamData() {
-    reader.read().then(({ value, done }) => {
-      if (done) {
-        return;
-      }
-
-      // FIXME: @jaycho-46 handle uncompleted lines
-      // Assuming the streaming data is separated by line breaks
-      const dataStrings = new TextDecoder().decode(value).split('\n');
-      dataStrings.forEach((dataString) => {
-        const trimmedDataString = dataString.trim();
-        if (trimmedDataString) {
-          try {
-            const jsonData: StreamData = JSON.parse(dataString);
-            // console.log(jsonData.id);
-            handleStreamingData(jsonData);
-          } catch (e: any) {
-            // console.error('Error parsing JSON:', e.message);
-          }
-        }
-      });
-      streamData();
-    });
-  }
-
-  streamData();
+  window.addEventListener('price-update', streamData);
 
   return async () => {
-    await reader.cancel();
-    reader.releaseLock();
-    await response.body?.cancel();
+    window.removeEventListener('price-update', streamData);
   };
 }
 

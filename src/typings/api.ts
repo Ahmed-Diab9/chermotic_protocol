@@ -36,3 +36,11 @@ export type CMCTokenInfo = {
   self_reported_market_cap: unknown;
   infinite_supply: boolean;
 };
+
+export type PythStreamData = {
+  id: string;
+  f: string;
+  p: number;
+  t: number;
+  s: number;
+};
