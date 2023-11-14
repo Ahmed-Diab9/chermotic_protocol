@@ -72,8 +72,7 @@ function Airdrop() {
         />
         <AirdropZealyConvertModal
           isOpen={Boolean(isOpened && syncState?.isZealyConnected)}
-          xp={syncState?.xp}
-          credit={syncState?.credit}
+          syncData={syncState}
           onClick={onModalClose}
           onClose={onModalClose}
         />

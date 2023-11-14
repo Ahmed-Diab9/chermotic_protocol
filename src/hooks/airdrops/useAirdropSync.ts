@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios';
-import { isNotNil } from 'ramda';
 import { useCallback, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useAccount } from 'wagmi';
@@ -25,11 +24,23 @@ export const useAirdropSync = () => {
         address,
       });
       const { synced_xp: xp } = response.data as SyncZealy;
-      if (isNotNil(xp)) {
+      if (xp > 0) {
         return {
           credit: xp,
           xp,
           isZealyConnected: true,
+          title: 'Successfully converted!',
+          content: 'Your Zealy XP has been successfully converted to\nChromatic airdrop Credit.',
+        };
+      }
+      if (xp === 0) {
+        // TODO: Should check the content more valuable.
+        return {
+          credit: xp,
+          xp,
+          isZealyConnected: true,
+          title: 'No changes',
+          content: 'Your Zealy XP would be same as current credit.',
         };
       }
     } catch (error) {
