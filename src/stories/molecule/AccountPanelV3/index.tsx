@@ -237,7 +237,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
               value={amount}
               maxValue={maxAmount}
               onChange={onAmountChange}
-              className="w-full"
+              itemsAlign="stretch"
               error={isAmountError}
               errorMsg={
                 isLess
