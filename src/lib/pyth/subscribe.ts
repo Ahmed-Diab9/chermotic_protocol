@@ -30,17 +30,29 @@ export async function subscribePythFeed() {
           .then(({ value, done }) => {
             if (done) return;
 
-            const dataStrings = new TextDecoder().decode(value).split('\n');
-            dataStrings.forEach((dataString) => {
-              const trimmedDataString = dataString.trim();
-              if (trimmedDataString) {
-                try {
-                  const streamData: PythStreamData = JSON.parse(dataString);
-                  next(streamData);
-                } catch (e: any) {
-                  // FIXME: @jaycho-46 handle uncompleted lines
-                  // Assuming the streaming data is separated by line breaks
-                  // console.error('[stream] Error parsing JSON:', e.message);
+            const text = new TextDecoder().decode(value);
+            let json = '';
+            let jsons = [] as string[];
+            for (let step = 0; step < text.length; step++) {
+              const char = text[step];
+              if (char === '{') {
+                json = '{';
+                continue;
+              }
+              if (char === '}') {
+                json += '}';
+                jsons = jsons.concat(json);
+                continue;
+              }
+              json += char;
+            }
+            jsons.forEach((jsonItem) => {
+              try {
+                const streamData: PythStreamData = JSON.parse(jsonItem);
+                next(streamData);
+              } catch (error) {
+                if (import.meta.env.DEV) {
+                  console.error(error);
                 }
               }
             });
