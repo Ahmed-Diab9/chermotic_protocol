@@ -19,11 +19,12 @@ import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
+import { Modal } from '~/stories/template/Modal';
 
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAccount, useConnect } from 'wagmi';
 import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
@@ -57,6 +58,8 @@ function Airdrop() {
       historyTabRef.current?.click();
     }
   }, [searchParams]);
+
+  let [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
 
   return (
     <>
@@ -228,6 +231,7 @@ function Airdrop() {
                                 css="chrm-hover"
                                 size="3xl"
                                 className="!text-xl !w-[280px]"
+                                onClick={() => setRandomboxModalOpen(true)}
                               />
                             </div>
                           </article>
@@ -336,6 +340,18 @@ function Airdrop() {
         )}
         <Toast />
         <ChainModal />
+        {randomboxModalOpen && (
+          <Modal
+            title="Random Box"
+            paragraph="Random box is unavailable yet"
+            subParagraph="The random box is scheduled to be released in the first quarter of 2024."
+            buttonLabel="OK"
+            buttonCss="default"
+            onClick={() => setRandomboxModalOpen(false)}
+            isOpen={randomboxModalOpen}
+            setIsOpen={setRandomboxModalOpen}
+          />
+        )}
       </div>
     </>
   );
