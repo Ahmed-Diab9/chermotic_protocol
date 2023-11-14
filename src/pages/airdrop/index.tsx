@@ -190,7 +190,7 @@ function Airdrop() {
                                   className=""
                                   size="lg"
                                   css="underlined"
-                                  href=""
+                                  href="https://zealy.io/cw/_/settings/profile"
                                 />
                               </div>
                             </div>
