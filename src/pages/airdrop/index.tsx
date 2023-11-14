@@ -8,11 +8,12 @@ import GalxeIcon from '~/assets/images/galxe.png';
 import ZealyIcon from '~/assets/images/zealy.png';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
+import { Outlink } from '~/stories/atom/Outlink';
 import '~/stories/atom/Tabs/style.css';
 import { Toast } from '~/stories/atom/Toast';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { ChainModal } from '~/stories/container/ChainModal';
-import { AirdropActivity } from '~/stories/template/AirdropActivity';
+import { AirdropActivity, ArrowInfo } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
@@ -93,11 +94,24 @@ function Airdrop() {
                               color="chrm"
                             />
                           </div>
-                          <div className="mt-10 text-left">
-                            <p className="text-xl text-primary-light">
-                              Airdrop 1 period: Nov 2023 ~ 1Q 2024 (The end date will be announced
-                              later.)
+                          <div className="mt-10 text-lg text-left">
+                            <p className="text-xl text-primary">
+                              Airdrop 1 period: Nov 2023 ~ 1Q 2024
+                              <span className="ml-2 text-lg text-primary-lighter">
+                                (The end date will be announced later.)
+                              </span>
                             </p>
+                            <p className="mt-4 mb-2 text-primary-light">
+                              "Airdrop Season1 will be evaluated based on community activity and
+                              contributions during the testnet (Arbitrum Goerli) and the initial
+                              months of the mainnet (Arbitrum One) period, from November 2023 to
+                              some point in the first quarter of 2024, and rCHRMA will be
+                              distributed (or vested) accordingly."
+                            </p>
+                            <ArrowInfo
+                              to="#"
+                              label="Learn more about the Chromatic airdrop program"
+                            />
                           </div>
                         </section>
                         <section className="flex flex-col gap-[140px] mt-16">

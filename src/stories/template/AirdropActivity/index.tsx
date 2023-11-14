@@ -77,7 +77,7 @@ interface ArrowInfoProps {
   to?: string;
 }
 
-const ArrowInfo = (props: ArrowInfoProps) => {
+export const ArrowInfo = (props: ArrowInfoProps) => {
   const { label, to } = props;
   if (to)
     return (
