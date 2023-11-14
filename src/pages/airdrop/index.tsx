@@ -87,37 +87,47 @@ function Airdrop() {
                     <Tab.Panels className="flex-auto block">
                       <Tab.Panel>
                         <section>
-                          <h2 className="mb-2 text-4xl font-semibold text-left text-primary">
+                          <h2 className="mb-5 text-4xl font-semibold text-left text-primary">
                             Chromatic Airdrop Season 1
                           </h2>
-                          <div className="w-full">
+                          <div className="flex items-end mb-12">
                             <BlurText
-                              label="May the CHRMA be with you!"
-                              className="text-[60px] tracking-tight"
+                              label="May the $CHRMA be with you!"
+                              className="text-[60px] tracking-tight w-[620px]"
                               color="chrm"
                             />
+                            <div className="ml-auto text-right">
+                              <p className="text-xl text-primary">
+                                Season 1 Period: Nov 2023 - 1Q 2024
+                              </p>
+                              <p className="mt-1 text-lg text-primary-light">
+                                The end date will be announced later.
+                              </p>
+                            </div>
                           </div>
-                          <div className="mt-10 text-lg text-left">
-                            <p className="text-xl text-primary">
-                              Airdrop 1 period: Nov 2023 ~ 1Q 2024
-                              <span className="ml-2 text-lg text-primary-lighter">
-                                (The end date will be announced later.)
-                              </span>
-                            </p>
-                            <p className="mt-4 mb-2 text-primary-light">
-                              "Airdrop Season1 will be evaluated based on community activity and
-                              contributions during the testnet (Arbitrum Goerli) and the initial
-                              months of the mainnet (Arbitrum One) period, from November 2023 to
-                              some point in the first quarter of 2024, and rCHRMA will be
-                              distributed (or vested) accordingly."
-                            </p>
-                            <ArrowInfo
-                              to="#"
-                              label="Learn more about the Chromatic airdrop program"
-                            />
+                          <div className="flex items-center gap-4 px-5 py-4 text-lg panel">
+                            <div className="w-4/5 text-left">
+                              <p className="text-left text-primary">
+                                Airdrop Season 1 will be evaluated based on community activity and
+                                contributions during the testnet (Arbitrum Goerli) and the initial
+                                months of the mainnet (Arbitrum One) period, from November 2023 to
+                                some point in the first quarter of 2024, and rCHRMA will be
+                                distributed (or vested) accordingly.
+                              </p>
+                            </div>
+                            <div className="flex flex-col pl-8 ml-auto border-l ">
+                              <Button
+                                label="Learn more"
+                                iconRight={<ChevronRightIcon />}
+                                className="whitespace-nowrap"
+                                size="lg"
+                                css="underlined"
+                                href=""
+                              />
+                            </div>
                           </div>
                         </section>
-                        <section className="flex flex-col gap-[140px] mt-16">
+                        <section className="flex flex-col gap-[140px] mt-5">
                           <article>
                             <AirdropStamp />
                           </article>
@@ -148,14 +158,17 @@ function Airdrop() {
                               <div className="text-left">
                                 <p className="text-left text-price-lower">
                                   To convert XP from Zealy quests to Chromatic Airdrop credits
-                                  automatically, connect your wallet via Zealy Profile {'>'} Linked
-                                  Account.
+                                  automatically, connect your wallet via Zealy <br />
+                                  Profile {'>'} Linked Account. Click
+                                  <Button
+                                    label="here"
+                                    css="underlined"
+                                    size="lg"
+                                    className="text-primary"
+                                  />
+                                  to get informed how to connect wallet address to zealy linked
+                                  account.
                                 </p>
-                                <Button
-                                  label="How to connect your wallet to Zealy linked account"
-                                  css="underlined"
-                                  className="mt-1"
-                                />
                               </div>
                               <div className="flex flex-col pl-8 ml-auto border-l">
                                 <Button
