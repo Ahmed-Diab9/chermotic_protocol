@@ -102,14 +102,11 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
     isAssetReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
-
-      debugger;
-
       const pool = await getLiquidityPool(lensApi, marketAddress, tokenAddress);
 
       return pool;
     },
-    { keepPreviousData: false, dedupingInterval: 8000 }
+    { keepPreviousData: false, refreshInterval: 1000 * 60 }
   );
 
   const [longTotalMaxLiquidity, longTotalUnusedLiquidity] = useMemo(() => {

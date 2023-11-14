@@ -258,6 +258,7 @@ export const useChromaticLp = () => {
     },
     {
       keepPreviousData: false,
+      refreshInterval: 1000 * 60,
     }
   );
 
