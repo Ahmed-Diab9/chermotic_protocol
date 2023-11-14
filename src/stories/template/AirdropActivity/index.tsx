@@ -47,7 +47,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-2 text-right">
               <h4 className="text-[28px]">{airdropAssets?.booster}</h4>
-              <p className="text-primary-light">17 Booster Chances</p>
+              <p className="text-primary-light">{airdropAssets?.booster} Booster Chances</p>
             </div>
           </div>
           <p className="pt-5">
