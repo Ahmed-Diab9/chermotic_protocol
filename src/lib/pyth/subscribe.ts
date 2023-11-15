@@ -67,9 +67,7 @@ export async function subscribePythFeed() {
             });
             streamData();
           })
-          .catch(() => {
-            attemptReconnect(retries, delay);
-          });
+          .catch(() => {});
       }
 
       streamData();
