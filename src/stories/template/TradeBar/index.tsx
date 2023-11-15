@@ -152,7 +152,6 @@ export const TradeBar = () => {
               >
                 <span className="min-w-[140px] text-primary text-lg font-semibold">
                   Position
-                  {/* TODO: position 갯수 보여주기 (갯수 세는 기준은 확인중) */}
                   {/* (n) */}
                 </span>
                 {/* <Button

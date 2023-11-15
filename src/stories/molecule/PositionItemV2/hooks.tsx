@@ -54,10 +54,6 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
     }
   }
 
-  /**
-   * FIXME
-   * Oracle Decimals을 확인해야 함
-   */
   const values = useMemo(() => {
     if (isNil(position) || isNil(tokens)) {
       return emptyPosition;

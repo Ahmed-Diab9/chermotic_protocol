@@ -73,7 +73,6 @@ export const OptionInput = (props: OptionInputProps) => {
         }`}
       >
         <div className="flex gap-1">
-          {/* 버튼 누르면 값이 input에 입력되면서 active 상태됨, input value가 바뀌면 active 해제됨 */}
           <Button
             className="flex-auto shadow-base !text-lg !px-2"
             label="25%"
