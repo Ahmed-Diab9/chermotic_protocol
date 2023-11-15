@@ -88,7 +88,10 @@ function Airdrop() {
                       <Tab ref={historyTabRef}>My History</Tab>
                       <button
                         onClick={() => {
-                          window.open('https://chromatic.finance/', '_blank');
+                          window.open(
+                            'https://chromatic.gitbook.io/docs/community-and-programs/airdrop',
+                            '_blank'
+                          );
                         }}
                         className="flex gap-2 text-primary-light"
                       >
@@ -134,7 +137,7 @@ function Airdrop() {
                                 className="whitespace-nowrap"
                                 size="lg"
                                 css="underlined"
-                                href=""
+                                href="https://chromatic.gitbook.io/docs/community-and-programs/airdrop"
                               />
                             </div>
                           </div>
@@ -177,6 +180,7 @@ function Airdrop() {
                                     css="underlined"
                                     size="lg"
                                     className="text-primary"
+                                    href="https://chromatic.gitbook.io/docs/community-and-programs/how-to-connect-zealy-account-to-arbitrum-wallet"
                                   />
                                   to get informed how to connect wallet address to zealy linked
                                   account.

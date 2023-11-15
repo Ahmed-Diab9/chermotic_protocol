@@ -34,7 +34,10 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo
+                label="Learn more"
+                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters"
+              />
             </div>
           </div>
         </div>
@@ -63,7 +66,10 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo
+                label="Learn more"
+                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters#2.-how-to-get-boosters"
+              />
             </div>
           </div>
         </div>
