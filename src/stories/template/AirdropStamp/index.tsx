@@ -63,7 +63,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                     className="relative flex items-center justify-center"
                   >
                     <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
-                    <h4 className="absolute top-[52px] text-chrm text-lg">+5</h4>
+                    <h4 className="absolute top-[52px] text-chrm-h text-lg">+5</h4>
                   </button>
                 ) : (
                   <div className="relative flex items-center justify-center">
@@ -82,7 +82,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                         schedule.status === 'success'
                           ? 'text-price-higher text-xl'
                           : schedule.status === 'fail'
-                          ? 'text-price-lower text-xl'
+                          ? 'text-primary/10 text-xl'
                           : 'text-primary/10 text-lg'
                       }`}
                     >
