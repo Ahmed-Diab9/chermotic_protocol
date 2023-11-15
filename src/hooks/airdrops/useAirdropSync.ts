@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 import { airdropClient } from '~/apis/airdrop';
 import { SyncZealy } from '~/typings/airdrop';
 import { checkAllProps } from '~/utils';
+import { navigateExternalPage } from '~/utils/link';
 
 export const useAirdropSync = () => {
   const { address } = useAccount();
@@ -60,29 +61,21 @@ export const useAirdropSync = () => {
     reset();
   }, [reset]);
 
-  const onZealyConnect = useCallback(() => {
-    const anchor = document.createElement('a');
-    anchor.href = 'https://zealy.io/cw/_/settings/linked-accounts' satisfies `https://${string}`;
-    anchor.target = '_blank';
-    anchor.rel = 'noreferrer';
-    anchor.click();
-    onModalClose();
-  }, [onModalClose]);
-
-  const onZealyNavigate = () => {
-    const anchor = document.createElement('a');
-    anchor.href = 'https://zealy.io/cw/_/settings/linked-accounts' satisfies `https://${string}`;
-    anchor.target = '_blank';
-    anchor.rel = 'noreferrer';
-    anchor.click();
-  };
+  const onExternalNavigate = useCallback(
+    (url: `https://${string}`, closeModal: boolean = false) => {
+      navigateExternalPage(url);
+      if (closeModal) {
+        onModalClose();
+      }
+    },
+    [onModalClose]
+  );
 
   return {
     syncState,
     isMutating,
     synchronize,
-    onZealyConnect,
-    onZealyNavigate,
+    onExternalNavigate,
     onModalClose,
   };
 };
