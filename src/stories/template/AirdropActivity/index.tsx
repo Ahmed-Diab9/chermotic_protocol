@@ -28,13 +28,16 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
-                Credits can be acquired through the completion of Chromatic's Zealy Quests and the
+                Credits can be acquired through the completion of Chromatic's Zealy Quests or the
                 fulfillment of special missions offered on Discord.
               </p>
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo
+                label="Learn more"
+                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters"
+              />
             </div>
           </div>
         </div>
@@ -57,13 +60,16 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
-                Boosters can be acquired by daily visiting the airdrop page and the fulfillment of
-                special missions offered on Discord.
+                Boosters can be acquired by attending to airdrop page for 6 consecutive days in a
+                week or the fulfillment of special missions offered on Discord.
               </p>
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo
+                label="Learn more"
+                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters#2.-how-to-get-boosters"
+              />
             </div>
           </div>
         </div>

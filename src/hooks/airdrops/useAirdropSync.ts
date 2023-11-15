@@ -39,8 +39,8 @@ export const useAirdropSync = () => {
           credit: xp,
           xp,
           isZealyConnected: true,
-          title: 'No changes',
-          content: 'Your Zealy XP would be same as current credit.',
+          // title: 'No updates',
+          content: 'The number of Zealy XP has not been changed since last update.',
         };
       }
     } catch (error) {

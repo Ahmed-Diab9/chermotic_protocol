@@ -33,8 +33,8 @@ export function AirdropZealyConvertModal(props: AirdropZealyConvertModalProps) {
           </Dialog.Title>
           <Dialog.Description className="gap-5 modal-content">
             <article className="text-center">
-              <h2 className="text-4xl">{title}</h2>
-              <p className="mt-3 mb-6 text-primary-light whitespace-pre-line">{content}</p>
+              {title && <h2 className="mb-3 text-4xl">{title}</h2>}
+              <p className="mb-6 whitespace-pre-line text-primary-light">{content}</p>
               <div className="flex justify-center gap-5 mt-10 mb-2">
                 <div className="flex flex-col items-center justify-center w-1/3 gap-2">
                   <img src={ZealyIcon} alt="zealy" className="h-6" />
