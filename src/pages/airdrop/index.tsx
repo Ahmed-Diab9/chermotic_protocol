@@ -244,10 +244,9 @@ function Airdrop() {
                                 </div>
                                 <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    To unlock the Random Box, it is necessary to join the designated
-                                    Discord server that requires mobile phone authentication. The
-                                    invitation code of the Discord server will be announced before
-                                    the random box release.
+                                    To open the Random Box, you must join a designated Discord
+                                    server and complete phone verification. (The address of the
+                                    designated Discord server will be announced later.)
                                   </p>
                                 </div>
                               </div>

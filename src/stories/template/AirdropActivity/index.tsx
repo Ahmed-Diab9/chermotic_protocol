@@ -28,7 +28,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
-                Credits can be acquired through the completion of Chromatic's Zealy Quests and the
+                Credits can be acquired through the completion of Chromatic's Zealy Quests or the
                 fulfillment of special missions offered on Discord.
               </p>
             </div>
@@ -57,8 +57,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
-                Boosters can be acquired by daily visiting the airdrop page and the fulfillment of
-                special missions offered on Discord.
+                Boosters can be acquired by attending to airdrop page for 6 consecutive days in a
+                week or the fulfillment of special missions offered on Discord.
               </p>
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
