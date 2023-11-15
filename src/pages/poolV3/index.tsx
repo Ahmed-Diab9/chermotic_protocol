@@ -1,8 +1,10 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import { PlusIcon } from '~/assets/icons/Icon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -24,15 +26,14 @@ import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
 import { formatDecimals } from '~/utils/number';
-import { usePoolDetail } from '~/stories/template/PoolDetail/hooks';
 import './style.css';
 
 const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
+  const { client } = useChromaticClient();
   const { onLoadBackgroundRef } = useBackgroundGradient();
-  const { onCLPRegister } = usePoolDetail();
 
   const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
@@ -69,6 +70,26 @@ const PoolV3 = () => {
     }
     return '';
   }, [selectedLp]);
+
+  const onCLPRegister = useCallback(async () => {
+    if (isNil(selectedLp)) {
+      return;
+    }
+    const isAdded = await client.walletClient?.watchAsset({
+      type: 'ERC20',
+      options: {
+        address: selectedLp.address,
+        symbol: selectedLp.clpSymbol,
+        decimals: selectedLp.clpDecimals,
+      },
+    });
+
+    if (isAdded) {
+      toast('New CLP token was registered.');
+    } else {
+      toast.error('Failed to register.');
+    }
+  }, [client.walletClient, selectedLp]);
 
   return (
     <>
