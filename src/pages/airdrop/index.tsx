@@ -62,8 +62,8 @@ function Airdrop() {
   }, [searchParams]);
 
   const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
-  const { hours, minutes, unit } = useTimeDifferences();
-  const message = `The date changes at ${hours}${unit} local time (UTC+${hours.padStart(
+  const { hours, minutes, unit, prefix } = useTimeDifferences();
+  const message = `The date changes at ${hours}${unit} local time (UTC${prefix}${hours.padStart(
     2,
     '0'
   )}:${minutes.padStart(2, '0')})`;
