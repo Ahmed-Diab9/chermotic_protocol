@@ -92,6 +92,7 @@ export const TradeManagementV3 = () => {
                   <Button
                     iconOnly={<ArrowPathIcon />}
                     css="unstyled"
+                    className="text-primary-light"
                     onClick={() => {
                       onRefreshList();
                     }}

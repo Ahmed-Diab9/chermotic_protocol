@@ -19,5 +19,6 @@ export const Default: Story = {
     subParagraph: 'hello world, this is sub paragraph.',
     buttonLabel: 'default',
     buttonCss: 'default',
+    isOpen: true,
   },
 };

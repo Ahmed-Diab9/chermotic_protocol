@@ -193,7 +193,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
           href={addressExplorer}
           size="base"
           css="unstyled"
-          className="absolute right-2"
+          className="absolute right-2 text-primary-light"
           iconOnly={<OutlinkIcon />}
         />
       </article>
@@ -237,7 +237,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
               value={amount}
               maxValue={maxAmount}
               onChange={onAmountChange}
-              className="w-full"
+              itemsAlign="stretch"
               error={isAmountError}
               errorMsg={
                 isLess

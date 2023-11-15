@@ -258,7 +258,7 @@ export function MarketSelectV3() {
               <Button
                 css="unstyled"
                 iconOnly={<OutlinkIcon />}
-                className="self-center opacity-50"
+                className="self-center text-primary-light"
                 href={explorerUrl}
               />
             </div>
