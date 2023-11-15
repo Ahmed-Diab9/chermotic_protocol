@@ -1,10 +1,11 @@
 import { AxiosError } from 'axios';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useAccount } from 'wagmi';
 import { airdropClient } from '~/apis/airdrop';
 import { SyncZealy } from '~/typings/airdrop';
 import { checkAllProps } from '~/utils';
+import { navigateExternalPage } from '~/utils/link';
 
 export const useAirdropSync = () => {
   const { address } = useAccount();
@@ -12,18 +13,17 @@ export const useAirdropSync = () => {
     address,
     key: 'fetchAirdropSync',
   };
-  const [isOpened, setIsOpened] = useState(false);
   const {
     trigger: synchronize,
     isMutating,
     data: syncState,
+    reset,
   } = useSWRMutation(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address }) => {
-    setIsOpened(true);
     try {
       const response = await airdropClient.post('/airdrop/assets/sync-zealy', {
         address,
       });
-      const { synced_xp: xp } = response.data as SyncZealy;
+      const { synced_xp: xp, synced_count: count } = response.data as SyncZealy;
       if (xp > 0) {
         return {
           credit: xp,
@@ -58,24 +58,24 @@ export const useAirdropSync = () => {
   });
 
   const onModalClose = useCallback(() => {
-    setIsOpened(false);
-  }, []);
+    reset();
+  }, [reset]);
 
-  const onZealyConnect = useCallback(() => {
-    const anchor = document.createElement('a');
-    anchor.href = 'https://zealy.io/cw/_/settings/linked-accounts' satisfies `https://${string}`;
-    anchor.target = '_blank';
-    anchor.rel = 'noreferrer';
-    anchor.click();
-    onModalClose();
-  }, [onModalClose]);
+  const onExternalNavigate = useCallback(
+    (url: `https://${string}`, closeModal: boolean = false) => {
+      navigateExternalPage(url);
+      if (closeModal) {
+        onModalClose();
+      }
+    },
+    [onModalClose]
+  );
 
   return {
     syncState,
     isMutating,
-    isOpened,
     synchronize,
-    onZealyConnect,
+    onExternalNavigate,
     onModalClose,
   };
 };

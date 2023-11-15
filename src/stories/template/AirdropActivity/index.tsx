@@ -1,5 +1,6 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { AIRDROP_LINKS } from '~/constants/airdrop';
 import { useAirdropActivity } from './hooks';
 import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
@@ -34,10 +35,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
-              <ArrowInfo
-                label="Learn more"
-                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters"
-              />
+              <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_CREDITS']} />
             </div>
           </div>
         </div>
@@ -66,10 +64,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
-              <ArrowInfo
-                label="Learn more"
-                to="https://chromatic.gitbook.io/docs/community-and-programs/how-to-get-credits-and-boosters#2.-how-to-get-boosters"
-              />
+              <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_BOOSTERS']} />
             </div>
           </div>
         </div>
