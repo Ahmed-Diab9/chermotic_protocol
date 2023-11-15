@@ -57,20 +57,38 @@ export const AirdropStamp = (props: AirdropStampProps) => {
               <div className="mt-3 mb-2">
                 {schedule.status === 'active' ? (
                   // TODO: button onclick
-                  <button title="Open Today's Reward" onClick={onScheduleClick}>
+                  <button
+                    title="Open Today's Reward"
+                    onClick={onScheduleClick}
+                    className="relative flex items-center justify-center"
+                  >
                     <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
+                    <h4 className="absolute top-[52px] text-chrm text-lg">+5</h4>
                   </button>
                 ) : (
-                  <Avatar
-                    className="w-20 h-20"
-                    src={
-                      schedule.status === 'success'
-                        ? StampSuccess
-                        : schedule.status === 'fail'
-                        ? StampFail
-                        : StampEmpty
-                    }
-                  />
+                  <div className="relative flex items-center justify-center">
+                    <Avatar
+                      className="w-20 h-20"
+                      src={
+                        schedule.status === 'success'
+                          ? StampSuccess
+                          : schedule.status === 'fail'
+                          ? StampFail
+                          : StampEmpty
+                      }
+                    />
+                    <h4
+                      className={`absolute top-[52px] ${
+                        schedule.status === 'success'
+                          ? 'text-price-higher text-xl'
+                          : schedule.status === 'fail'
+                          ? 'text-price-lower text-xl'
+                          : 'text-primary/10 text-lg'
+                      }`}
+                    >
+                      +{schedule.status === 'fail' ? '0' : '5'}
+                    </h4>
+                  </div>
                 )}
               </div>
               {schedule.status === 'success' && (
