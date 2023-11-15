@@ -36,7 +36,7 @@ import './style.css';
 
 function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
-  const { syncState, isMutating, isOpened, synchronize, onZealyConnect, onModalClose } =
+  const { syncState, isMutating, synchronize, onZealyConnect, onZealyNavigate, onModalClose } =
     useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
   const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
@@ -66,12 +66,12 @@ function Airdrop() {
     <>
       <div className="page-container bg-gradient-chrm">
         <AirdropZealyConnectModal
-          isOpen={Boolean(isOpened && syncState?.isFailed)}
+          isOpen={Boolean(!isMutating && syncState?.isFailed)}
           onClick={onZealyConnect}
           onClose={onModalClose}
         />
         <AirdropZealyConvertModal
-          isOpen={Boolean(isOpened && syncState?.isZealyConnected)}
+          isOpen={Boolean(!isMutating && syncState?.isZealyConnected)}
           syncData={syncState}
           onClick={onModalClose}
           onClose={onModalClose}
@@ -193,7 +193,9 @@ function Airdrop() {
                                   className="whitespace-nowrap"
                                   size="lg"
                                   css="underlined"
-                                  href="https://zealy.io/cw/_/settings/linked-accounts"
+                                  onClick={() => {
+                                    onZealyNavigate();
+                                  }}
                                 />
                                 <p className="mt-[2px] text-sm text-price-lower">
                                   Zealy login required
