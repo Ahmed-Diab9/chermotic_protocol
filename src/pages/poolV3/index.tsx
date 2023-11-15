@@ -132,7 +132,7 @@ const PoolV3 = () => {
                     <PoolAnalyticsV3 />
                   </div> */}
                 </div>
-                <div className="flex-none w-[36%] min-w-[340px] max-w-[420px] flex flex-col gap-3">
+                <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex flex-col gap-3">
                   {/* To be added later */}
                   {/* <PoolBalance /> */}
                   <div className="panel panel-translucent">
