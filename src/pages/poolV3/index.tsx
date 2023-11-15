@@ -106,25 +106,21 @@ const PoolV3 = () => {
                       onCLPRegister();
                     }}
                   />
+                  <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
+                    CLP Price
+                    <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
+                      <Avatar
+                        label={`${price} ${selectedLp?.settlementToken.name}`}
+                        size="sm"
+                        gap="1"
+                        fontSize="2xl"
+                        src={selectedLp?.settlementToken.image}
+                      />
+                    </SkeletonElement>
+                  </div>
                 </div>
                 <p className="text-lg text-primary-light">{lpDescription}</p>
                 {/* TODO: learn more button */}
-              </div>
-              <div className="flex items-center justify-between mb-3 text-lg text-primary">
-                {/* To be added later */}
-                {/* <div>esChroma Rewards: 500 esChroma/day</div> */}
-                <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
-                  CLP Price
-                  <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
-                    <Avatar
-                      label={`${price} ${selectedLp?.settlementToken.name}`}
-                      size="sm"
-                      gap="1"
-                      fontSize="2xl"
-                      src={selectedLp?.settlementToken.image}
-                    />
-                  </SkeletonElement>
-                </div>
               </div>
               <div className="flex gap-3">
                 <div className="flex-auto overflow-hidden">
