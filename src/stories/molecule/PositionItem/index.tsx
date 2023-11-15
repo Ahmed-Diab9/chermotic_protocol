@@ -101,7 +101,6 @@ export function PositionItem(props: PositionItemProps) {
           </div>
         </div>
         <div className="flex items-center gap-1 ml-auto">
-          {/* 상태에 따라 내용 변동 */}
           {isOpening && (
             <>
               <Loading size="sm" />
@@ -206,7 +205,6 @@ export function PositionItem(props: PositionItemProps) {
           </div>
         </div>
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
-          {/* 상태에 따라 버튼 css prop, label 다르게 들어감 */}
           {/* Close / Claim USDC */}
           {(isOpened || isOpening) && (
             <Button label="Close" css="light" size="sm" onClick={onClosePosition} />

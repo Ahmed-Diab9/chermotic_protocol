@@ -1,6 +1,7 @@
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { createPortal } from 'react-dom';
 import { BoosterIcon, CoinStackIcon } from '~/assets/icons/Icon';
+import { useTimeDifferences } from '~/hooks/useTimeDifferences';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { AirdropStampModal } from '../AirdropStampModal';
@@ -25,7 +26,10 @@ export const AirdropStamp = (props: AirdropStampProps) => {
     onModalConfirm,
     onModalClose,
   } = useAirdropStamp();
-
+  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
+  const message = `The date changes at ${formatted.hours}:${String(
+    formatted.minutes
+  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
   return (
     <>
       <div className="p-5 text-left panel AirdropStamp">
@@ -33,9 +37,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
           <div className="pl-3">
             <div className="flex">
               <h4 className="mb-5 text-3xl text-primary-light">Sign-In Rewards</h4>
-              <p className="ml-auto text-lg text-primary-light">
-                The date changes at 9am local time (UTC+09:00)
-              </p>
+              <p className="ml-auto text-lg text-primary-light">{message}</p>
             </div>
             <div className="flex items-center gap-2 mb-2">
               <BoosterIcon className="w-6" />

@@ -16,6 +16,7 @@ import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
 
 import { AIRDROP_LINKS } from '~/constants/airdrop';
+import { useTimeDifferences } from '~/hooks/useTimeDifferences';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
@@ -61,6 +62,10 @@ function Airdrop() {
   }, [searchParams]);
 
   const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
+  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
+  const message = `The date changes at ${formatted.hours}:${String(
+    formatted.minutes
+  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
 
   return (
     <>
@@ -278,9 +283,7 @@ function Airdrop() {
                           <article>
                             <div className="flex items-baseline">
                               <h2 className="text-4xl">Leader board</h2>
-                              <div className="ml-auto text-lg text-primary-light">
-                                The date changes at 9am local time (UTC+09:00)
-                              </div>
+                              <div className="ml-auto text-lg text-primary-light">{message}</div>
                             </div>
                             <div className="p-5 mt-10 mb-12 panel">
                               <div className="flex justify-between">
@@ -328,9 +331,7 @@ function Airdrop() {
                         <section>
                           <div className="flex items-baseline">
                             <BlurText label="My History" className="text-[60px]" color="chrm" />
-                            <div className="ml-auto text-lg text-primary-light">
-                              The date changes at 9am local time (UTC+09:00)
-                            </div>
+                            <div className="ml-auto text-lg text-primary-light">{message}</div>
                           </div>
                           <div className="p-5 mt-10 panel">
                             <div className="flex justify-between">
