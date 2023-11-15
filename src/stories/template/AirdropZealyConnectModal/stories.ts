@@ -15,6 +15,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     isOpen: true,
+    to: 'https://testnet.chromatic.finance',
     onClick() {},
     onClose() {},
   },

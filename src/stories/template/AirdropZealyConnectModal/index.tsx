@@ -1,18 +1,19 @@
 import '~/stories/template/Modal/style.css';
 
 import { Dialog } from '@headlessui/react';
-import { Button } from '~/stories/atom/Button';
 import { OutlinkIcon } from '~/assets/icons/Icon';
+import { Button } from '~/stories/atom/Button';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 
 export interface AirdropZealyConnectModalProps {
   isOpen: boolean;
+  to: `https${string}`;
   onClick: () => unknown;
   onClose: () => unknown;
 }
 
 export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
-  const { isOpen, onClick, onClose } = props;
+  const { isOpen, to, onClick, onClose } = props;
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -35,7 +36,11 @@ export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
                 iconRight={<OutlinkIcon />}
                 css="underlined"
                 size="lg"
-                onClick={onClick}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onClick();
+                }}
+                href={to}
               />
             </article>
           </Dialog.Description>
@@ -46,7 +51,11 @@ export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
               size="xl"
               className="text-lg"
               css="active"
-              onClick={onClick}
+              onClick={(event) => {
+                event.preventDefault();
+                onClick();
+              }}
+              href={to}
             />
           </div>
         </Dialog.Panel>

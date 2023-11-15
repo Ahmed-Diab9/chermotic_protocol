@@ -15,6 +15,7 @@ import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
 
+import { AIRDROP_LINKS } from '~/constants/airdrop';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
@@ -36,8 +37,7 @@ import './style.css';
 
 function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
-  const { syncState, isMutating, isOpened, synchronize, onZealyConnect, onModalClose } =
-    useAirdropSync();
+  const { syncState, isMutating, synchronize, onExternalNavigate, onModalClose } = useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
   const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
   const { metadata } = useAirdropLeaderBoard({
@@ -60,18 +60,21 @@ function Airdrop() {
     }
   }, [searchParams]);
 
-  let [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
+  const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
 
   return (
     <>
       <div className="page-container bg-gradient-chrm">
         <AirdropZealyConnectModal
-          isOpen={Boolean(isOpened && syncState?.isFailed)}
-          onClick={onZealyConnect}
+          isOpen={Boolean(!isMutating && syncState?.isFailed)}
+          onClick={() => {
+            onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT'], true);
+          }}
+          to={AIRDROP_LINKS['HOW_TO_CONNECT']}
           onClose={onModalClose}
         />
         <AirdropZealyConvertModal
-          isOpen={Boolean(isOpened && syncState?.isZealyConnected)}
+          isOpen={Boolean(!isMutating && syncState?.isZealyConnected)}
           syncData={syncState}
           onClick={onModalClose}
           onClose={onModalClose}
@@ -88,10 +91,7 @@ function Airdrop() {
                       <Tab ref={historyTabRef}>My History</Tab>
                       <button
                         onClick={() => {
-                          window.open(
-                            'https://chromatic.gitbook.io/docs/community-and-programs/airdrop',
-                            '_blank'
-                          );
+                          onExternalNavigate(AIRDROP_LINKS['AIRDROP_INTRO']);
                         }}
                         className="flex gap-2 text-primary-light"
                       >
@@ -137,7 +137,11 @@ function Airdrop() {
                                 className="whitespace-nowrap"
                                 size="lg"
                                 css="underlined"
-                                href="https://chromatic.gitbook.io/docs/community-and-programs/airdrop"
+                                href={AIRDROP_LINKS['AIRDROP_INTRO']}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  onExternalNavigate(AIRDROP_LINKS['AIRDROP_INTRO']);
+                                }}
                               />
                             </div>
                           </div>
@@ -180,7 +184,11 @@ function Airdrop() {
                                     css="underlined"
                                     size="lg"
                                     className="text-primary"
-                                    href="https://chromatic.gitbook.io/docs/community-and-programs/how-to-connect-zealy-account-to-arbitrum-wallet"
+                                    href={AIRDROP_LINKS['HOW_TO_CONNECT']}
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT']);
+                                    }}
                                   />
                                   to get informed how to connect wallet address to zealy linked
                                   account.
@@ -193,7 +201,10 @@ function Airdrop() {
                                   className="whitespace-nowrap"
                                   size="lg"
                                   css="underlined"
-                                  href="https://zealy.io/cw/_/settings/linked-accounts"
+                                  onClick={() => {
+                                    onExternalNavigate(AIRDROP_LINKS['LINKED_ACCOUNT']);
+                                  }}
+                                  href={AIRDROP_LINKS['LINKED_ACCOUNT']}
                                 />
                                 <p className="mt-[2px] text-sm text-price-lower">
                                   Zealy login required
