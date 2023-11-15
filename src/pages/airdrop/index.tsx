@@ -79,7 +79,7 @@ function Airdrop() {
         <HeaderV3 />
         {_isConnected ? (
           <>
-            <main>
+            <main className="max-w-[1400px]">
               <div className="wrapper-tabs">
                 <Tab.Group>
                   <div className="flex gap-10">
@@ -102,7 +102,7 @@ function Airdrop() {
                           <h2 className="mb-5 text-4xl font-semibold text-left text-primary">
                             Chromatic Airdrop Season 1
                           </h2>
-                          <div className="flex items-end mb-12">
+                          <div className="flex flex-wrap items-end mb-12">
                             <BlurText
                               label="May the $CHRMA be with you!"
                               className="text-[60px] tracking-tight w-[620px]"
@@ -168,11 +168,11 @@ function Airdrop() {
                             </div>
                             <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
                               <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
-                              <div className="text-left">
+                              <div className="w-2/3 text-left">
                                 <p className="text-left text-price-lower">
                                   To convert XP from Zealy quests to Chromatic Airdrop credits
-                                  automatically, connect your wallet via Zealy <br />
-                                  Profile {'>'} Linked Account. Click
+                                  automatically, connect your wallet via Zealy Profile {'>'} Linked
+                                  Account. Click
                                   <Button
                                     label="here"
                                     css="underlined"
@@ -187,7 +187,7 @@ function Airdrop() {
                                 <Button
                                   label="My Zealy Profile"
                                   iconRight={<ChevronRightIcon />}
-                                  className=""
+                                  className="whitespace-nowrap"
                                   size="lg"
                                   css="underlined"
                                   href="https://zealy.io/cw/_/settings/linked-accounts"

@@ -24,8 +24,8 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Credits are the currency used to activate Random Boxes in the Airdrop. One hundred
             credits are needed to unlock a single random box.
           </p>
-          <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
+          <div className="flex flex-col gap-4 pt-10 mt-auto xl:items-end xl:justify-between xl:flex-row xl:gap-0">
+            <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
                 Credits may be acquired through the completion of Chromatic's Zealy Quest, active
@@ -33,7 +33,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
                 offered on Discord.
               </p>
             </div>
-            <div className="flex flex-col gap-1 pl-5">
+            <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
               <ArrowInfo label="Learn more" to="#" />
             </div>
@@ -54,15 +54,15 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             Boosters increase the probability of getting more rCHRMA from the Random Box. By using
             Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
-          <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col max-w-[324px] w-2/3 gap-2">
+          <div className="flex flex-col gap-4 pt-10 mt-auto xl:items-end xl:justify-between xl:flex-row xl:gap-0">
+            <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
                 Boosters can be acquired through participation in Trading Competitions or by
                 successfully completing special missions available on Discord.
               </p>
             </div>
-            <div className="flex flex-col gap-1 pl-5">
+            <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
               <ArrowInfo label="Learn more" to="#" />
             </div>
