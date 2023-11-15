@@ -30,13 +30,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
     <header className="HeaderV3">
       <div className="h-[70px] px-10 py-5 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <a
-            href="https://chromatic.finance/"
-            className="mr-4"
-            title="Chromatic"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="/" className="mr-4" title="Chromatic Protocol" rel="noopener noreferrer">
             <ChromaticSimpleLogo className="text-primary h-9" />
           </a>
           {!hideMenu && (

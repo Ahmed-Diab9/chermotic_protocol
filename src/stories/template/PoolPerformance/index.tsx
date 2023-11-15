@@ -12,15 +12,8 @@ import './style.css';
 export interface PoolPerformanceProps {}
 
 export const PoolPerformance = (props: PoolPerformanceProps) => {
-  const {
-    tokenName,
-    tokenImage,
-    performance,
-    period,
-    trailingApr,
-    formattedPeriods,
-    onPeriodChange,
-  } = usePoolPerformance();
+  const { tokenName, tokenImage, profit, period, annualRate, formattedPeriods, onPeriodChange } =
+    usePoolPerformance();
 
   return (
     <div className="p-5 PoolPerformance">
@@ -68,7 +61,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher text-xl mt-[2px]">{performance}</h4>
+              <h4 className="text-price-higher text-xl mt-[2px]">{profit}</h4>
             </div>
           </div>
           <div className="flex w-1/2 gap-3 pl-5 border-l">
@@ -83,7 +76,7 @@ export const PoolPerformance = (props: PoolPerformanceProps) => {
                 />
               </div>
               {/* todo: text price color */}
-              <h4 className="text-price-higher text-xl mt-[2px]">{trailingApr}</h4>
+              <h4 className="text-price-higher text-xl mt-[2px]">{annualRate}</h4>
             </div>
           </div>
         </div>

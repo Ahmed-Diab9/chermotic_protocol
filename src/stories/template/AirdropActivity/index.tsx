@@ -1,5 +1,6 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { AIRDROP_LINKS } from '~/constants/airdrop';
 import { useAirdropActivity } from './hooks';
 import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
@@ -21,20 +22,20 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             <h4 className="text-[28px]">{formattedCredit}</h4>
           </div>
           <p className="pt-5">
-            Credits are a commodity paid to run Random Boxes in Airdrop. 100 Credits are required to
-            open one random box.
+            Credits are the currency used to activate Random Boxes in the Airdrop. One hundred
+            credits are needed to unlock a single random box.
           </p>
-          <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+          <div className="flex flex-col gap-4 pt-10 mt-auto xl:items-end xl:justify-between xl:flex-row xl:gap-0">
+            <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Credit</h5>
               <p className="text-primary-light">
-                You can earn Credits by completing Chromatic's Zealy Quest, participating in Trading
-                Competitions, or completing special missions given on Discord.
+                Credits can be acquired through the completion of Chromatic's Zealy Quests or the
+                fulfillment of special missions offered on Discord.
               </p>
             </div>
-            <div className="flex flex-col gap-1 pl-5">
+            <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_CREDITS']} />
             </div>
           </div>
         </div>
@@ -46,24 +47,24 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
             </div>
             <div className="flex flex-col gap-2 text-right">
               <h4 className="text-[28px]">{airdropAssets?.booster}</h4>
-              <p className="text-primary-light">17 Booster Chances</p>
+              <p className="text-primary-light">{airdropAssets?.booster} Booster Chances</p>
             </div>
           </div>
           <p className="pt-5">
             Boosters increase the probability of getting more rCHRMA from the Random Box. By using
             Booster, you can earn approximately twice as much rCHRMA as without using Booster.
           </p>
-          <div className="flex items-end justify-between pt-10 mt-auto">
-            <div className="flex flex-col w-[324px] gap-2">
+          <div className="flex flex-col gap-4 pt-10 mt-auto xl:items-end xl:justify-between xl:flex-row xl:gap-0">
+            <div className="flex flex-col xl:max-w-[324px] xl:w-2/3 gap-2">
               <h5 className="self-start mb-1 text-xl text-chrm">How to get Booster</h5>
               <p className="text-primary-light">
-                You can earn Boosters participating in Trading Competitions, or completing special
-                missions given on Discord.
+                Boosters can be acquired by attending to airdrop page for 6 consecutive days in a
+                week or the fulfillment of special missions offered on Discord.
               </p>
             </div>
-            <div className="flex flex-col gap-1 pl-5">
+            <div className="flex flex-col gap-1 xl:pl-5">
               <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
-              <ArrowInfo label="Learn more" to="#" />
+              <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_BOOSTERS']} />
             </div>
           </div>
         </div>
@@ -77,13 +78,13 @@ interface ArrowInfoProps {
   to?: string;
 }
 
-const ArrowInfo = (props: ArrowInfoProps) => {
+export const ArrowInfo = (props: ArrowInfoProps) => {
   const { label, to } = props;
   if (to)
     return (
       <Link
         to={to}
-        className="flex items-center gap-1 text-primary-light hover:underline"
+        className="flex items-center gap-1 text-primary-light hover:underline whitespace-nowrap"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -93,7 +94,7 @@ const ArrowInfo = (props: ArrowInfoProps) => {
     );
   else
     return (
-      <p className="flex items-center gap-1 text-primary-light">
+      <p className="flex items-center gap-1 text-primary-light whitespace-nowrap">
         <ArrowLongRightIcon className="w-4" />
         <span>{label}</span>
       </p>

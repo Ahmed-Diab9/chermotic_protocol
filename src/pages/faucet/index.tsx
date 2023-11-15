@@ -52,7 +52,7 @@ const Faucet = () => {
                 </div>
                 <Button
                   iconOnly={<OutlinkIcon />}
-                  className="ml-auto"
+                  className="ml-auto text-primary-light"
                   css="unstyled"
                   href={blockExplorer}
                 />

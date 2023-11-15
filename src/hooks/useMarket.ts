@@ -1,18 +1,108 @@
+import { Client } from '@chromatic-protocol/sdk-viem';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { fetchTokenImages } from '~/apis/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { selectedMarketSelector, selectedTokenSelector } from '~/store/selector';
 import { Market } from '~/typings/market';
+import { OracleVersion } from '~/typings/oracleVersion';
 import { trimMarket } from '~/utils/market';
-import { PromiseOnlySuccess } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
 import { useSettlementToken } from './useSettlementToken';
+
+const getMarkets = async (client: Client, tokenAddresses: Address[]) => {
+  const marketFactoryApi = client.marketFactory();
+  const marketAddressesPromise = tokenAddresses
+    .map((tokenAddress) => {
+      const response = marketFactoryApi
+        .contracts()
+        .marketFactory.read.getMarketsBySettlmentToken([tokenAddress]);
+      return [tokenAddress, response] as const;
+    })
+    .flat(1);
+  const addressTuples = await Promise.allSettled(marketAddressesPromise);
+  const addressMap = new Map<Address, Address>();
+  let currentTokenAddress: Address = '0x';
+  for (let index = 0; index < addressTuples.length; index++) {
+    const tupleItem = addressTuples[index];
+    if (tupleItem.status === 'rejected') {
+      continue;
+    }
+    if (typeof tupleItem.value === 'string') {
+      currentTokenAddress = tupleItem.value;
+    } else {
+      // eslint-disable-next-line no-loop-func
+      tupleItem.value.forEach((marketAddress) => {
+        addressMap.set(marketAddress, currentTokenAddress);
+      });
+    }
+  }
+  const marketAddresses = Array.from(addressMap.keys());
+  const marketApi = client.market();
+  const tuplesPromise = marketAddresses
+    .map(
+      (address) =>
+        [
+          Promise.resolve(address),
+          marketApi.getCurrentPrice(address),
+          marketApi.getMarketName(address),
+        ] as const
+    )
+    .flat(1);
+  const tuples = await Promise.allSettled(tuplesPromise);
+  let fulfilledMarkets = [] as Market[];
+  for (let index = 0; index < tuples.length; index++) {
+    const tupleItem = tuples[index];
+    if (tupleItem.status === 'rejected') {
+      continue;
+    }
+    const marketIndex = Math.floor(index / 3);
+    const tupleIndex = index % 3;
+    switch (tupleIndex) {
+      case 0: {
+        const marketAddress = tupleItem.value as Address;
+        fulfilledMarkets[marketIndex] = {
+          address: marketAddress,
+          tokenAddress: addressMap.get(marketAddress),
+        } as Market;
+        break;
+      }
+      case 1: {
+        fulfilledMarkets[marketIndex] = {
+          ...fulfilledMarkets[marketIndex],
+          oracleValue: tupleItem.value as OracleVersion,
+        };
+        break;
+      }
+      case 2: {
+        fulfilledMarkets[marketIndex] = {
+          ...fulfilledMarkets[marketIndex],
+          description: tupleItem.value as string,
+        };
+        break;
+      }
+    }
+  }
+  const marketNames = fulfilledMarkets.map(
+    (market) => market.description.split(/\s*\/\s*/) as [string, string]
+  );
+  const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
+  return fulfilledMarkets.map((market, marketIndex) => {
+    const description = marketNames[marketIndex].join('/');
+
+    return {
+      ...market,
+      description,
+      image: marketImageMap[marketNames[marketIndex][0]],
+    } satisfies Market;
+  });
+};
 
 export const useEntireMarkets = () => {
   const { isReady, client } = useChromaticClient();
@@ -29,28 +119,7 @@ export const useEntireMarkets = () => {
   } = useSWR(
     isReady && checkAllProps(fetchKey) && fetchKey,
     async ({ tokenAddresses }) => {
-      const response = await PromiseOnlySuccess(
-        tokenAddresses.map(async (tokenAddress) => {
-          const marketFactoryApi = client.marketFactory();
-          const markets = (await marketFactoryApi.getMarkets(tokenAddress)) ?? [];
-          const marketNames = markets.map(
-            (market) => market.description.split(/\s*\/\s*/) as [string, string]
-          );
-          const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
-          return markets.map((market, marketIndex) => {
-            const description = marketNames[marketIndex].join('/');
-
-            return {
-              ...market,
-              description,
-              tokenAddress,
-              image: marketImageMap[marketNames[marketIndex][0]],
-            } satisfies Market;
-          });
-        })
-      );
-
-      return response.flat();
+      return getMarkets(client, tokenAddresses);
     },
     {
       refreshInterval: 1000 * 30,
@@ -85,22 +154,7 @@ export const useMarket = (_interval?: number) => {
   } = useSWR(
     isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
     async ({ selectedTokenAddress }) => {
-      const markets = (await marketFactoryApi.getMarkets(selectedTokenAddress)) || [];
-      const marketNames = markets.map(
-        (market) => market.description.split(/\s*\/\s*/) as [string, string]
-      );
-      const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
-      const detailedMarkets = markets.map((market, marketIndex) => {
-        const description = marketNames[marketIndex].join('/');
-        return {
-          ...market,
-          description,
-          tokenAddress: selectedTokenAddress,
-          image: marketImageMap[marketNames[marketIndex][0]],
-        } as Market;
-      });
-
-      return detailedMarkets;
+      return getMarkets(client, [selectedTokenAddress]);
     },
     {
       refreshInterval: 1000 * 30,

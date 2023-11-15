@@ -62,7 +62,7 @@ a {
   }
   &.btn-light {
     @apply border border-gray-lighter text-primary bg-paper enabled:hover:bg-paper-light;
-    @apply dark:border-transparent dark:bg-paper-light dark:enabled:hover:bg-gray;
+    @apply dark:border-transparent dark:bg-gray-light dark:enabled:hover:bg-gray;
     &:disabled {
       @apply border-gray-lighter text-gray-light;
       @apply dark:bg-gray-light dark:border-transparent dark:text-primary/20;
@@ -80,6 +80,12 @@ a {
   }
   &.btn-unstyled {
     @apply bg-transparent;
+    &.text-primary-lighter {
+      @apply enabled:hover:text-primary-light;
+    }
+    &.text-primary-light {
+      @apply enabled:hover:text-primary/80;
+    }
   }
   &.btn-underlined {
     @apply bg-transparent !px-0 !h-auto;
@@ -88,6 +94,12 @@ a {
     }
     &:disabled {
       @apply opacity-20;
+    }
+    &.text-primary-lighter {
+      @apply enabled:hover:text-primary-light;
+    }
+    &.text-primary-light {
+      @apply enabled:hover:text-primary/80;
     }
   }
   &.btn-circle {

@@ -1,5 +1,6 @@
 import { ToastContainer, toast } from 'react-toastify';
 import { ChromaticRowLogo } from '~/assets/icons/Logo';
+
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
 
@@ -70,4 +71,12 @@ const Msg = (props: MsgProps) => {
       )}
     </div>
   );
+};
+
+export const showCautionToast = (props: MsgProps) => {
+  toast(<Msg {...props} />, {
+    autoClose: false,
+    closeButton: true,
+    closeOnClick: false,
+  });
 };

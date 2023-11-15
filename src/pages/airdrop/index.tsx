@@ -1,13 +1,24 @@
 import { Tab } from '@headlessui/react';
-import { ArrowUpTrayIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAccount, useConnect } from 'wagmi';
+
 import { OutlinkIcon } from '~/assets/icons/Icon';
-import { Loading } from '~/stories/atom/Loading';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import RandomboxImage from '~/assets/images/airdrop_randombox.png';
-import GalxeIcon from '~/assets/images/galxe.png';
 import ZealyIcon from '~/assets/images/zealy.png';
+import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
+import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
+import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
+import { useMarketLocal } from '~/hooks/useMarketLocal';
+import { useTokenLocal } from '~/hooks/useTokenLocal';
+import { useAppSelector } from '~/store';
+
+import { AIRDROP_LINKS } from '~/constants/airdrop';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
+import { Loading } from '~/stories/atom/Loading';
 import '~/stories/atom/Tabs/style.css';
 import { Toast } from '~/stories/atom/Toast';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
@@ -16,25 +27,17 @@ import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
 import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
+import { AirdropZealyConnectModal } from '~/stories/template/AirdropZealyConnectModal';
+import { AirdropZealyConvertModal } from '~/stories/template/AirdropZealyConvertModal';
 import { Footer } from '~/stories/template/Footer';
 import { HeaderV3 } from '~/stories/template/HeaderV3';
-
-import { useMarketLocal } from '~/hooks/useMarketLocal';
-import { useTokenLocal } from '~/hooks/useTokenLocal';
-
-import { useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useAccount, useConnect } from 'wagmi';
-import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
-import { useAirdropLeaderBoard } from '~/hooks/airdrops/useAirdropLeaderBoard';
-import { useAirdropSync } from '~/hooks/airdrops/useAirdropSync';
-import { useAppSelector } from '~/store';
+import { Modal } from '~/stories/template/Modal';
 import { numberFormat } from '~/utils/number';
 import './style.css';
 
 function Airdrop() {
   const { airdropAssets } = useAirdropAssets();
-  const { synchronize } = useAirdropSync();
+  const { syncState, isMutating, synchronize, onExternalNavigate, onModalClose } = useAirdropSync();
   const { refreshAssets } = useAirdropAssets();
   const { filterLabels, labelMap, selectedIndex } = useAppSelector((state) => state.airdrop);
   const { metadata } = useAirdropLeaderBoard({
@@ -57,13 +60,29 @@ function Airdrop() {
     }
   }, [searchParams]);
 
+  const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
+
   return (
     <>
       <div className="page-container bg-gradient-chrm">
+        <AirdropZealyConnectModal
+          isOpen={Boolean(!isMutating && syncState?.isFailed)}
+          onClick={() => {
+            onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT'], true);
+          }}
+          to={AIRDROP_LINKS['HOW_TO_CONNECT']}
+          onClose={onModalClose}
+        />
+        <AirdropZealyConvertModal
+          isOpen={Boolean(!isMutating && syncState?.isZealyConnected)}
+          syncData={syncState}
+          onClick={onModalClose}
+          onClose={onModalClose}
+        />
         <HeaderV3 />
         {_isConnected ? (
           <>
-            <main>
+            <main className="max-w-[1400px]">
               <div className="wrapper-tabs">
                 <Tab.Group>
                   <div className="flex gap-10">
@@ -72,7 +91,7 @@ function Airdrop() {
                       <Tab ref={historyTabRef}>My History</Tab>
                       <button
                         onClick={() => {
-                          window.open('https://chromatic.finance/', '_blank');
+                          onExternalNavigate(AIRDROP_LINKS['AIRDROP_INTRO']);
                         }}
                         className="flex gap-2 text-primary-light"
                       >
@@ -83,24 +102,51 @@ function Airdrop() {
                     <Tab.Panels className="flex-auto block">
                       <Tab.Panel>
                         <section>
-                          <h2 className="mb-2 text-4xl font-semibold text-left text-primary">
+                          <h2 className="mb-5 text-4xl font-semibold text-left text-primary">
                             Chromatic Airdrop Season 1
                           </h2>
-                          <div className="w-full">
+                          <div className="flex flex-wrap items-end mb-12">
                             <BlurText
-                              label="May the CHRMA be with you!"
-                              className="text-[60px] tracking-tight"
+                              label="May the $CHRMA be with you!"
+                              className="text-[60px] tracking-tight w-[620px]"
                               color="chrm"
                             />
+                            <div className="ml-auto text-right">
+                              <p className="text-xl text-primary">
+                                Season 1 Period: Nov 2023 - 1Q 2024
+                              </p>
+                              <p className="mt-1 text-lg text-primary-light">
+                                The end date will be announced later.
+                              </p>
+                            </div>
                           </div>
-                          <div className="mt-10 text-left">
-                            <p className="text-xl text-primary-light">
-                              Airdrop 1 period: Nov 2023 ~ 1Q 2024 (The end date will be announced
-                              later.)
-                            </p>
+                          <div className="flex items-center gap-4 px-5 py-4 text-lg panel">
+                            <div className="w-4/5 text-left">
+                              <p className="text-left text-primary">
+                                Airdrop Season 1 will be evaluated based on community activity and
+                                contributions during the testnet (Arbitrum Goerli) and the initial
+                                months of the mainnet (Arbitrum One) period, from November 2023 to
+                                some point in the first quarter of 2024, and rCHRMA will be
+                                distributed (or vested) accordingly.
+                              </p>
+                            </div>
+                            <div className="flex flex-col pl-8 ml-auto border-l ">
+                              <Button
+                                label="Learn more"
+                                iconRight={<ChevronRightIcon />}
+                                className="whitespace-nowrap"
+                                size="lg"
+                                css="underlined"
+                                href={AIRDROP_LINKS['AIRDROP_INTRO']}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  onExternalNavigate(AIRDROP_LINKS['AIRDROP_INTRO']);
+                                }}
+                              />
+                            </div>
                           </div>
                         </section>
-                        <section className="flex flex-col gap-[140px] mt-16">
+                        <section className="flex flex-col gap-[140px] mt-5">
                           <article>
                             <AirdropStamp />
                           </article>
@@ -115,7 +161,8 @@ function Airdrop() {
                                 <Button
                                   label="Convert XP to Credit"
                                   // TODO: show icon when loading
-                                  iconRight={<Loading />}
+                                  iconLeft={isMutating ? <Loading /> : null}
+                                  disabled={isMutating}
                                   css="active"
                                   size="sm"
                                   className="!text-lg"
@@ -128,20 +175,40 @@ function Airdrop() {
                             </div>
                             <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
                               <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
-                              <p className="text-left text-price-lower">
-                                In order to automatically convert XP earned by completing quests in
-                                Zealy into credits for Chromatic Airdrop, <br />
-                                you must connect your wallet at Zealy Profile {'>'} Linked account.
-                              </p>
-                              <div className="pl-8 ml-auto border-l">
+                              <div className="w-2/3 text-left">
+                                <p className="text-left text-price-lower">
+                                  To convert XP from Zealy quests to Chromatic Airdrop credits,
+                                  connect your wallet at Zealy Profile {'>'} Linked Account. Click
+                                  <Button
+                                    label="here"
+                                    css="underlined"
+                                    size="lg"
+                                    className="text-primary"
+                                    href={AIRDROP_LINKS['HOW_TO_CONNECT']}
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT']);
+                                    }}
+                                  />
+                                  to get informed how to connect wallet address to zealy linked
+                                  account.
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-start pl-8 ml-auto border-l">
                                 <Button
-                                  label="My Zealy Profile"
+                                  label="Zealy Linked account"
                                   iconRight={<ChevronRightIcon />}
-                                  className=""
+                                  className="whitespace-nowrap"
                                   size="lg"
                                   css="underlined"
-                                  href=""
+                                  onClick={() => {
+                                    onExternalNavigate(AIRDROP_LINKS['LINKED_ACCOUNT']);
+                                  }}
+                                  href={AIRDROP_LINKS['LINKED_ACCOUNT']}
                                 />
+                                <p className="mt-[2px] text-sm text-price-lower">
+                                  Zealy login required
+                                </p>
                               </div>
                             </div>
                             <AirdropActivity />
@@ -178,35 +245,24 @@ function Airdrop() {
                             <div className="flex flex-col items-center mt-10">
                               <img src={RandomboxImage} alt="ramdom box" className="w-[330px]" />
                               <div className="flex mb-10 text-lg text-left border-y text-primary-light">
-                                <div className="w-1/4 px-3 py-5">
+                                <div className="w-1/3 px-3 py-5">
                                   <p>
-                                    You can obtain rCHRMA through random box. 100 Credits are
-                                    required to run Random Box once.
+                                    rCHRMA can be obtained through a random box, requiring 100
+                                    credits for a single box opening.
                                   </p>
                                 </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
+                                <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    Random Box will be activated and open in the first quarter of
-                                    2024 after the end of the testnet period.
+                                    The Random Box will be activated and opened in the first quarter
+                                    of 2024.
                                   </p>
                                 </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
+                                <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    To open Random Box, you will need to join a specific Discord
-                                    server specified by Chromatic Protocol.
+                                    To open the Random Box, you must join a designated Discord
+                                    server and complete phone verification. (The address of the
+                                    designated Discord server will be announced later.)
                                   </p>
-                                </div>
-                                <div className="w-1/4 px-3 py-5 border-l">
-                                  <p>
-                                    The address of the Discord server specified by Chromatic
-                                    Protocol will be announced before the random box is released.
-                                  </p>
-                                  <Button
-                                    label="Discord Chromatic Server"
-                                    iconRight={<ChevronRightIcon />}
-                                    css="underlined"
-                                    className="mt-5 text-primary"
-                                  />
                                 </div>
                               </div>
                               <Button
@@ -214,6 +270,7 @@ function Airdrop() {
                                 css="chrm-hover"
                                 size="3xl"
                                 className="!text-xl !w-[280px]"
+                                onClick={() => setRandomboxModalOpen(true)}
                               />
                             </div>
                           </article>
@@ -322,6 +379,18 @@ function Airdrop() {
         )}
         <Toast />
         <ChainModal />
+        {randomboxModalOpen && (
+          <Modal
+            title="Random Box"
+            paragraph="Random box is unavailable yet"
+            subParagraph="The random box is scheduled to be released in the first quarter of 2024."
+            buttonLabel="OK"
+            buttonCss="default"
+            onClick={() => setRandomboxModalOpen(false)}
+            isOpen={randomboxModalOpen}
+            setIsOpen={setRandomboxModalOpen}
+          />
+        )}
       </div>
     </>
   );

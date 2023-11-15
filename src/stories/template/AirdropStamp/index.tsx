@@ -29,9 +29,14 @@ export const AirdropStamp = (props: AirdropStampProps) => {
   return (
     <>
       <div className="p-5 text-left panel AirdropStamp">
-        <div className="flex pb-5 border-b">
-          <div className="w-1/2 pl-5 pr-10">
-            <h4 className="mb-5 text-3xl text-primary-light">Sign-In Rewards</h4>
+        <div className="pb-5 border-b">
+          <div className="pl-3">
+            <div className="flex">
+              <h4 className="mb-5 text-3xl text-primary-light">Sign-In Rewards</h4>
+              <p className="ml-auto text-lg text-primary-light">
+                The date changes at 9am local time (UTC+09:00)
+              </p>
+            </div>
             <div className="flex items-center gap-2 mb-2">
               <BoosterIcon className="w-6" />
               <p className="text-lg">{boosterText}</p>
@@ -41,11 +46,8 @@ export const AirdropStamp = (props: AirdropStampProps) => {
               <p className="text-lg">{creditText}</p>
             </div>
           </div>
-          <div className="ml-auto text-lg text-primary-light">
-            The date changes at 9am local time (UTC+09:00)
-          </div>
         </div>
-        <div className="flex justify-between px-10 mt-6">
+        <div className="flex justify-around mt-6">
           {schedules.map((schedule) => (
             <div
               key={`${schedule.id}-${schedule.date}-${schedule.name}`}

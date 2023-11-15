@@ -1,5 +1,4 @@
 import { Dialog } from '@headlessui/react';
-import { useState } from 'react';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Button } from '../../atom/Button';
 import './style.css';
@@ -12,6 +11,8 @@ interface ModalProps {
   buttonLabel?: string;
   buttonCss?: 'default' | 'light' | 'active' | 'unstyled';
   onClick?: () => void;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Modal = ({
@@ -22,10 +23,10 @@ export const Modal = ({
   buttonCss = 'default',
   size = 'sm',
   onClick,
+  isOpen,
+  setIsOpen,
   ...props
 }: ModalProps) => {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
     <Dialog className="" open={isOpen} onClose={() => setIsOpen(false)}>
       <div className="backdrop" aria-hidden="true" />

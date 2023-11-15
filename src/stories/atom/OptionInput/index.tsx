@@ -14,7 +14,8 @@ interface OptionInputProps {
   assetSrc?: string;
   size?: 'sm' | 'base' | 'lg';
   css?: 'default' | 'active';
-  align?: 'center' | 'left' | 'right';
+  itemsAlign?: 'center' | 'start' | 'end' | 'stretch';
+  inputAlign?: 'center' | 'left' | 'right';
   direction?: 'row' | 'column';
   className?: string;
   disabled?: boolean;
@@ -34,7 +35,8 @@ export const OptionInput = (props: OptionInputProps) => {
     assetSrc,
     size = 'base',
     css = 'default',
-    align = 'right',
+    itemsAlign = 'end',
+    inputAlign = 'right',
     direction = 'column',
     className = '',
     disabled = false,
@@ -61,7 +63,7 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   return (
-    <div className={`flex flex-col items-end ${className}`}>
+    <div className={`flex flex-col items-${itemsAlign} ${className}`}>
       {errorMsg && <p className={`mb-2 text-price-lower text-${errorMsgAlign}`}>{errorMsg}</p>}
       <div
         className={`flex ${
@@ -107,7 +109,7 @@ export const OptionInput = (props: OptionInputProps) => {
           assetSrc={assetSrc}
           size={size}
           css={css}
-          align={align}
+          align={inputAlign}
           value={value}
           onChange={onChangeInput}
           className="relative border-gray-light"
