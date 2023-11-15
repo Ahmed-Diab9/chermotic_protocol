@@ -190,7 +190,7 @@ function Airdrop() {
                                   className=""
                                   size="lg"
                                   css="underlined"
-                                  href="https://zealy.io/cw/_/settings/profile"
+                                  href="https://zealy.io/cw/_/settings/linked-accounts"
                                 />
                               </div>
                             </div>
