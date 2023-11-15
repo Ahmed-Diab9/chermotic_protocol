@@ -121,20 +121,12 @@ export function PoolPanel() {
                   <div className="flex justify-between mt-6 mb-5">
                     <div className="text-left">
                       <p className="mb-1 text-primary-lighter">Short LP</p>
-                      {/**
-                       * @TODO
-                       * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
-                       */}
                       <p>
                         {shortUsedLp} / {shortMaxLp}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="mb-1 text-primary-lighter">Long LP</p>
-                      {/**
-                       * @TODO
-                       * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
-                       */}
                       <p>
                         {longUsedLp} / {longMaxLp}{' '}
                       </p>
@@ -267,10 +259,6 @@ export function PoolPanel() {
                     </div>
                   </div>
                   <h4 className="text-xl text-left xl:text-right">
-                    {/**
-                     * @TODO
-                     * 총 유동성 보여주는 로직
-                     */}
                     <SkeletonElement isLoading={isLoading} width={100}>
                       {totalLiquidityValue}
                       {/* {tokenName} */}
