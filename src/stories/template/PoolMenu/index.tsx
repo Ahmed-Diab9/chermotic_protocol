@@ -45,7 +45,7 @@ export const PoolMenuItem = (props: PoolMenuItemProps) => {
 
   return (
     <button
-      className={`flex items-center w-full px-5 py-3 panel ${
+      className={`flex items-center w-full px-5 py-3 panel gap-5 ${
         selected ? '' : '!bg-inverted border !border-gray-lighter'
       }`}
       title={title}

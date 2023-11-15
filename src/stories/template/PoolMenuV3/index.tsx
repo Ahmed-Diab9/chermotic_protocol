@@ -64,7 +64,7 @@ export const PoolMenuV3Item = (props: PoolMenuV3ItemProps) => {
 
   return (
     <button
-      className={`flex items-center w-full px-5 py-3 border rounded ${
+      className={`flex items-center w-full px-5 py-3 border rounded gap-5 ${
         selected ? 'border-primary-light bg-primary/10' : 'border-primary/10'
       }`}
       title={name}
