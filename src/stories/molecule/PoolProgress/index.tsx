@@ -180,7 +180,6 @@ export function PoolProgress() {
                         <TooltipGuide
                           tipOnly
                           label="minting-standby"
-                          // TODO: 퍼센트값 불러오기
                           tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
@@ -195,7 +194,6 @@ export function PoolProgress() {
                         <TooltipGuide
                           tipOnly
                           label="burning-standby"
-                          // TODO: 퍼센트값 불러오기
                           tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"

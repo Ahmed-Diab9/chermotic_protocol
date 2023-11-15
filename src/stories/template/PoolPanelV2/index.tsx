@@ -70,20 +70,12 @@ export function PoolPanelV2() {
                 <div className="flex justify-between mb-5">
                   <div className="text-left">
                     <p className="mb-1 text-primary-lighter">Short LP</p>
-                    {/**
-                     * @TODO
-                     * 숏 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
-                     */}
                     <p>
                       {shortUsedLp} / {shortMaxLp}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="mb-1 text-primary-lighter">Long LP</p>
-                    {/**
-                     * @TODO
-                     * 롱 카운터 LP 최대 유동성과 사용되고 있는 유동성 총합 렌더링하는 로직입니다.
-                     */}
                     <p>
                       {longUsedLp} / {longMaxLp}{' '}
                     </p>

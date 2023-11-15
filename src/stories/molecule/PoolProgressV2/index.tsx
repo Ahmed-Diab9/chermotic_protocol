@@ -179,7 +179,6 @@ export function PoolProgressV2() {
                         <TooltipGuide
                           tipOnly
                           label="minting-standby"
-                          // TODO: 퍼센트값 불러오기
                           tip="Waiting for the next oracle round for liquidity provisioning (CLB minting). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and it is updated at least once a day."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
@@ -194,7 +193,6 @@ export function PoolProgressV2() {
                         <TooltipGuide
                           tipOnly
                           label="burning-standby"
-                          // TODO: 퍼센트값 불러오기
                           tip="Waiting for the next oracle round for liquidity withdrawing (CLB burning). The next oracle round is updated whenever the Chainlink price moves by 0.05% or more, and updated at least once a day."
                           outLink="https://chromatic-protocol.gitbook.io/docs/trade/settlement#next-oracle-round-mechanism-in-settlement"
                           outLinkAbout="Next Oracle Round"
@@ -266,14 +264,12 @@ const ProgressItem = (props: ProgressItemProps) => {
           {receipt.status === 'standby' && receipt.action === 'minting' && (
             <TooltipGuide
               label="minting-standby-clp"
-              // TODO: 퍼센트값 불러오기
               tip="Waiting for the next oracle round for liquidity provisioning (CLP minting). The next oracle round mechanism is updated whenever the Chainlink price moves by (0.05%) or more, and it is updated at least once a day."
             />
           )}
           {receipt.status === 'standby' && receipt.action === 'burning' && (
             <TooltipGuide
               label="burning-standby-clp"
-              // TODO: 퍼센트값 불러오기
               tip="Waiting for the next oracle round for liquidity withdrawing (CLP burning). The next oracle round mechanism is updated whenever the Chainlink price moves by (0.05%) or more, and updated at least once a day."
             />
           )}
