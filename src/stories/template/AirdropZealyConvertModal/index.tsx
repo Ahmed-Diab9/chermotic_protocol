@@ -1,20 +1,27 @@
 import '~/stories/template/Modal/style.css';
 
 import { Dialog } from '@headlessui/react';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { CoinStackIcon } from '~/assets/icons/Icon';
+import ZealyIcon from '~/assets/images/zealy.png';
 import { Button } from '~/stories/atom/Button';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
-import { CoinStackIcon } from '~/assets/icons/Icon';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import ZealyIcon from '~/assets/images/zealy.png';
 
 export interface AirdropZealyConvertModalProps {
   isOpen: boolean;
+  syncData?: {
+    xp?: number;
+    credit?: number;
+    title?: string;
+    content?: string;
+  };
   onClick: () => unknown;
   onClose: () => unknown;
 }
 
 export function AirdropZealyConvertModal(props: AirdropZealyConvertModalProps) {
-  const { isOpen, onClick, onClose } = props;
+  const { isOpen, syncData, onClick, onClose } = props;
+  const { xp = 0, credit = 0, title, content } = syncData ?? {};
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -26,20 +33,17 @@ export function AirdropZealyConvertModal(props: AirdropZealyConvertModalProps) {
           </Dialog.Title>
           <Dialog.Description className="gap-5 modal-content">
             <article className="text-center">
-              <h2 className="text-4xl">Successfully converted!</h2>
-              <p className="mt-3 mb-6 text-primary-light">
-                Your Zealy XP has been successfully converted to <br />
-                Chromatic airdrop Credit.
-              </p>
+              <h2 className="text-4xl">{title}</h2>
+              <p className="mt-3 mb-6 text-primary-light whitespace-pre-line">{content}</p>
               <div className="flex justify-center gap-5 mt-10 mb-2">
                 <div className="flex flex-col items-center justify-center w-1/3 gap-2">
                   <img src={ZealyIcon} alt="zealy" className="h-6" />
-                  <h4 className="ml-2 text-xl">350XP</h4>
+                  <h4 className="text-xl">{xp} XP</h4>
                 </div>
                 <ArrowRightIcon className="w-5" />
                 <div className="flex flex-col items-center justify-center w-1/3 gap-2">
                   <CoinStackIcon className="w-7" />
-                  <h4 className="ml-1 text-xl capitalize text-chrm">350 Credits</h4>
+                  <h4 className="text-xl capitalize text-chrm">{credit} Credits</h4>
                 </div>
               </div>
             </article>

@@ -25,9 +25,9 @@ export const useCLPPerformance = () => {
 
     const performaces = periods.reduce((performances, period) => {
       const profit = response.lp_performances_by_pk?.[`rate_${period}`];
-      performances[period] = numberFormat(profit ?? '0', {
-        minDigits: 2,
-        maxDigits: 2,
+      performances[period] = numberFormat(profit * 100 ?? '0', {
+        minDigits: 3,
+        maxDigits: 3,
         roundingMode: 'trunc',
         type: 'string',
         useGrouping: true,
