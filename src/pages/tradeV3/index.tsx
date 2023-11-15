@@ -28,10 +28,10 @@ function TradeV3() {
         <div id="prev"></div>
         <div id="current"></div>
       </div>
-      <div className="page-container">
+      <div className="page-container !min-w-[1360px]">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <main className="!max-w-none">
+        <main>
           <div className="flex w-full gap-3 overflow-hidden">
             <article className="flex flex-col flex-auto w-full gap-5">
               <div className="pb-2">

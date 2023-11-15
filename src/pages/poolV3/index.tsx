@@ -79,10 +79,10 @@ const PoolV3 = () => {
       <div className="page-container">
         <BookmarkBoardV3 />
         <HeaderV3 />
-        <main>
+        <main className="max-w-[1480px]">
           <MarketSelectV3 />
           <div className="flex items-stretch gap-5 mt-8">
-            <div className="flex-none w-[240px]">
+            <div className="flex-none w-[220px]">
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
@@ -136,7 +136,7 @@ const PoolV3 = () => {
                     <PoolAnalyticsV3 />
                   </div> */}
                 </div>
-                <div className="flex-none w-2/5 max-w-[420px] flex flex-col gap-3">
+                <div className="flex-none w-[36%] min-w-[340px] max-w-[420px] flex flex-col gap-3">
                   {/* To be added later */}
                   {/* <PoolBalance /> */}
                   <div className="panel panel-translucent">
