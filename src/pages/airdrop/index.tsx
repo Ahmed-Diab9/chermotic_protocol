@@ -170,9 +170,8 @@ function Airdrop() {
                               <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
                               <div className="w-2/3 text-left">
                                 <p className="text-left text-price-lower">
-                                  To convert XP from Zealy quests to Chromatic Airdrop credits
-                                  automatically, connect your wallet via Zealy Profile {'>'} Linked
-                                  Account. Click
+                                  To convert XP from Zealy quests to Chromatic Airdrop credits,
+                                  connect your wallet at Zealy Profile {'>'} Linked Account. Click
                                   <Button
                                     label="here"
                                     css="underlined"
@@ -183,15 +182,18 @@ function Airdrop() {
                                   account.
                                 </p>
                               </div>
-                              <div className="flex flex-col pl-8 ml-auto border-l">
+                              <div className="flex flex-col items-start pl-8 ml-auto border-l">
                                 <Button
-                                  label="My Zealy Profile"
+                                  label="Zealy Linked account"
                                   iconRight={<ChevronRightIcon />}
                                   className="whitespace-nowrap"
                                   size="lg"
                                   css="underlined"
                                   href="https://zealy.io/cw/_/settings/linked-accounts"
                                 />
+                                <p className="mt-[2px] text-sm text-price-lower">
+                                  Zealy login required
+                                </p>
                               </div>
                             </div>
                             <AirdropActivity />
@@ -237,15 +239,15 @@ function Airdrop() {
                                 <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
                                     The Random Box will be activated and opened in the first quarter
-                                    of 2024, following the conclusion of the testnet period.
+                                    of 2024.
                                   </p>
                                 </div>
                                 <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    To unlock the Random Box, it is crucial to join the designated
-                                    Discord server outlined by the Chromatic Protocol. The Chromatic
-                                    Protocol will announce the Discord server address before the
-                                    random box release.
+                                    To unlock the Random Box, it is necessary to join the designated
+                                    Discord server that requires mobile phone authentication. The
+                                    invitation code of the Discord server will be announced before
+                                    the random box release.
                                   </p>
                                 </div>
                               </div>
