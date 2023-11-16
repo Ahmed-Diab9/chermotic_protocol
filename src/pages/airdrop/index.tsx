@@ -383,8 +383,9 @@ function Airdrop() {
         {randomboxModalOpen && (
           <Modal
             title="Random Box"
-            paragraph="Random box is unavailable yet"
-            subParagraph="The random box is scheduled to be released in the first quarter of 2024."
+            // paragraph="Random box is unavailable yet"
+            paragraph="The random box is scheduled to be released in the first quarter of 2024."
+            // subParagraph="The random box is scheduled to be released in the first quarter of 2024."
             buttonLabel="OK"
             buttonCss="default"
             onClick={() => setRandomboxModalOpen(false)}
