@@ -32,13 +32,22 @@ function App() {
   }, []);
 
   useEffect(() => {
-    showCautionToast({
-      title: 'Introducing Chromatic Testnet',
-      titleClass: 'text-chrm',
-      message:
-        'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
-      showLogo: true,
-    });
+    switch (window.location.pathname) {
+      case '/pool':
+      case '/trade': {
+        showCautionToast({
+          title: 'Introducing Chromatic Testnet',
+          titleClass: 'text-chrm',
+          message:
+            'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
+          showLogo: true,
+        });
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }, []);
 
   return (

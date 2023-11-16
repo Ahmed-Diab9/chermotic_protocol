@@ -35,7 +35,7 @@ export const useCLPPerformance = () => {
           const profit = response.lp_performances_by_pk?.[`pnl_${period}`];
           const rate = response.lp_performances_by_pk?.[`rate_${period}`];
 
-          const parsedProfit = isNotNil(profit) ? parseUnits(profit, currentToken.decimals) : 0n;
+          const parsedProfit = isNotNil(profit) ? BigInt(profit) : 0n;
           const parsedRate = isNotNil(rate) ? parseUnits(rate, currentToken.decimals) * 100n : 0n;
 
           profits[period] = parsedProfit;
