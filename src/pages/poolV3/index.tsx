@@ -1,8 +1,10 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import { PlusIcon } from '~/assets/icons/Icon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -24,15 +26,14 @@ import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
 import { formatDecimals } from '~/utils/number';
-import { usePoolDetail } from '~/stories/template/PoolDetail/hooks';
 import './style.css';
 
 const PoolV3 = () => {
   useTokenLocal();
   useMarketLocal();
   useLpLocal();
+  const { client } = useChromaticClient();
   const { onLoadBackgroundRef } = useBackgroundGradient();
-  const { onCLPRegister } = usePoolDetail();
 
   const selectedLp = useAppSelector(selectedLpSelector);
   const lpTitle = isNotNil(selectedLp)
@@ -58,17 +59,37 @@ const PoolV3 = () => {
   const lpDescription = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
       case 'high risk': {
-        return 'Liquidity is provided at a same amount from low to high fee bins.';
+        return 'Liquidity is provided at a constant decremental rate from low to high fee bins. The lower the fee, the more liquidity is available and the more traders may use it.';
       }
       case 'mid risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. However, there is less difference between the highest and lowest fee bins than with crescendo.';
+        return 'Liquidity is provided at a same amount from low to high fee bins. There is a constant supply of liquidity regardless of fees, so trader usage should be moderate.';
       }
       case 'low risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. The higher the fee, the more liquidity is available, which may discourage traders from using it.';
       }
     }
     return '';
   }, [selectedLp]);
+
+  const onCLPRegister = useCallback(async () => {
+    if (isNil(selectedLp)) {
+      return;
+    }
+    const isAdded = await client.walletClient?.watchAsset({
+      type: 'ERC20',
+      options: {
+        address: selectedLp.address,
+        symbol: selectedLp.clpSymbol,
+        decimals: selectedLp.clpDecimals,
+      },
+    });
+
+    if (isAdded) {
+      toast('New CLP token was registered.');
+    } else {
+      toast.error('Failed to register.');
+    }
+  }, [client.walletClient, selectedLp]);
 
   return (
     <>
@@ -86,26 +107,36 @@ const PoolV3 = () => {
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
-            <div className="flex-auto mt-10">
-              <div className="mb-10 text-left">
-                <div className="flex items-center mb-5">
-                  <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
-                    <h2 className="mr-3 text-4xl">
-                      {lpTitle} {selectedLp?.name}
-                    </h2>
-                  </SkeletonElement>
-                  <Tag label={selectedLp?.tag} className={tagClass} />
-                  <Button
-                    label="Metamask"
-                    iconLeft={<PlusIcon className="w-3 h-3" />}
-                    css="translucent"
-                    className="ml-4 !pl-2 !py-1"
-                    gap="1"
-                    size="sm"
-                    onClick={() => {
-                      onCLPRegister();
-                    }}
-                  />
+            <div className="flex-auto">
+              <div className="flex gap-3 mt-10 mb-5 text-left">
+                <div className="flex-auto">
+                  <div className="flex items-center mb-5">
+                    <SkeletonElement
+                      isLoading={isNil(lpTitle)}
+                      width={120}
+                      containerClassName="mr-3"
+                    >
+                      <h2 className="mr-3 text-4xl">
+                        {lpTitle} {selectedLp?.name}
+                      </h2>
+                    </SkeletonElement>
+                    <Tag label={selectedLp?.tag} className={tagClass} />
+                    <Button
+                      label="Metamask"
+                      iconLeft={<PlusIcon className="w-3 h-3" />}
+                      css="translucent"
+                      className="ml-4 !pl-2 !py-1"
+                      gap="1"
+                      size="sm"
+                      onClick={() => {
+                        onCLPRegister();
+                      }}
+                    />
+                  </div>
+                  <p className="mb-5 text-lg text-primary-light">{lpDescription}</p>
+                  {/* TODO: learn more button */}
+                </div>
+                <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex items-end">
                   <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
                     CLP Price
                     <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
@@ -119,9 +150,8 @@ const PoolV3 = () => {
                     </SkeletonElement>
                   </div>
                 </div>
-                <p className="text-lg text-primary-light">{lpDescription}</p>
-                {/* TODO: learn more button */}
               </div>
+
               <div className="flex gap-3">
                 <div className="flex-auto overflow-hidden">
                   <div className="panel panel-translucent">

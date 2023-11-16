@@ -26,9 +26,13 @@ export const AirdropStamp = (props: AirdropStampProps) => {
     onModalConfirm,
     onModalClose,
   } = useAirdropStamp();
+
   const credit = schedules.at(0)?.credit ?? 0;
-  const { hours, unit } = useTimeDifferences();
-  const message = `The date changes at ${hours}${unit} local time (UTC+0${hours}:00)`;
+  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
+  const message = `The date changes at ${formatted.hours}:${String(
+    formatted.minutes
+  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
+
   return (
     <>
       <div className="p-5 text-left panel AirdropStamp">
