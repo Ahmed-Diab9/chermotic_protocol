@@ -5,8 +5,8 @@ import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { OutlinkIcon } from '~/assets/icons/Icon';
+import arbitrumIcon from '~/assets/images/arbitrum.svg';
 
 import { Popover, Tab, Transition } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
@@ -204,7 +204,15 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                 ) : (
                                   <div className="flex flex-col gap-3">
                                     {formattedLps.map(
-                                      ({ key, name, clpSymbol, token, market, image, balance }) => (
+                                      ({
+                                        key,
+                                        name,
+                                        clpSymbol,
+                                        token,
+                                        market,
+                                        tokenImage,
+                                        balance,
+                                      }) => (
                                         <Link
                                           to="#"
                                           key={key}
@@ -219,7 +227,7 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                               width={40}
                                               height={40}
                                             >
-                                              <Avatar size="xl" src={image} />
+                                              <Avatar size="xl" src={tokenImage} />
                                             </SkeletonElement>
                                             <div className="flex-1 gap-3">
                                               <div className="flex flex-col gap-1 leading-none">
