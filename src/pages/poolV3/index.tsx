@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { isNil, isNotNil } from 'ramda';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { PlusIcon } from '~/assets/icons/Icon';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
@@ -14,7 +14,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
-import { Toast, showCautionToast } from '~/stories/atom/Toast';
+import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
@@ -90,16 +90,6 @@ const PoolV3 = () => {
       toast.error('Failed to register.');
     }
   }, [client.walletClient, selectedLp]);
-
-  useEffect(() => {
-    showCautionToast({
-      title: 'Chromatic Protocol Testnet',
-      titleClass: 'text-chrm',
-      message:
-        'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
-      showLogo: true,
-    });
-  }, []);
 
   return (
     <>
