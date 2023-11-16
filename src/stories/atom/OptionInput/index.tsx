@@ -46,9 +46,11 @@ export const OptionInput = (props: OptionInputProps) => {
     onChange,
   } = props;
   const [ratio, setRatio] = useState<number>();
+  const [isOptionClicked, setIsOptionClicked] = useState(false);
 
   const onClick = (ratio: 25 | 50 | 75 | 100) => () => {
     setRatio(ratio);
+    setIsOptionClicked(true);
     if (ratio === 100) {
       onChange?.(String(maxValue || ''), true);
     } else {
@@ -58,8 +60,11 @@ export const OptionInput = (props: OptionInputProps) => {
   };
 
   const onChangeInput = (value: string) => {
-    if (isNotNil(ratio)) setRatio(undefined);
+    if (isNotNil(ratio)) {
+      setRatio(undefined);
+    }
     onChange?.(value);
+    setIsOptionClicked(false);
   };
 
   return (
@@ -114,6 +119,7 @@ export const OptionInput = (props: OptionInputProps) => {
           className="relative border-gray-light"
           disabled={disabled}
           error={error}
+          isOptionClicked={isOptionClicked}
           debug
         />
       </div>
