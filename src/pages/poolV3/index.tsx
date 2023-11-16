@@ -59,13 +59,13 @@ const PoolV3 = () => {
   const lpDescription = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
       case 'high risk': {
-        return 'Liquidity is provided at a constant decremental rate from low to high fee bins.';
+        return 'Liquidity is provided at a constant decremental rate from low to high fee bins. The lower the fee, the more liquidity is available and the more traders may use it.';
       }
       case 'mid risk': {
-        return 'Liquidity is provided at a same amount from low to high fee bins.';
+        return 'Liquidity is provided at a same amount from low to high fee bins. There is a constant supply of liquidity regardless of fees, so trader usage should be moderate.';
       }
       case 'low risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. The higher the fee, the more liquidity is available, which may discourage traders from using it.';
       }
     }
     return '';
