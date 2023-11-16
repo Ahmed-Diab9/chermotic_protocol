@@ -2,8 +2,8 @@ import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
+import { PAGE_SIZE } from '~/constants/arbiscan';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
@@ -19,25 +19,24 @@ import { compareMarkets } from '~/utils/market';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
+const wait = async (ms: number = 1000) => {
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(undefined!);
+    }, ms);
+  });
+};
+
 export function useTradeManagementV3() {
   const { currentMarket } = useMarket();
   const { markets } = useEntireMarkets();
   const previousMarkets = usePrevious(markets);
   const { positions, isLoading, fetchPositions } = usePositions();
-  const {
-    historyData,
-    isLoading: isHistoryLoading,
-    onFetchNextHistory,
-    refreshTradeHistory,
-  } = useTradeHistory();
-  const {
-    tradesData,
-    isLoading: isTradeLogsLoading,
-    onFetchNextTrade,
-    refreshTradeLogs,
-  } = useTradeLogs();
-  const { initialBlockNumber } = useInitialBlockNumber();
+  const { history, isLoading: isHistoryLoading, refreshTradeHistory } = useTradeHistory();
+  const { trades, isLoading: isTradeLogsLoading, refreshTradeLogs } = useTradeLogs();
   const { fetchBalances } = useChromaticAccount();
+  const [pages, setPages] = useState({ history: 1, trades: 1 });
+  const [isLoadings, setIsLoadings] = useState({ history: false, trades: false });
 
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
@@ -71,6 +70,32 @@ export function useTradeManagementV3() {
     fetchBalances,
     fetchPositions,
   ]);
+
+  const onFetchNextHistory = async () => {
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      history: true,
+    }));
+    await wait(3000);
+    setPages((pages) => ({ ...pages, history: pages.history + 1 }));
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      history: false,
+    }));
+  };
+
+  const onFetchNextTrade = async () => {
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      trades: true,
+    }));
+    await wait(3000);
+    setPages((pages) => ({ ...pages, trades: pages.trades + 1 }));
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      trades: false,
+    }));
+  };
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -145,13 +170,12 @@ export function useTradeManagementV3() {
   const positionList = positions || [];
 
   const historyList = useMemo(() => {
-    if (isNil(historyData)) {
+    if (isNil(history)) {
       return;
     }
-    return historyData
-      .map((historyItem) => historyItem.history)
-      .flat(1)
+    return history
       .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+      .slice(0, PAGE_SIZE * pages.history)
       .map((historyValue) => {
         return {
           token: historyValue.token,
@@ -189,13 +213,12 @@ export function useTradeManagementV3() {
           closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
-  }, [historyData]);
+  }, [history, pages]);
 
   const tradeList = useMemo(() => {
-    return tradesData
-      ?.map((tradesItem) => tradesItem.tradeLogs)
-      .flat(1)
-      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+    return trades
+      ?.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+      .slice(0, PAGE_SIZE * pages.trades)
       .map((tradeLog) => ({
         token: tradeLog.token,
         market: tradeLog.market,
@@ -209,7 +232,7 @@ export function useTradeManagementV3() {
         entryTime: formatTimestamp(tradeLog.entryTimestamp),
         blockNumber: tradeLog.blockNumber,
       }));
-  }, [tradesData]);
+  }, [trades, pages.trades]);
 
   const hasMoreHistory = useMemo(() => {
     const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;

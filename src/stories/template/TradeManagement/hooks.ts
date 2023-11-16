@@ -20,8 +20,8 @@ import { abs, divPreserved, formatDecimals } from '~/utils/number';
 export function useTradeManagement() {
   const { currentMarket } = useMarket();
   const { positions, isLoading } = usePositions();
-  const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
-  const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
+  const { history, isLoading: isHistoryLoading } = useTradeHistory();
+  const { trades, isLoading: isTradeLogsLoading } = useTradeLogs();
   const { initialBlockNumber } = useInitialBlockNumber();
   const previousOracle = usePrevious(currentMarket?.oracleValue.version);
   const openingPositionSize = usePrevious(
@@ -51,6 +51,8 @@ export function useTradeManagement() {
 
   const historyBottomRef = useRef<HTMLDivElement | null>(null);
   const isHistoryRendered = isNotNil(historyBottomRef.current);
+  const onFetchNextHistory = () => {};
+  const onFetchNextTrade = () => {};
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -114,12 +116,10 @@ export function useTradeManagement() {
   const positionList = positions || [];
 
   const historyList = useMemo(() => {
-    if (isNil(historyData)) {
+    if (isNil(history)) {
       return;
     }
-    return historyData
-      .map((historyItem) => historyItem.history)
-      .flat(1)
+    return history
       .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((historyValue) => {
         return {
@@ -158,13 +158,11 @@ export function useTradeManagement() {
           closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
-  }, [historyData]);
+  }, [history]);
 
   const tradeList = useMemo(() => {
-    return tradesData
-      ?.map((tradesItem) => tradesItem.tradeLogs)
-      .flat(1)
-      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+    return trades
+      ?.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((tradeLog) => ({
         token: tradeLog.token,
         market: tradeLog.market,
@@ -178,22 +176,10 @@ export function useTradeManagement() {
         entryTime: formatTimestamp(tradeLog.entryTimestamp),
         blockNumber: tradeLog.blockNumber,
       }));
-  }, [tradesData]);
+  }, [trades]);
 
-  const hasMoreHistory = useMemo(() => {
-    const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [historyData, initialBlockNumber]);
-  const hasMoreTrades = useMemo(() => {
-    const toBlockNumber = tradesData?.[tradesData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [tradesData, initialBlockNumber]);
+  const hasMoreHistory = false;
+  const hasMoreTrades = false;
 
   const onLoadHistoryRef = useCallback((element: HTMLDivElement | null) => {
     historyBottomRef.current = element;
