@@ -41,8 +41,16 @@ export const AirdropBoard = () => {
               <div className="tr">
                 <div className="td">Rank</div>
                 <div className="td">Name</div>
-                <div className="td">Credits (1D)</div>
-                <div className="td">Credits (All Time)</div>
+                <div className="td">
+                  Credits (
+                  {filterLabels.map(
+                    (label, labelIndex) =>
+                      activeLabel === labelMap[label] && (
+                        <span key={labelIndex}>{label === 'All Time' ? 'All Time' : '1D'}</span>
+                      )
+                  )}
+                  )
+                </div>
                 <div className="td">Boosters</div>
               </div>
             </div>
@@ -67,14 +75,6 @@ export const AirdropBoard = () => {
                       width={40}
                     >
                       {boardItem.address}
-                    </SkeletonElement>
-                  </div>
-                  <div className="td">
-                    <SkeletonElement
-                      // isLoading={isLoading}
-                      width={40}
-                    >
-                      {boardItem.credit}
                     </SkeletonElement>
                   </div>
                   <div className="td">
