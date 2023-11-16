@@ -42,9 +42,7 @@ export const AirdropBoard = () => {
               <div className="tr">
                 <div className="td">Rank</div>
                 <div className="td">Name</div>
-                <div className="td">
-                  <span>{creditLabel}</span>
-                </div>
+                <div className="td">{creditLabel}</div>
                 <div className="td">Boosters</div>
               </div>
             </div>
