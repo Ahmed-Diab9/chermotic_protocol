@@ -26,6 +26,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
     onModalConfirm,
     onModalClose,
   } = useAirdropStamp();
+  const credit = schedules.at(0)?.credit ?? 0;
   const { hours, unit } = useTimeDifferences();
   const message = `The date changes at ${hours}${unit} local time (UTC+0${hours}:00)`;
   return (
@@ -63,7 +64,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                     className="relative flex items-center justify-center"
                   >
                     <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
-                    <h4 className="absolute top-[52px] text-chrm-h text-lg">+5</h4>
+                    <h4 className="absolute top-[52px] text-chrm-h text-lg">+{credit}</h4>
                   </button>
                 ) : (
                   <div className="relative flex items-center justify-center">
@@ -86,7 +87,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                           : 'text-primary/10 text-lg'
                       }`}
                     >
-                      +{schedule.status === 'fail' ? '0' : '5'}
+                      +{schedule.status === 'fail' ? '0' : credit}
                     </h4>
                   </div>
                 )}
