@@ -1,8 +1,8 @@
 export const useTimeDifferences = () => {
   const offset = new Date().getTimezoneOffset();
 
-  const unit = offset < 0 ? 'am' : 'pm';
-  const prefix = offset < 0 ? '+' : '-';
+  const unit = offset <= 0 ? 'am' : 'pm';
+  const prefix = offset <= 0 ? '+' : '-';
   const hours = Math.abs(Math.floor(offset / 60));
   let formattedHours = hours;
   if (prefix === '-') {
@@ -15,7 +15,7 @@ export const useTimeDifferences = () => {
   }
 
   const formattedMinutes = minutes.toString().padStart(2, '0');
-  console.log(formattedHours);
+
   return {
     hours,
     minutes,
