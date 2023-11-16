@@ -258,14 +258,17 @@ export function useTradeManagementV3() {
   const onRefreshList = useCallback(async () => {
     switch (tabRef.current) {
       case 0: {
+        toast('Refreshing positions.');
         await fetchPositions();
         break;
       }
       case 1: {
+        toast('Refreshing trade history.');
         await refreshTradeHistory();
         break;
       }
       case 2: {
+        toast('Refreshing trade logs.');
         await refreshTradeLogs();
         break;
       }
