@@ -330,7 +330,7 @@ function Airdrop() {
                       <Tab.Panel>
                         <section>
                           <div className="flex items-baseline">
-                            <BlurText label="My History" className="text-[60px]" color="chrm" />
+                            <BlurText label="My History" className="text-[52px]" color="chrm" />
                             <div className="ml-auto text-lg text-primary-light">{message}</div>
                           </div>
                           <div className="p-5 mt-10 panel">
