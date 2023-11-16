@@ -1,6 +1,5 @@
 import { ReactNode, useState } from 'react';
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -8,13 +7,17 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ComposedChart,
+  Area,
 } from 'recharts';
-import { Props as LegendProps } from 'recharts/types/component/DefaultLegendContent';
+
+type ChartType = 'line' | 'area';
 
 export type ChartMap = {
   [key: string]: {
     name: string;
     description?: string;
+    type: ChartType;
   };
 };
 
@@ -29,10 +32,6 @@ interface AnalyticsChartProps {
 }
 
 const COLORS = ['#978FED', '#FBDE9D'];
-const LINE_CONFIG = {
-  dot: <></>,
-  isAnimationActive: false,
-};
 
 export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
   const [activeLines, setActiveLines] = useState(Object.keys(map));
@@ -106,23 +105,47 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
   }
 
   return (
-    <ResponsiveContainer width={'100%'} height={500}>
-      <LineChart data={data}>
-        <CartesianGrid />
-        <XAxis dataKey={x} />
-        <YAxis />
-        <Tooltip />
+    <ResponsiveContainer width={'100%'} height={300}>
+      <ComposedChart data={data}>
+        <defs>
+          <linearGradient id="area_0" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#6F644D" stopOpacity={1} />
+            <stop offset="100%" stopColor="#837455" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id="area_1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#6F644D" stopOpacity={1} />
+            <stop offset="100%" stopColor="#837455" stopOpacity={0.1} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid stroke="#4A4A51" />
         <Legend content={CustomLegend} />
-        {Object.keys(map).map((key, idx) => (
+        {Object.keys(map)
+          .map((key, idx) =>
+            map[key].type === 'area' ? (
+              <Area
+                dot={false}
+                isAnimationActive={false}
+                key={key}
+                dataKey={key}
+                stroke={COLORS[idx]}
+                fill={`url(#area_${idx})`}
+                activeDot={false}
+                hide={!activeLines.includes(key)}
+              />
+            ) : (
           <Line
-            {...LINE_CONFIG}
+                dot={false}
+                isAnimationActive={false}
             key={key}
             dataKey={key}
             stroke={COLORS[idx]}
+                activeDot={false}
             hide={!activeLines.includes(key)}
           />
-        ))}
-      </LineChart>
+            )
+          )
+          .sort((a) => (a.type.displayName === 'Line' ? 0 : -1))}
+      </ComposedChart>
     </ResponsiveContainer>
   );
 }
