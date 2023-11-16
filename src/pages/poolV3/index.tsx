@@ -59,13 +59,13 @@ const PoolV3 = () => {
   const lpDescription = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
       case 'high risk': {
-        return 'Liquidity is provided at a same amount from low to high fee bins.';
+        return 'Liquidity is provided at a constant decremental rate from low to high fee bins. The lower the fee, the more liquidity is available and the more traders may use it.';
       }
       case 'mid risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. However, there is less difference between the highest and lowest fee bins than with crescendo.';
+        return 'Liquidity is provided at a same amount from low to high fee bins. There is a constant supply of liquidity regardless of fees, so trader usage should be moderate.';
       }
       case 'low risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
+        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. The higher the fee, the more liquidity is available, which may discourage traders from using it.';
       }
     }
     return '';
@@ -107,26 +107,36 @@ const PoolV3 = () => {
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
-            <div className="flex-auto mt-10">
-              <div className="mb-10 text-left">
-                <div className="flex items-center mb-5">
-                  <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
-                    <h2 className="mr-3 text-4xl">
-                      {lpTitle} {selectedLp?.name}
-                    </h2>
-                  </SkeletonElement>
-                  <Tag label={selectedLp?.tag} className={tagClass} />
-                  <Button
-                    label="Metamask"
-                    iconLeft={<PlusIcon className="w-3 h-3" />}
-                    css="translucent"
-                    className="ml-4 !pl-2 !py-1"
-                    gap="1"
-                    size="sm"
-                    onClick={() => {
-                      onCLPRegister();
-                    }}
-                  />
+            <div className="flex-auto">
+              <div className="flex gap-3 mt-10 mb-5 text-left">
+                <div className="flex-auto">
+                  <div className="flex items-center mb-5">
+                    <SkeletonElement
+                      isLoading={isNil(lpTitle)}
+                      width={120}
+                      containerClassName="mr-3"
+                    >
+                      <h2 className="mr-3 text-4xl">
+                        {lpTitle} {selectedLp?.name}
+                      </h2>
+                    </SkeletonElement>
+                    <Tag label={selectedLp?.tag} className={tagClass} />
+                    <Button
+                      label="Metamask"
+                      iconLeft={<PlusIcon className="w-3 h-3" />}
+                      css="translucent"
+                      className="ml-4 !pl-2 !py-1"
+                      gap="1"
+                      size="sm"
+                      onClick={() => {
+                        onCLPRegister();
+                      }}
+                    />
+                  </div>
+                  <p className="mb-5 text-lg text-primary-light">{lpDescription}</p>
+                  {/* TODO: learn more button */}
+                </div>
+                <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex items-end">
                   <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
                     CLP Price
                     <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
@@ -140,9 +150,8 @@ const PoolV3 = () => {
                     </SkeletonElement>
                   </div>
                 </div>
-                <p className="text-lg text-primary-light">{lpDescription}</p>
-                {/* TODO: learn more button */}
               </div>
+
               <div className="flex gap-3">
                 <div className="flex-auto overflow-hidden">
                   <div className="panel panel-translucent">
