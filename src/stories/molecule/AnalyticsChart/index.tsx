@@ -103,6 +103,12 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
       </div>
     ) as ReactNode;
   }
+
+  const domain = ([min, max]: [number, number]) => {
+    const gap = (max - min) * 0.7;
+    return [min - gap, max + gap] as [number, number];
+  };
+
   const xTick = (dateObject: Date) => {
     const date = dateObject.toLocaleString('en-US', {
       month: 'short',
@@ -127,6 +133,8 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
         </defs>
         <CartesianGrid stroke="#4A4A51" />
         <XAxis dataKey={x} tickFormatter={xTick} axisLine={false} stroke="#4A4A51" />
+        <YAxis scale="log" domain={domain} stroke="#4A4A51" />
+        <Tooltip cursor={{ stroke: 'null' }} />
         <Legend content={CustomLegend} />
         {Object.keys(map)
           .map((key, idx) =>
