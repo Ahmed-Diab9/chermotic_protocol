@@ -110,10 +110,10 @@ function Airdrop() {
                           <h2 className="mb-5 text-4xl font-semibold text-left text-primary">
                             Chromatic Airdrop Season 1
                           </h2>
-                          <div className="flex flex-wrap items-end mb-12">
+                          <div className="flex flex-wrap items-end mb-10">
                             <BlurText
                               label="May the $CHRMA be with you!"
-                              className="text-[60px] tracking-tight w-[620px]"
+                              className="text-[52px] tracking-tight w-[520px]"
                               color="chrm"
                             />
                             <div className="ml-auto text-right">
@@ -125,7 +125,7 @@ function Airdrop() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4 px-5 py-4 text-lg panel">
+                          <div className="flex items-center gap-4 py-5 mb-12 text-lg border-y">
                             <div className="w-4/5 text-left">
                               <p className="text-left text-primary">
                                 Airdrop Season 1 will be evaluated based on community activity and
@@ -330,7 +330,7 @@ function Airdrop() {
                       <Tab.Panel>
                         <section>
                           <div className="flex items-baseline">
-                            <BlurText label="My History" className="text-[60px]" color="chrm" />
+                            <BlurText label="My History" className="text-[52px]" color="chrm" />
                             <div className="ml-auto text-lg text-primary-light">{message}</div>
                           </div>
                           <div className="p-5 mt-10 panel">
@@ -383,8 +383,9 @@ function Airdrop() {
         {randomboxModalOpen && (
           <Modal
             title="Random Box"
-            paragraph="Random box is unavailable yet"
-            subParagraph="The random box is scheduled to be released in the first quarter of 2024."
+            // paragraph="Random box is unavailable yet"
+            paragraph="The random box is scheduled to be released in the first quarter of 2024."
+            // subParagraph="The random box is scheduled to be released in the first quarter of 2024."
             buttonLabel="OK"
             buttonCss="default"
             onClick={() => setRandomboxModalOpen(false)}
