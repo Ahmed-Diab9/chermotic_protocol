@@ -11,6 +11,7 @@ import { ChromaticProvider } from '~/contexts/ChromaticClient';
 import { subscribePythFeed } from '~/lib/pyth/subscribe';
 import { router } from '~/routes';
 import { store } from '~/store/index';
+import { showCautionToast } from './stories/atom/Toast';
 
 const config = createConfig({
   autoConnect: true,
@@ -28,6 +29,25 @@ function App() {
         action && action();
       });
     };
+  }, []);
+
+  useEffect(() => {
+    switch (window.location.pathname) {
+      case '/pool':
+      case '/trade': {
+        showCautionToast({
+          title: 'Introducing Chromatic Testnet',
+          titleClass: 'text-chrm',
+          message:
+            'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
+          showLogo: true,
+        });
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }, []);
 
   return (

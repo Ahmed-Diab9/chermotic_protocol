@@ -1,7 +1,7 @@
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
-import { Toast, showCautionToast } from '~/stories/atom/Toast';
+import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
 import { BookmarkBoardV3 } from '~/stories/template/BookmarkBoardV3';
@@ -11,7 +11,6 @@ import { TradeChartPanel } from '~/stories/template/TradeChartPanel';
 import { TradeManagementV3 } from '~/stories/template/TradeManagementV3';
 import { TradePanelV3 } from '~/stories/template/TradePanelV3';
 
-import { useEffect } from 'react';
 import { usePositionFilterLocal } from '~/hooks/usePositionFilterLocal';
 import './style.css';
 
@@ -22,16 +21,6 @@ function TradeV3() {
 
   const { beforeCondition, afterCondition, toggleConditions, onLoadBackgroundRef } =
     useBackgroundGradient();
-
-  useEffect(() => {
-    showCautionToast({
-      title: 'Introducing Chromatic Testnet',
-      titleClass: 'text-chrm',
-      message:
-        'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
-      showLogo: true,
-    });
-  }, []);
 
   return (
     <>
