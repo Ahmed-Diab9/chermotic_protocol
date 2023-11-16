@@ -50,7 +50,7 @@ export const useAirdropBoard = () => {
         return 'Credits (1D)';
       }
     }
-  }, []);
+  }, [filterLabels, labelMap, selectedLabel]);
 
   const onLabelChange = (nextIndex: number) => {
     dispatch(airdropAction.onLabelSwitch(nextIndex));
