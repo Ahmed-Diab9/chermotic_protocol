@@ -234,20 +234,18 @@ export function useTradeManagementV3() {
       }));
   }, [trades, pages.trades]);
 
-  const hasMoreHistory = useMemo(() => {
-    const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
+  const hasMores = useMemo(() => {
+    if (isNil(history) || isNil(trades)) {
+      return {
+        history: false,
+        trades: false,
+      };
     }
-    return toBlockNumber > initialBlockNumber;
-  }, [historyData, initialBlockNumber]);
-  const hasMoreTrades = useMemo(() => {
-    const toBlockNumber = tradesData?.[tradesData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [tradesData, initialBlockNumber]);
+    return {
+      history: history.length > pages.history * PAGE_SIZE,
+      trades: trades.length > pages.trades * PAGE_SIZE,
+    };
+  }, [history, trades, pages]);
 
   const onLoadHistoryRef = useCallback((element: HTMLDivElement | null) => {
     historyBottomRef.current = element;
@@ -291,12 +289,11 @@ export function useTradeManagementV3() {
 
     historyBottomRef,
     tradeBottomRef,
-    isHistoryLoading,
-    isTradeLogsLoading,
+    isHistoryLoading: isHistoryLoading || isLoadings.history,
+    isTradeLogsLoading: isTradeLogsLoading || isLoadings.trades,
     historyList,
     tradeList,
-    hasMoreHistory,
-    hasMoreTrades,
+    hasMores,
     onFetchNextTrade,
     onFetchNextHistory,
     onLoadHistoryRef,
