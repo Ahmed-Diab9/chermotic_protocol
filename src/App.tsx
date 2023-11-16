@@ -36,7 +36,7 @@ function App() {
       title: 'Chromatic Protocol Testnet',
       titleClass: 'text-chrm',
       message:
-        'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
+        'During the testnet, contract updates may reset deposited assets, positions and liquidity data in your account.',
       showLogo: true,
     });
   }, []);
