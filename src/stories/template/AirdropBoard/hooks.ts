@@ -40,12 +40,25 @@ export const useAirdropBoard = () => {
     return sum.totalBooster < metadata.totalBooster || sum.totalCredit < metadata.totalCredit;
   }, [metadata, leaderboard, isLoading]);
 
+  const creditLabel = useMemo(() => {
+    const foundLabel = filterLabels.find((label) => selectedLabel === labelMap[label]);
+    switch (foundLabel) {
+      case 'All Time': {
+        return 'Credits (All Time)';
+      }
+      default: {
+        return 'Credits (1D)';
+      }
+    }
+  }, [filterLabels, labelMap, selectedLabel]);
+
   const onLabelChange = (nextIndex: number) => {
     dispatch(airdropAction.onLabelSwitch(nextIndex));
   };
 
   return {
     filterLabels,
+    creditLabel,
     labelMap,
     activeLabel: selectedLabel,
     leaderboard,
