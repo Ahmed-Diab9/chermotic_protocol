@@ -108,7 +108,7 @@ const PoolV3 = () => {
               <PoolMenuV3 />
             </div>
             <div className="flex-auto">
-              <div className="flex gap-3 my-10 text-left">
+              <div className="flex gap-3 mt-10 mb-5 text-left">
                 <div className="flex-auto">
                   <div className="flex items-center mb-5">
                     <SkeletonElement
@@ -133,7 +133,7 @@ const PoolV3 = () => {
                       }}
                     />
                   </div>
-                  <p className="text-lg text-primary-light">{lpDescription}</p>
+                  <p className="mb-5 text-lg text-primary-light">{lpDescription}</p>
                   {/* TODO: learn more button */}
                 </div>
                 <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex items-end">
