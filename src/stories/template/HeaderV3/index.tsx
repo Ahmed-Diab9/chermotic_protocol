@@ -22,8 +22,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const links = [
     { to: 'trade', className: '' },
     { to: 'pool', className: '' },
-    // TODO: Enable airdrop link later
-    // { to: 'airdrop', className: '' },
+    { to: 'airdrop', className: '' },
   ];
 
   return (
