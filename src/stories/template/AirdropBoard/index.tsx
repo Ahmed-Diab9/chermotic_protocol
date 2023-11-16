@@ -9,6 +9,7 @@ import './style.css';
 export const AirdropBoard = () => {
   const {
     filterLabels,
+    creditLabel,
     labelMap,
     activeLabel,
     leaderboard,
@@ -42,14 +43,7 @@ export const AirdropBoard = () => {
                 <div className="td">Rank</div>
                 <div className="td">Name</div>
                 <div className="td">
-                  Credits (
-                  {filterLabels.map(
-                    (label, labelIndex) =>
-                      activeLabel === labelMap[label] && (
-                        <span key={labelIndex}>{label === 'All Time' ? 'All Time' : '1D'}</span>
-                      )
-                  )}
-                  )
+                  <span>{creditLabel}</span>
                 </div>
                 <div className="td">Boosters</div>
               </div>
