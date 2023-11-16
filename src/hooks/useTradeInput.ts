@@ -154,6 +154,13 @@ export const useTradeInput = (props: Props) => {
     [direction, currentToken, pool?.bins, longTotalUnusedLiquidity, shortTotalUnusedLiquidity]
   );
 
+  const onFeeAllowanceChange = useCallback(
+    (allowance: number | string) => {
+      dispatch(tradesAction.updateTradesState({ direction, maxFeeAllowance: +allowance }));
+    },
+    [direction, dispatch]
+  );
+
   useEffect(() => {
     const { feePercent } = getTradeFee(state.makerMargin);
     if (isNil(currentToken) || isNil(feePercent)) return;
@@ -166,7 +173,7 @@ export const useTradeInput = (props: Props) => {
     );
 
     onFeeAllowanceChange(maxFeeAllowance);
-  }, [getTradeFee, currentToken, state.makerMargin]);
+  }, [getTradeFee, onFeeAllowanceChange, currentToken, state.makerMargin]);
 
   const { tradeFee, feePercent } = useMemo(
     () => getTradeFee(state.makerMargin),
@@ -224,10 +231,6 @@ export const useTradeInput = (props: Props) => {
 
     const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
     dispatch(tradesAction.updateTradesState({ direction, ...calculated }));
-  };
-
-  const onFeeAllowanceChange = (allowance: number | string) => {
-    dispatch(tradesAction.updateTradesState({ direction, maxFeeAllowance: +allowance }));
   };
 
   const disabled = useMemo<{
