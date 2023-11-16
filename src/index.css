@@ -255,6 +255,13 @@ h6 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+.text-chrm-h {
+  @apply inline-flex;
+  background: linear-gradient(180deg, #a6d85b 0%, #ff5044 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 *:focus {
   outline: none;
