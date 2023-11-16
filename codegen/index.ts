@@ -43,6 +43,12 @@ const config: CodegenConfig = {
       plugins: PLUGINS,
       config: CONFIG,
     },
+    [`${GENERATED_PATH}/analytics.ts`]: {
+      documents: 'codegen/analytics.ts',
+      schema: `${HASURA_API_URL}`,
+      plugins: PLUGINS,
+      config: CONFIG,
+    },
   },
 };
 
