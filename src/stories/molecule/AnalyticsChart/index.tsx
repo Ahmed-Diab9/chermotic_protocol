@@ -91,13 +91,13 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           const description = map[key].description;
           const color = COLORS[idx];
           return (
-          <LegendItem
+            <LegendItem
               key={key}
               name={name}
               description={description}
-            color={color!}
+              color={color!}
               onClick={toggleActiveLine(key)}
-          />
+            />
           );
         })}
       </div>
@@ -150,15 +150,15 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
                 hide={!activeLines.includes(key)}
               />
             ) : (
-          <Line
+              <Line
                 dot={false}
                 isAnimationActive={false}
-            key={key}
-            dataKey={key}
-            stroke={COLORS[idx]}
+                key={key}
+                dataKey={key}
+                stroke={COLORS[idx]}
                 activeDot={false}
-            hide={!activeLines.includes(key)}
-          />
+                hide={!activeLines.includes(key)}
+              />
             )
           )
           .sort((a) => (a.type.displayName === 'Line' ? 0 : -1))}
