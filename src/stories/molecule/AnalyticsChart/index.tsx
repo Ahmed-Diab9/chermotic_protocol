@@ -19,8 +19,7 @@ export type ChartMap = {
 };
 
 export type ChartData = {
-  date: string;
-  [key: string]: string | number;
+  [key: string]: string | number | Date;
 }[];
 
 interface AnalyticsChartProps {
@@ -48,9 +47,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
     setActiveLines(updatedActiveLines);
   };
 
-  function CustomLegend(props: LegendProps) {
-    const { payload } = props;
-
+  function CustomLegend() {
     function LegendItem({
       color,
       name,
@@ -74,8 +71,8 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
         >
           <div style={{ backgroundColor: color, width: 35, height: 8, borderRadius: 4 }}></div>
           <div>
-            {name}
-            {description}
+            <span>{name}</span>
+            <span style={{ color: '#4A4A51' }}>{description}</span>
           </div>
         </div>
       );
@@ -90,15 +87,20 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           justifyContent: 'space-around',
         }}
       >
-        {payload?.map(({ color, value }) => (
+        {Object.keys(map).map((key, idx) => {
+          const name = map[key].name;
+          const description = map[key].description;
+          const color = COLORS[idx];
+          return (
           <LegendItem
-            key={value}
-            name={map[value as string].name}
-            description={map[value as string].description}
+              key={key}
+              name={name}
+              description={description}
             color={color!}
-            onClick={toggleActiveLine(value)}
+              onClick={toggleActiveLine(key)}
           />
-        ))}
+          );
+        })}
       </div>
     ) as ReactNode;
   }
