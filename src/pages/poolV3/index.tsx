@@ -117,26 +117,36 @@ const PoolV3 = () => {
               <h4 className="mt-3 mb-2 text-left">Pools</h4>
               <PoolMenuV3 />
             </div>
-            <div className="flex-auto mt-10">
-              <div className="mb-10 text-left">
-                <div className="flex items-center mb-5">
-                  <SkeletonElement isLoading={isNil(lpTitle)} width={120} containerClassName="mr-3">
-                    <h2 className="mr-3 text-4xl">
-                      {lpTitle} {selectedLp?.name}
-                    </h2>
-                  </SkeletonElement>
-                  <Tag label={selectedLp?.tag} className={tagClass} />
-                  <Button
-                    label="Metamask"
-                    iconLeft={<PlusIcon className="w-3 h-3" />}
-                    css="translucent"
-                    className="ml-4 !pl-2 !py-1"
-                    gap="1"
-                    size="sm"
-                    onClick={() => {
-                      onCLPRegister();
-                    }}
-                  />
+            <div className="flex-auto">
+              <div className="flex gap-3 my-10 text-left">
+                <div className="flex-auto">
+                  <div className="flex items-center mb-5">
+                    <SkeletonElement
+                      isLoading={isNil(lpTitle)}
+                      width={120}
+                      containerClassName="mr-3"
+                    >
+                      <h2 className="mr-3 text-4xl">
+                        {lpTitle} {selectedLp?.name}
+                      </h2>
+                    </SkeletonElement>
+                    <Tag label={selectedLp?.tag} className={tagClass} />
+                    <Button
+                      label="Metamask"
+                      iconLeft={<PlusIcon className="w-3 h-3" />}
+                      css="translucent"
+                      className="ml-4 !pl-2 !py-1"
+                      gap="1"
+                      size="sm"
+                      onClick={() => {
+                        onCLPRegister();
+                      }}
+                    />
+                  </div>
+                  <p className="text-lg text-primary-light">{lpDescription}</p>
+                  {/* TODO: learn more button */}
+                </div>
+                <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex items-end">
                   <div className="flex items-center gap-2 ml-auto text-xl font-semibold">
                     CLP Price
                     <SkeletonElement isLoading={isNil(selectedLp)} containerClassName="w-[120px]">
@@ -150,9 +160,8 @@ const PoolV3 = () => {
                     </SkeletonElement>
                   </div>
                 </div>
-                <p className="text-lg text-primary-light">{lpDescription}</p>
-                {/* TODO: learn more button */}
               </div>
+
               <div className="flex gap-3">
                 <div className="flex-auto overflow-hidden">
                   <div className="panel panel-translucent">
