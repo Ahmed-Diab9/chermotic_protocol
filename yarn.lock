@@ -1219,10 +1219,10 @@
   resolved "https://registry.yarnpkg.com/@base2/pretty-print-object/-/pretty-print-object-1.0.1.tgz#371ba8be66d556812dc7fb169ebc3c08378f69d4"
   integrity sha512-4iri8i1AqYHJE2DstZYkyEprg6Pq6sKx3xn5FpySk9sNhH7qN2LLlHJCfDTZRILNwQNPD7mATWM0TBui7uC1pA==
 
-"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.33":
-  version "1.0.1-rc.33"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.33.tgz#1a00b9e95731a164e0b7eef132f4906c19476a45"
-  integrity sha512-jmxQW7bCvyxg4OBRE81JhbbJjuaZdILkrK78RoIfQO23i2W0sUhrvMfsf6l9YPofuthpASZOEhnBCfgOTu12Lw==
+"@chromatic-protocol/liquidity-provider-sdk@^1.0.1-rc.34":
+  version "1.0.1-rc.34"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/liquidity-provider-sdk/-/liquidity-provider-sdk-1.0.1-rc.34.tgz#43305a1e700232ba5a1533f38bf25a3abe49c802"
+  integrity sha512-wcOxGmvSdaJhcUuPX3TS2OlxiNg5Lu273YnUAqMU8SWne664THRe8r6jsbJXYB/jR0O5lEdbayYC6bQsTKRpWg==
   dependencies:
     viem "^1.5.0"
 
@@ -1234,10 +1234,10 @@
     d3-scale "^4.0.2"
     react-compound-slider "^3.3.1"
 
-"@chromatic-protocol/sdk-viem@^0.1.0-rc.164":
-  version "0.1.0-rc.164"
-  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.164.tgz#e88441470e6ab7d943af606ed146f108ac9eff9a"
-  integrity sha512-4zD0FEgjZyJB3Xywk16Nb4n6fg7g1AzbDiJ8gBRjGr4eotW3Fc7j1VXrrhh4J1yhrZL8gPARceIRtlJm+BNgIQ==
+"@chromatic-protocol/sdk-viem@^0.1.0-rc.165":
+  version "0.1.0-rc.165"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/sdk-viem/-/sdk-viem-0.1.0-rc.165.tgz#7f7de0aeed97d5208eb21cfd884b11b7ddcd3996"
+  integrity sha512-mJniZ33SuAZCBEWALiZ1CNyF/fqSMvWN2pyHIr/FttaeEI/cNlzRcCjLXH+WTd9AV/lJKgEhIshqHym2h+VuNQ==
   dependencies:
     viem "^1.12.1"
 
