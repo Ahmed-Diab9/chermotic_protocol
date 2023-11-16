@@ -59,10 +59,10 @@ const PoolV3 = () => {
   const lpDescription = useMemo(() => {
     switch (selectedLp?.tag.toLowerCase()) {
       case 'high risk': {
-        return 'Liquidity is provided at a same amount from low to high fee bins.';
+        return 'Liquidity is provided at a constant decremental rate from low to high fee bins.';
       }
       case 'mid risk': {
-        return 'Liquidity is provided at a constant incremental rate from low to high fee bins. However, there is less difference between the highest and lowest fee bins than with crescendo.';
+        return 'Liquidity is provided at a same amount from low to high fee bins.';
       }
       case 'low risk': {
         return 'Liquidity is provided at a constant incremental rate from low to high fee bins.';
