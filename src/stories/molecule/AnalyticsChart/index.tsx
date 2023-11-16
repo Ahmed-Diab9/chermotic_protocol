@@ -103,6 +103,14 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
       </div>
     ) as ReactNode;
   }
+  const xTick = (dateObject: Date) => {
+    const date = dateObject.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+
+    return date;
+  };
 
   return (
     <ResponsiveContainer width={'100%'} height={300}>
@@ -118,6 +126,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           </linearGradient>
         </defs>
         <CartesianGrid stroke="#4A4A51" />
+        <XAxis dataKey={x} tickFormatter={xTick} axisLine={false} stroke="#4A4A51" />
         <Legend content={CustomLegend} />
         {Object.keys(map)
           .map((key, idx) =>
