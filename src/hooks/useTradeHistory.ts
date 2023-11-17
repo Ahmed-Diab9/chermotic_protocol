@@ -118,7 +118,9 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
     }
     return history;
   }, new Map<bigint, History>());
-  const historyArray = Array.from(historyMap.values());
+  const historyArray = Array.from(historyMap.values()).filter(
+    (historyValue) => historyValue.isOpened && historyValue.isClosed && historyValue.isClaimed
+  );
   return { historyArray };
 };
 
