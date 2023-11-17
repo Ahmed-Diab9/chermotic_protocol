@@ -8,6 +8,7 @@ import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
+import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -29,10 +30,27 @@ const wait = async (ms: number = 1000) => {
 };
 
 export function useTradeManagementV3() {
-  const { currentMarket } = useMarket();
-  const { markets } = useEntireMarkets();
-  const previousMarkets = usePrevious(markets);
+  const { currentMarket, markets } = useMarket();
+  const { markets: entireMarkets } = useEntireMarkets();
   const { positions, isLoading, fetchPositions } = usePositions();
+  const { filterOption } = usePositionFilter();
+  const filteredMarkets = useMemo(() => {
+    if (isNil(currentMarket)) {
+      return [];
+    }
+    switch (filterOption) {
+      case 'ALL': {
+        return entireMarkets;
+      }
+      case 'TOKEN_BASED': {
+        return markets;
+      }
+      case 'MARKET_ONLY': {
+        return [currentMarket];
+      }
+    }
+  }, [entireMarkets, markets, currentMarket, filterOption]);
+  const previousMarkets = usePrevious(filteredMarkets);
   const { history, isLoading: isHistoryLoading, refreshTradeHistory } = useTradeHistory();
   const { trades, isLoading: isTradeLogsLoading, refreshTradeLogs } = useTradeLogs();
   const { fetchBalances } = useChromaticAccount();
@@ -47,10 +65,10 @@ export function useTradeManagementV3() {
   );
 
   useEffect(() => {
-    if (isNil(previousMarkets) || isNil(markets)) {
+    if (isNil(previousMarkets) || isNil(filteredMarkets)) {
       return;
     }
-    const isVersionUpdated = compareMarkets(previousMarkets, markets);
+    const isVersionUpdated = compareMarkets(previousMarkets, filteredMarkets);
     if (isVersionUpdated) {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
@@ -64,7 +82,7 @@ export function useTradeManagementV3() {
       }
     }
   }, [
-    markets,
+    filteredMarkets,
     previousMarkets,
     openingPositionSize,
     closingPositionSize,
