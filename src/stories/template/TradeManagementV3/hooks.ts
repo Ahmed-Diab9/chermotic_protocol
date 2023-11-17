@@ -17,7 +17,6 @@ import { useTradeLogs } from '~/hooks/useTradeLogs';
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
 import { formatTimestamp } from '~/utils/date';
-import { compareMarkets } from '~/utils/market';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
@@ -33,6 +32,7 @@ export function useTradeManagementV3() {
   const { currentMarket, markets } = useMarket();
   const { markets: entireMarkets } = useEntireMarkets();
   const { positions, isLoading, fetchPositions } = usePositions();
+  const previousPositions = usePrevious(positions, true);
   const { filterOption } = usePositionFilter();
   const filteredMarkets = useMemo(() => {
     if (isNil(currentMarket)) {
@@ -50,42 +50,62 @@ export function useTradeManagementV3() {
       }
     }
   }, [entireMarkets, markets, currentMarket, filterOption]);
-  const previousMarkets = usePrevious(filteredMarkets);
+  const previousMarkets = usePrevious(filteredMarkets, true);
   const { history, isLoading: isHistoryLoading, refreshTradeHistory } = useTradeHistory();
   const { trades, isLoading: isTradeLogsLoading, refreshTradeLogs } = useTradeLogs();
   const { fetchBalances } = useChromaticAccount();
   const [pages, setPages] = useState({ history: 1, trades: 1 });
   const [isLoadings, setIsLoadings] = useState({ history: false, trades: false });
 
-  const openingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
-  );
-  const closingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === POSITION_STATUS.CLOSING).length ?? 0
-  );
-
   useEffect(() => {
-    if (isNil(previousMarkets) || isNil(filteredMarkets)) {
+    if (isNil(filteredMarkets) || isNil(previousMarkets)) {
       return;
     }
-    const isVersionUpdated = compareMarkets(previousMarkets, filteredMarkets);
-    if (isVersionUpdated) {
-      if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
-        toast.info('The opening process has been completed.');
-        fetchPositions();
-        fetchBalances();
+    let hasOpenedPositions = false;
+    let hasClosedPositions = false;
+    for (let index = 0; index < filteredMarkets.length; index++) {
+      const filteredMarket = filteredMarkets[index];
+
+      const previousMarket = previousMarkets.find(
+        (market) => market.address === filteredMarket.address
+      );
+      if (isNil(previousMarket)) {
+        continue;
       }
-      if (isNotNil(closingPositionSize) && closingPositionSize > 0) {
-        toast.info('The closing process has been completed.');
-        fetchPositions();
-        fetchBalances();
+      if (previousMarket.oracleValue.version !== filteredMarket.oracleValue.version) {
+        const previousOpenings = (previousPositions ?? []).filter(
+          (position) =>
+            position.status === POSITION_STATUS.OPENING &&
+            position.marketAddress === filteredMarket.address
+        ).length;
+        if (previousOpenings > 0) {
+          hasOpenedPositions = true;
+        }
+        const previousClosings = (previousPositions ?? []).filter(
+          (position) =>
+            position.status === POSITION_STATUS.CLOSING &&
+            position.marketAddress === filteredMarket.address
+        ).length;
+        if (previousClosings > 0) {
+          hasClosedPositions = true;
+        }
       }
+    }
+    if (hasOpenedPositions) {
+      toast.info('The opening process has been completed.');
+    }
+    if (hasClosedPositions) {
+      toast.info('The closing process has been completed.');
+    }
+    if (hasOpenedPositions || hasClosedPositions) {
+      fetchPositions();
+      fetchBalances();
     }
   }, [
     filteredMarkets,
     previousMarkets,
-    openingPositionSize,
-    closingPositionSize,
+    previousPositions,
+    positions,
     fetchBalances,
     fetchPositions,
   ]);
@@ -121,7 +141,7 @@ export function useTradeManagementV3() {
       ...loadingState,
       history: true,
     }));
-    await wait(3000);
+    await wait(1000);
     setPages((pages) => ({ ...pages, history: pages.history + 1 }));
     setIsLoadings((loadingState) => ({
       ...loadingState,
@@ -134,7 +154,7 @@ export function useTradeManagementV3() {
       ...loadingState,
       trades: true,
     }));
-    await wait(3000);
+    await wait(1000);
     setPages((pages) => ({ ...pages, trades: pages.trades + 1 }));
     setIsLoadings((loadingState) => ({
       ...loadingState,
