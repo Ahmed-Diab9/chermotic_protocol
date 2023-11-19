@@ -66,20 +66,8 @@ function Airdrop() {
   const message = `The date changes at ${formatted.hours}:${String(
     formatted.minutes
   )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
-  const [isModalOpen, setIsModalOpen] = useState(true);
   return (
     <>
-      <Modal
-        title="Notice"
-        paragraph="There is currently an error with the check in rewards. We are trying to fix the error as soon as possible. We apologize for any inconvenience this may have caused."
-        buttonLabel="OK"
-        buttonCss="default"
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-        onClick={() => {
-          setIsModalOpen(false);
-        }}
-      />
       <div className="page-container bg-gradient-chrm">
         <AirdropZealyConnectModal
           isOpen={Boolean(!isMutating && syncState?.isFailed)}
