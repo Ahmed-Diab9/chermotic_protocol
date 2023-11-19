@@ -162,7 +162,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               <Input
                 // size="sm"
                 unit="x"
-                className="w-20 ml-auto"
+                className="w-24 ml-auto "
                 value={leverage}
                 placeholder={leveragePlaceholder}
                 autoCorrect
@@ -179,7 +179,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               <div className="flex items-center gap-2">
                 <h4 className="text-left">Take Profit</h4>
               </div>
-              <div className="w-20">
+              <div className="w-24">
                 <Input
                   size="sm"
                   unit="%"
@@ -207,7 +207,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               <div className="flex items-center gap-2">
                 <h4 className="text-left">Stop Loss</h4>
               </div>
-              <div className="w-20">
+              <div className="w-24">
                 <Input
                   size="sm"
                   unit="%"
@@ -271,7 +271,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
                   outLinkAbout="Next Oracle Round"
                 />
               </div>
-              <div className="w-20">
+              <div className="w-24">
                 <Input
                   size="xs"
                   unit="%"

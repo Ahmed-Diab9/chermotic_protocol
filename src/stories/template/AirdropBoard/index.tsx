@@ -9,6 +9,7 @@ import './style.css';
 export const AirdropBoard = () => {
   const {
     filterLabels,
+    creditLabel,
     labelMap,
     activeLabel,
     leaderboard,
@@ -41,8 +42,7 @@ export const AirdropBoard = () => {
               <div className="tr">
                 <div className="td">Rank</div>
                 <div className="td">Name</div>
-                <div className="td">Credits (1D)</div>
-                <div className="td">Credits (All Time)</div>
+                <div className="td">{creditLabel}</div>
                 <div className="td">Boosters</div>
               </div>
             </div>
@@ -67,14 +67,6 @@ export const AirdropBoard = () => {
                       width={40}
                     >
                       {boardItem.address}
-                    </SkeletonElement>
-                  </div>
-                  <div className="td">
-                    <SkeletonElement
-                      // isLoading={isLoading}
-                      width={40}
-                    >
-                      {boardItem.credit}
                     </SkeletonElement>
                   </div>
                   <div className="td">
