@@ -1,8 +1,8 @@
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
-import { AdvancedChart } from '~/stories/molecule/AdvancedChart';
 import { ResizablePanel } from '~/stories/atom/ResizablePanel';
+import { AdvancedChart } from '~/stories/molecule/AdvancedChart';
 import { useTradeChartPanel } from './hooks';
 
 // May be used later.
@@ -12,7 +12,7 @@ import { useTradeChartPanel } from './hooks';
 export interface TradeChartViewProps {}
 
 export function TradeChartPanel(props: TradeChartViewProps) {
-  const { darkMode, symbol } = useTradeChartPanel();
+  const { symbol } = useTradeChartPanel();
 
   return (
     <ResizablePanel
