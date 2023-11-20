@@ -59,7 +59,7 @@ export const RANGE_CONFIG = [
     interval: 0.1,
     color: {
       secondary:
-        'linear-gradient(180deg, rgba(255, 151, 90, 0.3) 50%, rgba(255, 118, 38, 0.3) 80%)',
+        'linear-gradient(180deg, rgba(255, 118, 38, 0.3) 50%, rgba(255, 118, 38, 0.3) 80%)',
       primary: 'linear-gradient(180deg, #FF975A 0%, rgba(255, 118, 38, 0.10) 100%)',
       selected: 'rgba(255, 118, 38, 0.8)',
     },
@@ -70,7 +70,7 @@ export const RANGE_CONFIG = [
     interval: 1,
     color: {
       secondary:
-        'linear-gradient(180deg, rgba(255, 171, 94, 0.3) 50%, rgba(255, 157, 86, 0.3) 80%)',
+        'linear-gradient(180deg, rgba(255, 153, 60, 0.3) 50%, rgba(255, 153, 60, 0.3) 80%)',
       primary: 'linear-gradient(180deg, #FFAB5E 0%, rgba(255, 153, 60, 0.10) 100%)',
       selected: 'rgba(255, 153, 60, 0.8)',
     },
@@ -81,7 +81,7 @@ export const RANGE_CONFIG = [
     interval: 5,
     color: {
       secondary:
-        'linear-gradient(180deg, rgba(255, 206, 148, 0.3) 50%, rgba(255, 196, 126, 0.3) 80%)',
+        'linear-gradient(180deg, rgba(255, 196, 126, 0.3) 50%, rgba(255, 196, 126, 0.3) 80%)',
       primary: 'linear-gradient(180deg, #FFCE94 0%, rgba(255, 196, 126, 0.10) 100%)',
       selected: 'rgba(255, 196, 126, 0.8)',
     },
