@@ -9,13 +9,13 @@ interface AmountSwitchProps {
   method: 'quantity' | 'collateral';
   direction: 'long' | 'short';
   disabled: boolean;
-  disableDetail?: 'minimum' | 'liquidity' | 'balance' | undefined;
+  disableDetail?: 'minimum' | 'liquidity' | 'balance' | 'tradeFee' | undefined;
   tokenName?: string;
   tokenImage?: string;
   minAmount: string;
   maxAmount: string | number;
   optionInputDirection?: 'row' | 'column';
-  onAmountChange: (value: string, hasMax?: boolean) => unknown;
+  onAmountChange: (value: string) => unknown;
 }
 
 export const AmountSwitch = (props: AmountSwitchProps) => {
@@ -38,6 +38,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     balance: 'Exceeded available account balance.',
     liquidity: 'Exceeded free liquidity size.',
     minimum: `Less than minimum betting amount. (${minAmount} ${tokenName})`,
+    tradeFee: 'Trade fee is too high.',
   };
   const errorMessage = disableDetail ? errors[disableDetail] : undefined;
 
@@ -73,6 +74,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             assetSrc={tokenImage}
             direction={optionInputDirection}
             size="lg"
+            ratios={[20, 40, 60, 80]}
           />
           {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>

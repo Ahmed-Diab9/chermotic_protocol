@@ -184,20 +184,11 @@ export const useTradeInput = (props: Props) => {
     dispatch(tradesAction.updateTradesState({ direction, method: value }));
   };
 
-  const onAmountChange = (value: string, hasMax: boolean = false) => {
+  const onAmountChange = (value: string) => {
     const amount = parseUnits(value, currentToken?.decimals || 0);
 
     const { method, takeProfit, stopLoss } = state;
-
-    const { makerMargin } = getCalculatedValues({ method, takeProfit, stopLoss, amount });
-
-    let reducedAmount = amount;
-    if (hasMax) {
-      const { tradeFee } = getTradeFee(makerMargin);
-      reducedAmount = amount - tradeFee;
-    }
-
-    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount: reducedAmount });
+    const calculated = getCalculatedValues({ method, takeProfit, stopLoss, amount });
 
     const amounts =
       amount === undefined
@@ -235,7 +226,7 @@ export const useTradeInput = (props: Props) => {
 
   const disabled = useMemo<{
     status: boolean;
-    detail?: 'minimum' | 'liquidity' | 'balance';
+    detail?: 'minimum' | 'liquidity' | 'balance' | 'tradeFee';
   }>(() => {
     if (!currentToken) return { status: true };
 
@@ -283,10 +274,14 @@ export const useTradeInput = (props: Props) => {
     if (isOverBalance || isNil(balance)) {
       return { status: true, detail: 'balance' };
     }
+    if (state.collateral + tradeFee > balance) {
+      return { status: true, detail: 'tradeFee' };
+    }
 
     return { status: false };
   }, [
     state,
+    tradeFee,
     longTotalUnusedLiquidity,
     shortTotalUnusedLiquidity,
     currentToken,
