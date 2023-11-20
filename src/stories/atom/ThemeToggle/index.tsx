@@ -13,6 +13,7 @@ interface ThemeToggleProps {
 }
 
 export const ThemeToggle = (props: ThemeToggleProps) => {
+  const { showToggle = true } = props;
   const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', true);
 
   const forceDarkMode = true;
@@ -30,12 +31,10 @@ export const ThemeToggle = (props: ThemeToggleProps) => {
     setDarkMode(!darkMode);
   };
 
-  const { showToggle = 'true' } = props;
-
   if (showToggle) {
     return (
       <Button
-        className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${darkMode ? '' : ''}`}
+        className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter`}
         css="light"
         onClick={toggleTheme}
         iconOnly={darkMode ? <SunIcon /> : <MoonIcon />}
