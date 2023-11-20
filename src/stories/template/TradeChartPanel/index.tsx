@@ -32,7 +32,7 @@ export function TradeChartPanel(props: TradeChartViewProps) {
       >
         <AdvancedChart
           className="flex flex-col items-center flex-auto"
-          darkMode={darkMode}
+          darkMode={true}
           symbol={symbol}
         />
       </div>

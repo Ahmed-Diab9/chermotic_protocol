@@ -9,29 +9,37 @@ interface ThemeToggleProps {
   className?: string;
   disabled?: boolean;
   onToggle?: (checked: boolean) => void;
+  showToggle?: boolean;
 }
 
 export const ThemeToggle = (props: ThemeToggleProps) => {
   const { state: darkMode, setState: setDarkMode } = useLocalStorage('app:useDarkMode', true);
 
+  const forceDarkMode = true;
+  const isDarkMode = forceDarkMode || darkMode;
+
   useEffect(() => {
-    if (darkMode) {
+    if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, [darkMode]);
+  }, [isDarkMode]);
 
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
 
-  return (
-    <Button
-      className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${darkMode ? '' : ''}`}
-      css="light"
-      onClick={toggleTheme}
-      iconOnly={darkMode ? <SunIcon /> : <MoonIcon />}
-    />
-  );
+  const { showToggle = 'true' } = props;
+
+  if (showToggle) {
+    return (
+      <Button
+        className={`!w-[42px] !h-[42px] text-primary-light bg-gray-lighter ${darkMode ? '' : ''}`}
+        css="light"
+        onClick={toggleTheme}
+        iconOnly={darkMode ? <SunIcon /> : <MoonIcon />}
+      />
+    );
+  }
 };
