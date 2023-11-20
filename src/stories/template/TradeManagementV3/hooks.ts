@@ -1,7 +1,6 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { PAGE_SIZE } from '~/constants/arbiscan';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
@@ -102,32 +101,6 @@ export function useTradeManagementV3() {
     fetchBalances,
     fetchPositions,
   ]);
-
-  const positionPnls = useMemo(() => {
-    return positions?.reduce((pnls, position) => {
-      const { tokenAddress, marketAddress } = position;
-      const pnl = pnls[`${tokenAddress}:${marketAddress}`];
-      if (isNil(pnl)) {
-        pnls[`${tokenAddress}:${marketAddress}`] = position.pnl;
-      } else {
-        pnls[`${tokenAddress}:${marketAddress}`] += position.pnl;
-      }
-      return pnls;
-    }, {} as Record<`${Address}:${Address}`, bigint>);
-  }, [positions]);
-
-  const historyPnls = useMemo(() => {
-    history?.reduce((pnls, historyItem) => {
-      const { market, token } = historyItem;
-      const pnl = pnls[`${token.address}:${market.address}`];
-      if (isNil(pnl)) {
-        pnls[`${token.address}:${market.address}`] = historyItem.pnl;
-      } else {
-        pnls[`${token.address}:${market.address}`] += historyItem.pnl;
-      }
-      return pnls;
-    }, {} as Record<`${Address}:${Address}`, bigint>);
-  }, [history]);
 
   const onFetchNextHistory = async () => {
     setIsLoadings((loadingState) => ({
