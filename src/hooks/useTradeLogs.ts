@@ -12,7 +12,7 @@ import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { abs, divPreserved } from '~/utils/number';
-import { PromiseOnlySuccess } from '~/utils/promise';
+import { PromiseOnlySuccess, wait } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -61,6 +61,7 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
     }
     responseLogs = responseLogs.concat(logs);
     index += 1;
+    await wait(500);
   }
 
   const decodedLogsPromise = responseLogs.map(async (log) => {

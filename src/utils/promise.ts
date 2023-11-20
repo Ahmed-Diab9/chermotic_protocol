@@ -7,7 +7,7 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-async function wait(interval = 1000) {
+export async function wait(interval = 1000) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(null!);

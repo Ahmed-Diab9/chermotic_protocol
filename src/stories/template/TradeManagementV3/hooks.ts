@@ -19,14 +19,7 @@ import { POSITION_STATUS } from '~/typings/position';
 import { formatTimestamp } from '~/utils/date';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
-
-const wait = async (ms: number = 1000) => {
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined!);
-    }, ms);
-  });
-};
+import { wait } from '~/utils/promise';
 
 export function useTradeManagementV3() {
   const { currentMarket, markets } = useMarket();

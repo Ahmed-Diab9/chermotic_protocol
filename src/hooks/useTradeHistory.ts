@@ -11,6 +11,7 @@ import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
+import { wait } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useError } from './useError';
 import { useEntireMarkets, useMarket } from './useMarket';
@@ -56,6 +57,8 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
       break;
     }
     responseLogs = responseLogs.concat(logs);
+    index += 1;
+    await wait(500);
   }
   const decodedLogs = responseLogs.map((log) => {
     const decoded = decodeEventLog({
