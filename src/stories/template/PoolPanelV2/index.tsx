@@ -144,6 +144,7 @@ export function PoolPanelV2() {
                         errorMsg={errorMessages.add}
                         assetSrc={tokenImage}
                         size="lg"
+                        ratios={[25, 50, 75, 100]}
                       />
                       {/* {isExceeded && (
                         <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
@@ -276,6 +277,7 @@ export function PoolPanelV2() {
                                   errorMsg={errorMessages.remove}
                                   assetSrc={clpImage}
                                   size="lg"
+                                  ratios={[25, 50, 75, 100]}
                                 />
                                 {/* {isExceeded && (
                                   <TooltipAlert

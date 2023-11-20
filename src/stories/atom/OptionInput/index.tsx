@@ -22,8 +22,9 @@ interface OptionInputProps {
   error?: boolean;
   errorMsg?: string | undefined;
   errorMsgAlign?: 'left' | 'center' | 'right';
+  ratios?: number[];
   onClick?: () => unknown;
-  onChange?: (value: string, hasMax?: boolean) => unknown;
+  onChange?: (value: string) => unknown;
 }
 
 export const OptionInput = (props: OptionInputProps) => {
@@ -43,16 +44,17 @@ export const OptionInput = (props: OptionInputProps) => {
     error = false,
     errorMsg,
     errorMsgAlign = 'right',
+    ratios,
     onChange,
   } = props;
   const [ratio, setRatio] = useState<number>();
   const [isOptionClicked, setIsOptionClicked] = useState(false);
 
-  const onClick = (ratio: 25 | 50 | 75 | 100) => () => {
+  const onClick = (ratio: number) => () => {
     setRatio(ratio);
     setIsOptionClicked(true);
     if (ratio === 100) {
-      onChange?.(String(maxValue || ''), true);
+      onChange?.(String(maxValue || ''));
     } else {
       const nextValue = Number(maxValue) * (ratio / 100);
       onChange?.(String(nextValue || ''));
@@ -78,34 +80,16 @@ export const OptionInput = (props: OptionInputProps) => {
         }`}
       >
         <div className="flex gap-1">
-          <Button
-            className="flex-auto shadow-base !text-lg !px-2"
-            label="25%"
-            size="sm"
-            css={ratio === 25 ? 'active' : 'default'}
-            onClick={onClick(25)}
-          />
-          <Button
-            className="flex-auto shadow-base !text-lg !px-2"
-            label="50%"
-            size="sm"
-            css={ratio === 50 ? 'active' : 'default'}
-            onClick={onClick(50)}
-          />
-          <Button
-            className="flex-auto shadow-base !text-lg !px-2"
-            label="75%"
-            size="sm"
-            css={ratio === 75 ? 'active' : 'default'}
-            onClick={onClick(75)}
-          />
-          <Button
-            className="flex-auto shadow-base !text-lg !px-2"
-            label="Max"
-            size="sm"
-            css={ratio === 100 ? 'active' : 'default'}
-            onClick={onClick(100)}
-          />
+          {ratios?.map((ratioItem) => (
+            <Button
+              key={`ratio:${ratioItem}`}
+              className="flex-auto shadow-base !text-lg !px-2"
+              label={ratioItem !== 100 ? `${ratioItem}%` : 'Max'}
+              size="sm"
+              css={ratio === ratioItem ? 'active' : 'default'}
+              onClick={onClick(ratioItem)}
+            />
+          ))}
         </div>
         <Input
           label={label}

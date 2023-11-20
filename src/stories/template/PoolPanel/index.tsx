@@ -101,6 +101,7 @@ export function PoolPanel() {
                     maxValue={maxAmount}
                     onChange={onAmountChange}
                     error={isExceeded}
+                    ratios={[25, 50, 75, 100]}
                   />
                   {isExceeded && (
                     <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
