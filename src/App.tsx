@@ -36,7 +36,7 @@ function App() {
       case '/pool':
       case '/trade': {
         showCautionToast({
-          title: 'Introducing Chromatic Testnet',
+          title: 'Chromatic Protocol Testnet',
           titleClass: 'text-chrm',
           message:
             'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
