@@ -19,7 +19,7 @@ const config = createConfig({
 const preview: Preview = {
   globalTypes: {
     darkMode: {
-      defaultValue: false,
+      defaultValue: true,
     },
     className: {
       defaultValue: 'dark',

@@ -69,9 +69,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           <div className="ml-5">
             <WalletPopoverV3 {...walletPopoverProps} />
           </div>
-          <div className="hidden">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle showToggle={false} />
         </div>
       </div>
     </header>
