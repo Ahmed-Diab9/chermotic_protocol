@@ -180,6 +180,15 @@ export const usePositions = () => {
           ? markets
           : markets.filter((market) => market.address === currentMarket.address);
       return getPositions(accountApi, positionApi, marketApi, filteredMarkets, chromaticAccount);
+    },
+    {
+      // TODO: Find proper interval seconds
+      refreshInterval: 1000 * 60,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateFirstPage: true,
+      shouldRetryOnError: false,
     }
   );
 
@@ -197,7 +206,7 @@ export const usePositions = () => {
       const accountApi = client.account();
       const positionApi = client.position();
       const marketApi = client.market();
-      const foundMarket = markets?.find((market) => market.address === marketAddress);
+      const foundMarket = entireMarkets?.find((market) => market.address === marketAddress);
       if (isNil(foundMarket)) {
         return;
       }
@@ -213,7 +222,7 @@ export const usePositions = () => {
       mergedPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
       await fetchPositions<Position[]>(mergedPositions, { revalidate: false });
     },
-    [client, isLoading, markets, positions, accountAddress, fetchPositions]
+    [client, isLoading, entireMarkets, positions, accountAddress, fetchPositions]
   );
 
   const currentPositions = useMemo(() => {

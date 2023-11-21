@@ -11,7 +11,7 @@ import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 
-import { formatDecimals, numberFormat } from '~/utils/number';
+import { formatDecimals, mulFloat, numberFormat } from '~/utils/number';
 
 import { tradesAction } from '~/store/reducer/trades';
 
@@ -45,11 +45,31 @@ export function useTradeContentV3(props: TradeContentV3Props) {
 
   const quantity = formatDecimals(input.quantity, tokenDecimals);
   const collateral = formatDecimals(input.collateral, tokenDecimals);
-  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
-
+  const method = input.method;
+  const methodMap = {
+    collateral: 'Collateral',
+    quantity: 'Contract Qty',
+  };
+  const methodLabel = methodMap[method];
   const tokenAddress = currentToken?.address;
   const tokenName = currentToken?.name;
   const tokenImage = currentToken?.image;
+  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
+  const maxAmount = useMemo(() => {
+    if (isNil(balances) || isNil(tokenAddress) || isNil(currentToken)) {
+      return 0;
+    }
+    const value =
+      method === 'collateral'
+        ? balances[tokenAddress]
+        : mulFloat(balances[tokenAddress], input.leverage);
+    return numberFormat(formatUnits(value, tokenDecimals), {
+      minDigits: currentToken.decimals,
+      maxDigits: currentToken.decimals,
+      useGrouping: false,
+      roundingMode: 'trunc',
+    });
+  }, [balances, currentToken, input.leverage, method, tokenAddress, tokenDecimals]);
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
 
@@ -62,13 +82,6 @@ export function useTradeContentV3(props: TradeContentV3Props) {
           roundingMode: 'trunc',
         })
       : 0;
-
-  const method = input.method;
-  const methodMap = {
-    collateral: 'Collateral',
-    quantity: 'Contract Qty',
-  };
-  const methodLabel = methodMap[method];
 
   const isLong = direction === 'long';
 
@@ -197,6 +210,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     quantity,
     collateral,
     minAmount,
+    maxAmount,
     onAmountChange,
 
     leverage,

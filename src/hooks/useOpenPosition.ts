@@ -17,7 +17,7 @@ import { errorLog } from '~/utils/log';
 import { mulFloat } from '~/utils/number';
 
 function useOpenPosition() {
-  const { fetchPositions } = usePositions();
+  const { fetchCurrentPositions } = usePositions();
   const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
   const { currentMarket } = useMarket();
@@ -77,7 +77,7 @@ function useOpenPosition() {
         makerMargin: input.makerMargin,
         maxAllowableTradingFee,
       });
-      await fetchPositions();
+      await fetchCurrentPositions(currentMarket.address);
       await fetchBalances();
 
       dispatchTradeEvent();

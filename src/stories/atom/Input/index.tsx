@@ -1,7 +1,7 @@
 import './style.css';
 
 import { isNil, isNotNil } from 'ramda';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Avatar } from '~/stories/atom/Avatar';
 import { numberFormat, withComma } from '~/utils/number';
 
@@ -25,6 +25,7 @@ interface InputProps {
   useGrouping?: boolean;
   onChange?: (value: string) => unknown;
   debug?: boolean;
+  isOptionClicked?: boolean;
 }
 
 export const Input = (props: InputProps) => {
@@ -46,33 +47,44 @@ export const Input = (props: InputProps) => {
     maxDigits,
     useGrouping = true,
     onChange,
+    isOptionClicked,
   } = props;
-  const [displayValue, setDisplayValue] = useState(value);
+  const [formattedValue, setFormattedValue] = useState(value);
   const [isInternalChange, setIsInternalChange] = useState(false);
 
-  const setFormattedDisplayValue = (
-    value?: number | string,
-    roundingMode?: 'ceil' | 'floor' | 'trunc'
-  ) => {
-    if (isNil(value) || value === '' || displayValue === placeholder) return setDisplayValue('');
-    const formatted = numberFormat(value, {
-      minDigits,
-      maxDigits,
-      useGrouping,
-      roundingMode,
-    });
-    return setDisplayValue(formatted);
-  };
-
-  const getPureValue = (value: string) =>
-    trimLeadingZero(value)
-      .replaceAll(',', '')
-      .replace(/[^0-9.]/g, '');
+  const onFormattedValueChange = useCallback(
+    (value?: number | string, roundingMode?: 'ceil' | 'floor' | 'trunc') => {
+      if (isNil(value) || value === '') {
+        setFormattedValue('');
+        return;
+      }
+      if (isInternalChange && formattedValue === placeholder) {
+        setFormattedValue('');
+        return;
+      }
+      const formatted = numberFormat(value, {
+        minDigits,
+        maxDigits,
+        useGrouping,
+        roundingMode,
+      });
+      return setFormattedValue(formatted);
+    },
+    [formattedValue, maxDigits, minDigits, placeholder, useGrouping, isInternalChange]
+  );
 
   useEffect(() => {
-    if (!isInternalChange) setFormattedDisplayValue(value, 'trunc');
-    return setIsInternalChange(false);
-  }, [value]);
+    if (!isInternalChange || isOptionClicked) {
+      onFormattedValueChange(value, 'trunc');
+      return;
+    }
+  }, [autoCorrect, isInternalChange, isOptionClicked, value, onFormattedValueChange]);
+
+  const getNumericValue = (value: string) =>
+    value
+      .replace(/^0+(?!\.|$)/, '')
+      .replaceAll(',', '')
+      .replace(/[^0-9.]/g, '');
 
   function isOverMax(newValue?: string | number) {
     return newValue === undefined || isNil(max) || +newValue > max;
@@ -82,47 +94,45 @@ export const Input = (props: InputProps) => {
     return newValue === undefined || isNil(min) || +newValue < min;
   }
 
-  function trimLeadingZero(str: string) {
-    return str.replace(/^0+(?!\.|$)/, '');
-  }
-
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    const newValue = getPureValue(event.target.value);
+    const newValue = getNumericValue(event.target.value);
 
-    if (newValue === displayValue || isNaN(+newValue)) {
+    if (newValue === formattedValue || isNaN(+newValue)) {
       return;
     }
 
     if (isNil(onChange)) {
-      setDisplayValue(newValue);
+      setFormattedValue(newValue);
       return;
     }
 
     setIsInternalChange(true);
 
     if (!autoCorrect) {
-      setDisplayValue(withComma(newValue));
+      setFormattedValue(withComma(newValue));
       onChange(newValue);
       return;
     }
 
     if (isNotNil(max) && isOverMax(newValue)) {
       onChange(max!.toString());
-      setDisplayValue(max!.toString());
+      setFormattedValue(max!.toString());
     } else if (isNotNil(min) && isUnderMin(newValue)) {
       onChange(min!.toString());
-      setDisplayValue(newValue);
+      setFormattedValue(newValue);
     } else {
       onChange(newValue);
-      setDisplayValue(newValue);
+      setFormattedValue(newValue);
     }
   }
 
   function handleBlur() {
-    if (autoCorrect && isNotNil(min) && isUnderMin(displayValue)) {
-      return setFormattedDisplayValue(value, 'trunc');
+    if (autoCorrect && isNotNil(min) && isUnderMin(formattedValue)) {
+      onFormattedValueChange(value, 'trunc');
     }
+    setIsInternalChange(false);
+    return;
   }
 
   return (
@@ -137,7 +147,7 @@ export const Input = (props: InputProps) => {
         <input
           type="text"
           className={`text-${align}`}
-          value={displayValue}
+          value={formattedValue}
           placeholder={placeholder}
           onChange={handleChange}
           onBlur={handleBlur}

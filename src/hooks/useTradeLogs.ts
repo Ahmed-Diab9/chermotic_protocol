@@ -3,20 +3,19 @@ import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
 import axios from 'axios';
 import { isNil } from 'ramda';
 import { useCallback } from 'react';
-import useSWRInfinite from 'swr/infinite';
+import useSWR from 'swr';
 import { decodeEventLog, getEventSelector } from 'viem';
 import { Address } from 'wagmi';
-import { ARBISCAN_API_KEY, ARBISCAN_API_URL, BLOCK_CHUNK, PAGE_SIZE } from '~/constants/arbiscan';
+import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
 import { MarketLike, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { abs, divPreserved } from '~/utils/number';
-import { PromiseOnlySuccess } from '~/utils/promise';
+import { PromiseOnlySuccess, wait } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useInitialBlockNumber } from './useInitialBlockNumber';
 import { useEntireMarkets, useMarket } from './useMarket';
 import { usePositionFilter } from './usePositionFilter';
 import { useSettlementToken } from './useSettlementToken';
@@ -35,8 +34,6 @@ type Trade = {
 };
 
 type GetTradeLogsParams = {
-  toBlockNumber: bigint;
-  initialBlockNumber: bigint;
   accountAddress: Address;
   markets: MarketLike[];
   tokens: Token[];
@@ -50,18 +47,22 @@ const eventSignature = getEventSelector({
 });
 
 const getTradeLogs = async (params: GetTradeLogsParams) => {
-  const { toBlockNumber, initialBlockNumber, accountAddress, markets, tokens, client } = params;
-  const fromBlockNumber: bigint =
-    toBlockNumber - BLOCK_CHUNK > initialBlockNumber
-      ? toBlockNumber - BLOCK_CHUNK
-      : initialBlockNumber;
-  const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&fromBlock=${fromBlockNumber}&toBlock=${Number(
-    toBlockNumber
-  )}&apikey=${ARBISCAN_API_KEY}`;
-  const response = await axios(apiUrl);
-  const responseData = await response.data;
-  const responseLogs =
-    typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+  const { accountAddress, markets, tokens, client } = params;
+  let index = 1;
+  let responseLogs = [] as ResponseLog[];
+  while (true) {
+    const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=${index}&offset=1000&apikey=${ARBISCAN_API_KEY}`;
+    const response = await axios(apiUrl);
+    const responseData = await response.data;
+    const logs =
+      typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);
+    if (logs.length === 0) {
+      break;
+    }
+    responseLogs = responseLogs.concat(logs);
+    index += 1;
+    await wait(500);
+  }
 
   const decodedLogsPromise = responseLogs.map(async (log) => {
     const decoded = decodeEventLog({
@@ -94,7 +95,7 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
   });
 
   const decodedLogs = await PromiseOnlySuccess(decodedLogsPromise);
-  return { decodedLogs, fromBlockNumber };
+  return { decodedLogs };
 };
 
 export const useTradeLogs = () => {
@@ -104,101 +105,39 @@ export const useTradeLogs = () => {
   const { markets, currentMarket } = useMarket();
   const { markets: entireMarkets } = useEntireMarkets();
   const { filterOption } = usePositionFilter();
-  const { initialBlockNumber } = useInitialBlockNumber();
+
+  const fetchKey = {
+    key: 'fetchTradeLogs',
+    accountAddress,
+    tokens,
+    markets: trimMarkets(markets),
+    entireMarkets: trimMarkets(entireMarkets),
+    currentMarket: trimMarket(currentMarket),
+    filterOption,
+  };
 
   const {
-    data: tradesData,
+    data: trades,
     isLoading,
     error,
-    size,
-    setSize,
     mutate,
-  } = useSWRInfinite(
-    (pageIndex, previousData) => {
-      if (!isReady || isNil(initialBlockNumber)) {
-        return null;
-      }
-      const fetchKey = {
-        key: 'fetchTradeLogs',
-        accountAddress,
-        tokens,
-        markets: trimMarkets(markets),
-        entireMarkets: trimMarkets(entireMarkets),
-        currentMarket: trimMarket(currentMarket),
-        filterOption,
-        initialBlockNumber,
-      };
-      if (!checkAllProps(fetchKey)) {
-        return;
-      }
-      if (previousData?.toBlockNumber < initialBlockNumber) {
-        return null;
-      }
-      return checkAllProps(fetchKey)
-        ? { ...fetchKey, toBlockNumber: previousData?.toBlockNumber as bigint | undefined }
-        : null;
-    },
-    async ({
-      accountAddress,
-      tokens,
-      markets,
-      entireMarkets,
-      currentMarket,
-      filterOption,
-      initialBlockNumber,
-      toBlockNumber,
-    }) => {
-      if (isNil(toBlockNumber)) {
-        toBlockNumber = await client.publicClient?.getBlockNumber();
-        if (isNil(toBlockNumber)) {
-          throw new Error('Invalid block number bounds');
-        }
-      }
+  } = useSWR(
+    checkAllProps(fetchKey) ? fetchKey : undefined,
+    async ({ accountAddress, tokens, markets, entireMarkets, currentMarket, filterOption }) => {
       const filteredMarkets =
         filterOption === 'ALL'
           ? entireMarkets
           : filterOption === 'TOKEN_BASED'
           ? markets
           : markets.filter((market) => market.address === currentMarket?.address);
-      let tradeLogs = [] as Trade[];
-
-      while (true) {
-        await new Promise((resolve) =>
-          setTimeout(() => {
-            resolve(undefined!);
-          }, 1000)
-        );
-        const { decodedLogs, fromBlockNumber } = await getTradeLogs({
-          toBlockNumber,
-          initialBlockNumber,
-          accountAddress,
-          markets: filteredMarkets,
-          tokens,
-          client,
-        });
-        decodedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
-        const totalLength = tradeLogs.length + decodedLogs.length;
-
-        if (totalLength > PAGE_SIZE) {
-          tradeLogs = tradeLogs.concat(decodedLogs).slice(0, PAGE_SIZE);
-          toBlockNumber = tradeLogs[tradeLogs.length - 1].blockNumber - 1n;
-          break;
-        } else if (totalLength === PAGE_SIZE) {
-          tradeLogs = tradeLogs.concat(decodedLogs);
-          toBlockNumber = fromBlockNumber - 1n;
-          break;
-        } else {
-          tradeLogs = tradeLogs.concat(decodedLogs);
-          toBlockNumber = fromBlockNumber - 1n;
-          if (fromBlockNumber === initialBlockNumber) {
-            break;
-          }
-        }
-      }
-      return {
-        tradeLogs,
-        toBlockNumber,
-      };
+      const { decodedLogs } = await getTradeLogs({
+        accountAddress,
+        markets: filteredMarkets,
+        tokens,
+        client,
+      });
+      decodedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
+      return decodedLogs;
     },
     {
       refreshInterval: 0,
@@ -209,10 +148,6 @@ export const useTradeLogs = () => {
     }
   );
 
-  const onFetchNextTrade = () => {
-    setSize((size) => size + 1);
-  };
-
   const refreshTradeLogs = useCallback(() => {
     mutate();
   }, [mutate]);
@@ -220,9 +155,8 @@ export const useTradeLogs = () => {
   useError({ error });
 
   return {
-    tradesData,
+    trades,
     isLoading,
-    onFetchNextTrade,
     refreshTradeLogs,
   };
 };

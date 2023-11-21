@@ -22,6 +22,7 @@ type FormattedLp = {
   clpSymbol: string;
   image: string;
   token: string;
+  tokenImage: string;
   market: string;
   balance: string;
 };
@@ -118,9 +119,9 @@ export function useWalletPopoverV3() {
     const image = lp.image;
 
     const market = lp.market.description;
-    const token = lp.settlementToken.name;
+    const { name: tokenName, image: tokenImage } = lp.settlementToken;
     const balance = formatDecimals(lp.balance, lp.clpDecimals, 2, true);
-    acc.push({ key, name, clpSymbol, token, market, balance, image });
+    acc.push({ key, name, clpSymbol, token: tokenName, tokenImage, market, balance, image });
     return acc;
   }, []);
   const isLiquidityTokenEmpty = formattedLps.length === 0;

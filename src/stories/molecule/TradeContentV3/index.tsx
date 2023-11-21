@@ -42,6 +42,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
     collateral,
     quantity,
     minAmount,
+    maxAmount,
     onAmountChange,
 
     leverage,
@@ -118,7 +119,7 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
             tokenName={tokenName}
             tokenImage={tokenImage}
             minAmount={minAmount}
-            maxAmount={balance}
+            maxAmount={maxAmount}
             onAmountChange={onAmountChange}
             optionInputDirection="row"
           />
