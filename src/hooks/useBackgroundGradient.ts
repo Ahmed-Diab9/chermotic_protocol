@@ -1,20 +1,22 @@
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import useMarketOracle from './commons/useMarketOracle';
 import useMarkets from './commons/useMarkets';
 import { usePreviousOracle } from './usePreviousOracle';
 
 function useBackgroundGradient() {
   const { currentMarket } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
   const { previousOracle } = usePreviousOracle({ market: currentMarket });
   const backgroundRef = useRef<HTMLDivElement | null>(null);
 
   const [beforeCondition, setBeforeCondition] = useState<boolean>();
   const [afterCondition, setAfterCondition] = useState<boolean>();
   const checkCondition = useCallback((): [boolean, boolean] => {
-    if (isNil(currentMarket) || isNil(previousOracle)) {
+    if (isNil(currentOracle) || isNil(previousOracle)) {
       return [false, false];
     }
-    const currentPrice = currentMarket?.oracleValue.price;
+    const currentPrice = currentOracle.price;
     const isIncreasedNow = currentPrice - previousOracle.oracleBefore1Day.price > 0n;
     if (isNil(previousOracle.oracleBefore2Days)) {
       return [true, isIncreasedNow];
@@ -22,7 +24,7 @@ function useBackgroundGradient() {
     const isIncreasedBefore1Day =
       previousOracle.oracleBefore1Day.price - previousOracle.oracleBefore2Days.price > 0n;
     return [isIncreasedBefore1Day, isIncreasedNow];
-  }, [currentMarket, previousOracle]);
+  }, [currentOracle, previousOracle]);
 
   const onLoadBackgroundRef = (element: HTMLDivElement | null) => {
     backgroundRef.current = element;

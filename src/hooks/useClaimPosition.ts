@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { AppError } from '~/typings/error';
 import { Market } from '~/typings/market';
 import { errorLog } from '~/utils/log';
+import useMarketOracle from './commons/useMarketOracle';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { usePositions } from './usePositions';
@@ -16,6 +17,7 @@ export function useClaimPosition(props: Props) {
   const { market, positionId } = props;
   const { client } = useChromaticClient();
   const { fetchBalances } = useChromaticAccount();
+  const { currentOracle } = useMarketOracle({ market });
   const { positions, fetchPositions, fetchCurrentPositions } = usePositions();
   async function onClaimPosition() {
     try {
@@ -30,7 +32,7 @@ export function useClaimPosition(props: Props) {
         toast('Positions are not selected.');
         return AppError.reject('no positions', 'onClosePosition');
       }
-      if ((market?.oracleValue.version || 0n) <= position.closeVersion) {
+      if ((currentOracle?.version || 0n) <= position.closeVersion) {
         errorLog('the selected position is not closed');
         toast('This position is not closed yet.');
         return AppError.reject('the selected position is not closed', 'onClaimPosition');
