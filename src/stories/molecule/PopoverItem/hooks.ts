@@ -1,3 +1,4 @@
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import { formatDecimals } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
@@ -5,6 +6,7 @@ import { PopoverItemProps } from '.';
 
 export const usePopoverItem = (props: PopoverItemProps) => {
   const { market, selectedMarket, onMarketClick } = props;
+  const { currentOracle } = useMarketOracle({ market });
   const { previousOracle } = usePreviousOracle({
     market: selectedMarket,
   });
@@ -13,9 +15,9 @@ export const usePopoverItem = (props: PopoverItemProps) => {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
   });
-  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, market.oracleValue);
+  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentOracle);
   const formattedPrice =
-    '$' + priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 2)));
+    '$' + priceFormatter.format(Number(formatDecimals(currentOracle?.price, 18, 2)));
 
   return {
     market,
