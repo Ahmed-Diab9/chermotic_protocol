@@ -1,6 +1,5 @@
 .btn {
   @apply inline-flex items-center justify-center;
-  @apply font-semibold leading-[1];
   @apply cursor-pointer;
   border-radius: 100px;
   > div {
@@ -8,7 +7,7 @@
   }
   span,
   svg {
-    @apply inline-flex;
+    @apply inline-flex font-semibold leading-[1];
   }
   &:disabled {
     @apply cursor-not-allowed;

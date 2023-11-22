@@ -1,7 +1,7 @@
 .modal {
   @apply inline-block border rounded-2xl relative bg-paper shadow-modal dark:shadow-none;
   .modal-title {
-    @apply text-center text-lg mb-2 font-semibold;
+    @apply text-center text-xl mb-2 font-semibold;
   }
   .modal-content {
     @apply flex flex-col mt-5 mb-7;
@@ -12,8 +12,11 @@
       @apply flex-auto;
     }
   }
-  .wrapper-liq {
-    @apply relative flex flex-col border border-gray-light dark:border-transparent rounded-xl overflow-hidden;
+  .modal-box {
+    @apply relative flex flex-col rounded-xl overflow-hidden bg-paper-lighter;
+    * {
+      @apply border-gray-light/60;
+    }
   }
 
   &.modal-base {
