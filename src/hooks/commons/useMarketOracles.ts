@@ -25,26 +25,32 @@ const useMarketOracles = (props: UseMarketOracles) => {
     data: marketOracles,
     error,
     isLoading,
-  } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ markets }) => {
-    const marketApi = client.market();
-    const oracleProviders = await promiseIfFulfilled(
-      markets.map(async (market) => marketApi.contracts().oracleProvider(market.address))
-    );
-    const currentOracles = await promiseIfFulfilled(
-      oracleProviders.map(async (oracleProvider, providerIndex) => {
-        if (isNil(oracleProvider)) {
-          return;
-        }
-        const currentOracle = await oracleProvider.read.currentVersion();
-        return currentOracle;
-      })
-    );
-    return markets.reduce((oracles, market, marketIndex) => {
-      oracles[market.address] = currentOracles[marketIndex];
+  } = useSWR(
+    checkAllProps(fetchKey) ? fetchKey : undefined,
+    async ({ markets }) => {
+      const marketApi = client.market();
+      const oracleProviders = await promiseIfFulfilled(
+        markets.map(async (market) => marketApi.contracts().oracleProvider(market.address))
+      );
+      const currentOracles = await promiseIfFulfilled(
+        oracleProviders.map(async (oracleProvider, providerIndex) => {
+          if (isNil(oracleProvider)) {
+            return;
+          }
+          const currentOracle = await oracleProvider.read.currentVersion();
+          return currentOracle;
+        })
+      );
+      return markets.reduce((oracles, market, marketIndex) => {
+        oracles[market.address] = currentOracles[marketIndex];
 
-      return oracles;
-    }, {} as Record<Address, OracleVersion | undefined>);
-  });
+        return oracles;
+      }, {} as Record<Address, OracleVersion | undefined>);
+    },
+    {
+      refreshInterval: 1000 * 30,
+    }
+  );
 
   useError({ error });
 

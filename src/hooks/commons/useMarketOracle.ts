@@ -19,12 +19,18 @@ const useMarketOracle = (props: UseMarketOracle) => {
     data: currentOracle,
     isLoading,
     error,
-  } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ market }) => {
-    const oracleProvider = await client.market().contracts().oracleProvider(market.address);
-    const currentOracle = await oracleProvider.read.currentVersion();
+  } = useSWR(
+    checkAllProps(fetchKey) ? fetchKey : undefined,
+    async ({ market }) => {
+      const oracleProvider = await client.market().contracts().oracleProvider(market.address);
+      const currentOracle = await oracleProvider.read.currentVersion();
 
-    return currentOracle;
-  });
+      return currentOracle;
+    },
+    {
+      refreshInterval: 1000 * 30,
+    }
+  );
 
   useError({ error });
 
