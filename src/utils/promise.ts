@@ -15,23 +15,17 @@ export async function wait(interval = 1000) {
   });
 }
 
-export async function promiseSlowLoop<A extends unknown[] | readonly unknown[], R extends unknown>(
-  array: A,
-  callback: (item: A[number], index: number) => Promise<R> | R,
-  config?: { interval?: number; hasCatch?: boolean }
-) {
-  const { interval = 1000, hasCatch = false } = config ?? {};
-  const response = await Promise.allSettled(
-    array.map(async (item, index) => {
-      await wait(interval * index);
-      return callback(item, index);
-    })
-  );
-  if (hasCatch) {
-    const rejecteds = response.filter(({ status }) => status === 'rejected');
-    console.error(rejecteds, 'rejecteds');
+export async function promiseIfFulfilled<T>(promises: (Promise<T> | undefined)[]) {
+  const settled = await Promise.allSettled(promises);
+  let result = [] as (T | undefined)[];
+  for (let index = 0; index < settled.length; index++) {
+    const promiseElement = settled[index];
+    if (promiseElement.status === 'rejected') {
+      result = result.concat(undefined);
+    } else {
+      result = result.concat(promiseElement.value);
+    }
   }
-  return response
-    .filter((value): value is PromiseFulfilledResult<Awaited<R>> => value.status === 'fulfilled')
-    .map(({ value }) => value);
+
+  return result;
 }
