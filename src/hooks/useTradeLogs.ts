@@ -7,24 +7,22 @@ import useSWR from 'swr';
 import { decodeEventLog, getEventSelector } from 'viem';
 import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
-import { MarketLike, Token } from '~/typings/market';
+import { Market, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
-import { trimMarket, trimMarkets } from '~/utils/market';
 import { abs, divPreserved } from '~/utils/number';
-import { PromiseOnlySuccess, wait } from '~/utils/promise';
+import { PromiseOnlySuccess, promiseIfFulfilled, wait } from '~/utils/promise';
+import useFilteredMarkets from './commons/useFilteredMarkets';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useEntireMarkets, useMarket } from './useMarket';
-import { usePositionFilter } from './usePositionFilter';
 import { useSettlementToken } from './useSettlementToken';
 
 type Trade = {
   positionId: bigint;
   token: Token;
-  market: MarketLike;
-  entryPrice: bigint;
+  market: Market;
+  entryPrice: bigint | undefined;
   direction: 'long' | 'short';
   collateral: bigint;
   qty: bigint;
@@ -35,7 +33,7 @@ type Trade = {
 
 type GetTradeLogsParams = {
   accountAddress: Address;
-  markets: MarketLike[];
+  markets: Market[];
   tokens: Token[];
   client: Client;
 };
@@ -50,6 +48,7 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
   const { accountAddress, markets, tokens, client } = params;
   let index = 1;
   let responseLogs = [] as ResponseLog[];
+  const marketApi = client.market();
   while (true) {
     const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=${index}&offset=1000&apikey=${ARBISCAN_API_KEY}`;
     const response = await axios(apiUrl);
@@ -63,23 +62,40 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
     index += 1;
     await wait(500);
   }
-
-  const decodedLogsPromise = responseLogs.map(async (log) => {
-    const decoded = decodeEventLog({
+  const decodedLogs = responseLogs.map((log) => ({
+    ...decodeEventLog({
       abi: chromaticAccountABI,
       data: log.data,
       topics: log.topics,
       eventName: 'OpenPosition',
-    });
-    const { positionId, qty, takerMargin, marketAddress, openTimestamp, openVersion } =
-      decoded.args;
+    }),
+    blockNumber: log.blockNumber,
+  }));
+
+  const oracleProviders = await PromiseOnlySuccess(
+    markets.map(async (market) => {
+      const oracleProvider = await marketApi.contracts().oracleProvider(market.address);
+      return [market.address, oracleProvider] as const;
+    })
+  );
+  const openOracles = await promiseIfFulfilled(
+    decodedLogs.map((log) => {
+      const oracleProvider = oracleProviders.find(
+        ([marketAddress]) => marketAddress === log.args.marketAddress
+      )?.[1];
+
+      return oracleProvider?.read.atVersion([log.args.openVersion + 1n]);
+    })
+  );
+
+  const detailedLogsPromise = decodedLogs.map(async (log, logIndex) => {
+    const { positionId, qty, takerMargin, marketAddress, openTimestamp, openVersion } = log.args;
     const selectedMarket = markets.find((market) => market.address === marketAddress);
     const selectedToken = tokens.find((token) => token.address === selectedMarket?.tokenAddress);
     if (isNil(selectedMarket) || isNil(selectedToken)) {
       throw new Error('Invalid logs');
     }
-    const oracleProvider = await client.market().contracts().oracleProvider(selectedMarket.address);
-    const entryOracle = await oracleProvider.read.atVersion([openVersion + 1n]);
+    const entryOracle = openOracles[logIndex];
     return {
       positionId,
       token: selectedToken,
@@ -89,31 +105,26 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
       leverage: divPreserved(qty, takerMargin, selectedToken.decimals),
       direction: qty > 0n ? 'long' : 'short',
       entryTimestamp: openTimestamp,
-      entryPrice: entryOracle.price,
+      entryPrice: entryOracle?.price,
       blockNumber: BigInt(log.blockNumber),
     } satisfies Trade;
   });
 
-  const decodedLogs = await PromiseOnlySuccess(decodedLogsPromise);
-  return { decodedLogs };
+  const detailedLogs = await PromiseOnlySuccess(detailedLogsPromise);
+  return { detailedLogs };
 };
 
 export const useTradeLogs = () => {
   const { isReady, client } = useChromaticClient();
   const { accountAddress } = useChromaticAccount();
   const { tokens } = useSettlementToken();
-  const { markets, currentMarket } = useMarket();
-  const { markets: entireMarkets } = useEntireMarkets();
-  const { filterOption } = usePositionFilter();
+  const { markets } = useFilteredMarkets();
 
   const fetchKey = {
     key: 'fetchTradeLogs',
     accountAddress,
     tokens,
-    markets: trimMarkets(markets),
-    entireMarkets: trimMarkets(entireMarkets),
-    currentMarket: trimMarket(currentMarket),
-    filterOption,
+    markets,
   };
 
   const {
@@ -123,21 +134,15 @@ export const useTradeLogs = () => {
     mutate,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : undefined,
-    async ({ accountAddress, tokens, markets, entireMarkets, currentMarket, filterOption }) => {
-      const filteredMarkets =
-        filterOption === 'ALL'
-          ? entireMarkets
-          : filterOption === 'TOKEN_BASED'
-          ? markets
-          : markets.filter((market) => market.address === currentMarket?.address);
-      const { decodedLogs } = await getTradeLogs({
+    async ({ accountAddress, tokens, markets }) => {
+      const { detailedLogs } = await getTradeLogs({
         accountAddress,
-        markets: filteredMarkets,
+        markets,
         tokens,
         client,
       });
-      decodedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
-      return decodedLogs;
+      detailedLogs.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1));
+      return detailedLogs;
     },
     {
       refreshInterval: 0,

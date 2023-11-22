@@ -6,22 +6,21 @@ import useSWR from 'swr';
 import { decodeEventLog } from 'viem';
 import { Address } from 'wagmi';
 import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
-import { MarketLike, Token } from '~/typings/market';
+import { Market, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
-import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { wait } from '~/utils/promise';
+import useFilteredMarkets from './commons/useFilteredMarkets';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useError } from './useError';
-import { useEntireMarkets, useMarket } from './useMarket';
 import { usePositionFilter } from './usePositionFilter';
 import { useSettlementToken } from './useSettlementToken';
 
 type History = {
   positionId: bigint;
   token: Token;
-  market: MarketLike;
+  market: Market;
   entryPrice: bigint;
   direction: 'long' | 'short';
   collateral: bigint;
@@ -39,7 +38,7 @@ type History = {
 
 type GetTradeHistoryParams = {
   accountAddress: Address;
-  markets: MarketLike[];
+  markets: Market[];
   tokens: Token[];
 };
 
@@ -130,18 +129,14 @@ const getTradeHistory = async (params: GetTradeHistoryParams) => {
 export const useTradeHistory = () => {
   const { accountAddress } = useChromaticAccount();
   const { tokens } = useSettlementToken();
-  const { markets, currentMarket } = useMarket();
-  const { markets: entireMarkets } = useEntireMarkets();
+  const { markets } = useFilteredMarkets();
   const { filterOption } = usePositionFilter();
 
   const fetchKey = {
     key: 'fetchHistory',
     accountAddress,
     tokens,
-    markets: trimMarkets(markets),
-    entireMarkets: trimMarkets(entireMarkets),
-    currentMarket: trimMarket(currentMarket),
-    filterOption,
+    markets,
   };
 
   const {
@@ -151,16 +146,10 @@ export const useTradeHistory = () => {
     mutate,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : undefined,
-    async ({ accountAddress, tokens, markets, entireMarkets, currentMarket, filterOption }) => {
-      const filteredMarkets =
-        filterOption === 'ALL'
-          ? entireMarkets
-          : filterOption === 'TOKEN_BASED'
-          ? markets
-          : markets.filter((market) => market.address === currentMarket?.address);
+    async ({ accountAddress, tokens, markets }) => {
       const { historyArray } = await getTradeHistory({
         accountAddress,
-        markets: filteredMarkets,
+        markets,
         tokens,
       });
       historyArray.sort((previous, next) => {
