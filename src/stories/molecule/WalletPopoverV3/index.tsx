@@ -231,27 +231,31 @@ export function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV
                                             </SkeletonElement>
                                             <div className="flex-1 gap-3">
                                               <div className="flex flex-col gap-1 leading-none">
-                                                <SkeletonElement isLoading={isLoading} width={100}>
-                                                  <p className="font-semibold">
+                                                <p className="font-semibold">
+                                                  <SkeletonElement
+                                                    isLoading={isLoading}
+                                                    width={100}
+                                                  >
                                                     {token}
                                                     <span className="px-1 font-light text-primary-lighter">
                                                       |
                                                     </span>
                                                     {market}
-                                                  </p>
-                                                </SkeletonElement>
-                                                <SkeletonElement isLoading={isLoading} width={100}>
-                                                  <p className="text-primary-lighter">
-                                                    {/* pool name */}
+                                                  </SkeletonElement>
+                                                </p>
+                                                <p className="text-primary-lighter">
+                                                  <SkeletonElement
+                                                    isLoading={isLoading}
+                                                    width={100}
+                                                  >
                                                     {name}
-                                                  </p>
-                                                </SkeletonElement>
-                                                <SkeletonElement isLoading={isLoading} width={60}>
-                                                  <p className="font-medium break-all text-primary">
-                                                    {/* {liquidity} {name} */}
+                                                  </SkeletonElement>
+                                                </p>
+                                                <p className="mt-1 font-medium break-all text-primary">
+                                                  <SkeletonElement isLoading={isLoading} width={60}>
                                                     {balance} {clpSymbol}
-                                                  </p>
-                                                </SkeletonElement>
+                                                  </SkeletonElement>
+                                                </p>
                                               </div>
                                             </div>
                                           </div>
