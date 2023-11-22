@@ -28,10 +28,11 @@ export const AirdropStamp = (props: AirdropStampProps) => {
   } = useAirdropStamp();
 
   const credit = schedules.at(0)?.credit ?? 0;
-  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
-  const message = `The date changes at ${formatted.hours}:${String(
-    formatted.minutes
-  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
+  const {
+    unit,
+    formatted: { hours, minutes },
+  } = useTimeDifferences();
+  const message = `The date changes at ${hours}:${minutes}${unit} local time (UTC+00:00)`;
 
   return (
     <>
