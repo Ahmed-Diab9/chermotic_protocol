@@ -6,12 +6,12 @@ import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
 import { dispatchLpEvent, dispatchLpReceiptEvent } from '~/typings/events';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
 
 export const useAddChromaticLp = () => {
   const { client, lpClient, isReady } = useChromaticClient();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { address } = useAccount();
   const selectedLp = useAppSelector(selectedLpSelector);
   const [isAddPending, setIsAddPending] = useState(false);

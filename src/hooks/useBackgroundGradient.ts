@@ -1,10 +1,10 @@
 import { isNil } from 'ramda';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMarket } from './useMarket';
+import useMarkets from './commons/useMarkets';
 import { usePreviousOracle } from './usePreviousOracle';
 
 function useBackgroundGradient() {
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { previousOracle } = usePreviousOracle({ market: currentMarket });
   const backgroundRef = useRef<HTMLDivElement | null>(null);
 

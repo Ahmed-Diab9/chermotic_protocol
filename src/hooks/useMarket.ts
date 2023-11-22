@@ -3,12 +3,11 @@ import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
-import { fetchTokenImages } from '~/apis/token';
+import { MARKET_LOGOS } from '~/configs/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { marketAction } from '~/store/reducer/market';
 import { selectedMarketSelector, selectedTokenSelector } from '~/store/selector';
 import { Market } from '~/typings/market';
-import { OracleVersion } from '~/typings/oracleVersion';
 import { trimMarket } from '~/utils/market';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
@@ -73,13 +72,6 @@ const getMarkets = async (client: Client, tokenAddresses: Address[]) => {
         } as Market;
         break;
       }
-      case 1: {
-        fulfilledMarkets[marketIndex] = {
-          ...fulfilledMarkets[marketIndex],
-          oracleValue: tupleItem.value as OracleVersion,
-        };
-        break;
-      }
       case 2: {
         fulfilledMarkets[marketIndex] = {
           ...fulfilledMarkets[marketIndex],
@@ -92,14 +84,13 @@ const getMarkets = async (client: Client, tokenAddresses: Address[]) => {
   const marketNames = fulfilledMarkets.map(
     (market) => market.description.split(/\s*\/\s*/) as [string, string]
   );
-  const marketImageMap = await fetchTokenImages(marketNames.map((names) => names[0]));
   return fulfilledMarkets.map((market, marketIndex) => {
     const description = marketNames[marketIndex].join('/');
 
     return {
       ...market,
       description,
-      image: marketImageMap[marketNames[marketIndex][0]],
+      image: MARKET_LOGOS[marketNames[marketIndex][0]],
     } satisfies Market;
   });
 };
@@ -180,7 +171,7 @@ export const useMarket = (_interval?: number) => {
   const onMarketSelect = useCallback(
     (market: Market) => {
       dispatch(marketAction.onMarketSelect(market));
-      setStoredMarket(market.description);
+      setStoredMarket(market.address);
       toast('Market is now selected.');
     },
     [dispatch]
