@@ -66,7 +66,7 @@ export function useAnalytics({ start, end }: { start: Date | null; end: Date | n
       refreshWhenOffline: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      revalidateIfStale: false,
+      keepPreviousData: true,
     }
   );
 

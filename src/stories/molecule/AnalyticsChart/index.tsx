@@ -10,6 +10,7 @@ import {
   ComposedChart,
   Area,
 } from 'recharts';
+import { isEmpty } from 'ramda';
 
 import { CategoricalChartState } from 'recharts/types/chart/generateCategoricalChart';
 
@@ -117,6 +118,15 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
       </div>
     );
   };
+
+  // TODO: @dia-nn empty case
+  if (isEmpty(data)) {
+    return (
+      <ResponsiveContainer width={'100%'} height={300}>
+        <>EMPTY</>
+      </ResponsiveContainer>
+    );
+  }
 
   return (
     <ResponsiveContainer width={'100%'} height={300}>

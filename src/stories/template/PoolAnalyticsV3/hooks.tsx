@@ -76,15 +76,14 @@ export const usePoolAnalyticsV3 = () => {
       data: price,
       map: priceMap,
       x: xAxisKey,
-      isLoading,
       isEmpty: isEmpty(price),
     },
     supplyChartProps: {
       data: supply,
       map: supplyMap,
       x: xAxisKey,
-      isLoading,
       isEmpty: isEmpty(supply),
     },
+    isLoading,
   };
 };
