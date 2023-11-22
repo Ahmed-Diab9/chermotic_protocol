@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { PoolChart } from '.';
+import PoolChart from '.';
 
 const meta = {
   title: 'Atom/PoolChart',

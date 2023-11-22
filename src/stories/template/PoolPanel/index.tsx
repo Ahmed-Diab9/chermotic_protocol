@@ -1,4 +1,5 @@
 import { Switch, Tab } from '@headlessui/react';
+import { Suspense, lazy } from 'react';
 import { createPortal } from 'react-dom';
 import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -6,7 +7,6 @@ import { Button } from '~/stories/atom/Button';
 import { Checkbox } from '~/stories/atom/Checkbox';
 import { Counter } from '~/stories/atom/Counter';
 import { OptionInput } from '~/stories/atom/OptionInput';
-import { PoolChart } from '~/stories/atom/PoolChart';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
@@ -17,6 +17,8 @@ import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiqui
 import { formatFeeRate } from '~/utils/number';
 import { usePoolPanel } from './hooks';
 import './style.css';
+
+const PoolChart = lazy(() => import('~/stories/atom/PoolChart'));
 
 export function PoolPanel() {
   const {
@@ -135,13 +137,15 @@ export function PoolPanel() {
                   </div>
                 </article>
                 <article>
-                  <PoolChart
-                    id="pool"
-                    chartRef={rangeChartRef}
-                    height={180}
-                    onChange={onRangeChange}
-                    isDotVisible={isBinValueVisible}
-                  />
+                  <Suspense>
+                    <PoolChart
+                      id="pool"
+                      chartRef={rangeChartRef}
+                      height={180}
+                      onChange={onRangeChange}
+                      isDotVisible={isBinValueVisible}
+                    />
+                  </Suspense>
                 </article>
 
                 <article>

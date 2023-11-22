@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { SWRConfig } from 'swr';
@@ -64,7 +64,9 @@ function App() {
         <WagmiConfig config={config}>
           <ChromaticProvider>
             <div className="App">
-              <RouterProvider router={router} />
+              <Suspense>
+                <RouterProvider router={router} />
+              </Suspense>
             </div>
           </ChromaticProvider>
         </WagmiConfig>

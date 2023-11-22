@@ -1,12 +1,14 @@
+import { lazy } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import Airdrop from './pages/airdrop';
 import Faucet from './pages/faucet';
 import Pool from './pages/pool';
 import PoolV2 from './pages/poolV2';
-import PoolV3 from './pages/poolV3';
 import Trade from './pages/trade';
 import TradeV2 from './pages/tradeV2';
-import TradeV3 from './pages/tradeV3';
+
+const PoolV3 = lazy(() => import('./pages/poolV3'));
+const TradeV3 = lazy(() => import('./pages/tradeV3'));
 
 const router = createBrowserRouter([
   {
