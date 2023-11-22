@@ -62,10 +62,12 @@ function Airdrop() {
   }, [searchParams]);
 
   const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
-  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
-  const message = `The date changes at ${formatted.hours}:${String(
-    formatted.minutes
-  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
+  const {
+    unit,
+    formatted: { hours, minutes },
+  } = useTimeDifferences();
+  const message = `The date changes at ${hours}:${minutes}${unit} local time (UTC+00:00)`;
+
   return (
     <>
       <div className="page-container bg-gradient-chrm">
