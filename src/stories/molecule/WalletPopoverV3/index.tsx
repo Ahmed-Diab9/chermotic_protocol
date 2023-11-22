@@ -4,15 +4,10 @@ import './style.css';
 import { Fragment, Suspense, lazy } from 'react';
 
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { OutlinkIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 
-import { Popover, Tab, Transition } from '@headlessui/react';
-import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { AddressWithButton } from '~/stories/atom/AddressWithButton';
+import { Popover, Transition } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
-import { Button } from '~/stories/atom/Button';
-import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { useWalletPopoverV3 } from './hooks';
@@ -23,32 +18,14 @@ interface WalletPopoverV3Props {
 }
 
 const WalletPopoverV3Body = lazy(() => import('~/stories/molecule/WalletPopoverV3Body'));
+
+export default function WalletPopoverV3({ isDisconnected, isWrongChain }: WalletPopoverV3Props) {
   const {
     onConnect,
     onSwitchChain,
-    onCreateAccount,
-    onDisconnect,
 
     isLoading,
-
-    chainName,
-
-    accountExplorerUrl,
-
-    assets,
-    isAssetEmpty,
-
-    formattedLps,
-    isLiquidityTokenEmpty,
-
     walletAddress,
-    onCopyWalletAddress,
-
-    chromaticAddress,
-    onCopyChromaticAddress,
-    isChromaticAccountExist,
-
-    onLpClick,
   } = useWalletPopoverV3();
 
   if (isDisconnected) {
