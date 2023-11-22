@@ -1,6 +1,5 @@
 import { accountReducer } from './account';
 import { airdropReducer } from './airdrop';
-import { loadedReducer } from './loaded';
 import { lpReducer } from './lp';
 import { marketReducer } from './market';
 import { poolsReducer } from './pools';
@@ -17,7 +16,6 @@ const rootReducer = {
   position: positionReducer,
   lp: lpReducer,
   airdrop: airdropReducer,
-  loaded: loadedReducer,
 };
 
 export default rootReducer;
