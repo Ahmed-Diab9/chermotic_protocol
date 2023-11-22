@@ -18,22 +18,15 @@ export function MarketSelectV3() {
   const {
     isLoading,
     isPriceLoading,
-    tokenName,
-    tokenImage,
-    marketDescription,
-    marketAddress,
-    marketImage,
-    tokens,
-    markets,
+    isBookmarkeds,
+    token,
+    market,
     price,
     priceClass,
-    priceClassMap,
-    poolMap,
     interestRate,
     changeRate,
     changeRateClass,
     explorerUrl,
-    isBookmarked,
     formattedElapsed,
     onBookmarkClick,
   } = useMarketSelectV3();
@@ -45,15 +38,21 @@ export function MarketSelectV3() {
           <BookmarkButton
             size="lg"
             onClick={() => {
-              if (isNotNil(onBookmarkClick) && isNotNil(tokenName) && isNotNil(marketDescription)) {
+              if (isNotNil(onBookmarkClick) && isNotNil(token) && isNotNil(market)) {
                 onBookmarkClick({
-                  id: `${tokenName}:${marketDescription}`,
-                  tokenName,
-                  marketDescription,
+                  id: `${token.name}:${market.description}`,
+                  tokenName: token.name,
+                  tokenAddress: token.address,
+                  marketDescription: market.description,
+                  marketAddress: market.address,
                 });
               }
             }}
-            isMarked={isBookmarked?.[`${tokenName}:${marketDescription}`]}
+            isMarked={
+              isNotNil(token) &&
+              isNotNil(market) &&
+              isBookmarkeds?.[`${token.name}:${market.description}`]
+            }
           />
           <Popover className="h-full">
             {({ open, close }) => (
@@ -62,13 +61,13 @@ export function MarketSelectV3() {
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                     <SkeletonElement
-                      isLoading={isLoading || isNil(tokenName) || isNil(marketDescription)}
+                      isLoading={isLoading || isNil(token?.name) || isNil(market?.description)}
                       width={60}
                       containerClassName="text-2xl"
                     >
                       <Avatar
-                        label={tokenName}
-                        src={tokenImage}
+                        label={token?.name}
+                        src={token?.image}
                         fontSize="xl"
                         gap="1"
                         size="base"
@@ -78,13 +77,13 @@ export function MarketSelectV3() {
                   <div className="flex items-center gap-1">
                     <SkeletonElement isLoading={isLoading} circle width={24} height={24} />
                     <SkeletonElement
-                      isLoading={isLoading || isNil(tokenName) || isNil(marketDescription)}
+                      isLoading={isLoading || isNil(token?.name) || isNil(market?.description)}
                       width={80}
                       containerClassName="text-2xl"
                     >
                       <Avatar
-                        label={marketDescription}
-                        src={marketImage}
+                        label={market?.description}
+                        src={market?.image}
                         fontSize="xl"
                         gap="1"
                         size="base"

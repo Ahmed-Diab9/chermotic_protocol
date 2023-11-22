@@ -15,11 +15,9 @@ import { useMarketSelectV2 } from './hooks';
 export function MarketSelectV2() {
   const {
     isLoading,
-    tokenName,
-    tokenImage,
-    marketDescription,
-    marketAddress,
-    marketImage,
+    token,
+    market,
+    isBookmarkeds,
     tokens,
     markets,
     price,
@@ -42,15 +40,21 @@ export function MarketSelectV2() {
           <BookmarkButton
             size="lg"
             onClick={() => {
-              if (isNotNil(onBookmarkClick)) {
+              if (isNotNil(onBookmarkClick) && isNotNil(token) && isNotNil(market)) {
                 onBookmarkClick({
-                  id: `${tokenName}:${marketDescription}`,
-                  tokenName,
-                  marketDescription,
+                  id: `${token.name}:${market.description}`,
+                  tokenName: token.name,
+                  tokenAddress: token.address,
+                  marketDescription: market.description,
+                  marketAddress: market.address,
                 });
               }
             }}
-            isMarked={isBookmarked?.[`${tokenName}:${marketDescription}`]}
+            isMarked={
+              isNotNil(token) &&
+              isNotNil(market) &&
+              isBookmarkeds?.[`${token.name}:${market.description}`]
+            }
           />
           <Popover className="h-full">
             {({ open }) => (
@@ -65,8 +69,8 @@ export function MarketSelectV2() {
                         containerClassName="text-2xl"
                       >
                         <Avatar
-                          label={tokenName}
-                          src={tokenImage}
+                          label={token?.name}
+                          src={token?.image}
                           fontSize="2xl"
                           gap="1"
                           size="base"
@@ -83,8 +87,8 @@ export function MarketSelectV2() {
                         containerClassName="text-2xl"
                       >
                         <Avatar
-                          label={marketDescription}
-                          src={marketImage}
+                          label={market?.description}
+                          src={market?.image}
                           fontSize="2xl"
                           gap="1"
                           size="base"
@@ -132,22 +136,28 @@ export function MarketSelectV2() {
                             key,
                             isSelectedMarket,
                             onClickMarket,
-                            description,
+                            token,
                             price,
-                            settlementToken,
+                            isBookmarked,
+                            description,
+                            address,
                             image,
                           }) => (
                             <div key={key} className="relative flex items-center w-full">
                               <BookmarkButton
                                 className="absolute left-0 ml-2"
                                 onClick={() => {
-                                  onBookmarkClick?.({
-                                    id: `${settlementToken}:${description}`,
-                                    tokenName: settlementToken!,
-                                    marketDescription: description,
-                                  });
+                                  if (isNotNil(token)) {
+                                    onBookmarkClick?.({
+                                      id: `${token.name}:${description}`,
+                                      tokenName: token.name,
+                                      tokenAddress: token.address,
+                                      marketDescription: description,
+                                      marketAddress: address,
+                                    });
+                                  }
                                 }}
-                                isMarked={isBookmarked?.[`${settlementToken}:${description}`]}
+                                isMarked={isBookmarked}
                               />
                               <button
                                 className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 border ${
