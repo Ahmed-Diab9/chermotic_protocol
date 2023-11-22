@@ -9,9 +9,7 @@ export const PoolAnalytics = (props: PoolAnalyticsProps) => {
     <div className="PoolAnalytics">
       <div className="flex items-baseline justify-between mt-10">
         <h2 className="text-4xl">CLP Analytics</h2>
-        <div className="ml-auto">
-          <Calendar />
-        </div>
+        <div className="ml-auto">{/* <Calendar /> */}</div>
       </div>
       <div className="panel">
         <div className="p-5 text-left">
