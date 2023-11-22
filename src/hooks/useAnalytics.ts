@@ -31,8 +31,7 @@ export function useAnalytics({ start, end }: { start: Date | null; end: Date | n
       const { lp_value_histories } = await analyticsSdk.ClpHistories({
         start,
         end,
-        // address,
-        address: '0x70AdfB00de10E525F2b29C0eD0c8498149E03618',
+        address,
       });
       const decimals = selectedLp.clpDecimals;
 
