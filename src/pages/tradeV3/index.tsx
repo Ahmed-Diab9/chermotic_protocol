@@ -24,11 +24,11 @@ function TradeV3() {
 
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
-        <div id="prev"></div>
-        <div id="current"></div>
-      </div>
       <div className="page-container !min-w-[1360px]">
+        <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
+          <div id="prev"></div>
+          <div id="current"></div>
+        </div>
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main>

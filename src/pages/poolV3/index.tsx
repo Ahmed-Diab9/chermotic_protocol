@@ -93,11 +93,11 @@ const PoolV3 = () => {
 
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
-        <div id="prev"></div>
-        <div id="current"></div>
-      </div>
       <div className="page-container">
+        <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
+          <div id="prev"></div>
+          <div id="current"></div>
+        </div>
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main className="max-w-[1480px]">
