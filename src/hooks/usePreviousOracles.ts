@@ -1,7 +1,11 @@
+import { isNil } from 'ramda';
 import useSWR from 'swr';
+import { Address } from 'wagmi';
 import { Market } from '~/typings/market';
+import { OracleVersion } from '~/typings/oracleVersion';
 import { checkAllProps } from '~/utils';
-import { PromiseOnlySuccess } from '~/utils/promise';
+import { promiseIfFulfilled } from '~/utils/promise';
+import useMarketOracles from './commons/useMarketOracles';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 
@@ -11,28 +15,39 @@ interface Props {
 
 export const usePreviousOracles = ({ markets }: Props) => {
   const { isReady, client } = useChromaticClient();
+  const { marketOracles } = useMarketOracles({ markets });
   const fetchKey = {
     name: 'getPreviousOracleVersions',
-    markets,
+    marketOracles,
   };
   const {
     data: previousOracles,
     error,
     isLoading,
-  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ markets }) => {
-    const response = await PromiseOnlySuccess(
-      markets.map(async (market) => {
-        const currentVersion = market.oracleValue.version;
-        const oracleProvider = await client.market().contracts().oracleProvider(market.address);
-        if (currentVersion <= 0n) {
-          return undefined;
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ marketOracles }) => {
+    const marketApi = client.market();
+    const oracleProviders = await promiseIfFulfilled(
+      Object.keys(marketOracles).map(async (marketAddress) => {
+        return marketApi.contracts().oracleProvider(marketAddress as Address);
+      })
+    );
+    const previousOracles = await promiseIfFulfilled(
+      Object.values(marketOracles).map(async (marketOracle, index) => {
+        if (isNil(marketOracle) || marketOracle.version < 1n) {
+          return;
         }
-        const previousOracle = await oracleProvider.read.atVersion([currentVersion - 1n]);
-        return { ...previousOracle, marketAddress: market.address };
+        const previousOracle = await oracleProviders[index]?.read.atVersion([
+          marketOracle.version - 1n,
+        ]);
+        return previousOracle;
       })
     );
 
-    return response;
+    return Object.keys(marketOracles).reduce((oracles, marketAddress, currentIndex) => {
+      oracles[marketAddress as Address] = previousOracles[currentIndex];
+
+      return oracles;
+    }, {} as Record<Address, OracleVersion | undefined>);
   });
 
   useError({ error });
