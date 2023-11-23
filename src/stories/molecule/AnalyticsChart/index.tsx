@@ -118,8 +118,8 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
   if (isEmpty(data)) {
     return (
       <ResponsiveContainer width={'100%'} height={300} className="flex items-center justify-center">
-        {/* <img src={LOADING} className="w-10 animate-spin" alt="loading..." /> */}
-        <p className="text-primary-lighter">There is no data</p>
+        <img src={LOADING} className="w-10 animate-spin" alt="loading..." />
+        {/* <p className="text-primary-lighter">There is no data</p> */}
       </ResponsiveContainer>
     );
   }
