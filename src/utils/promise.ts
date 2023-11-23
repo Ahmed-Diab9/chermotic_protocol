@@ -16,16 +16,12 @@ export async function wait(interval = 1000) {
 }
 
 export async function promiseIfFulfilled<T>(promises: (Promise<T> | undefined)[]) {
-  const settled = await Promise.allSettled(promises);
-  let result = [] as (T | undefined)[];
-  for (let index = 0; index < settled.length; index++) {
-    const promiseElement = settled[index];
-    if (promiseElement.status === 'rejected') {
-      result = result.concat(undefined);
-    } else {
-      result = result.concat(promiseElement.value);
-    }
-  }
+  const settleds = await Promise.allSettled(promises);
 
-  return result;
+  return settleds.map((settled) => {
+    if (settled.status === 'rejected') {
+      return undefined;
+    }
+    return settled.value;
+  });
 }
