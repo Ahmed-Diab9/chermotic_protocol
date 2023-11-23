@@ -20,19 +20,14 @@ export interface Price {
 export interface Market {
   address: Address;
   description: string;
-  oracleValue: {
-    timestamp: bigint;
-    version: bigint;
-    price: bigint;
-  };
   tokenAddress: Address;
   image: string;
 }
 
-export type MarketLike = Omit<Market, 'oracleValue'>;
-
 export interface Bookmark {
   id: string;
   tokenName: string;
+  tokenAddress: Address;
   marketDescription: string;
+  marketAddress: Address;
 }

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { WalletPopoverV3 } from '.';
 import { hiddenArgs } from '~/utils/storybook';
+import WalletPopoverV3 from '.';
 
 const meta = {
   title: 'Molecule/WalletPopoverV3',

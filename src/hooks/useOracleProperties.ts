@@ -2,13 +2,13 @@ import useSWR from 'swr';
 import { BPS_DECIMALS } from '~/configs/decimals';
 import { checkAllProps } from '~/utils';
 import { formatDecimals } from '~/utils/number';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useMarket } from './useMarket';
 
 export const useOracleProperties = () => {
   const { isReady, client } = useChromaticClient();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
 
   const fetchKeyData = {
     name: 'useOracleProperties',

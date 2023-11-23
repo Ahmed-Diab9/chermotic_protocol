@@ -1,5 +1,5 @@
 import { Switch, Tab } from '@headlessui/react';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, Suspense, lazy } from 'react';
 import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
@@ -15,9 +15,10 @@ import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
 import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
-import { PoolChart } from '~/stories/atom/PoolChart';
 import { usePoolPanelV2 } from './hooks';
 import './style.css';
+
+const PoolChart = lazy(() => import('~/stories/atom/PoolChart'));
 
 export function PoolPanelV2() {
   const {
@@ -82,12 +83,14 @@ export function PoolPanelV2() {
                   </div>
                 </div>
                 <article className="-mx-7">
-                  <PoolChart
-                    id="pool"
-                    height={180}
-                    isDotVisible={isBinValueVisible}
-                    isHandlesVisible={false}
-                  />
+                  <Suspense>
+                    <PoolChart
+                      id="pool"
+                      height={180}
+                      isDotVisible={isBinValueVisible}
+                      isHandlesVisible={false}
+                    />
+                  </Suspense>
                 </article>
                 <div className="flex justify-between mt-10">
                   <div className="flex items-center gap-4">

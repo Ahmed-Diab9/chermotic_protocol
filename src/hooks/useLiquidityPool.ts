@@ -2,19 +2,17 @@ import type { ChromaticLens } from '@chromatic-protocol/sdk-viem';
 import { utils as ChromaticUtils } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { poolsAction } from '~/store/reducer/pools';
-import { isLpReadySelector, isPositionsReadySelector } from '~/store/selector';
 import { FEE_RATES } from '../configs/feeRate';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch } from '../store';
 import { Bin, LiquidityPool } from '../typings/pools';
 import { checkAllProps } from '../utils';
 import { PromiseOnlySuccess } from '../utils/promise';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useEntireMarkets, useMarket } from './useMarket';
 import { usePrevious } from './usePrevious';
 import { useSettlementToken } from './useSettlementToken';
 
@@ -22,8 +20,7 @@ const { encodeTokenId } = ChromaticUtils;
 
 export const useLiquidityPools = () => {
   const { client } = useChromaticClient();
-  const { markets } = useEntireMarkets();
-  const isLpReady = useAppSelector(isLpReadySelector);
+  const { markets } = useMarkets();
 
   const addresses = useMemo(() => {
     return markets?.map((market) => {
@@ -43,7 +40,7 @@ export const useLiquidityPools = () => {
     error,
     mutate: fetchLiquidityPools,
   } = useSWR(
-    isLpReady && checkAllProps(fetchKeyData) ? fetchKeyData : undefined,
+    checkAllProps(fetchKeyData) ? fetchKeyData : undefined,
     async ({ addresses }) => {
       const lensApi = client.lens();
 
@@ -67,25 +64,12 @@ export const useLiquidityPools = () => {
 export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address) => {
   const dispatch = useAppDispatch();
 
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { currentToken } = useSettlementToken();
   const currentMarketAddress = marketAddress || currentMarket?.address;
   const currentTokenAddress = tokenAddress || currentToken?.address;
-  const isPositionsReady = useAppSelector(isPositionsReadySelector);
-  const isLpReady = useAppSelector(isLpReadySelector);
   const previousMarketAddress = usePrevious(currentMarketAddress);
   const { isReady, client } = useChromaticClient();
-  const location = useLocation();
-  const isAssetReady = useMemo(() => {
-    switch (location.pathname) {
-      case '/trade': {
-        return true;
-      }
-      case '/pool': {
-        return isLpReady;
-      }
-    }
-  }, [location.pathname, isLpReady]);
 
   const fetchKeyData = {
     name: 'useLiquidityPool',
@@ -99,7 +83,7 @@ export const useLiquidityPool = (marketAddress?: Address, tokenAddress?: Address
     isLoading,
     error,
   } = useSWR(
-    isAssetReady && isReady && checkAllProps(fetchKeyData) && fetchKeyData,
+    isReady && checkAllProps(fetchKeyData) && fetchKeyData,
     async ({ marketAddress, tokenAddress }) => {
       const lensApi = client.lens();
       const pool = await getLiquidityPool(lensApi, marketAddress, tokenAddress);

@@ -2,10 +2,10 @@ import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
-import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
+import useMarkets from '~/hooks/commons/useMarkets';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -18,12 +18,12 @@ import { formatTimestamp } from '~/utils/date';
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
 export function useTradeManagement() {
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
   const { positions, isLoading } = usePositions();
   const { history, isLoading: isHistoryLoading } = useTradeHistory();
   const { trades, isLoading: isTradeLogsLoading } = useTradeLogs();
-  const { initialBlockNumber } = useInitialBlockNumber();
-  const previousOracle = usePrevious(currentMarket?.oracleValue.version);
+  const previousOracle = usePrevious(currentOracle?.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
   );
@@ -32,10 +32,10 @@ export function useTradeManagement() {
   );
 
   useEffect(() => {
-    if (isNil(previousOracle) || isNil(currentMarket)) {
+    if (isNil(previousOracle) || isNil(currentOracle)) {
       return;
     }
-    if (previousOracle !== currentMarket.oracleValue.version) {
+    if (previousOracle !== currentOracle?.version) {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
       }
@@ -43,7 +43,7 @@ export function useTradeManagement() {
         toast.info('The closing process has been completed.');
       }
     }
-  }, [currentMarket, previousOracle, openingPositionSize, closingPositionSize]);
+  }, [currentOracle, previousOracle, openingPositionSize, closingPositionSize]);
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -109,7 +109,7 @@ export function useTradeManagement() {
   const { formattedElapsed } = useLastOracle();
 
   const currentPrice = isNotNil(currentMarket)
-    ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
+    ? formatDecimals(currentOracle?.price, 18, 2, true)
     : '-';
 
   const isPositionsEmpty = isNil(positions) || positions.length === 0;

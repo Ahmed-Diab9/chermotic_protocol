@@ -1,6 +1,7 @@
 import { isNil, isNotNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
-import { useMarket } from './useMarket';
+import { Market } from '~/typings/market';
+import useMarketOracle from './commons/useMarketOracle';
 
 const formatter = Intl.DateTimeFormat('en-US', {
   second: '2-digit',
@@ -14,15 +15,17 @@ const preformat = (elapsed: number) => {
 };
 
 interface Props {
-  format: (item: Intl.DateTimeFormatPart) => string;
+  market?: Market;
+  format?: (item: Intl.DateTimeFormatPart) => string;
 }
 
 export function useLastOracle(props?: Props) {
-  const { currentMarket } = useMarket();
+  const { market, format } = props ?? {};
+  const { currentOracle } = useMarketOracle({ market });
   const [elapsed, setElapsed] = useState<number>();
 
   useEffect(() => {
-    const timestamp = currentMarket?.oracleValue?.timestamp;
+    const timestamp = currentOracle?.timestamp;
     if (isNil(timestamp)) return;
     let timerId: NodeJS.Timeout;
     timerId = setInterval(() => {
@@ -33,14 +36,14 @@ export function useLastOracle(props?: Props) {
     return () => {
       clearTimeout(timerId);
     };
-  }, [currentMarket]);
+  }, [currentOracle?.timestamp]);
 
   const formattedElapsed = useMemo(() => {
     if (isNil(elapsed)) {
       return;
     }
-    if (isNotNil(props)) {
-      return preformat(elapsed).map(props.format);
+    if (isNotNil(format)) {
+      return preformat(elapsed).map(format);
     }
     return preformat(elapsed).map(({ type, value }) => {
       switch (type) {
@@ -63,8 +66,7 @@ export function useLastOracle(props?: Props) {
           return value;
       }
     });
-    // .join(' ');
-  }, [elapsed, props]);
+  }, [elapsed, format]);
 
   return { elapsed, formattedElapsed };
 }

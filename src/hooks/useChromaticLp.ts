@@ -1,32 +1,31 @@
 import { Client as LpClient } from '@chromatic-protocol/liquidity-provider-sdk';
 import { ChromaticRegistry } from '@chromatic-protocol/liquidity-provider-sdk/dist/esm/entities/ChromaticRegistry';
 import { isNil, isNotNil } from 'ramda';
-import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import { Address, useAccount } from 'wagmi';
 import { LP_TAG_ORDER } from '~/configs/lp';
 import { useAppDispatch, useAppSelector } from '~/store';
-import { loadedAction } from '~/store/reducer/loaded';
 import { lpAction } from '~/store/reducer/lp';
 import { ChromaticLp } from '~/typings/lp';
-import { MarketLike } from '~/typings/market';
+import { Market } from '~/typings/market';
 import { checkAllProps } from '~/utils';
 import { trimMarket, trimMarkets } from '~/utils/market';
 import { divPreserved } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
 import CLP from '../assets/tokens/CLP.svg';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import useLocalStorage from './useLocalStorage';
-import { useEntireMarkets, useMarket } from './useMarket';
+import { useEntireMarkets } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 type FetchChromaticLpArgs = {
   lpClient: LpClient;
   registry: ChromaticRegistry;
   walletAddress?: Address;
-  market: MarketLike;
+  market: Market;
 };
 
 const fetchChromaticLp = async (args: FetchChromaticLpArgs) => {
@@ -216,7 +215,7 @@ export const useEntireChromaticLp = () => {
 export const useChromaticLp = () => {
   const { lpClient, isReady } = useChromaticClient();
   const { address: walletAddress } = useAccount();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { tokens } = useSettlementToken();
   const fetchKey = {
     key: 'getChromaticLp',
@@ -261,12 +260,6 @@ export const useChromaticLp = () => {
       refreshInterval: 1000 * 60,
     }
   );
-
-  useEffect(() => {
-    if (isNotNil(lpList) && !isLpLoading) {
-      dispatch(loadedAction.onDataLoaded('chromaticLp'));
-    }
-  }, [dispatch, lpList, isLpLoading]);
 
   const onLpSelect = (nextLp: ChromaticLp) => {
     if (!isReady) {

@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { positionAction } from '~/store/reducer/position';
 import { FilterOption } from '~/typings/position';
+import useMarkets from './commons/useMarkets';
 import useLocalStorage from './useLocalStorage';
-import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 export const usePositionFilter = () => {
@@ -13,7 +13,7 @@ export const usePositionFilter = () => {
     useLocalStorage<FilterOption>('app:position', 'MARKET_ONLY');
 
   const { currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const dispatch = useAppDispatch();
 
   const filterOptions = useMemo(() => {

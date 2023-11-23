@@ -14,6 +14,7 @@ import { abs, divPreserved, formatDecimals, withComma } from '~/utils/number';
 
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 
+import useMarketOracles from '~/hooks/commons/useMarketOracles';
 import { comparePrices } from '~/utils/price';
 import { PositionItemProps } from './index';
 
@@ -21,6 +22,7 @@ interface UsePositionItem extends PositionItemProps {}
 
 export function usePositionItem({ position }: UsePositionItem) {
   const { markets } = useMarket();
+  const { marketOracles } = useMarketOracles({ markets });
   const { currentToken } = useSettlementToken();
   const { isLoading } = usePositions();
 
@@ -64,9 +66,7 @@ export function usePositionItem({ position }: UsePositionItem) {
         : (makerMargin * parseUnits('1', currentToken.decimals) * 100n * 10000n) /
           parseUnits(String(abs(qty)), currentToken.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
-    const currentOracleVersion = markets?.find(
-      (market) => market.address === position.marketAddress
-    )?.oracleValue;
+    const currentOracleVersion = marketOracles?.[position.marketAddress];
     if (
       isNil(currentOracleVersion) ||
       isNil(currentOracleVersion.version) ||

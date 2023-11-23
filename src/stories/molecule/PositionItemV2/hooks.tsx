@@ -76,9 +76,6 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
         : (makerMargin * parseUnits('1', currentToken.decimals) * 100n * 10000n) /
           parseUnits(String(abs(qty)), currentToken.decimals);
     const takeProfit = formatDecimals(takeProfitRaw, 4, 2) + '%';
-    const currentOracleVersion = markets?.find(
-      (market) => market.address === position.marketAddress
-    )?.oracleValue;
     if (position.status === POSITION_STATUS.OPENING) {
       const pendingPosition = {
         tokenName: currentToken.name,

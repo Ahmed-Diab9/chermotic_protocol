@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { dispatchPoolEvent } from '~/typings/events';
 import { Logger, errorLog } from '../utils/log';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
-import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useSettlementToken } from './useSettlementToken';
 import { useTokenBalances } from './useTokenBalance';
@@ -20,7 +20,7 @@ interface Props {
 function useAddLiquidity(props: Props) {
   const { amount, binFeeRates } = props;
 
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { currentToken } = useSettlementToken();
 
   const { fetchReceipts } = usePoolReceipt();
