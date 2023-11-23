@@ -265,9 +265,11 @@ function Airdrop() {
                                 </div>
                                 <div className="w-1/3 px-3 py-5 border-l">
                                   <p>
-                                    To open the Random Box, you must join a designated Discord
-                                    server and complete phone verification. (The address of the
-                                    designated Discord server will be announced later.)
+                                    To open Random Box, you must join the specified Discord server
+                                    to complete phone verification, and you may be asked to complete
+                                    some additional authentications. (The address of the designated
+                                    Discord server and the other authentications will be announced
+                                    later.)
                                   </p>
                                 </div>
                               </div>
