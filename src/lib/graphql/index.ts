@@ -3,6 +3,7 @@ import { HASURA_API_URL, SUBGRAPH_API_URL } from '~/configs/subgraph';
 
 import * as Lp from '~/lib/graphql/sdk/lp';
 import * as Performance from '~/lib/graphql/sdk/performance';
+import * as Analytics from '~/lib/graphql/sdk/analytics';
 
 type UrlMap = {
   operations: string[];
@@ -23,6 +24,10 @@ const urlMap: UrlMap = [
   },
   {
     operations: getOperations(Performance),
+    url: `${HASURA_API_URL}`,
+  },
+  {
+    operations: getOperations(Analytics),
     url: `${HASURA_API_URL}`,
   },
 ];
@@ -46,5 +51,6 @@ const graphClient = new GraphQLClient('', {
 
 const lpGraphSdk = Lp.getSdk(graphClient);
 const performanceSdk = Performance.getSdk(graphClient);
+const analyticsSdk = Analytics.getSdk(graphClient);
 
-export { lpGraphSdk, performanceSdk };
+export { lpGraphSdk, performanceSdk, analyticsSdk };
