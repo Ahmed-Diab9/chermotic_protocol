@@ -19,7 +19,7 @@ interface AvatarProps {
 export const Avatar = (props: AvatarProps) => {
   const {
     className = '',
-    size = 'base',
+    size,
     gap = '2',
     src,
     svg,
@@ -31,7 +31,7 @@ export const Avatar = (props: AvatarProps) => {
   return (
     <span className="avatar">
       <span className={`flex items-center gap-${gap}`}>
-        <span className={`wrapper-img avatar-${size} ${className} `}>
+        <span className={`wrapper-img ${size ? `avatar-${size}` : ''} ${className} `}>
           {src ? (
             <img src={src} alt="" className="object-cover w-full h-full" />
           ) : svg ? (
