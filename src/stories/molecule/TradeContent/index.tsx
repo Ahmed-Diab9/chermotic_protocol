@@ -2,17 +2,17 @@ import '~/stories/atom/Select/style.css';
 import '~/stories/atom/Toggle/style.css';
 
 import { Listbox, Switch } from '@headlessui/react';
+import { Suspense, lazy } from 'react';
 import { Input } from '~/stories/atom/Input';
 import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Slider } from '~/stories/atom/Slider';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
-
 import { useTradeContent } from './hooks';
 
+const TradeChart = lazy(() => import('~/stories/atom/TradeChart'));
 export interface TradeContentProps {
   direction: 'long' | 'short';
 }
@@ -235,12 +235,14 @@ export const TradeContent = (props: TradeContentProps) => {
       </section>
       <section>
         <div className="mx-[-40px] relative border-b">
-          <TradeChart
-            id={`trade-${direction}`}
-            positive={isLong}
-            height={140}
-            selectedAmount={makerMargin}
-          />
+          <Suspense>
+            <TradeChart
+              id={`trade-${direction}`}
+              positive={isLong}
+              height={140}
+              selectedAmount={makerMargin}
+            />
+          </Suspense>
           <div
             className={`flex flex-col gap-1 px-3 py-2 absolute top-0 bg-paper ${
               isLong ? 'items-end right-0' : 'items-start left-0'

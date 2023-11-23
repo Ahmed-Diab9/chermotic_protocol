@@ -1,13 +1,15 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
 import { PAGE_SIZE } from '~/constants/arbiscan';
+import useFilteredMarkets from '~/hooks/commons/useFilteredMarkets';
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
-import { usePositionFilter } from '~/hooks/usePositionFilter';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -21,66 +23,82 @@ import { abs, divPreserved, formatDecimals } from '~/utils/number';
 import { wait } from '~/utils/promise';
 
 export function useTradeManagementV3() {
-  const { currentMarket, markets } = useMarket();
-  const { markets: entireMarkets } = useEntireMarkets();
+  const { client } = useChromaticClient();
+  const { markets, currentMarket } = useFilteredMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
+
+  const tabRef = useRef<number>(0);
+  const onLoadTabRef = useCallback((index: number) => {
+    tabRef.current = index;
+  }, []);
+
   const { positions, isLoading, fetchPositions } = usePositions();
   const previousPositions = usePrevious(positions, true);
-  const { filterOption } = usePositionFilter();
-  const filteredMarkets = useMemo(() => {
-    if (isNil(currentMarket)) {
-      return [];
-    }
-    switch (filterOption) {
-      case 'ALL': {
-        return entireMarkets;
-      }
-      case 'TOKEN_BASED': {
-        return markets;
-      }
-      case 'MARKET_ONLY': {
-        return [currentMarket];
-      }
-    }
-  }, [entireMarkets, markets, currentMarket, filterOption]);
-  const previousMarkets = usePrevious(filteredMarkets, true);
   const { history, isLoading: isHistoryLoading, refreshTradeHistory } = useTradeHistory();
   const { trades, isLoading: isTradeLogsLoading, refreshTradeLogs } = useTradeLogs();
   const { fetchBalances } = useChromaticAccount();
   const [pages, setPages] = useState({ history: 1, trades: 1 });
   const [isLoadings, setIsLoadings] = useState({ history: false, trades: false });
+  const currentPrice = useMemo(() => {
+    return formatDecimals(currentOracle?.price, ORACLE_PROVIDER_DECIMALS, 2, true);
+  }, [currentOracle?.price]);
 
-  useEffect(() => {
-    if (isNil(filteredMarkets) || isNil(previousMarkets)) {
+  const onPriceChange = useCallback(async () => {
+    if (isNil(markets) || isNil(positions) || isNil(previousPositions)) {
       return;
     }
+
+    const currentOpenings = positions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.OPENING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const previousOpenings = previousPositions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.OPENING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const currentClosings = positions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.CLOSING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const previousClosings = previousPositions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.CLOSING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+
     let hasOpenedPositions = false;
     let hasClosedPositions = false;
-    for (let index = 0; index < filteredMarkets.length; index++) {
-      const filteredMarket = filteredMarkets[index];
+    for (let index = 0; index < markets.length; index++) {
+      const market = markets[index];
 
-      const previousMarket = previousMarkets.find(
-        (market) => market.address === filteredMarket.address
-      );
-      if (isNil(previousMarket)) {
-        continue;
+      if (previousOpenings[market.address] > currentOpenings[market.address]) {
+        hasOpenedPositions = true;
       }
-      if (previousMarket.oracleValue.version !== filteredMarket.oracleValue.version) {
-        const previousOpenings = (previousPositions ?? []).filter(
-          (position) =>
-            position.status === POSITION_STATUS.OPENING &&
-            position.marketAddress === filteredMarket.address
-        ).length;
-        if (previousOpenings > 0) {
-          hasOpenedPositions = true;
-        }
-        const previousClosings = (previousPositions ?? []).filter(
-          (position) =>
-            position.status === POSITION_STATUS.CLOSING &&
-            position.marketAddress === filteredMarket.address
-        ).length;
-        if (previousClosings > 0) {
-          hasClosedPositions = true;
-        }
+      if (previousClosings[market.address] > currentClosings[market.address]) {
+        hasClosedPositions = true;
       }
     }
     if (hasOpenedPositions) {
@@ -93,14 +111,13 @@ export function useTradeManagementV3() {
       fetchPositions();
       fetchBalances();
     }
-  }, [
-    filteredMarkets,
-    previousMarkets,
-    previousPositions,
-    positions,
-    fetchBalances,
-    fetchPositions,
-  ]);
+
+    return;
+  }, [markets, previousPositions, positions, fetchBalances, fetchPositions]);
+
+  useEffect(() => {
+    onPriceChange();
+  }, [onPriceChange]);
 
   const onFetchNextHistory = async () => {
     setIsLoadings((loadingState) => ({
@@ -130,10 +147,6 @@ export function useTradeManagementV3() {
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
-  const tabRef = useRef<number>(0);
-  const onLoadTabRef = useCallback((index: number) => {
-    tabRef.current = index;
-  }, []);
   const [isGuideVisible, setGuideVisible] = useState(false);
 
   const historyBottomRef = useRef<HTMLDivElement | null>(null);
@@ -191,12 +204,7 @@ export function useTradeManagementV3() {
     };
   }, []);
 
-  const { formattedElapsed } = useLastOracle();
-
-  const currentPrice = isNotNil(currentMarket)
-    ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
-    : '-';
-
+  const { formattedElapsed } = useLastOracle({ market: currentMarket });
   const isPositionsEmpty = isNil(positions) || positions.length === 0;
   const positionList = positions || [];
 

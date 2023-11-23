@@ -1,13 +1,13 @@
 import { isNotNil } from 'ramda';
 import { useMemo } from 'react';
-
-import { useMarket } from '~/hooks/useMarket';
+import useMarkets from '~/hooks/commons/useMarkets';
 
 export function useTradeChartPanel() {
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
 
   const symbol = useMemo(
-    () => (isNotNil(currentMarket) ? currentMarket.description.replace('/', '') : undefined),
+    () =>
+      isNotNil(currentMarket) ? currentMarket.description.split(/\s*\/\s*/).join('') : undefined,
     [currentMarket]
   );
 

@@ -7,11 +7,13 @@ import { LeverageOption } from '~/stories/atom/LeverageOption';
 import { Slider } from '~/stories/atom/Slider';
 import { Tag } from '~/stories/atom/Tag';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { TradeChart } from '~/stories/atom/TradeChart';
 import { AmountSwitch } from '~/stories/molecule/AmountSwitch';
 import { TransactionButton } from '~/stories/molecule/TransactionButton';
 
+import { Suspense, lazy } from 'react';
 import { useTradeContentV3 } from './hooks';
+
+const TradeChart = lazy(() => import('~/stories/atom/TradeChart'));
 
 export interface TradeContentV3Props {
   direction: 'long' | 'short';
@@ -245,12 +247,14 @@ export const TradeContentV3 = (props: TradeContentV3Props) => {
               {totalLiquididy} / {freeLiquidity}
             </p>
           </div>
-          <TradeChart
-            id={`trade-${direction}`}
-            positive={isLong}
-            height={100}
-            selectedAmount={makerMargin}
-          />
+          <Suspense>
+            <TradeChart
+              id={`trade-${direction}`}
+              positive={isLong}
+              height={100}
+              selectedAmount={makerMargin}
+            />
+          </Suspense>
         </div>
         <article className="px-7">
           <div className="flex flex-col gap-1 mt-5">

@@ -11,7 +11,6 @@ import {
 } from '~/lib/charting_library';
 import datafeed from '~/lib/pyth/datafeed';
 import { useAppDispatch } from '~/store';
-import { loadedAction } from '~/store/reducer/loaded';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
@@ -101,12 +100,6 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
     if (isNil(tvWidgetRef.current)) return;
     changeTheme(tvWidgetRef.current, darkMode ? 'dark' : 'light');
   }, [darkMode, isChartReady]);
-
-  useEffect(() => {
-    if (isChartReady) {
-      dispatch(loadedAction.onDataLoaded('chromaticLp'));
-    }
-  }, [dispatch, isChartReady]);
 
   return { isLoading, chartContainerRef };
 };

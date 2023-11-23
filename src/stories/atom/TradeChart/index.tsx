@@ -17,7 +17,7 @@ export interface TradeChartProps {
   selectableLabel?: string;
 }
 
-export function TradeChart(props: TradeChartProps) {
+export default function TradeChart(props: TradeChartProps) {
   const { id } = props;
 
   const { tokenName, liquidityTooltipProps, selectedTooltipProps, fillupChartProps, isLoading } =

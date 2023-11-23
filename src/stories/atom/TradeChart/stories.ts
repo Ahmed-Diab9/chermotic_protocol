@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { disabledArgs, hiddenArgs } from '~/utils/storybook';
 
-import { TradeChart } from '.';
+import TradeChart from '.';
 
 const meta = {
   title: 'Atom/TradeChart',
