@@ -27,4 +27,4 @@ export const formatTimestamp = (timestamp: bigint) => {
   );
 };
 
-export const getSeconds = (date: Date) => Math.trunc(date.valueOf() / 1000);
+export const getSeconds = (date: Date) => Math.trunc(date.getTime() / 1000);
