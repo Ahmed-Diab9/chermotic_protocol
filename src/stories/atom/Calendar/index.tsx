@@ -100,7 +100,7 @@ const DatePickerHeader =
           changeMonth={changeMonth}
           changeYear={changeYear}
         />
-        <div className="flex items-center gap-5 px-5 pt-5 pb-4">
+        <div className="flex items-center gap-0 px-5 pt-5 pb-4">
           <div>
             <span className="mr-2 !text-2xl font-bold react-datepicker__current-month !text-primary">
               {monthDate.toLocaleString('en-US', {
