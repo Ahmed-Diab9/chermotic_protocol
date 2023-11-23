@@ -66,11 +66,9 @@ export const ChromaticLayout = () => {
 export const GradientLayout = () => {
   const { onLoadBackgroundRef } = useBackgroundGradient();
   useEffect(() => {
-    console.log('subscribing...');
     const unsubscriber = subscribePythFeed();
     return () => {
       unsubscriber.then((action) => {
-        console.log('unsubscribing...');
         action && action();
       });
     };
