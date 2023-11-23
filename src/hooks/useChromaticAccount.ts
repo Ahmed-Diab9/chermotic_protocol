@@ -75,17 +75,18 @@ export const useChromaticAccount = () => {
     async ({ tokens, chromaticAddress }) => {
       const accountApi = client.account().contracts().account(chromaticAddress);
 
-      const response = await promiseIfFulfilled(
+      const balances = await promiseIfFulfilled(
         tokens.map(async (token) => {
           const balance = await accountApi.read.balance([token.address]);
-          return [token, balance] as const;
+          return balance;
         })
       );
-      return response.reduce((record, item) => {
-        if (isNil(item)) {
+      return tokens.reduce((record, token, tokenIndex) => {
+        const balance = balances[tokenIndex];
+        if (isNil(balance)) {
+          record[token.address] = 0n;
           return record;
         }
-        const [token, balance] = item;
         record[token.address] = balance;
         return record;
       }, {} as Record<Address, bigint>);
