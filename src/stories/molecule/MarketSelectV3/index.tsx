@@ -199,7 +199,7 @@ export function MarketSelectV3() {
           </h2> */}
         </div>
         <div className="flex justify-between mt-3">
-          <h2 className={`text-[40px] ${priceClass} text-price-higher`}>
+          <h2 className={`text-[40px] ${priceClass}`}>
             <SkeletonElement isLoading={isPriceLoading} width={80}>
               <div className="flex items-center gap-1">
                 <span className="flex items-center gap-1">${price}</span>
