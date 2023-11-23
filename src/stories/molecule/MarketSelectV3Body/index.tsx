@@ -6,6 +6,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 
 import { isNotNil } from 'ramda';
+import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { useMarketSelectV3Body } from './hooks';
 
 export interface MarketSelectV3BodyProps {
@@ -47,24 +48,29 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
         </article>
 
         <article className="flex flex-col flex-auto gap-2 py-3">
-          {!isLoading &&
-            markets.map(
-              ({
-                key,
-                isSelectedMarket,
-                onClickMarket,
-                token,
-                price,
-                isBookmarked,
-                description,
-                address,
-                image,
-              }) => (
+          {markets.map(
+            ({
+              key,
+              isSelectedMarket,
+              onClickMarket,
+              token,
+              price,
+              isBookmarked,
+              description,
+              address,
+              image,
+            }) => (
+              <SkeletonElement
+                key={key}
+                isLoading={isLoading}
+                containerClassName="pt-1 py-3 mb-2"
+                className="py-1"
+              >
                 <div key={key} className="relative flex items-center w-full">
                   <BookmarkButton
                     className="absolute left-0 ml-2"
                     onClick={() => {
-                      if (isNotNil(token)) {
+                      if (isNotNil(token) && !isLoading) {
                         onBookmarkClick?.({
                           id: `${token.name}:${description}`,
                           tokenName: token.name,
@@ -81,6 +87,7 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
                       isSelectedMarket ? 'bg-paper-light rounded-lg' : 'border-transparent'
                     }`}
                     onClick={onClickMarket}
+                    disabled={isLoading}
                   >
                     <span className="flex items-center justify-between flex-auto gap-10">
                       <Avatar label={description} src={image} fontSize="lg" gap="2" size="base" />
@@ -92,8 +99,9 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
                     </span>
                   </button>
                 </div>
-              )
-            )}
+              </SkeletonElement>
+            )
+          )}
         </article>
       </section>
       {/* todo later : create new market */}
