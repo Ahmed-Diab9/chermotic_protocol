@@ -74,7 +74,7 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                 ) : (
                   <div className="relative flex items-center justify-center">
                     <Avatar
-                      className="w-20 h-20"
+                      className="!w-20 !h-20"
                       src={
                         schedule.status === 'success'
                           ? StampSuccess
