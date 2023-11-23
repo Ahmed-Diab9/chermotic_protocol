@@ -205,9 +205,9 @@ export function MarketSelectV3() {
                 <span className="flex items-center gap-1">${price}</span>
                 {priceClass === 'text-price-higher' ? (
                   <IncreaseIcon className="w-10 h-10" />
-                ) : (
+                ) : priceClass === 'text-price-lower' ? (
                   <DecreaseIcon className="w-10 h-10" />
-                )}
+                ) : null}
               </div>
             </SkeletonElement>
           </h2>
