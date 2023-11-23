@@ -69,8 +69,8 @@ export default function WalletPopoverV3({ isDisconnected, isWrongChain }: Wallet
   return (
     <div className={`WalletPopoverV3 popover text-right`}>
       <Popover>
-        {({ close }) => (
-          <Suspense>
+        {({ open, close }) => (
+          <>
             <Popover.Button className="btn btn-wallet min-w-[175px]">
               <Avatar
                 label={walletAddress}
@@ -82,21 +82,27 @@ export default function WalletPopoverV3({ isDisconnected, isWrongChain }: Wallet
                 gap="3"
               />
             </Popover.Button>
-            <Popover.Overlay className="backdrop" />
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-50 translate-x-20"
-              enterTo="opacity-100 translate-x-0"
-              leave="transition ease-in duration-0"
-              // leaveFrom="opacity-100 translate-x-20"
-              // leaveTo="opacity-100 translate-x-0"
-            >
-              <Popover.Panel className="transform border-l shadow-xl popover-panel">
-                <WalletPopoverV3Body onPopoverClose={close} />
-              </Popover.Panel>
-            </Transition>
-          </Suspense>
+            <Suspense>
+              {open && (
+                <>
+                  <Popover.Overlay className="backdrop" />
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-50 translate-x-20"
+                    enterTo="opacity-100 translate-x-0"
+                    leave="transition ease-in duration-0"
+                    // leaveFrom="opacity-100 translate-x-20"
+                    // leaveTo="opacity-100 translate-x-0"
+                  >
+                    <Popover.Panel className="transform border-l shadow-xl popover-panel">
+                      <WalletPopoverV3Body onPopoverClose={close} />
+                    </Popover.Panel>
+                  </Transition>
+                </>
+              )}
+            </Suspense>
+          </>
         )}
       </Popover>
     </div>

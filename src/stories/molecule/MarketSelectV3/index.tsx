@@ -12,7 +12,7 @@ import { isNil, isNotNil } from 'ramda';
 import { Suspense, lazy } from 'react';
 import { useMarketSelectV3 } from './hooks';
 
-const MarketSelectV3Main = lazy(() => import('~/stories/molecule/MarketSelectV3Body'));
+const MarketSelectV3Body = lazy(() => import('~/stories/molecule/MarketSelectV3Body'));
 
 export function MarketSelectV3() {
   const {
@@ -96,9 +96,7 @@ export function MarketSelectV3() {
                     aria-hidden="true"
                   />
                 </Popover.Button>
-                <Suspense>
-                  <MarketSelectV3Main onMouseLeave={close} />
-                </Suspense>
+                <Suspense fallback>{open && <MarketSelectV3Body onMouseLeave={close} />}</Suspense>
               </>
             )}
           </Popover>

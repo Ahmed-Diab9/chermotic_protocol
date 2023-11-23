@@ -107,15 +107,9 @@ export const useEntireMarkets = () => {
     data: markets,
     error,
     isLoading: isMarketsLoading,
-  } = useSWR(
-    isReady && checkAllProps(fetchKey) && fetchKey,
-    async ({ tokenAddresses }) => {
-      return getMarkets(client, tokenAddresses);
-    },
-    {
-      refreshInterval: 1000 * 30,
-    }
-  );
+  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ tokenAddresses }) => {
+    return getMarkets(client, tokenAddresses);
+  });
 
   useError({ error });
 
@@ -146,9 +140,6 @@ export const useMarket = (_interval?: number) => {
     isReady && checkAllProps(marketsFetchKey) && marketsFetchKey,
     async ({ selectedTokenAddress }) => {
       return getMarkets(client, [selectedTokenAddress]);
-    },
-    {
-      refreshInterval: 1000 * 30,
     }
   );
 
