@@ -1,5 +1,6 @@
-import { lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { ChromaticLayout, GradientLayout } from './layouts';
 
 const Pool = lazy(() => import('./pages/pool'));
 const PoolV2 = lazy(() => import('./pages/poolV2'));
@@ -13,45 +14,84 @@ const Faucet = lazy(() => import('./pages/faucet'));
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to={'/trade'} />,
-  },
-  {
-    path: '/pool1',
-    element: <Pool />,
-  },
-  {
-    path: '/pool2',
-    element: <PoolV2 />,
-  },
-  {
-    path: '/pool',
-    element: <PoolV3 />,
-  },
+    element: <ChromaticLayout />,
+    children: [
+      {
+        path: '/airdrop',
+        element: (
+          <Suspense>
+            <Airdrop />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/',
+        element: <GradientLayout />,
+        children: [
+          {
+            path: '/pool1',
+            element: (
+              <Suspense>
+                <Pool />
+              </Suspense>
+            ),
+          },
+          {
+            path: '/pool2',
+            element: (
+              <Suspense>
+                <PoolV2 />
+              </Suspense>
+            ),
+          },
+          {
+            path: '/pool',
+            element: (
+              <Suspense>
+                <PoolV3 />
+              </Suspense>
+            ),
+          },
 
-  {
-    path: '/trade1',
-    element: <Trade />,
-  },
-  {
-    path: '/trade2',
-    element: <TradeV2 />,
-  },
-  {
-    path: '/trade',
-    element: <TradeV3 />,
-  },
-
-  {
-    path: '/airdrop',
-    element: <Airdrop />,
+          {
+            path: '/trade1',
+            element: (
+              <Suspense>
+                <Trade />
+              </Suspense>
+            ),
+          },
+          {
+            path: '/trade2',
+            element: (
+              <Suspense>
+                <TradeV2 />
+              </Suspense>
+            ),
+          },
+          {
+            path: '/trade',
+            element: (
+              <Suspense>
+                <TradeV3 />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+    ],
   },
   {
     path: '/faucet',
-    element: <Faucet />,
+    element: (
+      <Suspense>
+        <Faucet />
+      </Suspense>
+    ),
   },
   {
-    path: '/airdrop',
-    element: <Airdrop />,
+    path: '*',
+    element: <Navigate to={'/trade'} />,
   },
 ]);
 
