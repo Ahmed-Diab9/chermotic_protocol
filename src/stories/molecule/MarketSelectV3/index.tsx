@@ -7,6 +7,7 @@ import { BookmarkButton } from '~/stories/atom/BookmarkButton';
 import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { IncreaseIcon, DecreaseIcon } from '~/assets/icons/Icon';
 
 import { isNil, isNotNil } from 'ramda';
 import { useMarketSelectV3 } from './hooks';
@@ -198,9 +199,16 @@ export function MarketSelectV3() {
           </h2> */}
         </div>
         <div className="flex justify-between mt-3">
-          <h2 className={`text-[40px] ${priceClass}`}>
+          <h2 className={`text-[40px] ${priceClass} text-price-higher`}>
             <SkeletonElement isLoading={isPriceLoading} width={80}>
-              <span className="flex items-center gap-1">${price}</span>
+              <div className="flex gap-1">
+                <span className="flex items-center gap-1">${price}</span>
+                {priceClass === 'text-price-higher' ? (
+                  <IncreaseIcon className="w-10 h-10" />
+                ) : (
+                  <DecreaseIcon className="w-10 h-10" />
+                )}
+              </div>
             </SkeletonElement>
           </h2>
           <div className="flex items-center gap-5">
