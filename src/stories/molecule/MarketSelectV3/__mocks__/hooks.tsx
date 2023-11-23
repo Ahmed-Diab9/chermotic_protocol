@@ -1,11 +1,8 @@
 export function useMarketSelectV3() {
   const isLoading = false;
-
-  const tokenName = 'CHRM';
-  const marketDescription = 'ETH/USD';
-
+  const token = { name: 'cETH', address: '0x', image: '' };
+  const market = { description: 'ETH / USD', address: '0x', image: '' };
   const tokens = [{ key: 0, isSelectedToken: true, onClickToken: () => {}, name: 'CHRM' }];
-
   const markets = [
     {
       key: 0,
@@ -19,5 +16,13 @@ export function useMarketSelectV3() {
   const price = '1,000';
   const interestRate = 0.011;
 
-  return { isLoading, tokenName, marketDescription, tokens, markets, price, interestRate };
+  return {
+    isLoading,
+    token,
+    market,
+    tokens,
+    markets,
+    price,
+    interestRate,
+  };
 }

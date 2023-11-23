@@ -2,11 +2,11 @@ import { isNotNil } from 'ramda';
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '~/store';
 import { marketAction } from '~/store/reducer/market';
+import useMarkets from './commons/useMarkets';
 import useLocalStorage from './useLocalStorage';
-import { useMarket } from './useMarket';
 
 export const useMarketLocal = () => {
-  const { markets, isMarketLoading } = useMarket();
+  const { markets, isLoading: isMarketLoading } = useMarkets();
   const dispatch = useAppDispatch();
   const { state: storedMarket, setState: setStoredMarket } = useLocalStorage<string>('app:market');
 

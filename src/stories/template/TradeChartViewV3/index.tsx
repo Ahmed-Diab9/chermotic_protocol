@@ -1,11 +1,11 @@
-import { isNil, isNotNil } from 'ramda';
+import { isNil } from 'ramda';
 import { Resizable } from 're-resizable';
 import { useMemo, useRef, useState } from 'react';
 import useLocalStorage from '~/hooks/useLocalStorage';
-import { useMarket } from '~/hooks/useMarket';
 import { useResizable } from '~/stories/atom/ResizablePanel/useResizable';
 import '~/stories/atom/Tabs/style.css';
 // import { TradingViewWidget } from '~/stories/molecule/TradingViewWidget';
+import useMarkets from '~/hooks/commons/useMarkets';
 import './style.css';
 
 // May be used later.
@@ -21,15 +21,14 @@ export interface TradeChartViewV3Props {}
 
 export const TradeChartViewV3 = (props: TradeChartViewV3Props) => {
   const [selectedButton, setSelectedButton] = useState(0);
-  const { currentMarket } = useMarket();
-  const { state: storedMarketSymbol } = useLocalStorage<string>('app:market');
+  const { currentMarket } = useMarkets();
   const marketSymbol = useMemo(() => {
-    return isNotNil(currentMarket)
-      ? marketMap[currentMarket.description]
-      : isNotNil(storedMarketSymbol)
-      ? marketMap[storedMarketSymbol]
-      : undefined;
-  }, [currentMarket, storedMarketSymbol]);
+    if (isNil(currentMarket)) {
+      return;
+    }
+    const description = currentMarket.description.split(/\s*\/\s*/).join('/');
+    return marketMap[description];
+  }, [currentMarket]);
   const viewRef = useRef<HTMLDivElement>(null);
   const { state: darkMode } = useLocalStorage('app:useDarkMode', true);
   const { width, height, minWidth, minHeight, maxHeight, handleResizeStop } = useResizable({

@@ -5,7 +5,7 @@ import { Button } from '~/stories/atom/Button';
 import { ThemeToggle } from '~/stories/atom/ThemeToggle';
 import { AccountPopoverV3 } from '~/stories/molecule/AccountPopoverV3';
 import { HeaderMenuPopover } from '~/stories/molecule/HeaderMenuPopover';
-import { WalletPopoverV3 } from '~/stories/molecule/WalletPopoverV3';
+import WalletPopoverV3 from '~/stories/molecule/WalletPopoverV3';
 import './style.css';
 
 import { useHeaderV3 } from './hooks';
@@ -69,9 +69,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
           <div className="ml-5">
             <WalletPopoverV3 {...walletPopoverProps} />
           </div>
-          <div className="hidden">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle showToggle={false} />
         </div>
       </div>
     </header>

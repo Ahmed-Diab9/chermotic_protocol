@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
@@ -15,12 +14,13 @@ import { TradeInput } from '~/typings/trade';
 
 import { errorLog } from '~/utils/log';
 import { mulFloat } from '~/utils/number';
+import useMarkets from './commons/useMarkets';
 
 function useOpenPosition() {
-  const { fetchPositions } = usePositions();
+  const { fetchCurrentPositions } = usePositions();
   const { accountAddress, fetchBalances, balances } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { client } = useChromaticClient();
   const {
     liquidity: { longTotalUnusedLiquidity, shortTotalUnusedLiquidity },
@@ -77,7 +77,7 @@ function useOpenPosition() {
         makerMargin: input.makerMargin,
         maxAllowableTradingFee,
       });
-      await fetchPositions();
+      await fetchCurrentPositions(currentMarket.address);
       await fetchBalances();
 
       dispatchTradeEvent();

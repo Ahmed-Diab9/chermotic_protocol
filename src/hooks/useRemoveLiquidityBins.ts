@@ -6,9 +6,9 @@ import { poolsAction } from '~/store/reducer/pools';
 import { dispatchPoolEvent } from '~/typings/events';
 import { REMOVE_LIQUIDITY_TYPE } from '~/typings/pools';
 import { mulPreserved } from '~/utils/number';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useLiquidityPool } from './useLiquidityPool';
-import { useMarket } from './useMarket';
 import usePoolReceipt from './usePoolReceipt';
 import { useTokenBalances } from './useTokenBalance';
 
@@ -17,7 +17,7 @@ function useRemoveLiquidityBins() {
   const bins = useAppSelector((state) => state.pools.selectedBins);
 
   const { client, walletAddress } = useChromaticClient();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { liquidityPool } = useLiquidityPool();
   const { fetchReceipts } = usePoolReceipt();
   const { fetchTokenBalances: fetchWalletBalances } = useTokenBalances();

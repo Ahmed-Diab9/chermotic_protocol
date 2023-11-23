@@ -1,7 +1,7 @@
 import { Popover } from '@headlessui/react';
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline';
-import { OutlinkIcon } from '~/assets/icons/Icon';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
@@ -223,6 +223,7 @@ export const AssetPanel = (props: AssetPanelProps) => {
                         onChange={onAmountChange}
                         className="w-full"
                         error={isAmountError}
+                        ratios={[25, 50, 75, 100]}
                       />
                       {isExceeded && (
                         <TooltipAlert

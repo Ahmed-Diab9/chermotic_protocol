@@ -1,8 +1,8 @@
 import { RangeChart as Chart, RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import './style.css';
 
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import LOADING from '~/assets/images/loading.png';
+import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
 import { usePoolChart } from './hooks';
 
 export interface PoolChartProps {
@@ -15,7 +15,7 @@ export interface PoolChartProps {
   chartRef?: any;
 }
 
-export function PoolChart(props: PoolChartProps) {
+export default function PoolChart(props: PoolChartProps) {
   const { tokenName, rangeChartProps, tooltipProps, isLoading } = usePoolChart(props);
   const { id } = props;
 

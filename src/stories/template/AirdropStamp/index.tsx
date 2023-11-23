@@ -28,10 +28,11 @@ export const AirdropStamp = (props: AirdropStampProps) => {
   } = useAirdropStamp();
 
   const credit = schedules.at(0)?.credit ?? 0;
-  const { hours, minutes, unit, prefix, formatted } = useTimeDifferences();
-  const message = `The date changes at ${formatted.hours}:${String(
-    formatted.minutes
-  )}${unit} local time (UTC${prefix}${hours}:${formatted.minutes})`;
+  const {
+    unit,
+    formatted: { hours, minutes },
+  } = useTimeDifferences();
+  const message = `The date changes at ${hours}:${minutes}${unit} local time (UTC+00:00)`;
 
   return (
     <>
@@ -67,13 +68,13 @@ export const AirdropStamp = (props: AirdropStampProps) => {
                     onClick={onScheduleClick}
                     className="relative flex items-center justify-center"
                   >
-                    <Avatar className="w-20 h-20 !bg-transparent" src={StampActive} />
+                    <Avatar className="!w-20 !h-20 !bg-transparent" src={StampActive} />
                     <h4 className="absolute top-[52px] text-chrm-h text-lg">+{credit}</h4>
                   </button>
                 ) : (
                   <div className="relative flex items-center justify-center">
                     <Avatar
-                      className="w-20 h-20"
+                      className="!w-20 !h-20"
                       src={
                         schedule.status === 'success'
                           ? StampSuccess

@@ -1,5 +1,4 @@
 import { useFeeRate } from '~/hooks/useFeeRate';
-import { useMarket } from '~/hooks/useMarket';
 import { useOracleBefore24Hours } from '~/hooks/useOracleBefore24Hours';
 import { usePreviousOracle } from '~/hooks/usePreviousOracle';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -10,15 +9,16 @@ import { isNil, isNotNil } from 'ramda';
 import { useMemo } from 'react';
 import { formatUnits } from 'viem';
 import { Address, usePublicClient } from 'wagmi';
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
+import useMarkets from '~/hooks/commons/useMarkets';
 import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
-import { usePreviousOracles } from '~/hooks/usePreviousOracles';
-import { Bookmark } from '~/typings/market';
-import { decimalLength, formatDecimals, numberFormat } from '~/utils/number';
-import { compareOracles } from '~/utils/price';
 import { usePythPrice } from '~/hooks/usePythPrice';
+import { Bookmark } from '~/typings/market';
+import { formatDecimals, numberFormat } from '~/utils/number';
+import { compareOracles } from '~/utils/price';
 
 export function useMarketSelectV3() {
   const liquidityFormatter = Intl.NumberFormat('en', {
@@ -29,14 +29,16 @@ export function useMarketSelectV3() {
     minimumFractionDigits: 0,
   });
   const { refetchBookmarks } = useBookmarkOracles();
-  const { tokens: _tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
-  const { markets: _markets, currentMarket, isMarketLoading, onMarketSelect } = useMarket();
+  const { currentToken, isTokenLoading } = useSettlementToken();
+  const { currentMarket, isLoading: isMarketLoading } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
   const { previousOracle } = usePreviousOracle({
     market: currentMarket,
   });
   const { feeRate } = useFeeRate();
   const publicClient = usePublicClient();
   const { formattedElapsed } = useLastOracle({
+    market: currentMarket,
     format: ({ type, value }) => {
       switch (type) {
         case 'hour': {
@@ -66,86 +68,46 @@ export function useMarketSelectV3() {
   } = useOracleBefore24Hours({
     market: currentMarket,
   });
-  const { previousOracles, isLoading: isOraclesLoading } = usePreviousOracles({
-    markets: _markets,
-  });
   const { liquidityPools } = useLiquidityPools();
   const { state: bookmarks, setState: setBookmarks } = useLocalStorage(
     'app:bookmarks',
     [] as Bookmark[]
   );
 
-  const priceFormatter = Intl.NumberFormat('en', {
-    useGrouping: true,
-    maximumFractionDigits: 3,
-    minimumFractionDigits: 3,
-  });
-
   const isLoading = isTokenLoading || isMarketLoading;
 
-  const tokenName = currentToken?.name;
-  const tokenImage = currentToken?.image;
-  const marketDescription = currentMarket?.description;
-  const marketAddress = currentMarket?.address;
-  const marketImage = currentMarket?.image;
+  const token = useMemo(() => {
+    if (isNil(currentToken)) {
+      return;
+    }
+    const { name, address, image } = currentToken;
+    return { name, address, image };
+  }, [currentToken]);
+  const market = useMemo(() => {
+    if (isNil(currentMarket)) {
+      return;
+    }
+    const { description, address, image } = currentMarket;
+    return { address, description, image };
+  }, [currentMarket]);
 
-  const tokens = (_tokens ?? []).map((token) => {
-    const key = token.address;
-    const isSelectedToken = token.address === currentToken?.address;
-    const onClickToken = () => {
-      return onTokenSelect(token);
-    };
-    const name = token.name;
-    const image = token.image;
-    return { key, isSelectedToken, onClickToken, name, image };
-  });
-
-  const markets = (_markets ?? []).map((market) => {
-    const key = market.address;
-    const isSelectedMarket = market.address === currentMarket?.address;
-    const onClickMarket = () => {
-      return onMarketSelect(market);
-    };
-    const settlementToken = _tokens?.find((token) => token.address === market.tokenAddress)?.name;
-    const description = market.description;
-    const price = priceFormatter.format(Number(formatDecimals(market.oracleValue.price, 18, 3)));
-    const image = market.image;
-    return {
-      key,
-      isSelectedMarket,
-      onClickMarket,
-      description,
-      price,
-      settlementToken,
-      image,
-    };
-  });
-
+  const isBookmarkeds = useMemo(() => {
+    return bookmarks?.reduce((record, bookmark) => {
+      record[bookmark.id] = true;
+      return record;
+    }, {} as Record<string, boolean>);
+  }, [bookmarks]);
   const pythInfo = usePythPrice(currentMarket?.description);
   const isPriceLoading = isLoading || pythInfo.isLoading;
   const price = numberFormat(pythInfo.price, { roundingMode: 'trunc', minDigits: 2, maxDigits: 2 });
-  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentMarket?.oracleValue);
+  const priceClass = compareOracles(previousOracle?.oracleBefore1Day, currentOracle);
 
   const interestRate = formatDecimals(((feeRate ?? 0n) * 100n) / (365n * 24n), 4, 4);
   const changeRate = useMemo(() => {
     const sign = changeRateRaw > 0n ? '+' : '';
     return sign + formatDecimals(changeRateRaw * 100n, ORACLE_PROVIDER_DECIMALS, 4, true) + '%';
   }, [changeRateRaw]);
-  const changeRateClass = compareOracles(beforeOracle, currentMarket?.oracleValue);
-
-  const priceClassMap = useMemo(() => {
-    return previousOracles?.reduce((record, previousOracle) => {
-      if (isNil(previousOracle)) {
-        return record;
-      }
-      const currentMarket = _markets?.find(
-        (_market) => _market.address === previousOracle?.marketAddress
-      );
-      const priceClass = compareOracles(previousOracle, currentMarket?.oracleValue);
-      record[previousOracle.marketAddress] = priceClass;
-      return record;
-    }, {} as Record<Address, string>);
-  }, [previousOracles, _markets]);
+  const changeRateClass = compareOracles(beforeOracle, currentOracle);
 
   const poolMap = useMemo(() => {
     if (isNil(currentToken)) {
@@ -187,32 +149,19 @@ export function useMarketSelectV3() {
     setBookmarks((bookmarks ?? []).concat(newBookmark));
   };
 
-  const isBookmarked = useMemo(() => {
-    return bookmarks?.reduce((record, bookmark) => {
-      record[bookmark.id] = true;
-      return record;
-    }, {} as Record<string, boolean>);
-  }, [bookmarks]);
-
   return {
     isLoading,
     isPriceLoading,
-    tokenName,
-    tokenImage,
-    marketDescription,
-    marketAddress,
-    marketImage,
-    tokens,
-    markets,
+    token,
+    market,
+    isBookmarkeds,
     price,
     priceClass,
-    priceClassMap,
     poolMap,
     interestRate,
     changeRate,
     changeRateClass,
     explorerUrl,
-    isBookmarked,
     formattedElapsed,
     onBookmarkClick,
   };

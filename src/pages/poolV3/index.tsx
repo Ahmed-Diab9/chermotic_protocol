@@ -3,10 +3,10 @@ import { isNil, isNotNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { PlusIcon } from '~/assets/icons/Icon';
+import useMarketLocal from '~/hooks/commons/useMarketLocal';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpLocal } from '~/hooks/useLpLocal';
-import { useMarketLocal } from '~/hooks/useMarketLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
@@ -93,11 +93,11 @@ const PoolV3 = () => {
 
   return (
     <>
-      <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
-        <div id="prev"></div>
-        <div id="current"></div>
-      </div>
       <div className="page-container">
+        <div id="gradient" ref={(element) => onLoadBackgroundRef(element)}>
+          <div id="prev"></div>
+          <div id="current"></div>
+        </div>
         <BookmarkBoardV3 />
         <HeaderV3 />
         <main className="max-w-[1480px]">

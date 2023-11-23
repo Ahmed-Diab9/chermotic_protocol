@@ -1,6 +1,13 @@
 import { Address } from 'wagmi';
 import { CHAIN } from '../constants/contracts';
 
+import BTC_LOGO from '../assets/tokens/BTC.png';
+import ETH_LOGO from '../assets/tokens/ETH.png';
+import USDC_LOGO from '../assets/tokens/USDC.png';
+import WETH_LOGO from '../assets/tokens/WETH.png';
+import cBTC_LOGO from '../assets/tokens/cBTC.svg';
+import cETH_LOGO from '../assets/tokens/cETH.svg';
+
 export const USDC =
   CHAIN === 'arbitrum_one'
     ? '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
@@ -30,3 +37,12 @@ export const PRICE_FEEDS: Record<string, Record<string, Address | undefined> | u
 };
 
 export const CHRM = 'CHRM';
+
+export const MARKET_LOGOS = {
+  BTC: BTC_LOGO,
+  ETH: ETH_LOGO,
+  WETH: WETH_LOGO,
+  USDC: USDC_LOGO,
+  cETH: cETH_LOGO,
+  cBTC: cBTC_LOGO,
+} as Record<string, string>;

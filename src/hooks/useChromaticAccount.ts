@@ -1,4 +1,4 @@
-import { fromPairs, isNil } from 'ramda';
+import { isNil } from 'ramda';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
@@ -7,7 +7,7 @@ import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { ADDRESS_ZERO } from '~/utils/address';
 import { Logger } from '~/utils/log';
-import { PromiseOnlySuccess } from '~/utils/promise';
+import { promiseIfFulfilled } from '~/utils/promise';
 import { checkAllProps } from '../utils';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
@@ -60,9 +60,10 @@ export const useChromaticAccount = () => {
       name: 'getChromaticAccountBalance',
       type: 'EOA',
       address: walletAddress,
+      chromaticAddress: accountAddress,
       tokens: tokens,
     }),
-    [walletAddress, tokens]
+    [walletAddress, tokens, accountAddress]
   );
 
   const {
@@ -71,19 +72,24 @@ export const useChromaticAccount = () => {
     isLoading: isChromaticBalanceLoading,
   } = useSWR(
     isReady && checkAllProps(accountBalanceFetchKey) && accountBalanceFetchKey,
-    async ({ tokens }) => {
-      const accountApi = client.account();
-      const result = await PromiseOnlySuccess(
+    async ({ tokens, chromaticAddress }) => {
+      const accountApi = client.account().contracts().account(chromaticAddress);
+
+      const balances = await promiseIfFulfilled(
         tokens.map(async (token) => {
-          const balance = await accountApi.balance(token.address);
-          return { token: token.address, balance };
+          const balance = await accountApi.read.balance([token.address]);
+          return balance;
         })
       );
-
-      const balances = fromPairs(
-        result?.map((balance) => [balance.token, balance.balance] as [Address, bigint])
-      );
-      return balances;
+      return tokens.reduce((record, token, tokenIndex) => {
+        const balance = balances[tokenIndex];
+        if (isNil(balance)) {
+          record[token.address] = 0n;
+          return record;
+        }
+        record[token.address] = balance;
+        return record;
+      }, {} as Record<Address, bigint>);
     }
   );
 

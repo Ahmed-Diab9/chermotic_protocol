@@ -5,7 +5,6 @@ import { formatUnits } from 'viem';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { useMarket } from '~/hooks/useMarket';
 import { useOpenPosition } from '~/hooks/useOpenPosition';
 import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -15,6 +14,8 @@ import { formatDecimals, numberFormat } from '~/utils/number';
 
 import { tradesAction } from '~/store/reducer/trades';
 
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
+import useMarkets from '~/hooks/commons/useMarkets';
 import { TradeContentProps } from '.';
 
 export function useTradeContent(props: TradeContentProps) {
@@ -38,7 +39,8 @@ export function useTradeContent(props: TradeContentProps) {
   const { oracleProperties } = useOracleProperties();
   const { balances, isAccountAddressLoading, isChromaticBalanceLoading } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
 
   const oracleDecimals = 18;
   const tokenDecimals = currentToken?.decimals || 0;
@@ -113,7 +115,7 @@ export function useTradeContent(props: TradeContentProps) {
         ? '-'
         : numberFormat(value, { useGrouping: true, compact: true, type: 'string' });
     return [format(freeLiq), format(totalLiq)];
-  }, [totalUnusedLiquidity, totalMaxLiquidity, currentToken]);
+  }, [totalUnusedLiquidity, totalMaxLiquidity, tokenDecimals]);
 
   const tradeFee = formatDecimals(fee, tokenDecimals, 2);
   const tradeFeePercent = formatDecimals(feePercent, tokenDecimals, 3);
@@ -130,11 +132,11 @@ export function useTradeContent(props: TradeContentProps) {
   }
 
   const executionPrice = useMemo(() => {
-    if (isNil(currentMarket)) {
+    if (isNil(currentOracle)) {
       return '-';
     }
-    return formatDecimals(currentMarket.oracleValue.price, oracleDecimals, 2, true);
-  }, [currentMarket]);
+    return formatDecimals(currentOracle?.price, oracleDecimals, 2, true);
+  }, [currentOracle]);
 
   const { takeProfitRatio, takeProfitPrice, stopLossRatio, stopLossPrice } = useMemo(() => {
     if (isNil(currentMarket) || isNil(input))
@@ -149,7 +151,7 @@ export function useTradeContent(props: TradeContentProps) {
 
     const isLong = direction === 'long';
 
-    const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
+    const oraclePrice = formatUnits(currentOracle?.price ?? 0n, oracleDecimals);
 
     const takeProfitRate = +takeProfit / 100;
     const stopLossRate = +stopLoss / 100;

@@ -1,7 +1,11 @@
+import { isNotNil } from 'ramda';
 import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
 import { PythStreamData } from '~/typings/api';
+import { Logger } from '~/utils/log';
 
 const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
+
+const logger = Logger('stream');
 
 export async function subscribePythFeed() {
   let unsubscriber: (() => Promise<void>) | undefined;
@@ -24,52 +28,32 @@ export async function subscribePythFeed() {
       }
       const reader = response.body.getReader();
 
-      function streamData() {
-        reader
-          .read()
-          .then(({ value, done }) => {
-            if (done) return;
+      let incompleteString: string;
 
-            const text = new TextDecoder().decode(value);
-            let json = '';
-            let isStarted = false;
-            let jsons = [] as string[];
-            for (let step = 0; step < text.length; step++) {
-              const char = text[step];
-              switch (char) {
-                case '{': {
-                  json = '{';
-                  isStarted = true;
-                  continue;
-                }
-                case '}': {
-                  json += '}';
-                  if (isStarted) {
-                    jsons = jsons.concat(json);
-                    isStarted = false;
-                  }
-                  continue;
-                }
-                default: {
-                  json += char;
-                }
+      function streamData() {
+        reader.read().then(({ value, done }) => {
+          if (done) return;
+
+          const responseText = new TextDecoder().decode(value);
+          const jsonList = responseText.replaceAll('\n', '').split(/(?<=})/g);
+
+          jsonList.forEach((jsonText) => {
+            try {
+              const data: PythStreamData = JSON.parse(jsonText);
+              next(data);
+            } catch (error) {
+              if (jsonText.endsWith('}') && isNotNil(incompleteString)) {
+                const data: PythStreamData = JSON.parse(incompleteString + jsonText);
+                next(data);
+              } else if (jsonText.startsWith('{')) {
+                incompleteString = jsonText;
+              } else {
+                logger.error('Incompleteable string:', jsonText);
               }
             }
-            const fullJson = `[${jsons.join(',')}]`;
-            (JSON.parse(fullJson) as Array<PythStreamData>).forEach((streamData) => {
-              try {
-                next(streamData);
-              } catch (error) {
-                if (import.meta.env.DEV) {
-                  console.error(error);
-                }
-              }
-            });
-            streamData();
-          })
-          .catch(() => {
-            attemptReconnect(retries, delay);
           });
+          streamData();
+        });
       }
 
       streamData();
@@ -81,6 +65,7 @@ export async function subscribePythFeed() {
         return;
       };
     } catch (err) {
+      logger.log('Trying to reconnect... Remain counts:', retries);
       attemptReconnect(retries, delay);
     }
 
@@ -90,7 +75,7 @@ export async function subscribePythFeed() {
           unsubscriber = await startStreaming(next, retriesLeft - 1, delay);
         }, delay);
       } else {
-        console.error('[stream] Maximum reconnection attempts reached.');
+        logger.error('Maximum reconnection attempts reached.');
       }
     }
   }

@@ -249,6 +249,7 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
                   : undefined
               }
               errorMsgAlign="left"
+              ratios={[25, 50, 75, 100]}
             />
           </div>
           <div className="text-sm">

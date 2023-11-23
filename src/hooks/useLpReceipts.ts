@@ -5,7 +5,7 @@
 
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { Address, useAccount } from 'wagmi';
 import { PAGE_SIZE } from '~/constants/arbiscan';
@@ -17,17 +17,16 @@ import {
   Sdk,
 } from '~/lib/graphql/sdk/lp';
 import { useAppDispatch, useAppSelector } from '~/store';
-import { loadedAction } from '~/store/reducer/loaded';
 import { selectedLpSelector } from '~/store/selector';
 import { LpReceipt, LpToken, ReceiptAction } from '~/typings/lp';
-import { MarketLike, Token } from '~/typings/market';
+import { Market, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
 import { trimMarket } from '~/utils/market';
 import { bigintify, divPreserved, formatDecimals } from '~/utils/number';
 import { PromiseOnlySuccess } from '~/utils/promise';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useMarket } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 type GetReceiptsArgs = {
@@ -158,7 +157,7 @@ const getRemoveReceipts = async (graphSdk: Sdk, args: GetReceiptsArgs) => {
 type MapToDetailedReceiptsArgs = {
   client: Client;
   receipts: LpReceipt[];
-  currentMarket: MarketLike;
+  currentMarket: Market;
   currentAction: ReceiptAction;
   settlementToken: Token;
   clpMeta: LpToken;
@@ -217,7 +216,7 @@ type UseLpReceipts = {
 export const useLpReceipts = (props: UseLpReceipts) => {
   const { isReady, lpClient, client } = useChromaticClient();
   const { address } = useAccount();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { tokens } = useSettlementToken();
   const selectedLp = useAppSelector(selectedLpSelector);
   const dispatch = useAppDispatch();
@@ -348,11 +347,6 @@ export const useLpReceipts = (props: UseLpReceipts) => {
   );
 
   useError({ error });
-  useEffect(() => {
-    if ((isNotNil(receiptsData) && isNotNil(address)) || !isLoading) {
-      dispatch(loadedAction.onDataLoaded('lpReceipts'));
-    }
-  }, [dispatch, isLoading, receiptsData, address]);
 
   const onFetchNextLpReceipts = useCallback(() => {
     if (isLoading) {

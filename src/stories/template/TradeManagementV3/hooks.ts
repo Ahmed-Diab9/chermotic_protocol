@@ -1,12 +1,15 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Address } from 'wagmi';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
+import { PAGE_SIZE } from '~/constants/arbiscan';
+import useFilteredMarkets from '~/hooks/commons/useFilteredMarkets';
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
-import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { useEntireMarkets, useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -15,69 +18,135 @@ import { useTradeLogs } from '~/hooks/useTradeLogs';
 import { TRADE_EVENT } from '~/typings/events';
 import { POSITION_STATUS } from '~/typings/position';
 import { formatTimestamp } from '~/utils/date';
-import { compareMarkets } from '~/utils/market';
 
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
+import { wait } from '~/utils/promise';
 
 export function useTradeManagementV3() {
-  const { currentMarket } = useMarket();
-  const { markets } = useEntireMarkets();
-  const previousMarkets = usePrevious(markets);
-  const { positions, isLoading, fetchPositions } = usePositions();
-  const {
-    historyData,
-    isLoading: isHistoryLoading,
-    onFetchNextHistory,
-    refreshTradeHistory,
-  } = useTradeHistory();
-  const {
-    tradesData,
-    isLoading: isTradeLogsLoading,
-    onFetchNextTrade,
-    refreshTradeLogs,
-  } = useTradeLogs();
-  const { initialBlockNumber } = useInitialBlockNumber();
-  const { fetchBalances } = useChromaticAccount();
+  const { client } = useChromaticClient();
+  const { markets, currentMarket } = useFilteredMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
 
-  const openingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
-  );
-  const closingPositionSize = usePrevious(
-    positions?.filter((position) => position.status === POSITION_STATUS.CLOSING).length ?? 0
-  );
-
-  useEffect(() => {
-    if (isNil(previousMarkets) || isNil(markets)) {
-      return;
-    }
-    const isVersionUpdated = compareMarkets(previousMarkets, markets);
-    if (isVersionUpdated) {
-      if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
-        toast.info('The opening process has been completed.');
-        fetchPositions();
-        fetchBalances();
-      }
-      if (isNotNil(closingPositionSize) && closingPositionSize > 0) {
-        toast.info('The closing process has been completed.');
-        fetchPositions();
-        fetchBalances();
-      }
-    }
-  }, [
-    markets,
-    previousMarkets,
-    openingPositionSize,
-    closingPositionSize,
-    fetchBalances,
-    fetchPositions,
-  ]);
-
-  const openButtonRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<number>(0);
   const onLoadTabRef = useCallback((index: number) => {
     tabRef.current = index;
   }, []);
+
+  const { positions, isLoading, fetchPositions } = usePositions();
+  const previousPositions = usePrevious(positions, true);
+  const { history, isLoading: isHistoryLoading, refreshTradeHistory } = useTradeHistory();
+  const { trades, isLoading: isTradeLogsLoading, refreshTradeLogs } = useTradeLogs();
+  const { fetchBalances } = useChromaticAccount();
+  const [pages, setPages] = useState({ history: 1, trades: 1 });
+  const [isLoadings, setIsLoadings] = useState({ history: false, trades: false });
+  const currentPrice = useMemo(() => {
+    return formatDecimals(currentOracle?.price, ORACLE_PROVIDER_DECIMALS, 2, true);
+  }, [currentOracle?.price]);
+
+  const onPriceChange = useCallback(async () => {
+    if (isNil(markets) || isNil(positions) || isNil(previousPositions)) {
+      return;
+    }
+
+    const currentOpenings = positions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.OPENING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const previousOpenings = previousPositions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.OPENING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const currentClosings = positions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.CLOSING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+    const previousClosings = previousPositions?.reduce((status, position) => {
+      if (isNil(status[position.marketAddress])) {
+        status[position.marketAddress] = 0;
+      }
+      if (position.status !== POSITION_STATUS.CLOSING) {
+        return status;
+      }
+      status[position.marketAddress] += 1;
+      return status;
+    }, {} as Record<Address, number>);
+
+    let hasOpenedPositions = false;
+    let hasClosedPositions = false;
+    for (let index = 0; index < markets.length; index++) {
+      const market = markets[index];
+
+      if (previousOpenings[market.address] > currentOpenings[market.address]) {
+        hasOpenedPositions = true;
+      }
+      if (previousClosings[market.address] > currentClosings[market.address]) {
+        hasClosedPositions = true;
+      }
+    }
+    if (hasOpenedPositions) {
+      toast.info('The opening process has been completed.');
+    }
+    if (hasClosedPositions) {
+      toast.info('The closing process has been completed.');
+    }
+    if (hasOpenedPositions || hasClosedPositions) {
+      fetchPositions();
+      fetchBalances();
+    }
+
+    return;
+  }, [markets, previousPositions, positions, fetchBalances, fetchPositions]);
+
+  useEffect(() => {
+    onPriceChange();
+  }, [onPriceChange]);
+
+  const onFetchNextHistory = async () => {
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      history: true,
+    }));
+    await wait(1000);
+    setPages((pages) => ({ ...pages, history: pages.history + 1 }));
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      history: false,
+    }));
+  };
+
+  const onFetchNextTrade = async () => {
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      trades: true,
+    }));
+    await wait(1000);
+    setPages((pages) => ({ ...pages, trades: pages.trades + 1 }));
+    setIsLoadings((loadingState) => ({
+      ...loadingState,
+      trades: false,
+    }));
+  };
+
+  const openButtonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [isGuideVisible, setGuideVisible] = useState(false);
 
   const historyBottomRef = useRef<HTMLDivElement | null>(null);
@@ -135,23 +204,17 @@ export function useTradeManagementV3() {
     };
   }, []);
 
-  const { formattedElapsed } = useLastOracle();
-
-  const currentPrice = isNotNil(currentMarket)
-    ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
-    : '-';
-
+  const { formattedElapsed } = useLastOracle({ market: currentMarket });
   const isPositionsEmpty = isNil(positions) || positions.length === 0;
   const positionList = positions || [];
 
   const historyList = useMemo(() => {
-    if (isNil(historyData)) {
+    if (isNil(history)) {
       return;
     }
-    return historyData
-      .map((historyItem) => historyItem.history)
-      .flat(1)
+    return history
       .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+      .slice(0, PAGE_SIZE * pages.history)
       .map((historyValue) => {
         return {
           token: historyValue.token,
@@ -189,13 +252,12 @@ export function useTradeManagementV3() {
           closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
-  }, [historyData]);
+  }, [history, pages]);
 
   const tradeList = useMemo(() => {
-    return tradesData
-      ?.map((tradesItem) => tradesItem.tradeLogs)
-      .flat(1)
-      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+    return trades
+      ?.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+      .slice(0, PAGE_SIZE * pages.trades)
       .map((tradeLog) => ({
         token: tradeLog.token,
         market: tradeLog.market,
@@ -209,22 +271,20 @@ export function useTradeManagementV3() {
         entryTime: formatTimestamp(tradeLog.entryTimestamp),
         blockNumber: tradeLog.blockNumber,
       }));
-  }, [tradesData]);
+  }, [trades, pages.trades]);
 
-  const hasMoreHistory = useMemo(() => {
-    const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
+  const hasMores = useMemo(() => {
+    if (isNil(history) || isNil(trades)) {
+      return {
+        history: false,
+        trades: false,
+      };
     }
-    return toBlockNumber > initialBlockNumber;
-  }, [historyData, initialBlockNumber]);
-  const hasMoreTrades = useMemo(() => {
-    const toBlockNumber = tradesData?.[tradesData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [tradesData, initialBlockNumber]);
+    return {
+      history: history.length > pages.history * PAGE_SIZE,
+      trades: trades.length > pages.trades * PAGE_SIZE,
+    };
+  }, [history, trades, pages]);
 
   const onLoadHistoryRef = useCallback((element: HTMLDivElement | null) => {
     historyBottomRef.current = element;
@@ -235,14 +295,17 @@ export function useTradeManagementV3() {
   const onRefreshList = useCallback(async () => {
     switch (tabRef.current) {
       case 0: {
+        toast('Refreshing positions.');
         await fetchPositions();
         break;
       }
       case 1: {
+        toast('Refreshing trade history.');
         await refreshTradeHistory();
         break;
       }
       case 2: {
+        toast('Refreshing trade logs.');
         await refreshTradeLogs();
         break;
       }
@@ -265,12 +328,11 @@ export function useTradeManagementV3() {
 
     historyBottomRef,
     tradeBottomRef,
-    isHistoryLoading,
-    isTradeLogsLoading,
+    isHistoryLoading: isHistoryLoading || isLoadings.history,
+    isTradeLogsLoading: isTradeLogsLoading || isLoadings.trades,
     historyList,
     tradeList,
-    hasMoreHistory,
-    hasMoreTrades,
+    hasMores,
     onFetchNextTrade,
     onFetchNextHistory,
     onLoadHistoryRef,

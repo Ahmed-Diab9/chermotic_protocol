@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
-import { fetchTokenImages } from '~/apis/token';
+import { MARKET_LOGOS } from '~/configs/token';
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tokenAction } from '~/store/reducer/token';
 import { selectedTokenSelector } from '~/store/selector';
@@ -32,9 +32,6 @@ export const useSettlementToken = () => {
     const marketFactoryApi = client.marketFactory();
 
     const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
-    const tokenNames = registeredSettlementTokens.map((token) => token.name);
-    const tokenImageMap = await fetchTokenImages(tokenNames);
-
     const settlementTokens = await PromiseOnlySuccess(
       registeredSettlementTokens.map(async (token) => {
         const minimumMargin = await marketFactoryApi
@@ -43,7 +40,7 @@ export const useSettlementToken = () => {
         return {
           ...token,
           minimumMargin,
-          image: tokenImageMap[token.name],
+          image: MARKET_LOGOS[token.name],
         } as Token;
       })
     );

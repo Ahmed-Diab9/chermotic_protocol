@@ -70,14 +70,9 @@ export function HeaderMenuPopover() {
                             </Link>
                           </li>
                           <li className="list-item">
-                            {/* <Link to="" target="_blank"> */}
-                            Zealy
-                            {/* </Link> */}
-                          </li>
-                          <li className="list-item">
-                            {/* <Link to="" target="_blank"> */}
-                            Galxe
-                            {/* </Link> */}
+                            <Link to="https://zealy.io/c/chromatic/questboard" target="_blank">
+                              Zealy
+                            </Link>
                           </li>
                         </ul>
                       </div>

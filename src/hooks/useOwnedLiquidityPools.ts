@@ -11,10 +11,11 @@ import { LiquidityPoolSummary, OwnedBin } from '~/typings/pools';
 import { trimMarkets } from '~/utils/market';
 import { checkAllProps } from '../utils';
 import { divPreserved, mulPreserved } from '../utils/number';
-import { PromiseOnlySuccess, promiseSlowLoop } from '../utils/promise';
+import { PromiseOnlySuccess } from '../utils/promise';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
-import { useEntireMarkets, useMarket } from './useMarket';
+import { useEntireMarkets } from './useMarket';
 import { useSettlementToken } from './useSettlementToken';
 
 const { encodeTokenId } = ChromaticUtils;
@@ -27,34 +28,35 @@ async function getLiquidityPool(
   tokenAddress: Address
 ) {
   const bins = await lensApi.ownedLiquidityBins(marketAddress, address);
-  const detailedBins = await promiseSlowLoop(
-    bins,
-    async (bin) => {
-      const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
-      const { name, decimals, description, image } = await marketApi.clbTokenMeta(
-        marketAddress,
-        tokenId
-      );
-      return {
-        liquidity: bin.liquidity,
-        freeLiquidity: bin.freeLiquidity,
-        removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
-        clbTokenName: name,
-        clbTokenImage: image,
-        clbTokenDescription: description,
-        clbTokenDecimals: decimals,
-        clbTokenBalance: bin.clbBalance,
-        clbTokenValue: bin.clbValue,
-        clbTotalSupply: bin.clbTotalSupply,
-        binValue: bin.binValue,
-        clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
-        baseFeeRate: bin.tradingFeeRate,
-        tokenId: tokenId,
-      } satisfies OwnedBin;
-    },
-    {
-      interval: 400,
-    }
+  const detailedBins = await PromiseOnlySuccess(
+    bins.map(
+      async (bin) => {
+        const tokenId = encodeTokenId(Number(bin.tradingFeeRate));
+        const { name, decimals, description, image } = await marketApi.clbTokenMeta(
+          marketAddress,
+          tokenId
+        );
+        return {
+          liquidity: bin.liquidity,
+          freeLiquidity: bin.freeLiquidity,
+          removableRate: divPreserved(bin.freeLiquidity, bin.liquidity, decimals),
+          clbTokenName: name,
+          clbTokenImage: image,
+          clbTokenDescription: description,
+          clbTokenDecimals: decimals,
+          clbTokenBalance: bin.clbBalance,
+          clbTokenValue: bin.clbValue,
+          clbTotalSupply: bin.clbTotalSupply,
+          binValue: bin.binValue,
+          clbBalanceOfSettlement: mulPreserved(bin.clbBalance, bin.clbValue, decimals),
+          baseFeeRate: bin.tradingFeeRate,
+          tokenId: tokenId,
+        } satisfies OwnedBin;
+      },
+      {
+        interval: 400,
+      }
+    )
   );
   return { tokenAddress, marketAddress, bins: detailedBins };
 }
@@ -62,7 +64,7 @@ async function getLiquidityPool(
 export const useOwnedLiquidityPools = () => {
   const { client, walletAddress } = useChromaticClient();
   const { tokens, currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { markets } = useEntireMarkets();
 
   const fetchKey = {

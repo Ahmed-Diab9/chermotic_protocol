@@ -5,16 +5,17 @@ import { formatUnits } from 'viem';
 
 import { useChromaticAccount } from '~/hooks/useChromaticAccount';
 import { useLiquidityPool } from '~/hooks/useLiquidityPool';
-import { useMarket } from '~/hooks/useMarket';
 import { useOpenPosition } from '~/hooks/useOpenPosition';
 import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 
-import { formatDecimals, numberFormat } from '~/utils/number';
+import { formatDecimals, mulFloat, numberFormat } from '~/utils/number';
 
 import { tradesAction } from '~/store/reducer/trades';
 
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
+import useMarkets from '~/hooks/commons/useMarkets';
 import { TradeContentV3Props } from '.';
 
 export function useTradeContentV3(props: TradeContentV3Props) {
@@ -38,18 +39,39 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   const { oracleProperties } = useOracleProperties();
   const { balances, isAccountAddressLoading, isChromaticBalanceLoading } = useChromaticAccount();
   const { currentToken } = useSettlementToken();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
 
   const oracleDecimals = 18;
   const tokenDecimals = currentToken?.decimals || 0;
 
   const quantity = formatDecimals(input.quantity, tokenDecimals);
   const collateral = formatDecimals(input.collateral, tokenDecimals);
-  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
-
+  const method = input.method;
+  const methodMap = {
+    collateral: 'Collateral',
+    quantity: 'Contract Qty',
+  };
+  const methodLabel = methodMap[method];
   const tokenAddress = currentToken?.address;
   const tokenName = currentToken?.name;
   const tokenImage = currentToken?.image;
+  const minAmount = formatDecimals(currentToken?.minimumMargin, tokenDecimals);
+  const maxAmount = useMemo(() => {
+    if (isNil(balances) || isNil(tokenAddress) || isNil(currentToken)) {
+      return 0;
+    }
+    const value =
+      method === 'collateral'
+        ? balances[tokenAddress]
+        : mulFloat(balances[tokenAddress], input.leverage);
+    return numberFormat(formatUnits(value, tokenDecimals), {
+      minDigits: currentToken.decimals,
+      maxDigits: currentToken.decimals,
+      useGrouping: false,
+      roundingMode: 'trunc',
+    });
+  }, [balances, currentToken, input.leverage, method, tokenAddress, tokenDecimals]);
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
 
@@ -62,13 +84,6 @@ export function useTradeContentV3(props: TradeContentV3Props) {
           roundingMode: 'trunc',
         })
       : 0;
-
-  const method = input.method;
-  const methodMap = {
-    collateral: 'Collateral',
-    quantity: 'Contract Qty',
-  };
-  const methodLabel = methodMap[method];
 
   const isLong = direction === 'long';
 
@@ -133,11 +148,11 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   }
 
   const executionPrice = useMemo(() => {
-    if (isNil(currentMarket)) {
+    if (isNil(currentOracle)) {
       return '-';
     }
-    return formatDecimals(currentMarket.oracleValue.price, oracleDecimals, 2, true);
-  }, [currentMarket]);
+    return formatDecimals(currentOracle?.price, oracleDecimals, 2, true);
+  }, [currentOracle]);
 
   const { takeProfitRatio, takeProfitPrice, stopLossRatio, stopLossPrice } = useMemo(() => {
     if (isNil(currentMarket) || isNil(input))
@@ -152,7 +167,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
 
     const isLong = direction === 'long';
 
-    const oraclePrice = formatUnits(currentMarket.oracleValue.price, oracleDecimals);
+    const oraclePrice = formatUnits(currentOracle?.price ?? 0n, oracleDecimals);
 
     const takeProfitRate = +takeProfit / 100;
     const stopLossRate = +stopLoss / 100;
@@ -197,6 +212,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     quantity,
     collateral,
     minAmount,
+    maxAmount,
     onAmountChange,
 
     leverage,

@@ -2,10 +2,10 @@ import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ORACLE_PROVIDER_DECIMALS, PERCENT_DECIMALS, PNL_RATE_DECIMALS } from '~/configs/decimals';
-import { useInitialBlockNumber } from '~/hooks/useInitialBlockNumber';
+import useMarketOracle from '~/hooks/commons/useMarketOracle';
+import useMarkets from '~/hooks/commons/useMarkets';
 
 import { useLastOracle } from '~/hooks/useLastOracle';
-import { useMarket } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { usePrevious } from '~/hooks/usePrevious';
 import { useTradeHistory } from '~/hooks/useTradeHistory';
@@ -18,12 +18,12 @@ import { formatTimestamp } from '~/utils/date';
 import { abs, divPreserved, formatDecimals } from '~/utils/number';
 
 export function useTradeManagement() {
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
+  const { currentOracle } = useMarketOracle({ market: currentMarket });
   const { positions, isLoading } = usePositions();
-  const { historyData, isLoading: isHistoryLoading, onFetchNextHistory } = useTradeHistory();
-  const { tradesData, isLoading: isTradeLogsLoading, onFetchNextTrade } = useTradeLogs();
-  const { initialBlockNumber } = useInitialBlockNumber();
-  const previousOracle = usePrevious(currentMarket?.oracleValue.version);
+  const { history, isLoading: isHistoryLoading } = useTradeHistory();
+  const { trades, isLoading: isTradeLogsLoading } = useTradeLogs();
+  const previousOracle = usePrevious(currentOracle?.version);
   const openingPositionSize = usePrevious(
     positions?.filter((position) => position.status === POSITION_STATUS.OPENING).length ?? 0
   );
@@ -32,10 +32,10 @@ export function useTradeManagement() {
   );
 
   useEffect(() => {
-    if (isNil(previousOracle) || isNil(currentMarket)) {
+    if (isNil(previousOracle) || isNil(currentOracle)) {
       return;
     }
-    if (previousOracle !== currentMarket.oracleValue.version) {
+    if (previousOracle !== currentOracle?.version) {
       if (isNotNil(openingPositionSize) && openingPositionSize > 0) {
         toast.info('The opening process has been completed.');
       }
@@ -43,7 +43,7 @@ export function useTradeManagement() {
         toast.info('The closing process has been completed.');
       }
     }
-  }, [currentMarket, previousOracle, openingPositionSize, closingPositionSize]);
+  }, [currentOracle, previousOracle, openingPositionSize, closingPositionSize]);
 
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -51,6 +51,8 @@ export function useTradeManagement() {
 
   const historyBottomRef = useRef<HTMLDivElement | null>(null);
   const isHistoryRendered = isNotNil(historyBottomRef.current);
+  const onFetchNextHistory = () => {};
+  const onFetchNextTrade = () => {};
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -107,19 +109,17 @@ export function useTradeManagement() {
   const { formattedElapsed } = useLastOracle();
 
   const currentPrice = isNotNil(currentMarket)
-    ? formatDecimals(currentMarket.oracleValue.price, 18, 2, true)
+    ? formatDecimals(currentOracle?.price, 18, 2, true)
     : '-';
 
   const isPositionsEmpty = isNil(positions) || positions.length === 0;
   const positionList = positions || [];
 
   const historyList = useMemo(() => {
-    if (isNil(historyData)) {
+    if (isNil(history)) {
       return;
     }
-    return historyData
-      .map((historyItem) => historyItem.history)
-      .flat(1)
+    return history
       .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((historyValue) => {
         return {
@@ -158,13 +158,11 @@ export function useTradeManagement() {
           closeTime: formatTimestamp(historyValue.closeTimestamp),
         };
       });
-  }, [historyData]);
+  }, [history]);
 
   const tradeList = useMemo(() => {
-    return tradesData
-      ?.map((tradesItem) => tradesItem.tradeLogs)
-      .flat(1)
-      .sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
+    return trades
+      ?.sort((previous, next) => (previous.positionId < next.positionId ? 1 : -1))
       .map((tradeLog) => ({
         token: tradeLog.token,
         market: tradeLog.market,
@@ -178,22 +176,10 @@ export function useTradeManagement() {
         entryTime: formatTimestamp(tradeLog.entryTimestamp),
         blockNumber: tradeLog.blockNumber,
       }));
-  }, [tradesData]);
+  }, [trades]);
 
-  const hasMoreHistory = useMemo(() => {
-    const toBlockNumber = historyData?.[historyData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [historyData, initialBlockNumber]);
-  const hasMoreTrades = useMemo(() => {
-    const toBlockNumber = tradesData?.[tradesData.length - 1].toBlockNumber;
-    if (!toBlockNumber || !initialBlockNumber) {
-      return true;
-    }
-    return toBlockNumber > initialBlockNumber;
-  }, [tradesData, initialBlockNumber]);
+  const hasMoreHistory = false;
+  const hasMoreTrades = false;
 
   const onLoadHistoryRef = useCallback((element: HTMLDivElement | null) => {
     historyBottomRef.current = element;

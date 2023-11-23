@@ -1,21 +1,17 @@
 import { isNotNil } from 'ramda';
 import { useMemo } from 'react';
-
-import useLocalStorage from '~/hooks/useLocalStorage';
-import { useMarket } from '~/hooks/useMarket';
+import useMarkets from '~/hooks/commons/useMarkets';
 
 export function useTradeChartPanel() {
-  const { currentMarket } = useMarket();
-
-  const { state: darkMode } = useLocalStorage('app:useDarkMode', false);
+  const { currentMarket } = useMarkets();
 
   const symbol = useMemo(
-    () => (isNotNil(currentMarket) ? currentMarket.description.replace('/', '') : undefined),
+    () =>
+      isNotNil(currentMarket) ? currentMarket.description.split(/\s*\/\s*/).join('') : undefined,
     [currentMarket]
   );
 
   return {
-    darkMode,
     symbol,
   };
 }

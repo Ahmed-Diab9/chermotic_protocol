@@ -15,10 +15,10 @@ import {
   numberBuffer,
   percentage,
 } from '../utils/number';
+import useMarkets from './commons/useMarkets';
 import { useChromaticClient } from './useChromaticClient';
 import { useError } from './useError';
 import { useLiquidityPool } from './useLiquidityPool';
-import { useMarket } from './useMarket';
 
 export type PoolReceiptAction = 'add' | 'remove';
 export interface PoolReceipt {
@@ -70,7 +70,7 @@ const receiptDetail = (
 
 const usePoolReceipt = () => {
   const { client, walletAddress } = useChromaticClient();
-  const { currentMarket } = useMarket();
+  const { currentMarket } = useMarkets();
   const { liquidityPool } = useLiquidityPool();
 
   const binName = useCallback((feeRate: number, description?: string) => {
