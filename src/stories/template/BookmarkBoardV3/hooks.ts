@@ -43,7 +43,6 @@ export const useBookmarkBoardV3 = () => {
   }, [bookmarkOracles]);
 
   const bookmarks = useMemo(() => {
-    console.log(bookmarkOracles, 'bookmark oracles');
     return bookmarkOracles?.map((oracle) => {
       const { id, tokenName, tokenAddress, marketDescription, marketAddress } = oracle;
       return {
