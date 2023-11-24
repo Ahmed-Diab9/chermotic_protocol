@@ -12,7 +12,6 @@ import { Address, usePublicClient } from 'wagmi';
 import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import useMarketOracles from '~/hooks/commons/useMarketOracles';
 import useMarkets from '~/hooks/commons/useMarkets';
-import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import { useLiquidityPools } from '~/hooks/useLiquidityPool';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -29,7 +28,6 @@ export function useMarketSelectV2() {
     maximumFractionDigits: 3,
     minimumFractionDigits: 0,
   });
-  const { refetchBookmarks } = useBookmarkOracles();
   const { tokens, currentToken, isTokenLoading, onTokenSelect } = useSettlementToken();
   const { markets, currentMarket, isLoading: isMarketLoading, onMarketSelect } = useMarkets();
   const { marketOracles } = useMarketOracles({ markets });
