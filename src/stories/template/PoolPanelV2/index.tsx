@@ -7,7 +7,6 @@ import { ChartLabel } from '~/stories/atom/ChartLabel';
 import { Checkbox } from '~/stories/atom/Checkbox';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { PoolProgressV2 } from '~/stories/molecule/PoolProgressV2';
@@ -16,6 +15,8 @@ import { isNil, isNotNil } from 'ramda';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
 import { usePoolPanelV2 } from './hooks';
+import '~/stories/atom/Toggle/style.css';
+import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 const PoolChart = lazy(() => import('~/stories/atom/PoolChart'));

@@ -100,9 +100,9 @@ const DatePickerHeader =
           changeMonth={changeMonth}
           changeYear={changeYear}
         />
-        <div className="flex items-center gap-5 px-5 pt-5 pb-4">
+        <div className="flex items-center gap-0 px-5 pt-5 pb-4">
           <div>
-            <span className="mr-2 text-2xl font-bold react-datepicker__current-month text-primary">
+            <span className="mr-2 !text-2xl font-bold react-datepicker__current-month !text-primary">
               {monthDate.toLocaleString('en-US', {
                 month: 'long',
               })}
@@ -113,7 +113,7 @@ const DatePickerHeader =
                 <Listbox.Button className="!h-auto !not-sr-only !p-0 font-bold text-2xl">
                   {getYear(date)}
                 </Listbox.Button>
-                <Listbox.Options className="max-h-[200px] overflow-y-auto text-primary">
+                <Listbox.Options className="max-h-[200px] min-w-[80px] overflow-y-auto text-primary">
                   {years.map((option) => (
                     <Listbox.Option key={option} value={option}>
                       {option}

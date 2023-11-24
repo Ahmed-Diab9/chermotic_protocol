@@ -11,6 +11,7 @@ import {
   Area,
 } from 'recharts';
 import { isEmpty } from 'ramda';
+import LOADING from '~/assets/images/loading.png';
 
 import { CategoricalChartState } from 'recharts/types/chart/generateCategoricalChart';
 
@@ -80,17 +81,12 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           <div
             key={key}
             onClick={toggleActiveLine(key)}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'pointer',
-            }}
+            className="flex gap-[6px] items-center cursor-pointer"
           >
-            <div style={{ backgroundColor: color, width: 35, height: 8, borderRadius: 4 }}></div>
-            <div>
-              <span>{name}</span>
-              <span style={{ color: '#4A4A51' }}>{description}</span>
+            <div style={{ backgroundColor: color }} className="w-3 h-3"></div>
+            <div className="flex text-sm">
+              <span className="text-primary">{name}</span>
+              <span className="ml-1 text-primary-light">{description}</span>
             </div>
           </div>
         );
@@ -103,12 +99,12 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
     const payload = tooltipData.activePayload ? tooltipData.activePayload.reverse() : [];
     return (
       <div className="wrapper-tooltip">
-        <div className={`tooltip tooltip-outline min-w-[200px] `}>
-          <div>
+        <div className={`tooltip tooltip-outline min-w-[200px]`}>
+          <div className="p-3">
             <p className="font-semibold text-primary">{date}</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
               {payload.map(({ name, color, value }) => (
-                <p style={{ color: color }}>
+                <p style={{ color: color }} className="text-sm">
                   {map[name].name}: {value}
                 </p>
               ))}
@@ -119,11 +115,10 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
     );
   };
 
-  // TODO: @dia-nn empty case
   if (isEmpty(data)) {
     return (
-      <ResponsiveContainer width={'100%'} height={300}>
-        <>EMPTY</>
+      <ResponsiveContainer width={'100%'} height={300} className="flex items-center justify-center">
+        <p className="text-primary-lighter">There is no data</p>
       </ResponsiveContainer>
     );
   }
