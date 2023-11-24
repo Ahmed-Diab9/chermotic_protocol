@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { OutlinkIcon } from '~/assets/icons/Icon';
+import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -28,6 +28,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
 
     assets,
     isAssetEmpty,
+    onTokenRegister,
 
     formattedLps,
     isLiquidityTokenEmpty,
@@ -96,6 +97,15 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                 css="unstyled"
                                 size="sm"
                                 className="text-primary-light"
+                              />
+                              <Button
+                                iconOnly={<PlusIcon className="w-3 h-3" />}
+                                css="translucent"
+                                gap="1"
+                                size="xs"
+                                onClick={() => {
+                                  onTokenRegister(key);
+                                }}
                               />
                             </div>
 
