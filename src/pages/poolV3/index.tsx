@@ -155,7 +155,7 @@ const PoolV3 = () => {
               <div className="panel panel-translucent">
                 <PoolDetail />
               </div>
-              <div className="mt-5">
+              <div className="mt-5 text-center">
                 <Button
                   to="/trade"
                   css="translucent"
