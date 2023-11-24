@@ -39,23 +39,24 @@ export const ChromaticLayout = () => {
   const classes = useMemo(() => {
     switch (location.pathname) {
       case '/trade': {
-        return { container: 'page-container !min-w-[1360px]', main: '' };
+        return { container: '!min-w-[1360px]', main: '' };
       }
       case '/pool': {
-        return { container: 'page-container', main: 'max-w-[1480px]' };
+        return { container: '', main: 'max-w-[1480px]' };
       }
       case '/airdrop': {
-        return { container: 'page-container bg-gradient-chrm', main: 'max-w-[1400px]' };
+        return { container: 'bg-gradient-chrm', main: 'max-w-[1400px]' };
       }
     }
   }, [location.pathname]);
   return (
-    <div className={classes?.container}>
+    <div className={`page-container ${classes?.container}`}>
       {!isAirdrop && <BookmarkBoardV3 />}
       <HeaderV3 />
       <main className={classes?.main}>
         <Outlet />
       </main>
+      <Footer />
       <Toast />
       <ChainModal />
     </div>
@@ -82,7 +83,6 @@ export const GradientLayout = () => {
         <div id="current"></div>
       </div>
       <Outlet />
-      <Footer />
     </>
   );
 };
