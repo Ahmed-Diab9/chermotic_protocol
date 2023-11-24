@@ -61,9 +61,9 @@ export function findMaxAllowableTakerMargin(
     }
 
     if (transactionAmount > balance) {
-      boundary.max = candidate
+      boundary.max = candidate;
     } else {
-      boundary.min = candidate
+      boundary.min = candidate;
     }
   }
 

@@ -9,7 +9,7 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { TradeInput } from '~/typings/trade';
 
 import { divFloat, divPreserved, floatMath, formatDecimals, mulFloat } from '~/utils/number';
-import { calculateMakerMargin, calculateTradingFee } from '../utils/trading_fee';
+import { calculateMakerMargin, calculateTradingFee } from '../utils/trade';
 
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tradesAction } from '~/store/reducer/trades';
@@ -24,7 +24,7 @@ function getCalculatedValues({
   takeProfit: number;
   stopLoss: number;
   amount: bigint;
-}): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance'> {
+}): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance' | 'tradeFee' | 'feePercent'> {
   const leverage = floatMath(100).divide(stopLoss);
 
   const takeProfitRate = floatMath(takeProfit).divide(100);
