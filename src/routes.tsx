@@ -77,6 +77,10 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: '/',
+            element: <Navigate to={'/trade'} />,
+          },
         ],
       },
     ],
@@ -88,10 +92,6 @@ const router = createBrowserRouter([
         <Faucet />
       </Suspense>
     ),
-  },
-  {
-    path: '*',
-    element: <Navigate to={'/trade'} />,
   },
 ]);
 
