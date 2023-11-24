@@ -85,8 +85,8 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           >
             <div style={{ backgroundColor: color }} className="w-3 h-3"></div>
             <div className="flex text-sm">
-              <span className="text-primary-light">{name}</span>
-              <span className="ml-1 text-primary-lighter">{description}</span>
+              <span className="text-primary">{name}</span>
+              <span className="ml-1 text-primary-light">{description}</span>
             </div>
           </div>
         );
