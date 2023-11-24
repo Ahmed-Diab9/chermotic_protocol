@@ -17,9 +17,13 @@ export function Logger(nameOrFunction?: string | Function) {
 }
 const logger = Logger();
 export const errorLog = (...args: any) => {
-  logger.error.apply(logger, args);
+  if (!import.meta.env.PROD) {
+    logger.error.apply(logger, args);
+  }
 };
 
 export const infoLog = (...args: any) => {
-  logger.info.apply(logger, args);
+  if (!import.meta.env.PROD) {
+    logger.info.apply(logger, args);
+  }
 };
