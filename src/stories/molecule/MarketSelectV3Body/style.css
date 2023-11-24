@@ -1,26 +1,28 @@
-.popover-panel {
-  @apply flex flex-col absolute left-0 top-7 mt-3;
-  @apply min-h-[230px] rounded;
-  /* @apply bg-paper; */
-  @apply bg-paper/60 backdrop-blur-xl;
-  @apply border;
-}
-.inner-popover {
-  @apply flex items-start;
-  .inner-popover-button {
-    &[aria-expanded='true'] {
-      @apply bg-primary text-inverted;
-    }
+.MarketSelectV3Body {
+  .popover-panel {
+    @apply flex flex-col absolute left-0 top-7 mt-3;
+    @apply min-h-[230px] rounded;
+    /* @apply bg-paper; */
+    @apply bg-paper/60 backdrop-blur-xl;
+    @apply border;
   }
-  .inner-popover-panel {
-    @apply absolute top-4 left-[156px] right-0;
-    @apply flex flex-col;
-    .inner-popover-item {
-      @apply flex justify-between cursor-pointer;
-      @apply py-3 px-4 gap-6;
-      @apply hover:bg-primary hover:text-inverted;
-      h4 {
-        @apply flex-1;
+  .inner-popover {
+    @apply flex items-start;
+    .inner-popover-button {
+      &[aria-expanded='true'] {
+        @apply bg-primary text-inverted;
+      }
+    }
+    .inner-popover-panel {
+      @apply absolute top-4 left-[156px] right-0;
+      @apply flex flex-col;
+      .inner-popover-item {
+        @apply flex justify-between cursor-pointer;
+        @apply py-3 px-4 gap-6;
+        @apply hover:bg-primary hover:text-inverted;
+        h4 {
+          @apply flex-1;
+        }
       }
     }
   }
