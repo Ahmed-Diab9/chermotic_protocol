@@ -17,6 +17,9 @@ export const useBookmarkBoard = () => {
 
   const bookmarkPrices = useMemo(() => {
     return bookmarkOracles?.reduce((prices, bookmark) => {
+      if (isNil(bookmark.currentOracle)) {
+        return prices;
+      }
       const price = numberFormat(
         formatUnits(bookmark.currentOracle.price, ORACLE_PROVIDER_DECIMALS),
         {

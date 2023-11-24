@@ -17,6 +17,9 @@ export const useBookmarkBoardV3 = () => {
 
   const bookmarkPrices = useMemo(() => {
     return bookmarkOracles?.reduce((prices, bookmark) => {
+      if (isNil(bookmark.currentOracle)) {
+        return prices;
+      }
       const price = numberFormat(
         formatUnits(bookmark.currentOracle.price, ORACLE_PROVIDER_DECIMALS),
         {
@@ -40,6 +43,7 @@ export const useBookmarkBoardV3 = () => {
   }, [bookmarkOracles]);
 
   const bookmarks = useMemo(() => {
+    console.log(bookmarkOracles, 'bookmark oracles');
     return bookmarkOracles?.map((oracle) => {
       const { id, tokenName, tokenAddress, marketDescription, marketAddress } = oracle;
       return {
