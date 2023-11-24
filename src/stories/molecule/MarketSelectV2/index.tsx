@@ -28,9 +28,10 @@ export function MarketSelectV2() {
     changeRate,
     changeRateClass,
     explorerUrl,
-    isBookmarked,
     formattedElapsed,
     onBookmarkClick,
+    onTokenClick,
+    onMarketClick,
   } = useMarketSelectV2();
 
   return (
@@ -114,13 +115,13 @@ export function MarketSelectV2() {
                   </div>
                   <section className="flex flex-auto w-full px-3">
                     <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r min-w-[128px]">
-                      {tokens.map(({ key, isSelectedToken, onClickToken, name, image }) => (
+                      {tokens.map(({ key, isSelectedToken, name, image, address }) => (
                         <button
                           key={key}
                           className={`flex items-center gap-2 px-3 py-2 w-[116px] border ${
                             isSelectedToken ? 'bg-paper-light rounded-lg' : 'border-transparent'
                           }`}
-                          onClick={onClickToken}
+                          onClick={() => onTokenClick(address)}
                           title={name}
                         >
                           <Avatar label={name} src={image} fontSize="lg" gap="2" size="base" />
@@ -135,7 +136,6 @@ export function MarketSelectV2() {
                           ({
                             key,
                             isSelectedMarket,
-                            onClickMarket,
                             token,
                             price,
                             isBookmarked,
@@ -165,7 +165,7 @@ export function MarketSelectV2() {
                                     ? 'bg-paper-light rounded-lg'
                                     : 'border-transparent'
                                 }`}
-                                onClick={onClickMarket}
+                                onClick={() => onMarketClick(address)}
                               >
                                 <span className="flex items-center justify-between flex-auto gap-10">
                                   <Avatar
