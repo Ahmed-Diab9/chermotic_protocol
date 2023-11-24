@@ -28,7 +28,6 @@ import { AirdropHistory } from '~/stories/template/AirdropHistory';
 import { AirdropStamp } from '~/stories/template/AirdropStamp';
 import { AirdropZealyConnectModal } from '~/stories/template/AirdropZealyConnectModal';
 import { AirdropZealyConvertModal } from '~/stories/template/AirdropZealyConvertModal';
-import { Footer } from '~/stories/template/Footer';
 import { Modal } from '~/stories/template/Modal';
 import { numberFormat } from '~/utils/number';
 import './style.css';
@@ -375,7 +374,6 @@ function Airdrop() {
               </div>
             </Tab.Group>
           </div>
-          <Footer />
         </>
       ) : (
         <main>
