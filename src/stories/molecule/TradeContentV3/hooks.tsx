@@ -10,12 +10,13 @@ import { useOracleProperties } from '~/hooks/useOracleProperties';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { useTradeInput } from '~/hooks/useTradeInput';
 
-import { formatDecimals, mulFloat, numberFormat } from '~/utils/number';
+import { floatMath, formatDecimals, mulFloat, numberFormat } from '~/utils/number';
 
 import { tradesAction } from '~/store/reducer/trades';
 
 import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import useMarkets from '~/hooks/commons/useMarkets';
+import { findMaxAllowableTakerMargin } from '~/utils/trade';
 import { TradeContentV3Props } from '.';
 
 export function useTradeContentV3(props: TradeContentV3Props) {
@@ -41,6 +42,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
   const { currentToken } = useSettlementToken();
   const { currentMarket } = useMarkets();
   const { currentOracle } = useMarketOracle({ market: currentMarket });
+  const { liquidityPool: pool } = useLiquidityPool();
 
   const oracleDecimals = 18;
   const tokenDecimals = currentToken?.decimals || 0;
@@ -61,17 +63,33 @@ export function useTradeContentV3(props: TradeContentV3Props) {
     if (isNil(balances) || isNil(tokenAddress) || isNil(currentToken)) {
       return 0;
     }
-    const value =
+    const { takeProfit, stopLoss } = input;
+    const balance = balances[tokenAddress];
+    const takeProfitRate = floatMath(takeProfit).divide(100);
+    const lossCutRate = floatMath(stopLoss).divide(100);
+    const maxAllowableCollateral = findMaxAllowableTakerMargin(
+      balance,
+      currentToken.minimumMargin,
+      lossCutRate,
+      takeProfitRate,
+      (pool?.bins || []).filter(
+        (bin) =>
+          (direction === 'long' && bin.baseFeeRate > 0) ||
+          (direction === 'short' && bin.baseFeeRate < 0)
+      ),
+      0.001
+    );
+    const formattedMaxCollateral =
       method === 'collateral'
-        ? balances[tokenAddress]
-        : mulFloat(balances[tokenAddress], input.leverage);
-    return numberFormat(formatUnits(value, tokenDecimals), {
+        ? maxAllowableCollateral
+        : mulFloat(maxAllowableCollateral, input.leverage);
+    return numberFormat(formatUnits(formattedMaxCollateral, tokenDecimals), {
       minDigits: currentToken.decimals,
       maxDigits: currentToken.decimals,
       useGrouping: false,
       roundingMode: 'trunc',
     });
-  }, [balances, currentToken, input.leverage, method, tokenAddress, tokenDecimals]);
+  }, [balances, currentToken, tokenAddress, tokenDecimals, direction, method, input, pool?.bins]);
 
   const isBalanceLoading = isAccountAddressLoading || isChromaticBalanceLoading;
 
@@ -186,7 +204,7 @@ export function useTradeContentV3(props: TradeContentV3Props) {
       stopLossRatio: `${isLong ? '-' : '+'}${format(stopLoss)}`,
       stopLossPrice: format(stopLossPrice),
     };
-  }, [input, currentMarket, direction]);
+  }, [input, currentMarket, direction, currentOracle?.price]);
 
   return {
     disabled,

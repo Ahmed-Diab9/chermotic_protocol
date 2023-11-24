@@ -74,7 +74,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             assetSrc={tokenImage}
             direction={optionInputDirection}
             size="lg"
-            ratios={[20, 40, 60, 80]}
+            ratios={[25, 50, 75, 100]}
           />
           {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>
