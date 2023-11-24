@@ -1,5 +1,6 @@
 import { FEE_RATE_DECIMAL } from '../configs/decimals';
 import { Bin } from '../typings/pools';
+import { errorLog } from './log';
 import { abs, divFloat, mulFloat, mulPreserved } from './number';
 
 export function calculateMakerMargin(
@@ -47,7 +48,12 @@ export function findMaxAllowableTakerMargin(
 ): bigint {
   const minMakerMargin = calculateMakerMargin(minimumMargin, lossCutRate, takeProfitRate);
   const minTradingFee = calculateTradingFee(minMakerMargin, bins);
-  if (balance < minimumMargin + minTradingFee) throw new Error('insufficient balance');
+  if (balance < minimumMargin + minTradingFee) {
+    errorLog('insufficient balance');
+
+    const remainedBalance = balance - minTradingFee;
+    return remainedBalance > 0n ? remainedBalance : 0n;
+  }
 
   const boundary = { min: minimumMargin, max: balance };
   for (let i = 0; i < iterate; i++) {
