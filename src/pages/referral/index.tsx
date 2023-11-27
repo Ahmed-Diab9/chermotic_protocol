@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAccount, useConnect } from 'wagmi';
 
-// import { EpochBoard } from '~/stories/template/EpochBoard';
+import { EpochBoard } from '~/stories/template/EpochBoard';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
@@ -57,7 +57,9 @@ function Referral() {
                 </article>
               </section>
               <section className="w-[400px]">
-                <article>{/* <EpochBoard /> */}</article>
+                <article>
+                  <EpochBoard />
+                </article>
               </section>
             </div>
           </div>
