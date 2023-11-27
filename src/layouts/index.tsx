@@ -47,6 +47,9 @@ export const ChromaticLayout = () => {
       case '/airdrop': {
         return { container: 'bg-gradient-chrm', main: 'max-w-[1400px]' };
       }
+      case '/referral': {
+        return { container: 'bg-gradient-chrm', main: 'max-w-[1400px]' };
+      }
     }
   }, [location.pathname]);
   return (
