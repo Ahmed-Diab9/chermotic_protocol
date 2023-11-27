@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
+import { ChevronDoubleRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
@@ -99,10 +99,10 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                 className="text-primary-light"
                               />
                               <Button
-                                iconOnly={<PlusIcon className="w-3 h-3" />}
-                                css="translucent"
-                                gap="1"
-                                size="xs"
+                                iconOnly={<PlusCircleIcon />}
+                                css="unstyled"
+                                size="sm"
+                                className="text-primary-light"
                                 onClick={() => {
                                   onTokenRegister(key);
                                 }}
