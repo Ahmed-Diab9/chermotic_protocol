@@ -7,6 +7,8 @@ import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { isNotNil } from 'ramda';
 import { usePoolPerformance } from './hooks';
+
+import '~/stories/atom/Select/style.css';
 import './style.css';
 
 export interface PoolPerformanceProps {}
