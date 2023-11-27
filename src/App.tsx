@@ -1,4 +1,3 @@
-import { Suspense, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { SWRConfig } from 'swr';
@@ -8,10 +7,8 @@ import '~/App.css';
 import '~/bigint';
 import { chains, publicClient, webSocketPublicClient } from '~/configs/wagmiClient';
 import { ChromaticProvider } from '~/contexts/ChromaticClient';
-import { subscribePythFeed } from '~/lib/pyth/subscribe';
 import { router } from '~/routes';
 import { store } from '~/store/index';
-import { showCautionToast } from './stories/atom/Toast';
 
 const config = createConfig({
   autoConnect: true,
@@ -22,34 +19,6 @@ const config = createConfig({
 });
 
 function App() {
-  useEffect(() => {
-    const unsubscriber = subscribePythFeed();
-    return () => {
-      unsubscriber.then((action) => {
-        action && action();
-      });
-    };
-  }, []);
-
-  useEffect(() => {
-    switch (window.location.pathname) {
-      case '/pool':
-      case '/trade': {
-        showCautionToast({
-          title: 'Chromatic Protocol Testnet',
-          titleClass: 'text-chrm',
-          message:
-            'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
-          showLogo: true,
-        });
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  }, []);
-
   return (
     <SWRConfig
       value={{
@@ -64,9 +33,7 @@ function App() {
         <WagmiConfig config={config}>
           <ChromaticProvider>
             <div className="App">
-              <Suspense>
-                <RouterProvider router={router} />
-              </Suspense>
+              <RouterProvider router={router} />
             </div>
           </ChromaticProvider>
         </WagmiConfig>

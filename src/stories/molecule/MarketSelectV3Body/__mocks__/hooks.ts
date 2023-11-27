@@ -1,13 +1,11 @@
 export function useMarketSelectV3Body() {
   const isLoading = false;
-  const tokens = [
-    { key: '0x1', isSelectedToken: true, onClickToken: () => {}, name: 'cETH', image: '' },
-  ];
+  const tokens = [{ key: '0x1', isSelectedToken: true, name: 'cETH', image: '', address: '0x1' }];
   const markets = [
     {
       key: '0x2',
+      address: '0x2',
       isSelectedMarket: false,
-      onClickMarket: () => {},
       token: tokens[0],
       market: {
         image: '',

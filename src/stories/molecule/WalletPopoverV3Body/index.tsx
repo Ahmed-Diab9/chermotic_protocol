@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { OutlinkIcon } from '~/assets/icons/Icon';
+import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -28,6 +28,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
 
     assets,
     isAssetEmpty,
+    onTokenRegister,
 
     formattedLps,
     isLiquidityTokenEmpty,
@@ -42,7 +43,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
     onLpClick,
   } = useWalletPopoverV3Body();
   return (
-    <div className="relative flex flex-col h-full WalletPopoverMain ">
+    <div className="relative flex flex-col h-full WalletPopoverV3Body">
       <Avatar src={arbitrumIcon} label={chainName} size="xl" fontSize="sm" gap="3" />
       <section className="flex flex-col flex-grow mt-6 box-inner">
         <article className="px-4 py-3 border-b bg-paper-light dark:bg-paper">
@@ -96,6 +97,15 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                 css="unstyled"
                                 size="sm"
                                 className="text-primary-light"
+                              />
+                              <Button
+                                iconOnly={<PlusIcon className="w-3 h-3" />}
+                                css="translucent"
+                                gap="1"
+                                size="xs"
+                                onClick={() => {
+                                  onTokenRegister(key);
+                                }}
                               />
                             </div>
 

@@ -10,6 +10,7 @@ import { useTokenBalances } from '~/hooks/useTokenBalance';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import useMarkets from '~/hooks/commons/useMarkets';
+import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useEntireChromaticLp } from '~/hooks/useChromaticLp';
 import { useEntireMarkets } from '~/hooks/useMarket';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
@@ -34,6 +35,7 @@ export const useWalletPopoverV3Body = () => {
   const { tokens, onTokenSelect } = useSettlementToken();
   const { onMarketSelect } = useMarkets();
   const { tokenBalances, isTokenBalanceLoading } = useTokenBalances();
+  const { client } = useChromaticClient();
 
   const isLoading = isTokenBalanceLoading || isChromaticBalanceLoading;
   const { markets } = useEntireMarkets();
@@ -69,7 +71,7 @@ export const useWalletPopoverV3Body = () => {
 
   const assets = (tokens || []).reduce<
     {
-      key: string;
+      key: Address;
       name: string;
       balance: string;
       explorerUrl?: string;
@@ -98,6 +100,23 @@ export const useWalletPopoverV3Body = () => {
     acc.push({ key, name, balance: formattedBalance, explorerUrl, image });
     return acc;
   }, []);
+  const onTokenRegister = useCallback(
+    (tokenAddress: Address) => {
+      const token = tokens?.find(({ address }) => address === tokenAddress);
+      if (isNil(token)) {
+        return;
+      }
+      client.walletClient?.watchAsset({
+        type: 'ERC20',
+        options: {
+          address: token.address,
+          symbol: token.name,
+          decimals: token.decimals,
+        },
+      });
+    },
+    [client, tokens]
+  );
   const isAssetEmpty = assets.length === 0;
 
   const formattedLps = (lpList || []).reduce<FormattedLp[]>((acc, lp) => {
@@ -149,6 +168,7 @@ export const useWalletPopoverV3Body = () => {
 
     assets,
     isAssetEmpty,
+    onTokenRegister,
 
     formattedLps,
     isLiquidityTokenEmpty,

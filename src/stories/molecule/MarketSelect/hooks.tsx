@@ -5,8 +5,8 @@ import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
 
 import { isNil } from 'ramda';
-import { useMemo } from 'react';
-import { usePublicClient } from 'wagmi';
+import { useCallback, useMemo } from 'react';
+import { Address, usePublicClient } from 'wagmi';
 import useMarketOracle from '~/hooks/commons/useMarketOracle';
 import useMarketOracles from '~/hooks/commons/useMarketOracles';
 import useMarkets from '~/hooks/commons/useMarkets';
@@ -40,26 +40,20 @@ export function useMarketSelect() {
   const formattedTokens = (tokens ?? []).map((token) => {
     const key = token.address;
     const isSelectedToken = token.address === currentToken?.address;
-    const onClickToken = () => {
-      return onTokenSelect(token);
-    };
     const name = token.name;
     const image = token.image;
-    return { key, isSelectedToken, onClickToken, name, image };
+    return { ...token, key, isSelectedToken, name, image };
   });
 
   const formattedMarkets = (markets ?? []).map((market) => {
     const key = market.address;
     const isSelectedMarket = market.address === currentMarket?.address;
-    const onClickMarket = () => {
-      return onMarketSelect(market);
-    };
     const description = market.description;
     const price = priceFormatter.format(
       Number(formatDecimals(marketOracles?.[market.address]?.price, 18, 3))
     );
     const image = market.image;
-    return { key, isSelectedMarket, onClickMarket, description, price, image };
+    return { ...market, key, isSelectedMarket, description, price, image };
   });
 
   const price = formatDecimals(currentOracle?.price || 0, ORACLE_PROVIDER_DECIMALS, 2, true);
@@ -79,6 +73,28 @@ export function useMarketSelect() {
     }
   }, [publicClient, currentMarket]);
 
+  const onTokenClick = useCallback(
+    (tokenAddress: Address) => {
+      const token = tokens?.find((token) => token.address === tokenAddress);
+      if (isNil(token)) {
+        return;
+      }
+      onTokenSelect(token);
+    },
+    [tokens, onTokenSelect]
+  );
+
+  const onMarketClick = useCallback(
+    (marketAddress: Address) => {
+      const market = markets?.find((market) => market.address === marketAddress);
+      if (isNil(market)) {
+        return;
+      }
+      onMarketSelect(market);
+    },
+    [markets, onMarketSelect]
+  );
+
   return {
     isLoading,
     tokenName,
@@ -91,5 +107,7 @@ export function useMarketSelect() {
     priceClass,
     interestRate,
     explorerUrl,
+    onTokenClick,
+    onMarketClick,
   };
 }

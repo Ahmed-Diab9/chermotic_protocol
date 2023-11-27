@@ -2,12 +2,12 @@ export function useMarketSelectV3() {
   const isLoading = false;
   const token = { name: 'cETH', address: '0x', image: '' };
   const market = { description: 'ETH / USD', address: '0x', image: '' };
-  const tokens = [{ key: 0, isSelectedToken: true, onClickToken: () => {}, name: 'CHRM' }];
+  const tokens = [{ key: 0, isSelectedToken: true, name: 'CHRM', address: '0x1' }];
   const markets = [
     {
       key: 0,
       isSelectedMarket: true,
-      onClickMarket: () => {},
+      address: '0x2',
       description: 'ETH/USD',
       price: '1,000',
     },

@@ -15,8 +15,16 @@ export interface MarketSelectV3BodyProps {
 
 const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
   const { onMouseLeave } = props;
-  const { isLoading, tokens, markets, priceClassMap, poolMap, onBookmarkClick } =
-    useMarketSelectV3Body();
+  const {
+    isLoading,
+    tokens,
+    markets,
+    priceClassMap,
+    poolMap,
+    onTokenClick,
+    onMarketClick,
+    onBookmarkClick,
+  } = useMarketSelectV3Body();
 
   return (
     <div className="MarketSelectV3Body">
@@ -33,13 +41,13 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
         </div>
         <section className="flex flex-auto w-full px-3">
           <article className="flex flex-col gap-2 py-3 pr-3 mr-3 border-r min-w-[136px]">
-            {tokens.map(({ key, isSelectedToken, onClickToken, name, image }) => (
+            {tokens.map(({ key, isSelectedToken, name, image, address }) => (
               <button
                 key={key}
                 className={`flex items-center gap-2 px-3 py-2 w-[116px] border ${
                   isSelectedToken ? 'bg-paper-light rounded-lg' : 'border-transparent'
                 }`}
-                onClick={onClickToken}
+                onClick={() => onTokenClick(address)}
                 title={name}
               >
                 <Avatar label={name} src={image} fontSize="lg" gap="2" size="base" />
@@ -53,7 +61,6 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
               ({
                 key,
                 isSelectedMarket,
-                onClickMarket,
                 token,
                 price,
                 isBookmarked,
@@ -87,7 +94,7 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
                       className={`w-full flex items-center justify-between gap-3 pl-8 py-2 pr-3 border ${
                         isSelectedMarket ? 'bg-paper-light rounded-lg' : 'border-transparent'
                       }`}
-                      onClick={onClickMarket}
+                      onClick={() => onMarketClick(address)}
                       disabled={isLoading}
                     >
                       <span className="flex items-center justify-between flex-auto gap-10">
