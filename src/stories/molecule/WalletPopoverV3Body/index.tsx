@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
-import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
+import { ChevronDoubleRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
+import { OutlinkIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -91,22 +91,24 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <Button
-                                href={explorerUrl}
-                                iconOnly={<OutlinkIcon />}
-                                css="translucent"
-                                size="xs"
-                                className="text-primary-light"
-                              />
-                              <Button
-                                iconOnly={<PlusIcon />}
-                                css="translucent"
-                                size="xs"
-                                className="text-primary-light"
-                                onClick={() => {
-                                  onTokenRegister(key);
-                                }}
-                              />
+                              <div className="flex items-center ml-1">
+                                <Button
+                                  href={explorerUrl}
+                                  iconOnly={<OutlinkIcon className="!w-4" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                />
+                                <Button
+                                  iconOnly={<PlusCircleIcon className="!w-4" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                  onClick={() => {
+                                    onTokenRegister(key);
+                                  }}
+                                />
+                              </div>
                             </div>
 
                             <div className="ml-auto text-right">
