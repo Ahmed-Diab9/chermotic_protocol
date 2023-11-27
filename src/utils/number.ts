@@ -53,6 +53,9 @@ export const formatDecimals = (
       const formatted = formatUnits(value, tokenDecimals ?? 0);
       const [numeric, decimals = ''] = formatted.split('.');
       const trimmedDecimals = decimals.slice(0, decimalLimit).padEnd(decimalLimit ?? 2, '0');
+      if (decimalLimit === 0) {
+        return numericFormatter.format(Number(numeric));
+      }
       return `${numericFormatter.format(Number(numeric))}.${trimmedDecimals}`;
     }
     case 'undefined': {
