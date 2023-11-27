@@ -91,22 +91,24 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <Button
-                                href={explorerUrl}
-                                iconOnly={<OutlinkIcon />}
-                                css="unstyled"
-                                size="sm"
-                                className="text-primary-light"
-                              />
-                              <Button
-                                iconOnly={<PlusIcon className="w-3 h-3" />}
-                                css="translucent"
-                                gap="1"
-                                size="xs"
-                                onClick={() => {
-                                  onTokenRegister(key);
-                                }}
-                              />
+                              <div className="flex items-center ml-1 gap-[2px]">
+                                <Button
+                                  href={explorerUrl}
+                                  iconOnly={<OutlinkIcon className="!w-[14px]" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                />
+                                <Button
+                                  iconOnly={<PlusIcon className="!w-[14px]" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                  onClick={() => {
+                                    onTokenRegister(key);
+                                  }}
+                                />
+                              </div>
                             </div>
 
                             <div className="ml-auto text-right">

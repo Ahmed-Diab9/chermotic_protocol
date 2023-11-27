@@ -156,11 +156,11 @@ const QuickButtons = ({
   changeMonth: (month: number) => void;
 }) => {
   const buttons = [
-    { label: 'A Week ago', start: subWeeks(new Date(), 1) },
-    { label: 'A Month ago', start: subMonths(new Date(), 1) },
-    { label: '3 Month ago', start: subMonths(new Date(), 3) },
-    { label: '6 Month ago', start: subMonths(new Date(), 6) },
-    { label: '1 Year ago', start: subYears(new Date(), 1) },
+    { label: 'A Week', start: subWeeks(new Date(), 1) },
+    { label: 'A Month', start: subMonths(new Date(), 1) },
+    { label: '3 Month', start: subMonths(new Date(), 3) },
+    { label: '6 Month', start: subMonths(new Date(), 6) },
+    { label: '1 Year', start: subYears(new Date(), 1) },
     { label: 'All time', start: new Date(0) },
   ];
 
