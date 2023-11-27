@@ -4,13 +4,13 @@ export function useMarketSelect() {
   const tokenName = 'CHRM';
   const marketDescription = 'ETH/USD';
 
-  const tokens = [{ key: 0, isSelectedToken: true, onClickToken: () => {}, name: 'CHRM' }];
+  const tokens = [{ key: 0, isSelectedToken: true, name: 'CHRM', address: '0x1' }];
 
   const markets = [
     {
       key: 0,
       isSelectedMarket: true,
-      onClickMarket: () => {},
+      address: '0x2',
       description: 'ETH/USD',
       price: '1,000',
     },

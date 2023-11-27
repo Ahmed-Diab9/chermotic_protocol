@@ -1,44 +1,76 @@
-import axios from 'axios';
 import useSWR from 'swr';
+import { sum } from 'ramda';
+import { startOfDay, endOfDay } from 'date-fns';
 
 import { useError } from '~/hooks/useError';
-import { useMarket } from '~/hooks/useMarket';
-
-import { DUNE_API } from '~/constants/dune';
+import { useChromaticLp } from '~/hooks/useChromaticLp';
 
 import { checkAllProps } from '~/utils';
+import { divPreserved } from '~/utils/number';
+import { getSeconds } from '~/utils/date';
 
-export function useAnalytics(id: string) {
-  const { clbTokenAddress } = useMarket();
+import { analyticsSdk } from '~/lib/graphql';
+
+export function useAnalytics({ start, end }: { start: Date | null; end: Date | null }) {
+  const { selectedLp } = useChromaticLp();
 
   const fetchKey = {
     key: 'getAnalytics',
-    clbTokenAddress,
+    selectedLp,
+    startDate: start,
+    endDate: end,
   };
 
-  const {
-    data: analytics,
-    error,
-    isLoading: isAnalyticsLoading,
-  } = useSWR(
+  const { data, error, isLoading } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
-    async () => {
-      const { data } = await axios({
-        method: 'GET',
-        url: `${DUNE_API}/${id}`,
+    async ({ startDate, endDate, selectedLp }) => {
+      const start = getSeconds(startOfDay(startDate));
+      const end = getSeconds(endOfDay(endDate));
+
+      const address = selectedLp.address;
+      const { lp_value_histories } = await analyticsSdk.ClpHistories({
+        start,
+        end,
+        address,
       });
-      return data;
+      const decimals = selectedLp.clpDecimals;
+
+      const response = lp_value_histories.map(
+        ({
+          block_timestamp: timestamp,
+          clp_total_supply,
+          holding_clb_value,
+          holding_value,
+          pending_clb_value,
+          pending_value,
+        }) => {
+          const aum = BigInt(
+            sum([holding_clb_value, holding_value, pending_clb_value, pending_value])
+          );
+          const clpSupply = BigInt(clp_total_supply);
+          const clpPrice = divPreserved(aum, clpSupply, decimals);
+
+          return {
+            timestamp,
+            clpSupply,
+            aum,
+            clpPrice,
+          };
+        }
+      );
+
+      return response;
     },
     {
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      revalidateIfStale: false,
+      keepPreviousData: true,
     }
   );
 
   useError({ error });
 
-  return { analytics, isAnalyticsLoading };
+  return { data, isLoading };
 }

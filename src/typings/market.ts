@@ -1,4 +1,5 @@
 import { Address } from 'wagmi';
+import { OracleVersion } from './oracleVersion';
 
 export interface Token {
   name: string;
@@ -30,4 +31,9 @@ export interface Bookmark {
   tokenAddress: Address;
   marketDescription: string;
   marketAddress: Address;
+}
+
+export interface BookmarkOracle extends Bookmark {
+  currentOracle: OracleVersion;
+  previousOracle: OracleVersion | undefined;
 }

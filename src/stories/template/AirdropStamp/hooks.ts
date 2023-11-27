@@ -29,10 +29,10 @@ export const useAirdropStamp = () => {
     for (let index = 0; index < bonusRewards.length; index++) {
       const reward = bonusRewards[index];
       if (reward.booster !== 0) {
-        boosterText = `Sign-In ${reward.consecutive} days in a week & get ${reward.booster} booster`;
+        boosterText = `Sign-In ${reward.consecutive} days in a row & get ${reward.booster} booster`;
       }
       if (reward.credit !== 0) {
-        creditText = `Sign-In ${reward.consecutive} days in a week & get ${reward.credit} extra credits`;
+        creditText = `Sign-In ${reward.consecutive} days in a row & get ${reward.credit} extra credits`;
       }
     }
 

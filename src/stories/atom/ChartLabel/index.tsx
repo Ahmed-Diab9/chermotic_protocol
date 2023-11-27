@@ -21,7 +21,7 @@ export const ChartLabel = (props: ChartLabelProps) => {
             translucent ? `opacity-30 from-primary/50 to-primary/30` : `from-primary to-primary/10`
           }`}
         />
-        <p className="text-sm leading-none text-primary-light">{label}</p>
+        <p className="text-sm leading-none text-primary">{label}</p>
       </div>
     </SkeletonElement>
   );

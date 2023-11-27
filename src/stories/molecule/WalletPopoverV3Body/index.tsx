@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { OutlinkIcon } from '~/assets/icons/Icon';
+import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -28,6 +28,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
 
     assets,
     isAssetEmpty,
+    onTokenRegister,
 
     formattedLps,
     isLiquidityTokenEmpty,
@@ -42,7 +43,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
     onLpClick,
   } = useWalletPopoverV3Body();
   return (
-    <div className="WalletPopoverMain relative flex flex-col h-full ">
+    <div className="relative flex flex-col h-full WalletPopoverV3Body">
       <Avatar src={arbitrumIcon} label={chainName} size="xl" fontSize="sm" gap="3" />
       <section className="flex flex-col flex-grow mt-6 box-inner">
         <article className="px-4 py-3 border-b bg-paper-light dark:bg-paper">
@@ -90,13 +91,24 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <Button
-                                href={explorerUrl}
-                                iconOnly={<OutlinkIcon />}
-                                css="unstyled"
-                                size="sm"
-                                className="text-primary-light"
-                              />
+                              <div className="flex items-center ml-1 gap-[2px]">
+                                <Button
+                                  href={explorerUrl}
+                                  iconOnly={<OutlinkIcon className="!w-[14px]" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                />
+                                <Button
+                                  iconOnly={<PlusIcon className="!w-[14px]" />}
+                                  css="unstyled"
+                                  size="xs"
+                                  className="text-primary-light"
+                                  onClick={() => {
+                                    onTokenRegister(key);
+                                  }}
+                                />
+                              </div>
                             </div>
 
                             <div className="ml-auto text-right">
@@ -125,12 +137,21 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                     ) : (
                       <div className="flex flex-col gap-3">
                         {formattedLps.map(
-                          ({ key, name, clpSymbol, token, market, tokenImage, balance }) => (
+                          ({
+                            key,
+                            name,
+                            addresses,
+                            clpSymbol,
+                            balance,
+                            tokenName,
+                            tokenImage,
+                            marketDescription,
+                          }) => (
                             <Link
                               to="#"
                               key={key}
                               onClick={() => {
-                                onLpClick(token, market);
+                                onLpClick(addresses);
                               }}
                             >
                               <div className="flex gap-3 pb-3 border-b last:border-b-0">
@@ -146,11 +167,11 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   <div className="flex flex-col gap-1 leading-none">
                                     <SkeletonElement isLoading={isLoading} width={100}>
                                       <p className="font-semibold">
-                                        {token}
+                                        {tokenName}
                                         <span className="px-1 font-light text-primary-lighter">
                                           |
                                         </span>
-                                        {market}
+                                        {marketDescription}
                                       </p>
                                     </SkeletonElement>
                                     <SkeletonElement isLoading={isLoading} width={100}>
@@ -160,7 +181,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                       </p>
                                     </SkeletonElement>
                                     <SkeletonElement isLoading={isLoading} width={60}>
-                                      <p className="font-medium break-all text-primary">
+                                      <p className="mt-1 font-medium break-all text-primary">
                                         {/* {liquidity} {name} */}
                                         {balance} {clpSymbol}
                                       </p>

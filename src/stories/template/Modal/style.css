@@ -1,7 +1,7 @@
 .modal {
   @apply inline-block border rounded-2xl relative bg-paper shadow-modal dark:shadow-none;
   .modal-title {
-    @apply text-center text-lg mb-2 font-semibold;
+    @apply text-center mb-2 font-semibold;
   }
   .modal-content {
     @apply flex flex-col mt-5 mb-7;
@@ -12,14 +12,23 @@
       @apply flex-auto;
     }
   }
-  .wrapper-liq {
-    @apply relative flex flex-col border border-gray-light dark:border-transparent rounded-xl overflow-hidden;
+  .modal-box {
+    @apply relative flex flex-col rounded-xl overflow-hidden bg-paper-lighter;
+    * {
+      @apply border-gray-light/60;
+    }
   }
 
   &.modal-base {
     @apply px-10 pt-6 pb-7 w-full max-w-[500px];
+    .modal-title {
+      @apply text-xl;
+    }
   }
   &.modal-sm {
     @apply px-5 pb-5 pt-6 w-[320px];
+    &.modal-title {
+      @apply text-base;
+    }
   }
 }

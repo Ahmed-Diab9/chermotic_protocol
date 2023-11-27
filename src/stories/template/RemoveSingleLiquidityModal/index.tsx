@@ -43,15 +43,15 @@ export function RemoveSingleLiquidityModal() {
             <ModalCloseButton onClick={onClose} />
           </Dialog.Title>
           {/* <div className="w-[100px] mx-auto border-b border-2 !border-primary"></div> */}
-          <Dialog.Description className="gap-5 modal-content">
-            <article className="wrapper-liq">
+          <Dialog.Description className="modal-content">
+            <article className="mb-6 modal-box">
               <LiquidityItems />
             </article>
 
-            <article className="flex flex-col gap-2 pb-5 border-b">
+            <article className="flex flex-col gap-2 pb-3 mb-3 border-b">
               <div className="flex justify-between">
-                <div className="flex text-primary-lighter">
-                  My Liquidity Value
+                <div className="flex text-primary-light">
+                  <p>My Liquidity Value</p>
                   <TooltipGuide
                     label="RemoveLiquidityModal-my-liquidity-value"
                     tip="The value of my CLB tokens converted into the current token value."
@@ -63,8 +63,8 @@ export function RemoveSingleLiquidityModal() {
               </div>
 
               <div className="flex justify-between">
-                <div className="flex text-primary-lighter">
-                  Removable Liquidity
+                <div className="flex text-primary-light">
+                  <p>Removable Liquidity</p>
                   <TooltipGuide
                     label="RemoveLiquidityModal-removable-liquidity"
                     tip="The amount of liquidity that is currently removable due to not being utilized."
@@ -73,7 +73,7 @@ export function RemoveSingleLiquidityModal() {
                 </div>
                 <p>
                   {removableLiquidity} {tokenName}
-                  <span className="ml-1 text-primary-lighter">({removableRate}%)</span>
+                  <span className="ml-1 text-primary-light">({removableRate}%)</span>
                 </p>
               </div>
             </article>
@@ -81,11 +81,11 @@ export function RemoveSingleLiquidityModal() {
             <article className="">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex-none font-semibold">Remove CLB Tokens</p>
-                <p className="text-right text-primary-lighter">
+                <p className="text-right text-primary-light">
                   {inputClbValue} {tokenName}
                 </p>
               </div>
-              <div className="flex items-center justify-between gap-6 mt-3">
+              <div className="flex items-center justify-between gap-6 mt-2">
                 <div className="flex gap-1">
                   <Button
                     className="flex-auto shadow-base"
@@ -122,7 +122,7 @@ export function RemoveSingleLiquidityModal() {
                   </div>
                 </div>
               </div>
-              <p className="mt-4 text-xs text-primary-lighter">
+              <p className="mt-3 text-sm text-primary-lighter">
                 Holders can immediately withdraw liquidity by burning the CLB tokens that is not
                 collateralized by maker margin. Since the withdrawal takes place in the next oracle
                 round, the final amount of removable liquidity is determined based on the

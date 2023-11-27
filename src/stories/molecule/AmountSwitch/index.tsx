@@ -38,7 +38,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     balance: 'Exceeded available account balance.',
     liquidity: 'Exceeded free liquidity size.',
     minimum: `Less than minimum betting amount. (${minAmount} ${tokenName})`,
-    tradeFee: 'Trade fee is too high.',
+    tradeFee: 'Collateral and fees exceeded available account balance.',
   };
   const errorMessage = disableDetail ? errors[disableDetail] : undefined;
 
@@ -74,7 +74,7 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             assetSrc={tokenImage}
             direction={optionInputDirection}
             size="lg"
-            ratios={[20, 40, 60, 80]}
+            ratios={[25, 50, 75, 100]}
           />
           {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>

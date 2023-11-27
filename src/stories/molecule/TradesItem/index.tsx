@@ -28,12 +28,12 @@ export function TradesItem(props: TradesItemProps) {
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{token && token.name}</h6>
+                <h5>{token && token.name}</h5>
               </SkeletonElement>
             </div>
             <div className="flex items-center gap-1 pl-2 border-l">
               <SkeletonElement isLoading={isLoading} width={40}>
-                <h6>{market && market.description}</h6>
+                <h5>{market && market.description}</h5>
               </SkeletonElement>
             </div>
             <SkeletonElement isLoading={isLoading} width={40}>

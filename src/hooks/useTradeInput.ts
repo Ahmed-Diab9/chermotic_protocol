@@ -6,19 +6,10 @@ import { useLiquidityPool } from '~/hooks/useLiquidityPool';
 import { useMargins } from '~/hooks/useMargins';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 
-import { FEE_RATE_DECIMAL } from '~/configs/decimals';
-
 import { TradeInput } from '~/typings/trade';
 
-import {
-  abs,
-  divFloat,
-  divPreserved,
-  floatMath,
-  formatDecimals,
-  mulFloat,
-  mulPreserved,
-} from '~/utils/number';
+import { divFloat, divPreserved, floatMath, formatDecimals, mulFloat } from '~/utils/number';
+import { calculateMakerMargin, calculateTradingFee } from '../utils/trade';
 
 import { useAppDispatch, useAppSelector } from '~/store';
 import { tradesAction } from '~/store/reducer/trades';
@@ -33,7 +24,7 @@ function getCalculatedValues({
   takeProfit: number;
   stopLoss: number;
   amount: bigint;
-}): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance'> {
+}): Omit<TradeInput, 'method' | 'direction' | 'maxFeeAllowance' | 'tradeFee' | 'feePercent'> {
   const leverage = floatMath(100).divide(stopLoss);
 
   const takeProfitRate = floatMath(takeProfit).divide(100);
@@ -45,7 +36,7 @@ function getCalculatedValues({
       : { quantity: amount, collateral: mulFloat(amount, lossCutRate) };
 
   const takerMargin = collateral;
-  const makerMargin = mulFloat(divFloat(collateral, lossCutRate), takeProfitRate);
+  const makerMargin = calculateMakerMargin(takerMargin, lossCutRate, takeProfitRate);
 
   return {
     collateral: collateral,
@@ -121,28 +112,13 @@ export const useTradeInput = (props: Props) => {
       ) {
         return { tradeFee: 0n, feePercent: 0n };
       }
-      const { tradeFee } = (pool?.bins || []).reduce(
-        (acc, cur) => {
-          if (
-            (direction === 'long' && cur.baseFeeRate > 0) ||
-            (direction === 'short' && cur.baseFeeRate < 0) ||
-            acc.makerMargin > 0n
-          ) {
-            const feeRate = abs(cur.baseFeeRate);
-
-            if (acc.makerMargin >= cur.freeLiquidity) {
-              acc.tradeFee =
-                acc.tradeFee + mulPreserved(cur.freeLiquidity, feeRate, FEE_RATE_DECIMAL);
-              acc.makerMargin = acc.makerMargin - cur.freeLiquidity;
-            } else {
-              acc.tradeFee =
-                acc.tradeFee + mulPreserved(acc.makerMargin, feeRate, FEE_RATE_DECIMAL);
-              acc.makerMargin = 0n;
-            }
-          }
-          return acc;
-        },
-        { tradeFee: 0n, makerMargin: makerMargin }
+      const tradeFee = calculateTradingFee(
+        makerMargin,
+        (pool?.bins || []).filter(
+          (bin) =>
+            (direction === 'long' && bin.baseFeeRate > 0) ||
+            (direction === 'short' && bin.baseFeeRate < 0)
+        )
       );
 
       const feePercent =
