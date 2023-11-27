@@ -85,7 +85,7 @@ export const useFaucet = (props: UseFaucet) => {
       if (isFaucetEnabled) {
         return {
           isActive: true,
-          label: `Receive ${formatDecimals(amount, token.decimals, 0)}${token.name}`,
+          label: `Receive ${formatDecimals(amount, token.decimals, 0)} ${token.name}`,
           tokenName: token.name,
         };
       } else {

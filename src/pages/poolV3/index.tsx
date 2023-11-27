@@ -16,6 +16,7 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { Tag } from '~/stories/atom/Tag';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
+import { PoolAnalyticsV3 } from '~/stories/template/PoolAnalyticsV3';
 import { PoolDetail } from '~/stories/template/PoolDetail';
 import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
@@ -138,10 +139,9 @@ const PoolV3 = () => {
               <div className="panel panel-translucent">
                 <PoolPanelV2 />
               </div>
-              {/* TODO: Should be implemented later */}
-              {/* <div className="mt-10">
-                    <PoolAnalyticsV3 />
-                  </div> */}
+              <div className="mt-10">
+                <PoolAnalyticsV3 />
+              </div>
             </div>
             <div className="flex-none w-[36%] min-w-[340px] max-w-[380px] flex flex-col gap-3">
               {/* To be added later */}

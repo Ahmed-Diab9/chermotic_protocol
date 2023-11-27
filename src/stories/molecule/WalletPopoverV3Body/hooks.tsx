@@ -11,21 +11,27 @@ import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import useMarkets from '~/hooks/commons/useMarkets';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
-import { useEntireChromaticLp } from '~/hooks/useChromaticLp';
+import { useChromaticLp, useEntireChromaticLp } from '~/hooks/useChromaticLp';
 import { useEntireMarkets } from '~/hooks/useMarket';
 import { ADDRESS_ZERO, trimAddress } from '~/utils/address';
 import { copyText } from '~/utils/clipboard';
 import { formatDecimals, numberFormat } from '~/utils/number';
 
+type Addresses = {
+  token: Address;
+  market: Address;
+  lp: Address;
+};
+
 type FormattedLp = {
   key: string;
   name: string;
   clpSymbol: string;
-  image: string;
-  token: string;
-  tokenImage: string;
-  market: string;
   balance: string;
+  addresses: Addresses;
+  tokenName: string;
+  tokenImage: string;
+  marketDescription: string;
 };
 
 export const useWalletPopoverV3Body = () => {
@@ -40,6 +46,7 @@ export const useWalletPopoverV3Body = () => {
   const isLoading = isTokenBalanceLoading || isChromaticBalanceLoading;
   const { markets } = useEntireMarkets();
   const { lpList } = useEntireChromaticLp();
+  const { onLpSelect } = useChromaticLp();
   const { disconnectAsync } = useDisconnect();
   const navigate = useNavigate();
   function onCreateAccount() {
@@ -126,12 +133,22 @@ export const useWalletPopoverV3Body = () => {
     const key = `${lp.settlementToken.name}-${lp.market.description}-${lp.name}`;
     const name = lp.name;
     const clpSymbol = lp.clpSymbol;
-    const image = lp.image;
-
-    const market = lp.market.description;
     const { name: tokenName, image: tokenImage } = lp.settlementToken;
     const balance = formatDecimals(lp.balance, lp.clpDecimals, 2, true);
-    acc.push({ key, name, clpSymbol, token: tokenName, tokenImage, market, balance, image });
+    acc.push({
+      key,
+      name,
+      clpSymbol,
+      balance,
+      addresses: {
+        token: lp.settlementToken.address,
+        market: lp.market.address,
+        lp: lp.address,
+      },
+      tokenName,
+      tokenImage,
+      marketDescription: lp.market.description,
+    });
     return acc;
   }, []);
   const isLiquidityTokenEmpty = formattedLps.length === 0;
@@ -146,14 +163,20 @@ export const useWalletPopoverV3Body = () => {
     return isNotNil(chromaticAccount) && copyText(chromaticAccount);
   }
   const isChromaticAccountExist = chromaticAccount && chromaticAccount !== ADDRESS_ZERO;
-  const onLpClick = (tokenName: string, marketDescription: string) => {
-    const token = tokens?.find((token) => token.name === tokenName);
-    const market = markets?.find((market) => market.description === marketDescription);
+  const onLpClick = (addresses: Addresses) => {
+    const { token: tokenAddress, market: marketAddress, lp: lpAddress } = addresses;
+    const token = tokens?.find((token) => token.address === tokenAddress);
+    const market = markets?.find((market) => market.address === marketAddress);
     if (isNil(token) || isNil(market)) {
+      return;
+    }
+    const lp = lpList?.find((lp) => lp.address === lpAddress);
+    if (isNil(lp)) {
       return;
     }
     onTokenSelect(token);
     onMarketSelect(market);
+    onLpSelect(lp);
     navigate('/pool');
   };
   return {

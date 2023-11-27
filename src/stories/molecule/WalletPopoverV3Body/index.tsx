@@ -137,12 +137,21 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                     ) : (
                       <div className="flex flex-col gap-3">
                         {formattedLps.map(
-                          ({ key, name, clpSymbol, token, market, tokenImage, balance }) => (
+                          ({
+                            key,
+                            name,
+                            addresses,
+                            clpSymbol,
+                            balance,
+                            tokenName,
+                            tokenImage,
+                            marketDescription,
+                          }) => (
                             <Link
                               to="#"
                               key={key}
                               onClick={() => {
-                                onLpClick(token, market);
+                                onLpClick(addresses);
                               }}
                             >
                               <div className="flex gap-3 pb-3 border-b last:border-b-0">
@@ -158,11 +167,11 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   <div className="flex flex-col gap-1 leading-none">
                                     <SkeletonElement isLoading={isLoading} width={100}>
                                       <p className="font-semibold">
-                                        {token}
+                                        {tokenName}
                                         <span className="px-1 font-light text-primary-lighter">
                                           |
                                         </span>
-                                        {market}
+                                        {marketDescription}
                                       </p>
                                     </SkeletonElement>
                                     <SkeletonElement isLoading={isLoading} width={100}>
