@@ -249,44 +249,18 @@ function Airdrop() {
                                 for a single box opening.
                               </p>
                             </div>
-                            <div className="flex flex-col items-center mt-10">
-                              <img src={RandomboxImage} alt="ramdom box" className="w-[330px]" />
-                              <div className="flex mb-10 text-lg text-left border-y text-primary-light">
-                                <div className="w-1/3 px-3 py-5">
-                                  <p>
-                                    rCHRMA can be obtained through a random box, requiring 100
-                                    credits for a single box opening.
-                                  </p>
-                                </div>
-                                <div className="w-1/3 px-3 py-5 border-l">
-                                  <p>
-                                    The Random Box will be activated and opened in the first quarter
-                                    of 2024.
-                                  </p>
-                                </div>
-                                <div className="w-1/3 px-3 py-5 border-l">
-                                  <p>
-                                    To open Random Box, you must join the specified Discord server
-                                    to complete phone verification, and you may be asked to complete
-                                    some additional authentications. (The address of the designated
-                                    Discord server and the other authentications will be announced
-                                    later.)
-                                  </p>
-                                </div>
-                              </div>
-                              <Button
-                                label="Open Random Box"
-                                css="chrm-hover"
-                                size="3xl"
-                                className="!text-xl !w-[280px]"
-                                onClick={() => setRandomboxModalOpen(true)}
-                              />
+                            <div className="w-1/3 px-3 py-5 border-l">
+                              <p>
+                                The Random Box will be activated and opened in the first quarter of
+                                2024.
+                              </p>
                             </div>
                             <div className="w-1/3 px-3 py-5 border-l">
                               <p>
-                                To open the Random Box, you must join a designated Discord server
-                                and complete phone verification. (The address of the designated
-                                Discord server will be announced later.)
+                                To open Random Box, you must join the specified Discord server to
+                                complete phone verification, and you may be asked to complete some
+                                additional authentications. (The address of the designated Discord
+                                server and the other authentications will be announced later.)
                               </p>
                             </div>
                           </div>
