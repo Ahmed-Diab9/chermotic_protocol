@@ -43,7 +43,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
     onLpClick,
   } = useWalletPopoverV3Body();
   return (
-    <div className="relative flex flex-col h-full WalletPopoverMain ">
+    <div className="relative flex flex-col h-full WalletPopoverV3Body">
       <Avatar src={arbitrumIcon} label={chainName} size="xl" fontSize="sm" gap="3" />
       <section className="flex flex-col flex-grow mt-6 box-inner">
         <article className="px-4 py-3 border-b bg-paper-light dark:bg-paper">
