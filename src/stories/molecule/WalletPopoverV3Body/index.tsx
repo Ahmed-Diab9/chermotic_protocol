@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
-import { ChevronDoubleRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { OutlinkIcon } from '~/assets/icons/Icon';
+import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { AddressWithButton } from '~/stories/atom/AddressWithButton';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -91,16 +91,16 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <div className="flex items-center ml-1">
+                              <div className="flex items-center ml-1 gap-[2px]">
                                 <Button
                                   href={explorerUrl}
-                                  iconOnly={<OutlinkIcon className="!w-4" />}
+                                  iconOnly={<OutlinkIcon className="!w-[14px]" />}
                                   css="unstyled"
                                   size="xs"
                                   className="text-primary-light"
                                 />
                                 <Button
-                                  iconOnly={<PlusCircleIcon className="!w-4" />}
+                                  iconOnly={<PlusIcon className="!w-[14px]" />}
                                   css="unstyled"
                                   size="xs"
                                   className="text-primary-light"
