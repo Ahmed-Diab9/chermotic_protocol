@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { ChevronDoubleRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { OutlinkIcon, PlusIcon } from '~/assets/icons/Icon';
 import arbitrumIcon from '~/assets/images/arbitrum.svg';
@@ -91,22 +91,28 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <Button
-                                href={explorerUrl}
-                                iconOnly={<OutlinkIcon />}
-                                css="unstyled"
-                                size="sm"
-                                className="text-primary-light"
-                              />
-                              <Button
-                                iconOnly={<PlusCircleIcon />}
-                                css="unstyled"
-                                size="sm"
-                                className="text-primary-light"
-                                onClick={() => {
-                                  onTokenRegister(key);
-                                }}
-                              />
+                              <div className="flex">
+                                <span>
+                                  <Button
+                                    href={explorerUrl}
+                                    iconOnly={<OutlinkIcon />}
+                                    css="unstyled"
+                                    size="sm"
+                                    className="text-primary-light"
+                                  />
+                                </span>
+                                <span className="border-l">
+                                  <Button
+                                    iconOnly={<PlusIcon />}
+                                    css="unstyled"
+                                    size="sm"
+                                    className="text-primary-light"
+                                    onClick={() => {
+                                      onTokenRegister(key);
+                                    }}
+                                  />
+                                </span>
+                              </div>
                             </div>
 
                             <div className="ml-auto text-right">
