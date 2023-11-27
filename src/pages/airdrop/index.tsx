@@ -305,7 +305,7 @@ function Airdrop() {
                           <h2 className="text-4xl">Leader board</h2>
                           <div className="ml-auto text-lg text-primary-light">{message}</div>
                         </div>
-                        <div className="p-5 mt-10 mb-12 panel">
+                        <div className="p-5 mt-10 mb-12 text-center panel">
                           <div className="flex justify-between">
                             <div className="w-1/3">
                               <h2 className="text-4xl">{metadata?.participants}</h2>
@@ -351,7 +351,7 @@ function Airdrop() {
                         <BlurText label="My History" className="text-[52px]" color="chrm" />
                         <div className="ml-auto text-lg text-primary-light">{message}</div>
                       </div>
-                      <div className="p-5 mt-10 panel">
+                      <div className="p-5 mt-10 text-center panel">
                         <div className="flex justify-between">
                           <div className="w-1/2">
                             <h2 className="text-4xl">
