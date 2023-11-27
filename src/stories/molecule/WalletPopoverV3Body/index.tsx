@@ -91,28 +91,22 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                                   gap="2"
                                 />
                               </SkeletonElement>
-                              <div className="flex">
-                                <span>
-                                  <Button
-                                    href={explorerUrl}
-                                    iconOnly={<OutlinkIcon />}
-                                    css="unstyled"
-                                    size="sm"
-                                    className="text-primary-light"
-                                  />
-                                </span>
-                                <span className="border-l">
-                                  <Button
-                                    iconOnly={<PlusIcon />}
-                                    css="unstyled"
-                                    size="sm"
-                                    className="text-primary-light"
-                                    onClick={() => {
-                                      onTokenRegister(key);
-                                    }}
-                                  />
-                                </span>
-                              </div>
+                              <Button
+                                href={explorerUrl}
+                                iconOnly={<OutlinkIcon />}
+                                css="translucent"
+                                size="xs"
+                                className="text-primary-light"
+                              />
+                              <Button
+                                iconOnly={<PlusIcon />}
+                                css="translucent"
+                                size="xs"
+                                className="text-primary-light"
+                                onClick={() => {
+                                  onTokenRegister(key);
+                                }}
+                              />
                             </div>
 
                             <div className="ml-auto text-right">
