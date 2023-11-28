@@ -114,9 +114,9 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
             <Tab.Group>
               <Tab.List className="flex flex-col w-full mb-5 tabs-list">
                 <div className="px-5 -mx-5 -mt-1 border-b">
-                  <div className="flex gap-2 pb-3 text-left">
-                    <p className="flex mb-1 text-primary-lighter">Wallet Balance</p>
-                    <h5>
+                  <div className="flex items-baseline gap-3 pb-3 text-left">
+                    <p className="flex items-center mb-1 text-primary-lighter">Wallet Balance</p>
+                    <h5 className="text-xl">
                       <SkeletonElement
                         // isLoading={isLoading}
                         width={80}
