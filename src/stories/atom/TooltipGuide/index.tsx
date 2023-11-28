@@ -1,9 +1,10 @@
+import { PropsWithChildren } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { Outlink } from '../Outlink';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import './style.css';
 
-interface TooltipGuideProps {
+interface TooltipGuideProps extends PropsWithChildren {
   label: string;
   tip?: string;
   outLink?: string;
@@ -21,28 +22,33 @@ interface TooltipGuideProps {
     | 'left'
     | 'left-start'
     | 'left-end';
+  css?: 'solid' | 'outline';
   size?: 'sm' | 'base' | 'lg';
   align?: 'center' | 'left' | 'right';
   className?: string;
   iconClass?: string;
+  tipClass?: string;
   iconOnly?: boolean;
   tipOnly?: boolean;
   onClick?: () => unknown;
 }
 
-export const TooltipGuide = (props: TooltipGuideProps) => {
+export const TooltipGuide = (props: PropsWithChildren<TooltipGuideProps>) => {
   const {
     label,
     tip,
     outLink,
     outLinkAbout,
     place = 'top',
+    css = 'solid',
     size = 'base',
     align = 'left',
     className = '',
     iconClass,
+    tipClass,
     iconOnly,
     tipOnly,
+    children,
   } = props;
 
   return (
@@ -55,22 +61,26 @@ export const TooltipGuide = (props: TooltipGuideProps) => {
       {iconOnly || (
         <Tooltip
           anchorSelect={`.tooltip-${label}`}
-          className={`tooltip tooltip-solid text-${align}`}
+          className={`tooltip tooltip-${css} text-${align} tooltip-${size} ${tipClass}`}
           place={place}
           clickable
           // isOpen
           // events={["click"]}
         >
-          <span className={`tooltip-${size} inline-flex flex-col`}>
-            <span className="text-sm font-medium text-inverted">{tip}</span>
-            {outLink && (
-              <Outlink
-                outLink={outLink}
-                outLinkAbout={outLinkAbout}
-                className="mt-2 !text-inverted-light"
-              />
-            )}
-          </span>
+          {children ? (
+            <div className="w-full">{children}</div>
+          ) : (
+            <span className={`inline-flex flex-col`}>
+              <span className="text-sm font-medium text-inverted">{tip}</span>
+              {outLink && (
+                <Outlink
+                  outLink={outLink}
+                  outLinkAbout={outLinkAbout}
+                  className="mt-2 !text-inverted-light"
+                />
+              )}
+            </span>
+          )}
         </Tooltip>
       )}
     </span>

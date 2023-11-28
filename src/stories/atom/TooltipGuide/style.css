@@ -20,7 +20,7 @@
     @apply w-fit max-w-[420px];
   }
   .tooltip {
-    @apply rounded-lg inline-flex;
+    @apply rounded-lg flex;
   }
   .tooltip-solid {
     @apply bg-primary text-inverted;
