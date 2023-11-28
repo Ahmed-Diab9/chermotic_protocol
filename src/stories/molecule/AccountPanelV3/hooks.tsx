@@ -131,6 +131,16 @@ export const useAccountPanelV3 = ({ type }: UseAccountPanelV3Props) => {
     tokenImage,
     availableMargin,
     balance,
+    walletBalance:
+      isNotNil(walletBalances) && isNotNil(currentToken)
+        ? formatDecimals(
+            walletBalances[currentToken.address],
+            currentToken.decimals,
+            2,
+            true,
+            'trunc'
+          )
+        : '0',
 
     maxAmount,
     minimumAmount,

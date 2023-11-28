@@ -1,9 +1,9 @@
 import './style.css';
 
 import { Tab } from '@headlessui/react';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { OutlinkIcon } from '~/assets/icons/Icon';
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { Avatar } from '~/stories/atom/Avatar';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
@@ -32,6 +32,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     tokenName,
     tokenImage,
     availableMargin,
+    walletBalance,
     onClickCreateAccount,
   } = useAccountPanelV3(props);
   const { onPanelClose } = props;
@@ -121,7 +122,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
                         width={80}
                       >
                         {/* TODO: show wallet balance */}
-                        100 {tokenName}
+                        {walletBalance} {tokenName}
                       </SkeletonElement>
                     </h5>
                   </div>
