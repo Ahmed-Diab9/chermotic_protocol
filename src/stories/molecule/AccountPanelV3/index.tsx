@@ -1,6 +1,7 @@
 import './style.css';
 
 import { Tab } from '@headlessui/react';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { CompleteLgIcon, CreateLgIcon, LoadingLgIcon } from '~/assets/icons/CreateAccountIcon';
 import { OutlinkIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
@@ -31,6 +32,7 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
     tokenName,
     tokenImage,
     availableMargin,
+    walletBalance,
     onClickCreateAccount,
   } = useAccountPanelV3(props);
   const { onPanelClose } = props;
@@ -110,29 +112,47 @@ export const AccountPanelV3 = (props: AccountPanelV3Props) => {
           <div className="w-full wrapper-tabs">
             {/* <Tab.Group selectedIndex={selectedTab} onChange={onSelectTab}> */}
             <Tab.Group>
-              <Tab.List className="flex items-center w-full mb-5 tabs-list">
-                <div className="text-left">
-                  <div className="flex mb-1 text-primary-lighter">
-                    <h4>Available Margin</h4>
-                    <TooltipGuide
-                      label="available-margin"
-                      tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
+              <Tab.List className="flex flex-col w-full mb-5 tabs-list">
+                <div className="px-5 -mx-5 -mt-1 border-b">
+                  <div className="flex items-baseline gap-3 pb-3 text-left">
+                    <p className="flex items-center mb-1 text-primary-lighter">Wallet Balance</p>
+                    <h5 className="text-xl">
+                      <SkeletonElement
+                        // isLoading={isLoading}
+                        width={80}
+                      >
+                        {/* TODO: show wallet balance */}
+                        {walletBalance} {tokenName}
+                      </SkeletonElement>
+                    </h5>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between w-full pt-4">
+                  <div className="">
+                    <div className="flex mb-1 text-primary-lighter">
+                      <h4 className="text-left">Account Available Margin</h4>
+                      <TooltipGuide
+                        label="available-margin"
+                        tip="Available Margin is the amount that can be immediately withdrawn. Available Margin = Balance - Taker Margin"
+                      />
+                    </div>
+                    <Avatar
+                      // label={balance}
+                      label={`${availableMargin} ${tokenName}`}
+                      fontSize="3xl"
+                      src={tokenImage}
                     />
                   </div>
-                  <Avatar
-                    // label={balance}
-                    label={`${availableMargin} ${tokenName}`}
-                    fontSize="3xl"
-                    src={tokenImage}
-                  />
-                </div>
-                <div className="flex gap-3 ml-auto">
-                  <Tab value="short" className="btn-tab btn-sm btn btn-line">
-                    Deposit
-                  </Tab>
-                  <Tab value="long" className="btn-tab btn-sm btn btn-line">
-                    Withdraw
-                  </Tab>
+                  <div className="flex gap-3 ml-auto">
+                    <Tab value="short" className="btn-tab btn-sm btn btn-line">
+                      <ArrowDownIcon className="w-3 h-3 mr-1 -ml-1" />
+                      <span>Deposit</span>
+                    </Tab>
+                    <Tab value="long" className="btn-tab btn-sm btn btn-line">
+                      <ArrowUpIcon className="w-3 h-3 mr-1 -ml-1" />
+                      <span>Withdraw</span>
+                    </Tab>
+                  </div>
                 </div>
               </Tab.List>
               <Tab.Panels className="flex flex-col items-center w-full">
@@ -204,12 +224,12 @@ export const AccountManagementV3 = (props: AccountManagementV3Props) => {
             <Avatar size="xs" label={tokenName} gap="1" src={tokenImage} />
           </div>
           <div>
-            <div className="flex mb-1 text-primary-lighter">Account Balance</div>
-            <div>
+            <p className="flex mb-1 text-primary-lighter">Account Balance</p>
+            <h5>
               <SkeletonElement isLoading={isLoading} width={80}>
                 {balance} {tokenName}
               </SkeletonElement>
-            </div>
+            </h5>
           </div>
           {/* 
                       Temporary commented out 
