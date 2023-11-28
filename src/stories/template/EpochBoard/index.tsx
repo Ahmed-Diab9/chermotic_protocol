@@ -22,20 +22,7 @@ export const EpochBoard = (props: EpochBoardProps) => {
       <div className="px-5 py-4 border rounded panel border-chrm">
         <div className="flex items-center justify-between pb-4 border-b">
           <h6 className="text-sm text-primary-light">Epoch Countdown</h6>
-          <div className="flex items-baseline gap-[6px]">
-            <h4 className="text-4xl">
-              0<span className="text-xl text-primary-light ml-[2px]">D</span>
-            </h4>
-            <h4 className="text-4xl">
-              10<span className="text-xl text-primary-light ml-[2px]">H</span>
-            </h4>
-            <h4 className="text-4xl">
-              36<span className="text-xl text-primary-light ml-[2px]">M</span>
-            </h4>
-            <h4 className="text-4xl">
-              37<span className="text-xl text-primary-light ml-[2px]">S</span>
-            </h4>
-          </div>
+          <Countdown />
         </div>
         <div className="py-5">
           <div className="flex gap-10">
@@ -72,5 +59,30 @@ export const EpochBoard = (props: EpochBoardProps) => {
         the fee, the more liquidity is available, which may discourage traders from using it.
       </p>
     </div>
+  );
+};
+
+const Countdown = () => {
+  return (
+    <div className="flex items-baseline gap-[6px]">
+      <CountdownItem value={1} unit="D" />
+      <CountdownItem value={10} unit="H" />
+      <CountdownItem value={36} unit="M" />
+      <CountdownItem value={37} unit="S" />
+    </div>
+  );
+};
+
+interface CountdownItemProps {
+  value: number;
+  unit: string;
+}
+const CountdownItem = (props: CountdownItemProps) => {
+  const { value, unit } = props;
+  return (
+    <h4 className="text-4xl">
+      {value}
+      <span className="text-xl text-primary-light ml-[2px]">{unit}</span>
+    </h4>
   );
 };
