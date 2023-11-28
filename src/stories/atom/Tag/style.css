@@ -12,6 +12,9 @@
   /* @apply text-primary bg-inverted; */
   @apply text-price-lower bg-price-lower/10;
 }
+.tag-default {
+  @apply bg-gray-lighter normal-case;
+}
 .tag-leverage {
   @apply text-leverage bg-leverage/10 normal-case;
 }
@@ -23,7 +26,4 @@
 }
 .tag-risk-low {
   @apply text-risk-low bg-risk-low/10 capitalize;
-}
-.tag-default {
-  @apply bg-gray-lighter normal-case;
 }
