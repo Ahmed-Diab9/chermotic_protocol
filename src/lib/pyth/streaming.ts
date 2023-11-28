@@ -1,27 +1,8 @@
 import { LibrarySymbolInfo, ResolutionString, SubscribeBarsCallback } from '~/lib/charting_library';
-import { PythStreamData } from '~/typings/api';
+import { listenPriceFeed } from './subscribe';
+import { Bar, Handler, PythStreamData, SubscriptionItem } from './types';
 
 const channelToSubscription = new Map<string | undefined, SubscriptionItem>();
-
-type Bar = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
-
-type Handler = {
-  id: string;
-  callback: SubscribeBarsCallback;
-};
-
-type SubscriptionItem = {
-  subscriberUID: string;
-  resolution: ResolutionString;
-  lastDailyBar: Bar;
-  handlers: Handler[];
-};
 
 function handleStreamingData(data: PythStreamData): void {
   const { id, p, t } = data;
@@ -64,14 +45,12 @@ function handleStreamingData(data: PythStreamData): void {
 }
 
 export async function startStreaming() {
-  function streamData({ detail }: any) {
+  function streamData({ detail }: CustomEvent<PythStreamData>) {
     handleStreamingData(detail);
   }
-  window.addEventListener('price-update', streamData);
 
-  return async () => {
-    window.removeEventListener('price-update', streamData);
-  };
+  const unlisten = listenPriceFeed(streamData);
+  return unlisten;
 }
 
 function getNextDailyBarTime(barTime: number) {
