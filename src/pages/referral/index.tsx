@@ -8,6 +8,7 @@ import { EpochBoard } from '~/stories/template/EpochBoard';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
+import { Tag } from '~/stories/atom/Tag';
 import { Loading } from '~/stories/atom/Loading';
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
@@ -51,6 +52,55 @@ function Referral() {
                   <h3 className="text-4xl">
                     Your Rewards in <span className="text-chrm">Epoch #3</span>
                   </h3>
+                  <div className="flex gap-10 mt-8">
+                    <div className="w-1/2">
+                      <div className="flex">
+                        <div>
+                          <h5 className="mb-3 text-xl text-primary-light">As Referrer</h5>
+                          <h4 className="text-3xl">340K rCHRMA</h4>
+                        </div>
+                        <Tag
+                          label="Tier 0"
+                          className="ml-auto text-xl font-semibold"
+                          css="default"
+                        />
+                      </div>
+                      <div className="flex gap-10 text-lg mt-7">
+                        <div>
+                          <p className="mb-2 text-primary-light">Total Fees</p>
+                          <p className="text-xl">434.00</p>
+                        </div>
+                        <div>
+                          <p className="mb-2 text-primary-light">Rebate</p>
+                          <p className="text-xl">25%</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-l"></div>
+                    <div className="w-1/2">
+                      <div className="flex">
+                        <div>
+                          <h5 className="mb-3 text-xl text-primary-light">As Trader</h5>
+                          <h4 className="text-3xl">340K rCHRMA</h4>
+                        </div>
+                        <Tag
+                          label="Tier 0"
+                          className="ml-auto text-xl font-semibold"
+                          css="default"
+                        />
+                      </div>
+                      <div className="flex gap-10 text-lg mt-7">
+                        <div>
+                          <p className="mb-2 text-primary-light">Total Fees</p>
+                          <p className="text-xl">434.00</p>
+                        </div>
+                        <div>
+                          <p className="mb-2 text-primary-light">Rebate</p>
+                          <p className="text-xl">25%</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </article>
                 <article>
                   <h3 className="text-4xl">Referral History </h3>
