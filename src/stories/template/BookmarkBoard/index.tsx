@@ -5,13 +5,7 @@ import './style.css';
 export interface BookmarkBoardProps {}
 
 export const BookmarkBoard = (props: BookmarkBoardProps) => {
-  const {
-    bookmarks = [],
-    bookmarkPrices,
-    bookmarkClasses,
-    isBookmarkLoading,
-    onBookmarkClick,
-  } = useBookmarkBoard();
+  const { bookmarks = [], bookmarkPrices, bookmarkClasses, onBookmarkClick } = useBookmarkBoard();
   return (
     <div className={`mb-2 BookmarkBoard ${bookmarks.length <= 0 ? 'hidden' : ''}`}>
       <div className="flex items-stretch h-6">
