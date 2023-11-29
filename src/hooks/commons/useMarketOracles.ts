@@ -1,4 +1,5 @@
 import { isNil } from 'ramda';
+import { useCallback } from 'react';
 import useSWR from 'swr';
 import { Address } from 'wagmi';
 import { Market } from '~/typings/market';
@@ -25,6 +26,7 @@ const useMarketOracles = (props: UseMarketOracles) => {
     data: marketOracles,
     error,
     isLoading,
+    mutate,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ markets }) => {
@@ -48,13 +50,33 @@ const useMarketOracles = (props: UseMarketOracles) => {
       }, {} as Record<Address, OracleVersion | undefined>);
     },
     {
-      refreshInterval: 1000 * 30,
+      refreshInterval: 0,
     }
   );
 
   useError({ error });
 
-  return { marketOracles, isLoading };
+  const refreshMarketOracles = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
+  const mutateMarketOracles = useCallback(
+    async (marketAddress: Address) => {
+      if (isNil(client) || isNil(marketOracles)) {
+        return;
+      }
+      const oracleProvider = await client.market().contracts().oracleProvider(marketAddress);
+      const nextOracle = await oracleProvider.read.currentVersion();
+      const nextOracles = {
+        ...marketOracles,
+        [marketAddress]: nextOracle,
+      };
+      await mutate(nextOracles, { revalidate: false });
+    },
+    [client, marketOracles, mutate]
+  );
+
+  return { marketOracles, isLoading, refreshMarketOracles, mutateMarketOracles };
 };
 
 export default useMarketOracles;
