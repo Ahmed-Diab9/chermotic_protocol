@@ -7,7 +7,6 @@ import { useChromaticLp } from '~/hooks/useChromaticLp';
 
 import { checkAllProps } from '~/utils';
 import { divPreserved } from '~/utils/number';
-import { getSeconds } from '~/utils/date';
 
 import { analyticsSdk } from '~/lib/graphql';
 
@@ -49,7 +48,7 @@ export function useAnalytics({ start, end }: { start: Date | null; end: Date | n
           );
           const clpSupply = BigInt(clp_total_supply);
           const clpPrice = divPreserved(aum, clpSupply, decimals);
-          
+
           return {
             date: parse(date, 'yyyy-MM-dd', new Date()),
             clpSupply,
