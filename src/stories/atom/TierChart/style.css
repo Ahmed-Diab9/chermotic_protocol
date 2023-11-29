@@ -1,0 +1,7 @@
+.TierChart {
+  .wrapper-label {
+    .tooltip-tier-level {
+      @apply cursor-default;
+    }
+  }
+}
