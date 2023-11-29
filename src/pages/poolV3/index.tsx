@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { PlusIcon } from '~/assets/icons/Icon';
 import useMarketLocal from '~/hooks/commons/useMarketLocal';
+import useLpReceiptsUpdate from '~/hooks/updates/useLpReceiptsUpdate';
 import { useChromaticClient } from '~/hooks/useChromaticClient';
 import { useLpLocal } from '~/hooks/useLpLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
@@ -22,6 +23,7 @@ import { PoolMenuV3 } from '~/stories/template/PoolMenuV3';
 import { PoolPanelV2 } from '~/stories/template/PoolPanelV2';
 import { PoolPerformance } from '~/stories/template/PoolPerformance';
 import { PoolStat } from '~/stories/template/PoolStat';
+import { dispatchLpReceiptEvent } from '~/typings/events';
 import { formatDecimals } from '~/utils/number';
 
 const PoolV3 = () => {
@@ -84,6 +86,12 @@ const PoolV3 = () => {
       toast.error('Failed to register.');
     }
   }, [client.walletClient, selectedLp]);
+
+  useLpReceiptsUpdate({
+    callbacks: useMemo(() => {
+      return [dispatchLpReceiptEvent];
+    }, []),
+  });
 
   return (
     <>

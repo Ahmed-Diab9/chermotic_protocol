@@ -1,16 +1,20 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
-import { dispatchLpEvent, dispatchLpReceiptEvent } from '~/typings/events';
+import { dispatchLpEvent } from '~/typings/events';
 import { useChromaticClient } from './useChromaticClient';
+import { useLpReceiptCount } from './useLpReceiptCount';
+import { useLpReceipts } from './useLpReceipts';
 
 export const useRemoveChromaticLp = () => {
   const { client, lpClient } = useChromaticClient();
   const { address } = useAccount();
+  const { onMutateLpReceipts } = useLpReceipts();
+  const { onMutateLpReceiptCount } = useLpReceiptCount();
   const selectedLp = useAppSelector(selectedLpSelector);
   const [isRemovalPending, setIsRemovalPending] = useState(false);
 
@@ -34,9 +38,12 @@ export const useRemoveChromaticLp = () => {
         throw new Error('CLP approval failed.');
       }
       const receipt = await lp.removeLiquidity(selectedLp.address, parsedAmount);
-
+      if (isNotNil(receipt)) {
+        const timestamp = Math.floor(Date.now() / 1000);
+        onMutateLpReceiptCount('burning');
+        await onMutateLpReceipts(receipt, selectedLp.address, 'burning', BigInt(timestamp));
+      }
       dispatchLpEvent();
-      dispatchLpReceiptEvent();
       toast('Removal process started.');
 
       setIsRemovalPending(false);

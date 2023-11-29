@@ -3,15 +3,15 @@ import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { formatUnits } from 'viem';
 import { ORACLE_PROVIDER_DECIMALS } from '~/configs/decimals';
+import useBookmarkOracles from '~/hooks/commons/useBookmarkOracles';
 import useMarkets from '~/hooks/commons/useMarkets';
-import { useBookmarkOracles } from '~/hooks/useBookmarkOracles';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
 import { Bookmark, Market } from '~/typings/market';
 import { numberFormat } from '~/utils/number';
 import { compareOracles } from '~/utils/price';
 
 export const useBookmarkBoardV3 = () => {
-  const { bookmarkOracles, markets, isBookmarkLoading } = useBookmarkOracles();
+  const { bookmarkOracles, markets } = useBookmarkOracles();
   const { tokens, onTokenSelect } = useSettlementToken();
   const { onMarketSelect } = useMarkets();
 
@@ -78,7 +78,6 @@ export const useBookmarkBoardV3 = () => {
     bookmarks,
     bookmarkPrices,
     bookmarkClasses,
-    isBookmarkLoading,
     onBookmarkClick,
   };
 };

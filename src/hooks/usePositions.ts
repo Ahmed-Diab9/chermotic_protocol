@@ -146,7 +146,7 @@ export const usePositions = () => {
     },
     {
       // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 60,
+      refreshInterval: 0,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -157,11 +157,7 @@ export const usePositions = () => {
 
   const fetchCurrentPositions = useCallback(
     async (marketAddress: Address) => {
-      if (isLoading) {
-        return;
-      }
-      if (isNil(positions) || isNil(accountAddress) || isNil(accountAddress)) return positions;
-
+      if (isNil(positions) || isNil(accountAddress)) return positions;
       const filteredPositions = positions
         ?.filter((p) => !!p)
         .filter((position) => position.marketAddress !== marketAddress);
@@ -170,6 +166,7 @@ export const usePositions = () => {
       const positionApi = client.position();
       const marketApi = client.market();
       const foundMarket = markets?.find((market) => market.address === marketAddress);
+
       if (isNil(foundMarket)) {
         return;
       }
@@ -185,7 +182,7 @@ export const usePositions = () => {
       mergedPositions.sort((previous, next) => (previous.id < next.id ? 1 : -1));
       await fetchPositions<Position[]>(mergedPositions, { revalidate: false });
     },
-    [client, isLoading, markets, positions, accountAddress, fetchPositions]
+    [client, markets, positions, accountAddress, fetchPositions]
   );
 
   useError({

@@ -28,25 +28,31 @@ export const useSettlementToken = () => {
     error,
     mutate: fetchTokens,
     isLoading: isTokenLoading,
-  } = useSWR<Token[]>(isReady && fetchKey, async () => {
-    const marketFactoryApi = client.marketFactory();
+  } = useSWR<Token[]>(
+    isReady && fetchKey,
+    async () => {
+      const marketFactoryApi = client.marketFactory();
 
-    const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
-    const settlementTokens = await PromiseOnlySuccess(
-      registeredSettlementTokens.map(async (token) => {
-        const minimumMargin = await marketFactoryApi
-          .contracts()
-          .marketFactory.read.getMinimumMargin([token.address]);
-        return {
-          ...token,
-          minimumMargin,
-          image: MARKET_LOGOS[token.name],
-        } as Token;
-      })
-    );
+      const registeredSettlementTokens = await marketFactoryApi.registeredSettlementTokens();
+      const settlementTokens = await PromiseOnlySuccess(
+        registeredSettlementTokens.map(async (token) => {
+          const minimumMargin = await marketFactoryApi
+            .contracts()
+            .marketFactory.read.getMinimumMargin([token.address]);
+          return {
+            ...token,
+            minimumMargin,
+            image: MARKET_LOGOS[token.name],
+          } as Token;
+        })
+      );
 
-    return settlementTokens;
-  });
+      return settlementTokens;
+    },
+    {
+      refreshInterval: 0,
+    }
+  );
 
   useError({ error });
 

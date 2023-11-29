@@ -1,4 +1,5 @@
 import useMarketLocal from '~/hooks/commons/useMarketLocal';
+import usePositionsUpdate from '~/hooks/updates/usePositionsUpdate';
 import { usePositionFilterLocal } from '~/hooks/usePositionFilterLocal';
 import { useTokenLocal } from '~/hooks/useTokenLocal';
 import { MarketSelectV3 } from '~/stories/molecule/MarketSelectV3';
@@ -11,6 +12,7 @@ function TradeV3() {
   useTokenLocal();
   useMarketLocal();
   usePositionFilterLocal();
+  usePositionsUpdate();
 
   return (
     <>
