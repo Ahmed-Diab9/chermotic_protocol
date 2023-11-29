@@ -45,14 +45,14 @@ function Referral() {
               </div>
             </section>
             <div className="flex gap-12 mt-10">
-              <section className="flex flex-col flex-auto gap-20">
+              <section className="flex flex-col flex-auto gap-24">
                 <article>
                   <h3 className="text-4xl">Your Tier</h3>
                 </article>
                 <article>
                   <h3 className="text-4xl">Your Rewards in Epoch #3</h3>
-                  <div className="flex py-6 mt-5 px-7 panel panel-translucent">
-                    <div className="w-1/2 pl-2 pr-8 border-r">
+                  <div className="flex py-6 mt-5">
+                    <div className="w-1/2 pr-8 border-r">
                       <div className="flex">
                         <div>
                           <h5 className="mb-2 text-xl text-primary-light">As Referrer</h5>
@@ -136,9 +136,7 @@ function Referral() {
                 </article>
               </section>
               <section className="w-[400px]">
-                <article>
-                  <EpochBoard />
-                </article>
+                <EpochBoard />
               </section>
             </div>
           </div>

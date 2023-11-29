@@ -5,7 +5,7 @@ export interface EpochBoardProps {}
 
 export const EpochBoard = (props: EpochBoardProps) => {
   return (
-    <div className="EpochBoard">
+    <div className="sticky EpochBoard top-8">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-4xl text-chrm">Epoch #3</h3>
         <div className="text-sm text-primary-light">
