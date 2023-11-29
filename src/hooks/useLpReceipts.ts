@@ -7,6 +7,7 @@ import { Client } from '@chromatic-protocol/sdk-viem';
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
+import { TransactionReceipt } from 'viem';
 import { Address, useAccount } from 'wagmi';
 import { PAGE_SIZE } from '~/constants/arbiscan';
 import { lpGraphSdk } from '~/lib/graphql';
@@ -33,6 +34,11 @@ type GetReceiptsArgs = {
   count: number;
   walletAddress: Address;
   lpAddress: Address;
+  toBlockTimestamp: bigint;
+};
+
+type ReceiptsData = {
+  receipts: LpReceipt[];
   toBlockTimestamp: bigint;
 };
 
@@ -182,7 +188,7 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
       detail = formatDecimals(receipt.burnedAmount, token.decimals, 2, true) + ' ' + token.name;
     }
     let message = status === 'standby' ? 'Waiting for the next oracle round' : 'Completed';
-    const key = `${token.name}-${currentAction}-receipt-${receipt.id}-${receipt.action}-${status}`;
+    const key = `${token.name}:receipt:${receipt.id}:${receipt.action}:${status}:${currentAction}`;
 
     if (receipt.action === 'burning' && receipt.remainedAmount > 0n) {
       const dividedByAmount = divPreserved(
@@ -332,7 +338,7 @@ export const useLpReceipts = () => {
     },
     {
       // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 6,
+      refreshInterval: 0,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -354,10 +360,63 @@ export const useLpReceipts = () => {
     mutate();
   }, [mutate]);
 
+  const onMutateLpReceipts = useCallback(
+    async (
+      tx: TransactionReceipt,
+      lpAddress: Address,
+      action: 'minting' | 'burning',
+      timestamp: bigint
+    ) => {
+      const { transactionHash, blockNumber } = tx;
+      const key = `new:${transactionHash}:receipt:${action}:standby:${receiptAction}`;
+      const newPendingReceipt = {
+        key,
+        id: -1n,
+        lpAddress,
+        hasReturnedValue: false,
+        isIssued: true,
+        isSettled: false,
+        recipient: address,
+        status: 'standby',
+        action,
+        message: 'Waiting for the next oracle round',
+        detail: ['', ''],
+        blockTimestamp: timestamp,
+        blockNumber,
+        token: {},
+      } as LpReceipt;
+      if (isNil(receiptsData)) {
+        return mutate([{ receipts: [newPendingReceipt], toBlockTimestamp: timestamp }], {
+          revalidate: false,
+        });
+      }
+      const flattenData = receiptsData.map(({ receipts }) => receipts).flat(1);
+      flattenData.unshift(newPendingReceipt);
+      const mutated = flattenData.reduce((mutatedData, _, index) => {
+        if (index !== 0 && (index - 2) % 5 !== 0) {
+          return mutatedData;
+        }
+        const size = index === 0 ? 2 : 5;
+        const receipts = flattenData.slice(index, size);
+        if (receipts.length === 0) {
+          return mutatedData;
+        }
+        mutatedData = mutatedData.concat({
+          receipts,
+          toBlockTimestamp: receipts[0].blockTimestamp,
+        });
+        return mutatedData;
+      }, [] as ReceiptsData[]);
+      mutate(mutated, { revalidate: false });
+    },
+    [receiptAction, address, receiptsData, mutate]
+  );
+
   return {
     receiptsData,
     isReceiptsLoading: isLoading,
     onFetchNextLpReceipts,
     onRefreshLpReceipts,
+    onMutateLpReceipts,
   };
 };
