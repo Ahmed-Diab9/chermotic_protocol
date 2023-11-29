@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { sum } from 'ramda';
-import { startOfDay, endOfDay } from 'date-fns';
+import { formatRFC3339, parse } from 'date-fns';
 
 import { useError } from '~/hooks/useError';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
@@ -24,20 +24,20 @@ export function useAnalytics({ start, end }: { start: Date | null; end: Date | n
   const { data, error, isLoading } = useSWR(
     checkAllProps(fetchKey) && fetchKey,
     async ({ startDate, endDate, selectedLp }) => {
-      const start = getSeconds(startOfDay(startDate));
-      const end = getSeconds(endOfDay(endDate));
+      const start = formatRFC3339(startDate);
+      const end = formatRFC3339(endDate);
 
       const address = selectedLp.address;
-      const { lp_value_histories } = await analyticsSdk.ClpHistories({
+      const { lp_value_daily_histories } = await analyticsSdk.ClpHistories({
         start,
         end,
         address,
       });
       const decimals = selectedLp.clpDecimals;
 
-      const response = lp_value_histories.map(
+      const response = lp_value_daily_histories.map(
         ({
-          block_timestamp: timestamp,
+          date,
           clp_total_supply,
           holding_clb_value,
           holding_value,
@@ -49,9 +49,9 @@ export function useAnalytics({ start, end }: { start: Date | null; end: Date | n
           );
           const clpSupply = BigInt(clp_total_supply);
           const clpPrice = divPreserved(aum, clpSupply, decimals);
-
+          
           return {
-            timestamp,
+            date: parse(date, 'yyyy-MM-dd', new Date()),
             clpSupply,
             aum,
             clpPrice,

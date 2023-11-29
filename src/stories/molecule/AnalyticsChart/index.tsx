@@ -43,7 +43,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
 
   const domain = ([min, max]: [number, number]) => {
     const gap = (max - min) * 0.7;
-    return [min - gap, max + gap] as [number, number];
+    return [Math.max(min - gap, 0), max + gap] as [number, number];
   };
 
   const dateFormat = (dateObject: Date) =>
@@ -141,7 +141,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
         </defs>
         <CartesianGrid stroke="#4A4A51" />
         <XAxis dataKey={x} tickFormatter={dateFormat} axisLine={false} stroke="#4A4A51" />
-        <YAxis scale="log" domain={domain} stroke="#4A4A51" />
+        <YAxis scale="linear" domain={domain} stroke="#4A4A51" />
         <Tooltip
           cursor={{ stroke: 'null' }}
           isAnimationActive={false}
