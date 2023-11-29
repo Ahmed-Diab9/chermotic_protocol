@@ -1,5 +1,6 @@
 import { isNil, isNotNil } from 'ramda';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import useMarkets from '~/hooks/commons/useMarkets';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
@@ -16,7 +17,31 @@ export const usePoolProgressV2 = () => {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { fetchTokenBalances } = useTokenBalances();
-  const { formattedElapsed } = useLastOracle();
+  const { currentMarket } = useMarkets();
+  const { formattedElapsed } = useLastOracle({
+    market: currentMarket,
+    format: ({ type, value }) => {
+      switch (type) {
+        case 'hour': {
+          return `${value}h`;
+        }
+        case 'minute': {
+          return `${value}m`;
+        }
+        case 'second': {
+          return `${value}s`;
+        }
+        case 'literal': {
+          return ' ';
+        }
+        case 'dayPeriod': {
+          return '';
+        }
+        default:
+          return value;
+      }
+    },
+  });
   const receiptAction = useAppSelector(receiptActionSelector);
   const dispatch = useAppDispatch();
   const {
