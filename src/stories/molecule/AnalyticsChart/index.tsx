@@ -1,17 +1,16 @@
+import { isEmpty } from 'ramda';
 import { ReactNode, useState } from 'react';
 import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
   Line,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ComposedChart,
-  Area,
 } from 'recharts';
-import { isEmpty } from 'ramda';
-import LOADING from '~/assets/images/loading.png';
 
 import { CategoricalChartState } from 'recharts/types/chart/generateCategoricalChart';
 
@@ -103,8 +102,12 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           <div className="p-3">
             <p className="font-semibold text-primary">{date}</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
-              {payload.map(({ name, color, value }) => (
-                <p style={{ color: color }} className="text-sm">
+              {payload.map(({ name, color, value }, index) => (
+                <p
+                  style={{ color: color }}
+                  className="text-sm"
+                  key={`${name}:${color}:${value}:${index}`}
+                >
                   {map[name].name}: {value}
                 </p>
               ))}
