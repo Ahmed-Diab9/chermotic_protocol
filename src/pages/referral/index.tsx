@@ -5,6 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useAccount, useConnect } from 'wagmi';
 
 import { EpochBoard } from '~/stories/template/EpochBoard';
+import TierChart from '~/stories/atom/TierChart';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { ReferralHistory } from '~/stories/template/ReferralHistory';
 import { ChromaticLogo } from '~/assets/icons/Logo';
 import { BlurText } from '~/stories/atom/BlurText';
@@ -41,22 +43,63 @@ function Referral() {
               </div>
               <div className="flex justify-between py-5 pr-5 mt-10 border-y">
                 <h3 className="text-4xl">Share Referral Code and get Rewards!</h3>
-                <Button label="Get your Referral Code" css="active" size="xl" className="!h-8" />
+                <Button label="Get my Referral Code" css="active" size="xl" className="!h-8" />
               </div>
             </section>
             <div className="flex gap-12 mt-10">
               <section className="flex flex-col flex-auto gap-24">
                 <article>
-                  <h3 className="text-4xl">Your Tier</h3>
+                  <h3 className="text-4xl">My Tier</h3>
+                  <div className="flex items-center py-6 mt-5">
+                    <div className="flex items-center justify-center w-1/2 pr-8 border-r">
+                      {/* TODO: set totalFee, numberOfTrader */}
+                      <TierChart totalFee={80} numberOfTrader={40} />
+                    </div>
+                    <div className="w-1/2 pl-10">
+                      <div className="flex pb-4 mb-4 border-b">
+                        <div className="flex flex-col justify-between w-1/2">
+                          <div className="flex items-center mb-[6px]">
+                            <div className="w-3 h-3 mr-1 rounded-full bg-chart-secondary" />
+                            <h4 className="text-primary-light">Number of Traders</h4>
+                            <TooltipGuide label="number-of-trader" tip="" />
+                          </div>
+                          <h3>11</h3>
+                        </div>
+                        <div className="flex flex-col justify-between w-1/2 pl-8">
+                          <h4 className="text-primary-light mb-[6px]">Until Tier 2</h4>
+                          <Tag css="leverage" label="Eligible" className="self-start text-lg" />
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <div className="flex flex-col justify-between w-1/2">
+                          <div className="flex items-center mb-[6px]">
+                            <div className="w-3 h-3 mr-1 rounded-full bg-chart-primary" />
+                            <h4 className="text-primary-light">Total Fees</h4>
+                            <TooltipGuide label="total-fee" tip="" />
+                          </div>
+                          <h3>
+                            3,234.23{' '}
+                            <span className="text-lg font-semibold text-primary-light">USD</span>
+                          </h3>
+                        </div>
+                        <div className="flex flex-col justify-between w-1/2 pl-8">
+                          <h4 className="text-primary-light mb-[6px]">Until Tier 2</h4>
+                          <h4 className="text-price-lower">
+                            234.23 <span className="font-semibold">USD</span>
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </article>
                 <article>
-                  <h3 className="text-4xl">Your Rewards in Epoch #3</h3>
+                  <h3 className="text-4xl">My Rewards in Epoch #3</h3>
                   <div className="flex py-6 mt-5">
                     <div className="w-1/2 pr-8 border-r">
                       <div className="flex">
                         <div>
                           <h5 className="mb-2 text-xl text-primary-light">As Referrer</h5>
-                          <h4 className="text-3xl">340K rCHRMA</h4>
+                          <h3 className="text-3xl">340K rCHRMA</h3>
                         </div>
                         <Tag
                           label="Tier 0"
@@ -79,7 +122,7 @@ function Referral() {
                       </p>
                     </div>
                     {/* Case 1 */}
-                    <div className="w-1/2 pl-10">
+                    {/* <div className="w-1/2 pl-10">
                       <div className="flex">
                         <div>
                           <h5 className="mb-2 text-xl text-primary-light">As Trader</h5>
@@ -104,14 +147,15 @@ function Referral() {
                       <p className="mt-6 text-sm text-primary-light">
                         * Trader’s Referral reward is reflected and aggretated in Trade Rewards.
                       </p>
-                    </div>
+                    </div> */}
                     {/* Case 2 */}
-                    {/* <div className="w-1/2 pl-12">
-                      <div className="mb-10">
+                    <div className="flex flex-col items-start justify-between w-1/2 pl-12">
+                      <div className="mb-8">
                         <h5 className="mb-3 text-xl text-primary-light">As Trader</h5>
-                        <p>
-                          Join <Button label="Chromatic Referral Program" css="underlined" /> to
-                          Earn Rewards Together.
+                        <p className="text-lg">
+                          Join{' '}
+                          <Button label="Chromatic Referral Program" css="underlined" size="lg" />{' '}
+                          to Earn Rewards Together.
                         </p>
                       </div>
                       <Button
@@ -119,9 +163,9 @@ function Referral() {
                         iconLeft={<LinkIcon className="!w-4" />}
                         css="active"
                         size="xl"
-                        className="!h-8"
+                        className="!h-8 mb-10"
                       />
-                    </div> */}
+                    </div>
                   </div>
                 </article>
                 <article>

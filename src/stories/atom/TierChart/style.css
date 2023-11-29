@@ -1,4 +1,5 @@
 .TierChart {
+  @apply w-[224px] h-[160px] pt-6;
   .wrapper-label {
     .tooltip-tier-level {
       @apply cursor-default;

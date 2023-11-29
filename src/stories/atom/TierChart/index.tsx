@@ -15,7 +15,7 @@ export default function TierChart(props: TierChartProps) {
   const { totalFee, numberOfTrader } = props;
 
   return (
-    <div className="TierChart relative w-[224px] h-[180px]">
+    <div className="relative TierChart">
       <div className="relative flex items-center justify-center h-full">
         <DonutChart
           width={158}
@@ -34,7 +34,7 @@ export default function TierChart(props: TierChartProps) {
       </div>
       <div className="flex wrapper-label">
         <h4
-          className="absolute left-0 bottom-8 tooltip-tier-level"
+          className="absolute left-0 bottom-2 tooltip-tier-level"
           data-tooltip-content="0"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
@@ -63,7 +63,7 @@ export default function TierChart(props: TierChartProps) {
         </h4>
         <h4
           // TODO: give "text-primary-light" for unactive level
-          className="absolute right-0 bottom-8 tooltip-tier-level text-primary-light"
+          className="absolute right-0 bottom-2 tooltip-tier-level text-primary-light"
           data-tooltip-content="3"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
