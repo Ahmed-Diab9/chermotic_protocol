@@ -2,6 +2,7 @@ import { iChromaticLpABI } from '@chromatic-protocol/liquidity-provider-sdk/cont
 import { watchContractEvent } from '@wagmi/core';
 import { isNil } from 'ramda';
 import { useEffect, useMemo } from 'react';
+import { useAccount } from 'wagmi';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
 
@@ -23,6 +24,7 @@ interface UseLpReceiptsUpdate {
 const useLpReceiptsUpdate = (props: UseLpReceiptsUpdate) => {
   const { callbacks } = props;
   const selectedLp = useAppSelector(selectedLpSelector);
+  const { address } = useAccount();
   const lpAddress = useMemo(() => {
     return selectedLp?.address;
   }, [selectedLp]);
@@ -38,14 +40,17 @@ const useLpReceiptsUpdate = (props: UseLpReceiptsUpdate) => {
         address: lpAddress,
       },
       (logs) => {
-        callbacks?.forEach((callback) => callback());
+        const myLogs = logs.filter((log) => log.args.recipient === address);
+        if (myLogs.length !== 0) {
+          callbacks?.forEach((callback) => callback());
+        }
       }
     );
 
     return () => {
       unwatch();
     };
-  }, [lpAddress, callbacks]);
+  }, [callbacks, lpAddress, address]);
 };
 
 export default useLpReceiptsUpdate;
