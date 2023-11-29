@@ -40,6 +40,8 @@
     --color-error-light: 253 212 212; /* #FDD4D4 */
 
     --color-leverage: 85 242 234;
+    --color-chart-primary: 126 97 206;
+    --color-chart-secondary: 254 242 181;
     --color-price-higher: 101 206 18;
     --color-price-lower: 255 79 68;
     --color-status-standby: 255 152 32;
