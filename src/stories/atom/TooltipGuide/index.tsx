@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip, ITooltip } from 'react-tooltip';
 import { Outlink } from '../Outlink';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import './style.css';
@@ -31,6 +31,8 @@ interface TooltipGuideProps extends PropsWithChildren {
   iconOnly?: boolean;
   tipOnly?: boolean;
   onClick?: () => unknown;
+  render?: ITooltip['render'];
+  isOpen?: boolean;
 }
 
 export const TooltipGuide = (props: PropsWithChildren<TooltipGuideProps>) => {
@@ -49,6 +51,8 @@ export const TooltipGuide = (props: PropsWithChildren<TooltipGuideProps>) => {
     iconOnly,
     tipOnly,
     children,
+    render,
+    isOpen,
   } = props;
 
   return (
@@ -64,7 +68,8 @@ export const TooltipGuide = (props: PropsWithChildren<TooltipGuideProps>) => {
           className={`tooltip tooltip-${css} text-${align} tooltip-${size} ${tipClass}`}
           place={place}
           clickable
-          // isOpen
+          render={render}
+          isOpen={isOpen}
           // events={["click"]}
         >
           {children ? (

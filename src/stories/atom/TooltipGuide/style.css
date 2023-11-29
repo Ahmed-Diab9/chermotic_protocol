@@ -21,6 +21,9 @@
   }
   .tooltip {
     @apply rounded-lg flex;
+    .react-tooltip-content-wrapper {
+      @apply w-full;
+    }
   }
   .tooltip-solid {
     @apply bg-primary text-inverted;
