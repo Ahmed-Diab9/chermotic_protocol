@@ -1,11 +1,14 @@
 import { isNil, isNotNil } from 'ramda';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useChromaticLp } from '~/hooks/useChromaticLp';
 import { useLastOracle } from '~/hooks/useLastOracle';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import { useLpReceiptCount } from '~/hooks/useLpReceiptCount';
 import { useLpReceipts } from '~/hooks/useLpReceipts';
 import { useTokenBalances } from '~/hooks/useTokenBalance';
+import { useAppDispatch, useAppSelector } from '~/store';
+import { lpAction } from '~/store/reducer/lp';
+import { receiptActionSelector } from '~/store/selector';
 import { LP_EVENT, LP_RECEIPT_EVENT } from '~/typings/events';
 import { LpReceipt, ReceiptAction } from '~/typings/lp';
 
@@ -14,15 +17,14 @@ export const usePoolProgressV2 = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { fetchTokenBalances } = useTokenBalances();
   const { formattedElapsed } = useLastOracle();
-  const [receiptAction, setReceiptAction] = useState<ReceiptAction>('all');
+  const receiptAction = useAppSelector(receiptActionSelector);
+  const dispatch = useAppDispatch();
   const {
     receiptsData = [],
     isReceiptsLoading,
     onFetchNextLpReceipts,
     onRefreshLpReceipts,
-  } = useLpReceipts({
-    currentAction: receiptAction,
-  });
+  } = useLpReceipts();
   const { refreshChromaticLp } = useChromaticLp();
   const {
     counts = {
@@ -75,15 +77,15 @@ export const usePoolProgressV2 = () => {
   const onActionChange = (tabIndex: number) => {
     switch (tabIndex) {
       case 0: {
-        setReceiptAction('all');
+        dispatch(lpAction.onActionSelect('all'));
         break;
       }
       case 1: {
-        setReceiptAction('minting');
+        dispatch(lpAction.onActionSelect('minting'));
         break;
       }
       case 2: {
-        setReceiptAction('burning');
+        dispatch(lpAction.onActionSelect('burning'));
         break;
       }
     }

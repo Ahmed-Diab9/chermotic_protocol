@@ -17,7 +17,7 @@ import {
   Sdk,
 } from '~/lib/graphql/sdk/lp';
 import { useAppDispatch, useAppSelector } from '~/store';
-import { selectedLpSelector } from '~/store/selector';
+import { receiptActionSelector, selectedLpSelector } from '~/store/selector';
 import { LpReceipt, LpToken, ReceiptAction } from '~/typings/lp';
 import { Market, Token } from '~/typings/market';
 import { checkAllProps } from '~/utils';
@@ -209,16 +209,13 @@ const mapToDetailedReceipts = async (args: MapToDetailedReceiptsArgs) => {
   return detailedReceipts;
 };
 
-type UseLpReceipts = {
-  currentAction: ReceiptAction;
-};
-
-export const useLpReceipts = (props: UseLpReceipts) => {
+export const useLpReceipts = () => {
   const { isReady, lpClient, client } = useChromaticClient();
   const { address } = useAccount();
   const { currentMarket } = useMarkets();
   const { tokens } = useSettlementToken();
   const selectedLp = useAppSelector(selectedLpSelector);
+  const receiptAction = useAppSelector(receiptActionSelector);
   const dispatch = useAppDispatch();
   const clpMeta = useMemo(() => {
     if (isNil(selectedLp)) {
@@ -234,8 +231,6 @@ export const useLpReceipts = (props: UseLpReceipts) => {
     } satisfies LpToken;
     return metadata;
   }, [selectedLp]);
-
-  const { currentAction } = props;
 
   const {
     data: receiptsData,
@@ -261,7 +256,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         tokens,
         currentMarket: trimMarket(currentMarket),
         clpMeta,
-        currentAction,
+        receiptAction,
         pageIndex,
       };
       if (!checkAllProps(fetchKey)) {
@@ -274,7 +269,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       currentMarket,
       tokens,
       clpMeta,
-      currentAction,
+      receiptAction,
       toBlockTimestamp,
       pageIndex,
     }) => {
@@ -288,7 +283,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
       let receipts: LpReceipt[] = [];
 
       let currentReceipts = [] as LpReceipt[];
-      if (currentAction !== 'burning') {
+      if (receiptAction !== 'burning') {
         const addMap = await getAddReceipts(lpGraphSdk, {
           count,
           walletAddress,
@@ -297,7 +292,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         });
         currentReceipts = currentReceipts.concat(Array.from(addMap.values()));
       }
-      if (currentAction !== 'minting') {
+      if (receiptAction !== 'minting') {
         const removeMap = await getRemoveReceipts(lpGraphSdk, {
           count,
           walletAddress,
@@ -324,7 +319,7 @@ export const useLpReceipts = (props: UseLpReceipts) => {
         client,
         receipts,
         currentMarket,
-        currentAction,
+        currentAction: receiptAction,
         settlementToken,
         clpMeta,
       });
