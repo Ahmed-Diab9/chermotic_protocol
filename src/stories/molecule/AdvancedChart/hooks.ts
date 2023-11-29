@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -73,11 +73,10 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       },
     });
 
-    setIsLoading(true);
-
     tvWidget.onChartReady(() => {
       tvWidgetRef.current = tvWidget;
       setIsChartReady(true);
+      isNotNil(symbol) && setIsLoading(false);
     });
 
     return () => {
