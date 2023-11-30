@@ -15,7 +15,6 @@ import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Tag } from '~/stories/atom/Tag';
 import '~/stories/atom/Tabs/style.css';
-import './style.css';
 
 function Referral() {
   const { isConnected: _isConnected } = useAccount();
