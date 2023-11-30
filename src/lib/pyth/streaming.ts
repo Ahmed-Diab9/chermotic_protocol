@@ -1,27 +1,8 @@
 import { LibrarySymbolInfo, ResolutionString, SubscribeBarsCallback } from '~/lib/charting_library';
-import { PythStreamData } from '~/typings/api';
+import { listenPriceFeed } from './subscribe';
+import { Bar, Handler, PythStreamData, SubscriptionItem } from './types';
 
 const channelToSubscription = new Map<string | undefined, SubscriptionItem>();
-
-type Bar = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
-
-type Handler = {
-  id: string;
-  callback: SubscribeBarsCallback;
-};
-
-type SubscriptionItem = {
-  subscriberUID: string;
-  resolution: ResolutionString;
-  lastDailyBar: Bar;
-  handlers: Handler[];
-};
 
 function handleStreamingData(data: PythStreamData): void {
   const { id, p, t } = data;
@@ -36,13 +17,15 @@ function handleStreamingData(data: PythStreamData): void {
     return;
   }
 
-  const lastDailyBar = subscriptionItem.lastDailyBar;
-  const nextDailyBarTime = getNextDailyBarTime(lastDailyBar.time);
+  const lastBar = subscriptionItem.lastBar;
+
+  const resolution = subscriptionItem.resolution;
+  const nextBarTime = getNextBarTime(lastBar.time, resolution);
 
   let bar: Bar;
-  if (tradeTime >= nextDailyBarTime) {
+  if (tradeTime >= nextBarTime) {
     bar = {
-      time: nextDailyBarTime,
+      time: nextBarTime,
       open: tradePrice,
       high: tradePrice,
       low: tradePrice,
@@ -50,34 +33,44 @@ function handleStreamingData(data: PythStreamData): void {
     };
   } else {
     bar = {
-      ...lastDailyBar,
-      high: Math.max(lastDailyBar.high, tradePrice),
-      low: Math.min(lastDailyBar.low, tradePrice),
+      ...lastBar,
+      high: Math.max(lastBar.high, tradePrice),
+      low: Math.min(lastBar.low, tradePrice),
       close: tradePrice,
     };
   }
 
-  subscriptionItem.lastDailyBar = bar;
+  subscriptionItem.lastBar = bar;
 
   subscriptionItem.handlers.forEach((handler: Handler) => handler.callback(bar));
   channelToSubscription.set(channelString, subscriptionItem);
 }
 
 export async function startStreaming() {
-  function streamData({ detail }: any) {
+  function streamData({ detail }: CustomEvent<PythStreamData>) {
     handleStreamingData(detail);
   }
-  window.addEventListener('price-update', streamData);
 
-  return async () => {
-    window.removeEventListener('price-update', streamData);
-  };
+  const unlisten = listenPriceFeed(streamData);
+  return unlisten;
 }
 
-function getNextDailyBarTime(barTime: number) {
-  const date = new Date(barTime);
-  date.setDate(date.getDate() + 1);
-  return date.getTime();
+function getNextBarTime(barTime: number, resolutionString: ResolutionString) {
+  const digits = Number(resolutionString.match(/[0-9]/g)?.[0] || 0);
+  const resolution = resolutionString.match(/[a-zA-Z]/g)?.[0] || 'M';
+
+  const S = 1000;
+  const M = S * 60;
+  const H = M * 60;
+  const D = H * 24;
+  const W = D * 7;
+
+  const resolutionMap = { S, M, H, D, W };
+
+  const interval = digits * resolutionMap[resolution as 'S' | 'M' | 'H' | 'D' | 'W'];
+
+  const lastBarTime = barTime - (barTime % interval);
+  return lastBarTime + interval;
 }
 
 export function subscribeOnStream(
@@ -85,7 +78,7 @@ export function subscribeOnStream(
   resolution: ResolutionString,
   onRealtimeCallback: SubscribeBarsCallback,
   subscriberUID: string,
-  lastDailyBar: Bar
+  lastBar: Bar
 ) {
   const channelString = symbolInfo.ticker;
   const handler = {
@@ -96,7 +89,7 @@ export function subscribeOnStream(
   subscriptionItem = {
     subscriberUID,
     resolution,
-    lastDailyBar,
+    lastBar,
     handlers: [handler],
   };
   channelToSubscription.set(channelString, subscriptionItem);

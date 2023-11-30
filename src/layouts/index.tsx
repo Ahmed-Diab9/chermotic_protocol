@@ -69,12 +69,11 @@ export const ChromaticLayout = () => {
 export const GradientLayout = () => {
   const { onLoadBackgroundRef } = useBackgroundGradient();
   useBookmarksUpdate();
+  
   useEffect(() => {
     const unsubscriber = subscribePythFeed();
     return () => {
-      unsubscriber.then((action) => {
-        action && action();
-      });
+      unsubscriber();
     };
   }, []);
 
