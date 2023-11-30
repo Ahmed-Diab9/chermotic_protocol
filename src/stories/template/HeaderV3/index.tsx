@@ -20,9 +20,9 @@ export const HeaderV3 = (props: HeaderV3Props) => {
   const { hasAccount, isActiveLink, walletPopoverProps, _isConnected } = useHeaderV3();
 
   const links = [
-    { to: 'trade', className: '' },
-    { to: 'pool', className: '' },
-    { to: 'airdrop', className: '' },
+    { to: 'trade', name: 'trade', className: '' },
+    { to: 'pool', name: 'pools', className: '' },
+    { to: 'airdrop', name: 'airdrop', className: '' },
   ];
 
   return (
@@ -42,7 +42,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
                     isActiveLink(link.to) ? '!border-primary' : '!border-transparent'
                   }`}
                 >
-                  {link.to}
+                  {link.name}
                 </Link>
               ))}
               <HeaderMenuPopover />
