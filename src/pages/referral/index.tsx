@@ -176,7 +176,7 @@ function Referral() {
                       </p>
                     </div> */}
                     {/* Case 2 : not connected */}
-                    <div className="flex flex-col items-start justify-between w-1/2 pl-12">
+                    <div className="flex flex-col items-start justify-between w-1/2 pl-10">
                       <div className="mb-8">
                         <h5 className="mb-3 text-xl text-primary-light">As Trader</h5>
                         <p className="text-lg">
