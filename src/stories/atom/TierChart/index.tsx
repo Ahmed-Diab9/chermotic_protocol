@@ -1,8 +1,7 @@
-import { RangeChart as Chart, RangeChartData } from '@chromatic-protocol/react-compound-charts';
 import './style.css';
 
 import LOADING from '~/assets/images/loading.png';
-import { LiquidityTooltip } from '~/stories/molecule/LiquidityTooltip';
+import BadgeTier1 from '~/assets/images/tier1.png';
 import DonutChart from '../DonutChart';
 import { TooltipGuide } from '../TooltipGuide';
 
@@ -31,19 +30,12 @@ export default function TierChart(props: TierChartProps) {
           className="absolute"
           animate
         />
+        {/* TODO: show tier badge for each tier */}
+        <img src={BadgeTier1} alt="Tier 1" className="h-[102px]" />
       </div>
-      <div className="flex wrapper-label">
+      <div className="absolute top-0 left-0 wrapper-label">
         <h4
-          className="absolute left-0 bottom-2 tooltip-tier-level"
-          data-tooltip-content="0"
-          // TODO: set the number of trader, total fee
-          data-number-of-trader="10"
-          data-total-fee="100"
-        >
-          Tier 0
-        </h4>
-        <h4
-          className="absolute left-0 top-8 tooltip-tier-level"
+          className="self-end justify-end tooltip-tier-level"
           data-tooltip-content="1"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
@@ -53,7 +45,7 @@ export default function TierChart(props: TierChartProps) {
         </h4>
         <h4
           // TODO: give "text-primary-light" for unactive level
-          className="absolute right-0 top-8 tooltip-tier-level text-primary-light"
+          className="self-start tooltip-tier-level text-primary-light"
           data-tooltip-content="2"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
@@ -63,7 +55,7 @@ export default function TierChart(props: TierChartProps) {
         </h4>
         <h4
           // TODO: give "text-primary-light" for unactive level
-          className="absolute right-0 bottom-2 tooltip-tier-level text-primary-light"
+          className="self-end tooltip-tier-level text-primary-light"
           data-tooltip-content="3"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
