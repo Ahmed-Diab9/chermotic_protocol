@@ -19,7 +19,7 @@ import { useTimeDifferences } from '~/hooks/useTimeDifferences';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Loading } from '~/stories/atom/Loading';
-import '~/stories/atom/Tabs/style.css';
+import { Notice } from '~/stories/atom/Notice';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AirdropActivity } from '~/stories/template/AirdropActivity';
 import { AirdropBoard } from '~/stories/template/AirdropBoard';
@@ -29,6 +29,7 @@ import { AirdropZealyConnectModal } from '~/stories/template/AirdropZealyConnect
 import { AirdropZealyConvertModal } from '~/stories/template/AirdropZealyConvertModal';
 import { Modal } from '~/stories/template/Modal';
 import { numberFormat } from '~/utils/number';
+import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
 function Airdrop() {
@@ -181,43 +182,31 @@ function Airdrop() {
                             />
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded bg-price-lower/10">
-                          <img src={ZealyIcon} alt="zealy" className="w-[42px]" />
-                          <div className="w-2/3 text-left">
-                            <p className="text-left text-price-lower">
-                              To convert XP from Zealy quests to Chromatic Airdrop credits, connect
-                              your wallet at Zealy Profile {'>'} Linked Account. Click
-                              <Button
-                                label="here"
-                                css="underlined"
-                                size="lg"
-                                className="text-primary"
-                                href={AIRDROP_LINKS['HOW_TO_CONNECT']}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT']);
-                                }}
-                              />
-                              to get informed how to connect wallet address to zealy linked account.
-                            </p>
-                          </div>
-                          <div className="flex flex-col items-start pl-8 ml-auto border-l">
-                            <Button
-                              label="Zealy Linked account"
-                              iconRight={<ChevronRightIcon />}
-                              className="whitespace-nowrap"
-                              size="lg"
-                              css="underlined"
-                              onClick={() => {
-                                onExternalNavigate(AIRDROP_LINKS['LINKED_ACCOUNT']);
-                              }}
-                              href={AIRDROP_LINKS['LINKED_ACCOUNT']}
-                            />
-                            <p className="mt-[2px] text-sm text-price-lower">
-                              Zealy login required
-                            </p>
-                          </div>
-                        </div>
+                        <Notice
+                          src={ZealyIcon}
+                          href={AIRDROP_LINKS['LINKED_ACCOUNT']}
+                          onClick={() => {
+                            onExternalNavigate(AIRDROP_LINKS['LINKED_ACCOUNT']);
+                          }}
+                          buttonLabel="Zealy Linked account"
+                          buttonTip="Zealy login required"
+                          css="alert"
+                        >
+                          To convert XP from Zealy quests to Chromatic Airdrop credits, connect your
+                          wallet at Zealy Profile {'>'} Linked Account. Click
+                          <Button
+                            label="here"
+                            css="underlined"
+                            size="lg"
+                            className="text-primary"
+                            href={AIRDROP_LINKS['HOW_TO_CONNECT']}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              onExternalNavigate(AIRDROP_LINKS['HOW_TO_CONNECT']);
+                            }}
+                          />
+                          to get informed how to connect wallet address to zealy linked account.
+                        </Notice>
                         <AirdropActivity onHistoryClick={onHistoryClick} />
                         {/* <div className="flex items-center gap-4 py-2 pl-4 pr-5 mt-5 text-lg panel">
                               <img src={GalxeIcon} alt="galxe" className="w-[24px]" />
