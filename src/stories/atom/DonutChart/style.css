@@ -3,6 +3,11 @@
   inherits: true;
   initial-value: 1;
 }
+@property --c {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgb(var(--color-primary));
+}
 .DonutChart {
   .pie {
     --p: 0;
