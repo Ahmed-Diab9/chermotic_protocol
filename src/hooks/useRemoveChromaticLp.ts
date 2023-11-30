@@ -44,7 +44,7 @@ export const useRemoveChromaticLp = () => {
         await onMutateLpReceipts(receipt, selectedLp.address, 'burning', BigInt(timestamp));
       }
       dispatchLpEvent();
-      toast('Removal process started.');
+      toast('The liquidity withdrawing process has started.');
 
       setIsRemovalPending(false);
     } catch (error) {
