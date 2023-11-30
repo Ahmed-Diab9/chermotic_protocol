@@ -31,7 +31,9 @@ export const ReferralHistory = (props: ReferralHistoryProps) => {
       </div>
       <div className="flex items-center justify-between gap-5 py-5 mt-5 border-y">
         <h3 className="text-primary-light">As Referrer, you earned...</h3>
-        <h3>621.25 rCHRMA</h3>
+        <h3>
+          621.25 <span className="text-lg font-semibold">rCHRMA</span>
+        </h3>
       </div>
       <article className="mt-8 wrap-list">
         {/* if there is no list (empty) */}
@@ -44,7 +46,6 @@ export const ReferralHistory = (props: ReferralHistoryProps) => {
               <div className="td">Epoch</div>
               <div className="td">My Tier</div>
               <div className="td">Total Trading Fee</div>
-              <div className="td">Share of Epoch</div>
               <div className="td">Your Rebate Rewards</div>
             </div>
           </div>
@@ -80,17 +81,7 @@ export const ReferralHistory = (props: ReferralHistoryProps) => {
                   width={40}
                 >
                   <h4 className="value">
-                    0.00 <span>USDT</span>
-                  </h4>
-                </SkeletonElement>
-              </div>
-              <div className="td">
-                <SkeletonElement
-                  // isLoading={isLoading}
-                  width={40}
-                >
-                  <h4 className="value">
-                    0.00 <span>%</span>
+                    0.00 <span>USD</span>
                   </h4>
                 </SkeletonElement>
               </div>

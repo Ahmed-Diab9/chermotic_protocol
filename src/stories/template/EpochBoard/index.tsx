@@ -31,7 +31,9 @@ export const EpochBoard = (props: EpochBoardProps) => {
                 <p className="text-primary-light">$rCHRMA Rewards</p>
                 <TooltipGuide label="rchrma-reward" tip="" />
               </div>
-              <h5 className="mt-2 text-xl">340K rCHRMA</h5>
+              <h5 className="mt-2 text-xl">
+                340K <span className="text-lg text-primary-light">rCHRMA</span>
+              </h5>
             </div>
             <div className="w-1/2">
               <div className="flex items-center">

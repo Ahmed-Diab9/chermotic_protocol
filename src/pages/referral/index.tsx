@@ -1,7 +1,9 @@
-import { Tab } from '@headlessui/react';
-import { ChevronRightIcon, LinkIcon } from '@heroicons/react/24/outline';
-import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import {
+  ChevronRightIcon,
+  ClipboardDocumentCheckIcon,
+  ClipboardIcon,
+  LinkIcon,
+} from '@heroicons/react/24/outline';
 import { useAccount, useConnect } from 'wagmi';
 
 import { EpochBoard } from '~/stories/template/EpochBoard';
@@ -12,7 +14,6 @@ import { ChromaticLogo } from '~/assets/icons/Logo';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Tag } from '~/stories/atom/Tag';
-import { Loading } from '~/stories/atom/Loading';
 import '~/stories/atom/Tabs/style.css';
 import './style.css';
 
@@ -49,14 +50,26 @@ function Referral() {
             <div className="flex gap-12 mt-10">
               <section className="flex flex-col flex-auto gap-24">
                 <article>
-                  <h3 className="text-4xl">My Tier</h3>
-                  <div className="flex items-center py-6 mt-5">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-4xl">My Tier</h3>
+                    {/* TODO: show tag whitelisted or not */}
+                    {/* <span className="text-lg font-bold tag tag-default">
+                      <ClipboardIcon className="h-4 mr-[2px] -ml-[2px]" />
+                      Not Whitelisted
+                    </span> */}
+                    <span className="text-lg font-bold !normal-case tag tag-long">
+                      <ClipboardDocumentCheckIcon className="h-4 mr-[2px] -ml-[2px]" />
+                      Whitelisted
+                    </span>
+                  </div>
+                  <div className="flex items-center py-6 mt-3">
                     <div className="flex items-center justify-center w-1/2 pr-8 border-r">
                       {/* TODO: set totalFee, numberOfTrader */}
                       <TierChart totalFee={80} numberOfTrader={40} />
                     </div>
                     <div className="w-1/2 pl-10">
-                      <div className="flex pb-4 mb-4 border-b">
+                      <h2 className="text-3xl">Tier 1</h2>
+                      <div className="flex py-4 mt-3 mb-4 border-y">
                         <div className="flex flex-col justify-between w-1/2">
                           <div className="flex items-center mb-[6px]">
                             <div className="w-3 h-3 mr-1 rounded-full bg-chart-secondary" />
@@ -93,16 +106,21 @@ function Referral() {
                   </div>
                 </article>
                 <article>
-                  <h3 className="text-4xl">My Rewards in Epoch #3</h3>
-                  <div className="flex py-6 mt-5">
+                  <h3 className="text-4xl">My Est. Rewards in Epoch #3</h3>
+                  <div className="flex py-6 mt-3">
                     <div className="w-1/2 pr-8 border-r">
                       <div className="flex">
                         <div>
                           <h5 className="mb-2 text-xl text-primary-light">As Referrer</h5>
-                          <h3 className="text-3xl">340K rCHRMA</h3>
+                          <h3 className="text-3xl">
+                            340K{' '}
+                            <span className="text-2xl font-semibold text-primary-light">
+                              rCHRMA
+                            </span>
+                          </h3>
                         </div>
                         <Tag
-                          label="Tier 0"
+                          label="My Tier 0"
                           className="ml-auto text-xl font-semibold"
                           css="default"
                         />
@@ -110,23 +128,30 @@ function Referral() {
                       <div className="flex gap-10 mt-8 text-lg">
                         <div>
                           <p className="mb-2 text-primary-light">Total Fees</p>
-                          <p className="text-xl">434.00</p>
+                          <h4 className="text-xl">
+                            434.00 <span className="text-lg text-primary-light">USD</span>
+                          </h4>
                         </div>
                         <div>
                           <p className="mb-2 text-primary-light">Rebate</p>
-                          <p className="text-xl">25%</p>
+                          <h4 className="text-xl">25%</h4>
                         </div>
                       </div>
                       <p className="mt-6 text-sm text-primary-light">
                         * The total fee is the sum of all fees for the people you invited.
                       </p>
                     </div>
-                    {/* Case 1 */}
+                    {/* Case 1 : connected */}
                     {/* <div className="w-1/2 pl-10">
                       <div className="flex">
                         <div>
                           <h5 className="mb-2 text-xl text-primary-light">As Trader</h5>
-                          <h4 className="text-3xl">340K rCHRMA</h4>
+                          <h3 className="text-3xl">
+                            340K{' '}
+                            <span className="text-2xl font-semibold text-primary-light">
+                              rCHRMA
+                            </span>
+                          </h3>
                         </div>
                         <Tag
                           label="Referrer’s Tier 3"
@@ -137,18 +162,20 @@ function Referral() {
                       <div className="flex gap-10 mt-8 text-lg">
                         <div>
                           <p className="mb-2 text-primary-light">Total Fees</p>
-                          <p className="text-xl">434.00</p>
+                          <h4 className="text-xl">
+                            434.00 <span className="text-lg text-primary-light">USD</span>
+                          </h4>
                         </div>
                         <div>
                           <p className="mb-2 text-primary-light">Rebate</p>
-                          <p className="text-xl">25%</p>
+                          <h4 className="text-xl">25%</h4>
                         </div>
                       </div>
                       <p className="mt-6 text-sm text-primary-light">
                         * Trader’s Referral reward is reflected and aggretated in Trade Rewards.
                       </p>
                     </div> */}
-                    {/* Case 2 */}
+                    {/* Case 2 : not connected */}
                     <div className="flex flex-col items-start justify-between w-1/2 pl-12">
                       <div className="mb-8">
                         <h5 className="mb-3 text-xl text-primary-light">As Trader</h5>
@@ -158,13 +185,13 @@ function Referral() {
                           to Earn Rewards Together.
                         </p>
                       </div>
-                      <Button
+                      {/* <Button
                         label="Add Referral Address"
                         iconLeft={<LinkIcon className="!w-4" />}
                         css="active"
                         size="xl"
                         className="!h-8 mb-10"
-                      />
+                      /> */}
                     </div>
                   </div>
                 </article>
