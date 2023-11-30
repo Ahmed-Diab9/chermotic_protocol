@@ -107,7 +107,7 @@ function Airdrop() {
                       <div className="flex flex-wrap items-end mb-10">
                         <BlurText
                           label="May the $CHRMA be with you!"
-                          className="text-[52px] tracking-tight w-[520px]"
+                          className="w-[680px]"
                           color="chrm"
                         />
                         <div className="ml-auto text-right">
@@ -322,7 +322,7 @@ function Airdrop() {
                   <Tab.Panel>
                     <section>
                       <div className="flex items-baseline">
-                        <BlurText label="My History" className="text-[52px]" color="chrm" />
+                        <BlurText label="My History" color="chrm" />
                         <div className="ml-auto text-lg text-primary-light">{message}</div>
                       </div>
                       <div className="p-5 mt-10 text-center panel">

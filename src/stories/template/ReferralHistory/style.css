@@ -1,0 +1,49 @@
+.ReferralHistory {
+  .wrap-list {
+    @apply mt-7 min-h-[40vh] mb-20;
+  }
+  .list {
+    @apply text-left;
+    .thead {
+      @apply items-stretch text-lg;
+      .tr {
+        @apply px-10;
+      }
+      .td {
+        @apply py-3 text-primary-light;
+      }
+    }
+    .tbody {
+      @apply flex flex-col gap-2 text-xl;
+      .tr {
+        @apply gap-5 py-5 px-10;
+        @apply bg-paper/40 rounded;
+      }
+      .td {
+        &:not(:nth-child(1)) {
+          @apply break-all;
+        }
+      }
+    }
+    .tr {
+      @apply flex gap-5 justify-between;
+    }
+    .td {
+      @apply flex items-center;
+      flex: 1 1 auto;
+      h4.value {
+        @apply text-xl;
+        span {
+          @apply text-primary-light font-normal text-lg;
+        }
+      }
+    }
+  }
+  .td {
+    @apply w-[16%];
+    &:nth-child(1),
+    &:nth-child(2) {
+      @apply w-[6%];
+    }
+  }
+}

@@ -71,6 +71,11 @@ export const theme = {
       },
 
       leverage: 'rgb(var(--color-leverage))',
+
+      chart: {
+        primary: 'rgb(var(--color-chart-primary))',
+        secondary: 'rgb(var(--color-chart-secondary))',
+      },
       price: {
         higher: {
           DEFAULT: 'rgb(var(--color-price-higher))',

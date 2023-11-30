@@ -10,6 +10,7 @@ const TradeV2 = lazy(() => import('./pages/tradeV2'));
 const TradeV3 = lazy(() => import('./pages/tradeV3'));
 const Airdrop = lazy(() => import('./pages/airdrop'));
 const Faucet = lazy(() => import('./pages/faucet'));
+const Referral = lazy(() => import('./pages/referral'));
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense>
             <Airdrop />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/referral',
+        element: (
+          <Suspense>
+            <Referral />
           </Suspense>
         ),
       },
