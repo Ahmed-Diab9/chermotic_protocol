@@ -183,7 +183,8 @@ function Airdrop() {
                           </div>
                         </div>
                         <Notice
-                          src={ZealyIcon}
+                          imgSrc={ZealyIcon}
+                          imgAlt="zealy"
                           href={AIRDROP_LINKS['LINKED_ACCOUNT']}
                           onClick={() => {
                             onExternalNavigate(AIRDROP_LINKS['LINKED_ACCOUNT']);

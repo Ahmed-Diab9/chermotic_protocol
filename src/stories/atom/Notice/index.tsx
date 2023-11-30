@@ -6,7 +6,11 @@ import './style.css';
 interface NoticeProps extends PropsWithChildren {
   css?: 'default' | 'alert';
   className?: string;
-  src?: string;
+  imgSrc?: string;
+  imgAlt?: string;
+  icon?: any;
+  iconBg?: string;
+  to?: string;
   href?: string;
   onClick?: () => unknown;
   buttonLabel?: string;
@@ -17,8 +21,12 @@ export const Notice = (props: PropsWithChildren<NoticeProps>) => {
   const {
     css = 'default',
     className,
-    src,
+    imgSrc,
+    imgAlt,
+    icon,
+    iconBg = 'gray-light',
     onClick,
+    to,
     href,
     children,
     buttonLabel,
@@ -27,11 +35,14 @@ export const Notice = (props: PropsWithChildren<NoticeProps>) => {
 
   return (
     <div className={`notice notice-${css} ${className}`}>
-      {src && <img src={src} alt="zealy" className="h-[42px]" />}
+      {imgSrc && <img src={imgSrc} alt={imgAlt} className="h-[42px]" />}
+      {icon && (
+        <span className={`w-[42px] h-[42px] rounded-full bg-${iconBg} p-[10px]`}>{icon}</span>
+      )}
       <div className="w-2/3">
         <p className="text-left wrapper-children">{children}</p>
       </div>
-      <div className="flex flex-col items-start pl-8 ml-auto border-l">
+      <div className="flex flex-col items-start pl-5 ml-auto border-l">
         <Button
           label={buttonLabel}
           iconRight={<ChevronRightIcon />}
@@ -39,6 +50,7 @@ export const Notice = (props: PropsWithChildren<NoticeProps>) => {
           size="lg"
           css="underlined"
           onClick={onClick}
+          to={to}
           href={href}
         />
         {buttonTip && <p className="mt-[2px] text-sm text-price-lower">{buttonTip}</p>}

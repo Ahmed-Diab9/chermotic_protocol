@@ -14,7 +14,9 @@ import { ChromaticLogo } from '~/assets/icons/Logo';
 import { BlurText } from '~/stories/atom/BlurText';
 import { Button } from '~/stories/atom/Button';
 import { Tag } from '~/stories/atom/Tag';
+import { Notice } from '~/stories/atom/Notice';
 import '~/stories/atom/Tabs/style.css';
+import { Avatar } from '~/stories/atom/Avatar';
 
 function Referral() {
   const { isConnected: _isConnected } = useAccount();
@@ -52,10 +54,10 @@ function Referral() {
                   <div className="flex items-center gap-2">
                     <h3 className="text-4xl">My Tier</h3>
                     {/* TODO: show tag whitelisted or not */}
-                    {/* <span className="text-lg font-bold tag tag-default">
+                    <span className="text-lg font-bold tag tag-default">
                       <ClipboardIcon className="h-4 mr-[2px] -ml-[2px]" />
                       Not Whitelisted
-                    </span> */}
+                    </span>
                     <span className="text-lg font-bold !normal-case tag tag-long">
                       <ClipboardDocumentCheckIcon className="h-4 mr-[2px] -ml-[2px]" />
                       Whitelisted
@@ -103,6 +105,17 @@ function Referral() {
                       </div>
                     </div>
                   </div>
+                  <Notice
+                    icon={<ClipboardDocumentCheckIcon className="text-inverted" />}
+                    iconBg="price-higher"
+                    // href="#"
+                    onClick={() => {}}
+                    buttonLabel="Apply for Whitelist"
+                    className="mt-10"
+                  >
+                    Whitelisted users earn higher rewards from the Referral Program for themselves
+                    (up to 12%) and for referred traders (up to 9%).
+                  </Notice>
                 </article>
                 <article>
                   <h3 className="text-4xl">My Est. Rewards in Epoch #3</h3>
@@ -205,7 +218,7 @@ function Referral() {
                   <ReferralHistory />
                 </article>
               </section>
-              <section className="w-[400px]">
+              <section className="w-[400px] min-w-[360px]">
                 <EpochBoard />
               </section>
             </div>
