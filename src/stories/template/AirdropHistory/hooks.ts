@@ -1,7 +1,5 @@
 import { isNil, isNotNil } from 'ramda';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { PAGE_SIZE } from '~/constants/arbiscan';
+import { useCallback, useMemo, useState } from 'react';
 import { useAirdropAssets } from '~/hooks/airdrops/useAirdropAssets';
 import { useAirdropHistory } from '~/hooks/airdrops/useAirdropHistory';
 
@@ -11,9 +9,10 @@ const labelMap = {
   Credits: 'credits',
   Booster: 'booster',
 } as const;
+const PAGE_SIZE = 10;
 
 export const useFilteredAirdropHistory = () => {
-  const [selectedIndex, setSelectedIndex] = useState<number>();
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const { airdropHistory = [], refreshHistory } = useAirdropHistory();
   const { airdropAssets, isLoading } = useAirdropAssets();
   const activeLabel = useMemo(
@@ -21,31 +20,6 @@ export const useFilteredAirdropHistory = () => {
     [selectedIndex]
   );
   const [page, setPage] = useState(0);
-
-  const [searchParams] = useSearchParams();
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab !== 'history') {
-      setSelectedIndex(0);
-      return;
-    }
-    const label = searchParams.get('label');
-    switch (label) {
-      case 'credit': {
-        setSelectedIndex(1);
-        break;
-      }
-      case 'booster': {
-        setSelectedIndex(2);
-        break;
-      }
-      default: {
-        setSelectedIndex(0);
-        return;
-      }
-    }
-  }, [searchParams]);
-
   const filteredHistory = useMemo(() => {
     if (isNil(activeLabel)) {
       return [];

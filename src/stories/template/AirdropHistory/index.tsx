@@ -12,7 +12,12 @@ const historyList = [
   { category: 'Credits', score: '30', through: 'Zealy', date: '2023/10/04 08:24:37 (UTC)' },
 ];
 
-export const AirdropHistory = () => {
+interface AirdropHistoryProps {
+  onHistoryRefLoad?: (element: HTMLDivElement | null) => unknown;
+}
+
+export const AirdropHistory = (props: AirdropHistoryProps) => {
+  const { onHistoryRefLoad } = props;
   const {
     pagedHistory = [],
     filterLabels,
@@ -26,7 +31,7 @@ export const AirdropHistory = () => {
 
   return (
     <div className="AirdropHistory">
-      <div className="flex gap-3">
+      <div className="flex gap-3" ref={(element) => onHistoryRefLoad?.(element)}>
         {filterLabels.map((label, labelIndex) => (
           <button
             key={`${label}-${labelIndex}`}
