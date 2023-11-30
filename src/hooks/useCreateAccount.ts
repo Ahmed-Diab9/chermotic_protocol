@@ -5,6 +5,7 @@ import { accountAction } from '~/store/reducer/account';
 import { ACCOUNT_STATUS } from '~/typings/account';
 import { AppError } from '~/typings/error';
 import { Logger } from '~/utils/log';
+import { wait } from '~/utils/promise';
 import { useChromaticAccount } from './useChromaticAccount';
 import { useChromaticClient } from './useChromaticClient';
 
@@ -56,9 +57,17 @@ export const useCreateAccount = () => {
       );
 
       await client.publicClient?.waitForTransactionReceipt({ hash });
-      const newAccount = await client.account().getAccount();
-      await fetchAddress(newAccount);
       dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
+
+      const [accountPromise] = await Promise.allSettled([
+        client.account().getAccount(),
+        wait(1000 * 2),
+      ] as const);
+      if (accountPromise.status === 'fulfilled') {
+        await fetchAddress(accountPromise.value);
+      } else {
+        throw new Error('Failed to fetch new account.');
+      }
     } catch (error) {
       dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
       logger.error(error);

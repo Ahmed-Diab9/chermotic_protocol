@@ -46,7 +46,7 @@ export const useAddChromaticLp = () => {
         await onMutateLpReceipts(receipt, selectedLp.address, 'minting', BigInt(timestamp));
       }
       dispatchLpEvent();
-      toast('Add process started.');
+      toast('The liquidity provisioning process has started.');
       setIsAddPending(false);
     } catch (error) {
       setIsAddPending(false);

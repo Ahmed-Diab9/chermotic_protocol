@@ -81,7 +81,7 @@ function useOpenPosition() {
       await fetchBalances();
 
       dispatchTradeEvent();
-      toast('The opening process has been started.');
+      toast('The opening process has started.');
     } catch (error) {
       toast.error('Transaction rejected.');
     } finally {

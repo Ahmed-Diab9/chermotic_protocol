@@ -6,9 +6,12 @@ import './style.css';
 import BoosterLgIcon from '/src/assets/images/airdrop_booster.svg';
 import CreditLgIcon from '/src/assets/images/airdrop_credit.svg';
 
-export interface AirdropActivityProps {}
+export interface AirdropActivityProps {
+  onHistoryClick?: (tab: 'credit' | 'booster') => unknown;
+}
 
 export const AirdropActivity = (props: AirdropActivityProps) => {
+  const { onHistoryClick } = props;
   const { airdropAssets, formattedCredit, isLoading } = useAirdropActivity();
   return (
     <div className="text-lg text-left AirdropActivity">
@@ -34,7 +37,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               </p>
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
-              <ArrowInfo label="My Credit History" to="/airdrop?tab=history&label=credit" />
+              <ArrowInfo label="My Credit History" onClick={() => onHistoryClick?.('credit')} />
               <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_CREDITS']} />
             </div>
           </div>
@@ -63,7 +66,7 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
               </p>
             </div>
             <div className="flex flex-col gap-1 xl:pl-5">
-              <ArrowInfo label="My Booster History" to="/airdrop?tab=history&label=booster" />
+              <ArrowInfo label="My Booster History" onClick={() => onHistoryClick?.('booster')} />
               <ArrowInfo label="Learn more" to={AIRDROP_LINKS['GET_BOOSTERS']} />
             </div>
           </div>
@@ -76,10 +79,11 @@ export const AirdropActivity = (props: AirdropActivityProps) => {
 interface ArrowInfoProps {
   label: string;
   to?: string;
+  onClick?: () => unknown;
 }
 
 export const ArrowInfo = (props: ArrowInfoProps) => {
-  const { label, to } = props;
+  const { label, to, onClick } = props;
   if (to)
     return (
       <Link
@@ -94,7 +98,10 @@ export const ArrowInfo = (props: ArrowInfoProps) => {
     );
   else
     return (
-      <p className="flex items-center gap-1 text-primary-light whitespace-nowrap">
+      <p
+        className="flex items-center gap-1 text-primary-light whitespace-nowrap cursor-pointer hover:underline"
+        onClick={onClick}
+      >
         <ArrowLongRightIcon className="w-4" />
         <span>{label}</span>
       </p>

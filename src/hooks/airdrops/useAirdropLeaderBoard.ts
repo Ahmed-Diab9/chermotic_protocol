@@ -5,6 +5,8 @@ import { LeaderBoard } from '~/typings/airdrop';
 import { REWARD_EVENT } from '~/typings/events';
 import { useError } from '../useError';
 
+const PAGE_SIZE = 10;
+
 interface UseAirdropLeaderBoard {
   type: 'today' | 'yesterday' | 'all';
 }
@@ -21,8 +23,7 @@ export const useAirdropLeaderBoard = (props: UseAirdropLeaderBoard) => {
     mutate,
   } = useSWRInfinite(
     (pageIndex: number, previousData: unknown) => {
-      const limit = 5;
-      const url = `/airdrop/leaderboard/${type}?page=${pageIndex + 1}&limit=${limit}`;
+      const url = `/airdrop/leaderboard/${type}?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
 
       return url;
     },
