@@ -56,6 +56,9 @@ const useMarkets = () => {
           description: `${prefix}/${suffix}`,
         };
       });
+    },
+    {
+      refreshInterval: 0,
     }
   );
 

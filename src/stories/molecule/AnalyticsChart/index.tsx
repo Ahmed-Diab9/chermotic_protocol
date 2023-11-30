@@ -1,17 +1,16 @@
+import { isEmpty } from 'ramda';
 import { ReactNode, useState } from 'react';
 import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
   Line,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ComposedChart,
-  Area,
 } from 'recharts';
-import { isEmpty } from 'ramda';
-import LOADING from '~/assets/images/loading.png';
 
 import { CategoricalChartState } from 'recharts/types/chart/generateCategoricalChart';
 
@@ -44,7 +43,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
 
   const domain = ([min, max]: [number, number]) => {
     const gap = (max - min) * 0.7;
-    return [min - gap, max + gap] as [number, number];
+    return [Math.max(min - gap, 0), max + gap] as [number, number];
   };
 
   const dateFormat = (dateObject: Date) =>
@@ -103,8 +102,12 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
           <div className="p-3">
             <p className="font-semibold text-primary">{date}</p>
             <div className="flex flex-col gap-1 mt-2 text-sm font-semibold text-primary-lighter">
-              {payload.map(({ name, color, value }) => (
-                <p style={{ color: color }} className="text-sm">
+              {payload.map(({ name, color, value }, index) => (
+                <p
+                  style={{ color: color }}
+                  className="text-sm"
+                  key={`${name}:${color}:${value}:${index}`}
+                >
                   {map[name].name}: {value}
                 </p>
               ))}
@@ -138,7 +141,7 @@ export function AnalyticsChart({ data, map, x }: AnalyticsChartProps) {
         </defs>
         <CartesianGrid stroke="#4A4A51" />
         <XAxis dataKey={x} tickFormatter={dateFormat} axisLine={false} stroke="#4A4A51" />
-        <YAxis scale="log" domain={domain} stroke="#4A4A51" />
+        <YAxis scale="linear" domain={domain} stroke="#4A4A51" />
         <Tooltip
           cursor={{ stroke: 'null' }}
           isAnimationActive={false}

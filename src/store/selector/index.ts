@@ -6,6 +6,11 @@ export const selectedLpSelector = createSelector(
   (lp) => lp.selectedLp
 );
 
+export const receiptActionSelector = createSelector(
+  (state: RootState) => state.lp,
+  (lp) => lp.receiptAction
+);
+
 export const selectedTokenSelector = createSelector(
   (state: RootState) => state.token,
   (token) => token.selectedToken

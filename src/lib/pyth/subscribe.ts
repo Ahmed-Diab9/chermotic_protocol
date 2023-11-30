@@ -1,94 +1,50 @@
-import { isNotNil } from 'ramda';
-import { PYTH_TV_PRICEFEED } from '~/constants/pyth';
-import { PythStreamData } from '~/typings/api';
-import { Logger } from '~/utils/log';
+import { isNil } from 'ramda';
+import { PYTH_HERMES_PRICEFEED, PYTH_HERMES_IDS } from '~/constants/pyth';
 
-const streamingUrl = `${PYTH_TV_PRICEFEED}/streaming`;
+import { PriceServiceConnection } from '@pythnetwork/price-service-client';
+import { PythStreamData } from './types';
 
-const logger = Logger('stream');
+export const EVENT = 'price-update';
 
-export async function subscribePythFeed() {
-  let unsubscriber: (() => Promise<void>) | undefined;
+export function subscribePythFeed() {
+  const connection = new PriceServiceConnection(PYTH_HERMES_PRICEFEED);
 
-  const RETRY_DELAY = 1000;
+  const markets = ['Crypto.BTC/USD', 'Crypto.ETH/USD'];
 
-  async function startStreaming(
-    next: (props: PythStreamData) => void,
-    retries = 30,
-    delay = RETRY_DELAY
-  ) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), delay);
-      const response = await fetch(streamingUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
+  const priceIds = Object.keys(PYTH_HERMES_IDS).filter((market) =>
+    markets.includes(PYTH_HERMES_IDS[market])
+  );
 
-      if (!response.body) {
-        throw new Error('null body');
-      }
-      const reader = response.body.getReader();
+  connection.subscribePriceFeedUpdates(priceIds, (priceFeed) => {
+    const price = priceFeed.getPriceNoOlderThan(60);
 
-      let incompleteString: string;
+    if (isNil(price)) return;
 
-      function streamData() {
-        reader.read().then(({ value, done }) => {
-          if (done) return;
+    const data = {
+      id: PYTH_HERMES_IDS[`0x${priceFeed.id}`],
+      p: +price.price * 10 ** price.expo,
+      t: price.publishTime,
+    };
 
-          const responseText = new TextDecoder().decode(value);
-          const jsonList = responseText.replaceAll('\n', '').split(/(?<=})/g);
-
-          jsonList.forEach((jsonText) => {
-            try {
-              const data: PythStreamData = JSON.parse(jsonText);
-              next(data);
-            } catch (error) {
-              if (jsonText.endsWith('}') && isNotNil(incompleteString)) {
-                const data: PythStreamData = JSON.parse(incompleteString + jsonText);
-                next(data);
-              } else if (jsonText.startsWith('{')) {
-                incompleteString = jsonText;
-              } else {
-                logger.error('Incompleteable string:', jsonText);
-              }
-            }
-          });
-          streamData();
-        });
-      }
-
-      streamData();
-
-      return async () => {
-        await reader.cancel();
-        reader.releaseLock();
-        await response.body?.cancel();
-        return;
-      };
-    } catch (err) {
-      logger.log('Trying to reconnect... Remain counts:', retries);
-      attemptReconnect(retries, delay);
-    }
-
-    function attemptReconnect(retriesLeft: number, delay: number) {
-      if (retriesLeft > 0) {
-        setTimeout(async () => {
-          unsubscriber = await startStreaming(next, retriesLeft - 1, delay);
-        }, delay);
-      } else {
-        logger.error('Maximum reconnection attempts reached.');
-      }
-    }
-  }
-
-  function subscriber(data: PythStreamData) {
     window.dispatchEvent(
-      new CustomEvent('price-update', {
+      new CustomEvent(EVENT, {
         detail: data,
       })
     );
+  });
+
+  function disconncet() {
+    try {
+      connection.closeWebSocket();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  unsubscriber = await startStreaming(subscriber);
+  return disconncet;
+}
 
-  return unsubscriber;
+export function listenPriceFeed(callBack: (event: CustomEvent<PythStreamData>) => void) {
+  window.addEventListener(EVENT, callBack as EventListener);
+  return () => window.removeEventListener(EVENT, callBack as EventListener);
 }

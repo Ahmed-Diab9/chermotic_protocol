@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import useBookmarksUpdate from '~/hooks/updates/useBookmarksUpdate';
+import useMarketsUpdate from '~/hooks/updates/useMarketsUpdate';
 import useBackgroundGradient from '~/hooks/useBackgroundGradient';
 import { subscribePythFeed } from '~/lib/pyth/subscribe';
 import { Toast, showCautionToast } from '~/stories/atom/Toast';
@@ -11,6 +13,7 @@ import { HeaderV3 } from '~/stories/template/HeaderV3';
 export const ChromaticLayout = () => {
   const location = useLocation();
   const [isToastLoaded, setIsToastLoaded] = useState(false);
+  useMarketsUpdate();
   useEffect(() => {
     if (isToastLoaded) {
       return;
@@ -65,12 +68,12 @@ export const ChromaticLayout = () => {
 
 export const GradientLayout = () => {
   const { onLoadBackgroundRef } = useBackgroundGradient();
+  useBookmarksUpdate();
+  
   useEffect(() => {
     const unsubscriber = subscribePythFeed();
     return () => {
-      unsubscriber.then((action) => {
-        action && action();
-      });
+      unsubscriber();
     };
   }, []);
 

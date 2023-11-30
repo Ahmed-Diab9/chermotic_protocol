@@ -36,7 +36,10 @@ export const usePoolAnalyticsV3 = () => {
   const { selectedLp } = useChromaticLp();
 
   const { data, isLoading } = useAnalytics({ start: startDate, end: endDate });
-  const chartData = useMemo(() => data?.sort((a, b) => a.timestamp - b.timestamp), [data]);
+  const chartData = useMemo(
+    () => data?.sort((a, b) => a.date.getTime() - b.date.getTime()),
+    [data]
+  );
 
   const format = useCallback(
     (bigInt: bigint) => +formatDecimals(bigInt, selectedLp?.clpDecimals, selectedLp?.clpDecimals),
@@ -52,8 +55,7 @@ export const usePoolAnalyticsV3 = () => {
     if (isNil(chartData) || isEmpty(chartData)) return defaultChartData;
 
     return chartData.reduce((acc, cur) => {
-      const date = new Date(cur.timestamp * 1000);
-
+      const date = cur.date;
       const clpPrice = format(cur.clpPrice);
       acc.price.push({ clpPrice, date });
 

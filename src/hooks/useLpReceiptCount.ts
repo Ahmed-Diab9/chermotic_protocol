@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi';
 import { checkAllProps } from '~/utils';
 import { useError } from './useError';
 
+import { isNil } from 'ramda';
 import { lpGraphSdk } from '~/lib/graphql';
 import { useAppSelector } from '~/store';
 import { selectedLpSelector } from '~/store/selector';
@@ -63,7 +64,7 @@ export const useLpReceiptCount = () => {
     },
     {
       // TODO: Find proper interval seconds
-      refreshInterval: 1000 * 6,
+      refreshInterval: 0,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
@@ -78,9 +79,25 @@ export const useLpReceiptCount = () => {
     mutate();
   }, [mutate]);
 
+  const onMutateLpReceiptCount = useCallback(
+    (action: 'minting' | 'burning') => {
+      if (isNil(counts)) {
+        return;
+      }
+      const nextCounts = {
+        ...counts,
+        [action]: counts[action] + 1,
+        inProgress: counts['inProgress'] + 1,
+      };
+      mutate(nextCounts, { revalidate: false });
+    },
+    [counts, mutate]
+  );
+
   return {
     counts,
     isCountLoading,
     onRefreshLpReceiptCount,
+    onMutateLpReceiptCount,
   };
 };

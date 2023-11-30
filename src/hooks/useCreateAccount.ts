@@ -27,7 +27,7 @@ export const useCreateAccount = () => {
       await accountApi.createAccount();
 
       const newAccount = await accountApi.getAccount();
-      await fetchAddress(newAccount);
+      await fetchAddress(newAccount, { revalidate: false });
 
       dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETING));
     } catch (error) {

@@ -36,23 +36,29 @@ export const useChromaticAccount = () => {
     error,
     mutate: fetchAddress,
     isLoading: isAccountAddressLoading,
-  } = useSWR(isReady && checkAllProps(fetchKey) && fetchKey, async ({ address }) => {
-    try {
-      const accountApi = client.account();
-      const accountAddress = await accountApi.getAccount();
+  } = useSWR(
+    isReady && checkAllProps(fetchKey) && fetchKey,
+    async ({ address }) => {
+      try {
+        const accountApi = client.account();
+        const accountAddress = await accountApi.getAccount();
 
-      if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
+        if (isNil(accountAddress) || accountAddress === ADDRESS_ZERO) {
+          dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
+        } else {
+          dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETED));
+        }
+        return accountAddress;
+      } catch (error) {
         dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-      } else {
-        dispatch(setAccountStatus(ACCOUNT_STATUS.COMPLETED));
+        logger.error(error);
+        return ADDRESS_ZERO as Address;
       }
-      return accountAddress;
-    } catch (error) {
-      dispatch(setAccountStatus(ACCOUNT_STATUS.NONE));
-      logger.error(error);
-      return ADDRESS_ZERO as Address;
+    },
+    {
+      refreshInterval: 0,
     }
-  });
+  );
 
   const { tokens } = useSettlementToken();
   const accountBalanceFetchKey = useMemo(

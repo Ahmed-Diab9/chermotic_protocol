@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import useSWRSubscription from 'swr/subscription';
-
-import { PythStreamData } from '~/typings/api';
+import { listenPriceFeed } from '~/lib/pyth/subscribe';
+import { PythStreamData } from '~/lib/pyth/types';
 
 import { checkAllProps } from '~/utils';
 
@@ -12,7 +12,7 @@ interface IUsePythPrice {
 }
 
 export function usePythPrice(symbol?: string): IUsePythPrice {
-  const pythSymbol = useMemo(() => symbol?.replace(' / ', '/'), [symbol]);
+  const pythSymbol = useMemo(() => symbol && `Crypto.${symbol.replace(' / ', '/')}`, [symbol]);
 
   const subscriptionKey = {
     name: 'subscribePythPrice',
@@ -22,18 +22,15 @@ export function usePythPrice(symbol?: string): IUsePythPrice {
   const { data } = useSWRSubscription(
     checkAllProps(subscriptionKey) && subscriptionKey,
     ({ symbol }, { next }) => {
-      const listener = ({ detail }: any) => {
-        const { id, p: price, t: time } = detail as PythStreamData;
-        const dataSymbol = id.split('.')[1].trim();
-        if (dataSymbol === symbol) {
+      const listener = ({ detail }: CustomEvent<PythStreamData>) => {
+        const { id, p: price, t: time } = detail;
+        if (id === symbol) {
           next(null, { symbol, price, time });
         }
       };
-      window.addEventListener('price-update', listener);
 
-      return async () => {
-        window.removeEventListener('price-update', listener);
-      };
+      const unlisten = listenPriceFeed(listener);
+      return unlisten;
     }
   );
 

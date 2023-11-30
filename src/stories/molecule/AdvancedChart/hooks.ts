@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -10,7 +10,6 @@ import {
   widget,
 } from '~/lib/charting_library';
 import datafeed from '~/lib/pyth/datafeed';
-import { useAppDispatch } from '~/store';
 
 import { numberFormat } from '~/utils/number';
 import { changeTheme } from './utils';
@@ -21,7 +20,6 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
   const { symbol, darkMode } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChartReady, setIsChartReady] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
 
   const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
@@ -75,11 +73,10 @@ export const useAdvancedChart = (props: AdvancedChartProps) => {
       },
     });
 
-    setIsLoading(true);
-
     tvWidget.onChartReady(() => {
       tvWidgetRef.current = tvWidget;
       setIsChartReady(true);
+      isNotNil(symbol) && setIsLoading(false);
     });
 
     return () => {

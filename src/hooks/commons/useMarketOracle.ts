@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import useSWR from 'swr';
 import { Market } from '~/typings/market';
 import { checkAllProps } from '~/utils';
@@ -19,6 +20,7 @@ const useMarketOracle = (props: UseMarketOracle) => {
     data: currentOracle,
     isLoading,
     error,
+    mutate,
   } = useSWR(
     checkAllProps(fetchKey) ? fetchKey : undefined,
     async ({ market }) => {
@@ -28,13 +30,17 @@ const useMarketOracle = (props: UseMarketOracle) => {
       return currentOracle;
     },
     {
-      refreshInterval: 1000 * 30,
+      refreshInterval: 0,
     }
   );
 
   useError({ error });
 
-  return { currentOracle, isLoading };
+  const refreshMarketOracle = useCallback(async () => {
+    await mutate();
+  }, [mutate]);
+
+  return { currentOracle, isLoading, refreshMarketOracle };
 };
 
 export default useMarketOracle;
