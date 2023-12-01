@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { PropsWithChildren } from 'react';
 import { Tooltip } from 'react-tooltip';
 import '../TooltipGuide/style.css';
 
-interface TooltipAlertProps {
+interface TooltipAlertProps extends PropsWithChildren {
   label: string;
   tip?: string;
   css?: 'solid' | 'outline';
@@ -21,11 +21,11 @@ interface TooltipAlertProps {
     | 'left-start'
     | 'left-end';
   onClick?: () => unknown;
+  isOpen?: boolean;
 }
 
-export const TooltipAlert = (props: TooltipAlertProps) => {
-  const { label, tip, place, css = 'solid', className } = props;
-  const [isOpen, setIsOpen] = useState(true);
+export const TooltipAlert = (props: PropsWithChildren<TooltipAlertProps>) => {
+  const { label, tip, place, css = 'solid', className, isOpen = true, children } = props;
 
   return (
     <div className="wrapper-tooltip">
@@ -37,9 +37,7 @@ export const TooltipAlert = (props: TooltipAlertProps) => {
         clickable
         isOpen={isOpen}
       >
-        <div className="tooltip-base">
-          <p className="text-sm">{tip}</p>
-        </div>
+        <div className="tooltip-base">{children ? children : <p className="text-sm">{tip}</p>}</div>
       </Tooltip>
     </div>
   );

@@ -76,7 +76,6 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             size="lg"
             ratios={[25, 50, 75, 100]}
           />
-          {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">
