@@ -54,7 +54,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: '/pool',
+            path: '/pools',
             element: (
               <Suspense>
                 <PoolV3 />
@@ -89,6 +89,11 @@ const router = createBrowserRouter([
           {
             path: '/',
             element: <Navigate to={'/trade'} />,
+          },
+          // Navigate pool to pools
+          {
+            path: '/pool',
+            element: <Navigate to={'/pools'} />,
           },
         ],
       },
