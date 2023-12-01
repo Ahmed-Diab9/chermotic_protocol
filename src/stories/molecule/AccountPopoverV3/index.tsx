@@ -6,7 +6,7 @@ import { ArrowTriangleIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { AccountPanelV3 } from '../AccountPanelV3';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { ChromaticRowLogo } from '~/assets/icons/Logo';
 
 import { useAccountPopoverV3 } from './hooks';
@@ -65,7 +65,12 @@ export function AccountPopoverV3() {
                       <Popover.Panel className="popover-panel w-[600px]">
                         <AccountPanelV3 onPanelClose={close} />
                       </Popover.Panel>
-                      <TooltipAlert label="create-account" place="bottom" isOpen={!isAccountExist}>
+                      <TooltipGuide
+                        label="create-account"
+                        place="bottom"
+                        isOpen={!isAccountExist}
+                        tipOnly
+                      >
                         <div className="w-[240px] text-left py-1">
                           <h3 className="text-base">Create Account</h3>
                           <p className="mt-2 text-sm opacity-60">
@@ -74,7 +79,7 @@ export function AccountPopoverV3() {
                           </p>
                           {/* <ChromaticRowLogo className="mt-4 opacity-50" /> */}
                         </div>
-                      </TooltipAlert>
+                      </TooltipGuide>
                     </>
                   )}
                 </Popover>
