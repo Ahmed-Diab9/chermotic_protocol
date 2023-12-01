@@ -3,7 +3,7 @@ import './style.css';
 interface BlurTextProps {
   label?: string;
   color?: string;
-  fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+  fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | string;
   fontWeight?: 'lighter' | 'normal' | 'medium' | 'semibold' | 'bold';
   align?: 'left' | 'right' | 'center';
   className?: string;
@@ -13,7 +13,7 @@ export const BlurText = (props: BlurTextProps) => {
   const {
     className = '',
     label,
-    color = '',
+    color = 'chrm',
     fontSize,
     fontWeight = 'light',
     align = 'left',

@@ -219,6 +219,10 @@ body {
   &.panel-translucent {
     @apply bg-paper/60;
   }
+  &.panel-gradient {
+    @apply border border-gray-lighter;
+    background: linear-gradient(97deg, #2e2e32 0%, rgba(46, 46, 50, 0) 100%);
+  }
 }
 
 h1,
