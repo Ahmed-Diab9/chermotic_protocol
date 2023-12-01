@@ -12,16 +12,23 @@ import { HeaderV3 } from '~/stories/template/HeaderV3';
 
 export const ChromaticLayout = () => {
   const location = useLocation();
-  const [isToastLoaded, setIsToastLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState({
+    page: false,
+    toast: false,
+  });
+  useEffect(() => {
+    setIsLoaded((state) => ({
+      ...state,
+      page: true,
+    }));
+  }, []);
   useMarketsUpdate();
   useEffect(() => {
-    if (isToastLoaded) {
+    if (!isLoaded.page || isLoaded.toast) {
       return;
     }
-    setIsToastLoaded(true);
-
     switch (location.pathname) {
-      case '/pool':
+      case '/pools':
       case '/trade': {
         showCautionToast({
           title: 'Chromatic Protocol Testnet',
@@ -30,13 +37,17 @@ export const ChromaticLayout = () => {
             'During the testnet, contract updates may reset deposited assets, open positions, and liquidity data in your account.',
           showLogo: true,
         });
+        setIsLoaded((state) => ({
+          ...state,
+          toast: true,
+        }));
         break;
       }
       default: {
         break;
       }
     }
-  }, [location.pathname, isToastLoaded]);
+  }, [isLoaded, location]);
 
   const isAirdrop = location.pathname === '/airdrop';
   const classes = useMemo(() => {
@@ -44,7 +55,7 @@ export const ChromaticLayout = () => {
       case '/trade': {
         return { container: '!min-w-[1360px]', main: '' };
       }
-      case '/pool': {
+      case '/pools': {
         return { container: '', main: 'max-w-[1480px]' };
       }
       case '/airdrop': {
@@ -72,7 +83,7 @@ export const ChromaticLayout = () => {
 export const GradientLayout = () => {
   const { onLoadBackgroundRef } = useBackgroundGradient();
   useBookmarksUpdate();
-  
+
   useEffect(() => {
     const unsubscriber = subscribePythFeed();
     return () => {
