@@ -16,7 +16,6 @@ import { Button } from '~/stories/atom/Button';
 import { Tag } from '~/stories/atom/Tag';
 import { Notice } from '~/stories/atom/Notice';
 import '~/stories/atom/Tabs/style.css';
-import { Avatar } from '~/stories/atom/Avatar';
 
 function Referral() {
   const { isConnected: _isConnected } = useAccount();
@@ -107,7 +106,7 @@ function Referral() {
                   </div>
                   <Notice
                     icon={<ClipboardDocumentCheckIcon className="text-inverted" />}
-                    iconBg="price-higher"
+                    iconClass="bg-price-higher"
                     // href="#"
                     onClick={() => {}}
                     buttonLabel="Apply for Whitelist"

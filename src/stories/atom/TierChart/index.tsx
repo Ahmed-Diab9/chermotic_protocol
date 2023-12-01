@@ -44,8 +44,8 @@ export default function TierChart(props: TierChartProps) {
           Tier 1
         </h4>
         <h4
-          // TODO: give "text-primary-light" for unactive level
-          className="self-start tooltip-tier-level text-primary-light"
+          // TODO: give "text-primary-lighter" for unactive level
+          className="self-start tooltip-tier-level text-primary-lighter"
           data-tooltip-content="2"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"
@@ -54,8 +54,8 @@ export default function TierChart(props: TierChartProps) {
           Tier 2
         </h4>
         <h4
-          // TODO: give "text-primary-light" for unactive level
-          className="self-end tooltip-tier-level text-primary-light"
+          // TODO: give "text-primary-lighter" for unactive level
+          className="self-end tooltip-tier-level text-primary-lighter"
           data-tooltip-content="3"
           // TODO: set the number of trader, total fee
           data-number-of-trader="10"

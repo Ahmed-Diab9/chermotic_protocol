@@ -9,7 +9,7 @@ interface NoticeProps extends PropsWithChildren {
   imgSrc?: string;
   imgAlt?: string;
   icon?: any;
-  iconBg?: string;
+  iconClass?: string;
   to?: string;
   href?: string;
   onClick?: () => unknown;
@@ -24,7 +24,7 @@ export const Notice = (props: PropsWithChildren<NoticeProps>) => {
     imgSrc,
     imgAlt,
     icon,
-    iconBg = 'gray-light',
+    iconClass = 'bg-gray-light',
     onClick,
     to,
     href,
@@ -37,7 +37,7 @@ export const Notice = (props: PropsWithChildren<NoticeProps>) => {
     <div className={`notice notice-${css} ${className}`}>
       {imgSrc && <img src={imgSrc} alt={imgAlt} className="h-[42px]" />}
       {icon && (
-        <span className={`w-[42px] h-[42px] rounded-full bg-${iconBg} p-[10px]`}>{icon}</span>
+        <span className={`w-[42px] h-[42px] rounded-full ${iconClass} p-[10px]`}>{icon}</span>
       )}
       <div className="w-2/3">
         <p className="text-left wrapper-children">{children}</p>
