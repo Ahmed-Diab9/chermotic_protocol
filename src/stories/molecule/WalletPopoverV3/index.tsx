@@ -9,7 +9,7 @@ import arbitrumIcon from '~/assets/images/arbitrum.svg';
 import { Popover, Transition } from '@headlessui/react';
 import { Avatar } from '~/stories/atom/Avatar';
 
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { useWalletPopoverV3 } from './hooks';
 
 interface WalletPopoverV3Props {
@@ -55,12 +55,13 @@ export default function WalletPopoverV3({ isDisconnected, isWrongChain }: Wallet
           label={walletAddress}
           size="lg"
         />
-        <TooltipAlert
+        <TooltipGuide
           label="change-network"
           tip="Change Network"
           place="bottom"
           css="outline"
           className=""
+          tipOnly
         />
       </button>
     );

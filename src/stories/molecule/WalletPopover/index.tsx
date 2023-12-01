@@ -15,7 +15,7 @@ import { Button } from '~/stories/atom/Button';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 
 import { OutlinkIcon } from '~/assets/icons/Icon';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { useWalletPopover } from './hooks';
 
 interface WalletPopoverProps {
@@ -77,12 +77,13 @@ export function WalletPopover({ isDisconnected, isWrongChain }: WalletPopoverPro
           label={walletAddress}
           size="lg"
         />
-        <TooltipAlert
+        <TooltipGuide
           label="change-network"
           tip="Change Network"
           place="bottom"
           css="outline"
           className=""
+          tipOnly
         />
       </button>
     );

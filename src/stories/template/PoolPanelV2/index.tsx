@@ -138,7 +138,7 @@ export function PoolPanelV2() {
                     </div>
                     {/* todo: input error */}
                     {/* - Input : error prop is true when has error */}
-                    {/* - TooltipAlert : is shown when has error */}
+                    {/* - Tooltip : is shown when has error */}
                     <div className="tooltip-wallet-balance">
                       <OptionInput
                         value={amounts.add}
@@ -151,7 +151,7 @@ export function PoolPanelV2() {
                         ratios={[25, 50, 75, 100]}
                       />
                       {/* {isExceeded && (
-                        <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
+                        <TooltipGuide tipOnly label="wallet-balance" tip="Exceeded your wallet balance." />
                       )} */}
                     </div>
                   </div>

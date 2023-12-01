@@ -10,7 +10,6 @@ import { OptionInput } from '~/stories/atom/OptionInput';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import '~/stories/atom/Tabs/style.css';
 import { Thumbnail } from '~/stories/atom/Thumbnail';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { RemoveMultiLiquidityModal } from '~/stories/template/RemoveMultiLiquidityModal';
 import { RemoveSingleLiquidityModal } from '~/stories/template/RemoveSingleLiquidityModal';
@@ -96,7 +95,6 @@ export function PoolPanel() {
                 </div>
                 {/* todo: input error */}
                 {/* - Input : error prop is true when has error */}
-                {/* - TooltipAlert : is shown when has error */}
                 <div className="tooltip-wallet-balance">
                   <OptionInput
                     value={amount}
@@ -106,7 +104,11 @@ export function PoolPanel() {
                     ratios={[25, 50, 75, 100]}
                   />
                   {isExceeded && (
-                    <TooltipAlert label="wallet-balance" tip="Exceeded your wallet balance." />
+                    <TooltipGuide
+                      tipOnly
+                      label="wallet-balance"
+                      tip="Exceeded your wallet balance."
+                    />
                   )}
                 </div>
               </article>
