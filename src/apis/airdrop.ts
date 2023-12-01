@@ -5,5 +5,4 @@ export const airdropClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: import.meta.env.PROD,
 });

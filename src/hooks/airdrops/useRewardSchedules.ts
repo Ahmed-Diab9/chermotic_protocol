@@ -36,7 +36,7 @@ export const useRewardSchedules = () => {
     isLoading,
     mutate,
   } = useSWR(checkAllProps(fetchKey) ? fetchKey : undefined, async ({ address }) => {
-    const response = await airdropClient.get(`/airdrop/signin-reward/schedules?address=${address}`);
+    const response = await airdropClient.get(`/airdrop/signin-reward/schedules?address=${address}`,{withCredentials:true});
     const data = response.data as AirdropScheduleResponse;
 
     const current = new Date();
