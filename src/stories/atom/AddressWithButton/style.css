@@ -1,0 +1,8 @@
+.AddressWithButton {
+  @apply flex items-center justify-between flex-auto rounded-full border border-collapse;
+  @apply border-gray-light/50 bg-paper text-primary;
+  @apply dark:bg-paper-light;
+  .wrapper-address {
+    @apply px-4 overflow-hidden min-w-[100px] text-left;
+  }
+}
