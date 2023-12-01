@@ -8,6 +8,16 @@ import { publicProvider } from 'wagmi/providers/public';
 import '../src/index.css';
 import { store } from '../src/store';
 
+declare global {
+  interface BigInt {
+    toJSON(): string;
+  }
+}
+
+BigInt.prototype.toJSON = function () {
+  return this.toString() + 'n';
+};
+
 const { publicClient, webSocketPublicClient } = configureChains([hardhat], [publicProvider()]);
 
 const config = createConfig({
@@ -45,16 +55,6 @@ const preview: Preview = {
       );
     },
   ],
-};
-
-declare global {
-  export interface BigInt {
-    toJSON(): string;
-  }
-}
-
-BigInt.prototype.toJSON = function () {
-  return this.toString() + 'n';
 };
 
 export default preview;
