@@ -36,4 +36,13 @@ export default defineConfig({
   define: {
     'process.env': process.env,
   },
+  server: {
+    proxy: {
+      '/api/airdrop': {
+        target: 'https://airdrop-arbitrum-goerli.api.chromatic.finance',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });
