@@ -21,7 +21,7 @@ export const HeaderV3 = (props: HeaderV3Props) => {
 
   const links = [
     { to: 'trade', className: '' },
-    { to: 'pool', className: '' },
+    { to: 'pools', className: '' },
     { to: 'airdrop', className: '' },
   ];
 

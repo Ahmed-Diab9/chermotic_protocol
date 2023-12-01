@@ -54,7 +54,7 @@ export const TradeLiquidity = (props: TradeLiquidityProps) => {
             label="Provide Liquidity"
             css="unstyled"
             iconRight={<ChevronRightIcon />}
-            to={'/pool'}
+            to={'/pools'}
           />
         </div>
       </ResizablePanel>

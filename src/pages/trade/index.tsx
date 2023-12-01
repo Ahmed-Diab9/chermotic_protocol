@@ -7,9 +7,9 @@ import { Outlink } from '~/stories/atom/Outlink';
 import { Toast } from '~/stories/atom/Toast';
 import { ChainModal } from '~/stories/container/ChainModal';
 import { Header } from '~/stories/template/Header';
+import { MainBar } from '~/stories/template/MainBar';
 import { TradeBar } from '~/stories/template/TradeBar';
 import { TradePanel } from '~/stories/template/TradePanel';
-import { MainBar } from '~/stories/template/MainBar';
 import './style.css';
 
 function Trade() {
@@ -31,7 +31,7 @@ function Trade() {
                 oracle price, and the actual fee paid is determined by the next oracle price.{' '}
                 <Outlink outLink="https://chromatic-protocol.gitbook.io/docs/fee/trading-fee" />
               </div>
-              <Link to={'/pool'}>
+              <Link to={'/pools'}>
                 <Button
                   label="Provide Liquidity"
                   css="light"
