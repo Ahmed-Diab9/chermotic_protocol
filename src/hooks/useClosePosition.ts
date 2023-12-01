@@ -33,7 +33,7 @@ function useClosePosition(props: Props) {
 
       await fetchCurrentPositions(position.marketAddress);
       await fetchBalances();
-      toast('The closing process has been started.');
+      toast('The closing process has started.');
     } catch (error) {
       errorLog(error);
       toast.error('Transaction rejected.');

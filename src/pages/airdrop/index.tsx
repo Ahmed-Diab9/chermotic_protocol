@@ -1,7 +1,6 @@
 import { Tab } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
 import { OutlinkIcon } from '~/assets/icons/Icon';
@@ -42,28 +41,38 @@ function Airdrop() {
   });
   useTokenLocal();
   useMarketLocal();
-  const historyTabRef = useRef<HTMLDivElement>(null);
-
   const { isConnected: _isConnected } = useAccount();
   const { connectAsync, connectors } = useConnect();
   function onConnect() {
     return connectAsync({ connector: connectors[0] });
   }
-  const [searchParams] = useSearchParams();
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab === 'history') {
-      historyTabRef.current?.click();
-    }
-  }, [searchParams]);
-
   const [randomboxModalOpen, setRandomboxModalOpen] = useState(false);
   const {
     unit,
     formatted: { hours, minutes },
   } = useTimeDifferences();
   const message = `The date changes at ${hours}:${minutes}${unit} local time (UTC+00:00)`;
+  const historyTabRef = useRef<HTMLElement | null>(null);
+  const buttonsRef = useRef<HTMLDivElement | null>(null);
+  const onHistoryClick = (tab: 'credit' | 'booster') => {
+    historyTabRef.current?.click();
+    window.scrollTo({ top: 0 });
 
+    // TODO: run querySelector after dom updated
+    setTimeout(() => {
+      const buttons = buttonsRef.current?.querySelectorAll('button');
+      if (tab === 'credit') {
+        buttons?.[1].click();
+        return;
+      }
+      if (tab === 'booster') {
+        buttons?.[2].click();
+      }
+    }, 0);
+  };
+  const onHistoryRefLoad = (element: HTMLDivElement | null) => {
+    buttonsRef.current = element;
+  };
   return (
     <>
       {_isConnected ? (
@@ -87,7 +96,7 @@ function Airdrop() {
               <div className="flex gap-10">
                 <Tab.List className="tabs-list min-w-[210px] tabs-flex-column">
                   <Tab>Season 1</Tab>
-                  <Tab ref={historyTabRef}>My History</Tab>
+                  <Tab ref={(element) => (historyTabRef.current = element)}>My History</Tab>
                   <button
                     onClick={() => {
                       onExternalNavigate(AIRDROP_LINKS['AIRDROP_INTRO']);
@@ -107,7 +116,7 @@ function Airdrop() {
                       <div className="flex flex-wrap items-end mb-10">
                         <BlurText
                           label="May the $CHRMA be with you!"
-                          className="text-[52px] tracking-tight w-[520px]"
+                          className="w-[680px]"
                           color="chrm"
                         />
                         <div className="ml-auto text-right">
@@ -208,7 +217,7 @@ function Airdrop() {
                             </p>
                           </div>
                         </div>
-                        <AirdropActivity />
+                        <AirdropActivity onHistoryClick={onHistoryClick} />
                         {/* <div className="flex items-center gap-4 py-2 pl-4 pr-5 mt-5 text-lg panel">
                               <img src={GalxeIcon} alt="galxe" className="w-[24px]" />
                               <p className="text-left">
@@ -321,7 +330,7 @@ function Airdrop() {
                   <Tab.Panel>
                     <section>
                       <div className="flex items-baseline">
-                        <BlurText label="My History" className="text-[52px]" color="chrm" />
+                        <BlurText label="My History" color="chrm" />
                         <div className="ml-auto text-lg text-primary-light">{message}</div>
                       </div>
                       <div className="p-5 mt-10 text-center panel">
@@ -340,7 +349,7 @@ function Airdrop() {
                       </div>
                     </section>
                     <section className="mt-16">
-                      <AirdropHistory />
+                      <AirdropHistory onHistoryRefLoad={onHistoryRefLoad} />
                     </section>
                   </Tab.Panel>
                 </Tab.Panels>

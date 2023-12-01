@@ -1,0 +1,25 @@
+.TierChart {
+  @apply w-[228px] h-[168px] pt-12;
+  .wrapper-label {
+    @apply flex justify-between w-full h-full;
+    .tooltip-tier-level {
+      @apply cursor-default relative flex items-center w-9;
+      &::after {
+        @apply absolute border-4 border-primary-light;
+        content: '';
+      }
+      &:nth-child(1)::after {
+        @apply border-r-0 border-l-transparent border-b-transparent;
+        @apply top-[2px] -right-2 rotate-12;
+      }
+      &:nth-child(2)::after {
+        @apply border-r-0 border-l-transparent border-t-transparent;
+        @apply -bottom-[6px] left-[calc(50%-2px)] rotate-45;
+      }
+      &:nth-child(3)::after {
+        @apply border-l-0 border-r-transparent border-b-transparent;
+        @apply top-[2px] -left-2 -rotate-12;
+      }
+    }
+  }
+}

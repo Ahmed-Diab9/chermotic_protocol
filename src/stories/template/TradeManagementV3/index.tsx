@@ -205,13 +205,17 @@ export const TradeManagementV3 = () => {
                         </div>
                       </div>
                       <div className="tbody">
-                        {historyList.map((history) => (
-                          <HistoryItem
-                            key={history.positionId.toString()}
-                            history={history}
-                            isLoading={isHistoryLoading}
-                          />
-                        ))}
+                        {historyList.map((history) => {
+                          const { token, market, direction, positionId } = history;
+                          const key = `history:${token.address}:${market.address}:${direction}:${positionId}`;
+                          return (
+                            <HistoryItem
+                              key={key}
+                              history={history}
+                              isLoading={isHistoryLoading && historyList.length === 0}
+                            />
+                          );
+                        })}
                         {hasMores.history && (
                           <HistoryItem
                             key={'history-next'}
@@ -239,13 +243,17 @@ export const TradeManagementV3 = () => {
                         </div>
                       </div>
                       <div className="tbody">
-                        {tradeList.map((trade) => (
-                          <TradesItem
-                            key={trade.positionId.toString()}
-                            trade={trade}
-                            isLoading={isTradeLogsLoading}
-                          />
-                        ))}
+                        {tradeList.map((trade) => {
+                          const { token, market, direction, positionId } = trade;
+                          const key = `tradeLog:${token.address}:${market.address}:${direction}:${positionId}`;
+                          return (
+                            <TradesItem
+                              key={key}
+                              trade={trade}
+                              isLoading={isTradeLogsLoading && tradeList.length === 0}
+                            />
+                          );
+                        })}
                         {hasMores.trades && (
                           <TradesItem
                             key="trades-next"

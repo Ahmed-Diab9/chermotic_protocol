@@ -177,7 +177,7 @@ export const useWalletPopoverV3Body = () => {
     onTokenSelect(token);
     onMarketSelect(market);
     onLpSelect(lp);
-    navigate('/pool');
+    navigate('/pools');
   };
   return {
     onCreateAccount,

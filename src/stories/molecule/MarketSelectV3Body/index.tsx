@@ -28,7 +28,14 @@ const MarketSelectV3Body = (props: MarketSelectV3BodyProps) => {
 
   return (
     <div className="MarketSelectV3Body">
-      <Popover.Panel className="popover-panel" onMouseLeave={onMouseLeave}>
+      <Popover.Panel
+        className="popover-panel"
+        onMouseLeave={() => {
+          if (!isLoading) {
+            onMouseLeave?.();
+          }
+        }}
+      >
         <div className="flex items-stretch justify-between h-8 gap-20 px-3 text-left border-b tr text-primary-lighter bg-inverted-lighter">
           <div className="flex items-stretch">
             <div className="min-w-[136px] border-r flex items-center">Settlement token</div>

@@ -160,7 +160,7 @@ export function useTradeManagementV3() {
           }
         });
       },
-      { root: null, threshold: 0 }
+      { root: null, threshold: 0.8 }
     );
     if (isHistoryRendered) {
       observer.observe(historyBottomRef.current as HTMLDivElement);
@@ -181,7 +181,7 @@ export function useTradeManagementV3() {
           }
         });
       },
-      { root: null, threshold: 0 }
+      { root: null, threshold: 0.8 }
     );
     if (isTradeLogsRendered) {
       observer.observe(tradeBottomRef.current as HTMLDivElement);
@@ -229,7 +229,7 @@ export function useTradeManagementV3() {
           entryPrice:
             '$ ' + formatDecimals(historyValue.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
           leverage:
-            formatDecimals(historyValue.leverage, historyValue.token.decimals, 2, true) + 'x',
+            formatDecimals(abs(historyValue.leverage), historyValue.token.decimals, 2, true) + 'x',
           pnl:
             formatDecimals(historyValue.pnl, historyValue.token.decimals, 2) +
             ' ' +
@@ -267,7 +267,7 @@ export function useTradeManagementV3() {
           formatDecimals(tradeLog.collateral, tradeLog.token.decimals) + ' ' + tradeLog.token.name,
         qty: formatDecimals(abs(tradeLog.qty), tradeLog.token.decimals, 2),
         entryPrice: '$ ' + formatDecimals(tradeLog.entryPrice, ORACLE_PROVIDER_DECIMALS, 2, true),
-        leverage: formatDecimals(tradeLog.leverage, tradeLog.token.decimals, 2, true) + 'x',
+        leverage: formatDecimals(abs(tradeLog.leverage), tradeLog.token.decimals, 2, true) + 'x',
         entryTime: formatTimestamp(tradeLog.entryTimestamp),
         blockNumber: tradeLog.blockNumber,
       }));

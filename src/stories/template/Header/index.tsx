@@ -11,7 +11,7 @@ export function Header() {
 
   const links = [
     { to: 'trade', text: 'Trade', className: '' },
-    { to: 'pool', text: 'Pools', className: '' },
+    { to: 'pools', text: 'Pools', className: '' },
     { to: 'trade3', text: 'Trade3', className: 'text-primary-light' },
     { to: 'pool3', text: 'Pools3', className: 'text-primary-light' },
     { to: 'airdrop', text: 'Airdrop', className: '' },

@@ -152,6 +152,7 @@ export default function WalletPopoverV3Body(props: WalletPopoverMainProps) {
                               key={key}
                               onClick={() => {
                                 onLpClick(addresses);
+                                onPopoverClose();
                               }}
                             >
                               <div className="flex gap-3 pb-3 border-b last:border-b-0">
