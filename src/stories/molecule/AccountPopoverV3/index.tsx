@@ -65,20 +65,22 @@ export function AccountPopoverV3() {
                       <Popover.Panel className="popover-panel w-[600px]">
                         <AccountPanelV3 onPanelClose={close} />
                       </Popover.Panel>
-                      <TooltipAlert
-                        label="create-account"
-                        place="bottom"
-                        // isOpen={}
-                      >
-                        <div className="w-[240px] text-left py-1">
-                          <h3 className="text-base">Create Account</h3>
-                          <p className="mt-2 text-sm opacity-60">
-                            The trading collateral will be paid from the account, not my wallet.
-                            Please create an account here before starting trading.
-                          </p>
-                          {/* <ChromaticRowLogo className="mt-4 opacity-50" /> */}
-                        </div>
-                      </TooltipAlert>
+                      {!isAccountExist && (
+                        <TooltipAlert
+                          label="create-account"
+                          place="bottom"
+                          // isOpen={}
+                        >
+                          <div className="w-[240px] text-left py-1">
+                            <h3 className="text-base">Create Account</h3>
+                            <p className="mt-2 text-sm opacity-60">
+                              The trading collateral will be paid from the account, not my wallet.
+                              Please create an account here before starting trading.
+                            </p>
+                            {/* <ChromaticRowLogo className="mt-4 opacity-50" /> */}
+                          </div>
+                        </TooltipAlert>
+                      )}
                     </>
                   )}
                 </Popover>
