@@ -1,12 +1,12 @@
 import { Client } from '@chromatic-protocol/sdk-viem';
 import { chromaticAccountABI } from '@chromatic-protocol/sdk-viem/contracts';
-import axios from 'axios';
 import { isNil } from 'ramda';
 import { useCallback } from 'react';
 import useSWR from 'swr';
 import { decodeEventLog, getEventSelector } from 'viem';
 import { Address } from 'wagmi';
-import { ARBISCAN_API_KEY, ARBISCAN_API_URL } from '~/constants/arbiscan';
+import { arbiscanClient } from '~/apis/arbiscan';
+import { ARBISCAN_API_KEY } from '~/constants/arbiscan';
 import { Market, Token } from '~/typings/market';
 import { ResponseLog } from '~/typings/position';
 import { checkAllProps } from '~/utils';
@@ -50,8 +50,8 @@ const getTradeLogs = async (params: GetTradeLogsParams) => {
   let responseLogs = [] as ResponseLog[];
   const marketApi = client.market();
   while (true) {
-    const apiUrl = `${ARBISCAN_API_URL}/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=${index}&offset=1000&apikey=${ARBISCAN_API_KEY}`;
-    const response = await axios(apiUrl);
+    const apiUrl = `/api?module=logs&action=getLogs&address=${accountAddress}&topic0=${eventSignature}&page=${index}&offset=1000&apikey=${ARBISCAN_API_KEY}`;
+    const response = await arbiscanClient(apiUrl);
     const responseData = await response.data;
     const logs =
       typeof responseData.result === 'string' ? [] : (responseData.result as ResponseLog[]);

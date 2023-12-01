@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { ARBISCAN_API_URL } from '~/constants/arbiscan';
 
-export const airdropClient = axios.create({
-  baseURL: 'https://airdrop-arbitrum-goerli.api.chromatic.finance',
+export const arbiscanClient = axios.create({
+  baseURL: ARBISCAN_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
