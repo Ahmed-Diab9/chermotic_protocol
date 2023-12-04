@@ -31,7 +31,7 @@ export function AirdropZealyConvertModal(props: AirdropZealyConvertModalProps) {
           <Dialog.Title className="modal-title">
             <ModalCloseButton onClick={onClose} />
           </Dialog.Title>
-          <Dialog.Description className="gap-5 modal-content">
+          <Dialog.Description className="gap-5 modal-content" as="div">
             <article className="text-center">
               {title && <h2 className="mb-3 text-4xl">{title}</h2>}
               <p className="mb-6 whitespace-pre-line text-primary-light">{content}</p>

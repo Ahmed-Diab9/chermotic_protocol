@@ -23,7 +23,7 @@ export function AirdropZealyConnectModal(props: AirdropZealyConnectModalProps) {
           <Dialog.Title className="modal-title">
             <ModalCloseButton onClick={onClose} />
           </Dialog.Title>
-          <Dialog.Description className="gap-5 modal-content">
+          <Dialog.Description className="gap-5 modal-content" as="div">
             <article className="text-center">
               <h4 className="text-2xl">Please connect your wallet to Zealy account.</h4>
               <p className="mt-3 mb-6 text-primary-light">
