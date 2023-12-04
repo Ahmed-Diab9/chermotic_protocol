@@ -7,6 +7,7 @@ import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AccountPanelV3 } from '../AccountPanelV3';
+import { ChromaticRowLogo } from '~/assets/icons/Logo';
 
 import { useAccountPopoverV3 } from './hooks';
 
@@ -69,15 +70,16 @@ export function AccountPopoverV3() {
                         label="create-account"
                         place="bottom"
                         isOpen={isGuideOpen}
+                        css="outline"
                         tipOnly
                       >
                         <div className="w-[240px] text-left py-1">
-                          <h3 className="text-base">Create Account</h3>
-                          <p className="mt-2 text-sm opacity-60">
+                          <h3 className="text-base text-chrm">Create Account</h3>
+                          <p className="mt-2 text-sm">
                             The trading collateral will be paid from the account, not my wallet.
                             Please create an account here before starting trading.
                           </p>
-                          {/* <ChromaticRowLogo className="mt-4 opacity-50" /> */}
+                          <ChromaticRowLogo className="mt-4 opacity-50" />
                         </div>
                       </TooltipGuide>
                     </>
