@@ -1,0 +1,15 @@
+.notice {
+  @apply flex items-center gap-4 py-2 pl-4 pr-5 text-lg rounded;
+  &.notice-default {
+    @apply bg-paper;
+    .wrapper-children {
+      @apply text-primary;
+    }
+  }
+  &.notice-alert {
+    @apply bg-price-lower/10;
+    .wrapper-children {
+      @apply text-price-lower;
+    }
+  }
+}

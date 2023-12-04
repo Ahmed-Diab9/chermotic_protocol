@@ -5,7 +5,7 @@
     .tooltip-tier-level {
       @apply cursor-default relative flex items-center w-9;
       &::after {
-        @apply absolute border-4 border-primary-light;
+        @apply absolute border-4 border-primary-lighter;
         content: '';
       }
       &:nth-child(1)::after {

@@ -62,7 +62,7 @@ export const ChromaticLayout = () => {
         return { container: 'bg-gradient-chrm', main: 'max-w-[1400px]' };
       }
       case '/referral': {
-        return { container: 'bg-gradient-chrm', main: 'max-w-[1200px]' };
+        return { container: 'bg-gradient-chrm', main: 'max-w-[1280px]' };
       }
     }
   }, [location.pathname]);
