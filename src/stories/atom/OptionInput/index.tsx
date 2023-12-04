@@ -45,12 +45,13 @@ export const OptionInput = (props: OptionInputProps) => {
     errorMsg,
     errorMsgAlign = 'right',
     ratios,
+    onClick,
     onChange,
   } = props;
   const [ratio, setRatio] = useState<number>();
   const [isOptionClicked, setIsOptionClicked] = useState(false);
 
-  const onClick = (ratio: number) => () => {
+  const onOptionClick = (ratio: number) => () => {
     setRatio(ratio);
     setIsOptionClicked(true);
     if (ratio === 100) {
@@ -87,7 +88,10 @@ export const OptionInput = (props: OptionInputProps) => {
               label={ratioItem !== 100 ? `${ratioItem}%` : 'Max'}
               size="sm"
               css={ratio === ratioItem ? 'active' : 'default'}
-              onClick={onClick(ratioItem)}
+              onClick={() => {
+                onOptionClick(ratioItem)();
+                onClick?.();
+              }}
             />
           ))}
         </div>
@@ -100,6 +104,7 @@ export const OptionInput = (props: OptionInputProps) => {
           align={inputAlign}
           value={value}
           onChange={onChangeInput}
+          onClick={onClick}
           className="relative border-gray-light"
           disabled={disabled}
           error={error}

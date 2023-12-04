@@ -5,14 +5,14 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { ArrowTriangleIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { AccountPanelV3 } from '../AccountPanelV3';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
-import { ChromaticRowLogo } from '~/assets/icons/Logo';
+import { AccountPanelV3 } from '../AccountPanelV3';
 
 import { useAccountPopoverV3 } from './hooks';
 
 export function AccountPopoverV3() {
-  const { isConnected, isLoading, isAccountExist, balance, tokenImage } = useAccountPopoverV3();
+  const { isConnected, isLoading, isAccountExist, isGuideOpen, balance, tokenImage } =
+    useAccountPopoverV3();
 
   return (
     <>
@@ -68,7 +68,7 @@ export function AccountPopoverV3() {
                       <TooltipGuide
                         label="create-account"
                         place="bottom"
-                        isOpen={!isAccountExist}
+                        isOpen={isGuideOpen}
                         tipOnly
                       >
                         <div className="w-[240px] text-left py-1">

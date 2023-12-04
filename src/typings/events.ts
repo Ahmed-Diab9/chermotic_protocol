@@ -2,8 +2,8 @@ export const TRADE_EVENT = 'trade';
 export const POOL_EVENT = 'pool';
 export const LP_EVENT = 'lp';
 export const LP_RECEIPT_EVENT = 'lp-receipts';
-
 export const REWARD_EVENT = 'reward';
+export const TRADE_INPUT_EVENT = 'trade-input';
 
 export const dispatchTradeEvent = () =>
   window.dispatchEvent(
@@ -50,6 +50,17 @@ export const dispatchRewardEvent = () => {
     })
   );
 };
+export const dispatchAmountInputEvent = (isFocused: boolean) => {
+  window.dispatchEvent(
+    new CustomEvent(TRADE_INPUT_EVENT, {
+      bubbles: true,
+      cancelable: true,
+      detail: {
+        isFocused,
+      },
+    })
+  );
+};
 declare global {
   interface CustomEventMap {
     [TRADE_EVENT]: CustomEvent<unknown>;
@@ -57,6 +68,7 @@ declare global {
     [LP_EVENT]: CustomEvent<unknown>;
     [LP_RECEIPT_EVENT]: CustomEvent<unknown>;
     [REWARD_EVENT]: CustomEvent<unknown>;
+    [TRADE_INPUT_EVENT]: CustomEvent<{ isFocused: boolean }>;
   }
   interface Window {
     addEventListener<K extends keyof CustomEventMap>(
