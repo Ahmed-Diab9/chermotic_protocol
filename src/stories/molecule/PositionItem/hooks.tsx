@@ -120,7 +120,7 @@ export function usePositionItem({ position }: UsePositionItem) {
         hour12: false,
       }).format(new Date(Number(position.openTimestamp) * 1000)),
     };
-  }, [position, currentToken, markets]);
+  }, [position, currentToken, marketOracles]);
 
   const key = position.id.toString();
 
@@ -131,7 +131,7 @@ export function usePositionItem({ position }: UsePositionItem) {
     marketAddress: position.marketAddress,
   });
   const { onClaimPosition } = useClaimPosition({
-    positionId: position.id,
+    position,
     market: markets?.find((market) => market.address === position.marketAddress),
   });
 
