@@ -1,10 +1,10 @@
-import { POSITION_STATUS } from '~/typings/position';
+import { POSITION_STATUS, Position } from '~/typings/position';
 
 import { PositionItemV2Props } from '..';
 
-interface usePositionItemV2 extends PositionItemV2Props {}
+interface UsePositionItemV2 extends PositionItemV2Props {}
 
-export function usePositionItemV2({ position }: usePositionItemV2) {
+export function usePositionItemV2({ position }: UsePositionItemV2) {
   const isOpening = position.status === POSITION_STATUS.OPENING;
   const isOpened = position.status === POSITION_STATUS.OPENED;
   const isClosing = position.status === POSITION_STATUS.CLOSING;
@@ -34,5 +34,7 @@ export function usePositionItemV2({ position }: usePositionItemV2) {
     isOpened,
     isClosing,
     isClosed,
+
+    position: undefined as Position | undefined,
   };
 }

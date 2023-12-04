@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 
 import { useClaimPosition } from '~/hooks/useClaimPosition';
-import { useClosePosition } from '~/hooks/useClosePosition';
 import { useEntireMarkets } from '~/hooks/useMarket';
 import { usePositions } from '~/hooks/usePositions';
 import { useSettlementToken } from '~/hooks/useSettlementToken';
@@ -143,13 +142,8 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
   const key = position.id.toString();
 
   const direction = position.qty > 0n ? 'Long' : 'Short';
-
-  const { onClosePosition } = useClosePosition({
-    positionId: position.id,
-    marketAddress: position.marketAddress,
-  });
-  const { onClaimPosition } = useClaimPosition({
-    positionId: position.id,
+  const { onClaimPosition, isMutating: isClaimMutating } = useClaimPosition({
+    position,
     market: markets?.find((market) => market.address === position.marketAddress),
   });
 
@@ -169,10 +163,6 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
     key,
 
     direction,
-
-    onClosePosition,
-    onClaimPosition,
-
     isLoading,
 
     isOpening,
@@ -183,5 +173,9 @@ export function usePositionItemV2({ position }: UsePositionItemV2) {
     tpPriceClass,
     slPriceClass,
     pnlClass,
+    position,
+
+    onClaimPosition,
+    isClaimMutating,
   };
 }
