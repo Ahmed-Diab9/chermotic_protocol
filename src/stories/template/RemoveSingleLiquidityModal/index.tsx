@@ -5,7 +5,6 @@ import { Button } from '~/stories/atom/Button';
 import { Input } from '~/stories/atom/Input';
 import { ModalCloseButton } from '~/stories/atom/ModalCloseButton';
 import { Outlink } from '~/stories/atom/Outlink';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { LiquidityItems } from '~/stories/molecule/LiquidityItems';
 
@@ -114,9 +113,10 @@ export function RemoveSingleLiquidityModal() {
                       error={isExceeded}
                     />
                     {isExceeded && (
-                      <TooltipAlert
+                      <TooltipGuide
                         label="modal-input-clb"
                         tip="Exceeded your removable liquidity."
+                        tipOnly
                       />
                     )}
                   </div>

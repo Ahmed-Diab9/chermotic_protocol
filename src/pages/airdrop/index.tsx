@@ -133,10 +133,9 @@ function Airdrop() {
                         <div className="w-4/5 text-left">
                           <p className="text-left text-primary">
                             Airdrop Season 1 will be evaluated based on community activity and
-                            contributions during the testnet (Arbitrum Goerli) and the initial
-                            months of the mainnet (Arbitrum One) period, from November 2023 to some
-                            point in the first quarter of 2024, and rCHRMA will be distributed (or
-                            vested) accordingly.
+                            contributions during the Arbitrum Goerli testnet and the initial months
+                            of the Arbitrum mainnet period, and rCHRMA will be distributed or vested
+                            accordingly.
                           </p>
                         </div>
                         <div className="flex flex-col pl-8 ml-auto border-l ">

@@ -23,6 +23,7 @@ interface InputProps {
   minDigits?: number;
   maxDigits?: number;
   useGrouping?: boolean;
+  onClick?: () => unknown;
   onChange?: (value: string) => unknown;
   debug?: boolean;
   isOptionClicked?: boolean;
@@ -46,6 +47,7 @@ export const Input = (props: InputProps) => {
     minDigits,
     maxDigits,
     useGrouping = true,
+    onClick,
     onChange,
     isOptionClicked,
   } = props;
@@ -150,6 +152,7 @@ export const Input = (props: InputProps) => {
           value={formattedValue}
           placeholder={placeholder}
           onChange={handleChange}
+          onClick={onClick}
           onBlur={handleBlur}
           disabled={disabled}
         />

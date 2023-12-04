@@ -62,7 +62,7 @@ const Msg = (props: MsgProps) => {
 
   return (
     <div className="flex flex-col items-start gap-2">
-      {title && <h4 className={`text-sm ${titleClass}`}>{title}</h4>}
+      {title && <h4 className={`text-base ${titleClass}`}>{title}</h4>}
       <p className="text-sm">{message}</p>
       {showLogo && (
         <div className="mt-2 text-primary-light">

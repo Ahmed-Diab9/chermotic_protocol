@@ -5,12 +5,15 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { ArrowTriangleIcon } from '~/assets/icons/Icon';
 import { Avatar } from '~/stories/atom/Avatar';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
+import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 import { AccountPanelV3 } from '../AccountPanelV3';
+import { ChromaticRowLogo } from '~/assets/icons/Logo';
 
 import { useAccountPopoverV3 } from './hooks';
 
 export function AccountPopoverV3() {
-  const { isConnected, isLoading, isAccountExist, balance, tokenImage } = useAccountPopoverV3();
+  const { isConnected, isLoading, isAccountExist, isGuideOpen, balance, tokenImage } =
+    useAccountPopoverV3();
 
   return (
     <>
@@ -26,7 +29,7 @@ export function AccountPopoverV3() {
                       <Popover.Button
                         className={`btn btn-line !h-10 !min-w-[180px] px-3 hover:bg-primary/10 ${
                           open ? 'bg-primary/10' : ''
-                        }`}
+                        } ${!isAccountExist ? 'tooltip-create-account' : ''}`}
                       >
                         <span className="flex items-center justify-between w-full gap-4">
                           {isAccountExist ? (
@@ -63,6 +66,22 @@ export function AccountPopoverV3() {
                       <Popover.Panel className="popover-panel w-[600px]">
                         <AccountPanelV3 onPanelClose={close} />
                       </Popover.Panel>
+                      <TooltipGuide
+                        label="create-account"
+                        place="bottom"
+                        isOpen={isGuideOpen}
+                        css="outline"
+                        tipOnly
+                      >
+                        <div className="w-[240px] text-left py-1">
+                          <h3 className="text-base text-chrm">Create Account</h3>
+                          <p className="mt-2 text-sm">
+                            The trading collateral will be paid from the account, not my wallet.
+                            Please create an account here before starting trading.
+                          </p>
+                          <ChromaticRowLogo className="mt-4 opacity-50" />
+                        </div>
+                      </TooltipGuide>
                     </>
                   )}
                 </Popover>

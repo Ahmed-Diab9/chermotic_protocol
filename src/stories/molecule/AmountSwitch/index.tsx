@@ -1,6 +1,8 @@
 // import { Input } from '~/stories/atom/Input';
+import { useEffect, useRef } from 'react';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
+import { dispatchAmountInputEvent } from '~/typings/events';
 import { numberFormat } from '~/utils/number';
 
 interface AmountSwitchProps {
@@ -59,14 +61,31 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
     },
   };
   const preset = presets[method || 'collateral'];
-
+  const nodeRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const onClickAway = (event: MouseEvent) => {
+      if (event.target instanceof Node) {
+        const isContained = nodeRef?.current?.contains(event.target) ?? false;
+        if (!isContained) {
+          dispatchAmountInputEvent(false);
+        }
+      }
+    };
+    window.addEventListener('click', onClickAway);
+    return () => {
+      window.removeEventListener('click', onClickAway);
+    };
+  }, []);
   return (
     <>
-      <div className="">
+      <div className="" ref={nodeRef}>
         <div className={`tooltip-input-balance-${direction}`}>
           <OptionInput
             value={preset.value.toString()}
             maxValue={maxAmount}
+            onClick={() => {
+              dispatchAmountInputEvent(true);
+            }}
             onChange={onAmountChange}
             placeholder="0"
             error={disabled && !!errorMessage}
@@ -76,7 +95,6 @@ export const AmountSwitch = (props: AmountSwitchProps) => {
             size="lg"
             ratios={[25, 50, 75, 100]}
           />
-          {/* {errorMessage && <TooltipAlert label={`input-balance-${direction}`} tip={errorMessage} />} */}
         </div>
       </div>
       <div className="flex items-center justify-end mt-2">

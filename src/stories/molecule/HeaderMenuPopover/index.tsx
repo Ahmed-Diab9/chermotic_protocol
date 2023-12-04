@@ -65,7 +65,7 @@ export function HeaderMenuPopover() {
                             </Link>
                           </li>
                           <li className="list-item">
-                            <Link to="https://discord.gg/Sf5aewb6qS" target="_blank">
+                            <Link to="https://discord.gg/URDaHnrav4" target="_blank">
                               Discord
                             </Link>
                           </li>

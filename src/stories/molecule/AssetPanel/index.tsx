@@ -8,7 +8,6 @@ import { Loading } from '~/stories/atom/Loading';
 import { OptionInput } from '~/stories/atom/OptionInput';
 import { Outlink } from '~/stories/atom/Outlink';
 import { SkeletonElement } from '~/stories/atom/SkeletonElement';
-import { TooltipAlert } from '~/stories/atom/TooltipAlert';
 import { TooltipGuide } from '~/stories/atom/TooltipGuide';
 
 import { useAssetPanel } from './hooks';
@@ -226,8 +225,9 @@ export const AssetPanel = (props: AssetPanelProps) => {
                         ratios={[25, 50, 75, 100]}
                       />
                       {isExceeded && (
-                        <TooltipAlert
+                        <TooltipGuide
                           label="input-amount"
+                          tipOnly
                           tip={
                             isDeposit
                               ? 'Exceeded your wallet balance.'
@@ -236,8 +236,9 @@ export const AssetPanel = (props: AssetPanelProps) => {
                         />
                       )}
                       {isLess && (
-                        <TooltipAlert
+                        <TooltipGuide
                           label="input-amount"
+                          tipOnly
                           tip={`Less than minimum amount. (${minimumAmount})`}
                         />
                       )}
