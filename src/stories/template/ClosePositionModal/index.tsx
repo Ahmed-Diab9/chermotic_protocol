@@ -29,15 +29,23 @@ export function ClosePositonModal(props: ClosePositionModalProps) {
           </Dialog.Title>
           {/* <div className="w-[100px] mx-auto border-b border-2 !border-primary"></div> */}
           <Dialog.Description className="gap-5 modal-content" as="div">
-            <article className="px-4 pt-3 pb-4 modal-box">
-              <div className="flex items-center gap-3 pb-3 mb-4 border-b">
-                <Avatar size="2xl" src={position?.marketImage} />
-                <div className="flex items-center gap-2 mt-1">
-                  <h5>{position?.tokenName}</h5>
-                  <h5 className="pl-2 border-l border-primary-light">
-                    {position?.marketDescription}
-                  </h5>
-                  {/* <Tag label={direction} /> */}
+            <article className="px-4 pt-4 pb-4 modal-box">
+              <div className="flex items-center gap-3 pb-4 mb-4 border-b">
+                <div className="flex items-center gap-2">
+                  <Avatar
+                    size="sm"
+                    fontSize="lg"
+                    gap="1"
+                    src={position?.tokenImage}
+                    label={position?.tokenName}
+                  />
+                  <Avatar
+                    size="sm"
+                    fontSize="lg"
+                    gap="1"
+                    src={position?.marketImage}
+                    label={position?.marketDescription}
+                  />
                   <Tag label={position?.direction} />
                 </div>
               </div>

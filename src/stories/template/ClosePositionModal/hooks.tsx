@@ -41,6 +41,7 @@ export function useClosePositonModal(props: ClosePositionModalProps) {
       collateral: `${formatDecimals(collateral, token.decimals, 2, true)} ${token.name}`,
       direction: qty > 0n ? 'long' : 'short',
       tokenName: token.name,
+      tokenImage: token.image,
       marketDescription: market.description,
       marketImage: market.image,
       entryPrice,
