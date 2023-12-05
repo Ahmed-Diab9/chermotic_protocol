@@ -2,9 +2,9 @@ import { POSITION_STATUS } from '~/typings/position';
 
 import { PositionItemProps } from '..';
 
-interface usePositionItem extends PositionItemProps {}
+interface UsePositionItem extends PositionItemProps {}
 
-export function usePositionItem({ position }: usePositionItem) {
+export function usePositionItem({ position }: UsePositionItem) {
   const isOpening = position.status === POSITION_STATUS.OPENING;
   const isOpened = position.status === POSITION_STATUS.OPENED;
   const isClosing = position.status === POSITION_STATUS.CLOSING;

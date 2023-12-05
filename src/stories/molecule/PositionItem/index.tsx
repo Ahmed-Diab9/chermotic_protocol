@@ -207,9 +207,11 @@ export function PositionItem(props: PositionItemProps) {
         <div className="w-[10%] min-w-[140px] flex flex-col items-center justify-center gap-2 pl-6 border-l">
           {/* Close / Claim USDC */}
           {(isOpened || isOpening) && (
-            <Button label="Close" css="light" size="sm" onClick={onClosePosition} />
+            <Button label="Close" css="light" size="sm" onClick={() => onClosePosition()} />
           )}
-          {isClosed && <Button label="Claim" css="active" size="sm" onClick={onClaimPosition} />}
+          {isClosed && (
+            <Button label="Claim" css="active" size="sm" onClick={() => onClaimPosition()} />
+          )}
           {isClosing && <Button label="Claim" css="default" size="sm" disabled={true} />}
         </div>
       </div>
